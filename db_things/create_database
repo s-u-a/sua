@@ -1,0 +1,44 @@
+if [ $# -lt 1 ]
+then
+	echo "Usage: $0 [filename]"
+	exit 1
+fi
+
+mkdir $1
+RETURN_MKDIR=$?
+false
+FALSE=$?
+
+
+if [ $RETURN_MKDIR -eq $FALSE ]
+then
+	exit 1
+fi
+
+CWD=`pwd`
+
+touch $1/events
+mkdir $1/handel
+touch $1/highscores
+mkdir $1/items
+ln -s $CWD/gebaeude $1/items/gebaeude
+ln -s $CWD/forschung $1/items/forschung
+ln -s $CWD/roboter $1/items/roboter
+ln -s $CWD/schiffe $1/items/schiffe
+ln -s $CWD/verteidigung $1/items/verteidigung
+touch $1/logfile
+mkdir $1/messages
+mkdir $1/players
+ln -s $CWD/show_player_info $1/show_player_info
+mkdir $1/truemmerfelder
+mkdir $1/universe
+ln -s $CWD/create_galaxy $1/universe/create_galaxy
+
+OLD_PWD=`pwd`
+cd $1/universe
+php ./create_galaxy
+cd $OLD_PWD
+
+chmod -R a+rw $1
+
+exit 0;

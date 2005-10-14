@@ -1,0 +1,60 @@
+html { width:100%; }
+body { background-color:#000; background-image:url(images/background.jpg); color:#000; margin:0; padding:0; min-height:100%; width:100%; font-family:sans-serif; }
+
+#design-img-1 { position:absolute; top:-120px; left:-50px; z-index:5000; }
+#design-img-2 { position:absolute; top:-150px; right:-50px; z-index:4000; }
+#design-img-3 { position:absolute; top:100px; left:-50px; z-index:5001; }
+
+#content-7 { background-color:#ddd; margin:150px 50px 10px 50px; padding:0; position:relative; background-image:url(images/sterne.jpg); background-repeat:repeat-y; background-position:top right; }
+#content-8 { /*background-image:url(images/sonnenfinsternis.png);*/ background-repeat:no-repeat; min-height:325px; background-position:center center; }
+#content-9 { margin:0 18em; padding:1em 0; }
+
+#navigation { border:.2em solid #000; list-style-type:none; text-align:center; padding:.3em; margin:0; width:15em; position:absolute; left:1em; top:1em; z-index:10000; background-image:url(images/halb.png); }
+#navigation li a { text-decoration:none; font-weight:bold; color:#000; font-variant:small-caps; font-family:Georgia,serif; display:block; padding:.3em; margin:.2em; border:.067em solid #000; background-image:url(images/halb2.png); font-size:1.5em; line-height:1.3em; }
+#navigation li a:hover,#navigation li a:focus { background-color:#ddd; }
+
+#login-form { position:absolute; margin:0; top:1em; right:1em; width:15em; border:.2em solid #000; padding:.5em; background-image:url(images/halb.png); z-index:11000; }
+#login-form fieldset { border-style:none; padding:.5em; margin:0; text-align:center; }
+#login-form legend { font-size:1.5em; font-family:Georgia,serif; font-variant:small-caps; font-weight:bold; padding:0; text-align:center; margin:0 auto; }
+#login-form dl { margin:0; padding:0; }
+#login-form dd { display:block; margin:0; padding:0; }
+#login-form ul { margin:0; padding:0; list-style-type:none; text-align:center; }
+
+#login-form dt { display:block; font-weight:bold; padding:.567em; font-size:1.5em; font-family:Georgia,serif; font-variant:small-caps; margin-bottom:-2em; }
+#login-form input { width:100%; background-color:transparent; background-image:url(images/halb2.png); border:.067em solid #000; padding:0; font-size:1.5em; font-family:Georgia,serif; font-variant:small-caps; line-height:1.3em; height:1.6em; }
+#login-form input:hover,#login-form input:focus { background-color:#ddd; }
+
+#login-form button,#login-form a { border:.067em solid #000; width:100%; text-align:center; background-image:url(images/halb2.png); font-weight:bold; font-size:1.5em; font-variant:small-caps; font-family:Georgia,serif; display:block; padding:.3em 0; margin:.2em 0; color:#000; text-decoration:none; line-height:1.3em; }
+#login-form button:hover,#login-form button:focus,#login-form a:hover,#login-form a:focus { background-color:#ddd; cursor:pointer; }
+
+img { border-style:none; }
+
+#logo { position:absolute; top:-142px; left:-.2em; right:-.2em; text-align:center; margin:0; padding:0; font-size:1em; }
+#logo a { height:140px; display:block; width:100%; margin:0; padding:0; }
+#logo img { width:700px; height:140px; border-style:none; }
+* html #logo a { padding:5px; width:710px; height:150px; }
+
+
+#register-form { margin:1em; }
+#register-form dl { margin:1em; padding:0; }
+#register-form dt { display:block; margin:0; padding:0; float:left; width:40%; clear:left; }
+#register-form dt:after { content:":\a0"; }
+#register-form dd { display:block; margin:0; padding:0; margin-left:40%; }
+#register-form input { width:100%; }
+#register-form ul { margin:0; padding:0; list-style-type:none; text-align:center; }
+
+input { border:.1em solid #000; margin:.1em; background-image:url(images/halb2.png); background-color:transparent; }
+input:hover,input:focus { background-color:#ddd; }
+
+h2 { font-size:2em; font-family:Georgia,serif; font-variant:small-caps; text-align:center; border-bottom:.1em solid #000; margin:0 5%; font-weight:bold; }
+h3 { font-size:1.5em; font-family:Georgia,serif; font-variant:small-caps; text-align:left; text-decoration:underline; font-weight:bold; }
+h4 { font-size:1.2em; font-family:Georgia,serif; font-weight:bold; text-decoration:underline; }
+
+abbr,acronym { border-style:none; text-decoration:none; }
+
+#question-list { list-style-type:disc; }
+
+a:link,a:active,a:visited { color:#008; font-variant:small-caps; text-decoration:none; }
+a:hover,a:focus { color:#44f; font-variant:small-caps; text-decoration:none; }
+
+p { text-align:justify; }

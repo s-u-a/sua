@@ -1,0 +1,7 @@
+1129286165	Neues Feature: „Schnellbau automatisch ausführen“
+1129225709	Aktionen in der Karte werden nun nur noch angezeigt, wenn sie ausführbar sind. (Spionage zum Beispiel nur, wenn Spionagesonden verfügbar sind.)
+1129224666	Aktive Forschung wird in der Übersicht nun nur noch angezeigt, wenn auf dem Planeten ein Forschungslabor gebaut ist.
+1129048927	Aufgrund eines Bugs wurden Accounts überschrieben, Bugs behoben, Spiel wurde neugestartet.
+1129039111	Gröbste Fehler des Kampfsystem behoben, scheint ganz gut zu laufen. Testphase läuft weiterhin.
+1128976188	Kampfsystem eingebaut, Testphase gestartet.
+1128601925	Versionsmanagement eingeführt, derzeitige Versionsbezeichnung: 0.0.0 SVN

@@ -1,0 +1,15 @@
+#!/usr/bin/php
+<?php
+	if(!isset($_SERVER['argv'][1]))
+	{
+		echo "Please tell me the player's name.\n";
+		exit(1);
+	}
+	if(!is_file('players/'.$_SERVER['argv'][1]))
+	{
+		echo "This player doesn't exist.\n";
+		exit(1);
+	}
+
+	print_r(unserialize(gzuncompress(file_get_contents('players/'.$_SERVER['argv'][1]))));
+?>

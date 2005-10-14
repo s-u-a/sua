@@ -1,0 +1,7 @@
+body { padding:3.5em 1em 3.5em 12em; }
+
+#time { position:fixed; right:0; border-left:.2em solid #aaa; }
+#ress { position:fixed; }
+#navigation { position:fixed; top:3.5em; left:1em; width:10em;  }
+
+#content-13 { position:relative; }

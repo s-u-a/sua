@@ -1,0 +1,39 @@
+[Dir db_things]
+Dirs=
+Files=create_database/create_galaxy/forschung/gebaeude/roboter/schiffe/show_player_info/verteidigung
+
+[Dir engine]
+Dirs=
+Files=include.php
+
+[Dir login]
+Dirs=help/scripts/style
+Files=einstellungen.php/flotten.php/forschung.php/gebaeude.php/index.php/nachrichten.php/roboter.php/rohstoffe.php/schiffswerft.php/verbuendete.php/verteidigung.php/handel.php/karte.php/style.css/highscores.php
+
+[Dir login/help]
+Dirs=
+Files=dependencies.php/description.php/highscores.php/playerinfo.php
+
+[Dir login/scripts]
+Dirs=
+Files=include.php/logout.php/rename.php/pre_eventhandler.php
+
+[Dir login/style]
+Dirs=simple_grey/grey_graphics
+Files=skin.php/skins
+
+[Dir login/style/grey_graphics]
+Dirs=
+Files=style.inc.css
+
+[Dir login/style/simple_grey]
+Dirs=
+Files=fixed.css/iframe.css/style.inc.css
+
+[Project Dir]
+Dirs=admin/engine/login/db_things
+Files=index.php/register.php/style.css/impressum.php/sua.kateproject/faq.php
+
+[Project File]
+Name=SUA
+Type=Default

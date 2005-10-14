@@ -1,0 +1,302 @@
+html { font-size:1em; color:#fff; font-style:normal; }
+*,#planets .active dt { font-size:inherit; color:inherit; font-weight:inherit; font-style:inherit; font-variant:normal; text-decoration:inherit; font-family:inherit; }
+* html h1,* html h2,* html h3,* html h4 { font-size:100.01%; }
+* html *,* html #planets .active dt { font-size:11px; font-family:sans-serif; }
+
+#time { bottom:0; text-align:right; display:block; margin:0; border-top:.2em solid #aaa; padding:.2em; background-color:#222; word-spacing:-1em; line-height:2em; height:2em; white-space:nowrap; z-index:20000; }
+* html #time { word-spacing:0; }
+#time dt { margin:0 0 0 .25em; padding:.2em 0 .2em .3em; display:inline; background-color:#777; color:#fff; font-weight:bold; border-width:.1em; border-color:#aaa; border-style:solid none solid solid; font-family:monospace; }
+* html #time dt { padding-right:.5em; }
+#time dt:after { content:":\a0"; }
+#time dd { margin:0 .25em 0 0; padding:.2em .3em .2em 0; display:inline; background-color:#777; color:#fff; font-weight:bold; border-width:.1em; border-color:#aaa; border-style:solid solid solid none; font-family:monospace; }
+
+#ress { left:0; right:0; top:0; display:block; margin:0; border-bottom:.2em solid #aaa; padding:.2em; background-color:#222; word-spacing:-1em; line-height:2em; height:2em; white-space:nowrap; z-index:25000; }
+* html #ress { border-right:.2em solid #aaa; word-spacing:0; }
+#ress dt { margin:0 0 0 .25em; padding:.2em 0 .2em .3em; display:inline; background-color:#777; color:#fff; font-weight:bold; border-width:.1em; border-color:#aaa; border-style:solid none solid solid; white-space:nowrap; }
+#ress dt:after { content:":\a0"; }
+#ress dd { margin:0 .25em 0 0; padding:.2em .3em .2em 0; display:inline; background-color:#777; color:#fff; font-weight:bold; border-width:.1em; border-color:#aaa; border-style:solid solid solid none; white-space:nowrap; }
+.ress dd { word-spacing:0; }
+
+body { background-color:#222; }
+
+form { text-align:left; }
+
+#version { position:absolute; top:2.8em; right:.3em; }
+
+#navigation { border:.1em solid #888; background-color:#777; color:#fff; font-weight:bold; z-index:10000; }
+#navigation ul { list-style-type:none; margin:0; padding:0; }
+#navigation li { display:block; text-align:center; margin:0 0 -.1em 0; padding:0; border-bottom:.1em solid #888; border-top:.1em solid #888; position:relative; z-index:25000; }
+#navigation li.active,#navigation li:hover { border-color:#999; z-index:30000; }
+#navigation a { display:block; margin:0; padding:0; line-height:1.25em; position:relative; }
+* html #navigation a { width:100%; position:relative; }
+#navigation .active a, #navigation a:hover,#navigation a:focus { background-color:#888; }
+#navigation #navigation-karte { border-top:1em solid #888; }
+#navigation button { width:100%; padding:0; margin:0 -.1em; }
+
+* html #navigation { position:absolute; }
+
+#change-planet { margin:-.1em 0; padding:0; }
+#change-planet fieldset { margin:0; padding:0; border-style:none; }
+#change-planet legend { display:none; }
+#change-planet select { width:100%; background-color:#888; border-color:#999; border-style:solid none; text-align:center; }
+#change-planet option { text-align:left; }
+
+#content-12 { margin:0 auto; width:100%; max-width:100ex; }
+* html #content-12 { width:100ex; }
+#content-13 { border:.2em solid #aaa; background-color:#777; z-index:5000; text-align:center; }
+
+select { background-color:#777; border:.1em solid #aaa; }
+option { background-color:#777; }
+
+kbd { font:inherit; text-decoration:underline; }
+
+#content-12 h1 { margin:0; padding:.2em; border-bottom:.2em solid #aaa; text-align:center; background-color:#888; font-weight:bold; position:relative; }
+#content-11 h2 { margin:0; padding:.1em; border-bottom:.1em solid #aaa; text-align:center; background-color:#888; font-weight:bold; position:relative; }
+/* IE the faster browser? Definitely not, just check out the size of that crappy
+unnecessary code that's only here to satisfy IE. */
+#content-13 h3,#content-13 .desc-values h3 { border-bottom:.1em solid #aaa; background-color:#888; margin:0; padding:.1em; text-align:center; font-weight:bold; }
+#content-13 * h3 { border-bottom-style:none; background-color:transparent; padding:0; text-align:left; }
+* html h3 { position:relative; }
+
+* html a { color:#fff; text-decoration:none; } /* IE sucks! */
+a:hover,a:focus { color:#ccc; }
+#navigation a:hover,#navigation a:focus { color:#fff; }
+
+select,input,textarea,button { border:.1em solid #999; background-color:#888; color:#fff; font-weight:bold; }
+button { text-align:center; }
+select:hover,select:focus,select:active,input:hover,input:focus,input:active,textarea:hover,textarea:focus,textarea:active,button:hover,button:focus,button:active { background-color:#999; }
+select[readonly],input[readonly],textarea[readonly],button[readonly] { color:#ccc; }
+form div { text-align:center; padding:.5em; }
+form * div { text-align:inherit; padding:0; } /* IE Wuergaround */
+form div button { width:75%; text-align:center; margin:0 auto; }
+textarea { max-width:100%; }
+
+.error { color:#f00; font-weight:bold; text-align:center; font-size:1.2em; }
+
+form { margin:0; padding:0; }
+form ul { list-style-type:none; margin:0; padding:0; }
+form dt { float:left; width:30%; }
+form dt:after { content:":\a0"; }
+fieldset { padding:.5em; margin:.5em; border:.1em solid #aaa; }
+legend { font-weight:bold; }
+
+#planeten-umbenennen { list-style-type:none; margin:0; padding:0; position:absolute; top:0; right:0; }
+#planeten-umbenennen a:before { content:"("; }
+#planeten-umbenennen a:after { content:")"; }
+
+.item { border-color:#aaa; border-style:none; border-width:.1em; padding:.5em; text-align:left; clear:right; position:relative; }
+.item + .item { border-top-style:solid; }
+* html .item { border-top-style:solid; }
+.item h3 { font-weight:bold; margin:0 0 .5em 0; padding:0; line-height:2em; }
+.item h3 .stufe { font-weight:normal; }
+.item dl,.item dt,.item dd { margin:0; padding:0; width:auto; float:none; }
+.item .ress dt,.item .ress dd { display:inline; }
+.item .ress dt:after { content:":\a0"; word-spacing:-1em; }
+.item .ress dd { font-weight:bold; white-space:nowrap; }
+.item .ress dd:after { content:",\a0"; font-weight:normal; }
+.item .ress dd.ress-radium:after { content:""; }
+.item dt.item-kosten,.item dt.item-bauzeit { float:left; }
+.item dt.item-kosten:after,.item dt.item-bauzeit:after { content:":\a0"; }
+.item dd.item-bauzeit { font-weight:bold; }
+.item ul { padding:0; list-style-type:none; float:right; margin:-1.5em 0 1em 1em; }
+.item .item-ausbau,.item .item-rueckbau { width:10em; text-align:center; }
+.item .item-ausbau a,.item .item-rueckbau a { color:#0f0; font-weight:bold; }
+.item .item-ausbau a:hover,.item .item-ausbau a:focus,.item .item-rueckbau a:hover,.item .item-rueckbau a:focus { color:#0c0; }
+.item .item-ausbau.no-ress,.item .item-rueckbau.no-ress { color:#f00; font-weight:bold; }
+.item .item-ausbau.forschung-global { margin-top:.5em; }
+.item .item-bau { width:6em; text-align:right; }
+.item .item-bau input { width:4em; text-align:right; }
+.item .restbauzeit { float:right; margin:-1.5em 0 1em 1em; width:10em; text-align:center; }
+.item .item-rueckbau { font-size:.8em; margin-top:.75em; width:12.5em; }
+
+.unbeschaeftigte-planeten { list-style-type:none; margin:0; padding:0; font-weight:bold; }
+.unbeschaeftigte-planeten .c-voriger { position:absolute; top:0; left:0; }
+.unbeschaeftigte-planeten .c-voriger a:after { content:"\a0 Fastbuild"; vertical-align:middle; font-size:.8em; }
+.unbeschaeftigte-planeten .c-naechster { position:absolute; top:0; right:0; }
+.unbeschaeftigte-planeten .c-naechster a:before { content:"Fastbuild\a0"; vertical-align:middle; font-size:.8em; }
+
+.deps.deps-gebaeude { margin:0; }
+.deps { width:100%; padding:0; margin:-.1em 0 0 0; border-spacing:0; border-collapse:collapse; font-weight:bold; text-align:left; }
+.deps thead { background-color:#888; text-align:center; }
+.deps .c-item { border-right:.1em solid #aaa; }
+.deps th,.deps td { padding:.2em .3em; width:50%; vertical-align:top; }
+.deps td { border-bottom:.1em solid #aaa; }
+.deps tbody td { text-align:left; }
+.deps ul { margin:0; padding:0; list-style-type:none; }
+.deps .deps-ja { color:#0f0; }
+.deps .deps-nein { color:#f00; }
+
+.desc { text-align:left; }
+.desc p { padding-left:.5em; padding-right:.5em; }
+
+.desc-prod,.desc-values { text-align:center; }
+.desc-prod table,.desc-values table { margin:.5em auto; padding:0; border-spacing:0; border-collapse:collapse; border:.1em solid #aaa; }
+.desc-prod h3,.desc-values h3 { margin:0; padding:.1em; border-bottom:.1em solid #aaa; text-align:center; background-color:#888; font-weight:bold; }
+.desc-prod th,.desc-values th { font-weight:bold; }
+.desc-prod td,.desc-prod th,.desc-values td,.desc-values th { border-bottom:.1em solid #aaa; padding:.3em; text-align:center; border-left:.1em solid #aaa; }
+.desc-prod .c-stufe,.desc-values .c-stufe { border-left-style:none; }
+.desc-prod tr:hover td,.desc-prod tr:hover th,.desc-prod tr.active td,.desc-prod tr.active th,.desc-values tr:hover td,.desc-values tr:hover th { background-color:#888; }
+.desc-values ul { text-align:left; margin-top:0; padding-top:0; margin-bottom:0; padding-bottom:0; }
+
+.ress-prod { width:98%; border:.1em solid #aaa; border-spacing:0; border-collapse:collapse; margin:.5em; padding:0; background-color:#777; }
+.ress-prod thead { font-weight:bold; text-align:center; }
+.ress-prod th,.ress-prod td { border-bottom:.1em solid #aaa; padding:.1em .2em; border-right:.1em solid #aaa; }
+.ress-prod th.c-produktion,.ress-prod td.c-produktion { border-right-style:none; }
+.ress-prod td { text-align:right; font-weight:bold; }
+.ress-prod td.c-gebaeude { text-align:left; }
+.ress-prod td.c-gebaeude .stufe { font-weight:normal; }
+.ress-prod td.positiv { color:#0f0; }
+.ress-prod td.negativ { color:#f00; }
+.ress-prod tfoot th { text-align:left; font-weight:bold; }
+.ress-prod tfoot .c-stunde th,.ress-prod tfoot .c-stunde td { border-top:.4em double #aaa; }
+.ress-prod td.c-carbon,.ress-prod td.c-aluminium,.ress-prod td.c-wolfram,.ress-prod td.c-radium,.ress-prod td.c-tritium,.ress-prod td.c-energie { white-space:nowrap; }
+.prod-show-days { width:3ex; height:1.2em; }
+.ress-prod button { width:100%; }
+
+.punkte,.daten { width:70%; margin:.5em 20%; padding:0; border:.1em solid #aaa; white-space:nowrap; text-align:left; }
+* html .punkte,* html .daten { width:100%; }
+.punkte dt,.daten dt { float:left; width:35%; padding:.2em; border-bottom:.1em solid #aaa; border-right:.1em solid #aaa; margin-right:.2em; font-weight:bold; }
+.punkte dd,.daten dd { margin:0 0 0 35%; padding:.2em; border-bottom:.1em solid #aaa; font-weight:bold; }
+.punkte dt.c-gesamt,.punkte dd.c-gesamt,.punkte dt.c-registrierung,.punkte dd.c-registrierung { border-bottom-style:none; }
+
+.fertig { color:#0f0; font-weight:bold; }
+.fertig:hover,.fertig:focus { color:#0c0; }
+.abbrechen { color:#f00; font-weight:bold; }
+.abbrechen:before { content:"\0a"; white-space:pre; }
+.abbrechen:hover,.abbrechen:focus { color:#c00; }
+
+.queue { width:50ex; max-width:100%; margin:.5em auto; border-width:.1em; border-color:#aaa; border-style:solid solid none solid; padding:.2em 0; text-align:center; list-style-position:inside; }
+.queue li { border-bottom:.1em solid #aaa; font-size:.8em; }
+.queue .active { font-size:1em; }
+.queue .active,.queue .last { font-weight:bold; }
+.queue .restbauzeit { border-left:.1em solid #aaa; padding-left:1ex; }
+
+.karte-system { width:75%; border-spacing:0; border-collapse:collapse; text-align:center; margin:.5em auto; }
+.karte-system th,.karte-system td { border:.1em solid #aaa; padding:.2em; font-weight:bold; }
+.karte-system th.c-planet,.karte-system th.c-aktionen { width:1px; }
+.karte-system td.c-aktionen ul { margin:0; padding:0; list-style-type:none; }
+.karte-system td.c-aktionen li { width:1ex; overflow:hidden; float:left; display:block; margin-right:.3em; font-family:monospace; }
+.karte-system td.c-aktionen a { font-family:monospace; }
+
+.karte-wahl { width:26.6em; margin:0 auto; padding:0; font-weight:bold; }
+.karte-galaxiewahl { float:left; width:13em; padding:0; margin:0 .1em 0 0; text-align:center; }
+.karte-systemwahl { width:13em; padding:0; margin:0 0 0 13.3em; text-align:center; }
+.karte-wahl input { width:5ex; text-align:center; }
+.karte-wahl ul { margin:0; padding:0; list-style-type:none; }
+.karte-wahl li { display:inline; }
+.karte-wahl legend { margin:0 auto; text-align:center; }
+
+.benutzerbeschreibung { text-align:left; padding:.5em; }
+
+.nachrichten-kategorien { display:block; padding:0; margin:0; font-weight:bold; }
+.nachrichten-kategorien dt { float:left; margin:0; padding:.2em .3em; display:block; }
+.nachrichten-kategorien dd { margin:0; padding:.2em .3em; text-align:right; display:block; border-top:.1em solid #aaa; vertical-align:middle; }
+.nachrichten-kategorien dd.c-postausgang { border-width:.3em; border-style:double none none none; }
+.nachrichten-kategorien dt.c-gesamt { margin-top:.3em; }
+.nachrichten-kategorien dd.c-gesamt { border-top:.3em double #aaa; }
+.nachrichten-kategorien .alt a,.nachrichten-kategorien dt.c-gesamt.alt { color:#bbb; }
+.nachrichten-kategorien .alt a:hover,.nachrichten-kategorien .alt a:focus { color:#888; }
+.nachrichten-kategorien .leer { display:none; }
+
+.nachrichten-neu-link { font-weight:bold; list-style-type:none; text-align:center; margin:.5em 0; padding:0; font-size:1.2em; }
+
+.nachrichten-liste table { width:80%; border-spacing:0; border-collapse:collapse; margin:.5em auto; }
+.nachrichten-liste th,.nachrichten-liste td { border:.1em solid #aaa; padding:.2em; }
+.nachrichten-liste th { font-weight:bold; }
+.nachrichten-liste td { text-align:left; }
+.nachrichten-liste td.c-betreff { font-weight:bold; }
+.nachrichten-liste .c-auswaehlen { width:1px; text-align:center; }
+.nachrichten-liste .c-absender,.nachrichten-liste .c-datum { width:25%; white-space:nowrap; }
+.nachrichten-liste .auswahl-button { width:90%; text-align:center; padding:0; }
+.nachrichten-liste .alt a { color:#bbb; }
+.nachrichten-liste .alt a:hover,.nachrichten-liste .alt a:focus { color:#888; }
+
+.nachricht-informationen { margin:0; padding:0; text-align:left; font-weight:bold; }
+.nachricht-informationen dt { margin:0; padding:.2em .5em; width:10em; float:left; border-bottom:.1em solid #aaa; clear:left; }
+.nachricht-informationen dt:after { content:":"; }
+.nachricht-informationen dd { margin:0 0 0 11em; padding:.2em .5em; border-left:.1em solid #aaa; border-bottom:.1em solid #aaa; }
+.nachricht-informationen .c-nachricht { border-bottom-style:none; }
+.nachricht-informationen dd.c-nachricht { text-align:left; border:.1em solid transparent; border-left-color:#aaa; } /* Workaround */
+
+.nachricht-informationen.type-2.html dd.c-nachricht { padding:0; }
+.nachricht-informationen.type-2.html dd.c-nachricht dt,.nachricht-informationen.type-2.html dd.c-nachricht dd { border-style:none; }
+#content-11 .nachricht-informationen.type-2.html dd.c-nachricht h3,.nachricht-informationen.type-2.html dd.c-nachricht h4 { border-bottom:.1em solid #aaa; background-color:#888; margin:0; padding:.1em; text-align:center; font-weight:bold; }
+.nachricht-informationen.type-2.html dd.c-nachricht ul { list-style-type:disc; list-style-position:inside; margin:0; padding:0 .5em; }
+.nachricht-informationen.type-2.html dd.c-nachricht li { display:block; float:left; width:50%; padding:.2em 0; margin:0; }
+.nachricht-informationen.type-2.html h4 { clear:left; }
+.nachricht-loeschen-formular { clear:left; }
+.nachricht-informationen.type-2.html + .nachricht-loeschen-formular { display:block; text-align:center; padding:.5em 0; }
+.nachricht-informationen.type-2.html .besiedeln { text-align:center; }
+
+p.neue-nachrichten { font-weight:bold; margin:0; padding:.5em; }
+
+.nachricht-antworten-formular,.nachricht-loeschen-formular { display:inline; margin:0; padding:0; }
+.nachricht-antworten-formular div,.nachricht-loeschen-formular div { display:inline; }
+.nachricht-antworten-formular button,.nachricht-loeschen-formular button { width:10em; }
+
+.flotte-versenden,.flotte-versenden dl { margin:0; padding:0; }
+.flotte-versenden fieldset { margin:.5em; padding:0; }
+.flotte-versenden dt a { font-weight:bold; }
+.flotte-versenden .flotte-schiffe { border-bottom-style:none; }
+.flotte-versenden .flotte-schiffe dt { float:left; margin:0; padding:.2em .5em; clear:left; width:auto; }
+.flotte-versenden .flotte-schiffe dd { margin:0; padding:.2em .5em; border-bottom:.1em solid #aaa; text-align:right; }
+.flotte-versenden .flotte-schiffe input { width:5ex; text-align:right; }
+.flotte-versenden .flotte-koords { text-align:center; font-weight:bold; }
+.flotte-versenden .flotte-koords dl { width:100%; max-width:40ex; margin:.5em auto; text-align:left; padding:0; }
+* html .flotte-versenden .flotte-koords dl { width:40ex; }
+.flotte-versenden .flotte-koords dt { width:10ex; padding:.3em 1ex; }
+.flotte-versenden .flotte-koords dd { margin:0 0 0 12ex; padding:.3em 1ex; }
+.flotte-versenden .flotte-koords .c-ziel input { width:4ex; text-align:center; }
+
+.flotte-versenden-2 { font-weight:bold; text-align:center; }
+.flotte-versenden-2 dl { width:100%; max-width:65ex; margin:.5em auto; text-align:left; padding:0; border:.1em solid #aaa; }
+* html .flotte-versenden-2 dl { width:65ex; }
+.flotte-versenden-2 dd.c-tritiumverbrauch.ja { color:#0f0; }
+.flotte-versenden-2 dd.c-tritiumverbrauch.nein { color:#f00; }
+.flotte-versenden-2 dt { width:25ex; border-bottom:.1em solid #aaa; border-right:.1em solid #aaa; padding:.3em 1ex; }
+.flotte-versenden-2 dd { margin:0 0 0 27ex; border-bottom:.1em solid #aaa; padding:.3em 1ex; }
+.flotte-versenden-2 dd.c-transport { padding:0; border-style:none; }
+.flotte-versenden-2 .c-transport input { width:12ex; text-align:right; }
+.flotte-versenden-2 .c-transport dl { margin:0; padding:.5em; width:auto; border-style:none none none solid; }
+.flotte-versenden-2 .c-transport dt { float:left; padding:0; margin:0; width:20ex; border-style:none; }
+.flotte-versenden-2 .c-transport dd { padding:0; margin:0; width:auto; border-style:none; }
+
+#planets { list-style-type:none; padding:0; margin:0; position:relative; min-height:10em; text-align:left; }
+#planets .c-felder { display:none; }
+#planets dt { margin:0; padding:0; width:1ex; overflow:hidden; display:block; float:left; font-family:monospace; }
+#planets dd { margin:0; padding:0; display:block; }
+#planets dd:before { content:":\a0"; }
+#planets dl { margin:0; padding:0; }
+#planets li { float:right; clear:right; width:40ex; padding:.5em 1ex; font-weight:bold; border-color:#aaa; border-width:.4ex; border-style:none none none solid; display:block; }
+* html #planets li { width:42.8ex; }
+#planets li .koords,#planets li dl { font-weight:normal; }
+#planets li.active { position:absolute; width:auto; top:0; left:0; right:42ex; border-right:.4ex solid #aaa; text-align:center; border-left-style:none; min-height:10em; }
+* html #planets li.active { position:static !important; float:left; border-right-style:none; }
+#planets li.active > * { font-size:1.2em; }
+#planets li.active dl { margin:0; width:auto; }
+* html #planets li.active dl { width:1px; }
+#planets .active dt { display:inline; width:auto; float:none; clear:none; }
+#planets .active dt:after { content:":\a0"; }
+* html #planets .active dt { display:block; float:left; width:50%; text-align:right; margin:0; padding:0; clear:left; }
+#planets .active dd { display:inline; }
+#planets .active dd:before { content:""; }
+#planets .active dd:after { content:"\0a"; white-space:pre; }
+* html #planets .active dd { display:block; margin:0 0 0 50%; text-align:left; padding:0; }
+h2#punkte { clear:right; }
+#planets li + .active + li { border-top-style:solid; border-top-width:.1em; }
+* html #planets li.active .planet-info { width:100%; }
+
+#flotten { margin:-.1em 0 0 0; padding:0; }
+#flotten dt { margin:0; float:left; width:78%; border-top:.1em solid #aaa; padding:.5em 1%; text-align:left; font-weight:bold; }
+#flotten dd { margin:0; float:left; width:18%; border-top:.1em solid #aaa; padding:.5em 1%; }
+#planeten { clear:left; }
+#flotten dt.hinflug.eigen { color:#0f0; }
+#flotten dt.rueckflug.eigen { color:#0b0; }
+#flotten dt.type-4.fremd { color:#0cf; }
+#flotten dt.type-3.fremd,#flotten dt.type-5.fremd { color:#f00; }
+#flotten .beschreibung { color:#fff; cursor:help; }
+#flotten .rueckflug .beschreibung { color:#bbb; }
+#flotten .beschreibung:hover { color:#ccc; }
+#flotten .rueckflug .beschreibung:hover { color:#888; }
+#flotten .beschreibung[title=""] { color:inherit !important; cursor:inherit; }
+#flotten .beschreibung[title=""]:hover { color:inherit !important; }

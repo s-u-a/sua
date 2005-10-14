@@ -1,0 +1,8 @@
+simple_blue_iframe	Simple Blue (iframe style)	simple_grey/style.inc.css simple_grey/iframe.css simple_blue/style.inc.css
+simple_blue_fixed	Simple Blue (fixed style, non-IE)	simple_grey/style.inc.css simple_grey/fixed.css simple_blue/style.inc.css
+blue_graphics_iframe	Blue Graphics (iframe style)	simple_grey/style.inc.css simple_grey/iframe.css grey_graphics/style.inc.css simple_blue/style.inc.css
+blue_graphics_fixed	Blue Graphics (fixed style, non-IE)	simple_grey/style.inc.css simple_grey/fixed.css grey_graphics/style.inc.css simple_blue/style.inc.css
+simple_grey_iframe	Simple Grey (iframe style)	simple_grey/style.inc.css simple_grey/iframe.css
+simple_grey_fixed	Simple Grey (fixed style, non-IE)	simple_grey/style.inc.css simple_grey/fixed.css
+grey_graphics_iframe	Grey Graphics (iframe style)	simple_grey/style.inc.css simple_grey/iframe.css grey_graphics/style.inc.css
+grey_graphics_fixed	Grey Graphics (fixed style, non-IE)	simple_grey/style.inc.css simple_grey/fixed.css grey_graphics/style.inc.css
