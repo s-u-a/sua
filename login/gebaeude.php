@@ -115,6 +115,7 @@
 				else
 				{
 					# Jetzt in den Eventhandler aufnehmen
+					eventhandler::add_event($this_planet['building']['gebaeude'][1]);
 				}
 			}
 		}
@@ -169,9 +170,6 @@
 
 		write_user_array();
 
-		# Eintrag aus dem Eventhandler loeschen
-
-
 		delete_request();
 	}
 
@@ -190,13 +188,13 @@
 		if($fastbuild_prev !== false)
 		{
 ?>
-	<li class="c-voriger"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_prev))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$prev]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$prev]['pos'])?>) [U]" tabindex="1" accesskey="u">&larr;</a></li>
+	<li class="c-voriger"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_prev))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$prev]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$prev]['pos'])?>) [U]" tabindex="1" accesskey="u" rel="prev">&larr;</a></li>
 <?php
 		}
 		if($fastbuild_next !== false)
 		{
 ?>
-	<li class="c-naechster"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_next))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$next]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$next]['pos'])?>) [N]" tabindex="2" accesskey="n">&rarr;</a></li>
+	<li class="c-naechster"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_next))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$next]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$next]['pos'])?>) [N]" tabindex="2" accesskey="n" rel="next">&rarr;</a></li>
 <?php
 		}
 ?>

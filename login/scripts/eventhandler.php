@@ -15,7 +15,15 @@
 				$user = $_SESSION['username'];
 			}
 
-			$filesize = filesize(EVENT_FILE);
+			if(!is_array($time))
+				$time = array($time);
+
+			$user_string = $user;
+			if(strlen($user) < 24)
+				$user_string .= str_repeat(' ', 24-strlen($user));
+
+			sort($time, SORT_NUMERIC);
+
 			$fh = fopen(EVENT_FILE, 'a');
 
 			if(!$fh)
@@ -26,10 +34,16 @@
 
 			flock($fh, LOCK_EX);
 
-			if($filesize > 0)
-				fwrite($fh, "\n");
-
-			fwrite($fh, $time."\t".urlencode($user));
+			foreach($time as $i=>$time)
+			{
+				$time_bin = add_nulls(base_convert($time, 10, 2), 64);
+				$string = '';
+				for($i = 0; $i < strlen($time_bin); $i+=8)
+					$string .= chr(bindec(substr($time_bin, $i, 8)));
+				unset($time_bin);
+				$string .= $user_string;
+				fwrite($fh, $string);
+			}
 
 			flock($fh, LOCK_UN);
 			fclose($fh);
@@ -42,14 +56,24 @@
 			if($ev_username === false && !isset($_SESSION['username']))
 				return false;
 
-			if($ev_username === false || (isset($_SESSION['username']) && $ev_username == $_SESSION['username']))
-				global $user_array;
-
+			global $user_array;
 			global $items;
 			global $types_message_types;
+			global $this_planet;
 
-			if(!isset($user_array))
+			if($ev_username !== false && (!isset($_SESSION['username']) || $ev_username != $_SESSION['username']))
+			{
+				$user_array_save = $user_array;
 				$user_array = get_user_array($ev_username);
+			}
+
+			if($ev_username === false)
+				$ev_username = $_SESSION['username'];
+
+			if(isset($_SESSION['username']))
+				$username_save = $_SESSION['username'];
+			$GLOBALS['_SESSION']['username'] = $ev_username;
+
 			if(!isset($items))
 				$items = get_items(false);
 
@@ -58,7 +82,8 @@
 			$ges_planets = array_keys($user_array['planets']);
 			foreach($ges_planets as $ges_planet)
 			{
-				$this_planet = & $user_array['planets'][$ges_planet];
+				$GLOBALS['this_planet'] = & $user_array['planets'][$ges_planet];
+				$this_planet = &$GLOBALS['this_planet'];
 
 				# Rohstoffe aktualisieren
 				refresh_ress();
@@ -2051,6 +2076,20 @@
 					}
 				}
 			}
+
+			write_user_array($ev_username, $user_array);
+			if(isset($user_array_save))
+				$user_array = $user_array_save;
+			if(isset($username_save))
+				$GLOBALS['_SESSION']['username'] = $username_save;
+			if(isset($_SESSION['act_planet']))
+				$GLOBALS['this_planet'] = & $user_array['planets'][$_SESSION['act_planet']];
 		}
+	}
+
+	function print_this_planet()
+	{
+		global $this_planet;
+		print_r($this_planet);
 	}
 ?>

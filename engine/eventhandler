@@ -1,1 +1,60 @@
- 
+#!/usr/bin/php
+<?php
+	$USE_OB = false;
+	require_once('include.php');
+	require_once('../login/scripts/eventhandler.php');
+
+	header('Content-type: text/plain');
+
+	while(true)
+	{
+		clearstatcache();
+
+		$users = array();
+
+		$filesize = filesize(EVENT_FILE);
+
+		$fh = fopen(EVENT_FILE, 'r+');
+		flock($fh, LOCK_EX);
+
+		while(ftell($fh) < $filesize)
+		{
+			$line = fread($fh, 32);
+
+			$time_bin = '';
+			$time_bin .= add_nulls(decbin(ord(substr($line, 0, 1))), 8);
+			$time_bin .= add_nulls(decbin(ord(substr($line, 1, 1))), 8);
+			$time_bin .= add_nulls(decbin(ord(substr($line, 2, 1))), 8);
+			$time_bin .= add_nulls(decbin(ord(substr($line, 3, 1))), 8);
+			$time_bin .= add_nulls(decbin(ord(substr($line, 4, 1))), 8);
+			$time_bin .= add_nulls(decbin(ord(substr($line, 5, 1))), 8);
+			$time_bin .= add_nulls(decbin(ord(substr($line, 6, 1))), 8);
+			$time_bin .= add_nulls(decbin(ord(substr($line, 7, 1))), 8);
+			$time = base_convert($time_bin, 2, 10);
+			unset($time_bin);
+
+			$username = trim(substr($line, 8));
+
+			if($time < time())
+			{
+				# Event muss abgearbeitet werden
+				$users[$username] = true;
+				fseek($fh, -32, SEEK_CUR);
+				fwrite($fh, '                                ');
+			}
+		}
+		flock($fh, LOCK_UN);
+		fclose($fh);
+
+		foreach($users as $username=>$bla)
+		{
+			eventhandler::run_eventhandler($username);
+			echo date('Y-m-d, H:i:s');
+			echo ' -- ';
+			echo $username;
+			echo "\n";
+		}
+
+		sleep(EVENTHANDLER_INTERVAL);
+	}
+?>

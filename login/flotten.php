@@ -480,6 +480,8 @@
 									uasort($user_array['flotten'], 'usort_fleet');
 									write_user_array();
 
+									eventhandler::add_event($flotte[1][1]);
+
 									if($fast_action)
 									{
 										header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
@@ -919,7 +921,7 @@
 ?>
 <h3>Flotte versenden</h3>
 <?php
-		if(isset($this_planet['schiffe']) && count($this_planet['schiffe']))
+		if(isset($this_planet['schiffe']) && array_sum($this_planet['schiffe']) > 0)
 		{
 ?>
 <?php

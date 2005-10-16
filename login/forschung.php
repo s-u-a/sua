@@ -78,6 +78,7 @@
 			else
 			{
 				# Jetzt in den Eventhandler aufnehmen
+				eventhandler::add_event($build_array[1]);
 			}
 		}
 

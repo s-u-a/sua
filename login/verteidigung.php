@@ -14,6 +14,8 @@
 			}
 		}
 
+		$event_times = array();
+
 		foreach($_POST['verteidigung'] as $id=>$count)
 		{
 			if(!isset($items['verteidigung'][$id]) || !$items['verteidigung'][$id]['buildable'])
@@ -30,18 +32,22 @@
 
 					if(!isset($this_planet['building']['verteidigung']))
 						$this_planet['building']['verteidigung'] = array();
-					$this_planet['building']['verteidigung'][] = array($id, $last_time+$time);
 					$last_time += $time;
+					$this_planet['building']['verteidigung'][] = array($id, $last_time);
 
 					$this_planet['ress'][0] -= $ress[0];
 					$this_planet['ress'][1] -= $ress[1];
 					$this_planet['ress'][2] -= $ress[2];
 					$this_planet['ress'][3] -= $ress[3];
+
+					$event_times[] = $last_time;
 				}
 			}
 		}
 
 		write_user_array();
+
+		eventhandler::add_event($event_times);
 
 		delete_request();
 	}

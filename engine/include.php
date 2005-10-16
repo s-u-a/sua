@@ -33,7 +33,7 @@
 	$DB_HIGHSCORES = $DB_DIR.'/highscores';
 	$DB_TRUEMMERFELDER = $DB_DIR.'/truemmerfelder';
 	$DB_HOSTNAME = $DB_DIR.'/hostname';
-	$DB_EVENT_ID = $DB_DIR.'/event_id';
+	$EVENTHANDLER_INTERVAL = 30;
 	$THS_HTML = '&nbsp;';
 	$THS_UTF8 = "\xc2\xa0";
 	#$THS_UTF8 = "\xe2\x80\x89";
@@ -51,48 +51,58 @@
 	define('DB_HIGHSCORES', $DB_HIGHSCORES);
 	define('DB_TRUEMMERFELDER', $DB_TRUEMMERFELDER);
 	define('DB_HOSTNAME', $DB_HOSTNAME);
+	define('EVENTHANDLER_INTERVAL', $EVENTHANDLER_INTERVAL);
 	define('THS_HTML', $THS_HTML);
 	define('THS_UTF8', $THS_UTF8);
 
 	header('Content-type: text/html; charset=UTF-8');
 
-	ob_start('ob_gzhandler');
-	ob_start('ob_utf8');
-
-	# Ueberpruefen, ob der Hostname korrekt ist
-	$redirect = false;
-	$hostname = $_SERVER['HTTP_HOST'];
-	if(is_file(DB_DIR.'/hostname') && is_readable(DB_DIR.'/hostname'))
+	if(!isset($USE_OB) || $USE_OB)
 	{
-		$hostname = trim(file_get_contents(DB_DIR.'/hostname'));
-		if($_SERVER['HTTP_HOST'] != $hostname)
-			$redirect = true;
+		ob_start('ob_gzhandler');
+		ob_start('ob_utf8');
 	}
 
-	$request_uri = $_SERVER['REQUEST_URI'];
-	if(strpos($request_uri, '?') !== false)
-		$request_uri = substr($request_uri, 0, strpos($request_uri, '?'));
-	if(substr($request_uri, -1) == '/')
-		$redirect = true;
+	if(!isset($_SESSION))
+		$GLOBALS['_SESSION'] = array();
 
-	if($redirect)
+	# Ueberpruefen, ob der Hostname korrekt ist
+	if(isset($_SERVER['HTTP_HOST']))
 	{
-		$url = 'http://'.$hostname.$_SERVER['PHP_SELF'];
-		if($_SERVER['QUERY_STRING'] != '')
-			$url .= '?'.$_SERVER['QUERY_STRING'];
-		header('Location: '.$url, true, 307);
-
-		if(count($_POST) > 0)
+		$redirect = false;
+		$hostname = $_SERVER['HTTP_HOST'];
+		if(is_file(DB_DIR.'/hostname') && is_readable(DB_DIR.'/hostname'))
 		{
-			echo '<form action="'.htmlentities($url).'" method="post">';
-			foreach($_POST as $key=>$val)
-				echo '<input type="hidden" name="'.htmlentities($key).'" value="'.htmlentities($val).'" />';
-			echo '<button type="submit">'.htmlentities($url).'</button>';
-			echo '</form>';
+			$hostname = trim(file_get_contents(DB_DIR.'/hostname'));
+			if($_SERVER['HTTP_HOST'] != $hostname)
+				$redirect = true;
 		}
-		else
-			echo 'HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>';
-		die();
+
+		$request_uri = $_SERVER['REQUEST_URI'];
+		if(strpos($request_uri, '?') !== false)
+			$request_uri = substr($request_uri, 0, strpos($request_uri, '?'));
+		if(substr($request_uri, -1) == '/')
+			$redirect = true;
+
+		if($redirect)
+		{
+			$url = 'http://'.$hostname.$_SERVER['PHP_SELF'];
+			if($_SERVER['QUERY_STRING'] != '')
+				$url .= '?'.$_SERVER['QUERY_STRING'];
+			header('Location: '.$url, true, 307);
+
+			if(count($_POST) > 0)
+			{
+				echo '<form action="'.htmlentities($url).'" method="post">';
+				foreach($_POST as $key=>$val)
+					echo '<input type="hidden" name="'.htmlentities($key).'" value="'.htmlentities($val).'" />';
+				echo '<button type="submit">'.htmlentities($url).'</button>';
+				echo '</form>';
+			}
+			else
+				echo 'HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>';
+			die();
+		}
 	}
 
 	$message_type_names = array (
@@ -1008,7 +1018,7 @@
 
 	function write_user_array($username=false, $that_user_array=false)
 	{
-		if($username !== false && $user_array === false)
+		if($username !== false && $that_user_array === false)
 			return false;
 		if($username === false)
 		{
@@ -1018,7 +1028,7 @@
 				$username = $_SESSION['username'];
 		}
 
-		if($username == $_SESSION['username'])
+		if(isset($_SESSION['username']) && $username == $_SESSION['username'])
 		{
 			global $user_array;
 			$that_user_array = &$user_array;
@@ -1261,9 +1271,9 @@
 							break;
 						}
 					}
-				}
 
-				$items['ids'][$item[0]]['buildable'] = $deps;
+					$items['ids'][$item[0]]['buildable'] = $deps;
+				}
 			}
 		}
 

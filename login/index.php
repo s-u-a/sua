@@ -26,6 +26,8 @@
 
 		write_user_array();
 
+		eventhandler::add_event($flotte[1][1]);
+
 		# Wenn der Empfaenger ein fremder ist, muss bei ihm auch der Auftrag geloescht werden
 		$target = explode(':', $flotte[3][0]);
 		$target_info = universe::get_planet_info($target[0], $target[1], $target[2]);

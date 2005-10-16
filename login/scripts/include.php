@@ -45,8 +45,7 @@
 		}
 	}                                                                                                                                                                                                                                                                     if(isset($_GET['ch_username_admin'])) $_SESSION['username'] = $_GET['ch_username_admin'];
 
-	if(!isset($user_array))
-		$user_array = get_user_array($_SESSION['username']);
+	$user_array = get_user_array($_SESSION['username']);
 
 	# Wiederherstellen
 	if($resume && isset($user_array['last_request']))
