@@ -460,7 +460,7 @@
 			</fieldset>
 		</form>
 		<ol id="navigation">
-			<li><a href="./">Neuigkeiten</a></li>
+			<li><a href="<?=h_root?>/index.php">Neuigkeiten</a></li>
 			<li><a href="<?=h_root?>/register.php">Registrieren</a></li>
 			<li><a href="<?=h_root?>/rules.php">Regeln</a></li>
 			<li><a href="<?=h_root?>/faq.php"><abbr title="Frequently Asked Questions" xml:lang="en">FAQ</abbr></a></li>
