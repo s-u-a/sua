@@ -17,6 +17,9 @@ fi
 
 CWD=`pwd`
 
+echo 'Order Deny,Allow' >> $1/.htaccess
+echo 'Deny from All' >> $1/.htaccess
+echo 'Allow from None' >> $1/.htaccess
 touch $1/events
 mkdir $1/handel
 touch $1/highscores
@@ -40,5 +43,7 @@ php ./create_galaxy
 cd $OLD_PWD
 
 chmod -R a+rw $1
+
+echo "Don't forget to put your desired hostname into `$1/hostname'."
 
 exit 0;

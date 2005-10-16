@@ -300,3 +300,10 @@ h2#punkte { clear:right; }
 #flotten .rueckflug .beschreibung:hover { color:#888; }
 #flotten .beschreibung[title=""] { color:inherit !important; cursor:inherit; }
 #flotten .beschreibung[title=""]:hover { color:inherit !important; }
+
+.highscores { width:50%; margin:.5em auto; border-spacing:0; border-collapse:collapse; font-weight:bold; }
+.highscores td,.highscores th { border:.1em solid #aaa; padding:.1em .3em; }
+.highscores tbody td { text-align:left; }
+.highscores tbody td.c-punktzahl { text-align:right; }
+.highscores a.nachricht-schreiben { font-weight:normal; }
+.highscores th { text-align:center; }

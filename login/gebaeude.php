@@ -124,7 +124,7 @@
 			# Fastbuild
 
 			$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?planet='.urlencode($fastbuild_next);
-			header('Location: '.$url, true, 307);
+			header('Location: '.$url, true, 303);
 			die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 		}
 		else

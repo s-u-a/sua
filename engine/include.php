@@ -56,6 +56,42 @@
 	ob_start('ob_gzhandler');
 	ob_start('ob_utf8');
 
+	# Ueberpruefen, ob der Hostname korrekt ist
+	$redirect = false;
+	$hostname = $_SERVER['HTTP_HOST'];
+	if(is_file(DB_DIR.'/hostname') && is_readable(DB_DIR.'/hostname'))
+	{
+		$hostname = trim(file_get_contents(DB_DIR.'/hostname'));
+		if($_SERVER['HTTP_HOST'] != $hostname)
+			$redirect = true;
+	}
+
+	$request_uri = $_SERVER['REQUEST_URI'];
+	if(strpos($request_uri, '?') !== false)
+		$request_uri = substr($request_uri, 0, strpos($request_uri, '?'));
+	if(substr($request_uri, -1) == '/')
+		$redirect = true;
+
+	if($redirect)
+	{
+		$url = 'http://'.$hostname.$_SERVER['PHP_SELF'];
+		if($_SERVER['QUERY_STRING'] != '')
+			$url .= '?'.$_SERVER['QUERY_STRING'];
+		header('Location: '.$url, true, 307);
+
+		if(count($_POST) > 0)
+		{
+			echo '<form action="'.htmlentities($url).'" method="post">';
+			foreach($_POST as $key=>$val)
+				echo '<input type="hidden" name="'.htmlentities($key).'" value="'.htmlentities($val).'" />';
+			echo '<button type="submit">'.htmlentities($url).'</button>';
+			echo '</form>';
+		}
+		else
+			echo 'HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>';
+		die();
+	}
+
 	class eventhandler
 	{
 		function add_event($time, $event) # Fuegt einen Event hinzu, der vom Eventhandler ausgefuehrt wird
