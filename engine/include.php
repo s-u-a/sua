@@ -1465,6 +1465,7 @@
 	function refresh_ress()
 	{
 		global $this_planet;
+		global $ges_prod;
 
 		# Rohstoffe aktualisieren
 		$now_time = time();
