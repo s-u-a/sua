@@ -480,7 +480,7 @@
 									uasort($user_array['flotten'], 'usort_fleet');
 									write_user_array();
 
-									eventhandler::add_event($flotte[1][1]);
+									eventhandler::add_event($auftrag_array[1][1]);
 
 									if($fast_action)
 									{
