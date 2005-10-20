@@ -292,31 +292,31 @@
 										if($auftrag_array[5][1]['R01'] > $this_planet['roboter']['R01'])
 											$auftrag_array[5][1]['R01'] = $this_planet['roboter']['R01'];
 									}
-									if(isset($_POST['rtransport-carbon']) && $_POST['rtransport-carbon'] >= 0 && isset($this_planet['roboter']['R01']))
+									if(isset($_POST['rtransport-carbon']) && $_POST['rtransport-carbon'] >= 0 && isset($this_planet['roboter']['R02']))
 									{
 										$auftrag_array[5][1]['R02'] = (int) $_POST['rtransport-carbon'];
 										if($auftrag_array[5][1]['R02'] > $this_planet['roboter']['R02'])
 											$auftrag_array[5][1]['R02'] = $this_planet['roboter']['R02'];
 									}
-									if(isset($_POST['rtransport-aluminium']) && $_POST['rtransport-aluminium'] >= 0 && isset($this_planet['roboter']['R01']))
+									if(isset($_POST['rtransport-aluminium']) && $_POST['rtransport-aluminium'] >= 0 && isset($this_planet['roboter']['R03']))
 									{
 										$auftrag_array[5][1]['R03'] = (int) $_POST['rtransport-aluminium'];
 										if($auftrag_array[5][1]['R03'] > $this_planet['roboter']['R03'])
 											$auftrag_array[5][1]['R03'] = $this_planet['roboter']['R03'];
 									}
-									if(isset($_POST['rtransport-wolfram']) && $_POST['rtransport-wolfram'] >= 0 && isset($this_planet['roboter']['R01']))
+									if(isset($_POST['rtransport-wolfram']) && $_POST['rtransport-wolfram'] >= 0 && isset($this_planet['roboter']['R04']))
 									{
 										$auftrag_array[5][1]['R04'] = (int) $_POST['rtransport-wolfram'];
 										if($auftrag_array[5][1]['R04'] > $this_planet['roboter']['R04'])
 											$auftrag_array[5][1]['R04'] = $this_planet['roboter']['R04'];
 									}
-									if(isset($_POST['rtransport-radium']) && $_POST['rtransport-radium'] >= 0 && isset($this_planet['roboter']['R01']))
+									if(isset($_POST['rtransport-radium']) && $_POST['rtransport-radium'] >= 0 && isset($this_planet['roboter']['R05']))
 									{
 										$auftrag_array[5][1]['R05'] = (int) $_POST['rtransport-radium'];
 										if($auftrag_array[5][1]['R05'] > $this_planet['roboter']['R05'])
 											$auftrag_array[5][1]['R05'] = $this_planet['roboter']['R05'];
 									}
-									if(isset($_POST['rtransport-tritium']) && $_POST['rtransport-tritium'] >= 0 && isset($this_planet['roboter']['R01']))
+									if(isset($_POST['rtransport-tritium']) && $_POST['rtransport-tritium'] >= 0 && isset($this_planet['roboter']['R06']))
 									{
 										$auftrag_array[5][1]['R06'] = (int) $_POST['rtransport-tritium'];
 										if($auftrag_array[5][1]['R06'] > $this_planet['roboter']['R06'])
@@ -475,7 +475,11 @@
 
 									# Roboter abziehen
 									foreach($auftrag_array[5][1] as $id=>$anzahl)
+									{
+										if($anzahl == 0)
+											continue;
 										$this_planet['roboter'][$id] -= $anzahl;
+									}
 
 									uasort($user_array['flotten'], 'usort_fleet');
 									write_user_array();

@@ -328,11 +328,6 @@
 			return $planets;
 		}
 
-		function find_truemmerfeld($galaxy, $system, $planet)
-		{
-			return false;
-		}
-
 		function get_planet_class($galaxy, $system, $planet)
 		{
 			$type = (floor($system/100)*floor(($system%100)/10)*($system%10)+$galaxy)*$planet;
@@ -793,6 +788,14 @@
 
 		function set($galaxy, $system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
 		{
+			if($carbon <= 0 && $aluminium <= 0 && $wolfram <= 0 && $radium <= 0)
+			{
+				if(is_file(DB_TRUEMMERFELDER.'/'.$galaxy.'_'.$system.'_'.$planet))
+					return unlink(DB_TRUEMMERFELDER.'/'.$galaxy.'_'.$system.'_'.$planet);
+				else
+					return true;
+			}
+
 			$new = array(
 				base_convert($carbon, 10, 2),
 				base_convert($aluminium, 10, 2),
