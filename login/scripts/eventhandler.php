@@ -61,9 +61,13 @@
 			global $types_message_types;
 			global $this_planet;
 
-			if($ev_username !== false && (!isset($_SESSION['username']) || $ev_username != $_SESSION['username']))
+			if($ev_username !== false && (!isset($user_array) || !isset($_SESSION['username']) || $ev_username != $_SESSION['username']))
 			{
-				$user_array_save = $user_array;
+				if(isset($user_array))
+				{
+					$user_array_save = $user_array;
+					unset($user_array);
+				}
 				$user_array = get_user_array($ev_username);
 			}
 
@@ -809,7 +813,8 @@
 								{
 									if(!isset($items['ids'][$id]) || !isset($items['schiffe'][$id]))
 										continue;
-									$angreifer_flotte[$id] = array($anzahl, $items['schiffe'][$id]['def']*$anzahl*pow(1.05, $angreifer_verteid));
+									if($anzahl > 0)
+										$angreifer_flotte[$id] = array($anzahl, $items['schiffe'][$id]['def']*$anzahl*pow(1.05, $angreifer_verteid));
 								}
 
 								# Verteidiger-Flotte (inklusive Verteidigung) zusammenstellen
@@ -818,13 +823,15 @@
 								{
 									if(!isset($items['ids'][$id]) || !isset($items['schiffe'][$id]))
 										continue;
-									$verteidiger_flotte[$id] = array($anzahl, $items['schiffe'][$id]['def']*$anzahl*pow(1.05, $verteidiger_verteid));
+									if($anzahl > 0)
+										$verteidiger_flotte[$id] = array($anzahl, $items['schiffe'][$id]['def']*$anzahl*pow(1.05, $verteidiger_verteid));
 								}
 								foreach($that_planet['verteidigung'] as $id=>$anzahl)
 								{
 									if(!isset($items['ids'][$id]) || !isset($items['verteidigung'][$id]))
 										continue;
-									$verteidiger_flotte[$id] = array($anzahl, $items['verteidigung'][$id]['def']*$anzahl*pow(1.05, $verteidiger_verteid));
+									if($anzahl > 0)
+										$verteidiger_flotte[$id] = array($anzahl, $items['verteidigung'][$id]['def']*$anzahl*pow(1.05, $verteidiger_verteid));
 								}
 
 								# Namen
@@ -990,7 +997,7 @@
 										foreach($d as $id=>$anzahl)
 										{
 											$prozentsatz = $anzahl[1]%$items['ids'][$id]['def'];
-											if($prozentsatz = 0)
+											if($prozentsatz == 0)
 												$prozentsatz = $items['ids'][$id]['def'];
 											$prozentsatz = $prozentsatz/$items['ids'][$id]['def'];
 											if($prozentsatz < $angriff[0])
@@ -1074,7 +1081,7 @@
 								$nachrichten_text .= "\n";
 								$nachrichten_text .= "</p>\n";
 
-								$nachrichten_text .= "<h3>Flotten des Angreifer ".utf8_htmlentities($target_info[1])."</h3>\n";
+								$nachrichten_text .= "<h3>Flotten des Angreifers ".utf8_htmlentities($start_info[1])."</h3>\n";
 								if(count($angreifer_flotte) > 0)
 								{
 									$nachrichten_text .= "<table>\n";
@@ -1241,7 +1248,7 @@
 								# Koordinaten vertauschen
 								list($flotte[3][0], $flotte[3][1]) = array($flotte[3][1], $flotte[3][0]);
 
-								if(count($angreifer_flotte) > 0)
+								if(count($verteidiger_flotte) <= 0)
 								{
 									# Transportkapazitaet berechnen
 									$transport = 0;
@@ -1354,7 +1361,7 @@
 								$nachrichten_text .= "\tDer Angreifer ".utf8_htmlentities($start_info[1])." hat ".ths(round($angreifer_punkte))."&nbsp;Punkte verloren. Der Verteidiger ".utf8_htmlentities($target_info[1])." hat ".ths(round($verteidiger_punkte_schiffe+$verteidiger_punkte_vert))."&nbsp;Punkte verloren.";
 								$nachrichten_text .= "</p>\n";
 
-								if(count($angreifer_flotte) > 0)
+								if(count($verteidiger_flotte) <= 0)
 								{
 									# Erbeutete Rohstoffe
 									$nachrichten_text .= "<p>\n";
@@ -2079,7 +2086,10 @@
 
 			write_user_array($ev_username, $user_array);
 			if(isset($user_array_save))
+			{
 				$user_array = $user_array_save;
+				unset($user_array_save);
+			}
 			if(isset($username_save))
 				$GLOBALS['_SESSION']['username'] = $username_save;
 			if(isset($_SESSION['act_planet']))
