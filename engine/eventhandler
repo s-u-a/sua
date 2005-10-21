@@ -6,6 +6,8 @@
 
 	header('Content-type: text/plain');
 
+	echo "Eventhandler started.\n";
+
 	while(true)
 	{
 		clearstatcache();

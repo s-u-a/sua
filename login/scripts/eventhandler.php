@@ -65,10 +65,11 @@
 			{
 				if(isset($user_array))
 				{
-					$user_array_save = $user_array;
+					write_user_array();
 					unset($user_array);
 				}
-				$user_array = get_user_array($ev_username);
+				$GLOBALS['user_array'] = get_user_array($ev_username);
+				$user_array = &$GLOBALS['user_array'];
 			}
 
 			if($ev_username === false)
@@ -76,7 +77,7 @@
 
 			if(isset($_SESSION['username']))
 				$username_save = $_SESSION['username'];
-			$GLOBALS['_SESSION']['username'] = $ev_username;
+			$_SESSION['username'] = $ev_username;
 
 			if(!isset($items))
 				$items = get_items(false);
@@ -386,7 +387,8 @@
 
 			unset($this_planet);
 
-			global $this_planet;
+			if(isset($_SESSION['act_planet']))
+				$GLOBALS['this_planet'] = &$GLOBALS['user_array'][$_SESSION['act_planet']];
 
 			if(isset($user_array['flotten']) && $check_fleet)
 			{
@@ -1273,7 +1275,11 @@
 									$erbeut[4] = floor($that_planet['ress'][4]/2);
 
 									# Im Verhaeltnis mit Ladekapazitaet abgleichen
-									$k = $transport/array_sum($erbeut);
+									$erbeut_sum = array_sum($erbeut);
+									if($erbeut_sum == 0)
+										$k = 0;
+									else
+										$k = $transport/array_sum($erbeut);
 									if($k < 1)
 									{
 										$erbeut[0] = floor($erbeut[0]*$k);
@@ -2084,14 +2090,13 @@
 				}
 			}
 
-			write_user_array($ev_username, $user_array);
-			if(isset($user_array_save))
-			{
-				$user_array = $user_array_save;
-				unset($user_array_save);
-			}
+			write_user_array();
+
 			if(isset($username_save))
-				$GLOBALS['_SESSION']['username'] = $username_save;
+			{
+				$_SESSION['username'] = $username_save;
+				$user_array = get_user_array($_SESSION['username']);
+			}
 			if(isset($_SESSION['act_planet']))
 				$GLOBALS['this_planet'] = & $user_array['planets'][$_SESSION['act_planet']];
 		}

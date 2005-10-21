@@ -9,19 +9,18 @@
 		# Auswertung von $DB_DIR
 		if(substr($DB_DIR, 0, 1) != '/')
 		{ # Wenn der Pfad nicht absolut angegeben wurde, wird nun ein absoluter Pfad daraus
-
-			$included_files = get_included_files();
-
 			$this_filename = '/engine/include.php';
+			if(substr(__FILE__, -strlen($this_filename)) !== $this_filename)
+			{
+				logfile::panic('Der absolute Pfad der Datenbank konnte nicht ermittelt werden. Bitte gib ihn in der Datei /engine/include.php an.');
+				exit(1);
+			}
 			define('s_root', substr(__FILE__, 0, -strlen($this_filename)));
 			$DB_DIR = s_root.'/'.$DB_DIR;
 			$document_root = $_SERVER['DOCUMENT_ROOT'];
 			if(substr($document_root, -1) == '/')
 				$document_root = substr($document_root, 0, -1);
 			define('h_root', substr(s_root, strlen($document_root)));
-
-			if($this_filename !== false)
-				logfile::panic('Der absolute Pfad der Datenbank konnte nicht ermittelt werden. Bitte gib ihn in der Datei /engine/include.php an.');
 		}
 
 	$EVENT_FILE = $DB_DIR.'/events';
@@ -144,6 +143,10 @@
 
 		function panic($message) # Gibt eine fatale Fehlermeldung aus, aufgrund deren das Script
 		{ # nicht weiter ausgefuehrt werden kann und bricht es ab.
+			if(isset($_SERVER['HTTP_HOST'])) # Wurde per HTTP aufgerufen
+				die($message);
+			else # Wurde per Programm aufgerufen, zum Beispiel Eventhandler
+				echo $message."\n";
 		}
 	}
 
@@ -420,7 +423,7 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
 	<head>
-		<title xml:lang="en">S-U-A &ndash; Stars under Attack</title>
+		<title xml:lang="en">S-U-A &ndash; Stars Under Attack</title>
 		<link rel="stylesheet" href="<?=h_root?>/style.css" type="text/css" />
 	</head>
 	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
@@ -1035,6 +1038,18 @@
 		{
 			global $user_array;
 			$that_user_array = &$user_array;
+		}
+
+		if(!isset($that_user_array['username']) || $that_user_array['username'] != $username)
+		{
+			$meldung = 'Schutz vor sich selbst: Gerade wollte das Programm den Benutzeraccount des Spielers '.$username.' mit dem ';
+			if(!isset($that_user_array['username']))
+				$meldung .= 'eines unbekannten Spielers';
+			else
+				$meldung .= 'von '.$that_user_array['username'];
+			$meldung .= ' ueberschreiben.';
+			logfile::panic($meldung);
+			return false;
 		}
 
 		$fh = fopen(DB_PLAYERS.'/'.urlencode($username), 'w');

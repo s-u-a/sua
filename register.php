@@ -125,6 +125,7 @@
 						);
 						$user_array['sonden'] = 1;
 						$user_array['fastbuild'] = false;
+						$user_array['username'] = $_POST['username'];
 
 						# Planetenname
 						$user_array['planets'][0]['name'] = ((trim($_POST['hauptplanet']) == '') ? 'Hauptplanet' : trim($_POST['hauptplanet']));
