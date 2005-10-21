@@ -804,7 +804,7 @@
 								if(isset($start_user_array['forschung']['F5']))
 									$angreifer_verteid = $start_user_array['forschung']['F5'];
 								if(isset($target_user_array['forschung']['F5']))
-									$verteidier_verteid = $target_user_array['forschung']['F5'];
+									$verteidiger_verteid = $target_user_array['forschung']['F5'];
 
 								# Schildtechnik
 								$angreifer_schildtechnik = $verteidiger_schildtechnik = 0;
@@ -905,7 +905,7 @@
 									$ges_anzahl = $ges_staerke = $ges_schild = 0;
 									foreach($verteidiger_flotte as $id=>$anzahl)
 									{
-										$staerke = round($items['ids'][$id]['att']*$anzahl[0]*pow(1.05, $angreifer_waffentechnik));
+										$staerke = round($items['ids'][$id]['att']*$anzahl[0]*pow(1.05, $verteidiger_waffentechnik));
 										$schild = round($anzahl[1]);
 
 										$nachrichten_text .= "\t\t<tr>\n";
@@ -1063,8 +1063,8 @@
 									# Schilde des Angeschossenen je nach Schildtechnik heilen
 									foreach($d as $id=>$anzahl)
 									{
-										$diff = $items['ids'][$id]['def']-($anzahl[1]%$items['ids'][$id]['def']);
-										$add = $diff*pow(0.025, ${$runde_starter.'_schildtechnik'});
+										$diff = ($items['ids'][$id]['def']-($anzahl[1]%$items['ids'][$id]['def']))*pow(1.05, ${$runde_anderer.'_verteid'});
+										$add = $diff*(pow(1.025, ${$runde_anderer.'_schildtechnik'})-1);
 										if($add > $diff)
 											$add = $diff;
 										$d[$id][1] += $add;
@@ -1153,7 +1153,7 @@
 									$ges_anzahl = $ges_staerke = $ges_schild = 0;
 									foreach($verteidiger_flotte as $id=>$anzahl)
 									{
-										$staerke = round($items['ids'][$id]['att']*$anzahl[0]*pow(1.05, $angreifer_waffentechnik));
+										$staerke = round($items['ids'][$id]['att']*$anzahl[0]*pow(1.05, $verteidiger_waffentechnik));
 										$schild = round($anzahl[1]);
 
 										$nachrichten_text .= "\t\t<tr>\n";
@@ -1359,7 +1359,7 @@
 								else
 									unset($start_user_array['flotten'][$i]);
 
-								unset($target_user_array['flotten']);
+								unset($target_user_array['flotten'][$i]);
 
 								# Dem Verteidiger Verteidigungsrohstoffe zurueckerstatten
 								$that_planet['ress'][0] += $verteidiger_ress[0]*0.25;

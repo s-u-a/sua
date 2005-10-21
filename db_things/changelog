@@ -1,3 +1,4 @@
+1129934263	Bugs im Kampf- und Flottensystem behoben.
 1129918442	Rundungsfehler in der Rohstoffproduktion behoben.
 1129914996	Einige größere Bugs im automatischen Eventhandler behoben, Datenbank auf vorgestern, 18:00 Uhr zurückgesetzt. Soweit scheint es jetzt zu funktionieren.
 1129914947	Sicherheitssystem eingebaut, unter dem Accounts nicht mehr überschrieben werden können.

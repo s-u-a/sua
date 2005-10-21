@@ -692,6 +692,7 @@
 			else
 				$time = round(pow(($mass*$distance)/$speed, 0.3)*300);
 			#$time = round(pow(1.125*$mass*pow($distance, 2)/$speed, 0.33333)*10);
+			$time = 20;
 
 			return array($time, $tritium);
 		}
