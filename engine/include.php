@@ -2,6 +2,7 @@
 	define('start_mtime', microtime());
 
 	error_reporting(2047);
+	ignore_user_abort();
 
 	# Konstanten, die wichtige Pfade enthalten
 	$DB_DIR = '../sua.db'; # Relativ zum Hauptverzeichnis des Spiels
@@ -1298,20 +1299,23 @@
 		return $items;
 	}
 
-	function get_ges_prod()
+	function get_ges_prod($globalise=false)
 	{
 		global $this_planet;
 		global $items;
 		global $user_array;
 
-		global $carbon_f;
-		global $aluminium_f;
-		global $wolfram_f;
-		global $radium_f;
-		global $tritium_f;
-		global $energie_f;
+		if($globalise)
+		{
+			global $carbon_f;
+			global $aluminium_f;
+			global $wolfram_f;
+			global $radium_f;
+			global $tritium_f;
+			global $energie_f;
 
-		global $energie_mangel;
+			global $energie_mangel;
+		}
 
 		# Roboterfaktoren berechnen
 		$robtech = 0;
@@ -1480,17 +1484,18 @@
 		return 1;
 	}
 
-	function refresh_ress()
+	function refresh_ress($globalise=false)
 	{
 		global $this_planet;
-		global $ges_prod;
+		if($globalise)
+			global $ges_prod;
 
 		# Rohstoffe aktualisieren
 		$now_time = time();
 		$last_time = $this_planet['last_refresh'];
 		$secs = $now_time-$last_time;
 
-		$ges_prod = get_ges_prod();
+		$ges_prod = get_ges_prod($globalise);
 
 		$this_planet['ress'][0] += ($ges_prod[0]/3600)*$secs;
 		$this_planet['ress'][1] += ($ges_prod[1]/3600)*$secs;

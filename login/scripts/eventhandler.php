@@ -61,6 +61,8 @@
 			global $types_message_types;
 			global $this_planet;
 
+			$start_isset_username = isset($_SESSION['username']);
+
 			if($ev_username !== false && (!isset($user_array) || !isset($_SESSION['username']) || $ev_username != $_SESSION['username']))
 			{
 				if(isset($user_array))
@@ -91,7 +93,8 @@
 				$this_planet = &$GLOBALS['this_planet'];
 
 				# Rohstoffe aktualisieren
-				refresh_ress();
+				$globalise = (isset($_SESSION['act_planet']) && $_SESSION['act_planet'] == $ges_planet);
+				refresh_ress($globalise);
 
 				if(isset($this_planet['building']['gebaeude']) && trim($this_planet['building']['gebaeude'][0]) != '' && $this_planet['building']['gebaeude'][1] <= time())
 				{
@@ -740,6 +743,7 @@
 
 								$user_array['flotten'][$i] = $flotte;
 								uasort($user_array['flotten'], 'usort_fleet');
+								eventhandler::add_event($flotte[1][1]);
 							}
 							elseif($flotte[2] == 3)
 							{
@@ -1276,7 +1280,7 @@
 
 									# Im Verhaeltnis mit Ladekapazitaet abgleichen
 									$erbeut_sum = array_sum($erbeut);
-									if($erbeut_sum == 0)
+									if($erbeut_sum <= 0)
 										$k = 0;
 									else
 										$k = $transport/array_sum($erbeut);
@@ -1350,6 +1354,7 @@
 
 									$start_user_array['flotten'][$i] = $flotte;
 									uasort($start_user_array['flotten'], 'usort_fleet');
+									eventhandler::add_event($flotte[1][1]);
 								}
 								else
 									unset($start_user_array['flotten'][$i]);
@@ -1519,12 +1524,14 @@
 									{
 										$user_array['flotten'][$i] = $new_flotte;
 										uasort($user_array['flotten'], 'usort_fleet');
+										eventhandler::add_event($new_flotte[1][1]);
 									}
 								}
 								else
 								{
 									$start_user_array['flotten'][$i] = $new_flotte;
 									uasort($start_user_array['flotten'], 'usort_fleet');
+									eventhandler::add_event($new_flotte[1][1], $start_info[1]);
 
 									$fh = fopen(DB_PLAYERS.'/'.urlencode($start_info[1]), 'w');
 									if($fh)
@@ -2099,6 +2106,8 @@
 			}
 			if(isset($_SESSION['act_planet']))
 				$GLOBALS['this_planet'] = & $user_array['planets'][$_SESSION['act_planet']];
+			if(!$start_isset_username && isset($_SESSION['username']))
+				unset($_SESSION['username']);
 		}
 	}
 

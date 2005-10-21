@@ -1,0 +1,12 @@
+Order Deny,Allow
+
+# Uncomment the following line for Wartungsarbeiten
+#Deny from All
+
+ErrorDocument 403 /wartungsarbeiten.html.gz
+
+<Files "wartungsarbeiten.html.gz">
+	Deny from None
+</Files>
+
+Options +Indexes

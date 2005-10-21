@@ -110,6 +110,13 @@
 			$gebaeude['prod'][4] *= $energie_mangel;
 		}
 
+		$gebaeude['prod'][0] = round($gebaeude['prod'][0]);
+		$gebaeude['prod'][1] = round($gebaeude['prod'][1]);
+		$gebaeude['prod'][2] = round($gebaeude['prod'][2]);
+		$gebaeude['prod'][3] = round($gebaeude['prod'][3]);
+		$gebaeude['prod'][4] = round($gebaeude['prod'][4]);
+		$gebaeude['prod'][5] = round($gebaeude['prod'][5]);
+
 		$ges_prod[0] += $gebaeude['prod'][0];
 		$ges_prod[1] += $gebaeude['prod'][1];
 		$ges_prod[2] += $gebaeude['prod'][2];
