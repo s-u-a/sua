@@ -29,10 +29,10 @@
 		# Rohstoffkosten
 		$ress = $items['forschung'][$a_id]['ress'];
 		# Aktuelle Stufe einberechnen
-		$ress[0] *= pow($level+1, 2.4);
-		$ress[1] *= pow($level+1, 2.4);
-		$ress[2] *= pow($level+1, 2.4);
-		$ress[3] *= pow($level+1, 2.4);
+		$ress[0] *= pow($level+1, 3);
+		$ress[1] *= pow($level+1, 3);
+		$ress[2] *= pow($level+1, 3);
+		$ress[3] *= pow($level+1, 3);
 
 		$ress[0] = round($ress[0]);
 		$ress[1] = round($ress[1]);
