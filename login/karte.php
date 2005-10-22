@@ -77,8 +77,20 @@
 	foreach($system as $i=>$planet)
 	{
 		$class = universe::get_planet_class($galaxy_n, $system_n, $i);
+
+		if($planet[1])
+		{
+			if($planet[1] == $_SESSION['username'])
+				$class2 = 'eigen';
+			elseif(in_array($planet[1], $user_array['verbuendete']))
+				$class2 = 'verbuendet';
+			else
+				$class2 = 'fremd';
+		}
+		else
+			$class2 = 'leer';
 ?>
-		<tr class="<?=$planet[1] ? 'besetzt' : 'leer'?> planet_<?=$class?>">
+		<tr class="<?=$class2?> planet_<?=$class?>">
 <?php
 		$truemmerfeld = truemmerfeld::get($galaxy_n, $system_n, $i);
 		if($truemmerfeld !== false && array_sum($truemmerfeld) > 0)

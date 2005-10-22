@@ -1443,6 +1443,13 @@
 								unset($target_user_array);
 								if(isset($that_planet))
 									unset($that_planet);
+
+								# Highscores neu berechnen
+								if($angreifer_punkte > 0 || $verteidiger_punkte > 0)
+								{
+									highscores::recalc($start_info[1]);
+									highscores::recalc($target_info[1]);
+								}
 							}
 							elseif($flotte[2] == 5)
 							{
@@ -1576,17 +1583,23 @@
 									{
 										# Zielplanet ist besiedelt
 
-										# Spionagetechnikdifferenz ausrechnen
-										$start_level = $flotte[0]['S5']-1;
-										if(isset($start_user_array['forschung']['F1']))
-											$start_level += $start_user_array['forschung']['F1'];
-										$target_level = 0;
-										if(isset($target_user_array['forschung']['F1']))
-											$target_level += $target_user_array['forschung']['F1'];
-										if($target_level == 0)
+										if(!in_array($target_info[1], $start_user_array['verbuendete']))
+										{
+											# Spionagetechnikdifferenz ausrechnen
+											$start_level = $flotte[0]['S5']-1;
+											if(isset($start_user_array['forschung']['F1']))
+												$start_level += $start_user_array['forschung']['F1'];
+											$target_level = 0;
+											if(isset($target_user_array['forschung']['F1']))
+												$target_level += $target_user_array['forschung']['F1'];
+											if($target_level == 0)
+												$diff = 5;
+											else
+												$diff = floor(pow($start_level/$target_level, 2));
+										}
+										else # Verbuendete sehen immer alles
 											$diff = 5;
-										else
-											$diff = floor(pow($start_level/$target_level, 2));
+
 										if($diff > 5)
 											$diff = 5;
 

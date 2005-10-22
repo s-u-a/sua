@@ -31,11 +31,8 @@
 		if(!isset($player_info['punkte'][9])) $player_info['punkte'][9] = 0;
 		if(!isset($player_info['punkte'][10])) $player_info['punkte'][10] = 0;
 		if(!isset($player_info['punkte'][11])) $player_info['punkte'][11] = 0;
-
-		# Spaeter aendern!!!
-		if(!isset($player_info['punkte'][12])) $player_info['punkte'][12] = 0;
 ?>
-<h3>Punkte</h2>
+<h3 id="punkte">Punkte</h2>
 <dl class="punkte">
 	<dt class="c-gebaeude">Gebäude</dt>
 	<dd class="c-gebaeude"><?=ths($player_info['punkte'][0])?></dd>
@@ -61,7 +58,34 @@
 	<dt class="c-gesamt">Gesamt</dt>
 	<dd class="c-gesamt"><?=ths($player_info['punkte'][0]+$player_info['punkte'][1]+$player_info['punkte'][2]+$player_info['punkte'][3]+$player_info['punkte'][4]+$player_info['punkte'][5]+$player_info['punkte'][6])?> <span class="platz">(Platz&nbsp;<?=ths($player_info['punkte'][12])?>)</span></dd>
 </dl>
-<h3>Benutzerbeschreibung</h3>
+<?php
+		if($_GET['player'] == $_SESSION['username'] || in_array($_GET['player'], $user_array['verbuendete']))
+		{
+?>
+<h3 id="ausgegebene-rohstoffe">Ausgegebene Rohstoffe</h3>
+<dl class="punkte">
+	<dt class="c-carbon">Carbon</dt>
+	<dd class="c-carbon"><?=ths($player_info['punkte'][7])?></dd>
+
+	<dt class="c-eisenerz">Aluminium</dt>
+	<dd class="c-eisenerz"><?=ths($player_info['punkte'][8])?></dd>
+
+	<dt class="c-wolfram">Wolfram</dt>
+	<dd class="c-wolfram"><?=ths($player_info['punkte'][9])?></dd>
+
+	<dt class="c-radium">Radium</dt>
+	<dd class="c-radium"><?=ths($player_info['punkte'][10])?></dd>
+
+	<dt class="c-tritium">Tritium</dt>
+	<dd class="c-tritium"><?=ths($player_info['punkte'][11])?></dd>
+
+	<dt class="c-gesamt">Gesamt</dt>
+	<dd class="c-gesamt"><?=ths($player_info['punkte'][7]+$player_info['punkte'][8]+$player_info['punkte'][9]+$player_info['punkte'][10]+$player_info['punkte'][11])?></dd>
+</dl>
+<?php
+		}
+?>
+<h3 id="benutzerbeschreibung">Benutzerbeschreibung</h3>
 <div class="benutzerbeschreibung">
 <?php
 		function repl_nl($nls)
@@ -78,7 +102,7 @@
 		echo "\t<p>\n\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', utf8_htmlentities($player_info['description']))."\n\t</p>\n";
 ?>
 </div>
-<h3>Daten</h3>
+<h3 id="daten">Daten</h3>
 <dl class="daten">
 	<dt class="c-letzte-aktivitaet">Letzte Aktivität</dt>
 <?php
@@ -113,6 +137,23 @@
 ?>
 </dl>
 <?php
+		if($_GET['player'] == $_SESSION['username'] || in_array($_GET['player'], $user_array['verbuendete']))
+		{
+?>
+<h3 id="planeten">Planeten</h3>
+<ul class="playerinfo-planeten">
+<?php
+			$planets = array_keys($player_info['planets']);
+			foreach($planets as $planet)
+			{
+?>
+	<li><?=utf8_htmlentities($player_info['planets'][$planet]['name'])?> <span class="koords">(<?=utf8_htmlentities($player_info['planets'][$planet]['pos'])?>)</span></li>
+<?php
+			}
+?>
+</ul>
+<?php
+		}
 	}
 	login_gui::html_foot();
 ?>

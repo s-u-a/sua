@@ -141,6 +141,8 @@
 				$types = array_flip($types);
 				if($info[1] && isset($types[1])) # Besiedeln, Planet besetzt
 					unset($types[1]);
+				if($info[1] && isset($types[1]) && in_array($info[1], $user_array['verbuendete'])) # Verbuendete angreifen
+					unset($types[3]);
 				if(!$info[1]) # Planet nicht besetzt
 				{
 					if(isset($types[3])) # Angriff

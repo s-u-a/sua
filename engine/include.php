@@ -844,9 +844,19 @@
 
 	class highscores
 	{
-		function recalc()
+		function recalc($use_username=false)
 		{
-			global $user_array;
+			if($use_username === false && !isset($_SESSION['username']))
+				return false;
+			elseif($use_username === false)
+				$use_username = $_SESSION['username'];
+
+			if(isset($_SESSION['username']) && $use_username == $_SESSION['username'])
+				global $user_array;
+			else
+				$user_array = get_user_array($use_username);
+
+			$use_username = $user_array['username'];
 
 			$old_position = $user_array['punkte'][12];
 			$old_position_f = ($old_position-1)*32;
@@ -857,10 +867,10 @@
 			for($i = 0; $i < strlen($new_points_bin); $i+=8)
 				$new_points_str .= chr(bindec(substr($new_points_bin, $i, 8)));
 			unset($new_points_bin);
-			$my_string = substr($_SESSION['username'], 0, 24);
-			if(strlen($_SESSION['username']) < 24)
-				$my_string .= str_repeat(' ', 24-strlen($_SESSION['username']));
-			if(strlen($_SESSION['username']) > 24)
+			$my_string = substr($use_username, 0, 24);
+			if(strlen($use_username) < 24)
+				$my_string .= str_repeat(' ', 24-strlen($use_username));
+			if(strlen($use_username) > 24)
 				$my_string = substr($my_string, 0, 24);
 			$my_string .= $new_points_str;
 
@@ -1057,7 +1067,7 @@
 		if(!$fh)
 			return false;
 		flock($fh, LOCK_EX);
-		fwrite($fh, gzcompress(serialize($user_array)));
+		fwrite($fh, gzcompress(serialize($that_user_array)));
 		flock($fh, LOCK_UN);
 		fclose($fh);
 		return true;
