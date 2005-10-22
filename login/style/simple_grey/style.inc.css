@@ -316,6 +316,7 @@ h2#punkte { clear:right; }
 .buendnisse-liste dd { width:50%; margin:0 0 0 50%; padding:.1em 0; border-style:none; text-align:left; display:block; }
 .buendnisse-liste ul { margin:0; padding:0; display:inline; list-style-type:none; }
 .buendnisse-liste ul li { display:inline; border-left:.1em solid #aaa; margin:0 0 0 .5ex; padding:0 0 0 .5ex; font-size:.9em; }
+.buendnisse-liste .nachricht-schreiben { font-weight:normal; }
 .buendnisse-eingehen { margin:.5em; }
 .buendnisse { border:.1em solid #aaa; }
 .buendnisse-rundschreiben div { text-align:center; }

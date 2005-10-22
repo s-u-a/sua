@@ -7,7 +7,7 @@
 	{
 		# Neue Nachricht verfassen
 ?>
-<h2><a href="nachrichten.php" title="Zurück zur Nachrichtenkategorienübersicht">Nachrichten</a></h2>
+<h2><a href="nachrichten.php" title="Zurück zur Nachrichtenkategorienübersicht [W]" accesskey="w" tabindex="5">Nachrichten</a></h2>
 <?php
 		$error = '';
 		$show_form = true;
@@ -78,16 +78,16 @@
 		if(isset($_POST['betreff']))
 			$betreff = $_POST['betreff'];
 ?>
-			<dd class="c-empfaenger"><input type="text" id="empfaenger-input" name="empfaenger" value="<?=utf8_htmlentities($empfaenger)?>" /></dd>
+			<dd class="c-empfaenger"><input type="text" id="empfaenger-input" name="empfaenger" value="<?=utf8_htmlentities($empfaenger)?>" tabindex="1" accesskey="z" title="[Z]" /></dd>
 
 			<dt class="c-betreff"><label for="betreff-input">Betreff</label></dt>
-			<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" value="<?=utf8_htmlentities($betreff)?>" maxlength="30" /></dd>
+			<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" value="<?=utf8_htmlentities($betreff)?>" maxlength="30" tabindex="2" accesskey="j" title="[J]" /></dd>
 
 			<dt class="c-inhalt"><label for="inhalt-input">Inhalt</label></dt>
-			<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10"><?=isset($_POST['inhalt']) ? preg_replace("/[\n\r\t]/e", '\'&#\'.ord(\'$1\').\';\'', utf8_htmlentities($_POST['inhalt'])) : ''?></textarea></dd>
+			<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10" tabindex="3" accesskey="x" title="[X]"><?=isset($_POST['inhalt']) ? preg_replace("/[\n\r\t]/e", '\'&#\'.ord(\'$1\').\';\'', utf8_htmlentities($_POST['inhalt'])) : ''?></textarea></dd>
 		</dl>
 	</fieldset>
-	<div><button type="submit">Absenden</button></div>
+	<div><button type="submit" accesskey="n" tabindex="4">Abse<kbd>n</kbd>den</button></div>
 </form>
 <?php
 		}

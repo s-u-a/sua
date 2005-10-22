@@ -154,6 +154,23 @@
 </ul>
 <?php
 		}
+
+		if($_GET['player'] != $_SESSION['username'])
+		{
+?>
+<h3 id="nachricht">Nachricht</h3>
+<form action="../nachrichten.php?to=" method="post" class="playerinfo-nachricht">
+	<dl>
+		<dt class="c-betreff"><label for="betreff-input">Betreff</label></dt>
+		<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" maxlength="30" tabindex="1" /></dd>
+
+		<dt class="c-inhalt"><label for="inhalt-input">Inhalt</label></dt>
+		<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10" tabindex="2"></textarea></dd>
+	</dl>
+	<div><button type="submit" accesskey="n" tabindex="3"><kbd>N</kbd>achricht absenden</button><input type="hidden" name="empfaenger" value="<?=utf8_htmlentities($_GET['player'])?>" /></div>
+</form>
+<?php
+		}
 	}
 	login_gui::html_foot();
 ?>

@@ -136,7 +136,7 @@
 		foreach($user_array['verbuendete_anfragen'] as $anfrage)
 		{
 ?>
-	<dt><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($anfrage))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($anfrage)?></a></dt>
+	<dt><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($anfrage))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($anfrage)?></a> <a href="nachrichten.php?to=<?=htmlentities(urlencode($anfrage))?>" title="Schreiben Sie diesem Spieler eine Nachricht" class="nachricht-schreiben">[N]</a></dt>
 	<dd><ul>
 		<li><a href="verbuendete.php?anfrage=<?=htmlentities(urlencode($anfrage))?>&amp;annehmen=1">Annehmen</a></li>
 		<li><a href="verbuendete.php?anfrage=<?=htmlentities(urlencode($anfrage))?>&amp;annehmen=0">Ablehnen</a></li>
@@ -156,7 +156,7 @@
 		foreach($user_array['verbuendete_bewerbungen'] as $bewerbung)
 		{
 ?>
-	<dt><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($bewerbung))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($bewerbung)?></a></dt>
+	<dt><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($bewerbung))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($bewerbung)?></a> <a href="nachrichten.php?to=<?=htmlentities(urlencode($bewerbung))?>" title="Schreiben Sie diesem Spieler eine Nachricht" class="nachricht-schreiben">[N]</a></dt>
 	<dd><ul>
 		<li><a href="verbuendete.php?bewerbung=<?=htmlentities(urlencode($bewerbung))?>">Zurückziehen</a></li>
 	</ul></dd>
@@ -185,7 +185,7 @@
 		foreach($user_array['verbuendete'] as $name)
 		{
 ?>
-	<dt><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($name))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($name)?></a></dt>
+	<dt><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($name))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($name)?></a> <a href="nachrichten.php?to=<?=htmlentities(urlencode($name))?>" title="Schreiben Sie diesem Spieler eine Nachricht" class="nachricht-schreiben">[N]</a></dt>
 	<dd><ul>
 		<li><a href="verbuendete.php?kuendigen=<?=htmlentities(urlencode($name))?>" onclick="return confirm('Wollen Sie das Bündnis mit dem Spieler <?=utf8_jsentities($name)?> wirklich kündigen?');">Kündigen</a></li>
 	</ul></dd>
@@ -198,12 +198,12 @@
 		<legend>Bündnisrundschreiben</legend>
 		<dl>
 			<dt class="c-betreff"><label for="betreff-input">Betreff</label></dt>
-			<dd class="c-betreff"><input type="text" name="betreff" id="betreff-input" /></dd>
+			<dd class="c-betreff"><input type="text" name="betreff" id="betreff-input" tabindex="1" accesskey="j" title="[J]" /></dd>
 
-			<dt class="c-text"><label for="text-textarea">Text</label></dt>
-			<dd class="c-text"><textarea name="rundschreiben" id="text-textarea" rows="6" cols="35"></textarea></dd>
+			<dt class="c-text"><label for="text-textarea">Te<kbd>x</kbd>t</label></dt>
+			<dd class="c-text"><textarea name="rundschreiben" id="text-textarea" rows="6" cols="35" accesskey="x" tabindex="2"></textarea></dd>
 		</dl>
-		<div><button type="submit">Rundschreiben verschicken</button></div>
+		<div><button type="submit" tabindex="3" accesskey="u">R<kbd>u</kbd>ndschreiben verschicken</button></div>
 	</fieldset>
 </form>
 <?php
@@ -223,12 +223,12 @@
 <form action="verbuendete.php" method="post" class="buendnisse-eingehen">
 	<dl>
 		<dt class="c-spieler"><label for="spieler-input">Spieler</label></dt>
-		<dd class="c-spieler"><input type="text" name="empfaenger" id="spieler-input" value="<?=(isset($_POST['empfaenger']) ? utf8_htmlentities($_POST['empfaenger']) : '')?>" /></dd>
+		<dd class="c-spieler"><input type="text" name="empfaenger" id="spieler-input" value="<?=(isset($_POST['empfaenger']) ? utf8_htmlentities($_POST['empfaenger']) : '')?>" tabindex="4" accesskey="z" title="[Z]" /></dd>
 
 		<dt class="c-mitteilung"><label for="mitteilung-textarea">Mitteilung</label></dt>
-		<dd class="c-mitteilung"><textarea rows="5" cols="30" name="mitteilung" id="mitteilung-textarea"><?=(isset($_POST['mitteilung']) ? preg_replace("/[\t\r\n]/e", '\'&#\'.ord(\'$0\').\';\'', utf8_htmlentities($_POST['mitteilung'])) : '')?></textarea></dd>
+		<dd class="c-mitteilung"><textarea rows="5" cols="30" name="mitteilung" id="mitteilung-textarea" tabindex="5" accesskey="o" title="[O]"><?=(isset($_POST['mitteilung']) ? preg_replace("/[\t\r\n]/e", '\'&#\'.ord(\'$0\').\';\'', utf8_htmlentities($_POST['mitteilung'])) : '')?></textarea></dd>
 	</dl>
-	<div><button type="submit">Anfrage absenden</button></div>
+	<div><button type="submit" tabindex="6" accesskey="n">A<kbd>n</kbd>frage absenden</button></div>
 </form>
 <?php
 	login_gui::html_foot();
