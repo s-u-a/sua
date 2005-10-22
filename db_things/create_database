@@ -22,6 +22,7 @@ echo 'Deny from All' >> $1/.htaccess
 echo 'Allow from None' >> $1/.htaccess
 touch $1/events
 mkdir $1/handel
+touch $1/handelskurs
 touch $1/highscores
 mkdir $1/items
 ln -s $CWD/gebaeude $1/items/gebaeude

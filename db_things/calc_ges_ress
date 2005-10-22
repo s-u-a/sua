@@ -1,0 +1,75 @@
+#!/usr/bin/php
+<?php
+	require('../engine/include.php');
+
+	$ges_ress = array(0, 0, 0, 0, 0);
+
+	# Rohstoffe aller Planeten aller Benutzer zusammenzaehlen
+
+	$dh = opendir(DB_PLAYERS);
+	while(($filename = readdir($dh)) !== false)
+	{
+		if(substr($filename, 0, 1) == '.')
+			continue;
+		$username = urldecode($filename);
+		$user_array = get_user_array($username);
+
+		$planets = array_keys($user_array['planets']);
+		foreach($planets as $planet)
+		{
+			$ges_ress[0] += $user_array['planets'][$planet]['ress'][0];
+			$ges_ress[1] += $user_array['planets'][$planet]['ress'][1];
+			$ges_ress[2] += $user_array['planets'][$planet]['ress'][2];
+			$ges_ress[3] += $user_array['planets'][$planet]['ress'][3];
+			$ges_ress[4] += $user_array['planets'][$planet]['ress'][4];
+		}
+
+		unset($username);
+		unset($user_array);
+	}
+	closedir($dh);
+
+	# Kurs berechnen
+	$min = max($ges_ress);
+	if($min == 0)
+		$kurs = array(1, 1, 1, 1, 1);
+	else
+	{
+		foreach($ges_ress as $val)
+		{
+			if($val < $min && $val != 0)
+				$min = $val;
+		}
+
+		$kurs = array();
+		$kurs[0] = $ges_ress[0]/$min;
+		$kurs[1] = $ges_ress[1]/$min;
+		$kurs[2] = $ges_ress[2]/$min;
+		$kurs[3] = $ges_ress[3]/$min;
+		$kurs[4] = $ges_ress[4]/$min;
+
+		foreach($kurs as $key=>$val)
+		{
+			if($val == 0)
+				$kurs[$key] = 1;
+		}
+	}
+
+	unset($ges_ress);
+
+	# Kurs schreiben
+	$handelskurs = preg_split("/\r\n|\r|\n/", file_get_contents(DB_HANDELSKURS));
+	$handelskurs[0] = $kurs[0];
+	$handelskurs[1] = $kurs[1];
+	$handelskurs[2] = $kurs[2];
+	$handelskurs[3] = $kurs[3];
+	$handelskurs[4] = $kurs[4];
+
+	$fh = fopen(DB_HANDELSKURS, 'w');
+	flock($fh, LOCK_EX);
+
+	fwrite($fh, implode("\n", $handelskurs));
+
+	flock($fh, LOCK_UN);
+	fclose($fh);
+?>
