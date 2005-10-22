@@ -213,7 +213,7 @@
 			<form action="<?=htmlentities($_SERVER['PHP_SELF'])?>" method="get" id="change-planet">
 				<fieldset>
 					<legend>Planet wechseln</legend>
-					<select name="planet" onchange="this.form.submit();" onkeyup="this.form.submit();" accesskey="p">
+					<select name="planet" onchange="if(this.value != <?=$_SESSION['act_planet']?>) this.form.submit();" onkeyup="if(this.value != <?=$_SESSION['act_planet']?>) this.form.submit();" accesskey="p" title="Ihre Planeten [P]">
 <?php
 			$planets = array_keys($user_array['planets']);
 			foreach($planets as $planet)
