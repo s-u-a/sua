@@ -432,9 +432,6 @@
 		<link rel="stylesheet" href="<?=h_root?>/style.css" type="text/css" />
 	</head>
 	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
-		<img src="images/sonne.png" alt="" id="design-img-1" />
-		<img src="images/planet.gif" alt="" id="design-img-2" />
-		<img src="images/komet.png" alt="" id="design-img-3" />
 		<h1 id="logo"><a href="./" title="Zurück zur Startseite"><img src="images/logo_text.png" alt="Stars Under Attack" xml:lang="en" /></a></h1>
 		<form action="<?=h_root?>/login/index.php" method="post" id="login-form">
 			<fieldset>
