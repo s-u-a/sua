@@ -1583,7 +1583,12 @@
 				$prod = $this_planet['prod'][$id];
 
 			$this_prod = $items['gebaeude'][$id]['prod'];
-			$this_prod[5] = round($this_prod[5]*pow($stufe, 2)*$prod*$energie_f);
+			$this_prod[5] *= pow($stufe, 2)*$prod;
+
+			if($this_prod[5] > 0)
+				$this_prod[5] *= $energie_f;
+
+			$this_prod[5] = round($this_prod[5]);
 
 			if($this_prod[5] < 0)
 				$energie_need -= $this_prod[5];
