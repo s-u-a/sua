@@ -44,6 +44,7 @@
 		$user_array['receive'][5][1] = isset($_POST['nachrichten'][5][1]);
 
 		$user_array['fastbuild'] = isset($_POST['fastbuild']);
+		$user_array['shortcuts'] = isset($_POST['shortcuts']);
 
 		$changed = true;
 	}
@@ -125,8 +126,11 @@
 			<dt class="c-spionagesonden"><label for="spionagesonden">Spionagesonden</label></dt>
 			<dd class="c-spionagesonden"><input type="text" name="spionagesonden" id="spionagesonden" value="<?=utf8_htmlentities($user_array['sonden'])?>" title="Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der Karte geschickt werden sollen [J]" accesskey="j" tabindex="4" /></dd>
 
-			<dt class="c-schnellbau-automatisch-ausfuehren"><label for="fastbuild">Schnellbau automatisch ausführen</label></dt>
-			<dd class="c-schnellbau-automatisch-ausfuehren"><input type="checkbox" name="fastbuild" id="fastbuild"<?=$user_array['fastbuild'] ? ' checked="checked"' : ''?> title="Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten unbeschäftigten Planeten gewechselt [Q]" accesskey="q" tabindex="5" /></dd>
+			<dt class="c-auto-schnellbau"><label for="fastbuild">Auto-Schnellbau</label></dt>
+			<dd class="c-auto-schnellbau"><input type="checkbox" name="fastbuild" id="fastbuild"<?=$user_array['fastbuild'] ? ' checked="checked"' : ''?> title="Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten unbeschäftigten Planeten gewechselt [Q]" accesskey="q" tabindex="5" /></dd>
+
+			<dt class="c-schnell-shortcuts"><label for="shortcuts">Schnell-<span xml:lang="en">Shortcuts</span></label></dt>
+			<dd class="c-schnell-shortcuts"><input type="checkbox" name="shortcuts" id="shortcuts"<?=$user_array['shortcuts'] ? ' checked="checked"' : ''?> title="Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere Taste zu drücken [X]" accesskey="x" tabindex="6" /></dd>
 		</dl>
 	</fieldset>
 	<fieldset class="nachrichtentypen-empfangen">
@@ -143,27 +147,27 @@
 				<tr>
 					<th>Kaempfe</th>
 					<td></td>
-					<td><input type="checkbox" name="nachrichten[1][1]" tabindex="5"<?=$user_array['receive'][1][1] ? ' checked="checked"' : ''?> /></td>
+					<td><input type="checkbox" name="nachrichten[1][1]" tabindex="7"<?=$user_array['receive'][1][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 				<tr>
 					<th>Spionage</th>
 					<td></td>
-					<td><input type="checkbox" name="nachrichten[2][1]" tabindex="6"<?=$user_array['receive'][2][1] ? ' checked="checked"' : ''?> /></td>
+					<td><input type="checkbox" name="nachrichten[2][1]" tabindex="8"<?=$user_array['receive'][2][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 				<tr>
 					<th>Transport</th>
-					<td><input type="checkbox" name="nachrichten[3][0]" tabindex="7"<?=$user_array['receive'][3][0] ? ' checked="checked"' : ''?> /></td>
-					<td><input type="checkbox" name="nachrichten[3][1]" tabindex="8"<?=$user_array['receive'][3][1] ? ' checked="checked"' : ''?> /></td>
+					<td><input type="checkbox" name="nachrichten[3][0]" tabindex="9"<?=$user_array['receive'][3][0] ? ' checked="checked"' : ''?> /></td>
+					<td><input type="checkbox" name="nachrichten[3][1]" tabindex="10"<?=$user_array['receive'][3][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 				<tr>
 					<th>Sammeln</th>
 					<td></td>
-					<td><input type="checkbox" name="nachrichten[4][1]" tabindex="9"<?=$user_array['receive'][4][1] ? ' checked="checked"' : ''?> /></td>
+					<td><input type="checkbox" name="nachrichten[4][1]" tabindex="11"<?=$user_array['receive'][4][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 				<tr>
 					<th>Besiedelung</th>
-					<td><input type="checkbox" name="nachrichten[5][0]" tabindex="10"<?=$user_array['receive'][5][0] ? ' checked="checked"' : ''?> /></td>
-					<td><input type="checkbox" name="nachrichten[5][1]" tabindex="11"<?=$user_array['receive'][5][1] ? ' checked="checked"' : ''?> /></td>
+					<td><input type="checkbox" name="nachrichten[5][0]" tabindex="12"<?=$user_array['receive'][5][0] ? ' checked="checked"' : ''?> /></td>
+					<td><input type="checkbox" name="nachrichten[5][1]" tabindex="13"<?=$user_array['receive'][5][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 			</tbody>
 		</table>
@@ -172,16 +176,16 @@
 		<legend>Passwort ändern</legend>
 		<dl>
 			<dt class="c-altes-passwort"><label for="old-password">Altes Passw<kbd>o</kbd>rt</label></dt>
-			<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password" tabindex="13" accesskey="o" /></dd>
+			<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password" tabindex="15" accesskey="o" /></dd>
 
 			<dt class="c-neues-passwort"><label for="new-password">Neues Passwort</label></dt>
-			<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password" tabindex="14" /></dd>
+			<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password" tabindex="16" /></dd>
 
 			<dt class="c-neues-passwort-wiederholen"><label for="new-password2">Neues Passwort wiederholen</label></dt>
-			<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2" tabindex="15" /></dd>
+			<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2" tabindex="17" /></dd>
 		</dl>
 	</fieldset>
-	<div><button type="submit" tabindex="12" accesskey="w" title="[W]">Speichern</button></div>
+	<div><button type="submit" tabindex="14" accesskey="w" title="[W]">Speichern</button></div>
 </form>
 <?php
 	login_gui::html_foot();

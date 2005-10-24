@@ -101,80 +101,8 @@
 	<head>
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 		<title xml:lang="en">S-U-A &ndash; Stars Under Attack</title>
-		<script type="text/javascript">
-			var local_time_obj = new Date();
-			var local_time = Math.round(local_time_obj.getTime() / 1000);
-			var time_diff = local_time-<?=time()+1?>;
-
-			var countdowns = new Array();
-
-			function mk2(string)
-			{
-				string = ''+string;
-				while(string.length < 2)
-					string = '0'+string;
-
-				return string;
-			}
-
-			function time_up()
-			{
-				local_time_up = new Date();
-				server_time_up = new Date(local_time_up.getTime() - time_diff*1000);
-				document.getElementById('time-local').innerHTML = mk2(local_time_up.getHours())+':'+mk2(local_time_up.getMinutes())+':'+mk2(local_time_up.getSeconds());
-				document.getElementById('time-server').innerHTML = mk2(server_time_up.getHours())+':'+mk2(server_time_up.getMinutes())+':'+mk2(server_time_up.getSeconds());
-
-				for(var codo_key in countdowns)
-				{
-					var codo = countdowns[codo_key];
-					if(!codo[0] || !codo[1])
-						continue;
-					var this_remain = Math.round((codo[1]+time_diff)-local_time_up.getTime()/1000);
-
-					if(this_remain < 0)
-					{
-						document.getElementById('restbauzeit-'+codo[0]).innerHTML = '<a href="?" class="fertig" title="Seite neu laden.">Fertig.</a>';
-						delete countdowns[codo_key];
-						continue;
-					}
-
-					var this_timestring = '';
-					if(this_remain >= 86400)
-					{
-						this_timestring += Math.floor(this_remain/86400)+'&thinsp;<abbr title="Tag';
-						if(this_remain >= 172800)
-							this_timestring += 'e';
-						this_timestring += '">d</abbr> ';
-						this_remain = this_remain % 86400;
-					}
-
-					this_timestring += mk2(Math.floor(this_remain/3600))+':'+mk2(Math.floor((this_remain%3600)/60))+':'+mk2(Math.floor(this_remain%60));
-					if(codo[2])
-						this_timestring += ' <a href="?cancel='+encodeURIComponent(codo[0])+'" class="abbrechen">Abbrechen</a>';
-
-					document.getElementById('restbauzeit-'+codo[0]).innerHTML = this_timestring;
-				}
-			}
-
-			function init_countdown(obj_id, f_time)
-			{
-				var show_cancel = true;
-				if(init_countdown.arguments.length >= 3 && !init_countdown.arguments[2])
-					show_cancel = false;
-
-				var title_string = 'Fertigstellung: ';
-				var local_date = new Date((f_time+time_diff)*1000);
-				title_string += mk2(local_date.getHours())+':'+mk2(local_date.getMinutes())+':'+mk2(local_date.getSeconds())+', '+local_date.getFullYear()+'-'+mk2(local_date.getMonth()+1)+'-'+mk2(local_date.getDate())+' (Lokalzeit); ';
-
-				var remote_date = new Date(f_time*1000);
-				title_string += mk2(remote_date.getHours())+':'+mk2(remote_date.getMinutes())+':'+mk2(remote_date.getSeconds())+', '+remote_date.getFullYear()+'-'+mk2(remote_date.getMonth()+1)+'-'+mk2(remote_date.getDate())+' (Serverzeit)';
-
-				document.getElementById('restbauzeit-'+obj_id).setAttribute('title', title_string);
-				window.countdowns.push(new Array(obj_id, f_time, show_cancel));
-
-				time_up();
-			}
-		</script>
+		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts.js.php')?>"></script>
+		<script type="text/javascript">set_time_globals(<?=time()+1?>);</script>
 <?php
 			$skin_path = '';
 			if(isset($user_array['skin']))
@@ -195,7 +123,7 @@
 			}
 ?>
 	</head>
-	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
+	<body<?php if($user_array['shortcuts']){?> onload="get_key_elements();"<?php }?>><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
 		<dl id="time">
 			<script type="text/javascript">
 				// <![CDATA[
