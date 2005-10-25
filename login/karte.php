@@ -129,6 +129,13 @@
 <?php
 			if($planet[1] != $_SESSION['username'])
 			{
+				if(isset($this_planet['schiffe']['S5']) && $this_planet['schiffe']['S5'] > 0)
+				{
+?>
+					<li class="c-spionieren"><a href="flotten.php?action=spionage&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>" title="Spionieren Sie diesen Planeten aus">Spionieren</a></li>
+<?php
+				}
+
 				if($planet[1])
 				{
 ?>
@@ -136,12 +143,6 @@
 <?php
 				}
 
-				if(isset($this_planet['schiffe']['S5']) && $this_planet['schiffe']['S5'] > 0)
-				{
-?>
-					<li class="c-spionieren"><a href="flotten.php?action=spionage&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>" title="Spionieren Sie diesen Planeten aus">Spionieren</a></li>
-<?php
-				}
 				if(!$planet[1] && count($user_array['planets']) < 15 && isset($this_planet['schiffe']['S6']) && $this_planet['schiffe']['S6'] > 0)
 				{
 ?>
@@ -149,6 +150,7 @@
 <?php
 				}
 			}
+
 			if($show_sammeln)
 			{
 ?>

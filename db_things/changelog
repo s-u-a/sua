@@ -1,3 +1,4 @@
+1130270454	Herausfinden der Planeteninformationen der Flottenbewegungen auf der Startseite: auf Performance hin optimiert, deutliche Geschwindigkeitsverbesserung.
 1130187097	Schnell-Shortcuts eingebaut, JavaScript in andere Dateien verlagert.
 1130086916	Bug in der Rohstoffproduktion behoben, bei Energiemangel wurden falsche Werte produziert.
 1130016470	Erste Vorkehrungen fürs Handelssystem getroffen, Programme eingebaut, die den Handelskurs berechnen und Angebote auswerten.

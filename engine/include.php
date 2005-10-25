@@ -159,40 +159,108 @@
 
 	class universe
 	{
-		function get_planet_info($galaxy, $system, $planet) # Findet die Groesse, Eigentuemer und Namen des Planeten heraus
+		function get_planet_info($check_galaxy, $check_system=false, $check_planet=false) # Findet die Groesse, Eigentuemer und Namen des Planeten heraus
 		{ # unter den angegebenen Koordinaten heraus.
-			if($planet%1 != 0 || $planet < 1 || $system%1 != 0 || $system < 1 || !is_file(DB_UNIVERSE.'/'.$galaxy) || !is_readable(DB_UNIVERSE.'/'.$galaxy))
+			if($check_system !== false && $check_planet !== false)
+			{
+				$check_planets = array($check_galaxy.':'.$check_system.':'.$check_planet);
+				$return_array = false;
+			}
+			else
+			{
+				$check_planets = $check_galaxy;
+				$return_array = true;
+			}
+
+			uasort($check_planets, 'sort_koords');
+
+			$planets_ass = array();
+			foreach($check_planets as $id=>$planet)
+			{
+				$planet = explode(':', $planet);
+				if(count($planet) < 3 || $planet[2]%1 != 0 || $planet[2] < 1 || $planet[1]%1 != 0 || $planet[1] < 1 || !is_file(DB_UNIVERSE.'/'.$planet[0]) || !is_readable(DB_UNIVERSE.'/'.$planet[0]))
+					continue;
+				if(!isset($planets_ass[$planet[0]]))
+					$planets_ass[$planet[0]] = array();
+				if(!isset($planets_ass[$planet[0]][$planet[1]]))
+					$planets_ass[$planet[0]][$planet[1]] = array();
+				$planets_ass[$planet[0]][$planet[1]][] = $planet[2];
+			}
+
+			$filesize = array();
+			foreach($planets_ass as $galaxy=>$systems)
+			{
+				$filesize[$galaxy] = filesize(DB_UNIVERSE.'/'.$galaxy);
+				$system_keys = array_keys($systems);
+				while($filesize[$galaxy] < ($last_key = array_pop($system_keys))*1475) # System existiert nicht
+					unset($planets_ass[$galaxy][$last_key]);
+				if(count($planets_ass[$galaxy]) <= 0)
+					unset($planets_ass[$galaxy]);
+			}
+
+			if(count($planets_ass) <= 0)
 				return false;
 
-			$filesize = filesize(DB_UNIVERSE.'/'.$galaxy);
+			$strings = array();
 
-			if($filesize < ($system)*1475) # System existiert nicht
-				return false;
+			foreach($planets_ass as $galaxy=>$systems)
+			{
+				$fh = fopen(DB_UNIVERSE.'/'.$galaxy, 'rb');
+				flock($fh, LOCK_SH);
 
-			$fh = fopen(DB_UNIVERSE.'/'.$galaxy, 'rb');
-			flock($fh, LOCK_SH);
+				$strings[$galaxy] = array();
+				$system_keys = array_keys($systems);
+				foreach($system_keys as $system)
+				{
+					fseek($fh, ($system-1)*1475, SEEK_SET);
+					$strings[$galaxy][$system] = fread($fh, 1475);
+				}
 
-			fseek($fh, ($system-1)*1475, SEEK_SET);
-			$string = fread($fh, 1475);
+				flock($fh, LOCK_UN);
+				fclose($fh);
+			}
 
-			flock($fh, LOCK_UN);
-			fclose($fh);
+			$info = array();
 
-			$bin = '';
+			foreach($planets_ass as $galaxy=>$systems)
+			{
+				foreach($systems as $system=>$planets)
+				{
+					$this_string = & $strings[$galaxy][$system];
+					$planets_count = floor(ord($this_string{0})/8);
 
-			for($i=0; $i < strlen($string); $i++)
-				$bin .= add_nulls(decbin(ord($string{$i})), 8);
+					foreach($planets as $i=>$planet)
+					{
+						if($planet > $planets_count)
+							unset($info[$galaxy][$system][$i]);
+						else
+						{
+							$bin = '';
+							$len = strlen($this_string);
+							for($i=0; $i < $len; $i++)
+								$bin .= add_nulls(decbin(ord($this_string{$i})), 8);
 
-			$planet_count = bindec(substr($bin, 0, 5))+10;
-			if($planet > $planet_count) # Der Planet existiert nicht
-				return false;
+							$size = bindec(substr($bin, 5+($planet-1)*9, 9))+100;
+							$owner_name = trim(bin2string(substr($bin, 275+($planet-1)*192, 192)));
+							$planet_name = trim(bin2string(substr($bin, 6035+($planet-1)*192, 192)));
 
-			$size = bindec(substr($bin, 5+($planet-1)*9, 9))+100;
+							$info[$galaxy.':'.$system.':'.$planet] = array($size, $owner_name, $planet_name);
+							unset($bin);
+						}
+					}
+				}
+			}
 
-			$owner_name = trim(bin2string(substr($bin, 275+($planet-1)*192, 192)));
-			$planet_name = trim(bin2string(substr($bin, 6035+($planet-1)*192, 192)));
+			foreach($check_planets as $koords)
+			{
+				if(!isset($info[$koords]))
+					$info[$koords] = false;
+			}
 
-			return array($size, $owner_name, $planet_name);
+			if($return_array)
+				return $info;
+			else
+				return array_shift($info);
 		}
 
 		function set_planet_info($galaxy, $system, $planet, $size, $owner, $name)
@@ -1875,5 +1943,32 @@
 		$diff = max($ao, $bo)-min($ao, $bo);
 
 		return $diff;
+	}
+
+	function sort_koords($a, $b)
+	{
+		$a_expl = explode(':', $a);
+		$b_expl = explode(':', $b);
+
+		if($a_expl[0] > $b_expl[0])
+			return 1;
+		elseif($a_expl[0] < $b_expl[0])
+			return -1;
+		else
+		{
+			if($a_expl[1] > $b_expl[1])
+				return 1;
+			elseif($a_expl[1] < $b_expl[1])
+				return -1;
+			else
+			{
+				if($a_expl[2] > $b_expl[2])
+					return 1;
+				elseif($a_expl[2] < $b_expl[2])
+					return -1;
+				else
+					return 0;
+			}
+		}
 	}
 ?>

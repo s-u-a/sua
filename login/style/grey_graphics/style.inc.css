@@ -2,55 +2,55 @@
 * html #planets { padding:0 !important; }
 
 #planets li { background-repeat:no-repeat; background-position:right center; min-height:50px; padding:0 1ex; }
-#planets .planet_1 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet01.gif); }
-#planets .planet_2 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet02.gif); }
-#planets .planet_3 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet03.gif); }
-#planets .planet_4 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet04.gif); }
-#planets .planet_5 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet05.gif); }
-#planets .planet_6 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet06.gif); }
-#planets .planet_7 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet07.gif); }
-#planets .planet_8 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet08.gif); }
-#planets .planet_9 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet09.gif); }
-#planets .planet_10 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet10.gif); }
-#planets .planet_11 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet11.gif); }
-#planets .planet_12 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet12.gif); }
-#planets .planet_13 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet13.gif); }
-#planets .planet_14 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet14.gif); }
-#planets .planet_15 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet15.gif); }
-#planets .planet_16 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet16.gif); }
-#planets .planet_17 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet17.gif); }
-#planets .planet_18 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet18.gif); }
-#planets .planet_19 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet19.gif); }
-#planets .planet_20 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets_small%2fplanet20.gif); }
+#planets .planet_1 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet01.gif); }
+#planets .planet_2 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet02.gif); }
+#planets .planet_3 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet03.gif); }
+#planets .planet_4 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet04.gif); }
+#planets .planet_5 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet05.gif); }
+#planets .planet_6 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet06.gif); }
+#planets .planet_7 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet07.gif); }
+#planets .planet_8 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet08.gif); }
+#planets .planet_9 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet09.gif); }
+#planets .planet_10 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet10.gif); }
+#planets .planet_11 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet11.gif); }
+#planets .planet_12 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet12.gif); }
+#planets .planet_13 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet13.gif); }
+#planets .planet_14 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet14.gif); }
+#planets .planet_15 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet15.gif); }
+#planets .planet_16 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet16.gif); }
+#planets .planet_17 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet17.gif); }
+#planets .planet_18 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet18.gif); }
+#planets .planet_19 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet19.gif); }
+#planets .planet_20 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets_small%2fplanet20.gif); }
 
 #planets .active,#spionage-planet dl { background-repeat:no-repeat; background-position:center top; padding:250px 0 0 0 !important; }
-#planets .planet_1.active,#spionage-planet dl.planet_1 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet01.gif); }
-#planets .planet_2.active,#spionage-planet dl.planet_2 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet02.gif); }
-#planets .planet_3.active,#spionage-planet dl.planet_3 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet03.gif); }
-#planets .planet_4.active,#spionage-planet dl.planet_4 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet04.gif); }
-#planets .planet_5.active,#spionage-planet dl.planet_5 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet05.gif); }
-#planets .planet_6.active,#spionage-planet dl.planet_6 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet06.gif); }
-#planets .planet_7.active,#spionage-planet dl.planet_7 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet07.gif); }
-#planets .planet_8.active,#spionage-planet dl.planet_8 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet08.gif); }
-#planets .planet_9.active,#spionage-planet dl.planet_9 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet09.gif); }
-#planets .planet_10.active,#spionage-planet dl.planet_10 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet10.gif); }
-#planets .planet_11.active,#spionage-planet dl.planet_11 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet11.gif); }
-#planets .planet_12.active,#spionage-planet dl.planet_12 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet12.gif); }
-#planets .planet_13.active,#spionage-planet dl.planet_13 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet13.gif); }
-#planets .planet_14.active,#spionage-planet dl.planet_14 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet14.gif); }
-#planets .planet_15.active,#spionage-planet dl.planet_15 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet15.gif); }
-#planets .planet_16.active,#spionage-planet dl.planet_16 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet16.gif); }
-#planets .planet_17.active,#spionage-planet dl.planet_17 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet17.gif); }
-#planets .planet_18.active,#spionage-planet dl.planet_18 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet18.gif); }
-#planets .planet_19.active,#spionage-planet dl.planet_19 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet19.gif); }
-#planets .planet_20.active,#spionage-planet dl.planet_20 { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?planets%2fplanet20.gif); }
+#planets .planet_1.active,#spionage-planet dl.planet_1 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet01.gif); }
+#planets .planet_2.active,#spionage-planet dl.planet_2 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet02.gif); }
+#planets .planet_3.active,#spionage-planet dl.planet_3 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet03.gif); }
+#planets .planet_4.active,#spionage-planet dl.planet_4 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet04.gif); }
+#planets .planet_5.active,#spionage-planet dl.planet_5 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet05.gif); }
+#planets .planet_6.active,#spionage-planet dl.planet_6 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet06.gif); }
+#planets .planet_7.active,#spionage-planet dl.planet_7 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet07.gif); }
+#planets .planet_8.active,#spionage-planet dl.planet_8 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet08.gif); }
+#planets .planet_9.active,#spionage-planet dl.planet_9 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet09.gif); }
+#planets .planet_10.active,#spionage-planet dl.planet_10 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet10.gif); }
+#planets .planet_11.active,#spionage-planet dl.planet_11 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet11.gif); }
+#planets .planet_12.active,#spionage-planet dl.planet_12 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet12.gif); }
+#planets .planet_13.active,#spionage-planet dl.planet_13 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet13.gif); }
+#planets .planet_14.active,#spionage-planet dl.planet_14 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet14.gif); }
+#planets .planet_15.active,#spionage-planet dl.planet_15 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet15.gif); }
+#planets .planet_16.active,#spionage-planet dl.planet_16 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet16.gif); }
+#planets .planet_17.active,#spionage-planet dl.planet_17 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet17.gif); }
+#planets .planet_18.active,#spionage-planet dl.planet_18 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet18.gif); }
+#planets .planet_19.active,#spionage-planet dl.planet_19 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet19.gif); }
+#planets .planet_20.active,#spionage-planet dl.planet_20 { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?planets%2fplanet20.gif); }
 
 #ress dt { padding-left:21px !important; background-repeat:no-repeat; background-position:2px 50%; }
-#ress dt.ress-carbon { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?resources%2fcarbon.png); }
-#ress dt.ress-aluminium { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?resources%2faluminium.png); }
-#ress dt.ress-wolfram { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?resources%2fwolfram.png); }
-#ress dt.ress-radium { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?resources%2fradium.png); }
-#ress dt.ress-tritium { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?resources%2ftritium.png); }
-#ress dt.ress-energie { background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?resources%2fenergie.png); }
+#ress dt.ress-carbon { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?resources%2fcarbon.png); }
+#ress dt.ress-aluminium { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?resources%2faluminium.png); }
+#ress dt.ress-wolfram { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?resources%2fwolfram.png); }
+#ress dt.ress-radium { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?resources%2fradium.png); }
+#ress dt.ress-tritium { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?resources%2ftritium.png); }
+#ress dt.ress-energie { background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?resources%2fenergie.png); }
 
-* html .unbeschaeftigte-planeten .c-voriger a,* html .unbeschaeftigte-planeten .c-naechster a { width:45px; padding:0 0 0 45px; margin:0 .5ex; overflow:hidden; background-image:url(http://www.phoenix-world.com/Candid/sua/grey_blue_graphics/image.php?fastbuild.gif); background-repeat:no-repeat; background-position:left center; }
+* html .unbeschaeftigte-planeten .c-voriger a,* html .unbeschaeftigte-planeten .c-naechster a { width:45px; padding:0 0 0 45px; margin:0 .5ex; overflow:hidden; background-image:url(http://sua.rmueller.info/images/grey_blue_graphics/image.php?fastbuild.gif); background-repeat:no-repeat; background-position:left center; }

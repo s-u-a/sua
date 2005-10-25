@@ -105,6 +105,16 @@
 <h2>Flottenbewegungen</h2>
 <dl id="flotten">
 <?php
+		$infos = array();
+		foreach($user_array['flotten'] as $flotte)
+		{
+			if(!in_array($flotte[3][0], $infos))
+				$infos[] = $flotte[3][0];
+			if(!in_array($flotte[3][1], $infos))
+				$infos[] = $flotte[3][1];
+		}
+		$infos = universe::get_planet_info($infos);
+
 		$countdowns = array();
 		foreach($user_array['flotten'] as $i=>$flotte)
 		{
@@ -117,11 +127,8 @@
 			}
 			$flotte_string = implode('; ', $flotte_string);
 
-			$from = explode(':', $flotte[3][0]);
-			$to = explode(':', $flotte[3][1]);
-
-			$from_info = universe::get_planet_info($from[0], $from[1], $from[2]);
-			$to_info = universe::get_planet_info($to[0], $to[1], $to[2]);
+			$from_info = $infos[$flotte[3][0]];
+			$to_info = $infos[$flotte[3][1]];
 
 			$string = 'Eine <span class="beschreibung schiffe" title="'.$flotte_string.'">';
 			if($own)
