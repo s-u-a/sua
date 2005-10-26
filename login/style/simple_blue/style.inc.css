@@ -10,7 +10,7 @@
 #navigation #navigation-karte { border-color:#568; }
 #change-planet select { background-color:#568; border-color:#678; }
 
-select,option,textarea,input,button { background-color:#568; border-color:#679; }
+select,option,textarea,input,button,#js-title { background-color:#568; border-color:#679; }
 select:hover,select:focus,select:active,input:hover,input:focus,input:active,textarea:hover,textarea:focus,textarea:active,button:hover,button:focus,button:active { background-color:#679; }
 
 #content-13 * h3 { background-color:transparent; }

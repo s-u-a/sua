@@ -127,6 +127,7 @@
 						$user_array['fastbuild'] = false;
 						$user_array['username'] = $_POST['username'];
 						$user_array['shortcuts'] = false;
+						$user_array['tooltips'] = false;
 
 						# Planetenname
 						$user_array['planets'][0]['name'] = ((trim($_POST['hauptplanet']) == '') ? 'Hauptplanet' : trim($_POST['hauptplanet']));

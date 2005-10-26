@@ -15,6 +15,7 @@
 	<li><a href="#time">Was bedeuten <span xml:lang="en">Server</span>- und Lokalzeit?</a></li>
 	<li><a href="#research">Wo ist der Unterschied zwischen lokaler und globaler Forschung?</a></li>
 	<li><a href="#robots">Wie funktionieren die Roboter?</a></li>
+	<li><a href="#alliance">Was bringt mir ein Bündnis?</a></li>
 	<li><a href="#scrolling">Ich kann im Spiel mein <span xml:lang="en">Scroll</span>rad nicht benutzen. Woran liegt das?</a></li>
 	<li><a href="#resources">Die Rohstoffanzeige passt nicht in mein <span xml:lang="en">Browser</span>fenster und Quer<span xml:lang="en">scrollen</span> ist nicht möglich.</a></li>
 	<li><a href="#chat">Hat das Spiel einen <span xml:lang="en">Chat?</span></a></li>
@@ -71,6 +72,18 @@
 	<h3 id="robots">Wie funktionieren die Roboter?</h3>
 	<p>Die Roboter helfen, Gebäudebauzeiten zu verkürzen und die Rohstoffproduktion zu erhöhen. Der Auswirkungsgrad der Roboter hängt von der aktuellen Stufe der Roboterbautechnik ab. Jede Stufe der Roboterbautechnik erhöht dabei den Auswirkungsgrad Ihrer Bauroboter um ein Viertelprozent, den Ihrer Minenroboter um ein Sechzehntelprozent.</p>
 	<p>Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur Verfügung steht. Für Bauroboter liegt die Grenze bei der Hälfte der ursprünglichen Felderzahl des Planeten (Ingeneurswissenschaft zeigt also keine Wirkung), für Minenroboter liegt sie bei einem Zehnfachen der aktuellen Ausbaustufe der zugehörigen Mine (Ausnahme: Tritiumroboter, hier liegt die Grenze beim 15-Fachen der Ausbaustufe des Tritiumgenerators). Übersteigt die Roboterzahl die Grenze, zeigen überschüssige Roboter keinerlei Wirkung mehr.</p>
+</div>
+
+<div class="faq">
+	<h3 id="alliance">Was bringt mir ein Bündnis?</h3>
+	<p>Wenn Sie sich mit einem Spieler verbünden, dient das nicht nur der Diplomatie, sondern hat auch praktische Auswirkungen im Spielverlauf.</p>
+	<ul>
+		<li>In der Karte werden verbündete Spieler farblich hervorgehoben, sodass Sie immer die Übersicht behalten.</li>
+		<li>Sie können verbündete Spieler nicht angreifen.</li>
+		<li>Wenn Sie Ihren Verbündeten ausspionieren, wird Ihre Spionage nicht abgewehrt und Sie sehen vollständige Informationen über den Planeten, unabhängig von Spionagetechnik und der Anzahl der Spionagesonden, die Sie geschickt haben.</li>
+		<li>In der Spielerinformation sehen Sie die Koordinaten Ihrer Verbündeten und deren ausgegebene Rohstoffe.</li>
+		<li>Bündnisrundschreiben machen es möglich, dass Sie all Ihren Verbündeten gleichzeitig eine Nachricht zukommen lassen.</li>
+	</ul>
 </div>
 
 <div class="faq">

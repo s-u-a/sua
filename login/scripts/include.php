@@ -123,7 +123,19 @@
 			}
 ?>
 	</head>
-	<body<?php if($user_array['shortcuts']){?> onload="get_key_elements();"<?php }?>><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
+<?php
+			$onload_string = '';
+			if($user_array['tooltips'] || $user_array['shortcuts'])
+			{
+				$onload_string .= ' onload="';
+				if($user_array['shortcuts'])
+					$onload_string .= 'get_key_elements();';
+				if($user_array['tooltips'])
+					$onload_string .= 'load_titles();';
+				$onload_string .= '"';
+			}
+?>
+	<body<?=$onload_string?>><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
 		<dl id="time">
 			<script type="text/javascript">
 				// <![CDATA[
