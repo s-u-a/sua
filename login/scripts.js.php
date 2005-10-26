@@ -158,9 +158,10 @@ function show_title(ev)
 
 	var this_title = last_show_event.target.titleAttribute;
 	if(this_title)
+	{
 		document.getElementById('js-title').firstChild.data = this_title;
-
-	setTimeout('really_show_title()', 1000);
+		setTimeout('really_show_title()', 1000);
+	}
 }
 
 function really_show_title()
