@@ -148,19 +148,32 @@ function load_titles()
 
 var this_node = new Array();
 var this_title = '';
+var last_show_event;
 
 function show_title(ev)
 {
-	var this_title = ev.target.titleAttribute;
+	if(!ev) ev = window.event;
+
+	last_show_event = ev;
+
+	var this_title = last_show_event.target.titleAttribute;
 	if(this_title)
-	{
 		document.getElementById('js-title').firstChild.data = this_title;
+
+	setTimeout('really_show_title()', 1000);
+}
+
+function really_show_title()
+{
+	var this_title = last_show_event.target.titleAttribute;
+	if(this_title)
 		document.getElementById('js-title').className = 'show';
-	}
 }
 
 function move_title(ev)
 {
+	if(!ev) ev = window.event;
+
 	document.getElementById('js-title').style.top = (ev.pageY+10)+'px';
 	document.getElementById('js-title').style.left = (ev.pageX+10)+'px';
 }
