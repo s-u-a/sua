@@ -149,6 +149,7 @@ function load_titles()
 var this_node = new Array();
 var this_title = '';
 var last_show_event;
+var last_event_timeout;
 
 function show_title(ev)
 {
@@ -160,7 +161,7 @@ function show_title(ev)
 	if(this_title)
 	{
 		document.getElementById('js-title').firstChild.data = this_title;
-		setTimeout('really_show_title()', 1000);
+		last_event_timeout = setTimeout('really_show_title()', 1000);
 	}
 }
 
@@ -183,6 +184,9 @@ function hide_title(ev)
 {
 	document.getElementById('js-title').firstChild.data = '';
 	document.getElementById('js-title').className = 'hidden';
+
+	if(last_event_timeout)
+		clearTimeout(last_event_timeout);
 }
 
 var for_el;

