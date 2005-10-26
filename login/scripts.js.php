@@ -171,11 +171,27 @@ function hide_title(ev)
 	document.getElementById('js-title').className = 'hidden';
 }
 
+var for_el;
+var for_el_attr;
+
 function set_titles(el, level)
 {
 	if(el.getAttribute)
 	{
 		this_title = el.getAttribute('title');
+		if(!this_title)
+		{
+			if(el.nodeName.toLowerCase() == 'label')
+			{
+				for_el_attr = el.getAttribute('for');
+				if(for_el_attr)
+				{
+					for_el = document.getElementById(for_el_attr);
+					this_title = for_el.getAttribute('title');
+				}
+			}
+		}
+
 		if(this_title)
 		{
 			el.onmouseover = show_title;

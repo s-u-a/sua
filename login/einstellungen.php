@@ -130,10 +130,10 @@
 			<dt class="c-auto-schnellbau"><label for="fastbuild">Auto-Schnellbau</label></dt>
 			<dd class="c-auto-schnellbau"><input type="checkbox" name="fastbuild" id="fastbuild"<?=$user_array['fastbuild'] ? ' checked="checked"' : ''?> title="Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten unbeschäftigten Planeten gewechselt [Q]" accesskey="q" tabindex="5" /></dd>
 
-			<dt class="c-schnell-shortcuts"><label for="shortcuts">Schnell-<span xml:lang="en">Shortcuts</span></label></dt>
+			<dt class="c-schnell-shortcuts"><label for="shortcuts">Schnell-Shortcuts</label></dt>
 			<dd class="c-schnell-shortcuts"><input type="checkbox" name="shortcuts" id="shortcuts"<?=$user_array['shortcuts'] ? ' checked="checked"' : ''?> title="Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere Taste zu drücken [X]" accesskey="x" tabindex="6" /></dd>
 
-			<dt class="c-javascript-tooltips"><label for="tooltips"><span xml:lang="en">Javascript</span>-<span xml:lang="en">Tooltips</span></label></dt>
+			<dt class="c-javascript-tooltips"><label for="tooltips">Javascript-Tooltips</label></dt>
 			<dd class="c-javascript-tooltips"><input type="checkbox" name="tooltips" id="tooltips"<?=$user_array['tooltips'] ? ' checked="checked"' : ''?> title="Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden die normalen Tooltips durch hübsche JavaScript-Tooltips ersetzt. [Y]" accesskey="y" tabindex="7" /></dd>
 		</dl>
 	</fieldset>
