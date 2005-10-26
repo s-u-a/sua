@@ -227,7 +227,7 @@
 				foreach($systems as $system=>$planets)
 				{
 					$this_string = & $strings[$galaxy][$system];
-					$planets_count = floor(ord($this_string{0})/8);
+					$planets_count = floor(ord($this_string{0})/8)+10;
 
 					foreach($planets as $i=>$planet)
 					{
