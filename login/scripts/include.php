@@ -226,7 +226,7 @@
 				get_key_elements();
 <?php
 				}
-				else
+				if($user_array['tooltips'])
 				{
 ?>
 				load_titles();

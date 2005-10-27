@@ -149,7 +149,7 @@
 		<legend>Ihr Angebot</legend>
 		<div><input type="radio" id="eingabe-angebot" name="eingabe" value="angebot" onchange="refresh_eingabe();" onclick="refresh_eingabe();" onkeyup="refresh_eingabe();"<?=(!isset($_POST['eingabe']) || $_POST['eingabe'] != 'zurueck') ? ' checked="checked"' : ''?> tabindex="1" accesskey="o" /> <label for="eingabe-angebot">Angeb<kbd>o</kbd>t eingeben</label></div>
 		<dl>
-			<dt><label for="angebot-carbon">Carbon</label></dt>
+			<dt><label for="angebot-carbon">Carb<kbd>o</kbd>n</label></dt>
 			<dd><input type="text" name="angebot-anteil-carbon" id="angebot-anteil-carbon" size="3" title="Anteil (fortgeschrittener Modus)" class="handelsrechner-anteil" onkeyup="calc();" onmouseup="calc();" onchange="calc();" value="<?=isset($_POST['angebot-anteil-carbon']) ? htmlentities($_POST['angebot-anteil-carbon']) : '0'?>" tabindex="3" /> <input type="text" name="angebot-carbon" id="angebot-carbon" value="<?=htmlentities($angebot_carbon)?>" onkeyup="calc();" onmouseup="calc();" onchange="calc();" tabindex="4" /></dd>
 
 			<dt><label for="angebot-aluminium">Aluminium</label></dt>
@@ -169,7 +169,7 @@
 		<legend>Sie erhalten</legend>
 		<div><input type="radio" id="eingabe-zurueck" name="eingabe" value="zurueck" onchange="refresh_eingabe();" onclick="refresh_eingabe();" onkeyup="refresh_eingabe();"<?=(isset($_POST['eingabe']) && $_POST['eingabe'] == 'zurueck') ? ' checked="checked"' : ''?> tabindex="2" accesskey="n" /> <label for="eingabe-zurueck">Erhält<kbd>n</kbd>is eingeben</label></div>
 		<dl>
-			<dt><label for="zurueck-carbon">Carbon</label></dt>
+			<dt><label for="zurueck-carbon">Carbo<kbd>n</kbd></label></dt>
 			<dd><input type="text" name="zurueck-anteil-carbon" id="zurueck-anteil-carbon" size="3" title="Anteil (fortgeschrittener Modus)" class="handelsrechner-anteil" onkeyup="calc();" onmouseup="calc();" onchange="calc();" value="<?=isset($_POST['zurueck-anteil-carbon']) ? htmlentities($_POST['zurueck-anteil-carbon']) : '0'?>" tabindex="13" /> <input type="text" name="zurueck-carbon" id="zurueck-carbon" value="<?=htmlentities($zurueck_carbon)?>" onkeyup="calc();" onmouseup="calc();" onchange="calc();" tabindex="14" /></dd>
 
 			<dt><label for="zurueck-aluminium">Aluminium</label></dt>
@@ -424,20 +424,10 @@
 
 			document.getElementById('error-message').style.display = 'none';
 
-			if(window.fortgeschritten)
-			{
-				if(zurueck)
-					document.getElementById('zurueck-anteil-carbon').focus();
-				else
-					document.getElementById('angebot-anteil-carbon').focus();
-			}
+			if(zurueck)
+				document.getElementById('zurueck-carbon').focus();
 			else
-			{
-				if(zurueck)
-					document.getElementById('zurueck-carbon').focus();
-				else
-					document.getElementById('angebot-carbon').focus();
-			}
+				document.getElementById('angebot-carbon').focus();
 		}
 	}
 
