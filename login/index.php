@@ -160,7 +160,7 @@
 			{
 				$string .= 'kommt ';
 				if($from_info[1] == $_SESSION['username'])
-					$string .= 'von Ihrem Planeten &bdquo;'.utf8_htmlentities($from_info[1]).'&ldquo; ('.utf8_htmlentities($flotte[3][0]).')';
+					$string .= 'von Ihrem Planeten &bdquo;'.utf8_htmlentities($from_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][0]).')';
 				elseif($from_info[1])
 					$string .= 'vom Planeten &bdquo;'.utf8_htmlentities($from_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][0]).', Eigentümer: '.utf8_htmlentities($from_info[1]).')';
 				else

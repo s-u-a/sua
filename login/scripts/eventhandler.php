@@ -2123,10 +2123,4 @@
 				unset($_SESSION['username']);
 		}
 	}
-
-	function print_this_planet()
-	{
-		global $this_planet;
-		print_r($this_planet);
-	}
 ?>
