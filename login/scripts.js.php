@@ -148,36 +148,50 @@ function load_titles()
 
 var this_node = new Array();
 var this_title = '';
-var last_show_event;
+var last_show_element;
 var last_event_timeout;
 
 function show_title(ev)
 {
 	if(!ev) ev = window.event;
 
-	last_show_event = ev;
-
-	var this_title = last_show_event.target.titleAttribute;
-	if(this_title)
+	var el = ev.target;
+	if(!el)
+		el = ev.srcElement;
+	last_show_element = el;
+	if(el)
 	{
-		document.getElementById('js-title').firstChild.data = this_title;
-		last_event_timeout = setTimeout('really_show_title()', 1000);
+		var this_title = el.getAttribute('titleAttribute');
+		if(this_title)
+		{
+			document.getElementById('js-title').firstChild.data = this_title;
+			last_event_timeout = setTimeout('really_show_title()', 1000);
+		}
 	}
 }
 
 function really_show_title()
 {
-	var this_title = last_show_event.target.titleAttribute;
-	if(this_title)
-		document.getElementById('js-title').className = 'show';
+	if(last_show_element)
+	{
+		var this_title = last_show_element.getAttribute('titleAttribute');
+		if(this_title)
+			document.getElementById('js-title').className = 'show';
+	}
 }
 
 function move_title(ev)
 {
 	if(!ev) ev = window.event;
 
-	document.getElementById('js-title').style.top = (ev.pageY+10)+'px';
-	document.getElementById('js-title').style.left = (ev.pageX+10)+'px';
+	var x_val = ev.pageX;
+	if(!x_val)
+		x_val = ev.clientX;
+	var y_val = ev.pageY;
+	if(!y_val)
+		y_val = ev.clientY;
+	document.getElementById('js-title').style.top = (y_val+10)+'px';
+	document.getElementById('js-title').style.left = (x_val+10)+'px';
 }
 
 function hide_title(ev)
@@ -216,7 +230,7 @@ function set_titles(el, level)
 			el.onmousemove = move_title;
 			el.onmouseout = hide_title;
 
-			el.titleAttribute = this_title;
+			el.setAttribute('titleAttribute', this_title);
 			el.removeAttribute('title');
 		}
 	}
