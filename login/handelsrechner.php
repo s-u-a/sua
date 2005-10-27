@@ -32,7 +32,7 @@
 		</dl>
 		<script type="text/javascript">
 			// <![CDATA[
-			document.write('<button onclick="reset_handelskurs();" title="Setzt den Handelskurs auf seinen ursprünglichen Wert zurück.">Zurücksetzen</button>');
+			document.write('<button onclick="reset_handelskurs();" title="Setzt den Handelskurs auf seinen ursprünglichen Wert zurück." accesskey="z" tabindex="23"><kbd>Z</kbd>urücksetzen</button>');
 			// ]]>
 		</script>
 		<br class="clear" />
@@ -147,7 +147,7 @@
 ?>
 	<fieldset id="angebot" class="handelsrechner-angebot">
 		<legend>Ihr Angebot</legend>
-		<div><input type="radio" id="eingabe-angebot" name="eingabe" value="angebot" onchange="refresh_eingabe();" onclick="refresh_eingabe();" onkeyup="refresh_eingabe();"<?=(!isset($_POST['eingabe']) || $_POST['eingabe'] != 'zurueck') ? ' checked="checked"' : ''?> tabindex="1" /> <label for="eingabe-angebot">Angebot eingeben</label></div>
+		<div><input type="radio" id="eingabe-angebot" name="eingabe" value="angebot" onchange="refresh_eingabe();" onclick="refresh_eingabe();" onkeyup="refresh_eingabe();"<?=(!isset($_POST['eingabe']) || $_POST['eingabe'] != 'zurueck') ? ' checked="checked"' : ''?> tabindex="1" accesskey="o" /> <label for="eingabe-angebot">Angeb<kbd>o</kbd>t eingeben</label></div>
 		<dl>
 			<dt><label for="angebot-carbon">Carbon</label></dt>
 			<dd><input type="text" name="angebot-anteil-carbon" id="angebot-anteil-carbon" size="3" title="Anteil (fortgeschrittener Modus)" class="handelsrechner-anteil" onkeyup="calc();" onmouseup="calc();" onchange="calc();" value="<?=isset($_POST['angebot-anteil-carbon']) ? htmlentities($_POST['angebot-anteil-carbon']) : '0'?>" tabindex="3" /> <input type="text" name="angebot-carbon" id="angebot-carbon" value="<?=htmlentities($angebot_carbon)?>" onkeyup="calc();" onmouseup="calc();" onchange="calc();" tabindex="4" /></dd>
@@ -167,7 +167,7 @@
 	</fieldset>
 	<fieldset id="zurueck" class="handelsrechner-erhalten">
 		<legend>Sie erhalten</legend>
-		<div><input type="radio" id="eingabe-zurueck" name="eingabe" value="zurueck" onchange="refresh_eingabe();" onclick="refresh_eingabe();" onkeyup="refresh_eingabe();"<?=(isset($_POST['eingabe']) && $_POST['eingabe'] == 'zurueck') ? ' checked="checked"' : ''?> tabindex="2" /> <label for="eingabe-zurueck">Erhältnis eingeben</label></div>
+		<div><input type="radio" id="eingabe-zurueck" name="eingabe" value="zurueck" onchange="refresh_eingabe();" onclick="refresh_eingabe();" onkeyup="refresh_eingabe();"<?=(isset($_POST['eingabe']) && $_POST['eingabe'] == 'zurueck') ? ' checked="checked"' : ''?> tabindex="2" accesskey="n" /> <label for="eingabe-zurueck">Erhält<kbd>n</kbd>is eingeben</label></div>
 		<dl>
 			<dt><label for="zurueck-carbon">Carbon</label></dt>
 			<dd><input type="text" name="zurueck-anteil-carbon" id="zurueck-anteil-carbon" size="3" title="Anteil (fortgeschrittener Modus)" class="handelsrechner-anteil" onkeyup="calc();" onmouseup="calc();" onchange="calc();" value="<?=isset($_POST['zurueck-anteil-carbon']) ? htmlentities($_POST['zurueck-anteil-carbon']) : '0'?>" tabindex="13" /> <input type="text" name="zurueck-carbon" id="zurueck-carbon" value="<?=htmlentities($zurueck_carbon)?>" onkeyup="calc();" onmouseup="calc();" onchange="calc();" tabindex="14" /></dd>
@@ -187,7 +187,7 @@
 	</fieldset>
 	<noscript><button type="submit" tabindex="30">Berechnen</button></noscript>
 	<p id="fortgeschrittener-modus" class="handelsrechner-fortgeschrittener-modus">
-		<input type="checkbox" name="fortgeschrittener-modus" id="fortgeschrittener-modus-input"<?=isset($_POST['fortgeschrittener-modus']) ? ' checked="checked"' : ''?> onchange="refresh_modus();" onclick="refresh_modus();" onkeyup="refresh_modus();" tabindex="29" /> <label for="fortgeschrittener-modus-input">Fortgeschrittener Modus</label> (<a href="handelsrechner.php?hilfe=0" onclick="show_hilfe(); return false;">Hilfe</a>)
+		<input type="checkbox" name="fortgeschrittener-modus" id="fortgeschrittener-modus-input"<?=isset($_POST['fortgeschrittener-modus']) ? ' checked="checked"' : ''?> onchange="refresh_modus();" onclick="refresh_modus();" onkeyup="refresh_modus();" accesskey="u" tabindex="29" /> <label for="fortgeschrittener-modus-input">Fortgeschrittener Mod<kbd>u</kbd>s</label> (<a href="handelsrechner.php?hilfe=0" onclick="show_hilfe(); return false;">Hilfe</a>)
 	</p>
 <?php
 	if(!isset($_GET['hilfe']))
@@ -423,6 +423,21 @@
 
 
 			document.getElementById('error-message').style.display = 'none';
+
+			if(window.fortgeschritten)
+			{
+				if(zurueck)
+					document.getElementById('zurueck-anteil-carbon').focus();
+				else
+					document.getElementById('angebot-anteil-carbon').focus();
+			}
+			else
+			{
+				if(zurueck)
+					document.getElementById('zurueck-carbon').focus();
+				else
+					document.getElementById('angebot-carbon').focus();
+			}
 		}
 	}
 

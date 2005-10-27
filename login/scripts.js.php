@@ -164,6 +164,9 @@ function key_event(e)
 			location.href = that_href;
 		else if(key_elements[chr].nodeName.toLowerCase() == "input" && (key_elements[chr].getAttribute("type") == "checkbox" || key_elements[chr].getAttribute("type") == "radio"))
 			key_elements[chr].checked = !key_elements[chr].checked;
+
+		if(key_elements[chr].onclick)
+			key_elements[chr].onclick();
 	}
 }
 
