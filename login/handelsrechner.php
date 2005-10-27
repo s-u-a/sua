@@ -32,7 +32,7 @@
 		</dl>
 		<script type="text/javascript">
 			// <![CDATA[
-			document.write('<button onclick="reset_handelskurs();">Zurücksetzen</button>');
+			document.write('<button onclick="reset_handelskurs();" title="Setzt den Handelskurs auf seinen ursprünglichen Wert zurück.">Zurücksetzen</button>');
 			// ]]>
 		</script>
 		<br class="clear" />

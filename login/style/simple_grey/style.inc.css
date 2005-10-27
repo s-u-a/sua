@@ -334,6 +334,7 @@ h2#punkte { clear:right; }
 .handelsrechner-handelskurs button { width:20ex; margin:0 auto; }
 .handelsrechner-angebot { width:45%; margin:0 .5em; float:left; }
 .handelsrechner-erhalten { width:45%; margin:0 .5em; }
+* html .handelsrechner-erhalte { width:100%; }
 .handelsrechner input { padding:0 .2em; }
 .handelsrechner { font-weight:bold; }
 .handelsrechner fieldset div { text-align:right; font-weight:normal; }
