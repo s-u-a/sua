@@ -186,7 +186,7 @@
 			</ul>
 			<ul id="action-navigation">
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlentities(h_root)?>/login/karte.php" accesskey="k"><kbd>K</kbd>arte</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/handel.php') ? ' class="active"' : ''?> id="navigation-handel"><a href="<?=htmlentities(h_root)?>/login/handel.php" accesskey="d">Han<kbd>d</kbd>el</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/handelsrechner.php') ? ' class="active"' : ''?> id="navigation-handel"><a href="<?=htmlentities(h_root)?>/login/handelsrechner.php" accesskey="d">Han<kbd>d</kbd>elsrechner</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlentities(h_root)?>/login/verbuendete.php" accesskey="e">V<kbd>e</kbd>rbündete</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlentities(h_root)?>/login/highscores.php" id="navigation-highscores" xml:lang="en" accesskey="h"><kbd>H</kbd>ighscores</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlentities(h_root)?>/login/nachrichten.php" accesskey="c">Na<kbd>c</kbd>hrichten</a></li>

@@ -1082,172 +1082,6 @@
 	}
 
 	########################################
-
-	class handel
-	{
-		function get_angebote()
-		{
-			$haendl = array();
-
-			$dh = opendir(DB_HANDEL);
-			while(($fname = readdir($dh)) !== false)
-			{
-				if(substr($fname, 0, 1) == '.')
-					continue;
-				$haendl[] = $fname;
-			}
-			closedir($dh);
-
-			sort($haendl, SORT_NUMERIC);
-
-			$haendl2 = array(array(), array());
-
-			foreach($haendl as $handel)
-			{
-				if(substr($handel, 0, 2) == 's-')
-					$haendl2[0][] = preg_split("/\r\n|\r|\n/", trim(file_get_contents(DB_HANDEL.'/'.$handel)));
-				elseif(substr($handel, 0, 2) == 'b-')
-					$haendl2[1][] = preg_split("/\r\n|\r|\n/", trim(file_get_contents(DB_HANDEL.'/'.$handel)));
-			}
-
-			foreach($haendl2[0] as $id=>$handel)
-			{
-				if(count($handel) < 6 || !is_file(DB_PLAYERS.'/'.urlencode($handel[0])))
-					unset($haendl2[$id]);
-			}
-			foreach($haendl2[1] as $id=>$handel)
-			{
-				if(count($handel) < 6 || !is_file(DB_PLAYERS.'/'.urlencode($handel[0])))
-					unset($haendl2[$id]);
-			}
-
-			return $haendl2;
-		}
-
-		function calc_kurs()
-		{
-			$ges_suche = array(0, 0, 0, 0, 0);
-			$ges_biete = array(0, 0, 0, 0, 0);
-
-			$haendl = handel::get_angebote();
-			foreach($haendl[0] as $handel)
-			{
-				$ges_suche[0] += $handel[1];
-				$ges_suche[1] += $handel[2];
-				$ges_suche[2] += $handel[3];
-				$ges_suche[3] += $handel[4];
-				$ges_suche[4] += $handel[5];
-			}
-			foreach($haendl[1] as $handel)
-			{
-				$ges_biete[0] += $handel[1];
-				$ges_biete[1] += $handel[2];
-				$ges_biete[2] += $handel[3];
-				$ges_biete[3] += $handel[4];
-				$ges_biete[4] += $handel[5];
-			}
-
-			unset($haendl);
-
-			if(max($ges_suche) == 0)
-				$kurs_suche = array(1, 1, 1, 1, 1);
-			else
-			{
-				$min = max($ges_suche);
-				foreach($ges_suche as $val)
-				{
-					if($val < $min && $val != 0)
-						$min = $val;
-				}
-
-				$kurs_suche = array();
-				$kurs_suche[0] = $ges_suche[0]/$min;
-				$kurs_suche[1] = $ges_suche[1]/$min;
-				$kurs_suche[2] = $ges_suche[2]/$min;
-				$kurs_suche[3] = $ges_suche[3]/$min;
-				$kurs_suche[4] = $ges_suche[4]/$min;
-				unset($ges_suche);
-
-				foreach($kurs_suche as $id=>$val)
-				{
-					if($val == 0)
-						$kurs_suche[$id] = 1;
-				}
-			}
-
-			if(max($ges_biete) == 0)
-				$kurs_biete = array(1, 1, 1, 1, 1);
-			else
-			{
-				$min = max($ges_biete);
-				foreach($ges_biete as $val)
-				{
-					if($val < $min && $val != 0)
-						$min = $val;
-				}
-
-				$kurs_biete = array();
-				$kurs_biete[0] = $ges_biete[0]/$min;
-				$kurs_biete[1] = $ges_biete[1]/$min;
-				$kurs_biete[2] = $ges_biete[2]/$min;
-				$kurs_biete[3] = $ges_biete[3]/$min;
-				$kurs_biete[4] = $ges_biete[4]/$min;
-				unset($ges_biete);
-
-				foreach($kurs_biete as $id=>$val)
-				{
-					if($val == 0)
-						$kurs_biete[$id] = 1;
-				}
-			}
-
-			$kurs = array();
-			$kurs[0] = $kurs_biete[0]/$kurs_suche[0];
-			$kurs[1] = $kurs_biete[1]/$kurs_suche[1];
-			$kurs[2] = $kurs_biete[2]/$kurs_suche[2];
-			$kurs[3] = $kurs_biete[3]/$kurs_suche[3];
-			$kurs[4] = $kurs_biete[4]/$kurs_suche[4];
-
-			return $kurs;
-		}
-
-		function recalc_kurs()
-		{
-			$kurs_ges = preg_split("/\r\n|\r|\n/", file_get_contents(DB_HANDELSKURS));
-			$kurs_handel = handel::calc_kurs();
-
-			$kurs = array();
-			$kurs[0] = $kurs_ges[0]*$kurs_handel[0];
-			$kurs[1] = $kurs_ges[1]*$kurs_handel[1];
-			$kurs[2] = $kurs_ges[2]*$kurs_handel[2];
-			$kurs[3] = $kurs_ges[3]*$kurs_handel[3];
-			$kurs[4] = $kurs_ges[4]*$kurs_handel[4];
-
-			$kurs[0] /= min($kurs);
-			$kurs[1] /= min($kurs);
-			$kurs[2] /= min($kurs);
-			$kurs[3] /= min($kurs);
-			$kurs[4] /= min($kurs);
-
-			$kurs_ges[5] = $kurs[0];
-			$kurs_ges[6] = $kurs[1];
-			$kurs_ges[7] = $kurs[2];
-			$kurs_ges[8] = $kurs[3];
-			$kurs_ges[9] = $kurs[4];
-
-			$fh = fopen(DB_HANDELSKURS, 'w');
-			flock($fh, LOCK_EX);
-
-			fwrite($fh, implode("\n", $kurs_ges));
-
-			flock($fh, LOCK_UN);
-			fclose($fh);
-
-			return $kurs;
-		}
-	}
-
-	########################################
 	### Hier beginnen die Funktionen
 	########################################
 
@@ -1838,23 +1672,29 @@
 		return $return;
 	}
 
-	function ths($count, $utf8=false)
+	function ths($count, $utf8=false, $round=0)
 	{
 		if(!isset($count))
 			$count = 0;
-		$count = floor($count);
+		if($round == 0)
+			$count = floor($count);
+		else
+			$count = round($count, $round);
 
 		$neg = false;
 		if($count < 0)
 		{
 			$neg = true;
-			$count = (int) substr($count, 1);
+			if($round == 0)
+				$count = (int) substr($count, 1);
+			else
+				$count = (double) substr($count, 1);
 		}
 
 		$ths = THS_HTML;
 		if($utf8)
 			$ths = THS_UTF8;
-		$count = str_replace('.', $ths, number_format($count, 0, ',', '.'));
+		$count = str_replace('.', $ths, number_format($count, $round, ',', '.'));
 
 		if($neg)
 			$count = '&minus;'.$count;

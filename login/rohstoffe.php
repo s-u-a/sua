@@ -173,29 +173,6 @@
 	$day_prod = array($ges_prod[0]*24, $ges_prod[1]*24, $ges_prod[2]*24, $ges_prod[3]*24, $ges_prod[4]*24);
 ?>
 			<script type="text/javascript">
-				function ths(old_count)
-				{
-					var minus = false;
-					if(old_count < 0)
-					{
-						old_count *= -1;
-						minus = true;
-					}
-					var count = new String(Math.floor(old_count));
-					var new_count = new Array();
-					var first_letters = count.length%3;
-					if(first_letters == 0)
-						first_letters = 3;
-					new_count.push(count.substr(0, first_letters));
-					var max_i = (count.length-first_letters)/3;
-					for(var i=0; i<max_i; i++)
-						new_count.push(count.substr(i*3+first_letters, 3));
-					new_count = new_count.join("<?=utf8_jsentities(THS_UTF8)?>");
-					if(minus)
-						new_count = "\u2212"+new_count;
-					return new_count;
-				}
-
 				function recalc_perday()
 				{
 					var show_days = parseFloat(document.getElementById('show_days').value);

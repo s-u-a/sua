@@ -325,3 +325,27 @@ h2#punkte { clear:right; }
 #js-title { position:absolute; z-index:50000; border:.2em solid #aaa; padding:.5em; font-weight:bold; background-color:#888; margin:0 10px 10px 0; }
 #js-title.hidden { display:none; }
 #js-title.show { display:block; }
+
+.handelsrechner-handelskurs { text-align:center; }
+.handelsrechner-handelskurs dl dt { display:inline; font-size:.9em; font-weight:bold; float:none; margin:0; padding:0 0 0 .5ex; width:auto; border-left:.1em solid #aaa; }
+.handelsrechner-handelskurs dl dt.c-carbon { padding-left:0; border-left-style:none; }
+.handelsrechner-handelskurs dl dd { display:inline; float:none; margin:0; padding:0; width:auto; }
+.handelsrechner-handelskurs input { width:6ex; text-align:center; }
+.handelsrechner-handelskurs button { width:20ex; margin:0 auto; }
+.handelsrechner-angebot { width:45%; margin:0 .5em; float:left; }
+.handelsrechner-erhalten { width:45%; margin:0 .5em; }
+.handelsrechner input { padding:0 .2em; }
+.handelsrechner { font-weight:bold; }
+.handelsrechner fieldset div { text-align:right; font-weight:normal; }
+.handelsrechner fieldset div input { float:right; }
+.handelsrechner-angebot dl input,.handelsrechner-erhalten dl input { width:8em; }
+.handelsrechner-angebot input.handelsrechner-anteil,.handelsrechner-erhalten input.handelsrechner-anteil { width:5ex; }
+.handelsrechner noscript { text-align:center; display:block; }
+.handelsrechner noscript button { margin:.5em auto; width:95%; }
+.handelsrechner-fortgeschrittener-modus { text-align:right; font-weight:normal; }
+.handelsrechner-fortgeschrittener-modus label { font-weight:bold; }
+br.clear { clear:both; }
+.handelsrechner #hilfe-schliessen-klein { list-style-type:none; margin:0; padding:0; position:absolute; top:.5em; right:.5em; }
+.handelsrechner-hilfe { position:relative; }
+#content-11 .handelsrechner-hilfe h3,#content-11 .handelsrechner-hilfe h4 { text-align:center; }
+.handelsrechner-hilfe p { text-align:justify; font-weight:normal; }

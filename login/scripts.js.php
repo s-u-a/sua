@@ -1,8 +1,8 @@
 <?php
+	require('../engine/include.php');
 	header('Content-type: text/javascript; charset=ISO-8859-1');
 	header('Cache-control: max-age=152800');
 	header('Expires: '.strftime('%a, %d %b %Y %T %Z', time()+152800));
-	ob_start('ob_gzhandler');
 ?>
 function set_time_globals(server_time)
 {
@@ -78,6 +78,38 @@ function init_countdown(obj_id, f_time)
 	window.countdowns.push(new Array(obj_id, f_time, show_cancel));
 
 	time_up();
+}
+
+function ths(old_count)
+{
+	var minus = false;
+	if(old_count < 0)
+	{
+		old_count *= -1;
+		minus = true;
+	}
+	var count = new String(Math.floor(old_count));
+	var new_count = new Array();
+	var first_letters = count.length%3;
+	if(first_letters == 0)
+		first_letters = 3;
+	new_count.push(count.substr(0, first_letters));
+	var max_i = (count.length-first_letters)/3;
+	for(var i=0; i<max_i; i++)
+		new_count.push(count.substr(i*3+first_letters, 3));
+	new_count = new_count.join("<?=utf8_jsentities(THS_UTF8)?>");
+	if(minus)
+		new_count = "\u2212"+new_count;
+	return new_count;
+}
+
+function myParseInt(string)
+{
+	var count = parseInt(string);
+	if(isNaN(count) || count < 0)
+		return 0;
+	else
+		return count;
 }
 
 key_elements = new Array();
