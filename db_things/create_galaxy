@@ -46,9 +46,6 @@
 	$fh = fopen($galaxy, 'wb');
 	flock($fh, LOCK_EX);
 
-	$fh_empty = fopen('empty', 'a');
-	flock($fh_empty, LOCK_EX);
-
 	for($system = 1; $system <= 999; $system++)
 	{
 		$this_bin = '';
@@ -61,8 +58,6 @@
 			$size = rand(100, 500); # Planetengroesse
 
 			$this_bin .= add_nulls(decbin($size-100), 9);
-
-			fwrite($fh_empty, $galaxy.':'.$system.':'.$planet."\n");
 		}
 
 		if($planet_count != 30)
@@ -80,11 +75,6 @@
 
 		fwrite($fh, bin2string($this_bin));
 	}
-
-	flock($fh_empty, LOCK_UN);
-	fclose($fh_empty);
-
-	chmod('empty', 0666);
 
 	flock($fh, LOCK_UN);
 	fclose($fh);

@@ -30,141 +30,117 @@
 
 				# Koordinaten des Hauptplaneten bestimmen
 
-				$empty_filesize = filesize(DB_UNIVERSE.'/empty')-1;
-				$fh = fopen(DB_UNIVERSE.'/empty', 'r+');
-				if(!$fh)
+				$galaxies_count = universe::get_galaxies_count();
+				$galaxies = array();
+				for($i=1; $i<=$galaxies_count; $i++)
+					$galaxies[] = $i;
+				shuffle($galaxies);
+
+				$koords = false;
+				foreach($galaxies as $galaxy)
 				{
-					$error = 'Die Datenbank konnte nicht geöffnet werden.';
+					$systems_count = universe::get_systems_count($galaxy);
+					$systems = array();
+					for($i=1; $i<=$systems_count; $i++)
+						$systems[] = $i;
+					shuffle($systems);
+
+					foreach($systems as $system)
+					{
+						$system_info = universe::get_system_info($galaxy, $system);
+						$empty_planets = array();
+						foreach($system_info as $planet=>$info)
+						{
+							if(!$info[1])
+								$empty_planets[] = $planet;
+						}
+						if(count($empty_planets) > 0)
+						{
+							$koords = $galaxy.':'.$system.':'.$empty_planets[array_rand($empty_planets)];
+							break 2;
+						}
+					}
+				}
+
+				if(!$koords)
+				{
+					$error = 'Es gibt keine freien Planeten mehr.';
 					unlink(DB_PLAYERS.'/'.urlencode($_POST['username']));
 				}
 				else
 				{
-					flock($fh, LOCK_EX);
+					$user_array['planets'][0] = array('pos' => $koords);
 
-					$found = true;
-					$reached_end = false;
-					$pos = rand(0, $empty_filesize);
-					fseek($fh, $pos, SEEK_SET);
-					while($pos > 0 && fread($fh, 1) != "\n")
-					{
-						$pos--;
-						if($pos == 0 && fread($fh, 1) == ' ')
-						{
-							if(!$reached_end)
-							{
-								$pos = $empty_filesize-1;
-								$reached_end = true;
-							}
-							else
-							{
-								$found = false;
-								break;
-							}
-						}
+					# Startrohstoffe
+					$user_array['planets'][0]['ress'] = array(20000, 10000, 7500, 5000, 2000);
 
-						fseek($fh, $pos, SEEK_SET);
-					}
+					# Passwort setzen
+					$user_array['password'] = md5($_POST['password']);
 
-					if(!$found)
-					{
-						$error = 'Es gibt keine freien Planeten mehr.';
-						unlink(DB_PLAYERS.'/'.urlencode($_POST['username']));
-					}
+					# Startwerte
+					$user_array['planets'][0]['gebaeude'] = array();
+					$user_array['planets'][0]['schiffe'] = array();
+					$user_array['planets'][0]['verteidigung'] = array();
+					$user_array['planets'][0]['roboter'] = array();
+					$user_array['planets'][0]['items'] = array();
+					$user_array['planets'][0]['size'] = array(0, 375);
+					$user_array['planets'][0]['building'] = array();
+					$user_array['planets'][0]['last_refresh'] = time();
+					$user_array['forschung'] = array();
+					$user_array['verbuendete'] = array();
+					$user_array['punkte'] = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, floor(filesize(DB_HIGHSCORES)/32)+1);
+					$user_array['registration'] = time();
+					$user_array['messages'] = array();
+					$user_array['description'] = '';
+					$user_array['receive'] = array (
+						1 => array(true, true),
+						2 => array(true, false),
+						3 => array(true, false),
+						4 => array(true, true),
+						5 => array(true, false)
+					);
+					$user_array['sonden'] = 1;
+					$user_array['fastbuild'] = false;
+					$user_array['username'] = $_POST['username'];
+					$user_array['shortcuts'] = false;
+					$user_array['tooltips'] = false;
+
+					# Planetenname
+					$user_array['planets'][0]['name'] = ((trim($_POST['hauptplanet']) == '') ? 'Hauptplanet' : trim($_POST['hauptplanet']));
+
+					$fh = fopen(DB_PLAYERS.'/'.urlencode($_POST['username']), 'w');
+					if(!$fh)
+						$error = 'Es konnte nicht in die Datenbank geschrieben werden.';
 					else
 					{
-						if($pos > 0)
-							$pos++;
-
-						fseek($fh, $pos, SEEK_SET);
-
-						list($koords) = split("/[\r\n]/", fgets($fh));
-						$koords = trim($koords);
-
-						if($pos > 0)
+						# Planeten besetzen
+						$k = explode(':', $koords);
+						$old_info = universe::get_planet_info($k[0], $k[1], $k[2]);
+						if(!$old_info || !universe::set_planet_info($k[0], $k[1], $k[2], $old_info[0], $_POST['username'], $_POST['hauptplanet']))
 						{
-							fseek($fh, $pos-1, SEEK_SET);
-							fwrite($fh, "\r");
+							$error = 'Der Planet konnte nicht besetzt werden.';
+							fclose($fh);
+							unlink(DB_PLAYERS.'/'.urlencode($_POST['username']));
 						}
 						else
-							fseek($fh, $pos, SEEK_SET);
-
-						fwrite($fh, str_repeat(' ', strlen($koords)));
-
-						flock($fh, LOCK_UN);
-						fclose($fh);
-
-						$user_array['planets'][0] = array('pos' => $koords);
-
-						# Startrohstoffe
-						$user_array['planets'][0]['ress'] = array(20000, 10000, 7500, 5000, 2000);
-
-						# Passwort setzen
-						$user_array['password'] = md5($_POST['password']);
-
-						# Startwerte
-						$user_array['planets'][0]['gebaeude'] = array();
-						$user_array['planets'][0]['schiffe'] = array();
-						$user_array['planets'][0]['verteidigung'] = array();
-						$user_array['planets'][0]['roboter'] = array();
-						$user_array['planets'][0]['items'] = array();
-						$user_array['planets'][0]['size'] = array(0, 375);
-						$user_array['planets'][0]['building'] = array();
-						$user_array['planets'][0]['last_refresh'] = time();
-						$user_array['forschung'] = array();
-						$user_array['verbuendete'] = array();
-						$user_array['punkte'] = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, floor(filesize(DB_HIGHSCORES)/32)+1);
-						$user_array['registration'] = time();
-						$user_array['messages'] = array();
-						$user_array['description'] = '';
-						$user_array['receive'] = array (
-							1 => array(true, true),
-							2 => array(true, false),
-							3 => array(true, false),
-							4 => array(true, true),
-							5 => array(true, false)
-						);
-						$user_array['sonden'] = 1;
-						$user_array['fastbuild'] = false;
-						$user_array['username'] = $_POST['username'];
-						$user_array['shortcuts'] = false;
-						$user_array['tooltips'] = false;
-
-						# Planetenname
-						$user_array['planets'][0]['name'] = ((trim($_POST['hauptplanet']) == '') ? 'Hauptplanet' : trim($_POST['hauptplanet']));
-
-						$fh = fopen(DB_PLAYERS.'/'.urlencode($_POST['username']), 'w');
-						if(!$fh)
-							$error = 'Es konnte nicht in die Datenbank geschrieben werden.';
-						else
 						{
-							# Planeten besetzen
-							$k = explode(':', $koords);
-							$old_info = universe::get_planet_info($k[0], $k[1], $k[2]);
-							if(!$old_info || !universe::set_planet_info($k[0], $k[1], $k[2], $old_info[0], $_POST['username'], $_POST['hauptplanet']))
+							fwrite($fh, gzcompress(serialize($user_array)));
+							fclose($fh);
+
+							# In die Statistiken eintragen
+							$fh = fopen(DB_HIGHSCORES, 'a');
+							if($fh)
 							{
-								$error = 'Der Planet konnte nicht besetzt werden.';
+								flock($fh, LOCK_EX);
+
+								fwrite($fh, $_POST['username']);
+								if(strlen($_POST['username']) < 24)
+									fwrite($fh, str_repeat(' ', 24-strlen($_POST['username'])));
+								fwrite($fh, "\0\0\0\0\0\0\0\0");
+
+								flock($fh, LOCK_UN);
 								fclose($fh);
-								unlink(DB_PLAYERS.'/'.urlencode($_POST['username']));
 							}
-							else
-							{
-								fwrite($fh, gzcompress(serialize($user_array)));
-								fclose($fh);
-
-								# In die Statistiken eintragen
-								$fh = fopen(DB_HIGHSCORES, 'a');
-								if($fh)
-								{
-									flock($fh, LOCK_EX);
-
-									fwrite($fh, $_POST['username']);
-									if(strlen($_POST['username']) < 24)
-										fwrite($fh, str_repeat(' ', 24-strlen($_POST['username'])));
-									fwrite($fh, "\0\0\0\0\0\0\0\0");
-
-									flock($fh, LOCK_UN);
-									fclose($fh);
-								}
 ?>
 <p class="successful">
 	Die Registrierung war erfolgreich. Du kannst dich nun anmelden. Die Koordinaten deines Hauptplaneten lauten <?=htmlentities($koords)?>.
@@ -173,9 +149,8 @@
 	<li><a href="./">Zurück zur Startseite</a></li>
 </ul>
 <?php
-								gui::html_foot();
-								exit();
-							}
+							gui::html_foot();
+							exit();
 						}
 					}
 				}

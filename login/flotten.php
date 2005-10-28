@@ -4,6 +4,28 @@
 	login_gui::html_head();
 
 	$show_versenden = true;
+
+	$kontrollwesen = 0;
+	if(isset($user_array['forschung']['F0']))
+		$kontrollwesen = $user_array['forschung']['F0'];
+
+	$werften = 0;
+	$planets = array_keys($user_array['planets']);
+	$koords = array();
+	foreach($planets as $planet)
+	{
+		if(isset($user_array['planets'][$planet]['gebaeude']['B10']) && $user_array['planets'][$planet]['gebaeude']['B10'] > 0)
+			$werften++;
+		$koords[] = $user_array['planets'][$planet]['pos'];
+	}
+	$max_flotten = $kontrollwesen*$werften;
+
+	$my_flotten = 0;
+	foreach($user_array['flotten'] as $flotte)
+	{
+		if((!$flotte[7] && in_array($flotte[3][0], $koords)) || ($flotte[7] && in_array($flotte[3][1], $koords)))
+			$my_flotten++;
+	}
 ?>
 <h2>Flotten</h2>
 <?php
@@ -23,82 +45,94 @@
 			header('Location: '.$action_back_url, true, 307);
 			die('HTTP redirect: <a href="'.htmlentities($action_back_url).'">'.htmlentities($action_back_url).'</a>');
 		}
-
-		$_POST['galaxie'] = $_GET['action_galaxy'];
-		$_POST['system'] = $_GET['action_system'];
-		$_POST['planet'] = $_GET['action_planet'];
-
-		$_POST['speed'] = 1;
-
-		if($_GET['action'] == 'spionage')
+		if($my_flotten >= $max_flotten)
 		{
-			$_POST['auftrag'] = 5;
-			$_POST['flotte'] = array('S5' => 1);
-			if($target_info[1])
-				$_POST['flotte']['S5'] = $user_array['sonden'];
-			if(!isset($this_planet['schiffe']['S5']) || $this_planet['schiffe']['S5'] < 1)
+?>
+<p class="error">
+	Maximale Flottenzahl erreicht.
+</p>
+<?php
+			login_gui::html_foot();
+			die();
+		}
+		else
+		{
+			$_POST['galaxie'] = $_GET['action_galaxy'];
+			$_POST['system'] = $_GET['action_system'];
+			$_POST['planet'] = $_GET['action_planet'];
+
+			$_POST['speed'] = 1;
+
+			if($_GET['action'] == 'spionage')
 			{
+				$_POST['auftrag'] = 5;
+				$_POST['flotte'] = array('S5' => 1);
+				if($target_info[1])
+					$_POST['flotte']['S5'] = $user_array['sonden'];
+				if(!isset($this_planet['schiffe']['S5']) || $this_planet['schiffe']['S5'] < 1)
+				{
 ?>
 <p class="error">
 	Keine Spionagesonden vorhanden.
 </p>
 <?php
-				login_gui::html_foot();
-				die();
+					login_gui::html_foot();
+					die();
+				}
 			}
-		}
-		elseif($_GET['action'] == 'besiedeln')
-		{
-			$_POST['auftrag'] = 1;
-			$_POST['flotte'] = array('S6' => 1);
-			if(!isset($this_planet['schiffe']['S6']) || $this_planet['schiffe']['S6'] < 1)
+			elseif($_GET['action'] == 'besiedeln')
 			{
+				$_POST['auftrag'] = 1;
+				$_POST['flotte'] = array('S6' => 1);
+				if(!isset($this_planet['schiffe']['S6']) || $this_planet['schiffe']['S6'] < 1)
+				{
 ?>
 <p class="error">
 	Kein Besiedelungsschiff vorhanden.
 </p>
 <?php
-				login_gui::html_foot();
-				die();
+					login_gui::html_foot();
+					die();
+				}
 			}
-		}
-		elseif($_GET['action'] == 'sammeln')
-		{
-			$_POST['auftrag'] = 2;
-
-			$truemmerfeld = truemmerfeld::get($_GET['action_galaxy'], $_GET['action_system'], $_GET['action_planet']);
-
-			$anzahl = 0;
-			if($truemmerfeld !== false)
+			elseif($_GET['action'] == 'sammeln')
 			{
-				# Transportkapazitaet eines Sammlers
-				$transport = $items['schiffe']['S3']['trans'][0];
+				$_POST['auftrag'] = 2;
 
-				# Laderaumerweiterung
-				$l_level = 0;
-				if(isset($user_array['forschung']['F11']))
-					$l_level = $user_array['forschung']['F11'];
-				$transport = floor($transport*pow(1.2, $l_level));
+				$truemmerfeld = truemmerfeld::get($_GET['action_galaxy'], $_GET['action_system'], $_GET['action_planet']);
 
-				$anzahl = round(array_sum($truemmerfeld)/$transport);
-			}
-			if($anzahl <= 0)
-				$anzahl = 1;
+				$anzahl = 0;
+				if($truemmerfeld !== false)
+				{
+					# Transportkapazitaet eines Sammlers
+					$transport = $items['schiffe']['S3']['trans'][0];
 
-			$_POST['flotte'] = array('S3' => $anzahl);
+					# Laderaumerweiterung
+					$l_level = 0;
+					if(isset($user_array['forschung']['F11']))
+						$l_level = $user_array['forschung']['F11'];
+					$transport = floor($transport*pow(1.2, $l_level));
 
-			if(!isset($this_planet['schiffe']['S3']) || $this_planet['schiffe']['S3'] < 1)
-			{
+					$anzahl = round(array_sum($truemmerfeld)/$transport);
+				}
+				if($anzahl <= 0)
+					$anzahl = 1;
+
+				$_POST['flotte'] = array('S3' => $anzahl);
+
+				if(!isset($this_planet['schiffe']['S3']) || $this_planet['schiffe']['S3'] < 1)
+				{
 ?>
 <p class="error">
 	Keine Sammler vorhanden.
 </p>
 <?php
+				}
 			}
 		}
 	}
 
-	if(isset($_POST['flotte']) && is_array($_POST['flotte']) && isset($_POST['galaxie']) && isset($_POST['system']) && isset($_POST['planet']))
+	if($my_flotten < $max_flotten && isset($_POST['flotte']) && is_array($_POST['flotte']) && isset($_POST['galaxie']) && isset($_POST['system']) && isset($_POST['planet']))
 	{
 		foreach($_POST['flotte'] as $id=>$anzahl)
 		{
@@ -894,6 +928,9 @@
 		}
 ?>
 <h3>Flotte versenden</h3>
+<p class="flotte-anzahl<?=($my_flotten >= $max_flotten) ? ' voll' : ''?>">
+	Sie haben derzeit <?=ths($my_flotten)?> von <?=ths($max_flotten)?> <?=($max_flotten == 1) ? 'möglichen Flotte' : 'möglichen Flotten'?> unterwegs.
+</p>
 <?php
 		if(isset($this_planet['schiffe']) && array_sum($this_planet['schiffe']) > 0)
 		{
@@ -902,6 +939,10 @@
 			$this_pos = explode(':', $this_planet['pos']);
 ?>
 <form action="flotten.php" method="post" class="flotte-versenden">
+<?php
+			if($my_flotten < $max_flotten)
+			{
+?>
 	<fieldset class="flotte-koords">
 		<legend>Ziel</legend>
 		<dl>
@@ -914,13 +955,13 @@
 					document.write('<select id="ziel-planet-wahl" accesskey="n" tabindex="4" onchange="syncronise(false);" onkeyup="syncronise(false);">');
 					document.write('<option value="">Benutzerdefiniert</option>');
 <?php
-			$planets = array_keys($user_array['planets']);
-			foreach($planets as $planet)
-			{
+				$planets = array_keys($user_array['planets']);
+				foreach($planets as $planet)
+				{
 ?>
 					document.write('<option value="<?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?>"<?=($planet == $_SESSION['act_planet']) ? ' selected="selected"' : ''?>><?=utf8_htmlentities($user_array['planets'][$planet]['name'])?> (<?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?>)</option>');
 <?php
-			}
+				}
 ?>
 					document.write('</select>');
 					document.write('</dd>');
@@ -966,6 +1007,9 @@
 			</script>
 		</dl>
 	</fieldset>
+<?php
+			}
+?>
 	<fieldset class="flotte-schiffe">
 		<legend>Schiffe</legend>
 		<dl>
@@ -977,15 +1021,20 @@
 					continue;
 ?>
 			<dt><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($items['schiffe'][$id]['name'])?></a> <span class="vorhanden">(<?=ths($anzahl)?>&nbsp;vorhanden)</span></dt>
-			<dd><input type="text" name="flotte[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$i?>" /></dd>
+			<dd><input type="text" name="flotte[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$i?>"<?=($my_flotten >= $max_flotten) ? ' readonly="readonly"' : ''?> /></dd>
 <?php
 				$i++;
 			}
 ?>
 		</dl>
 	</fieldset>
+<?php
+			if($my_flotten < $max_flotten)
+			{
+?>
 	<div><button type="submit" accesskey="w" tabindex="<?=$i?>"><kbd>W</kbd>eiter</button></div>
 <?php
+			}
 		}
 ?>
 </form>
