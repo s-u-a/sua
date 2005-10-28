@@ -294,7 +294,7 @@
 								$that_punkte = $that_user_array['punkte'][0]+$that_user_array['punkte'][1]+$that_user_array['punkte'][2]+$that_user_array['punkte'][3]+$that_user_array['punkte'][4]+$that_user_array['punkte'][5]+$that_user_array['punkte'][6];
 								$this_punkte = $user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6];
 
-								if($that_punkte > $this_punkte && $that_punkte*0.05) > $this_punkte)
+								if($that_punkte > $this_punkte && $that_punkte*0.05 > $this_punkte)
 								{
 ?>
 <p class="error">
