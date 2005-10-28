@@ -189,6 +189,8 @@
 					if(count($user_array['planets']) >= 15) # Schon 15 Planeten im Besitz
 						unset($types[1]);
 				}
+				else
+					$that_user_array = get_user_array($info[1]);
 
 				$truemmerfeld = truemmerfeld::get($_POST['galaxie'], $_POST['system'], $_POST['planet']);
 				if(($truemmerfeld === false || array_sum($truemmerfeld) <= 0) && isset($types[2])) # Sammeln, kein Truemmerfeld
@@ -212,6 +214,18 @@
 				{ # Fremder Planet
 					if(isset($types[6])) # Stationieren
 						unset($types[6]);
+					if(in_array($info[1], $user_array['verbuendete']) && isset($types[3])) # Verbuendet, Angriff
+						unset($types[3]);
+
+					if(isset($types[3]))
+					{
+						# Anfaengerschutz
+						$that_punkte = $that_user_array['punkte'][0]+$that_user_array['punkte'][1]+$that_user_array['punkte'][2]+$that_user_array['punkte'][3]+$that_user_array['punkte'][4]+$that_user_array['punkte'][5]+$that_user_array['punkte'][6];
+						$this_punkte = $user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6];
+
+						if(($that_punkte > $this_punkte && $that_punkte*0.05 > $this_punkte) || ($that_punkte < $this_punkte && $that_punkte < $this_punkte*0.05))
+							unset($types[3]);
+					}
 				}
 
 				if(count($types) <= 0)
@@ -465,7 +479,6 @@
 								if($auftrag_array[2] != 1 && $auftrag_array[2] != 2 && $info[1] != $_SESSION['username'] && $info[1])
 								{
 									# Beim Zielbenutzer die Flottenbewegung eintragen
-									$that_user_array = get_user_array($info[1]);
 									if(!isset($that_user_array['flotten']))
 										$that_user_array['flotten'] = array();
 									while(isset($user_array['flotten'][$key]) || isset($that_user_array['flotten'][$key]))
@@ -474,8 +487,7 @@
 
 									uasort($that_user_array['flotten'], 'usort_fleet');
 
-									$fh = fopen(DB_PLAYERS.'/'.urlencode($info[1]), 'w');
-									if(!$fh)
+									if(!write_user_array($info[1], $that_user_array))
 									{
 ?>
 <p class="error">
@@ -483,13 +495,6 @@
 </p>
 <?php
 										$cont = false;
-									}
-									else
-									{
-										flock($fh, LOCK_EX);
-										fwrite($fh, gzcompress(serialize($that_user_array)));
-										flock($fh, LOCK_UN);
-										fclose($fh);
 									}
 								}
 

@@ -10,6 +10,7 @@
 <ol id="question-list">
 	<li><a href="#register">Wie kann ich mich anmelden?</a></li>
 	<li><a href="#scores">Wie bekomme ich Punkte?</a></li>
+	<li><a href="#noobs">Gibt es einen Anfängerschutz?</a></li>
 	<li><a href="#planets">Kann man mehrere Planeten haben?</a></li>
 	<li><a href="#times">Wie kann man die Bauzeiten verkürzen?</a></li>
 	<li><a href="#time">Was bedeuten <span xml:lang="en">Server</span>- und Lokalzeit?</a></li>
@@ -38,6 +39,11 @@
 	<p>Roboterpunkte werden aus den Rohstoffkosten der Roboter berechnet, die Sie gebaut haben. Pro Tausend verbaute Rohstoffe bekommen Sie einen Roboterpunkt.</p>
 	<p>Je mehr Tritium Sie im Flug verbrauchen, desto mehr Flugerfahrungspunkte erhalten Sie. Pro Tausend Tonnen Tritium, das Sie in einem erfolgreich am Ziel angelangten Flug verbraucht haben, bekommen Sie einen Flugerfahrungspunkt. Erfahrung im Flug lässt Ihre Schiffe schneller fliegen.</p>
 	<p>Pro Tausend Punkte, das Sie im Kampf Ihren Gegner verlieren ließen, bekommen Sie einen Kampferfahrungspunkt. Mehr Kampferfahrung schafft Ihnen Vorteile im Kampf.</p>
+</div>
+
+<div class="faq">
+	<h3 id="noobs">Gibt es einen Anfängerschutz?</h3>
+	<p>Ja, den gesamten Spielverlauf durch gilt eine Angriffssperre auf Spieler, die weniger als 5&thinsp;<abbr title="Prozent">%</abbr> des eigenen Gesamtpunktestandes besitzen. Außerdem ist es Ihnen nicht möglich, Spieler anzugreifen, die aufgrund von Einschränkungen im Spiel (zum Beispiel dem Anfängerschutz) keine Angriffe auf Sie selbst fliegen können.</p>
 </div>
 
 <div class="faq">
