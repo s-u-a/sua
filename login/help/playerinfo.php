@@ -102,6 +102,32 @@
 		echo "\t<p>\n\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', utf8_htmlentities($player_info['description']))."\n\t</p>\n";
 ?>
 </div>
+<h3 id="buendnisse">Bündnisse</h3>
+<?php
+		if(count($player_info['verbuendete']) <= 0)
+		{
+?>
+<p>
+	Dieser Benutzer ist derzeit in keinem Bündnis.
+</p>
+<?php
+		}
+		else
+		{
+?>
+<ul class="buendnis-informationen">
+<?php
+			foreach($player_info['verbuendete'] as $verbuendeter)
+			{
+?>
+	<li><a href="playerinfo.php?player=<?=htmlentities(urlencode($verbuendeter))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($verbuendeter)?></a></li>
+<?php
+			}
+?>
+</ul>
+<?php
+		}
+?>
 <h3 id="daten">Daten</h3>
 <dl class="daten">
 	<dt class="c-letzte-aktivitaet">Letzte Aktivität</dt>
@@ -146,8 +172,9 @@
 			$planets = array_keys($player_info['planets']);
 			foreach($planets as $planet)
 			{
+				$pos = explode(':', $player_info['planets'][$planet]['pos']);
 ?>
-	<li><?=utf8_htmlentities($player_info['planets'][$planet]['name'])?> <span class="koords">(<?=utf8_htmlentities($player_info['planets'][$planet]['pos'])?>)</span></li>
+	<li><?=utf8_htmlentities($player_info['planets'][$planet]['name'])?> <span class="koords">(<a href="../karte.php?galaxy=<?=htmlentities(urlencode($pos[0]))?>&amp;system=<?=htmlentities(urlencode($pos[1]))?>" title="Jenes Sonnensystem in der Karte ansehen"><?=utf8_htmlentities($player_info['planets'][$planet]['pos'])?></a>)</span></li>
 <?php
 			}
 ?>

@@ -216,7 +216,7 @@
 		if(time()-$user_array['umode_time'] >= 259200)
 		{
 ?>
-		<div><button name="umode" value="on">Urlaubsmodus</button></div>
+		<div><button name="umode" value="on" tabindex="16">Urlaubsmodus</button></div>
 		<p>Sie werden frühestens nach drei Tagen (<?=date('Y-m-d, H:i', time()+259200)?>, Serverzeit) aus dem Urlaubsmodus zurückkehren können.</p>
 <?php
 		}
@@ -230,7 +230,7 @@
 	elseif(time()-$user_array['umode_time'] >= 259200)
 	{
 ?>
-		<div><button name="umode" value="on">Urlaubsmodus verlassen</button></div>
+		<div><button name="umode" value="on" tabindex="16">Urlaubsmodus verlassen</button></div>
 <?php
 	}
 	else
@@ -245,13 +245,13 @@
 		<legend>Passwort ändern</legend>
 		<dl>
 			<dt class="c-altes-passwort"><label for="old-password">Altes Passw<kbd>o</kbd>rt</label></dt>
-			<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password" tabindex="16" accesskey="o" /></dd>
+			<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password" tabindex="17" accesskey="o" /></dd>
 
 			<dt class="c-neues-passwort"><label for="new-password">Neues Passwort</label></dt>
-			<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password" tabindex="17" /></dd>
+			<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password" tabindex="18" /></dd>
 
 			<dt class="c-neues-passwort-wiederholen"><label for="new-password2">Neues Passwort wiederholen</label></dt>
-			<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2" tabindex="18" /></dd>
+			<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2" tabindex="19" /></dd>
 		</dl>
 	</fieldset>
 	<div><button type="submit" tabindex="15" accesskey="w" title="[W]">Speichern</button></div>

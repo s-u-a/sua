@@ -241,6 +241,7 @@
 						$transport[1] += $items['schiffe'][$id]['trans'][1]*$anzahl;
 					}
 					$mass = round($mass*0.8);
+					$leermasse = $mass;
 					sort($types, SORT_NUMERIC);
 
 					# Laderaumerweiterung
@@ -287,7 +288,14 @@
 							$auftrag_array[1] = array(time(), 0); # Start-, Ankunftszeit
 							$auftrag_array[2] = $_POST['auftrag']; # Auftragsart
 							$auftrag_array[3] = array($this_planet['pos'], $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet']); # Koordinaten
-							$auftrag_array[4] = array(0, 0); # Tritium (Verbrauch, Ueberschuessig)
+
+							# Geschwindigkeitsfaktor
+							if(isset($_POST['speed']) && $_POST['speed'] >= 0.05 && $_POST['speed'] <= 1)
+								$auftrag_array[6] = $_POST['speed'];
+							else
+								$auftrag_array[6] = 1;
+
+							$auftrag_array[4] = array(fleet::get_tritium($leermasse, $distance)*$auftrag_array[6]*2, 0); # Tritium (Verbrauch, Ueberschuessig)
 
 							$auftrag_array[5] = array(array(0,0,0,0,0), array()); # Mitnahme: Rohstoffe, Roboter
 							if(($auftrag_array[2] == 1 || $auftrag_array[2] == 4 || $auftrag_array[2] == 6))
@@ -315,8 +323,8 @@
 										$auftrag_array[5][0][2] = $this_planet['ress'][2];
 									if($auftrag_array[5][0][3] > $this_planet['ress'][3])
 										$auftrag_array[5][0][3] = $this_planet['ress'][3];
-									if($auftrag_array[5][0][4] > $this_planet['ress'][4])
-										$auftrag_array[5][0][4] = $this_planet['ress'][4];
+									if($auftrag_array[5][0][4] > $this_planet['ress'][4]-$auftrag_array[4][0])
+										$auftrag_array[5][0][4] = $this_planet['ress'][4]-$auftrag_array[4][0];
 								}
 
 								if($transport[1] > 0)
@@ -391,6 +399,7 @@
 										case 2: $auftrag_array[5][0][1]++;
 										case 1: $auftrag_array[5][0][0]++;
 									}
+									$rohstoff_sum = array_sum($auftrag_array[5][0]);
 								}
 
 								# Roboter
@@ -432,16 +441,8 @@
 									$mass += $items['roboter'][$id]['mass']*$anzahl;
 							}
 
-							# Geschwindigkeitsfaktor
-							if(isset($_POST['speed']) && $_POST['speed'] >= 0.05 && $_POST['speed'] <= 1)
-								$auftrag_array[6] = $_POST['speed'];
-							else
-								$auftrag_array[6] = 1;
-
 							# Geschwindigkeit und Tritiumverbrauch nun berechnen
-							$fleet_info = fleet::calc($mass, $distance, $speed);
-							$auftrag_array[1][1] = time()+round($fleet_info[0]/$auftrag_array[6]); # Ankunftszeit
-							$auftrag_array[4][0] = round($fleet_info[1]*$auftrag_array[6]*2); # Tritiumverbrauch
+							$auftrag_array[1][1] = time()+round(fleet::get_time($mass, $distance, $speed)/$auftrag_array[6]); # Ankunftszeit
 
 							$auftrag_array[7] = false; # Rueckflug?
 
@@ -562,7 +563,8 @@
 							die('HTTP redirect: <a href="'.htmlentities($action_back_url).'">'.htmlentities($action_back_url).'</a>');
 						}
 
-						list($time, $tritium) = fleet::calc($mass, $distance, $speed);
+						$time = fleet::get_time($mass, $distance, $speed);
+						$tritium = fleet::get_tritium($mass, $distance);
 						$tritium *= 2;
 						$time_string = '';
 						if($time >= 86400)
@@ -838,7 +840,13 @@
 				var jetzt = new Date();
 				var ankunft_server = new Date(jetzt.getTime()+(time*1000));
 				var ankunft_server_server = new Date(ankunft_server.getTime()-time_diff);
-				document.getElementById('flugzeit').setAttribute('title', 'Ankunft: '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+' (Lokalzeit); '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+' (Serverzeit)');
+
+				var attrName;
+				if(document.getElementById('flugzeit').getAttribute('titleAttribute'))
+					attrName = 'titleAttribute';
+				else
+					attrName = 'title';
+				document.getElementById('flugzeit').setAttribute(attrName, 'Ankunft: '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+' (Lokalzeit); '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+' (Serverzeit)');
 <?php
 						if($transport[0] > 0 || $transport[1] > 0)
 						{

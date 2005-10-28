@@ -482,8 +482,7 @@
 									$distance = fleet::get_distance($flotte[3][0], $flotte[3][1]);
 									$mass = $items['schiffe']['S6']['mass'];
 									$speed = $items['schiffe']['S6']['speed'];
-									list(,$tritium) = fleet::calc($mass, $distance, $speed);
-									$tritium *= $flotte[6];
+									$tritium = fleet::get_tritium($mass, $distance, $speed)*$flotte[6];
 									$new_planet_array['ress'][4] += round($tritium);
 
 									$new_planet_array['last_refresh'] = time();
@@ -611,10 +610,9 @@
 										}
 
 										# Tritiumverbrauch und Flugzeit neu berechnen
-										list($time,) = fleet::calc($mass, $distance, $speed);
+										$time = fleet::get_time($mass, $distance, $speed);
 
 										$time /= $flotte[6];
-										$tritium *= $flotte[6];
 
 										$flotte[1] = array($flotte[1][1], $flotte[1][1]+round($time)); # Start- und Ankunftszeit
 										list($flotte[3][0], $flotte[3][1]) = array($flotte[3][1], $flotte[3][0]); # Start- und Zielkoordinaten
@@ -702,7 +700,7 @@
 										continue;
 									$mass += $items['roboter'][$id]['mass']*$anzahl;
 								}
-								list($time_diff) = fleet::calc($mass, $distance, $speed);
+								$time_diff = fleet::get_time($mass, $distance, $speed);
 								# Geschwindigkeitsfaktor
 								$time_diff *= $flotte[6];
 								$flotte[1] = array($flotte[1][1], $flotte[1][1]+$time_diff);
@@ -1344,7 +1342,7 @@
 											continue;
 										$mass += $items['roboter'][$id]['mass']*$anzahl;
 									}
-									list($time_diff) = fleet::calc($mass, $distance, $speed);
+									$time_diff = fleet::get_time($mass, $distance, $speed);
 									# Geschwindigkeitsfaktor
 									$time_diff *= $flotte[6];
 									$flotte[1] = array($flotte[1][1], $flotte[1][1]+$time_diff);
@@ -1805,7 +1803,7 @@
 											$speed += $items['schiffe'][$id]['speed']*$anzahl;
 										}
 										$distance = fleet::get_distance($new_flotte[3][1], $new_flotte[3][0]);
-										list($time) = fleet::calc($mass, $distance, $speed);
+										$time = fleet::get_time($mass, $distance, $speed);
 										$new_flotte[1] = array($new_flotte[1][1], $new_flotte[1][1]+$time);
 
 										# Koordinaten vertauschen

@@ -154,11 +154,14 @@ legend { font-weight:bold; }
 .prod-show-days { width:3ex; height:1.2em; }
 .ress-prod button { width:100%; }
 
-.punkte,.daten { width:70%; margin:.5em 20%; padding:0; border:.1em solid #aaa; white-space:nowrap; text-align:left; }
+.punkte,.daten,.buendnis-informationen,.playerinfo-planeten { width:70%; margin:.5em 15%; padding:0; border:.1em solid #aaa; white-space:nowrap; text-align:left; }
 * html .punkte,* html .daten { width:100%; }
 .punkte dt,.daten dt { float:left; width:35%; padding:.2em; border-bottom:.1em solid #aaa; border-right:.1em solid #aaa; margin-right:.2em; font-weight:bold; }
 .punkte dd,.daten dd { margin:0 0 0 35%; padding:.2em; border-bottom:.1em solid #aaa; font-weight:bold; }
 .punkte dt.c-gesamt,.punkte dd.c-gesamt,.punkte dt.c-registrierung,.punkte dd.c-registrierung { border-bottom-style:none; }
+.buendnis-informationen,.playerinfo-planeten { text-align:center; font-weight:bold; list-style-type:none; border-bottom-style:none; }
+.buendnis-informationen li,.playerinfo-planeten li { border-bottom:.1em solid #aaa; }
+.benutzerbeschreibung { text-align:left; padding:.5em; }
 
 .fertig { color:#0f0; font-weight:bold; }
 .fertig:hover,.fertig:focus { color:#0c0; }
@@ -188,9 +191,6 @@ legend { font-weight:bold; }
 .karte-wahl ul { margin:0; padding:0; list-style-type:none; }
 .karte-wahl li { display:inline; }
 .karte-wahl legend { margin:0 auto; text-align:center; }
-
-.benutzerbeschreibung { text-align:left; padding:.5em; }
-.playerinfo-planeten { list-style-type:none; margin:.5em; padding:0; }
 
 .nachrichten-kategorien { display:block; padding:0; margin:0; font-weight:bold; }
 .nachrichten-kategorien dt { float:left; margin:0; padding:.2em .3em; display:block; }
