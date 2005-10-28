@@ -171,9 +171,9 @@
 <div class="item forschung" id="item-<?=htmlentities($id)?>">
 	<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="stufe">(Level&nbsp;<?=ths($level)?>)</span></h3>
 <?php
-		if((!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B8') && !$user_array['umode'])
+		if(!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B8')
 		{
-			if(!isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0] == ''))
+			if(!$user_array['umode'] && (!isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0] == '')))
 			{
 				if($geb['buildable'])
 				{
