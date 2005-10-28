@@ -50,6 +50,38 @@
 		$changed = true;
 	}
 
+	if(isset($_POST['umode']) && time()-$user_array['umode_time'] >= 259200)
+	{
+		if(!$user_array['umode'])
+		{
+			$planets = array_keys($user_array['planets']);
+
+			$new_username = substr($_SESSION['username'], 0, 20);
+			$new_username .= ' (U)';
+			foreach($planets as $planet)
+			{
+				$pos = explode(':', $user_array['planets'][$planet]['pos']);
+				$info = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
+				universe::set_planet_info($pos[0], $pos[1], $pos[2], $info[0], $new_username, $info[2]);
+			}
+
+			$user_array['umode'] = true;
+			$user_array['umode_time'] = time();
+		}
+		else
+		{
+			$planets = array_keys($user_array['planets']);
+			foreach($planets as $planet)
+			{
+				$pos = explode(':', $user_array['planets'][$planet]['pos']);
+				$info = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
+				universe::set_planet_info($pos[0], $pos[1], $pos[2], $info[0], $_SESSION['username'], $info[2]);
+			}
+
+			$user_array['umode'] = false;
+			$user_array['umode_time'] = time();
+		}
+	}
 
 	if(isset($_POST['old-password']) && isset($_POST['new-password']) && isset($_POST['new-password2']) && ($_POST['old-password'] != $_POST['new-password'] || $_POST['new-password'] != $_POST['new-password2']))
 	{
@@ -175,6 +207,39 @@
 				</tr>
 			</tbody>
 		</table>
+	</fieldset>
+	<fieldset class="urlaubsmodus">
+		<legend>Urlaubsmodus</legend>
+<?php
+	if(!$user_array['umode'])
+	{
+		if(time()-$user_array['umode_time'] >= 259200)
+		{
+?>
+		<div><button name="umode" value="on">Urlaubsmodus</button></div>
+		<p>Sie werden frühestens nach drei Tagen (<?=date('Y-m-d, H:i', time()+259200)?>, Serverzeit) aus dem Urlaubsmodus zurückkehren können.</p>
+<?php
+		}
+		else
+		{
+?>
+		<p>Sie können erst wieder ab dem <?=date('Y-m-d, H:i', $user_array['umode_time']+259200)?> (Serverzeit) in den Urlaubsmodus wechseln.</p>
+<?php
+		}
+	}
+	elseif(time()-$user_array['umode_time'] >= 259200)
+	{
+?>
+		<div><button name="umode" value="on">Urlaubsmodus verlassen</button></div>
+<?php
+	}
+	else
+	{
+?>
+		<p>Sie können den Urlaubsmodus spätestens am <?=date('Y-m-d, H:i', $user_array['umode_time']+259200)?> (Serverzeit) verlassen.</p>
+<?php
+	}
+?>
 	</fieldset>
 	<fieldset class="passwort-aendern">
 		<legend>Passwort ändern</legend>

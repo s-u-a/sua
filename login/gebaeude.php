@@ -53,7 +53,7 @@
 		$rueckbau = true;
 	}
 
-	if(isset($a_id) && isset($items['gebaeude'][$a_id]) && $items['gebaeude'][$a_id]['buildable'] && ($a_id != 'B8' || !isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0]) == '') && ($a_id != 'B9' || !isset($this_planet['building']['roboter']) || count($this_planet['building']['roboter']) == 0) && ($a_id != 'B10' || !isset($this_planet['building']['schiffe']) || count($this_planet['building']['schiffe']) == 0) && ($a_id != 'B10' || !isset($this_planet['building']['verteidigung']) || count($this_planet['building']['verteidigung']) == 0) && ($this_planet['size'][0]+$items['gebaeude'][$a_id]['fields']*(1-2*$rueckbau)) <= floor($this_planet['size'][1]))
+	if(isset($a_id) && !$user_array['umode'] && isset($items['gebaeude'][$a_id]) && $items['gebaeude'][$a_id]['buildable'] && ($a_id != 'B8' || !isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0]) == '') && ($a_id != 'B9' || !isset($this_planet['building']['roboter']) || count($this_planet['building']['roboter']) == 0) && ($a_id != 'B10' || !isset($this_planet['building']['schiffe']) || count($this_planet['building']['schiffe']) == 0) && ($a_id != 'B10' || !isset($this_planet['building']['verteidigung']) || count($this_planet['building']['verteidigung']) == 0) && ($this_planet['size'][0]+$items['gebaeude'][$a_id]['fields']*(1-2*$rueckbau)) <= floor($this_planet['size'][1]))
 	{
 		# Ausbau
 
@@ -173,14 +173,11 @@
 		delete_request();
 	}
 
-	/*$user_array['punkte'][0] = 0;
-	write_user_array();*/
-
 	login_gui::html_head();
 ?>
 <h2>Gebäude</h2>
 <?php
-	if($fastbuild_prev !== false || $fastbuild_next !== false)
+	if(($fastbuild_prev !== false || $fastbuild_next !== false) && $user_array['umode'])
 	{
 ?>
 <ul class="unbeschaeftigte-planeten">
@@ -229,7 +226,7 @@
 <div class="item gebaeude" id="item-<?=htmlentities($id)?>">
 	<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=ths($level)?>)</span></h3>
 <?php
-		if(($id != 'B8' || !isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0]) == '') && ($id != 'B9' || !isset($this_planet['building']['roboter']) || count($this_planet['building']['roboter']) == 0) && ($id != 'B10' || !isset($this_planet['building']['schiffe']) || count($this_planet['building']['schiffe']) == 0) && ($id != 'B10' || !isset($this_planet['building']['verteidigung']) || count($this_planet['building']['verteidigung']) == 0))
+		if(!$user_array['umode'] && ($id != 'B8' || !isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0]) == '') && ($id != 'B9' || !isset($this_planet['building']['roboter']) || count($this_planet['building']['roboter']) == 0) && ($id != 'B10' || !isset($this_planet['building']['schiffe']) || count($this_planet['building']['schiffe']) == 0) && ($id != 'B10' || !isset($this_planet['building']['verteidigung']) || count($this_planet['building']['verteidigung']) == 0))
 		{
 			if(!isset($this_planet['building']['gebaeude']) || trim($this_planet['building']['gebaeude'][0] == ''))
 			{

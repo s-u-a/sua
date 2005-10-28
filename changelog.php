@@ -3,6 +3,8 @@
 
 	header('Content-type: text/plain;charset=UTF-8');
 
+	ob_end_clean();
+
 	$changelog = '';
 	if(is_file('db_things/changelog') && is_readable('db_things/changelog'))
 		$changelog = file_get_contents('db_things/changelog');

@@ -1571,6 +1571,7 @@
 	function refresh_ress($globalise=false)
 	{
 		global $this_planet;
+		global $user_array;
 		if($globalise)
 			global $ges_prod;
 
@@ -1581,11 +1582,14 @@
 
 		$ges_prod = get_ges_prod($globalise);
 
-		$this_planet['ress'][0] += ($ges_prod[0]/3600)*$secs;
-		$this_planet['ress'][1] += ($ges_prod[1]/3600)*$secs;
-		$this_planet['ress'][2] += ($ges_prod[2]/3600)*$secs;
-		$this_planet['ress'][3] += ($ges_prod[3]/3600)*$secs;
-		$this_planet['ress'][4] += ($ges_prod[4]/3600)*$secs;
+		if(!$user_array['umode'])
+		{
+			$this_planet['ress'][0] += ($ges_prod[0]/3600)*$secs;
+			$this_planet['ress'][1] += ($ges_prod[1]/3600)*$secs;
+			$this_planet['ress'][2] += ($ges_prod[2]/3600)*$secs;
+			$this_planet['ress'][3] += ($ges_prod[3]/3600)*$secs;
+			$this_planet['ress'][4] += ($ges_prod[4]/3600)*$secs;
+		}
 
 		$this_planet['last_refresh'] = $now_time;
 	}

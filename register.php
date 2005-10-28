@@ -23,6 +23,8 @@
 
 			if(file_exists(DB_PLAYERS.'/'.urlencode($_POST['username'])))
 				$error = 'Dieser Spieler existiert bereits. Bitte wähle einen anderen Namen.';
+			elseif(substr($_POST['username'], -4) == ' (U)')
+				$error = 'Der Benutzername darf nicht auf (U) enden.';
 			else
 			{
 				touch(DB_PLAYERS.'/'.urlencode($_POST['username']));
@@ -104,6 +106,8 @@
 					$user_array['username'] = $_POST['username'];
 					$user_array['shortcuts'] = false;
 					$user_array['tooltips'] = false;
+					$user_array['umode'] = false;
+					$user_array['umode_time'] = 0;
 
 					# Planetenname
 					$user_array['planets'][0]['name'] = ((trim($_POST['hauptplanet']) == '') ? 'Hauptplanet' : trim($_POST['hauptplanet']));

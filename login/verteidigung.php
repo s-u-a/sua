@@ -1,7 +1,7 @@
 <?php
 	require('scripts/include.php');
 
-	if((!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B10') && isset($_POST['verteidigung']) && is_array($_POST['verteidigung']))
+	if(!$user_array['umode'] && (!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B10') && isset($_POST['verteidigung']) && is_array($_POST['verteidigung']))
 	{
 		$last_time = time();
 		if(isset($this_planet['building']['verteidigung']))
@@ -72,7 +72,7 @@
 	<div class="item verteidigung" id="item-<?=htmlentities($id)?>">
 		<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="anzahl">(<?=ths($count)?>)</span></h3>
 <?php
-		if((!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B10') && $geb['buildable'])
+		if(!$user_array['umode'] && (!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B10') && $geb['buildable'])
 		{
 ?>
 		<ul>

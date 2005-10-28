@@ -17,7 +17,7 @@
 				$pos = explode(':', $this_planet['pos']);
 
 				$old_info = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
-				if(!$old_info || !universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_SESSION['username'], $_POST['planet_name']))
+				if(!$old_info || !universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $old_info[1], $_POST['planet_name']))
 				{
 					$this_planet['name'] = $old_name;
 					write_user_array();
@@ -144,7 +144,7 @@
 				$url .= urlencode($_SESSION['act_planet']);
 			else
 				$url .= urlencode($_SESSION['act_planet']-1);
-			#header('Location: '.$url, true, 303);
+			header('Location: '.$url, true, 303);
 			die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 		}
 	}

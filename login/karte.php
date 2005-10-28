@@ -78,14 +78,24 @@
 	{
 		$class = universe::get_planet_class($galaxy_n, $system_n, $i);
 
+		$that_uname = $planet[1];
+		$umode = false;
+		if(substr($that_uname, -4) == ' (U)')
+		{
+			$that_uname = substr($that_uname, 0, -4);
+			$umode = true;
+		}
+
 		if($planet[1])
 		{
-			if($planet[1] == $_SESSION['username'])
+			if($that_uname == $_SESSION['username'])
 				$class2 = 'eigen';
-			elseif(in_array($planet[1], $user_array['verbuendete']))
+			elseif(in_array($that_uname, $user_array['verbuendete']))
 				$class2 = 'verbuendet';
 			else
 				$class2 = 'fremd';
+			if($umode)
+				$class2 .= ' urlaub';
 		}
 		else
 			$class2 = 'leer';
@@ -103,7 +113,7 @@
 		if($planet[1])
 		{
 ?>
-			<td class="c-name"><?=utf8_htmlentities($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlentities(urlencode($planet[1]))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($planet[1])?></a>)</span></td>
+			<td class="c-name"><?=utf8_htmlentities($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlentities(urlencode($that_uname))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($that_uname)?></a><?=$umode ? ' (U)' : ''?>)</span></td>
 <?php
 		}
 		else
@@ -113,9 +123,9 @@
 <?php
 		}
 
-		$show_sammeln = (isset($this_planet['schiffe']['S3']) && $this_planet['schiffe']['S3'] > 0 && array_sum($truemmerfeld) > 0);
+		$show_sammeln = (!$user_array['umode'] && isset($this_planet['schiffe']['S3']) && $this_planet['schiffe']['S3'] > 0 && array_sum($truemmerfeld) > 0);
 
-		if($planet[1] == $_SESSION['username'] && !$show_sammeln)
+		if($that_uname == $_SESSION['username'] && !$show_sammeln)
 		{
 ?>
 			<td class="c-aktionen"></td>
@@ -127,9 +137,9 @@
 			<td class="c-aktionen">
 				<ul>
 <?php
-			if($planet[1] != $_SESSION['username'])
+			if($that_uname != $_SESSION['username'])
 			{
-				if(isset($this_planet['schiffe']['S5']) && $this_planet['schiffe']['S5'] > 0)
+				if(!$umode && !$user_array['umode'] && isset($this_planet['schiffe']['S5']) && $this_planet['schiffe']['S5'] > 0)
 				{
 ?>
 					<li class="c-spionieren"><a href="flotten.php?action=spionage&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>" title="Spionieren Sie diesen Planeten aus">Spionieren</a></li>
@@ -139,11 +149,11 @@
 				if($planet[1])
 				{
 ?>
-					<li class="c-nachricht"><a href="nachrichten.php?to=<?=htmlentities(urlencode($planet[1]))?>" title="Schreiben Sie diesem Spieler eine Nachricht">Nachricht</a></li>
+					<li class="c-nachricht"><a href="nachrichten.php?to=<?=htmlentities(urlencode($that_uname))?>" title="Schreiben Sie diesem Spieler eine Nachricht">Nachricht</a></li>
 <?php
 				}
 
-				if(!$planet[1] && count($user_array['planets']) < 15 && isset($this_planet['schiffe']['S6']) && $this_planet['schiffe']['S6'] > 0)
+				if(!$planet[1] && !$user_array['umode'] && count($user_array['planets']) < 15 && isset($this_planet['schiffe']['S6']) && $this_planet['schiffe']['S6'] > 0)
 				{
 ?>
 					<li class="c-besiedeln"><a href="flotten.php?action=besiedeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>" title="Schicken Sie ein Besiedelungsschiff zu diesem Planeten">Besiedeln</a></li>

@@ -132,7 +132,7 @@
 		}
 	}
 
-	if($my_flotten < $max_flotten && isset($_POST['flotte']) && is_array($_POST['flotte']) && isset($_POST['galaxie']) && isset($_POST['system']) && isset($_POST['planet']))
+	if(!$user_array['umode'] && $my_flotten < $max_flotten && isset($_POST['flotte']) && is_array($_POST['flotte']) && isset($_POST['galaxie']) && isset($_POST['system']) && isset($_POST['planet']))
 	{
 		foreach($_POST['flotte'] as $id=>$anzahl)
 		{
@@ -194,8 +194,8 @@
 				if(($truemmerfeld === false || array_sum($truemmerfeld) <= 0) && isset($types[2])) # Sammeln, kein Truemmerfeld
 					unset($types[2]);
 
-				if($this_planet['pos'] == $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'])
-				{ # Selber Planet, nur Sammeln
+				if($this_planet['pos'] == $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'] || substr($info[1], -4) == ' (U)')
+				{ # Selber Planet / Urlaubsmodus, nur Sammeln
 					if($truemmerfeld && isset($types[2]))
 						$types = array(2 => 0);
 					else
@@ -208,7 +208,7 @@
 					if(isset($types[5])) # Spionieren
 						unset($types[5]);
 				}
-				else /* Hier spaeter Buendnissystem einbauen! */
+				else
 				{ # Fremder Planet
 					if(isset($types[6])) # Stationieren
 						unset($types[6]);
@@ -940,7 +940,7 @@
 ?>
 <form action="flotten.php" method="post" class="flotte-versenden">
 <?php
-			if($my_flotten < $max_flotten)
+			if($my_flotten < $max_flotten && !$user_array['umode'])
 			{
 ?>
 	<fieldset class="flotte-koords">
@@ -1021,7 +1021,7 @@
 					continue;
 ?>
 			<dt><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($items['schiffe'][$id]['name'])?></a> <span class="vorhanden">(<?=ths($anzahl)?>&nbsp;vorhanden)</span></dt>
-			<dd><input type="text" name="flotte[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$i?>"<?=($my_flotten >= $max_flotten) ? ' readonly="readonly"' : ''?> /></dd>
+			<dd><input type="text" name="flotte[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$i?>"<?=($my_flotten >= $max_flotten || $user_array['umode']) ? ' readonly="readonly"' : ''?> /></dd>
 <?php
 				$i++;
 			}
@@ -1029,7 +1029,7 @@
 		</dl>
 	</fieldset>
 <?php
-			if($my_flotten < $max_flotten)
+			if($my_flotten < $max_flotten && !$user_array['umode'])
 			{
 ?>
 	<div><button type="submit" accesskey="w" tabindex="<?=$i?>"><kbd>W</kbd>eiter</button></div>

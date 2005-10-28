@@ -1,7 +1,7 @@
 <?php
 	require('scripts/include.php');
 
-	if((!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B9') && isset($_POST['roboter']) && is_array($_POST['roboter']))
+	if(!$user_array['umode'] && (!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B9') && isset($_POST['roboter']) && is_array($_POST['roboter']))
 	{
 		# Roboter in Auftrag geben
 
@@ -74,7 +74,7 @@
 	<div class="item roboter" id="item-<?=htmlentities($id)?>">
 		<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="anzahl">(<?=utf8_htmlentities($count)?>)</span></h3>
 <?php
-		if((!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B9') && $geb['buildable'])
+		if(!$user_array['umode'] && (!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B9') && $geb['buildable'])
 		{
 ?>
 		<ul>
