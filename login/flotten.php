@@ -298,7 +298,7 @@
 								{
 ?>
 <p class="error">
-	Sie befinden sich für diesen Spieler im Anfängerschutz und können ihn der <span xml:lang="en">Fairness</span> halber deswegen ebenfalls nicht angreifen.
+	Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen können. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anfängerschutz.)
 </p>
 <?php
 									$noob = true;
@@ -307,7 +307,7 @@
 								{
 ?>
 <p class="error">
-	Dieser Spieler befindet sich für Sie im Anfängerschutz.
+	Das Imperium dieses Spielers ist so groß, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anfängerschutz.)
 </p>
 <?php
 									$noob = true;
