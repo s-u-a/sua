@@ -189,8 +189,6 @@
 					if(count($user_array['planets']) >= 15) # Schon 15 Planeten im Besitz
 						unset($types[1]);
 				}
-				else
-					$that_user_array = get_user_array($info[1]);
 
 				$truemmerfeld = truemmerfeld::get($_POST['galaxie'], $_POST['system'], $_POST['planet']);
 				if(($truemmerfeld === false || array_sum($truemmerfeld) <= 0) && isset($types[2])) # Sammeln, kein Truemmerfeld
@@ -216,16 +214,6 @@
 						unset($types[6]);
 					if(in_array($info[1], $user_array['verbuendete']) && isset($types[3])) # Verbuendet, Angriff
 						unset($types[3]);
-
-					if(isset($types[3]))
-					{
-						# Anfaengerschutz
-						$that_punkte = $that_user_array['punkte'][0]+$that_user_array['punkte'][1]+$that_user_array['punkte'][2]+$that_user_array['punkte'][3]+$that_user_array['punkte'][4]+$that_user_array['punkte'][5]+$that_user_array['punkte'][6];
-						$this_punkte = $user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6];
-
-						if(($that_punkte > $this_punkte && $that_punkte*0.05 > $this_punkte) || ($that_punkte < $this_punkte && $that_punkte < $this_punkte*0.05))
-							unset($types[3]);
-					}
 				}
 
 				if(count($types) <= 0)
@@ -297,246 +285,277 @@
 							$show_form2 = true;
 						else
 						{
-							$auftrag_array = array();
-							$auftrag_array[0] = $_POST['flotte']; # Schiffe
-							$auftrag_array[1] = array(time(), 0); # Start-, Ankunftszeit
-							$auftrag_array[2] = $_POST['auftrag']; # Auftragsart
-							$auftrag_array[3] = array($this_planet['pos'], $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet']); # Koordinaten
+							$that_user_array = get_user_array($info[1]);
 
-							# Geschwindigkeitsfaktor
-							if(isset($_POST['speed']) && $_POST['speed'] >= 0.05 && $_POST['speed'] <= 1)
-								$auftrag_array[6] = $_POST['speed'];
-							else
-								$auftrag_array[6] = 1;
-
-							$auftrag_array[4] = array(fleet::get_tritium($leermasse, $distance)*$auftrag_array[6]*2, 0); # Tritium (Verbrauch, Ueberschuessig)
-
-							$auftrag_array[5] = array(array(0,0,0,0,0), array()); # Mitnahme: Rohstoffe, Roboter
-							if(($auftrag_array[2] == 1 || $auftrag_array[2] == 4 || $auftrag_array[2] == 6))
+							$noob = false;
+							if($_POST['auftrag'] == '3')
 							{
-								if($transport[0] > 0)
+								# Anfaengerschutz ueberpruefen
+								$that_punkte = $that_user_array['punkte'][0]+$that_user_array['punkte'][1]+$that_user_array['punkte'][2]+$that_user_array['punkte'][3]+$that_user_array['punkte'][4]+$that_user_array['punkte'][5]+$that_user_array['punkte'][6];
+								$this_punkte = $user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6];
+
+								if($that_punkte > $this_punkte && $that_punkte*0.05) > $this_punkte)
 								{
-									# Rohstoffmitnahme
-									if(isset($_POST['transport-carbon']) && $_POST['transport-carbon'] >= 0)
-										$auftrag_array[5][0][0] = (int) $_POST['transport-carbon'];
-									if(isset($_POST['transport-aluminium']) && $_POST['transport-aluminium'] >= 0)
-										$auftrag_array[5][0][1] = (int) $_POST['transport-aluminium'];
-									if(isset($_POST['transport-wolfram']) && $_POST['transport-wolfram'] >= 0)
-										$auftrag_array[5][0][2] = (int) $_POST['transport-wolfram'];
-									if(isset($_POST['transport-radium']) && $_POST['transport-radium'] >= 0)
-										$auftrag_array[5][0][3] = (int) $_POST['transport-radium'];
-									if(isset($_POST['transport-tritium']) && $_POST['transport-tritium'] >= 0)
-										$auftrag_array[5][0][4] = (int) $_POST['transport-tritium'];
-
-									# Mehr mitgenommen als vorhanden?
-									if($auftrag_array[5][0][0] > $this_planet['ress'][0])
-										$auftrag_array[5][0][0] = $this_planet['ress'][0];
-									if($auftrag_array[5][0][1] > $this_planet['ress'][1])
-										$auftrag_array[5][0][1] = $this_planet['ress'][1];
-									if($auftrag_array[5][0][2] > $this_planet['ress'][2])
-										$auftrag_array[5][0][2] = $this_planet['ress'][2];
-									if($auftrag_array[5][0][3] > $this_planet['ress'][3])
-										$auftrag_array[5][0][3] = $this_planet['ress'][3];
-									if($auftrag_array[5][0][4] > $this_planet['ress'][4]-$auftrag_array[4][0])
-										$auftrag_array[5][0][4] = $this_planet['ress'][4]-$auftrag_array[4][0];
+?>
+<p class="error">
+	Sie befinden sich für diesen Spieler im Anfängerschutz und können ihn der <span xml:lang="en">Fairness</span> halber deswegen ebenfalls nicht angreifen.
+</p>
+<?php
+									$noob = true;
 								}
-
-								if($transport[1] > 0)
+								elseif($that_punkte < $this_punkte && $that_punkte < $this_punkte*0.05)
 								{
-									# Robotermitnahme
-									if(isset($_POST['rtransport-bau']) && $_POST['rtransport-bau'] >= 0 && isset($this_planet['roboter']['R01']))
-									{
-										$auftrag_array[5][1]['R01'] = (int) $_POST['rtransport-bau'];
-										if($auftrag_array[5][1]['R01'] > $this_planet['roboter']['R01'])
-											$auftrag_array[5][1]['R01'] = $this_planet['roboter']['R01'];
-									}
-									if(isset($_POST['rtransport-carbon']) && $_POST['rtransport-carbon'] >= 0 && isset($this_planet['roboter']['R02']))
-									{
-										$auftrag_array[5][1]['R02'] = (int) $_POST['rtransport-carbon'];
-										if($auftrag_array[5][1]['R02'] > $this_planet['roboter']['R02'])
-											$auftrag_array[5][1]['R02'] = $this_planet['roboter']['R02'];
-									}
-									if(isset($_POST['rtransport-aluminium']) && $_POST['rtransport-aluminium'] >= 0 && isset($this_planet['roboter']['R03']))
-									{
-										$auftrag_array[5][1]['R03'] = (int) $_POST['rtransport-aluminium'];
-										if($auftrag_array[5][1]['R03'] > $this_planet['roboter']['R03'])
-											$auftrag_array[5][1]['R03'] = $this_planet['roboter']['R03'];
-									}
-									if(isset($_POST['rtransport-wolfram']) && $_POST['rtransport-wolfram'] >= 0 && isset($this_planet['roboter']['R04']))
-									{
-										$auftrag_array[5][1]['R04'] = (int) $_POST['rtransport-wolfram'];
-										if($auftrag_array[5][1]['R04'] > $this_planet['roboter']['R04'])
-											$auftrag_array[5][1]['R04'] = $this_planet['roboter']['R04'];
-									}
-									if(isset($_POST['rtransport-radium']) && $_POST['rtransport-radium'] >= 0 && isset($this_planet['roboter']['R05']))
-									{
-										$auftrag_array[5][1]['R05'] = (int) $_POST['rtransport-radium'];
-										if($auftrag_array[5][1]['R05'] > $this_planet['roboter']['R05'])
-											$auftrag_array[5][1]['R05'] = $this_planet['roboter']['R05'];
-									}
-									if(isset($_POST['rtransport-tritium']) && $_POST['rtransport-tritium'] >= 0 && isset($this_planet['roboter']['R06']))
-									{
-										$auftrag_array[5][1]['R06'] = (int) $_POST['rtransport-tritium'];
-										if($auftrag_array[5][1]['R06'] > $this_planet['roboter']['R06'])
-											$auftrag_array[5][1]['R06'] = $this_planet['roboter']['R06'];
-									}
+?>
+<p class="error">
+	Dieser Spieler befindet sich für Sie im Anfängerschutz.
+</p>
+<?php
+									$noob = true;
 								}
-
-								# Wenn zu viel mitgenommen wurde, kuerzen
-
-								# Rohstoffe
-								$rohstoff_sum = array_sum($auftrag_array[5][0]);
-								if($rohstoff_sum > $transport[0])
-								{
-									$f = $transport[0]/$rohstoff_sum;
-									$auftrag_array[5][0][0] = floor($auftrag_array[5][0][0]*$f);
-									$auftrag_array[5][0][1] = floor($auftrag_array[5][0][1]*$f);
-									$auftrag_array[5][0][2] = floor($auftrag_array[5][0][2]*$f);
-									$auftrag_array[5][0][3] = floor($auftrag_array[5][0][3]*$f);
-									$auftrag_array[5][0][4] = floor($auftrag_array[5][0][4]*$f);
-
-									# Rundungsdifferenzen ausgleichen
-									$rohstoff_sum = array_sum($auftrag_array[5][0]);
-									$d = $transport[0]-$rohstoff_sum;
-									$ed = floor($d/5);
-									$auftrag_array[5][0][0] += $ed;
-									$auftrag_array[5][0][1] += $ed;
-									$auftrag_array[5][0][2] += $ed;
-									$auftrag_array[5][0][3] += $ed;
-									$auftrag_array[5][0][4] += $ed;
-
-									$d = $d%5;
-									switch($d)
-									{
-										case 4: $auftrag_array[5][0][3]++;
-										case 3: $auftrag_array[5][0][2]++;
-										case 2: $auftrag_array[5][0][1]++;
-										case 1: $auftrag_array[5][0][0]++;
-									}
-									$rohstoff_sum = array_sum($auftrag_array[5][0]);
-								}
-
-								# Roboter
-								$roboter_sum = array_sum($auftrag_array[5][1]);
-								if($roboter_sum > $transport[1])
-								{
-									$f = $transport[1]/$roboter_sum;
-									$auftrag_array[5][1]['R01'] = floor($auftrag_array[5][1]['R01']*$f);
-									$auftrag_array[5][1]['R02'] = floor($auftrag_array[5][1]['R02']*$f);
-									$auftrag_array[5][1]['R03'] = floor($auftrag_array[5][1]['R03']*$f);
-									$auftrag_array[5][1]['R04'] = floor($auftrag_array[5][1]['R04']*$f);
-									$auftrag_array[5][1]['R05'] = floor($auftrag_array[5][1]['R05']*$f);
-									$auftrag_array[5][1]['R06'] = floor($auftrag_array[5][1]['R06']*$f);
-
-									# Rundungsdifferenzen ausgleichen
-									$roboter_sum = array_sum($auftrag_array[5][1]);
-									$d = $transport[1]-$roboter_sum;
-									$ed = floor($d/6);
-									$auftrag_array[5][1]['R01'] += $ed;
-									$auftrag_array[5][1]['R02'] += $ed;
-									$auftrag_array[5][1]['R03'] += $ed;
-									$auftrag_array[5][1]['R04'] += $ed;
-									$auftrag_array[5][1]['R05'] += $ed;
-									$auftrag_array[5][1]['R06'] += $ed;
-
-									$d = $d%6;
-									switch($d)
-									{
-										case 5: $auftrag_array[5][1]['R05']++;
-										case 4: $auftrag_array[5][1]['R04']++;
-										case 3: $auftrag_array[5][1]['R03']++;
-										case 2: $auftrag_array[5][1]['R02']++;
-										case 1: $auftrag_array[5][1]['R01']++;
-									}
-								}
-
-								$mass += $rohstoff_sum;
-								foreach($auftrag_array[5][1] as $id=>$anzahl)
-									$mass += $items['roboter'][$id]['mass']*$anzahl;
 							}
 
-							# Geschwindigkeit und Tritiumverbrauch nun berechnen
-							$auftrag_array[1][1] = time()+round(fleet::get_time($mass, $distance, $speed)/$auftrag_array[6]); # Ankunftszeit
-
-							$auftrag_array[7] = false; # Rueckflug?
-
-							if($this_planet['ress'][4] < $auftrag_array[4][0])
+							if(!$noob)
 							{
+								$auftrag_array = array();
+								$auftrag_array[0] = $_POST['flotte']; # Schiffe
+								$auftrag_array[1] = array(time(), 0); # Start-, Ankunftszeit
+								$auftrag_array[2] = $_POST['auftrag']; # Auftragsart
+								$auftrag_array[3] = array($this_planet['pos'], $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet']); # Koordinaten
+
+								# Geschwindigkeitsfaktor
+								if(isset($_POST['speed']) && $_POST['speed'] >= 0.05 && $_POST['speed'] <= 1)
+									$auftrag_array[6] = $_POST['speed'];
+								else
+									$auftrag_array[6] = 1;
+
+								$auftrag_array[4] = array(fleet::get_tritium($leermasse, $distance)*$auftrag_array[6]*2, 0); # Tritium (Verbrauch, Ueberschuessig)
+
+								$auftrag_array[5] = array(array(0,0,0,0,0), array()); # Mitnahme: Rohstoffe, Roboter
+								if(($auftrag_array[2] == 1 || $auftrag_array[2] == 4 || $auftrag_array[2] == 6))
+								{
+									if($transport[0] > 0)
+									{
+										# Rohstoffmitnahme
+										if(isset($_POST['transport-carbon']) && $_POST['transport-carbon'] >= 0)
+											$auftrag_array[5][0][0] = (int) $_POST['transport-carbon'];
+										if(isset($_POST['transport-aluminium']) && $_POST['transport-aluminium'] >= 0)
+											$auftrag_array[5][0][1] = (int) $_POST['transport-aluminium'];
+										if(isset($_POST['transport-wolfram']) && $_POST['transport-wolfram'] >= 0)
+											$auftrag_array[5][0][2] = (int) $_POST['transport-wolfram'];
+										if(isset($_POST['transport-radium']) && $_POST['transport-radium'] >= 0)
+											$auftrag_array[5][0][3] = (int) $_POST['transport-radium'];
+										if(isset($_POST['transport-tritium']) && $_POST['transport-tritium'] >= 0)
+											$auftrag_array[5][0][4] = (int) $_POST['transport-tritium'];
+
+										# Mehr mitgenommen als vorhanden?
+										if($auftrag_array[5][0][0] > $this_planet['ress'][0])
+											$auftrag_array[5][0][0] = $this_planet['ress'][0];
+										if($auftrag_array[5][0][1] > $this_planet['ress'][1])
+											$auftrag_array[5][0][1] = $this_planet['ress'][1];
+										if($auftrag_array[5][0][2] > $this_planet['ress'][2])
+											$auftrag_array[5][0][2] = $this_planet['ress'][2];
+										if($auftrag_array[5][0][3] > $this_planet['ress'][3])
+											$auftrag_array[5][0][3] = $this_planet['ress'][3];
+										if($auftrag_array[5][0][4] > $this_planet['ress'][4]-$auftrag_array[4][0])
+											$auftrag_array[5][0][4] = $this_planet['ress'][4]-$auftrag_array[4][0];
+									}
+
+									if($transport[1] > 0)
+									{
+										# Robotermitnahme
+										if(isset($_POST['rtransport-bau']) && $_POST['rtransport-bau'] >= 0 && isset($this_planet['roboter']['R01']))
+										{
+											$auftrag_array[5][1]['R01'] = (int) $_POST['rtransport-bau'];
+											if($auftrag_array[5][1]['R01'] > $this_planet['roboter']['R01'])
+												$auftrag_array[5][1]['R01'] = $this_planet['roboter']['R01'];
+										}
+										if(isset($_POST['rtransport-carbon']) && $_POST['rtransport-carbon'] >= 0 && isset($this_planet['roboter']['R02']))
+										{
+											$auftrag_array[5][1]['R02'] = (int) $_POST['rtransport-carbon'];
+											if($auftrag_array[5][1]['R02'] > $this_planet['roboter']['R02'])
+												$auftrag_array[5][1]['R02'] = $this_planet['roboter']['R02'];
+										}
+										if(isset($_POST['rtransport-aluminium']) && $_POST['rtransport-aluminium'] >= 0 && isset($this_planet['roboter']['R03']))
+										{
+											$auftrag_array[5][1]['R03'] = (int) $_POST['rtransport-aluminium'];
+											if($auftrag_array[5][1]['R03'] > $this_planet['roboter']['R03'])
+												$auftrag_array[5][1]['R03'] = $this_planet['roboter']['R03'];
+										}
+										if(isset($_POST['rtransport-wolfram']) && $_POST['rtransport-wolfram'] >= 0 && isset($this_planet['roboter']['R04']))
+										{
+											$auftrag_array[5][1]['R04'] = (int) $_POST['rtransport-wolfram'];
+											if($auftrag_array[5][1]['R04'] > $this_planet['roboter']['R04'])
+												$auftrag_array[5][1]['R04'] = $this_planet['roboter']['R04'];
+										}
+										if(isset($_POST['rtransport-radium']) && $_POST['rtransport-radium'] >= 0 && isset($this_planet['roboter']['R05']))
+										{
+											$auftrag_array[5][1]['R05'] = (int) $_POST['rtransport-radium'];
+											if($auftrag_array[5][1]['R05'] > $this_planet['roboter']['R05'])
+												$auftrag_array[5][1]['R05'] = $this_planet['roboter']['R05'];
+										}
+										if(isset($_POST['rtransport-tritium']) && $_POST['rtransport-tritium'] >= 0 && isset($this_planet['roboter']['R06']))
+										{
+											$auftrag_array[5][1]['R06'] = (int) $_POST['rtransport-tritium'];
+											if($auftrag_array[5][1]['R06'] > $this_planet['roboter']['R06'])
+												$auftrag_array[5][1]['R06'] = $this_planet['roboter']['R06'];
+										}
+									}
+
+									# Wenn zu viel mitgenommen wurde, kuerzen
+
+									# Rohstoffe
+									$rohstoff_sum = array_sum($auftrag_array[5][0]);
+									if($rohstoff_sum > $transport[0])
+									{
+										$f = $transport[0]/$rohstoff_sum;
+										$auftrag_array[5][0][0] = floor($auftrag_array[5][0][0]*$f);
+										$auftrag_array[5][0][1] = floor($auftrag_array[5][0][1]*$f);
+										$auftrag_array[5][0][2] = floor($auftrag_array[5][0][2]*$f);
+										$auftrag_array[5][0][3] = floor($auftrag_array[5][0][3]*$f);
+										$auftrag_array[5][0][4] = floor($auftrag_array[5][0][4]*$f);
+
+										# Rundungsdifferenzen ausgleichen
+										$rohstoff_sum = array_sum($auftrag_array[5][0]);
+										$d = $transport[0]-$rohstoff_sum;
+										$ed = floor($d/5);
+										$auftrag_array[5][0][0] += $ed;
+										$auftrag_array[5][0][1] += $ed;
+										$auftrag_array[5][0][2] += $ed;
+										$auftrag_array[5][0][3] += $ed;
+										$auftrag_array[5][0][4] += $ed;
+
+										$d = $d%5;
+										switch($d)
+										{
+											case 4: $auftrag_array[5][0][3]++;
+											case 3: $auftrag_array[5][0][2]++;
+											case 2: $auftrag_array[5][0][1]++;
+											case 1: $auftrag_array[5][0][0]++;
+										}
+										$rohstoff_sum = array_sum($auftrag_array[5][0]);
+									}
+
+									# Roboter
+									$roboter_sum = array_sum($auftrag_array[5][1]);
+									if($roboter_sum > $transport[1])
+									{
+										$f = $transport[1]/$roboter_sum;
+										$auftrag_array[5][1]['R01'] = floor($auftrag_array[5][1]['R01']*$f);
+										$auftrag_array[5][1]['R02'] = floor($auftrag_array[5][1]['R02']*$f);
+										$auftrag_array[5][1]['R03'] = floor($auftrag_array[5][1]['R03']*$f);
+										$auftrag_array[5][1]['R04'] = floor($auftrag_array[5][1]['R04']*$f);
+										$auftrag_array[5][1]['R05'] = floor($auftrag_array[5][1]['R05']*$f);
+										$auftrag_array[5][1]['R06'] = floor($auftrag_array[5][1]['R06']*$f);
+
+										# Rundungsdifferenzen ausgleichen
+										$roboter_sum = array_sum($auftrag_array[5][1]);
+										$d = $transport[1]-$roboter_sum;
+										$ed = floor($d/6);
+										$auftrag_array[5][1]['R01'] += $ed;
+										$auftrag_array[5][1]['R02'] += $ed;
+										$auftrag_array[5][1]['R03'] += $ed;
+										$auftrag_array[5][1]['R04'] += $ed;
+										$auftrag_array[5][1]['R05'] += $ed;
+										$auftrag_array[5][1]['R06'] += $ed;
+
+										$d = $d%6;
+										switch($d)
+										{
+											case 5: $auftrag_array[5][1]['R05']++;
+											case 4: $auftrag_array[5][1]['R04']++;
+											case 3: $auftrag_array[5][1]['R03']++;
+											case 2: $auftrag_array[5][1]['R02']++;
+											case 1: $auftrag_array[5][1]['R01']++;
+										}
+									}
+
+									$mass += $rohstoff_sum;
+									foreach($auftrag_array[5][1] as $id=>$anzahl)
+										$mass += $items['roboter'][$id]['mass']*$anzahl;
+								}
+
+								# Geschwindigkeit und Tritiumverbrauch nun berechnen
+								$auftrag_array[1][1] = time()+round(fleet::get_time($mass, $distance, $speed)/$auftrag_array[6]); # Ankunftszeit
+
+								$auftrag_array[7] = false; # Rueckflug?
+
+								if($this_planet['ress'][4] < $auftrag_array[4][0])
+								{
 ?>
 <p class="error">
 	Nicht genug Tritium vorhanden.
 </p>
 <?php
-							}
-							else
-							{
-								if(!isset($user_array['flotten']))
-									$user_array['flotten'] = array();
-
-								do $key = str_replace('.', '-', array_sum(explode(' ', microtime()))); while(isset($user_array['flotten'][$key]) && false);
-
-								$cont = true;
-								if($auftrag_array[2] != 1 && $auftrag_array[2] != 2 && $info[1] != $_SESSION['username'] && $info[1])
+								}
+								else
 								{
-									# Beim Zielbenutzer die Flottenbewegung eintragen
-									if(!isset($that_user_array['flotten']))
-										$that_user_array['flotten'] = array();
-									while(isset($user_array['flotten'][$key]) || isset($that_user_array['flotten'][$key]))
-										$key = str_replace('.', '-', array_sum(explode(' ', microtime())));
-									$that_user_array['flotten'][$key] = $auftrag_array;
+									if(!isset($user_array['flotten']))
+										$user_array['flotten'] = array();
 
-									uasort($that_user_array['flotten'], 'usort_fleet');
+									do $key = str_replace('.', '-', array_sum(explode(' ', microtime()))); while(isset($user_array['flotten'][$key]) && false);
 
-									if(!write_user_array($info[1], $that_user_array))
+									$cont = true;
+									if($auftrag_array[2] != 1 && $auftrag_array[2] != 2 && $info[1] != $_SESSION['username'] && $info[1])
 									{
+										# Beim Zielbenutzer die Flottenbewegung eintragen
+										if(!isset($that_user_array['flotten']))
+											$that_user_array['flotten'] = array();
+										while(isset($user_array['flotten'][$key]) || isset($that_user_array['flotten'][$key]))
+											$key = str_replace('.', '-', array_sum(explode(' ', microtime())));
+										$that_user_array['flotten'][$key] = $auftrag_array;
+
+										uasort($that_user_array['flotten'], 'usort_fleet');
+
+										if(!write_user_array($info[1], $that_user_array))
+										{
 ?>
 <p class="error">
 	Datenbankfehler.
 </p>
 <?php
-										$cont = false;
-									}
-								}
-
-								if($cont)
-								{
-									$user_array['flotten'][$key] = $auftrag_array;
-									$this_planet['ress'][4] -= $auftrag_array[4][0];
-									$user_array['punkte'][11] += $auftrag_array[4][0]; # Verbrauchtes Tritium
-
-									# Flotten abziehen
-									foreach($_POST['flotte'] as $id=>$anzahl)
-										$this_planet['schiffe'][$id] -= $anzahl;
-
-									# Rohstoffe abziehen
-									$this_planet['ress'][0] -= $auftrag_array[5][0][0];
-									$this_planet['ress'][1] -= $auftrag_array[5][0][1];
-									$this_planet['ress'][2] -= $auftrag_array[5][0][2];
-									$this_planet['ress'][3] -= $auftrag_array[5][0][3];
-									$this_planet['ress'][4] -= $auftrag_array[5][0][4];
-
-									# Roboter abziehen
-									foreach($auftrag_array[5][1] as $id=>$anzahl)
-									{
-										if($anzahl == 0)
-											continue;
-										$this_planet['roboter'][$id] -= $anzahl;
+											$cont = false;
+										}
 									}
 
-									uasort($user_array['flotten'], 'usort_fleet');
-									write_user_array();
-
-									eventhandler::add_event($auftrag_array[1][1]);
-
-									if($fast_action)
+									if($cont)
 									{
-										header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
-										ob_end_clean();
-										ob_end_clean();
-										die();
-									}
-									else
-									{
+										$user_array['flotten'][$key] = $auftrag_array;
+										$this_planet['ress'][4] -= $auftrag_array[4][0];
+										$user_array['punkte'][11] += $auftrag_array[4][0]; # Verbrauchtes Tritium
+
+										# Flotten abziehen
+										foreach($_POST['flotte'] as $id=>$anzahl)
+											$this_planet['schiffe'][$id] -= $anzahl;
+
+										# Rohstoffe abziehen
+										$this_planet['ress'][0] -= $auftrag_array[5][0][0];
+										$this_planet['ress'][1] -= $auftrag_array[5][0][1];
+										$this_planet['ress'][2] -= $auftrag_array[5][0][2];
+										$this_planet['ress'][3] -= $auftrag_array[5][0][3];
+										$this_planet['ress'][4] -= $auftrag_array[5][0][4];
+
+										# Roboter abziehen
+										foreach($auftrag_array[5][1] as $id=>$anzahl)
+										{
+											if($anzahl == 0)
+												continue;
+											$this_planet['roboter'][$id] -= $anzahl;
+										}
+
+										uasort($user_array['flotten'], 'usort_fleet');
+										write_user_array();
+
+										eventhandler::add_event($auftrag_array[1][1]);
+
+										if($fast_action)
+										{
+											header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
+											ob_end_clean();
+											ob_end_clean();
+											die();
+										}
+										else
+										{
 ?>
 <div class="flotte-versandt">
 	<p>
@@ -554,6 +573,7 @@
 	</dl>
 </div>
 <?php
+										}
 									}
 								}
 							}
