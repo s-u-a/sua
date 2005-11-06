@@ -196,7 +196,7 @@
 <?php
 				}
 			}
-			elseif($this_planet['building']['forschung'][0] == $id)
+			elseif(isset($this_planet['building']['forschung']) && $this_planet['building']['forschung'][0] == $id)
 			{
 ?>
 	<div class="restbauzeit" id="restbauzeit-<?=htmlentities($id)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $this_planet['building']['forschung'][1])?> (Serverzeit), <a href="forschung.php?cancel=<?=htmlentities(urlencode($id))?>" class="abbrechen">Abbrechen</a></div>

@@ -19,13 +19,13 @@
 			$_POST['empfaenger'] = trim($_POST['empfaenger']);
 
 			if(!is_file(DB_PLAYERS.'/'.urlencode($_POST['empfaenger'])) || !is_readable(DB_PLAYERS.'/'.urlencode($_POST['empfaenger'])))
-				$error = 'Der Empfänger, den du eingegeben hast, existiert nicht.';
+				$error = 'Der Empfänger, den Sie eingegeben haben, existiert nicht.';
 			elseif($_POST['empfaenger'] == $_SESSION['username'])
-				$error = 'Du kannst dir nicht selbst eine Nachricht schicken.';
+				$error = 'Sie können sich nicht selbst eine Nachricht schicken.';
 			elseif(strlen($_POST['betreff']) > 30)
 				$error = 'Der Betreff darf maximal 30 Bytes lang sein.';
 			elseif(strlen($_POST['inhalt']) <= 0)
-				$error = 'Du musst eine Nachricht eingeben.';
+				$error = 'Sie müssen eine Nachricht eingeben.';
 			else
 			{
 				# Nachricht versenden
@@ -98,7 +98,7 @@
 		{
 			# Nachricht anzeigen
 ?>
-<h2><a href="nachrichten.php" title="Zurück zur Nachrichtenkategorienübersicht [W]" tabindex="4" accesskey="w">Nachrichten</a>: <a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>" title="Zurück zur Nachrichtenübersicht: <?=htmlentities($message_type_names[$_GET['type']])?> [O]" tabindex="3" accesskey="o"><?=htmlentities($message_type_names[$_GET['type']])?></a></h2>
+<h2><a href="nachrichten.php" title="Zurück zur Nachrichtenkategorienübersicht [W]" tabindex="6" accesskey="w">Nachrichten</a>: <a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>" title="Zurück zur Nachrichtenübersicht: <?=htmlentities($message_type_names[$_GET['type']])?> [O]" tabindex="5" accesskey="o"><?=htmlentities($message_type_names[$_GET['type']])?></a></h2>
 <?php
 			if(!isset($user_array['messages'][$_GET['type']][$_GET['message']]))
 			{
@@ -127,6 +127,50 @@
 					{
 						$user_array['messages'][$_GET['type']][$_GET['message']] = false;
 						write_user_array();
+					}
+
+					# Vorige und naechste ungelesene Nachricht
+					$unread_prev = false;
+					$unread_next = false;
+					$messages = array_keys($user_array['messages'][$_GET['type']]);
+					$this_key = array_search($_GET['message'], $messages);
+					for($i=$this_key+1; $i<count($messages); $i++)
+					{
+						if($user_array['messages'][$_GET['type']][$messages[$i]])
+						{
+							$unread_prev = $messages[$i];
+							break;
+						}
+					}
+					for($i=$this_key-1; $i>=0; $i--)
+					{
+						if($user_array['messages'][$_GET['type']][$messages[$i]])
+						{
+							$unread_next = $messages[$i];
+							break;
+						}
+					}
+
+					if($unread_next !== false || $unread_prev !== false)
+					{
+?>
+<ul class="ungelesene-nachrichten">
+<?php
+						if($unread_prev !== false)
+						{
+?>
+	<li class="c-vorige"><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($unread_prev))?>" title="Vorige ungelesene Nachricht">&larr;</a></li>
+<?php
+						}
+						if($unread_next !== false)
+						{
+?>
+	<li class="c-naechste"><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($unread_next))?>" title="Nächste ungelesene Nachricht">&rarr;</a></li>
+<?php
+						}
+?>
+</ul>
+<?php
 					}
 ?>
 <dl class="nachricht-informationen type-<?=utf8_htmlentities($_GET['type'])?><?=$message['html'] ? ' html' : ''?>">
@@ -171,11 +215,18 @@
 					if($_GET['type'] == 6 || $_GET['type'] == 7)
 					{
 						# Bei Nachrichten im Postausgang ist die Antwort nicht moeglich
+
+						if(trim($message['subject']) == '')
+							$re_betreff = 'Kein Betreff';
+						else
+							$re_betreff = $message['subject'];
+						if(substr($re_betreff, 0, 4) != 'Re: ')
+							$re_betreff = 'Re: '.$message['subject'];
 ?>
 <form action="nachrichten.php" method="get" class="nachricht-antworten-formular">
 	<div>
 		<input type="hidden" name="to" value="<?=utf8_htmlentities($message['from'])?>" />
-		<input type="hidden" name="subject" value="<?=utf8_htmlentities('Re: '.((trim($message['subject']) != '') ? $message['subject'] : 'Kein Betreff'))?>" />
+		<input type="hidden" name="subject" value="<?=utf8_htmlentities($re_betreff)?>" />
 		<button type="submit" accesskey="w" tabindex="1">Ant<kbd>w</kbd>orten</button>
 	</div>
 </form>
@@ -184,6 +235,67 @@
 ?>
 <form action="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>" method="post" class="nachricht-loeschen-formular">
 	<div><input type="hidden" name="message[<?=htmlentities($_GET['message'])?>]" value="on" /><button type="submit" name="delete" accesskey="n" tabindex="2">Lösche<kbd>n</kbd></button></div>
+</form>
+<?php
+					if(isset($_POST['weiterleitung-to']))
+					{
+						$weiterleitung_text = '';
+						if($message['html'])
+							$weiterleitung_text .= "<p class=\"weitergeleitete-nachricht\">\n\t";
+						$weiterleitung_text .= "--- Weitergeleitete Nachricht";
+						if(isset($message['from']) && trim($message['from']) != '')
+						{
+							$weiterleitung_text .= ", Absender: ";
+							if($message['html'])
+								$weiterleitung_text .= htmlspecialchars($message['from']);
+							else
+								$weiterleitung_text .= $message['from'];
+						}
+						if(isset($message['time']))
+							$weiterleitung_text .= ", Sendezeit: ".date('H:i:s, Y-m-d', $message['time']);
+						$weiterleitung_text .= " ---\n";
+						if($message['html'])
+							$weiterleitung_text .= "</p>";
+						$weiterleitung_text .= "\n";
+
+						$_POST['weiterleitung-to'] = trim($_POST['weiterleitung-to']);
+
+						if(!is_file(DB_PLAYERS.'/'.urlencode($_POST['weiterleitung-to'])) || !is_readable(DB_PLAYERS.'/'.urlencode($_POST['weiterleitung-to'])))
+						{
+?>
+<p class="error">Der Empfänger, den Sie eingegeben haben, existiert nicht.</p>
+<?php
+						}
+						elseif($_POST['weiterleitung-to'] == $_SESSION['username'])
+						{
+?>
+<p class="error">Sie können sich nicht selbst eine Nachricht schicken.</p>
+<?php
+						}
+						elseif(!messages::new_message(array($_POST['weiterleitung-to']=>$_GET['type']), $_SESSION['username'], 'Fwd: '.$message['subject'], $weiterleitung_text.$message['text'], $message['html']))
+						{
+?>
+<p class="error">Datenbankfehler.</p>
+<?php
+						}
+						else
+						{
+?>
+<p class="successful">Die Nachricht wurde erfolgreich weitergeleitet.</p>
+<?php
+							unset($_POST['weiterleitung-to']);
+						}
+					}
+?>
+<form action="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($_GET['message']))?>#nachricht-weiterleiten-formular" method="post" id="nachricht-weiterleiten-formular" class="nachricht-weiterleiten-formular">
+	<fieldset>
+		<legend>Nachricht weiterleiten</legend>
+		<dl>
+			<dt><label for="empfaenger-input">Empfänger</label></dt>
+			<dd><input type="text" name="weiterleitung-to" value="<?=isset($_POST['weiterleitung-to']) ? utf8_htmlentities($_POST['weiterleitung-to']) : ''?>" title="[X]" accesskey="x" tabindex="3" /></dd>
+		</dl>
+		<div><button type="submit" tabindex="4">Weiterleiten</button></div>
+	</fieldset>
 </form>
 <?php
 				}

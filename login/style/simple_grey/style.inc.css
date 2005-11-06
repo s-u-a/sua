@@ -54,7 +54,7 @@ kbd { font:inherit; text-decoration:underline; }
 #content-11 h2 { margin:0; padding:.1em; border-bottom:.1em solid #aaa; text-align:center; background-color:#888; font-weight:bold; position:relative; }
 /* IE the faster browser? Definitely not, just check out the size of that crappy
 unnecessary code that's only here to satisfy IE. */
-#content-13 h3,#content-12 #content-13 .desc-prod h3,#content-12 #content-13 .desc-values h3 { border-bottom:.1em solid #aaa; background-color:#888; margin:0; padding:.1em; text-align:center; font-weight:bold; }
+#content-13 h3,#content-12 #content-13 .desc-prod h3,#content-12 #content-13 .desc-values h3,#content-12 .nachricht-informationen.type-1 h3,#content-12 .nachricht-informationen.type-1 h4 { border-bottom:.1em solid #aaa; background-color:#888; margin:0; padding:.1em; text-align:center; font-weight:bold; }
 #content-13 * h3 { border-bottom-style:none; background-color:transparent; padding:0; text-align:left; }
 * html h3 { position:relative; }
 
@@ -73,6 +73,7 @@ textarea { max-width:100%; }
 abbr,acronym { border-style:none; text-decoration:none; font-style:normal; }
 
 .error { color:#f00; font-weight:bold; text-align:center; font-size:1.2em; }
+.successful,.flotte-versandt p { color:#0f0; font-weight:bold; text-align:center; font-size:1.2em; }
 
 form { margin:0; padding:0; }
 form ul { list-style-type:none; margin:0; padding:0; }
@@ -110,11 +111,15 @@ legend { font-weight:bold; }
 .item .restbauzeit { float:right; margin:-1.5em 0 1em 1em; width:10em; text-align:center; }
 .item .item-rueckbau { font-size:.8em; margin-top:.75em; width:12.5em; }
 
-.unbeschaeftigte-planeten { list-style-type:none; margin:0; padding:0; font-weight:bold; }
-.unbeschaeftigte-planeten .c-voriger { position:absolute; top:0; left:0; }
-.unbeschaeftigte-planeten .c-voriger a:after { content:"\a0 Fastbuild"; vertical-align:middle; font-size:.8em; }
-.unbeschaeftigte-planeten .c-naechster { position:absolute; top:0; right:0; }
-.unbeschaeftigte-planeten .c-naechster a:before { content:"Fastbuild\a0"; vertical-align:middle; font-size:.8em; }
+.unbeschaeftigte-planeten,.ungelesene-nachrichten { list-style-type:none; margin:0; padding:0; font-weight:bold; }
+.unbeschaeftigte-planeten .c-voriger,.ungelesene-nachrichten .c-vorige { position:absolute; top:0; left:0; }
+.unbeschaeftigte-planeten .c-voriger a:after,.ungelesene-nachrichten .c-vorige a:after { vertical-align:middle; font-size:.8em; }
+.unbeschaeftigte-planeten .c-voriger a:after { content:"\a0 Fastbuild"; }
+.ungelesene-nachrichten .c-vorige a:after { content:"\a0 Fastread"; }
+.unbeschaeftigte-planeten .c-naechster,.ungelesene-nachrichten .c-naechste { position:absolute; top:0; right:0; }
+.unbeschaeftigte-planeten .c-naechster a:before,.ungelesene-nachrichten .c-naechste a:before { vertical-align:middle; font-size:.8em; }
+.unbeschaeftigte-planeten .c-naechster a:before { content:"Fastbuild\a0"; }
+.ungelesene-nachrichten .c-naechste a:before { content:"Fastread\a0"; }
 
 .deps.deps-gebaeude { margin:0; }
 .deps { width:100%; padding:0; margin:-.1em 0 0 0; border-spacing:0; border-collapse:collapse; font-weight:bold; text-align:left; }
@@ -232,6 +237,15 @@ legend { font-weight:bold; }
 .nachricht-informationen.type-2.html + .nachricht-loeschen-formular { display:block; text-align:center; padding:.5em 0; }
 .nachricht-informationen.type-2.html .besiedeln { text-align:center; }
 
+.nachricht-informationen.type-1 dd.c-nachricht { padding:0; }
+.nachricht-informationen.type-1 p { padding:0 .5em; }
+.nachricht-informationen.type-1 table { width:100%; border-spacing:0; border-collapse:collapse; margin:.5em; }
+.nachricht-informationen.type-1 th,.nachricht-informationen.type-1 td { text-align:center; border:.1em solid #aaa; padding:.1em .3em; }
+.nachricht-informationen.type-1 td.c-schiffstyp { text-align:left; }
+.nachricht-informationen.type-1 p.keine { margin:.5em; padding:.1em .3em; text-align:center; border:.1em solid #aaa; }
+
+.weitergeleitete-nachricht { text-align:center; }
+
 p.neue-nachrichten { font-weight:bold; margin:0; padding:.5em; }
 
 .nachricht-antworten-formular,.nachricht-loeschen-formular { display:inline; margin:0; padding:0; }
@@ -266,6 +280,12 @@ p.neue-nachrichten { font-weight:bold; margin:0; padding:.5em; }
 .flotte-versenden-2 .c-transport dl { margin:0; padding:.5em; width:auto; border-style:none none none solid; }
 .flotte-versenden-2 .c-transport dt { float:left; padding:0; margin:0; width:20ex; border-style:none; }
 .flotte-versenden-2 .c-transport dd { padding:0; margin:0; width:auto; border-style:none; }
+
+.flotte-versandt dl { width:100%; max-width:65ex; margin:.5em auto; text-align:left; padding:0; border:.1em solid #aaa; font-weight:bold; }
+* html .flotte-versandt dl { width:65ex; }
+.flotte-versandt dt { width:25ex; border-bottom:.1em solid #aaa; border-right:.1em solid #aaa; padding:.3em 1ex; float:left; }
+.flotte-versandt dt:after { content:":\a0"; }
+.flotte-versandt dd { margin:0 0 0 27ex; border-bottom:.1em solid #aaa; padding:.3em 1ex; }
 
 #planets { list-style-type:none; padding:0; margin:0; position:relative; min-height:10em; text-align:left; }
 #planets .c-felder { display:none; }
@@ -354,3 +374,10 @@ br.clear { clear:both; }
 .handelsrechner-hilfe p { text-align:justify; font-weight:normal; }
 
 .urlaubsmodus div { text-align:center; }
+
+.nachrichtentypen-empfangen table { width:50%; border:.1em solid #aaa; text-align:center; border-spacing:0; border-collapse:collapse; }
+.nachrichtentypen-empfangen thead th { font-weight:bold; padding:.2em .3em; }
+.nachrichtentypen-empfangen th.c-ankunft,.nachrichtentypen-empfangen th.c-rueckkehr { border-left:.1em solid #aaa; }
+.nachrichtentypen-empfangen tbody th,.nachrichtentypen-empfangen tbody td { border-top:.1em solid #aaa; padding:.1em .3em }
+.nachrichtentypen-empfangen tbody td { border-left:.1em solid #aaa; }
+.nachrichtentypen-empfangen tbody th { font-weight:bold; }

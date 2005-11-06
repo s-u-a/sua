@@ -81,6 +81,13 @@
 			$user_array['umode'] = false;
 			$user_array['umode_time'] = time();
 		}
+		$changed = true;
+	}
+
+	if(isset($_POST['email']))
+	{
+		$user_array['email'] = $_POST['email'];
+		$changed = true;
 	}
 
 	if(isset($_POST['old-password']) && isset($_POST['new-password']) && isset($_POST['new-password2']) && ($_POST['old-password'] != $_POST['new-password'] || $_POST['new-password'] != $_POST['new-password2']))
@@ -174,36 +181,36 @@
 		<table>
 			<thead>
 				<tr>
-					<th>Nachrichtentyp</th>
-					<th>Ankunft</th>
-					<th>Rückkehr</th>
+					<th class="c-nachrichtentyp">Nachrichtentyp</th>
+					<th class="c-ankunft">Ankunft</th>
+					<th class="c-rueckkehr">Rückkehr</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<th>Kaempfe</th>
-					<td></td>
-					<td><input type="checkbox" name="nachrichten[1][1]" tabindex="8"<?=$user_array['receive'][1][1] ? ' checked="checked"' : ''?> /></td>
+					<th class="c-nachrichtentyp">Kaempfe</th>
+					<td class="c-ankunft leer"></td>
+					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[1][1]" tabindex="8"<?=$user_array['receive'][1][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 				<tr>
-					<th>Spionage</th>
-					<td></td>
-					<td><input type="checkbox" name="nachrichten[2][1]" tabindex="9"<?=$user_array['receive'][2][1] ? ' checked="checked"' : ''?> /></td>
+					<th class="c-nachrichtentyp">Spionage</th>
+					<td class="c-ankunft leer"></td>
+					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[2][1]" tabindex="9"<?=$user_array['receive'][2][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 				<tr>
-					<th>Transport</th>
-					<td><input type="checkbox" name="nachrichten[3][0]" tabindex="10"<?=$user_array['receive'][3][0] ? ' checked="checked"' : ''?> /></td>
-					<td><input type="checkbox" name="nachrichten[3][1]" tabindex="11"<?=$user_array['receive'][3][1] ? ' checked="checked"' : ''?> /></td>
+					<th class="c-nachrichtentyp">Transport</th>
+					<td class="c-ankunft"><input type="checkbox" name="nachrichten[3][0]" tabindex="10"<?=$user_array['receive'][3][0] ? ' checked="checked"' : ''?> /></td>
+					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[3][1]" tabindex="11"<?=$user_array['receive'][3][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 				<tr>
-					<th>Sammeln</th>
-					<td></td>
-					<td><input type="checkbox" name="nachrichten[4][1]" tabindex="12"<?=$user_array['receive'][4][1] ? ' checked="checked"' : ''?> /></td>
+					<th class="c-nachrichtentyp">Sammeln</th>
+					<td class="c-ankunft leer"></td>
+					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[4][1]" tabindex="12"<?=$user_array['receive'][4][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 				<tr>
-					<th>Besiedelung</th>
-					<td><input type="checkbox" name="nachrichten[5][0]" tabindex="13"<?=$user_array['receive'][5][0] ? ' checked="checked"' : ''?> /></td>
-					<td><input type="checkbox" name="nachrichten[5][1]" tabindex="14"<?=$user_array['receive'][5][1] ? ' checked="checked"' : ''?> /></td>
+					<th class="c-nachrichtentyp">Besiedelung</th>
+					<td class="c-ankunft"><input type="checkbox" name="nachrichten[5][0]" tabindex="13"<?=$user_array['receive'][5][0] ? ' checked="checked"' : ''?> /></td>
+					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[5][1]" tabindex="14"<?=$user_array['receive'][5][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 			</tbody>
 		</table>
@@ -241,17 +248,24 @@
 	}
 ?>
 	</fieldset>
+	<fieldset class="email-adresse">
+		<legend>E-Mail-Adresse</legend>
+		<dl>
+			<dt class="c-email-adresse"><label for="email">E-Mail-Adresse</label></dt>
+			<dd class="c-email-adresse"><input type="text" name="email" value="<?=utf8_htmlentities($user_array['email'])?>" title="Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben. [Z]" tabindex="17" accesskey="z" /></dd>
+		</dl>
+	</fieldset>
 	<fieldset class="passwort-aendern">
 		<legend>Passwort ändern</legend>
 		<dl>
 			<dt class="c-altes-passwort"><label for="old-password">Altes Passw<kbd>o</kbd>rt</label></dt>
-			<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password" tabindex="17" accesskey="o" /></dd>
+			<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password" tabindex="18" accesskey="o" /></dd>
 
 			<dt class="c-neues-passwort"><label for="new-password">Neues Passwort</label></dt>
-			<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password" tabindex="18" /></dd>
+			<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password" tabindex="19" /></dd>
 
 			<dt class="c-neues-passwort-wiederholen"><label for="new-password2">Neues Passwort wiederholen</label></dt>
-			<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2" tabindex="19" /></dd>
+			<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2" tabindex="20" /></dd>
 		</dl>
 	</fieldset>
 	<div><button type="submit" tabindex="15" accesskey="w" title="[W]">Speichern</button></div>

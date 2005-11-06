@@ -411,6 +411,7 @@
 							if($flotte[2] == 1)
 							{
 								# Kolonisieren
+								# Besiedeln
 
 								$koords = explode(':', $flotte[3][1]);
 								$planet_info = universe::get_planet_info($koords[0], $koords[1], $koords[2]);
@@ -529,6 +530,21 @@
 									universe::set_planet_info($koords[0], $koords[1], $koords[2], $planet_info[0], $ev_username, $new_planet_array['name']);
 
 									$user_array['planets'][] = $new_planet_array;
+									$this_pos = $this_planet['pos'];
+									usort($user_array['planets'], 'sort_planets');
+
+									# Position des aktuellen Planeten neu bestimmen
+									$planets = array_keys($user_array['planets']);
+									foreach($planets as $planet)
+									{
+										if($user_array['planets'][$planet]['pos'] == $this_pos)
+										{
+											$_SESSION['act_planet'] = $planet;
+											$GLOBALS['this_planet'] = &$user_array['planets'][$planet];
+											$user_array['last_planet'] = $_SESSION['act_planet'];
+											break;
+										}
+									}
 
 									# Punkte fuer ein Besiedelungsschiff abziehen
 									$points = array_sum($items['schiffe']['S6']['ress'])/1000;

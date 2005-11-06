@@ -1,15 +1,13 @@
 html { width:100%; }
-body { background-color:#000; background-image:url(images/background.jpg); color:#000; margin:0; padding:0; min-height:100%; width:100%; font-family:sans-serif; }
+body { background-color:#000; color:#000; margin:0; padding:0; min-height:100%; width:100%; font-family:sans-serif; }
 
-#design-img-1 { position:absolute; top:-120px; left:-50px; z-index:5000; }
-#design-img-2 { position:absolute; top:-150px; right:-50px; z-index:4000; }
-#design-img-3 { position:absolute; top:100px; left:-50px; z-index:5001; }
-
-#content-7 { background-color:#ddd; margin:150px 50px 10px 50px; padding:0; position:relative; background-image:url(images/sterne.jpg); background-repeat:repeat-y; background-position:top right; }
-#content-8 { /*background-image:url(images/sonnenfinsternis.png);*/ background-repeat:no-repeat; min-height:325px; background-position:center center; }
+#content-7 { background-color:#ddd; margin:3em 5em; padding:0; position:relative; background-repeat:repeat-y; background-position:top right; }
+#content-8 { min-height:325px; }
 #content-9 { margin:0 18em; padding:1em 0; }
 
-#navigation { border:.2em solid #000; list-style-type:none; text-align:center; padding:.3em; margin:0; width:15em; position:absolute; left:1em; top:1em; z-index:10000; background-image:url(images/halb.png); }
+h1 { display:none; }
+
+#navigation { border:.2em solid #000; list-style-type:none; text-align:center; padding:.3em; margin:0; width:15em; position:absolute; left:1em; top:1em; z-index:10000; }
 #navigation li a { text-decoration:none; font-weight:bold; color:#000; font-variant:small-caps; font-family:Georgia,serif; display:block; padding:.3em; margin:.2em; border:.067em solid #000; background-image:url(images/halb2.png); font-size:1.5em; line-height:1.3em; }
 #navigation li a:hover,#navigation li a:focus { background-color:#ddd; }
 

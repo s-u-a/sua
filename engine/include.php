@@ -75,9 +75,9 @@
 	{
 		$redirect = false;
 		$hostname = $_SERVER['HTTP_HOST'];
-		if(is_file(DB_DIR.'/hostname') && is_readable(DB_DIR.'/hostname'))
+		if(is_file(DB_HOSTNAME) && is_readable(DB_HOSTNAME))
 		{
-			$hostname = trim(file_get_contents(DB_DIR.'/hostname'));
+			$hostname = trim(file_get_contents(DB_HOSTNAME));
 			if($_SERVER['HTTP_HOST'] != $hostname)
 				$redirect = true;
 		}
@@ -500,7 +500,7 @@
 		<link rel="stylesheet" href="<?=h_root?>/style.css" type="text/css" />
 	</head>
 	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
-		<h1 id="logo"><a href="./" title="Zurück zur Startseite"><img src="images/logo_text.png" alt="Stars Under Attack" xml:lang="en" /></a></h1>
+		<h1 id="logo"><a href="./" title="Zurück zur Startseite" xml:lang="en">Stars Under Attack</a></h1>
 		<form action="<?=h_root?>/login/index.php" method="post" id="login-form">
 			<fieldset>
 				<legend>Anmelden</legend>
@@ -514,6 +514,7 @@
 				<ul>
 					<li><button type="submit">Anmelden</button></li>
 					<li><a href="register.php">Registrieren</a></li>
+					<li><a href="passwd.php">Passwort vergessen?</a></li>
 				</ul>
 			</fieldset>
 		</form>
@@ -1817,5 +1818,10 @@
 					return 0;
 			}
 		}
+	}
+
+	function sort_planets($a, $b)
+	{
+		return sort_koords($a['pos'], $b['pos']);
 	}
 ?>

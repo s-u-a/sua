@@ -283,6 +283,14 @@
 
 						if(!in_array($_POST['auftrag'], $types))
 							$show_form2 = true;
+						elseif(isset($_SESSION['doppelklick']) && isset($_POST['doppelklick']) && $_POST['doppelklick'] == $_SESSION['doppelklick'])
+						{
+?>
+<p class="error">
+	Doppelklickschutz &ndash; Sie wollten die Flotte zweimal abschicken.
+</p>
+<?php
+						}
 						else
 						{
 							$that_user_array = get_user_array($info[1]);
@@ -489,6 +497,9 @@
 								}
 								else
 								{
+									if(isset($_POST['doppelklick']))
+										$_SESSION['doppelklick'] = $_POST['doppelklick'];
+
 									if(!isset($user_array['flotten']))
 										$user_array['flotten'] = array();
 
@@ -942,6 +953,7 @@
 		<input type="hidden" name="galaxie" value="<?=utf8_htmlentities($_POST['galaxie'])?>" />
 		<input type="hidden" name="system" value="<?=utf8_htmlentities($_POST['system'])?>" />
 		<input type="hidden" name="planet" value="<?=utf8_htmlentities($_POST['planet'])?>" />
+		<input type="hidden" name="doppelklick" value="<?=htmlentities(md5(microtime()))?>" />
 		<button type="submit" accesskey="d">Absen<kbd>d</kbd>en</button>
 	</div>
 </form>

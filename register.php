@@ -109,6 +109,9 @@
 					$user_array['umode'] = false;
 					$user_array['umode_time'] = 0;
 
+					if(isset($_POST['email']))
+						$user_array['email'] = $_POST['email'];
+
 					# Planetenname
 					$user_array['planets'][0]['name'] = ((trim($_POST['hauptplanet']) == '') ? 'Hauptplanet' : trim($_POST['hauptplanet']));
 
@@ -183,6 +186,9 @@
 
 			<dt><label for="password2">Passwort wiederholen</label></dt>
 			<dd><input type="password" id="password2" name="password2" /></dd>
+
+			<dt><label for="email"><span xml:lang="en">E-Mail</span>-Adresse</label></dt>
+			<dd><input type="text" name="email" id="email" /></dd>
 
 			<dt><label for="hauptplanet">Gewünschter Name des Hauptplaneten</label></dt>
 			<dd><input type="text" id="hauptplanet" name="hauptplanet"<?=isset($_POST['hauptplanet']) ? ' value="'.utf8_htmlentities($_POST['hauptplanet']).'"' : ''?> maxlength="24" /></dd>

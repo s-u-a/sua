@@ -45,6 +45,6 @@ cd $OLD_PWD
 
 chmod -R a+rw $1
 
-echo "Don't forget to put your desired hostname into `$1/hostname'."
+echo "Don't forget to put your desired hostname into \`$1/hostname'."
 
 exit 0;
