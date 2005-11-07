@@ -125,8 +125,7 @@
 
 			# Planeten aus der Karte loeschen
 			$this_pos = explode(':', $this_planet['pos']);
-			$this_info = universe::get_planet_info($this_pos[0], $this_pos[1], $this_pos[2]);
-			universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], '', '');
+			universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], rand(100, 500), '', '');
 
 			$i = $_SESSION['act_planet'];
 			$max = count($user_array['planets'])-1;

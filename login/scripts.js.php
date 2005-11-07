@@ -254,7 +254,8 @@ function set_titles(el, level)
 				if(for_el_attr)
 				{
 					for_el = document.getElementById(for_el_attr);
-					this_title = for_el.getAttribute('title');
+					if(for_el)
+						this_title = for_el.getAttribute('title');
 				}
 			}
 		}
@@ -278,4 +279,43 @@ function set_titles(el, level)
 
 		this_node[level] = this_node[level].nextSibling;
 	}
+}
+
+function refresh_ress(refresh_int, carbon_vorh, aluminium_vorh, wolfram_vorh, radium_vorh, tritium_vorh, carbon_prod, aluminium_prod, wolfram_prod, radium_prod, tritium_prod)
+{
+	window.carbon_vorh = carbon_vorh;
+	window.aluminium_vorh = aluminium_vorh;
+	window.wolfram_vorh = wolfram_vorh;
+	window.radium_vorh = radium_vorh;
+	window.tritium_vorh = tritium_vorh;
+
+	window.carbon_prod = carbon_prod;
+	window.aluminium_prod = aluminium_prod;
+	window.wolfram_prod = wolfram_prod;
+	window.radium_prod = radium_prod;
+	window.tritium_prod = tritium_prod;
+
+	var now_time = new Date();
+	window.last_increase_ress = now_time.getTime();
+
+	setInterval("increase_ress()", refresh_int);
+}
+
+function increase_ress()
+{
+	var now_time = new Date();
+	var time_diff = (now_time.getTime()-window.last_increase_ress)*0.000000277777777777778;
+	window.carbon_vorh += window.carbon_prod*time_diff;
+	window.aluminium_vorh += window.aluminium_prod*time_diff;
+	window.wolfram_vorh += window.wolfram_prod*time_diff;
+	window.radium_vorh += window.radium_prod*time_diff;
+	window.tritium_vorh += window.tritium_prod*time_diff;
+
+	document.getElementById('ress-carbon').firstChild.data = ths(window.carbon_vorh);
+	document.getElementById('ress-aluminium').firstChild.data = ths(window.aluminium_vorh);
+	document.getElementById('ress-wolfram').firstChild.data = ths(window.wolfram_vorh);
+	document.getElementById('ress-radium').firstChild.data = ths(window.radium_vorh);
+	document.getElementById('ress-tritium').firstChild.data = ths(window.tritium_vorh);
+
+	window.last_increase_ress = now_time.getTime();
 }

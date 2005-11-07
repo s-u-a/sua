@@ -56,3 +56,6 @@ a:link,a:active,a:visited { color:#008; font-variant:small-caps; text-decoration
 a:hover,a:focus { color:#44f; font-variant:small-caps; text-decoration:none; }
 
 p { text-align:justify; }
+
+.error { font-size:1.2em; color:#c00; font-weight:bold; border:.2em solid #800; padding:.5em; text-align:center; }
+.successful { font-size:1.2em; color:#00c; font-weight:bold; border:.2em solid #008; padding:.5em; text-align:center; }

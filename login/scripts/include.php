@@ -197,22 +197,22 @@
 		<div id="content-9">
 			<dl id="ress" class="ress">
 				<dt class="ress-carbon">Carbon</dt>
-				<dd class="ress-carbon"><?=ths(utf8_htmlentities($this_planet['ress'][0]))?></dd>
+				<dd class="ress-carbon" id="ress-carbon"><?=ths(utf8_htmlentities($this_planet['ress'][0]))?></dd>
 
 				<dt class="ress-aluminium">Aluminium</dt>
-				<dd class="ress-aluminium"><?=ths(utf8_htmlentities($this_planet['ress'][1]))?></dd>
+				<dd class="ress-aluminium" id="ress-aluminium"><?=ths(utf8_htmlentities($this_planet['ress'][1]))?></dd>
 
 				<dt class="ress-wolfram">Wolfram</dt>
-				<dd class="ress-wolfram"><?=ths(utf8_htmlentities($this_planet['ress'][2]))?></dd>
+				<dd class="ress-wolfram" id="ress-wolfram"><?=ths(utf8_htmlentities($this_planet['ress'][2]))?></dd>
 
 				<dt class="ress-radium">Radium</dt>
-				<dd class="ress-radium"><?=ths(utf8_htmlentities($this_planet['ress'][3]))?></dd>
+				<dd class="ress-radium" id="ress-radium"><?=ths(utf8_htmlentities($this_planet['ress'][3]))?></dd>
 
 				<dt class="ress-tritium">Tritium</dt>
-				<dd class="ress-tritium"><?=ths(utf8_htmlentities($this_planet['ress'][4]))?></dd>
+				<dd class="ress-tritium" id="ress-tritium"><?=ths(utf8_htmlentities($this_planet['ress'][4]))?></dd>
 
 				<dt class="ress-energie">Energie</dt>
-				<dd class="ress-energie"><?=ths(utf8_htmlentities($ges_prod[5]))?></dd>
+				<dd class="ress-energie" id="ress-energie"><?=ths(utf8_htmlentities($ges_prod[5]))?></dd>
 			</dl>
 			<div id="content-10"><div id="content-11"><div id="content-12"><div id="content-13">
 				<h1>Planet <em><?=utf8_htmlentities($this_planet['name'])?></em> <span class="koords">(<?=utf8_htmlentities($this_planet['pos'])?>)</span></h1>
@@ -222,8 +222,10 @@
 		function html_foot()
 		{
 			global $user_array;
+			global $this_planet;
+			global $ges_prod;
 
-			if($user_array['tooltips'] || $user_array['shortcuts'])
+			if($user_array['tooltips'] || $user_array['shortcuts'] || $user_array['ress_refresh'] > 0)
 			{
 ?>
 			<script type="text/javascript">
@@ -238,6 +240,12 @@
 				{
 ?>
 				load_titles();
+<?php
+				}
+				if($user_array['ress_refresh'] > 0)
+				{
+?>
+				refresh_ress(<?=$user_array['ress_refresh']*1000?>, <?=$this_planet['ress'][0]?>, <?=$this_planet['ress'][1]?>, <?=$this_planet['ress'][2]?>, <?=$this_planet['ress'][3]?>, <?=$this_planet['ress'][4]?>, <?=$ges_prod[0]?>, <?=$ges_prod[1]?>, <?=$ges_prod[2]?>, <?=$ges_prod[3]?>, <?=$ges_prod[4]?>);
 <?php
 				}
 ?>
