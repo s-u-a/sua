@@ -243,38 +243,40 @@
 			global $user_array;
 			global $this_planet;
 			global $ges_prod;
-
+?>
+			</div></div></div></div>
+		</div>
+		</div></div></div></div></div></div></div></div>
+<?php
 			if($user_array['tooltips'] || $user_array['shortcuts'] || $user_array['ress_refresh'] > 0)
 			{
 ?>
-			<script type="text/javascript">
+		<script type="text/javascript">
 <?php
 				if($user_array['shortcuts'])
 				{
 ?>
-				get_key_elements();
+			get_key_elements();
 <?php
 				}
 				if($user_array['tooltips'])
 				{
 ?>
-				load_titles();
+			load_titles();
 <?php
 				}
-				if($user_array['ress_refresh'] > 0)
+				if($user_array['ress_refresh'] > 0 && !$user_array['umode'])
 				{
 ?>
-				refresh_ress(<?=$user_array['ress_refresh']*1000?>, <?=$this_planet['ress'][0]?>, <?=$this_planet['ress'][1]?>, <?=$this_planet['ress'][2]?>, <?=$this_planet['ress'][3]?>, <?=$this_planet['ress'][4]?>, <?=$ges_prod[0]?>, <?=$ges_prod[1]?>, <?=$ges_prod[2]?>, <?=$ges_prod[3]?>, <?=$ges_prod[4]?>);
+			refresh_ress(<?=$user_array['ress_refresh']*1000?>, <?=$this_planet['ress'][0]?>, <?=$this_planet['ress'][1]?>, <?=$this_planet['ress'][2]?>, <?=$this_planet['ress'][3]?>, <?=$this_planet['ress'][4]?>, <?=$ges_prod[0]?>, <?=$ges_prod[1]?>, <?=$ges_prod[2]?>, <?=$ges_prod[3]?>, <?=$ges_prod[4]?>);
 <?php
 				}
 ?>
-			</script>
+		</script>
 <?php
 			}
 ?>
-			</div></div></div></div>
-		</div>
-	</div></div></div></div></div></div></div></div></body>
+	</body>
 </html>
 <?php
 		}

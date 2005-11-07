@@ -178,6 +178,7 @@ function load_titles()
 	js_title.appendChild(document.createTextNode(''));
 	js_title.className = 'hidden';
 	document.getElementsByTagName('body')[0].appendChild(js_title);
+
 	set_titles(document.getElementsByTagName('html')[0], 0);
 }
 
@@ -272,6 +273,7 @@ function set_titles(el, level)
 	}
 
 	this_node[level] = el.firstChild;
+	var next_element;
 	while(this_node[level] != null)
 	{
 		if(this_node[level].nodeType == 1)
