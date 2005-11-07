@@ -108,6 +108,7 @@
 					$user_array['tooltips'] = false;
 					$user_array['umode'] = false;
 					$user_array['umode_time'] = 0;
+					$user_array['refresh_ress'] = 0;
 
 					if(isset($_POST['email']))
 						$user_array['email'] = $_POST['email'];

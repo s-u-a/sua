@@ -51,7 +51,7 @@
 	{
 		if(isset($_COOKIE[session_name()]))
 			setcookie(session_name(), '');
-		logfile::panic('Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte neu anmelden.');
+		die('Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte neu anmelden.');
 	}
 
 	$user_array = get_user_array($_SESSION['username']);
@@ -74,6 +74,25 @@
 			die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 		}
 	}
+
+	# Schnellklicksperre
+	$now_time = array_sum(explode(' ', microtime()));
+
+	if(!isset($_SESSION['last_click_sleep']))
+		$_SESSION['last_click_sleep'] = 0;
+	if(isset($_SESSION['last_click']))
+	{
+		$last_click_diff = $now_time-$_SESSION['last_click']-pow($_SESSION['last_click_sleep'], 1.5);
+		if($last_click_diff < MIN_CLICK_DIFF)
+		{
+			$_SESSION['last_click_sleep']++;
+			$sleep_time = round(pow($_SESSION['last_click_sleep'], 1.5));
+			sleep($sleep_time);
+		}
+		else
+			$_SESSION['last_click_sleep'] = 0;
+	}
+	$_SESSION['last_click'] = $now_time;
 
 	if(isset($_GET['planet']) && $_GET['planet'] != '' && isset($user_array['planets'][$_GET['planet']])) # Planeten wechseln
 		$_SESSION['act_planet'] = $_GET['planet'];

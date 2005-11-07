@@ -39,6 +39,7 @@
 	$THS_HTML = '&nbsp;';
 	$THS_UTF8 = "\xc2\xa0";
 	#$THS_UTF8 = "\xe2\x80\x89";
+	$MIN_CLICK_DIFF = 0.5; # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
 
 
 	# Variablen als Konstanten speichern
@@ -58,6 +59,7 @@
 	define('EVENTHANDLER_INTERVAL', $EVENTHANDLER_INTERVAL);
 	define('THS_HTML', $THS_HTML);
 	define('THS_UTF8', $THS_UTF8);
+	define('MIN_CLICK_DIFF', $MIN_CLICK_DIFF);
 
 	header('Content-type: text/html; charset=UTF-8');
 
