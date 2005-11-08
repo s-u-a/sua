@@ -396,7 +396,10 @@
 				foreach($messages as $message_id=>$unread)
 				{
 					if(!is_file(DB_MESSAGES.'/'.$message_id) || !is_readable(DB_MESSAGES.'/'.$message_id))
+					{
+						unset($user_array['messages'][$_GET['type']][$message_id]);
 						continue;
+					}
 					$message = unserialize(gzuncompress(file_get_contents(DB_MESSAGES.'/'.$message_id)));
 					if(!$message)
 						continue;

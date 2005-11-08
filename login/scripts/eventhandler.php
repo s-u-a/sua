@@ -1249,10 +1249,11 @@
 								}
 								$verteidiger_punkte_schiffe /= 1000;
 								$verteidiger_punkte_vert /= 1000;
+								$verteidiger_punkte = $verteidiger_punkte_schiffe+$verteidiger_punkte_vert;
 
 								$target_user_array['punkte'][3] -= $verteidiger_punkte_schiffe;
 								$target_user_array['punkte'][4] -= $verteidiger_punkte_vert;
-								$start_user_array['punkte'][6] += ($verteidiger_punkte_schiffe+$verteidiger_punkte_vert)/1000;
+								$start_user_array['punkte'][6] += $verteidiger_punkte/1000;
 
 								$that_planet['schiffe'] = array();
 								$that_planet['verteidigung'] = array();

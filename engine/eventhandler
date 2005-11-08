@@ -65,9 +65,64 @@
 			system(s_root.'/db_things/calc_ges_ress');
 			echo date('Y-m-d, H:i:s')." -- Handelskurs recalculated.\n\n";
 
+			delete_old_messages();
+
 			$last_handelskurs = date('Y-m-d');
 		}
 
 		sleep(EVENTHANDLER_INTERVAL);
+	}
+
+	function delete_old_messages()
+	{
+		global $message_type_times;
+
+		$messages_deleted = 0;
+
+		$dh = opendir(DB_MESSAGES);
+		while(($fname = readdir($dh)) !== false)
+		{
+			if(substr($fname, 0, 1) == '.' || !is_file(DB_MESSAGES.'/'.$fname) || !is_readable(DB_MESSAGES.'/'.$fname))
+				continue;
+
+			$message_array = unserialize(gzuncompress(file_get_contents(DB_MESSAGES.'/'.$fname)));
+
+			if(!isset($message_array['time']))
+				continue;
+
+			$allow_delete = true;
+
+			foreach($message_array['users'] as $user=>$type)
+			{
+				$that_user_array = get_user_array($user);
+				if(!$that_user_array || !isset($that_user_array['messages'][$type][$fname]))
+					continue;
+				if($that_user_array['messages'][$type][$fname])
+				{
+					$allow_delete = false;
+					break;
+				}
+			}
+
+			if(!$allow_delete)
+				continue;
+
+			$max_age = 0;
+			foreach($message_array['users'] as $user=>$type)
+			{
+				if($message_type_times[$type] > $max_age)
+					$max_age = $message_type_times[$type];
+			}
+
+			$age = time()-$message_array['time'];
+			if($age*86400 > $max_age && unlink(DB_MESSAGES.'/'.$fname))
+				$messages_deleted;
+		}
+		closedir($dh);
+
+		echo date('Y-m-d, H:i:s').' -- '.$messages_deleted.' message';
+		if($messages_deleted != 1)
+			echo 's';
+		echo " deleted.\n";
 	}
 ?>
