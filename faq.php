@@ -48,11 +48,11 @@
 
 <div class="faq">
 	<h3 id="planets">Kann man mehrere Planeten haben?</h3>
-	<p>Ja, selbstverständlich. Derzeit können Sie maximal 15&nbsp;Planeten haben.</p>
+	<p>Ja, selbstverständlich. Derzeit können Sie maximal <?=htmlentities(MAX_PLANETS)?>&nbsp;Planeten haben.</p>
 	<p>Wenn Sie mit der Spionagesonde einen leeren Planeten ausspionieren, können Sie nachsehen, wieviele Felder dieser hat. Die Felderzahl variiert dabei unabhängig von der Position des Planeten, die Felderzahl beträgt 100&ndash;500&nbsp;Felder. Haben Sie einen Planeten gefunden, den Sie besiedeln möchten, können Sie einem Besiedelungsschiff den Auftrag dazu erteilen.</p>
 	<p>Optional können Sie dem Besiedelungsschiff zusätzliche Flotte mitschicken, diese wird nach der Besiedelung rückkehren. (Anders als das Besiedelungsschiff, dieses wird bei der Besiedelung abgebaut, um ein Startkapital auf dem Planeten zur Verfügung zu stellen.) Auf diese Weise können Sie auf dem neuen Planeten sofort Rohstoffe und Roboter durch die Transportkapazität der Flotte bereitstellen.</p>
 	<p>Überlegen Sie sich gut, wo Sie Ihre Planeten platzieren. Wenn Sie vorhaben, auf bestimmten Kolonien nur bestimmte Minen auszubauen, ist es möglicherweise sinnvoll für Sie, Ihre Planeten nah beieinander zu halten, um schnell Rohstoffe zwischen den Kolonien hin- und herzuschicken. Wenn Sie sich mehr auf den Handel spezialisieren möchten, ist es vielleicht geschickt, in jeder Galaxie mindestens einen Planeten zu besitzen, damit der Transport vom und zum Kunden nicht so lange dauert.</p>
-	<p>Einige Spieler bevorzugen es, ein oder zwei Kolonien des 15-Planeten-<span xml:lang="en">Limit</span>s offenzulassen, um später sogenannte &bdquo;<span xml:lang="en">Raid</span>kolonien&ldquo; besetzen zu können &ndash; solche Kolonien werden temporär besiedelt und auf Tritiumproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann.</p>
+	<p>Einige Spieler bevorzugen es, ein oder zwei Kolonien des <?=htmlentities(MAX_PLANETS)?>-Planeten-<span xml:lang="en">Limit</span>s offenzulassen, um später sogenannte &bdquo;<span xml:lang="en">Raid</span>kolonien&ldquo; besetzen zu können &ndash; solche Kolonien werden temporär besiedelt und auf Tritiumproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann.</p>
 </div>
 
 <div class="faq">

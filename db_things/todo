@@ -1,4 +1,3 @@
-Klassen error und successful auf der Hauptseite ordentlich formatieren.
 Schiffe überarbeiten
 Adminbereich
 Neues Design für die Hauptseite.
@@ -7,3 +6,7 @@ Spionageabwehr
 Einstellbar: Alertbox wenn/kurz bevor Countdown abgelaufen ist
 Imperiumsübersicht-ähnliche Funktion einbauen.
 Roboter-, Schiffs- und Verteidigungsbau auf Performance hin umstrukturieren
+Handelskursberechnung und Ähnliches in automatischen Eventhandler einbauen.
+Handelskurs: Konzept überdenken.
+Kontrollwesen: Konzept überdenken.
+Nachrichten automatisch löschen.

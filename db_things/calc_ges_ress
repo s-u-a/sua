@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-	require('../engine/include.php');
+	require_once('../engine/include.php');
 
 	$ges_ress = array(0, 0, 0, 0, 0);
 	$ges_ress2 = array(0, 0, 0, 0, 0);

@@ -18,7 +18,7 @@
 			$werften++;
 		$koords[] = $user_array['planets'][$planet]['pos'];
 	}
-	$max_flotten = $kontrollwesen*$werften;
+	$max_flotten = floor($kontrollwesen*$werften/2);
 
 	$my_flotten = 0;
 	foreach($user_array['flotten'] as $flotte)
@@ -186,7 +186,7 @@
 					if(isset($types[6])) # Stationieren
 						unset($types[6]);
 
-					if(count($user_array['planets']) >= 15) # Schon 15 Planeten im Besitz
+					if(count($user_array['planets']) >= MAX_PLANETS) # Planetenlimit erreicht
 						unset($types[1]);
 				}
 

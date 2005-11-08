@@ -40,6 +40,8 @@
 	$THS_UTF8 = "\xc2\xa0";
 	#$THS_UTF8 = "\xe2\x80\x89";
 	$MIN_CLICK_DIFF = 0.5; # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
+	$EMAIL_FROM = ini_get('sendmail_from');
+	$MAX_PLANETS = 15;
 
 
 	# Variablen als Konstanten speichern
@@ -60,6 +62,8 @@
 	define('THS_HTML', $THS_HTML);
 	define('THS_UTF8', $THS_UTF8);
 	define('MIN_CLICK_DIFF', $MIN_CLICK_DIFF);
+	define('EMAIL_FROM', $EMAIL_FROM);
+	define('MAX_PLANETS', $MAX_PLANETS);
 
 	header('Content-type: text/html; charset=UTF-8');
 
@@ -233,9 +237,7 @@
 
 					foreach($planets as $i=>$planet)
 					{
-						if($planet > $planets_count)
-							unset($info[$galaxy][$system][$i]);
-						else
+						if($planet <= $planets_count)
 						{
 							$bin = '';
 							$len = strlen($this_string);

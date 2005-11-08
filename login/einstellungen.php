@@ -131,6 +131,7 @@
 	}
 ?>
 <form action="einstellungen.php" method="post" class="einstellungen-formular">
+	<div class="einstellungen-speichern-1"><button type="submit" title="[W]">Speichern</button></div>
 	<fieldset class="verschiedene-einstellungen">
 		<legend>Verschiedene Einstellungen</legend>
 		<dl>
@@ -186,7 +187,7 @@
 			<dd class="c-javascript-tooltips"><input type="checkbox" name="tooltips" id="tooltips"<?=$user_array['tooltips'] ? ' checked="checked"' : ''?> title="Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden die normalen Tooltips durch hübsche JavaScript-Tooltips ersetzt. [Y]" accesskey="y" tabindex="7" /></dd>
 
 			<dt class="c-auto-refresh"><label for="autorefresh">Auto-Refresh</label></dt>
-			<dd class="c-auto-refresh"><input type="text" name="autorefresh" id="autorefresh" value="<?=utf8_htmlentities($user_array['ress_refresh'])?>" title="Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion erzeug keinen zusätzlichen Traffic)" tabindex="8" /></dd>
+			<dd class="c-auto-refresh"><input type="text" name="autorefresh" id="autorefresh" value="<?=utf8_htmlentities($user_array['ress_refresh'])?>" title="Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion erzeugt keinen zusätzlichen Traffic)" tabindex="8" /></dd>
 		</dl>
 	</fieldset>
 	<fieldset class="nachrichtentypen-empfangen">
@@ -201,7 +202,7 @@
 			</thead>
 			<tbody>
 				<tr>
-					<th class="c-nachrichtentyp">Kaempfe</th>
+					<th class="c-nachrichtentyp">Kämpfe</th>
 					<td class="c-ankunft leer"></td>
 					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[1][1]" tabindex="9"<?=$user_array['receive'][1][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
@@ -236,7 +237,7 @@
 		if(time()-$user_array['umode_time'] >= 259200)
 		{
 ?>
-		<div><button name="umode" value="on" tabindex="17">Urlaubsmodus</button></div>
+		<div><button name="umode" value="on" tabindex="17" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich betreten?');">Urlaubsmodus</button></div>
 		<p>Sie werden frühestens nach drei Tagen (<?=date('Y-m-d, H:i', time()+259200)?>, Serverzeit) aus dem Urlaubsmodus zurückkehren können.</p>
 <?php
 		}
@@ -250,7 +251,7 @@
 	elseif(time()-$user_array['umode_time'] >= 259200)
 	{
 ?>
-		<div><button name="umode" value="on" tabindex="17">Urlaubsmodus verlassen</button></div>
+		<div><button name="umode" value="on" tabindex="17" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich verlassen?');">Urlaubsmodus verlassen</button></div>
 <?php
 	}
 	else
@@ -281,7 +282,7 @@
 			<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2" tabindex="21" /></dd>
 		</dl>
 	</fieldset>
-	<div><button type="submit" tabindex="16" accesskey="w" title="[W]">Speichern</button></div>
+	<div class="einstellungen-speichern-2"><button type="submit" tabindex="16" accesskey="w" title="[W]">Speichern</button></div>
 </form>
 <?php
 	login_gui::html_foot();

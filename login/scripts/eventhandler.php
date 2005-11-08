@@ -435,9 +435,9 @@
 
 									messages::new_message(array($ev_username=>5), '', 'Planet '.$flotte[3][0].' bereits besetzt', 'Ihre Flotte erreicht den Planeten '.$flotte[3][0].' und will mit der Besiedelung anfangen. Jedoch ist der Planet nicht mehr frei und Ihre Flotte tritt den Rückweg an.');
 								}
-								elseif(count($user_array['planets']) >= 15)
+								elseif(count($user_array['planets']) >= MAX_PLANETS)
 								{
-									# 15-Planeten-Limit erreicht
+									# Planeten-Limit erreicht
 
 									# Flotte zurueckrufen
 
@@ -1584,7 +1584,7 @@
 										$message_text .= "\t</dl>\n";
 										$message_text .= "</div>";
 
-										if(count($start_user_array['planets']) < 15)
+										if(count($start_user_array['planets']) < MAX_PLANETS)
 										{
 											$message_text .= "\n<p class=\"besiedeln\">";
 											$message_text .= "\n\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlentities(urlencode($target_pos[0]))."&amp;action_system=".htmlentities(urlencode($target_pos[1]))."&amp;action_planet=".htmlentities(urlencode($target_pos[2]))."\" title=\"Schicken Sie ein Besiedelungsschiff zu diesem Planeten\">Besiedeln</a>";

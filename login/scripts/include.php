@@ -2,6 +2,11 @@
 	$include_filename = substr(__FILE__, 0, strrpos(__FILE__, '/')).'/../../engine/include.php';
 	require($include_filename);
 
+	header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+	header("Last-Modified: " . gmdate("D, d M Y H:i:s") ." GMT");
+	header("Pragma: no-cache");
+	header("Cache-Control: no-store, no-cache, max-age=0, must-revalidate")
+
 	$resume = false;
 	$del_email_passwd = false;
 	session_start();

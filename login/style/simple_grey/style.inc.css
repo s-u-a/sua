@@ -381,3 +381,5 @@ br.clear { clear:both; }
 .nachrichtentypen-empfangen tbody th,.nachrichtentypen-empfangen tbody td { border-top:.1em solid #aaa; padding:.1em .3em }
 .nachrichtentypen-empfangen tbody td { border-left:.1em solid #aaa; }
 .nachrichtentypen-empfangen tbody th { font-weight:bold; }
+
+.einstellungen-speichern-1 { display:none; }
