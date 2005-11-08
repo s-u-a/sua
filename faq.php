@@ -16,6 +16,7 @@
 	<li><a href="#time">Was bedeuten <span xml:lang="en">Server</span>- und Lokalzeit?</a></li>
 	<li><a href="#research">Wo ist der Unterschied zwischen lokaler und globaler Forschung?</a></li>
 	<li><a href="#robots">Wie funktionieren die Roboter?</a></li>
+	<li><a href="#fleet">Wieviele Flotten kann ich gleichzeitig verschicken?</a></li>
 	<li><a href="#alliance">Was bringt mir ein Bündnis?</a></li>
 	<li><a href="#scrolling">Ich kann im Spiel mein <span xml:lang="en">Scroll</span>rad nicht benutzen. Woran liegt das?</a></li>
 	<li><a href="#resources">Die Rohstoffanzeige passt nicht in mein <span xml:lang="en">Browser</span>fenster und Quer<span xml:lang="en">scrollen</span> ist nicht möglich.</a></li>
@@ -78,6 +79,12 @@
 	<h3 id="robots">Wie funktionieren die Roboter?</h3>
 	<p>Die Roboter helfen, Gebäudebauzeiten zu verkürzen und die Rohstoffproduktion zu erhöhen. Der Auswirkungsgrad der Roboter hängt von der aktuellen Stufe der Roboterbautechnik ab. Jede Stufe der Roboterbautechnik erhöht dabei den Auswirkungsgrad Ihrer Bauroboter um ein Viertelprozent, den Ihrer Minenroboter um ein Sechzehntelprozent.</p>
 	<p>Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur Verfügung steht. Für Bauroboter liegt die Grenze bei der Hälfte der ursprünglichen Felderzahl des Planeten (Ingeneurswissenschaft zeigt also keine Wirkung), für Minenroboter liegt sie bei einem Zehnfachen der aktuellen Ausbaustufe der zugehörigen Mine (Ausnahme: Tritiumroboter, hier liegt die Grenze beim 15-Fachen der Ausbaustufe des Tritiumgenerators). Übersteigt die Roboterzahl die Grenze, zeigen überschüssige Roboter keinerlei Wirkung mehr.</p>
+</div>
+
+<div class="faq">
+	<h3 id="fleet">Wieviele Flotten kann ich gleichzeitig verschicken?</h3>
+	<p>Die Anzahl der gleichzeitig koordinierbaren Flotten berechnet sich aus der Entwicklungsstufe Ihres Kontrollwesens und der Anzahl der Werften in Ihrem Imperium. Potenzieren Sie einfach das Produkt der beiden Werte mit 0,7 und runden Sie das Ergebnis ab.</p>
+	<p>Nocheinmal zum Mitschreiben: Anzahl gleichzeitig koordinierbarer Flotten = abgerundet((Kontrollwesen*Werftenzahl)^0,7).</p>
 </div>
 
 <div class="faq">
