@@ -8,6 +8,8 @@
 
 	echo date('Y-m-d, H:i:s')." -- Eventhandler started.\n";
 
+	$last_handelskurs = false;
+
 	while(true)
 	{
 		clearstatcache();
@@ -55,6 +57,15 @@
 			echo ' -- ';
 			echo $username;
 			echo "\n";
+		}
+
+		if(date('H')*3600+date('i')*60+60 > 16200 && $last_handelskurs != date('Y-m-d')) // 4:30 Uhr
+		{
+			echo "\nRecalculating Handelskurs...\n";
+			system(s_root.'/db_things/calc_ges_ress');
+			echo "Handelskurs recalculated.\n\n";
+
+			$last_handelskurs = date('Y-m-d');
 		}
 
 		sleep(EVENTHANDLER_INTERVAL);
