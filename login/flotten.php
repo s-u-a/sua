@@ -18,7 +18,7 @@
 			$werften++;
 		$koords[] = $user_array['planets'][$planet]['pos'];
 	}
-	$max_flotten = floor(pow($kontrollwesen*$werften/2, .7));
+	$max_flotten = floor(pow($kontrollwesen*$werften, .7));
 
 	$my_flotten = 0;
 	foreach($user_array['flotten'] as $flotte)
