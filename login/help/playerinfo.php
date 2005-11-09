@@ -13,6 +13,7 @@
 	}
 	else
 	{
+		logfile::action('16', $_GET['player']);
 ?>
 <h2>Spielerinfo <em class="playername"><?=utf8_htmlentities($_GET['player'])?></em></h2>
 <?php

@@ -101,7 +101,7 @@
 			{
 ?>
 	<p id="error-message" class="error">
-		Bitte gib gültige Werte ein.
+		Bitte geben Sie gültige Werte ein.
 	</p>
 <?php
 			}
@@ -476,7 +476,7 @@
 		error_message.setAttribute('class', 'error');
 		error_message.setAttribute('id', 'error-message');
 		error_message.style.display = 'none';
-		error_message.appendChild(document.createTextNode('Bitte gib gültige Werte ein.'));
+		error_message.appendChild(document.createTextNode('Bitte geben Sie gültige Werte ein.'));
 		document.getElementById('angebot').parentNode.insertBefore(error_message, document.getElementById('angebot'));
 
 		window.eingabe = 3;

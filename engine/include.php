@@ -40,7 +40,7 @@
 	$THS_UTF8 = "\xc2\xa0";
 	#$THS_UTF8 = "\xe2\x80\x89";
 	$MIN_CLICK_DIFF = 0.5; # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
-	$EMAIL_FROM = ini_get('sendmail_from');
+	$EMAIL_FROM = 'webmaster@s-u-a.net';
 	$MAX_PLANETS = 15;
 
 
@@ -159,8 +159,32 @@
 		{
 		}
 
-		function action($user, $action)
+		function action($type)
 		{
+			global $this_planet;
+
+			$cols = func_get_args();
+			if(isset($this_planet)) array_unshift($cols, $this_planet['pos']);
+			else array_unshift($cols, '');
+			array_unshift($cols, session_id());
+			array_unshift($cols, $_SERVER['REMOTE_ADDR']);
+			if(isset($_SESSION['username'])) array_unshift($cols, $_SESSION['username']);
+			else array_unshift($cols, '');
+			array_unshift($cols, time());
+
+			$line = implode("\t", $cols);
+
+			$fh = gzopen(LOG_FILE, 'a');
+			if(!$fh)
+				return false;
+			#flock($fh, LOCK_EX);
+
+			gzwrite($fh, $line."\n");
+
+			#flock($fh, LOCK_UN);
+			gzclose($fh);
+
+			return true;
 		}
 
 		function panic($message) # Gibt eine fatale Fehlermeldung aus, aufgrund deren das Script
@@ -495,7 +519,7 @@
 			flock($fh, LOCK_UN);
 			fclose($fh);
 
-			return true;
+			return $id;
 		}
 	}
 

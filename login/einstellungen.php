@@ -91,6 +91,9 @@
 			$user_array['umode'] = false;
 			$user_array['umode_time'] = time();
 		}
+
+		logfile::action('25', $user_array['umode']);
+
 		$changed = true;
 	}
 
@@ -114,8 +117,13 @@
 		}
 	}
 
-	if($changed && !write_user_array())
-		$error = 'Datenbankfehler.';
+	if($changed)
+	{
+		if(!write_user_array())
+			$error = 'Datenbankfehler.';
+		else
+			logfile::action('24');
+	}
 
 	login_gui::html_head();
 ?>

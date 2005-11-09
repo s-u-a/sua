@@ -16,12 +16,16 @@
 
 		$event_times = array();
 
+		$logfile_schiffe = array();
+
 		foreach($_POST['schiffe'] as $id=>$count)
 		{
 			if(!isset($items['schiffe'][$id]) || !$items['schiffe'][$id]['buildable'])
 				continue;
 
 			$ress = $items['schiffe'][$id]['ress'];
+
+			$anzahl = 0;
 
 			for($i = 1; $i <= $count; $i++)
 			{
@@ -41,13 +45,22 @@
 					$this_planet['ress'][3] -= $ress[3];
 
 					$event_times[] = $last_time;
+					$anzahl++;
 				}
 			}
+
+			if($anzahl > 0)
+				$logfile_schiffe[] = $id.' '.$anzahl;
 		}
+
+		$logfile_schiffe = implode(' ', $logfile_schiffe);
 
 		write_user_array();
 
 		eventhandler::add_event($event_times);
+
+		if($logfile_schiffe != '')
+			logfile::action('14', $logfile_schiffe);
 
 		delete_request();
 	}

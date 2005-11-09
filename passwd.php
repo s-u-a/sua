@@ -23,6 +23,18 @@
 					$error = 'Datenbankfehler 2.';
 				elseif(!mail($that_user_array['email'], 'Passwort�nderung in S-U-A', "Jemand (vermutlich Sie) hat in S-U-A die \xe2\x80\x9ePasswort vergessen\xe2\x80\x9c-Funktion mit Ihrem Account benutzt. Diese Nachricht ist deshalb an jene E-Mail-Adresse adressiert, die Sie in Ihren Einstellungen in S-U-A eingetragen haben.\nSollten Sie eine Änderung Ihres Passworts nicht erwünschen, ignorieren – oder besser löschen – Sie diese Nachricht einfach.\n\nUm Ihr Passwort zu ändern, rufen Sie bitte die folgende Adresse in Ihrem Browser auf und folgen Sie den Anweisungen:\nhttp://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".$EMAIL_FROM."\r\nReply-To: ".$EMAIL_FROM))
 					$error = 'Fehler beim Versand der E-Mail-Nachricht.';
+				else
+				{
+					$_SESSION['username'] = $_POST['benutzername'];
+					logfile::action('4');
+					unset($_SESSION['username']);
+				}
+			}
+			else
+			{
+				$_SESSION['username'] = $_POST['benutzername'];
+				logfile::action('4.1', $_POST['email'], trim($that_user_array['email']));
+				unset($_SESSION['username']);
 			}
 		}
 	}
@@ -77,6 +89,10 @@
 ?>
 <p class="successful">Das Passwort wurde erfolgreich ge�ndert. Sie k�nnen sich nun mit Ihrem neuen Passwort anmelden.</p>
 <?php
+						$_SESSION['username'] = $_GET['name'];
+						logfile::action('5');
+						unset($_SESSION['username']);
+
 						$continue = false;
 					}
 				}

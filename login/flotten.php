@@ -535,8 +535,14 @@
 										$user_array['punkte'][11] += $auftrag_array[4][0]; # Verbrauchtes Tritium
 
 										# Flotten abziehen
+										$logfile_schiffe = array();
 										foreach($_POST['flotte'] as $id=>$anzahl)
+										{
 											$this_planet['schiffe'][$id] -= $anzahl;
+											if($anzahl > 0)
+												$logfile_schiffe[] = $id.' '.$anzahl;
+										}
+										$logfile_schiffe = implode(' ', $logfile_schiffe);
 
 										# Rohstoffe abziehen
 										$this_planet['ress'][0] -= $auftrag_array[5][0][0];
@@ -546,12 +552,15 @@
 										$this_planet['ress'][4] -= $auftrag_array[5][0][4];
 
 										# Roboter abziehen
+										$logfile_roboter = array();
 										foreach($auftrag_array[5][1] as $id=>$anzahl)
 										{
 											if($anzahl == 0)
 												continue;
 											$this_planet['roboter'][$id] -= $anzahl;
+											$logfile_roboter[] = $id.' '.$anzahl;
 										}
+										$logfile_roboter = implode(' ', $logfile_roboter);
 
 										uasort($user_array['flotten'], 'usort_fleet');
 										write_user_array();
@@ -584,6 +593,7 @@
 	</dl>
 </div>
 <?php
+											logfile::action('12', $auftrag_array[3][1], $logfile_schiffe, $auftrag_array[2], $auftrag_array[6], implode('.', $auftrag_array[5][0]), $logfile_roboter, $key);
 										}
 									}
 								}

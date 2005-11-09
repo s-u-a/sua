@@ -24,7 +24,10 @@
 		}
 
 		if($changed && write_user_array()) # Produktion neu berechnen
+		{
 			$ges_prod = get_ges_prod(true);
+			logfile::action('6');
+		}
 	}
 
 	login_gui::html_head();

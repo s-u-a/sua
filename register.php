@@ -108,7 +108,7 @@
 					$user_array['tooltips'] = false;
 					$user_array['umode'] = false;
 					$user_array['umode_time'] = 0;
-					$user_array['refresh_ress'] = 0;
+					$user_array['ress_refresh'] = 0;
 
 					if(isset($_POST['email']))
 						$user_array['email'] = $_POST['email'];
@@ -151,12 +151,16 @@
 							}
 ?>
 <p class="successful">
-	Die Registrierung war erfolgreich. Du kannst dich nun anmelden. Die Koordinaten deines Hauptplaneten lauten <?=htmlentities($koords)?>.
+	Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten <?=htmlentities($koords)?>.
 </p>
 <ul>
 	<li><a href="./">Zurück zur Startseite</a></li>
 </ul>
 <?php
+							$_SESSION['username'] = $_POST['username'];
+							logfile::action('1', $_POST['email']);
+							unset($_SESSION['username']);
+
 							gui::html_foot();
 							exit();
 						}

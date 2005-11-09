@@ -18,12 +18,17 @@
 
 		$event_times = array();
 
+		$logfile = array();
+
 		foreach($_POST['roboter'] as $id=>$count)
 		{
 			if(!isset($items['roboter'][$id]) || !$items['roboter'][$id]['buildable'])
 				continue;
 
 			$ress = $items['roboter'][$id]['ress'];
+
+			$next_logfile = &$logfile[];
+			$next_logfile = 0;
 
 			for($i = 1; $i <= $count; $i++)
 			{
@@ -43,13 +48,25 @@
 					$this_planet['ress'][3] -= $ress[3];
 
 					$event_times[] = $last_time;
+
+					$next_logfile++;
 				}
 			}
+
+			if($next_logfile > 0)
+				$next_logfile = $id.' '.$next_logfile;
+			else
+				array_pop($logfile);
+			unset($next_logfile);
 		}
 
 		write_user_array();
 
 		eventhandler::add_event($event_times);
+
+		$logfile = implode(' ', $logfile);
+		if($logfile != '')
+			logfile::action('11', $logfile);
 
 		delete_request();
 	}

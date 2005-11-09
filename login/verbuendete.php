@@ -12,7 +12,9 @@
 		if(isset($_POST['betreff']) && strlen(trim($_POST['betreff'])) > 0)
 			$betreff = $_POST['betreff'];
 
-		messages::new_message($empfaenger, $_SESSION['username'], $betreff, $_POST['rundschreiben']);
+		$id = messages::new_message($empfaenger, $_SESSION['username'], $betreff, $_POST['rundschreiben']);
+
+		logfile::action('21', $id, implode(' ', $user_array['verbuendete']), $betreff);
 	}
 
 	if(isset($_POST['empfaenger']) && strlen(trim($_POST['empfaenger'])) > 0)
@@ -46,6 +48,8 @@
 			unset($_POST['empfaenger']);
 			if(isset($_POST['mitteilung']))
 				unset($_POST['mitteilung']);
+
+			logfile::action('17', $_POST['empfaenger']);
 		}
 	}
 
@@ -77,9 +81,15 @@
 			unset($that_user_array);
 
 			if($_GET['annehmen'])
+			{
 				messages::new_message(array($_GET['anfrage']=>7), $_SESSION['username'], "B\xc3\xbcndnisanfrage angenommen", "Der Spieler ".utf8_htmlentities($_SESSION['username'])." hat Ihre B\xc3\xbcndnisanfrage angenommen.");
+				logfile::action('18', $_GET['anfrage']);
+			}
 			else
+			{
 				messages::new_message(array($_GET['anfrage']=>7), $_SESSION['username'], "B\xc3\xbcnsnisanfrage abgelehnt", "Der Spieler ".utf8_htmlentities($_SESSION['username'])." hat Ihre B\xc3\xbcndnisanfrage abgelehnt.");
+				logfile::action('19', $_GET['anfrage']);
+			}
 		}
 	}
 
@@ -101,6 +111,8 @@
 			unset($that_user_array);
 
 			messages::new_message(array($_GET['bewerbung']=>7), $_SESSION['username'], "B\xc3\xbcndnisbewerbung zur\xc3\xbcckgezogen", "Der Spieler ".utf8_htmlentities($_SESSION['username'])." hat seine B\xc3\xbcndnisbewerbung bei Ihnen zur\xc3\xbcckgezogen.");
+
+			logfile::action('17.5', $_GET['bewerbung']);
 		}
 	}
 
@@ -122,6 +134,8 @@
 			unset($that_user_array);
 
 			messages::new_message(array($_GET['kuendigen']=>7), $_SESSION['username'], "B\xc3\xbcndnis gek\xc3\xbcndigt", "Der Spieler ".utf8_htmlentities($_SESSION['username'])." hat sein B\xc3\xbcndnis mit Ihnen gek\xc3\xbcndigt.");
+
+			logfile::action('20', $_GET['kuendigen']);
 		}
 	}
 

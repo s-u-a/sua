@@ -1,14 +1,14 @@
 <?php
-	#require('include.php');
+	require('../engine/include.php');
 
 	session_start();
+
+	logfile::action('3');
 
 	$_SESSION = array();
 	if(isset($_COOKIE[session_name()]))
 		setcookie(session_name(), '');
 	session_destroy();
-
-	# Loggen nicht vergessen!
 
 	$url = explode('/', $_SERVER['PHP_SELF']);
 	array_pop($url); array_pop($url); array_pop($url);

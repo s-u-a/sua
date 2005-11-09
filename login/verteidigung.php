@@ -16,12 +16,16 @@
 
 		$event_times = array();
 
+		$logfile_verteidigung = array();
+
 		foreach($_POST['verteidigung'] as $id=>$count)
 		{
 			if(!isset($items['verteidigung'][$id]) || !$items['verteidigung'][$id]['buildable'])
 				continue;
 
 			$ress = $items['verteidigung'][$id]['ress'];
+
+			$anzahl = 0;
 
 			for($i = 1; $i <= $count; $i++)
 			{
@@ -41,13 +45,23 @@
 					$this_planet['ress'][3] -= $ress[3];
 
 					$event_times[] = $last_time;
+
+					$anzahl++;
 				}
 			}
+
+			if($anzahl > 0)
+				$logfile_verteidigung[] = $id.' '.$anzahl;
 		}
+
+		$logfile_verteidigung = implode(' ', $logfile_verteidigung);
 
 		write_user_array();
 
 		eventhandler::add_event($event_times);
+
+		if($logfile_verteidigung != '')
+			logfile::action('15', $logfile_verteidigung);
 
 		delete_request();
 	}

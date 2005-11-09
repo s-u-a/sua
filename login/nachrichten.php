@@ -37,7 +37,7 @@
 				$subject = $_POST['betreff'];
 				$text = $_POST['inhalt'];
 
-				if(!messages::new_message($to, $from, $subject, $text))
+				if(!($id = messages::new_message($to, $from, $subject, $text)))
 					$error = 'Datenbankfehler.';
 				else
 				{
@@ -47,6 +47,8 @@
 </p>
 <?php
 					$show_form = false;
+
+					logfile::action('21', $id, $_POST['empfaenger'], $subject);
 				}
 			}
 		}
@@ -127,6 +129,8 @@
 					{
 						$user_array['messages'][$_GET['type']][$_GET['message']] = false;
 						write_user_array();
+
+						logfile::action('22', $_GET['message']);
 					}
 
 					# Vorige und naechste ungelesene Nachricht
@@ -159,13 +163,13 @@
 						if($unread_prev !== false)
 						{
 ?>
-	<li class="c-vorige"><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($unread_prev))?>" title="Vorige ungelesene Nachricht">&larr;</a></li>
+	<li class="c-vorige"><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($unread_prev))?>" title="Vorige ungelesene Nachricht [U]" accesskey="u" tabindex="4">&larr;</a></li>
 <?php
 						}
 						if($unread_next !== false)
 						{
 ?>
-	<li class="c-naechste"><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($unread_next))?>" title="Nächste ungelesene Nachricht">&rarr;</a></li>
+	<li class="c-naechste"><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($unread_next))?>" title="Nächste ungelesene Nachricht [Q]" accesskey="q" tabindex="3">&rarr;</a></li>
 <?php
 						}
 ?>
@@ -272,7 +276,7 @@
 <p class="error">Sie können sich nicht selbst eine Nachricht schicken.</p>
 <?php
 						}
-						elseif(!messages::new_message(array($_POST['weiterleitung-to']=>$_GET['type']), $_SESSION['username'], 'Fwd: '.$message['subject'], $weiterleitung_text.$message['text'], $message['html']))
+						elseif(!($id = messages::new_message(array($_POST['weiterleitung-to']=>$_GET['type']), $_SESSION['username'], 'Fwd: '.$message['subject'], $weiterleitung_text.$message['text'], $message['html'])))
 						{
 ?>
 <p class="error">Datenbankfehler.</p>
@@ -284,6 +288,8 @@
 <p class="successful">Die Nachricht wurde erfolgreich weitergeleitet.</p>
 <?php
 							unset($_POST['weiterleitung-to']);
+
+							logfile::action('21', $id, $_POST['weiterleitung-to'], 'Fwd: '.$message['subject']);
 						}
 					}
 ?>
@@ -292,9 +298,9 @@
 		<legend>Nachricht weiterleiten</legend>
 		<dl>
 			<dt><label for="empfaenger-input">Empfänger</label></dt>
-			<dd><input type="text" name="weiterleitung-to" value="<?=isset($_POST['weiterleitung-to']) ? utf8_htmlentities($_POST['weiterleitung-to']) : ''?>" title="[X]" accesskey="x" tabindex="3" /></dd>
+			<dd><input type="text" name="weiterleitung-to" value="<?=isset($_POST['weiterleitung-to']) ? utf8_htmlentities($_POST['weiterleitung-to']) : ''?>" title="[X]" accesskey="x" tabindex="5" /></dd>
 		</dl>
-		<div><button type="submit" tabindex="4">Weiterleiten</button></div>
+		<div><button type="submit" tabindex="6">Weiterleiten</button></div>
 	</fieldset>
 </form>
 <?php
@@ -319,6 +325,8 @@
 							continue;
 						$user_array['messages'][$_GET['type']][$message_id] = false;
 						$changed = true;
+
+						logfile::action('22', $message_id);
 					}
 					if($changed)
 						write_user_array();
@@ -349,6 +357,8 @@
 									fwrite($fh, gzcompress(serialize($message_array)));
 									flock($fh, LOCK_UN);
 									fclose($fh);
+
+									logfile::action('23', $message_id);
 								}
 							}
 						}

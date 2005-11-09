@@ -79,6 +79,8 @@
 			{
 				# Jetzt in den Eventhandler aufnehmen
 				eventhandler::add_event($build_array[1]);
+
+				logfile::action('9', $a_id, $global);
 			}
 		}
 
@@ -128,8 +130,7 @@
 
 		write_user_array();
 
-		# Eintrag aus dem Eventhandler loeschen
-
+		logfile::action('10', $a_id);
 
 		delete_request();
 	}
