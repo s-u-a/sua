@@ -61,8 +61,8 @@
 	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
 	{
 		logfile::action('3.1', $_SESSION['ip']);
-		if(isset($_COOKIE[session_name()]))
-			setcookie(session_name(), '');
+		if(isset($_COOKIE[SESSION_COOKIE]))
+			setcookie(SESSION_COOKIE, '');
 		die('Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte neu anmelden.');
 	}
 

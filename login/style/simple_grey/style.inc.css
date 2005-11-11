@@ -129,8 +129,8 @@ legend { font-weight:bold; }
 .deps td { border-bottom:.1em solid #aaa; }
 .deps tbody td { text-align:left; }
 .deps ul { margin:0; padding:0; list-style-type:none; }
-.deps .deps-ja { color:#0f0; }
-.deps .deps-nein { color:#f00; }
+.deps .deps-ja,.deps .deps-ja a { color:#0f0; }
+.deps .deps-nein,.deps .deps-nein a { color:#f00; }
 
 .desc { text-align:left; }
 .desc p { padding-left:.5em; padding-right:.5em; }

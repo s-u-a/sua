@@ -1,13 +1,13 @@
 <?php
-	require('../engine/include.php');
+	require('../../engine/include.php');
 
 	session_start();
 
 	logfile::action('3');
 
 	$_SESSION = array();
-	if(isset($_COOKIE[session_name()]))
-		setcookie(session_name(), '');
+	if(isset($_COOKIE[SESSION_COOKIE]))
+		setcookie(SESSION_COOKIE, '');
 	session_destroy();
 
 	$url = explode('/', $_SERVER['PHP_SELF']);

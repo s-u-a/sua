@@ -15,7 +15,7 @@
 	foreach($items['gebaeude'] as $id=>$gebaeude)
 	{
 ?>
-		<tr>
+		<tr id="deps-<?=htmlentities($id)?>">
 			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($gebaeude['name'])?></a></td>
 <?php
 		if(!isset($gebaeude['deps']) || count($gebaeude['deps']) <= 0)
@@ -38,7 +38,7 @@
 				$dep = explode('-', $dep);
 				$this = &$items['ids'][$dep[0]];
 ?>
-					<li class="deps-<?=(isset($this_planet['ids'][$dep[0]]) && $this_planet['ids'][$dep[0]] >= $dep[1]) ? 'ja' : 'nein'?>"><?=utf8_htmlentities($this['name'])?> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($dep[1])?>)</span></li>
+					<li class="deps-<?=(isset($this_planet['ids'][$dep[0]]) && $this_planet['ids'][$dep[0]] >= $dep[1]) ? 'ja' : 'nein'?>"><a href="#deps-<?=htmlentities($dep[0])?>" title="Zu diesem Gegenstand scrollen."><?=utf8_htmlentities($this['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($dep[1])?>)</span></li>
 <?php
 			}
 ?>
@@ -65,7 +65,7 @@
 	foreach($items['forschung'] as $id=>$forschung)
 	{
 ?>
-		<tr>
+		<tr id="deps-<?=htmlentities($id)?>">
 			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($forschung['name'])?></a></td>
 <?php
 		if(!isset($forschung['deps']) || count($forschung['deps']) <= 0)
@@ -85,7 +85,7 @@
 				$dep = explode('-', $dep);
 				$this = &$items['ids'][$dep[0]];
 ?>
-					<li class="deps-<?=(isset($this_planet['ids'][$dep[0]]) && $this_planet['ids'][$dep[0]] >= $dep[1]) ? 'ja' : 'nein'?>"><?=utf8_htmlentities($this['name'])?> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($dep[1])?>)</span></li>
+					<li class="deps-<?=(isset($this_planet['ids'][$dep[0]]) && $this_planet['ids'][$dep[0]] >= $dep[1]) ? 'ja' : 'nein'?>"><a href="#deps-<?=htmlentities($dep[0])?>" title="Zu diesem Gegenstand scrollen."><?=utf8_htmlentities($this['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($dep[1])?>)</span></li>
 <?php
 			}
 ?>
@@ -112,7 +112,7 @@
 	foreach($items['roboter'] as $id=>$roboter)
 	{
 ?>
-		<tr>
+		<tr id="deps-<?=htmlentities($id)?>">
 			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($roboter['name'])?></a></td>
 <?php
 		if(!isset($roboter['deps']) || count($roboter['deps']) <= 0)
@@ -132,7 +132,7 @@
 				$dep = explode('-', $dep);
 				$this = &$items['ids'][$dep[0]];
 ?>
-					<li class="deps-<?=(isset($this_planet['ids'][$dep[0]]) && $this_planet['ids'][$dep[0]] >= $dep[1]) ? 'ja' : 'nein'?>"><?=utf8_htmlentities($this['name'])?> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($dep[1])?>)</span></li>
+					<li class="deps-<?=(isset($this_planet['ids'][$dep[0]]) && $this_planet['ids'][$dep[0]] >= $dep[1]) ? 'ja' : 'nein'?>"><a href="#deps-<?=htmlentities($dep[0])?>" title="Zu diesem Gegenstand scrollen."><?=utf8_htmlentities($this['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($dep[1])?>)</span></li>
 <?php
 			}
 ?>
@@ -159,7 +159,7 @@
 	foreach($items['schiffe'] as $id=>$schiff)
 	{
 ?>
-		<tr>
+		<tr id="deps-<?=htmlentities($id)?>">
 			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($schiff['name'])?></a></td>
 <?php
 		if(!isset($schiff['deps']) || count($schiff['deps']) <= 0)
@@ -179,7 +179,7 @@
 				$dep = explode('-', $dep);
 				$this = &$items['ids'][$dep[0]];
 ?>
-					<li class="deps-<?=(isset($this_planet['ids'][$dep[0]]) && $this_planet['ids'][$dep[0]] >= $dep[1]) ? 'ja' : 'nein'?>"><?=utf8_htmlentities($this['name'])?> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($dep[1])?>)</span></li>
+					<li class="deps-<?=(isset($this_planet['ids'][$dep[0]]) && $this_planet['ids'][$dep[0]] >= $dep[1]) ? 'ja' : 'nein'?>"><a href="#deps-<?=htmlentities($dep[0])?>" title="Zu diesem Gegenstand scrollen."><?=utf8_htmlentities($this['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($dep[1])?>)</span></li>
 <?php
 			}
 ?>
@@ -206,7 +206,7 @@
 	foreach($items['verteidigung'] as $id=>$verteidigung)
 	{
 ?>
-		<tr>
+		<tr id="deps-<?=htmlentities($id)?>">
 			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($verteidigung['name'])?></a></td>
 <?php
 		if(!isset($verteidigung['deps']) || count($verteidigung['deps']) <= 0)

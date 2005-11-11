@@ -42,7 +42,7 @@
 	$MIN_CLICK_DIFF = 0.5; # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
 	$EMAIL_FROM = 'webmaster@s-u-a.net';
 	$MAX_PLANETS = 15;
-
+	$SESSION_COOKIE = ini_get('session.name');
 
 	# Variablen als Konstanten speichern
 
@@ -64,6 +64,7 @@
 	define('MIN_CLICK_DIFF', $MIN_CLICK_DIFF);
 	define('EMAIL_FROM', $EMAIL_FROM);
 	define('MAX_PLANETS', $MAX_PLANETS);
+	define('SESSION_COOKIE', $SESSION_COOKIE);
 
 	header('Content-type: text/html; charset=UTF-8');
 
