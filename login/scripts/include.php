@@ -34,15 +34,17 @@
 
 		if(!$loggedin)
 		{
-			$_SESSION['username'] = $_POST['username'];
+			if(isset($_POST['username']))
+				$_SESSION['username'] = $_POST['username'];
 			logfile::action('2.1');
-			unset($_SESSION['username']);
+			if(isset($_SESSION['username']))
+				unset($_SESSION['username']);
 
 			# Auf die Startseite zurueckleiten
 			$url = explode('/', $_SERVER['PHP_SELF']);
 			array_pop($url); array_pop($url);
 			$url = 'http://'.$_SERVER['HTTP_HOST'].implode('/', $url).'/index.php';
-			header('Location: '.$url);
+			header('Location: '.$url, true, 303);
 			die('Not logged in. Please <a href="'.htmlentities($url).'">relogin</a>.');
 		}
 		else
@@ -77,7 +79,7 @@
 	# Wiederherstellen
 	if($resume && isset($user_array['last_request']))
 	{
-		if($_SERVER['REQUEST_URI'] != $user_array['last_request'][0])
+		if($_SERVER['REQUEST_URI'] != $user_array['last_request'])
 		{
 			if(isset($user_array['last_planet']) && isset($user_array['planets'][$_SESSION['act_planet']]))
 				$_SESSION['act_planet'] = $user_array['last_planet'];
