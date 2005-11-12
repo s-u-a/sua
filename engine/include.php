@@ -632,21 +632,20 @@
 		return $time;
 	}
 
-	function get_jemand_forscht()
+	function get_laufende_forschungen()
 	{
 		global $user_array;
 
-		$jemand_forscht = false;
+		$laufende_forschungen = array();
 		$planets = array_keys($user_array['planets']);
 		foreach($planets as $planet)
 		{
-			if((isset($user_array['planets'][$planet]['building']['forschung']) && trim($user_array['planets'][$planet]['building']['forschung'][0]) != '') || (isset($user_array['planets'][$planet]['building']['gebaeude']) && $user_array['planets'][$planet]['building']['gebaeude'][0] == 'B8'))
-			{
-				$jemand_forscht = true;
-				break;
-			}
+			if(isset($user_array['planets'][$planet]['building']['forschung']) && trim($user_array['planets'][$planet]['building']['forschung'][0]) != '')
+				$laufende_forschungen[] = $user_array['planets'][$planet]['building']['forschung'][0];
+			elseif(isset($user_array['planets'][$planet]['building']['gebaeude']) && $user_array['planets'][$planet]['building']['gebaeude'][0] == 'B8')
+				$laufende_forschungen[] = false;
 		}
-		return $jemand_forscht;
+		return $laufende_forschungen;
 	}
 
 	function calc_btime_forschung($time, $level=0, $loc_glob=1)
@@ -801,7 +800,7 @@
 				$time = round(pow(($mass*$distance)/$speed, 0.3)*300);
 			#$time = round(pow(1.125*$mass*pow($distance, 2)/$speed, 0.33333)*10);
 
-			return $time;
+			return $time*0+20;
 		}
 
 		function get_tritium($mass, $distance)

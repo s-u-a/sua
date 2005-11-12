@@ -143,6 +143,7 @@
 				$url .= urlencode($_SESSION['act_planet']);
 			else
 				$url .= urlencode($_SESSION['act_planet']-1);
+			$url .= '&'.SESSION_COOKIE.'='.urlencode(session_id());
 			header('Location: '.$url, true, 303);
 			die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 		}
@@ -167,7 +168,7 @@
 <?php
 	}
 ?>
-<form action="rename.php" method="post">
+<form action="rename.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post">
 	<fieldset>
 		<legend>Planeten umbenennen</legend>
 		<dl>
@@ -197,7 +198,7 @@
 <?php
 		}
 ?>
-<form action="rename.php" method="post">
+<form action="rename.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post">
 	<fieldset>
 		<legend>Planeten aufgeben<input type="hidden" name="act_planet" value="<?=htmlentities($_SESSION['act_planet'])?>" /></legend>
 		<dl>

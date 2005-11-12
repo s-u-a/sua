@@ -126,7 +126,7 @@
 		{
 			# Fastbuild
 
-			$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?planet='.urlencode($fastbuild_next);
+			$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?planet='.urlencode($fastbuild_next).'&'.SESSION_COOKIE.'='.urlencode(session_id());
 			header('Location: '.$url, true, 303);
 			die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 		}
@@ -189,13 +189,13 @@
 		if($fastbuild_prev !== false)
 		{
 ?>
-	<li class="c-voriger"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_prev))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$fastbuild_prev]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$fastbuild_prev]['pos'])?>) [U]" tabindex="1" accesskey="u" rel="prev">&larr;</a></li>
+	<li class="c-voriger"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_prev))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$fastbuild_prev]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$fastbuild_prev]['pos'])?>) [U]" tabindex="1" accesskey="u" rel="prev">&larr;</a></li>
 <?php
 		}
 		if($fastbuild_next !== false)
 		{
 ?>
-	<li class="c-naechster"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_next))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$fastbuild_next]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$fastbuild_next]['pos'])?>) [Q]" tabindex="2" accesskey="q" rel="next">&rarr;</a></li>
+	<li class="c-naechster"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_next))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($user_array['planets'][$fastbuild_next]['name'])?>&ldquo; (<?=utf8_htmlentities($user_array['planets'][$fastbuild_next]['pos'])?>) [Q]" tabindex="2" accesskey="q" rel="next">&rarr;</a></li>
 <?php
 		}
 ?>
@@ -228,7 +228,7 @@
 			$debuildable = false; # Zu wenig Rohstoffe zum Abbau
 ?>
 <div class="item gebaeude" id="item-<?=htmlentities($id)?>">
-	<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=ths($level)?>)</span></h3>
+	<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=ths($level)?>)</span></h3>
 <?php
 		if(($id != 'B8' || !isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0]) == '') && ($id != 'B9' || !isset($this_planet['building']['roboter']) || count($this_planet['building']['roboter']) == 0) && ($id != 'B10' || !isset($this_planet['building']['schiffe']) || count($this_planet['building']['schiffe']) == 0) && ($id != 'B10' || !isset($this_planet['building']['verteidigung']) || count($this_planet['building']['verteidigung']) == 0))
 		{
@@ -240,7 +240,7 @@
 				if(($this_planet['size'][0]+$geb['fields']) <= floor($this_planet['size'][1]))
 				{
 ?>
-		<li class="item-ausbau<?=$buildable ? '' : ' no-ress'?>"><?=$buildable ? '<a href="gebaeude.php?ausbau='.htmlentities(urlencode($id)).'" tabindex="'.$tabindex.'">' : ''?>Ausbau auf Stufe&nbsp;<?=ths($level+1)?><?=$buildable ? '</a>' : ''?></li>
+		<li class="item-ausbau<?=$buildable ? '' : ' no-ress'?>"><?=$buildable ? '<a href="gebaeude.php?ausbau='.htmlentities(urlencode($id)).'&amp;'.htmlentities(SESSION_COOKIE.'='.urlencode(session_id())).'" tabindex="'.$tabindex.'">' : ''?>Ausbau auf Stufe&nbsp;<?=ths($level+1)?><?=$buildable ? '</a>' : ''?></li>
 <?php
 					if($buildable)
 						$tabindex++;
@@ -248,7 +248,7 @@
 				if($level > 0 && ($this_planet['size'][0]-$geb['fields']) <= floor($this_planet['size'][1]))
 				{
 ?>
-		<li class="item-rueckbau<?=$buildable ? '' : ' no-ress'?>"><?=$debuildable ? '<a href="gebaeude.php?abbau='.htmlentities(urlencode($id)).'">' : ''?>Rückbau auf Stufe&nbsp;<?=ths($level-1)?><?=$debuildable ? '</a>' : ''?></li>
+		<li class="item-rueckbau<?=$buildable ? '' : ' no-ress'?>"><?=$debuildable ? '<a href="gebaeude.php?abbau='.htmlentities(urlencode($id)).'&amp;'.htmlentities(SESSION_COOKIE.'='.urlencode(session_id())).'">' : ''?>Rückbau auf Stufe&nbsp;<?=ths($level-1)?><?=$debuildable ? '</a>' : ''?></li>
 <?php
 				}
 ?>
@@ -258,7 +258,7 @@
 			elseif(isset($this_planet['building']['gebaeude']) && $this_planet['building']['gebaeude'][0] == $id)
 			{
 ?>
-	<div class="restbauzeit" id="restbauzeit-<?=htmlentities($id)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $this_planet['building']['gebaeude'][1])?> (Serverzeit), <a href="gebaeude.php?cancel=<?=htmlentities(urlencode($id))?>" class="abbrechen">Abbrechen</a></div>
+	<div class="restbauzeit" id="restbauzeit-<?=htmlentities($id)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $this_planet['building']['gebaeude'][1])?> (Serverzeit), <a href="gebaeude.php?cancel=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a></div>
 	<script type="text/javascript">
 		init_countdown('<?=$id?>', <?=$this_planet['building']['gebaeude'][1]?>);
 	</script>

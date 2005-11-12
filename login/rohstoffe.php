@@ -33,7 +33,7 @@
 	login_gui::html_head();
 ?>
 <h2>Rohstoffproduktion pro Stunde</h2>
-<form action="rohstoffe.php" method="post">
+<form action="rohstoffe.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post">
 	<table class="ress-prod">
 		<thead>
 			<tr>
@@ -128,7 +128,7 @@
 		$ges_prod[5] += $gebaeude['prod'][5];
 ?>
 			<tr>
-				<td class="c-gebaeude"><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($gebaeude['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($level)?>)</span></td>
+				<td class="c-gebaeude"><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($gebaeude['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($level)?>)</span></td>
 				<td class="c-carbon <?=get_prod_class($gebaeude['prod'][0])?>"><?=ths($gebaeude['prod'][0])?></td>
 				<td class="c-aluminium <?=get_prod_class($gebaeude['prod'][1])?>"><?=ths($gebaeude['prod'][1])?></td>
 				<td class="c-wolfram <?=get_prod_class($gebaeude['prod'][2])?>"><?=ths($gebaeude['prod'][2])?></td>

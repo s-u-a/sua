@@ -27,6 +27,7 @@
 	<li><a href="#expand">Bei einem Gebäude/Forschung fehlt der Ausbauknopf oder bei meinen Robotern/Schiffen/Verteidigungsanlagen fehlt das Ausbaufeld.</a></li>
 	<li><a href="#mass">Meine Flotte hat für den Hin- und Rückflug unterschiedlich lange gebraucht!</a></li>
 	<li><a href="#distance">Wie berechnet sich die Entfernung zwischen zwei Planeten?</a></li>
+	<li><a href="#download">Wie kann ich mir das Spiel herunterladen?</a></li>
 </ol>
 <div class="faq">
 	<h3 id="register">Wie kann ich mich anmelden?</h3>
@@ -122,7 +123,7 @@
 
 <div class="faq">
 	<h3 id="name">Kann ich meinen Namen ändern?</h3>
-	<p>Namensänderungen sind eher unerwünscht (Benutzer könnten sich auf diese Weise vor anderen &bdquo;verstecken&ldquo; oder Verwirrung auslösen), weswegen das Spiel es Spielern nicht erlaubt, Ihren Benutzernamen zu ändern. Sollte es dennoch einen Grund geben, der für eine Namensänderung spricht (<span xml:lang="en">Account</span>übernahme, <abbr title="et cetera">etc.</span>), kann ein Administrator Ihren Namen ändern. (&rarr; <a href="#administrators">Wie kann ich die Administratoren erreichen?</a>)</p>
+	<p>Namensänderungen sind eher unerwünscht (Benutzer könnten sich auf diese Weise vor anderen &bdquo;verstecken&ldquo; oder Verwirrung auslösen), weswegen das Spiel es Spielern nicht erlaubt, Ihren Benutzernamen zu ändern. Sollte es dennoch einen Grund geben, der für eine Namensänderung spricht (<span xml:lang="en">Account</span>übernahme, <abbr title="et cetera">etc.</abbr>), kann ein Administrator Ihren Namen ändern. (&rarr; <a href="#administrators">Wie kann ich die Administratoren erreichen?</a>)</p>
 </div>
 
 <div class="faq">
@@ -157,6 +158,11 @@
 	<p>Planeten innerhalb des Sonnensystems sind in einer Reihe angeordnet. Die Distanz zum nächsten Planeten beträgt hierbei 10&thinsp;<abbr title="Orbits">Or</abbr>, die zum übernächsten 20&thinsp;<abbr title="Orbits">Or</abbr>, und so weiter.</p>
 	<p>Die Entfernung zu einem Planeten in derselben Galaxie, aber in einem anderen Sonnensystem gestaltet sich etwas schwieriger. Sie müssen sich eine Galaxie in <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> als riesigen Quader vorstellen, der eine Seitenlänge von 9&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr> hat. Stellen Sie sich ein dreidimensionales Koordinatensystem vor, in welchem die Längeneinheiten der x-, der y- und der z-Achse jeweils 1&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr> sind. Die Koordinaten eines Sonnensystems sind nun einfach herausfinden, das Sonnensystem 123 hat zum Beispiel die Koordinaten (1|2|3), also (1&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr>|2&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr>|3&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr>). Sollten Sie sich gut in der Mathematik und der Geometrie auskennen, werden Sie nun wissen, wie sich der Abstand zwischen zwei Sonnensystemen berechnet.</p>
 	<p>Wenn Sie mit einem Raumschiff in eine andere Galaxie fliegen wollen, müssen Sie größere Distanzen zurücklegen. Stellen Sie sich einen riesigen Kreis vor, auf dem die Galaxien gleichmäßig verteilt sind. Das Raumschiff nimmt in diesem Kreis den kürzesten Weg (&bdquo;Luftlinie&ldquo;) zur Zielgalaxie. Für die Mathematiker unter uns: Die Größe des Kreises wird so ausgelegt, dass der Abstand von einer Galaxie zur nächsten <strong>auf der Kreislinie entlang</strong> genau 20&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr> entspricht.</p>
+</div>
+
+<div class="faq">
+	<h3 id="download">Wie kann ich mir das Spiel herunterladen?</h3>
+	<p>Sie erhalten den Quellcode des Spiels unter <a href="svn://s-u-a.net/home/srv/svn/sua/">svn://s-u-a.net/home/srv/svn/sua/</a>.</p>
 </div>
 <?php
 	gui::html_foot();

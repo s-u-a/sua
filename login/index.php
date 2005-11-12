@@ -50,7 +50,7 @@
 	login_gui::html_head();
 ?>
 <ul id="planeten-umbenennen">
-	<li><a href="scripts/rename.php" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>
+	<li><a href="scripts/rename.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>
 </ul>
 <?php
 	$ncount = array(
@@ -94,6 +94,11 @@
 				$link .= '?type='.urlencode($type);
 		}
 		$title = implode('; ', $title);
+		if(strpos($link, '?') === false)
+			$link .= '?';
+		else
+			$link .= '&';
+		$link .= SESSION_COOKIE.'='.urlencode(session_id());
 ?>
 <p class="neue-nachrichten">
 	<a href="<?=htmlentities($link)?>" title="<?=$title?>" accesskey="n" tabindex="1">Sie haben <?=htmlentities($ges_ncount)?> neue <kbd>N</kbd>achricht<?=($ges_ncount != 1) ? 'en' : ''?>.</a>
@@ -203,7 +208,7 @@
 	<dt class="<?=$own ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($flotte[2])?> <?=$flotte[7] ? 'rueck' : 'hin'?>flug">
 		<?=$string."\n"?>
 	</dt>
-	<dd class="<?=$own ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($flotte[2])?> <?=$flotte[7] ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($i)?>">Ankunft: <?=date('H:i:s, Y-m-d', $flotte[1][1])?> (Serverzeit), <a href="index.php?cancel=<?=htmlentities(urlencode($i))?>" class="abbrechen">Abbrechen</a></dd>
+	<dd class="<?=$own ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($flotte[2])?> <?=$flotte[7] ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($i)?>">Ankunft: <?=date('H:i:s, Y-m-d', $flotte[1][1])?> (Serverzeit), <a href="index.php?cancel=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a></dd>
 <?php
 			$countdowns[] = array($i, $flotte[1][1], ($flotte[7] || !$own));
 		}
@@ -237,7 +242,7 @@
 		$pos = explode(':', $planet['pos']);
 		$class = universe::get_planet_class($pos[0], $pos[1], $pos[2]);
 ?>
-	<li class="planet_<?=htmlentities($class)?><?=($no == $_SESSION['act_planet']) ? ' active' : ''?>"><?=($no != $_SESSION['act_planet']) ? '<a href="index.php?planet='.htmlentities(urlencode($no)).'" tabindex="'.$tabindex.'">' : ''?><?=utf8_htmlentities($planet['name'])?><?=($no != $_SESSION['act_planet']) ? '</a>' : ''?> <span class="koords">(<?=utf8_htmlentities($planet['pos'])?>)</span>
+	<li class="planet_<?=htmlentities($class)?><?=($no == $_SESSION['act_planet']) ? ' active' : ''?>"><?=($no != $_SESSION['act_planet']) ? '<a href="index.php?planet='.htmlentities(urlencode($no)).htmlentities(SESSION_COOKIE.'='.urlencode(session_id())).'" tabindex="'.$tabindex.'">' : ''?><?=utf8_htmlentities($planet['name'])?><?=($no != $_SESSION['act_planet']) ? '</a>' : ''?> <span class="koords">(<?=utf8_htmlentities($planet['pos'])?>)</span>
 		<dl class="planet-info">
 			<dt class="c-felder">Felder</dt>
 			<dd class="c-felder"><?=ths($planet['size'][0])?> <span class="gesamtgroesse">(<?=ths($planet['size'][1])?>)</span></dd>

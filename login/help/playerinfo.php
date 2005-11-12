@@ -121,7 +121,7 @@
 			foreach($player_info['verbuendete'] as $verbuendeter)
 			{
 ?>
-	<li><a href="playerinfo.php?player=<?=htmlentities(urlencode($verbuendeter))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($verbuendeter)?></a></li>
+	<li><a href="playerinfo.php?player=<?=htmlentities(urlencode($verbuendeter))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($verbuendeter)?></a></li>
 <?php
 			}
 ?>
@@ -175,7 +175,7 @@
 			{
 				$pos = explode(':', $player_info['planets'][$planet]['pos']);
 ?>
-	<li><?=utf8_htmlentities($player_info['planets'][$planet]['name'])?> <span class="koords">(<a href="../karte.php?galaxy=<?=htmlentities(urlencode($pos[0]))?>&amp;system=<?=htmlentities(urlencode($pos[1]))?>" title="Jenes Sonnensystem in der Karte ansehen"><?=utf8_htmlentities($player_info['planets'][$planet]['pos'])?></a>)</span></li>
+	<li><?=utf8_htmlentities($player_info['planets'][$planet]['name'])?> <span class="koords">(<a href="../karte.php?galaxy=<?=htmlentities(urlencode($pos[0]))?>&amp;system=<?=htmlentities(urlencode($pos[1]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Jenes Sonnensystem in der Karte ansehen"><?=utf8_htmlentities($player_info['planets'][$planet]['pos'])?></a>)</span></li>
 <?php
 			}
 ?>
@@ -187,7 +187,7 @@
 		{
 ?>
 <h3 id="nachricht">Nachricht</h3>
-<form action="../nachrichten.php?to=" method="post" class="playerinfo-nachricht">
+<form action="../nachrichten.php?to=&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="playerinfo-nachricht">
 	<dl>
 		<dt class="c-betreff"><label for="betreff-input">Betreff</label></dt>
 		<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" maxlength="30" tabindex="1" /></dd>

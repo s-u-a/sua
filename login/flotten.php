@@ -35,9 +35,10 @@
 		$fast_action = true;
 
 		$this_pos = explode(':', $this_planet['pos']);
-		$action_back_url = 'http://'.$_SERVER['HTTP_HOST'].h_root.'/login/karte.php';
+		$action_back_url = 'http://'.$_SERVER['HTTP_HOST'].h_root.'/login/karte.php?';
 		if($_GET['action_galaxy'] != $this_pos[0] || $_GET['action_system'] != $this_pos[1])
-			$action_back_url .= '?galaxy='.urlencode($_GET['action_galaxy']).'&system='.urlencode($_GET['action_system']);
+			$action_back_url .= 'galaxy='.urlencode($_GET['action_galaxy']).'&system='.urlencode($_GET['action_system']).'&';
+		$action_back_url .= SESSION_COOKIE.'='.urlencode(session_id());
 
 		$target_info = universe::get_planet_info($_GET['action_galaxy'], $_GET['action_system'], $_GET['action_planet']);
 		if(!$target_info || $target_info[1] == $_SESSION['username'])
@@ -306,7 +307,7 @@
 								{
 ?>
 <p class="error">
-	Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen können. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anfängerschutz.)
+	Das Imperium dieses Spielers ist so groß, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anfängerschutz.)
 </p>
 <?php
 									$noob = true;
@@ -315,7 +316,7 @@
 								{
 ?>
 <p class="error">
-	Das Imperium dieses Spielers ist so groß, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anfängerschutz.)
+	Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen können. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anfängerschutz.)
 </p>
 <?php
 									$noob = true;
@@ -622,7 +623,7 @@
 							$time2 = $time;
 						$time_string .= add_nulls(floor($time2/3600), 2).':'.add_nulls(floor(($time2%3600)/60), 2).':'.add_nulls(($time2%60), 2);
 ?>
-<form action="flotten.php" method="post" class="flotte-versenden-2">
+<form action="flotten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2">
 	<dl>
 		<dt class="c-ziel">Ziel</dt>
 		<dd class="c-ziel"><?=utf8_htmlentities($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'])?> &ndash; <?=$info[1] ? utf8_htmlentities($info[2]).' <span class="playername">('.utf8_htmlentities($info[1]).')</span>' : 'Unbesiedelt'?></dd>
@@ -993,7 +994,7 @@
 <?php
 			$this_pos = explode(':', $this_planet['pos']);
 ?>
-<form action="flotten.php" method="post" class="flotte-versenden">
+<form action="flotten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="flotte-versenden">
 <?php
 			if($my_flotten < $max_flotten && !$user_array['umode'])
 			{
@@ -1075,7 +1076,7 @@
 				if(!isset($items['schiffe'][$id]) || $anzahl < 1)
 					continue;
 ?>
-			<dt><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($items['schiffe'][$id]['name'])?></a> <span class="vorhanden">(<?=ths($anzahl)?>&nbsp;vorhanden)</span></dt>
+			<dt><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($items['schiffe'][$id]['name'])?></a> <span class="vorhanden">(<?=ths($anzahl)?>&nbsp;vorhanden)</span></dt>
 			<dd><input type="text" name="flotte[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$i?>"<?=($my_flotten >= $max_flotten || $user_array['umode']) ? ' readonly="readonly"' : ''?> /></dd>
 <?php
 				$i++;

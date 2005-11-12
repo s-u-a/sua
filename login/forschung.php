@@ -1,7 +1,7 @@
 <?php
 	require('scripts/include.php');
 
-	$jemand_forscht = get_jemand_forscht();
+	$laufende_forschungen = get_laufende_forschungen();
 
 	if(isset($planet))
 		unset($planet);
@@ -11,12 +11,12 @@
 		$a_id = $_GET['lokal'];
 		$global = false;
 	}
-	elseif(isset($_GET['global']) && !$jemand_forscht)
+	elseif(isset($_GET['global']) && count($laufende_forschungen) == 0)
 	{
 		$a_id = $_GET['global'];
 		$global = true;
 	}
-	if((!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B8') && isset($a_id) && !$user_array['umode'] && isset($items['forschung'][$a_id]) && $items['forschung'][$a_id]['buildable'] && (!isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0]) == ''))
+	if((!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B8') && isset($a_id) && !$user_array['umode'] && isset($items['forschung'][$a_id]) && $items['forschung'][$a_id]['buildable'] && (!isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0]) == '') && !in_array($a_id, $laufende_forschungen))
 	{
 		# Weiterforschen
 
@@ -135,13 +135,9 @@
 		delete_request();
 	}
 
-	$jemand_forscht = get_jemand_forscht();
+	$laufende_forschungen = get_laufende_forschungen();
 
 	login_gui::html_head();
-
-	/*echo '<pre>';
-	print_r($user_array);
-	echo '</pre>';*/
 ?>
 <h2>Forschung</h2>
 <?php
@@ -166,28 +162,28 @@
 		if($this_planet['ress'][0] < $ress[0] || $this_planet['ress'][1] < $ress[1] || $this_planet['ress'][2] < $ress[2] || $this_planet['ress'][3] < $ress[3])
 			$buildable = false; # Zu wenig Rohstoffe zum Bau
 		$buildable_global = $buildable;
-		if($jemand_forscht)
+		if(count($laufende_forschungen) > 0)
 			$buildable_global = false; # Es wird schon wo geforscht
 ?>
 <div class="item forschung" id="item-<?=htmlentities($id)?>">
-	<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="stufe">(Level&nbsp;<?=ths($level)?>)</span></h3>
+	<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="stufe">(Level&nbsp;<?=ths($level)?>)</span></h3>
 <?php
 		if(!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B8')
 		{
-			if(!$user_array['umode'] && (!isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0] == '')))
+			if(!$user_array['umode'] && (!isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0]) == '') && !in_array($id, $laufende_forschungen))
 			{
 				if($geb['buildable'])
 				{
 ?>
 	<ul>
-		<li class="item-ausbau forschung-lokal<?=$buildable ? '' : ' no-ress'?>"><?=$buildable ? '<a href="forschung.php?lokal='.htmlentities(urlencode($id)).'" tabindex="'.$tabindex.'">' : ''?>Lokal weiterentwickeln<?=$buildable ? '</a>' : ''?></li>
+		<li class="item-ausbau forschung-lokal<?=$buildable ? '' : ' no-ress'?>"><?=$buildable ? '<a href="forschung.php?lokal='.htmlentities(urlencode($id)).'&amp;'.htmlentities(SESSION_COOKIE.'='.urlencode(session_id())).'" tabindex="'.$tabindex.'">' : ''?>Lokal weiterentwickeln<?=$buildable ? '</a>' : ''?></li>
 <?php
 					if($buildable)
 						$tabindex++;
-					if(!$jemand_forscht)
+					if(count($laufende_forschungen) == 0)
 					{
 ?>
-		<li class="item-ausbau forschung-global<?=$buildable_global ? '' : ' no-ress'?>"><?=$buildable_global ? '<a href="forschung.php?global='.htmlentities(urlencode($id)).'" tabindex="'.$tabindex.'">' : ''?>Global weiterentwickeln<?=$buildable_global ? '</a>' : ''?></li>
+		<li class="item-ausbau forschung-global<?=$buildable_global ? '' : ' no-ress'?>"><?=$buildable_global ? '<a href="forschung.php?global='.htmlentities(urlencode($id)).'&amp;'.htmlentities(SESSION_COOKIE.'='.urlencode(session_id())).'" tabindex="'.$tabindex.'">' : ''?>Global weiterentwickeln<?=$buildable_global ? '</a>' : ''?></li>
 <?php
 						if($buildable_global)
 							$tabindex++;
@@ -200,7 +196,7 @@
 			elseif(isset($this_planet['building']['forschung']) && $this_planet['building']['forschung'][0] == $id)
 			{
 ?>
-	<div class="restbauzeit" id="restbauzeit-<?=htmlentities($id)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $this_planet['building']['forschung'][1])?> (Serverzeit), <a href="forschung.php?cancel=<?=htmlentities(urlencode($id))?>" class="abbrechen">Abbrechen</a></div>
+	<div class="restbauzeit" id="restbauzeit-<?=htmlentities($id)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $this_planet['building']['forschung'][1])?> (Serverzeit), <a href="forschung.php?cancel=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a></div>
 	<script type="text/javascript">
 		init_countdown('<?=$id?>', <?=$this_planet['building']['forschung'][1]?>);
 	</script>

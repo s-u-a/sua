@@ -68,7 +68,7 @@
 	login_gui::html_head();
 ?>
 <h2>Schiffswerft</h2>
-<form action="schiffswerft.php" method="post">
+<form action="schiffswerft.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post">
 <?php
 	$tabindex = 1;
 	foreach($items['schiffe'] as $id=>$geb)
@@ -83,7 +83,7 @@
 		$ress = $geb['ress'];
 ?>
 	<div class="item schiffe" id="item-<?=htmlentities($id)?>">
-		<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="anzahl">(<?=ths($count)?>)</span></h3>
+		<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="anzahl">(<?=ths($count)?>)</span></h3>
 <?php
 		if(!$user_array['umode'] && (!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B10') && $geb['buildable'])
 		{

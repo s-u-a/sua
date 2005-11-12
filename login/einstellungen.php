@@ -138,7 +138,7 @@
 <?php
 	}
 ?>
-<form action="einstellungen.php" method="post" class="einstellungen-formular">
+<form action="einstellungen.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular">
 	<div class="einstellungen-speichern-1"><button type="submit" title="[W]">Speichern</button></div>
 	<fieldset class="verschiedene-einstellungen">
 		<legend>Verschiedene Einstellungen</legend>

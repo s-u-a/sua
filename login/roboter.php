@@ -74,7 +74,7 @@
 	login_gui::html_head();
 ?>
 <h2>Roboter</h2>
-<form action="roboter.php" method="post">
+<form action="roboter.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post">
 <?php
 	$tabindex = 1;
 	foreach($items['roboter'] as $id=>$geb)
@@ -89,7 +89,7 @@
 		$ress = $geb['ress'];
 ?>
 	<div class="item roboter" id="item-<?=htmlentities($id)?>">
-		<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="anzahl">(<?=utf8_htmlentities($count)?>)</span></h3>
+		<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="anzahl">(<?=utf8_htmlentities($count)?>)</span></h3>
 <?php
 		if(!$user_array['umode'] && (!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B9') && $geb['buildable'])
 		{

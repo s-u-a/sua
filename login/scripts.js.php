@@ -38,7 +38,7 @@ function time_up()
 
 		if(this_remain < 0)
 		{
-			document.getElementById('restbauzeit-'+codo[0]).innerHTML = '<a href="?" class="fertig" title="Seite neu laden.">Fertig.</a>';
+			document.getElementById('restbauzeit-'+codo[0]).innerHTML = '<a href="?'+window.session_cookie+'='+encodeURIComponent(window.session_id)+'" class="fertig" title="Seite neu laden.">Fertig.</a>';
 			delete countdowns[codo_key];
 			continue;
 		}
@@ -55,7 +55,7 @@ function time_up()
 
 		this_timestring += mk2(Math.floor(this_remain/3600))+':'+mk2(Math.floor((this_remain%3600)/60))+':'+mk2(Math.floor(this_remain%60));
 		if(codo[2])
-			this_timestring += ' <a href="?cancel='+encodeURIComponent(codo[0])+'" class="abbrechen">Abbrechen</a>';
+			this_timestring += ' <a href="?cancel='+encodeURIComponent(codo[0])+'&amp;'+window.session_cookie+'='+encodeURIComponent(window.session_id)+'" class="abbrechen">Abbrechen</a>';
 
 		document.getElementById('restbauzeit-'+codo[0]).innerHTML = this_timestring;
 	}

@@ -11,7 +11,7 @@
 	$handelskurs = preg_split("/\r\n|\r|\n/", file_get_contents(DB_HANDELSKURS));
 ?>
 <h2>Handelsrechner</h2>
-<form action="handelsrechner.php" method="post" class="handelsrechner">
+<form action="handelsrechner.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="handelsrechner">
 	<fieldset class="handelsrechner-handelskurs">
 		<legend>Handelskurs</legend>
 		<dl>
@@ -187,7 +187,7 @@
 	</fieldset>
 	<noscript><button type="submit" tabindex="30">Berechnen</button></noscript>
 	<p id="fortgeschrittener-modus" class="handelsrechner-fortgeschrittener-modus">
-		<input type="checkbox" name="fortgeschrittener-modus" id="fortgeschrittener-modus-input"<?=isset($_POST['fortgeschrittener-modus']) ? ' checked="checked"' : ''?> onchange="refresh_modus();" onclick="refresh_modus();" onkeyup="refresh_modus();" accesskey="u" tabindex="29" /> <label for="fortgeschrittener-modus-input">Fortgeschrittener Mod<kbd>u</kbd>s</label> (<a href="handelsrechner.php?hilfe=0" onclick="show_hilfe(); return false;">Hilfe</a>)
+		<input type="checkbox" name="fortgeschrittener-modus" id="fortgeschrittener-modus-input"<?=isset($_POST['fortgeschrittener-modus']) ? ' checked="checked"' : ''?> onchange="refresh_modus();" onclick="refresh_modus();" onkeyup="refresh_modus();" accesskey="u" tabindex="29" /> <label for="fortgeschrittener-modus-input">Fortgeschrittener Mod<kbd>u</kbd>s</label> (<a href="handelsrechner.php?hilfe=0&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" onclick="show_hilfe(); return false;">Hilfe</a>)
 	</p>
 <?php
 	if(!isset($_GET['hilfe']))
@@ -203,15 +203,15 @@
 	<hr id="hilfe-trenn" />
 	<div id="hilfe" class="handelsrechner-hilfe">
 		<ul id="hilfe-schliessen-klein">
-			<li><a href="<?=htmlentities($_SERVER['PHP_SELF'])?>" onclick="hide_hilfe(); return false;"><abbr title="Hilfe schließen">X</abbr></a></li>
+			<li><a href="<?=htmlentities($_SERVER['PHP_SELF'])?>?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" onclick="hide_hilfe(); return false;"><abbr title="Hilfe schließen">X</abbr></a></li>
 		</ul>
 		<h3>Hilfe zum fortgeschrittenen Modus</h3>
 		<p>Der fortgeschrittene Modus bietet die Möglichkeit, Angebot oder Erhältnis zu verschiedenen Anteilen in die Rohstoffe aufzuteilen.</p>
 		<p>Wenn Sie in den fortgeschrittenen Modus wechseln, erscheint vor jedem Rohstofffeld auf der Seite, auf der Sie gerade nichts eintippen wollen, ein zusätzliches kleines Textfeld. Dort können Sie die Verhältnisse eintragen, wie die Rohstoffe aufgeteilt werden sollen. Alternativ können Sie auch einfach Prozentzahlen eintippen. Achten Sie aber darauf, dass diese wirklich zusammen 100 ergeben.</p>
 
 		<ul id="beispiele-ausklappen">
-			<li><a href="handelsrechner.php?hilfe=<?=(isset($_GET['hilfe']) && $_GET['hilfe'] == '1') ? '0' : '1'?>" onclick="show_beispiel_1(); return false;">Beispiel 1</a></li>
-			<li><a href="handelsrechner.php?hilfe=<?=(isset($_GET['hilfe']) && $_GET['hilfe'] == '2') ? '0' : '2'?>" onclick="show_beispiel_2(); return false;">Beispiel 2</a></li>
+			<li><a href="handelsrechner.php?hilfe=<?=(isset($_GET['hilfe']) && $_GET['hilfe'] == '1') ? '0' : '1'?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" onclick="show_beispiel_1(); return false;">Beispiel 1</a></li>
+			<li><a href="handelsrechner.php?hilfe=<?=(isset($_GET['hilfe']) && $_GET['hilfe'] == '2') ? '0' : '2'?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" onclick="show_beispiel_2(); return false;">Beispiel 2</a></li>
 		</ul>
 		<hr id="beispiel-trenn" />
 <?php
@@ -270,7 +270,7 @@
 	}
 ?>
 		<ul id="hilfe-schliessen">
-			<li><a href="<?=htmlentities($_SERVER['PHP_SELF'])?>" onclick="hide_hilfe(); return false;">Hilfe schließen</a></li>
+			<li><a href="<?=htmlentities($_SERVER['PHP_SELF'])?>?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" onclick="hide_hilfe(); return false;">Hilfe schließen</a></li>
 		</ul>
 <?php
 	if(!isset($_GET['hilfe']))

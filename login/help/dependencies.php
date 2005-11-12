@@ -16,7 +16,7 @@
 	{
 ?>
 		<tr id="deps-<?=htmlentities($id)?>">
-			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($gebaeude['name'])?></a></td>
+			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($gebaeude['name'])?></a></td>
 <?php
 		if(!isset($gebaeude['deps']) || count($gebaeude['deps']) <= 0)
 		{
@@ -66,7 +66,7 @@
 	{
 ?>
 		<tr id="deps-<?=htmlentities($id)?>">
-			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($forschung['name'])?></a></td>
+			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($forschung['name'])?></a></td>
 <?php
 		if(!isset($forschung['deps']) || count($forschung['deps']) <= 0)
 		{
@@ -113,7 +113,7 @@
 	{
 ?>
 		<tr id="deps-<?=htmlentities($id)?>">
-			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($roboter['name'])?></a></td>
+			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($roboter['name'])?></a></td>
 <?php
 		if(!isset($roboter['deps']) || count($roboter['deps']) <= 0)
 		{
@@ -160,7 +160,7 @@
 	{
 ?>
 		<tr id="deps-<?=htmlentities($id)?>">
-			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($schiff['name'])?></a></td>
+			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($schiff['name'])?></a></td>
 <?php
 		if(!isset($schiff['deps']) || count($schiff['deps']) <= 0)
 		{
@@ -207,7 +207,7 @@
 	{
 ?>
 		<tr id="deps-<?=htmlentities($id)?>">
-			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($verteidigung['name'])?></a></td>
+			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($verteidigung['name'])?></a></td>
 <?php
 		if(!isset($verteidigung['deps']) || count($verteidigung['deps']) <= 0)
 		{
