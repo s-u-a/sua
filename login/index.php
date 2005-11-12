@@ -242,7 +242,7 @@
 		$pos = explode(':', $planet['pos']);
 		$class = universe::get_planet_class($pos[0], $pos[1], $pos[2]);
 ?>
-	<li class="planet_<?=htmlentities($class)?><?=($no == $_SESSION['act_planet']) ? ' active' : ''?>"><?=($no != $_SESSION['act_planet']) ? '<a href="index.php?planet='.htmlentities(urlencode($no)).htmlentities(SESSION_COOKIE.'='.urlencode(session_id())).'" tabindex="'.$tabindex.'">' : ''?><?=utf8_htmlentities($planet['name'])?><?=($no != $_SESSION['act_planet']) ? '</a>' : ''?> <span class="koords">(<?=utf8_htmlentities($planet['pos'])?>)</span>
+	<li class="planet_<?=htmlentities($class)?><?=($no == $_SESSION['act_planet']) ? ' active' : ''?>"><?=($no != $_SESSION['act_planet']) ? '<a href="index.php?planet='.htmlentities(urlencode($no).'&'.SESSION_COOKIE.'='.urlencode(session_id())).'" tabindex="'.$tabindex.'">' : ''?><?=utf8_htmlentities($planet['name'])?><?=($no != $_SESSION['act_planet']) ? '</a>' : ''?> <span class="koords">(<?=utf8_htmlentities($planet['pos'])?>)</span>
 		<dl class="planet-info">
 			<dt class="c-felder">Felder</dt>
 			<dd class="c-felder"><?=ths($planet['size'][0])?> <span class="gesamtgroesse">(<?=ths($planet['size'][1])?>)</span></dd>

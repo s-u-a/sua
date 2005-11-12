@@ -60,7 +60,7 @@
 		$changed = true;
 	}
 
-	if(isset($_POST['umode']) && time()-$user_array['umode_time'] >= 259200)
+	if((!isset($user_array['locked']) || !$user_array['locked']) && isset($_POST['umode']) && time()-$user_array['umode_time'] >= 259200)
 	{
 		if(!$user_array['umode'])
 		{
@@ -237,39 +237,46 @@
 			</tbody>
 		</table>
 	</fieldset>
+<?php
+	if(!isset($user_array['locked']) || !$user_array['locked'])
+	{
+?>
 	<fieldset class="urlaubsmodus">
 		<legend>Urlaubsmodus</legend>
 <?php
-	if(!$user_array['umode'])
-	{
-		if(time()-$user_array['umode_time'] >= 259200)
+		if(!$user_array['umode'])
 		{
+			if(time()-$user_array['umode_time'] >= 259200)
+			{
 ?>
 		<div><button name="umode" value="on" tabindex="17" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich betreten?');">Urlaubsmodus</button></div>
 		<p>Sie werden frühestens nach drei Tagen (<?=date('Y-m-d, H:i', time()+259200)?>, Serverzeit) aus dem Urlaubsmodus zurückkehren können.</p>
+<?php
+			}
+			else
+			{
+?>
+		<p>Sie können erst wieder ab dem <?=date('Y-m-d, H:i', $user_array['umode_time']+259200)?> (Serverzeit) in den Urlaubsmodus wechseln.</p>
+<?php
+			}
+		}
+		elseif(time()-$user_array['umode_time'] >= 259200)
+		{
+?>
+		<div><button name="umode" value="on" tabindex="17" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich verlassen?');">Urlaubsmodus verlassen</button></div>
 <?php
 		}
 		else
 		{
 ?>
-		<p>Sie können erst wieder ab dem <?=date('Y-m-d, H:i', $user_array['umode_time']+259200)?> (Serverzeit) in den Urlaubsmodus wechseln.</p>
-<?php
-		}
-	}
-	elseif(time()-$user_array['umode_time'] >= 259200)
-	{
-?>
-		<div><button name="umode" value="on" tabindex="17" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich verlassen?');">Urlaubsmodus verlassen</button></div>
-<?php
-	}
-	else
-	{
-?>
 		<p>Sie können den Urlaubsmodus spätestens am <?=date('Y-m-d, H:i', $user_array['umode_time']+259200)?> (Serverzeit) verlassen.</p>
 <?php
-	}
+		}
 ?>
 	</fieldset>
+<?php
+	}
+?>
 	<fieldset class="email-adresse">
 		<legend>E-Mail-Adresse</legend>
 		<dl>

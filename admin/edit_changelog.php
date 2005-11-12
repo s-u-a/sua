@@ -1,5 +1,8 @@
 <?php
-	require('../engine/include.php');
+	require('include.php');
+
+	if(!$admin_array['permissions'][6])
+		die('No access.');
 
 	if(isset($_GET['delete']))
 	{

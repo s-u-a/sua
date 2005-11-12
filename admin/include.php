@@ -1,0 +1,73 @@
+<?php
+	require('../engine/include.php');
+
+	$admins = get_admin_list();
+
+	session_start();
+
+	if((isset($_SESSION['ip']) && $_SESSION['ip'] != $_SERVER['REMOTE_ADDR']) || (isset($_GET['logout']) && $_GET['logout']))
+	{
+		if(isset($_COOKIE[SESSION_COOKIE]))
+			setcookie(SESSION_COOKIE, '');
+		unset($_SESSION);
+		$_SESSION = array();
+	}
+	if(isset($_GET['logout']) && $_GET['logout'])
+		session_destroy();
+
+	if(!isset($_SESSION['admin_username']) || !isset($admins[$_SESSION['admin_username']]))
+	{
+		if(isset($_POST['admin_username']) && isset($_POST['admin_password']) && isset($admins[$_POST['admin_username']]) && md5($_POST['admin_password']) == $admins[$_POST['admin_username']]['password'])
+		{
+			$_SESSION['admin_username'] = $_POST['admin_username'];
+			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+		}
+		else
+		{
+			admin_gui::html_head();
+?>
+<form action="<?=htmlentities($_SERVER['REQUEST_URI'])?>" method="post">
+	<dl>
+		<dt><label for="admin-benutzername-input">Benutzername</dt>
+		<dd><input type="text" name="admin_username" id="admin-benutzername-input" /></dd>
+
+		<dt><label for="admin-passwort-input">Passwort</dt>
+		<dd><input type="password" name="admin_password" id="admin-passwort-input" /></dd>
+	</dl>
+	<div><button type="submit">Anmelden</button></div>
+</form>
+<?php
+			admin_gui::html_foot();
+			die();
+		}
+	}
+
+	$admin_array = &$admins[$_SESSION['admin_username']];
+
+	class admin_gui
+	{
+		function html_head()
+		{
+?>
+<?='<?=xml version="1.0" encoding="UTF-8"?>'."\n"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+	<head>
+		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+		<title>S-U-A &ndash; Adminbereich</title>
+	</head>
+	<body>
+		<h1><a href="<?=htmlentities(h_root.'/admin/index.php')?>"><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Adminbereich</a> [<a href="?logout=1">Abmelden nicht vergessen</a>]</h1>
+<?php
+		}
+
+		function html_foot()
+		{
+?>
+	</body>
+</html>
+<?php
+		}
+	}
+?>

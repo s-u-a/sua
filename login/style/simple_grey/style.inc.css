@@ -384,3 +384,5 @@ br.clear { clear:both; }
 .nachrichtentypen-empfangen tbody th { font-weight:bold; }
 
 .einstellungen-speichern-1 { display:none; }
+
+#gesperrt-hinweis { font-size:1.2em; font-weight:bold; color:#f00; margin:0; padding:.5em; }

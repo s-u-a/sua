@@ -76,6 +76,12 @@
 		write_user_array();
 	}
 
+	if(isset($_SESSION['resume']) && $_SESSION['resume'])
+	{
+		$resume = true;
+		unset($_SESSION['resume']);
+	}
+
 	# Wiederherstellen
 	if($resume && isset($user_array['last_request']))
 	{
@@ -147,9 +153,12 @@
 
 	$this_planet = & $user_array['planets'][$_SESSION['act_planet']];
 
-	$user_array['last_request'] = $_SERVER['REQUEST_URI'];
-	$user_array['last_planet'] = $_SESSION['act_planet'];
-	$user_array['last_active'] = time();
+	if(!isset($_SESSION['ghost']) || !$_SESSION['ghost'])
+	{
+		$user_array['last_request'] = $_SERVER['REQUEST_URI'];
+		$user_array['last_planet'] = $_SESSION['act_planet'];
+		$user_array['last_active'] = time();
+	}
 
 	$items = get_items();
 
@@ -258,7 +267,20 @@
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlentities(h_root)?>/login/nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="c">Na<kbd>c</kbd>hrichten</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/help/dependencies.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlentities(h_root)?>/login/help/dependencies.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="a"><kbd>A</kbd>bhängigkeiten</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlentities(h_root)?>/login/einstellungen.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="t">Eins<kbd>t</kbd>ellungen</a></li>
+<?php
+			if(isset($_SESSION['admin_username']))
+			{
+?>
+				<li id="navigation-abmelden"><a href="<?=htmlentities(h_root)?>/admin/index.php" accesskey="m">Ad<kbd>m</kbd>inbereich</a></li>
+<?php
+			}
+			else
+			{
+?>
 				<li id="navigation-abmelden"><a href="<?=htmlentities(h_root)?>/login/scripts/logout.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="m">Ab<kbd>m</kbd>elden</a></li>
+<?php
+			}
+?>
 			</ul>
 		</div>
 		<div id="version">
@@ -285,6 +307,14 @@
 				<dd class="ress-energie" id="ress-energie"><?=ths(utf8_htmlentities($ges_prod[5]))?></dd>
 			</dl>
 			<div id="content-10"><div id="content-11"><div id="content-12"><div id="content-13">
+<?php
+			if(isset($user_array['locked']) && $user_array['locked'])
+			{
+?>
+				<p id="gesperrt-hinweis"><strong>Ihr Benutzeraccount ist gesperrt.</strong></p>
+<?php
+			}
+?>
 				<h1>Planet <em><?=utf8_htmlentities($this_planet['name'])?></em> <span class="koords">(<?=utf8_htmlentities($this_planet['pos'])?>)</span></h1>
 <?php
 		}

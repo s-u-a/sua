@@ -37,6 +37,19 @@ ln -s $CWD/show_player_info $1/show_player_info
 mkdir $1/truemmerfelder
 mkdir $1/universe
 ln -s $CWD/create_galaxy $1/universe/create_galaxy
+touch $1/admins
+read -p "Enter Admin user name: " ADMIN_USERNAME
+read -s -p "Enter Admin password: " ADMIN_PASSWD
+
+ADMIN_PASSWD=`md5sum << $ADMIN_PASSWD`
+for i in $ADMIN_PASSWD; do
+ADMIN_PASSWD=$i
+break
+done
+
+echo -n $ADMIN_USERNAME >> $1/admin
+echo -ne "\t" >> $1/admin
+echo -n $ADMIN_PASSWD >> $1/admin
 
 OLD_PWD=`pwd`
 cd $1/universe

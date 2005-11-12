@@ -35,6 +35,7 @@
 	$DB_HOSTNAME = $DB_DIR.'/hostname';
 	$DB_HANDEL = $DB_DIR.'/handel';
 	$DB_HANDELSKURS = $DB_DIR.'/handelskurs';
+	$DB_ADMINS = $DB_DIR.'/admins';
 	$EVENTHANDLER_INTERVAL = 30;
 	$THS_HTML = '&nbsp;';
 	$THS_UTF8 = "\xc2\xa0";
@@ -58,6 +59,7 @@
 	define('DB_HOSTNAME', $DB_HOSTNAME);
 	define('DB_HANDEL', $DB_HANDEL);
 	define('DB_HANDELSKURS', $DB_HANDELSKURS);
+	define('DB_ADMINS', $DB_ADMINS);
 	define('EVENTHANDLER_INTERVAL', $EVENTHANDLER_INTERVAL);
 	define('THS_HTML', $THS_HTML);
 	define('THS_UTF8', $THS_UTF8);
@@ -577,19 +579,6 @@
 	</div></div></div></div></div></div></div></div></body>
 </html>
 <?php
-		}
-	}
-
-	########################################
-
-	class admin_gui
-	{
-		function html_head()
-		{
-		}
-
-		function html_foot()
-		{
 		}
 	}
 
@@ -1594,6 +1583,29 @@
 		}
 
 		return $ges_prod;
+	}
+
+	function get_admin_list()
+	{
+		$admins = array();
+		if(!is_file(DB_ADMINS) || !is_readable(DB_ADMINS))
+			return false;
+		$admin_file = preg_split("/\r\n|\r|\n/", file_get_contents(DB_ADMINS));
+		foreach($admin_file as $line)
+		{
+			$line = explode("\t", $line);
+			if(count($line) < 2)
+				continue;
+
+			$this = &$admins[urldecode(array_shift($line))];
+			$this = array();
+			$this['password'] = array_shift($line);
+			$this['permissions'] = $line;
+
+			unset($this);
+		}
+
+		return $admins;
 	}
 
 	########################################

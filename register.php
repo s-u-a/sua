@@ -109,6 +109,7 @@
 					$user_array['umode'] = false;
 					$user_array['umode_time'] = 0;
 					$user_array['ress_refresh'] = 0;
+					$user_array['flotten'] = array();
 
 					if(isset($_POST['email']))
 						$user_array['email'] = $_POST['email'];

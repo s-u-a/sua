@@ -31,7 +31,7 @@
 		$prev_system = $system_count;
 ?>
 <h3>Karte <span class="karte-koords">(<?=utf8_htmlentities($galaxy_n)?>:<?=utf8_htmlentities($system_n)?>)</span></h3>
-<form action="karte.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="get" class="karte-wahl">
+<form action="karte.php" method="get" class="karte-wahl">
 	<fieldset class="karte-galaxiewahl">
 		<legend>Galaxie</legend>
 		<ul>
@@ -49,7 +49,7 @@
 		</ul>
 	</fieldset>
 	<div class="karte-wahl-absenden">
-		<button type="submit" tabindex="7" accesskey="w"><kbd>W</kbd>echseln</button>
+		<button type="submit" tabindex="7" accesskey="w"><kbd>W</kbd>echseln</button><input type="hidden" name="<?=htmlentities(SESSION_COOKIE)?>" value="<?=htmlentities(session_id())?>" />
 	</div>
 </form>
 <?php
@@ -79,11 +79,11 @@
 		$class = universe::get_planet_class($galaxy_n, $system_n, $i);
 
 		$that_uname = $planet[1];
-		$umode = false;
-		if(substr($that_uname, -4) == ' (U)')
+		$suffix = '';
+		if(substr($that_uname, -4) == ' (U)' || substr($that_uname, -4) == ' (g)')
 		{
+			$suffix = substr($that_uname, -4);
 			$that_uname = substr($that_uname, 0, -4);
-			$umode = true;
 		}
 
 		if($planet[1])
@@ -94,8 +94,10 @@
 				$class2 = 'verbuendet';
 			else
 				$class2 = 'fremd';
-			if($umode)
+			if($suffix == ' (U)')
 				$class2 .= ' urlaub';
+			elseif($suffix == ' (g)')
+				$class2 .= ' gesperrt';
 		}
 		else
 			$class2 = 'leer';
@@ -113,7 +115,7 @@
 		if($planet[1])
 		{
 ?>
-			<td class="c-name"><?=utf8_htmlentities($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($that_uname)?></a><?=$umode ? ' (U)' : ''?>)</span></td>
+			<td class="c-name"><?=utf8_htmlentities($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($that_uname)?></a><?=htmlentities($suffix)?>)</span></td>
 <?php
 		}
 		else
@@ -139,7 +141,7 @@
 <?php
 			if($that_uname != $_SESSION['username'])
 			{
-				if(!$umode && !$user_array['umode'] && isset($this_planet['schiffe']['S5']) && $this_planet['schiffe']['S5'] > 0)
+				if($suffix != ' (U)' && !$user_array['umode'] && isset($this_planet['schiffe']['S5']) && $this_planet['schiffe']['S5'] > 0)
 				{
 ?>
 					<li class="c-spionieren"><a href="flotten.php?action=spionage&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Spionieren Sie diesen Planeten aus">Spionieren</a></li>
