@@ -1,4 +1,4 @@
-php_flag session.use_cookies 1
-php_flag session.use_only_cookies 1
-php_flag session.cookie_path /admin/
-php_flag session.gc_maxlifetime 600
+php_flag session.use_cookies on
+php_flag session.use_only_cookies on
+php_value session.cookie_path /admin/
+php_value session.gc_maxlifetime 600
