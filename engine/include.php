@@ -1103,6 +1103,17 @@
 			return array($username, $points);
 		}
 
+		function make_info($username, $points)
+		{
+			$string = substr($username, 0, 24);
+			if(strlen($string) < 24)
+				$string .= str_repeat(' ', 24-strlen($string));
+			$points_bin = add_nulls(base_convert($points, 10, 2), 64);
+			for($i = 0; $i < strlen($points_bin); $i+=8)
+				$string .= chr(bindec(substr($points_bin, $i, 8)));
+			return $string;
+		}
+
 		function get_players_count()
 		{
 			$filesize = filesize(DB_HIGHSCORES);

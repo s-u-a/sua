@@ -248,7 +248,8 @@
 	</dd>
 </dl>
 <?php
-					if($_GET['type'] == 6 || $_GET['type'] == 7)
+					#if($_GET['type'] == 6 || $_GET['type'] == 7)
+					if($message['from'] != '' && $message['from'] != $_SESSION['username'])
 					{
 						# Bei Nachrichten im Postausgang ist die Antwort nicht moeglich
 
@@ -421,7 +422,7 @@
 				<th class="c-auswaehlen"></th>
 				<th class="c-betreff">Betreff</th>
 <?php
-	if($_GET['type'] == 6 || $_GET['type'] == 7)
+	#if($_GET['type'] == 6 || $_GET['type'] == 7)
 	{
 ?>
 				<th class="c-absender">Absender</th>
@@ -450,7 +451,7 @@
 				<td class="c-auswaehlen"><input type="checkbox" name="message[<?=htmlentities($message_id)?>]" tabindex="<?=$tabindex++?>" /></td>
 				<td class="c-betreff"><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($message_id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" tabindex="<?=$tabindex++?>"><?=(trim($message['subject']) != '') ? utf8_htmlentities($message['subject']) : 'Kein Betreff'?></a></td>
 <?php
-	if($_GET['type'] == 6 || $_GET['type'] == 7)
+	#if($_GET['type'] == 6 || $_GET['type'] == 7)
 	{
 ?>
 				<td class="c-absender"><?=utf8_htmlentities($message['from'])?></td>

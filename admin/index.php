@@ -146,10 +146,9 @@
 					if(!is_file(DB_MESSAGES.'/'.$message) || !is_readable(DB_MESSAGES.'/'.$message))
 						continue;
 					$mess = unserialize(gzuncompress(file_get_contents(DB_MESSAGES.'/'.$message)));
-					$mess_key = array_search($_POST['delete_username'], $mess['users']);
-					if($mess_key !== false)
+					if(isset($mess['users'][$_POST['delete_username']]))
 					{
-						unset($mess['users'][$mess_key]);
+						unset($mess['users'][$_POST['delete_username']]);
 						if(count($mess['users']) == 0)
 							unlink(DB_MESSAGES.'/'.$message);
 						else
@@ -212,6 +211,157 @@
 		write_user_array($_POST['lock_username'], $that_user_array);
 	}
 
+	if($admin_array['permissions'][5] && isset($_POST['rename_old']) && isset($_POST['rename_new']) && is_file(DB_PLAYERS.'/'.urlencode(trim($_POST['rename_old']))) && is_readable(DB_PLAYERS.'/'.urlencode(trim($_POST['rename_old']))) && !file_exists(DB_PLAYERS.'/'.urlencode(substr(trim($_POST['rename_new']), 0, 20))))
+	{
+		# Benutzer umbenennen
+
+		$_POST['rename_old'] = trim($_POST['rename_old']);
+		$_POST['rename_new'] = substr(trim($_POST['rename_new']), 0, 20);
+
+		$that_user_array = get_user_array($_POST['rename_old']);
+
+		$that_user_array['username'] = $_POST['rename_new'];
+
+		# Planeten neu benenennen
+		$planets = array_keys($that_user_array['planets']);
+		foreach($planets as $planet)
+		{
+			$pos = explode(':', $that_user_array['planets'][$planet]['pos']);
+			$old_info = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
+			if(isset($that_user_array['locked']) && $that_user_array['locked'])
+				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['rename_new'].' (g)', $old_info[2]);
+			elseif($that_user_array['umode'])
+				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['rename_new'].' (U)', $old_info[2]);
+			else
+				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['rename_new'], $old_info[2]);
+		}
+
+		# Nachrichten durchforsten
+		$dh = opendir(DB_MESSAGES);
+		while(($message = readdir($dh)) !== false)
+		{
+			if(!is_file(DB_MESSAGES.'/'.$message) || !is_readable(DB_MESSAGES.'/'.$message) || !is_writeable(DB_MESSAGES.'/'.$message))
+				continue;
+			$changed = false;
+			$msg = unserialize(gzuncompress(file_get_contents(DB_MESSAGES.'/'.$message)));
+			if($msg['from'] == $_POST['rename_old'])
+			{
+				$msg['from'] = $_POST['rename_new'];
+				$changed = true;
+			}
+
+			if(isset($msg['from'][$_POST['rename_old']]))
+			{
+				$msg['from'][$_POST['rename_new']] = $msg['from'][$_POST['rename_old']];
+				unset($msg['from'][$_POST['rename_old']]);
+				$changed = true;
+			}
+
+			if($changed)
+			{
+				$fh = fopen(DB_MESSAGES.'/'.$message, 'w');
+				flock($fh, LOCK_EX);
+				fwrite($fh, gzcompress(serialize($msg)));
+				flock($fh, LOCK_UN);
+				fclose($fh);
+			}
+		}
+		closedir($dh);
+
+		# Eintrag in Highscores aendern
+		$fh = fopen(DB_HIGHSCORES, 'r+');
+		flock($fh, LOCK_EX);
+
+		fseek($fh, ($that_user_array['punkte'][12]-1)*32, SEEK_SET);
+		fwrite($fh, highscores::make_info($_POST['rename_new'], $that_user_array['punkte'][1]+$that_user_array['punkte'][2]+$that_user_array['punkte'][3]+$that_user_array['punkte'][4]+$that_user_array['punkte'][5]+$that_user_array['punkte'][6]));
+
+		flock($fh, LOCK_UN);
+		fclose($fh);
+
+		# Buendnisparter auswechseln
+		foreach($that_user_array['verbuendete'] as $verbuendeter)
+		{
+			$verb_user_array = get_user_array($verbuendeter);
+			$verb_key = array_search($_POST['delete_username'], $verb_user_array['verbuendete']);
+			if($verb_key !== false)
+			{
+				$verb_user_array['verbuendete'][$verb_key] = $_POST['rename_new'];
+				write_user_array($verbuendeter, $verb_user_array);
+			}
+			unset($verb_user_array);
+		}
+		if(isset($that_user_array['verbuendete_bewerbungen']))
+		{
+			foreach($that_user_array['verbuendete_bewerbungen'] as $verbuendeter)
+			{
+				$verb_user_array = get_user_array($verbuendeter);
+				$verb_key = array_search($_POST['delete_username'], $verb_user_array['verbuendete_anfragen']);
+				if($verb_key !== false)
+				{
+					$verb_user_array['verbuendete_anfragen'][$verb_key] = $_POST['rename_new'];
+					write_user_array($verbuendeter, $verb_user_array);
+				}
+				unset($verb_user_array);
+			}
+		}
+		if(isset($that_user_array['verbuendete_anfragen']))
+		{
+			foreach($that_user_array['verbuendete_anfragen'] as $verbuendeter)
+			{
+				$verb_user_array = get_user_array($verbuendeter);
+				$verb_key = array_search($_POST['delete_username'], $verb_user_array['verbuendete_bewerbungen']);
+				if($verb_key !== false)
+				{
+					$verb_user_array['verbuendete_bewerbungen'][$verb_key] = $_POST['rename_new'];
+					write_user_array($verbuendeter, $verb_user_array);
+				}
+				unset($verb_user_array);
+			}
+		}
+
+		# Datei umbenennen und schreiben
+		rename(DB_PLAYERS.'/'.urlencode($_POST['rename_old']), DB_PLAYERS.'/'.urlencode($_POST['rename_new']));
+		write_user_array($_POST['rename_new'], $that_user_array);
+	}
+
+	if($admin_array['permissions'][8] && isset($_POST['message_text']) && trim($_POST['message_text']) != '')
+	{
+		$from = $to = $subject = '';
+		$html = false;
+		if(isset($_POST['message_from']))
+			$from = $_POST['message_from'];
+		if(isset($_POST['message_to']))
+			$to = $_POST['message_to'];
+		if(isset($_POST['message_subject']))
+			$subject = $_POST['message_subject'];
+		if(isset($_POST['message_html']) && $_POST['message_html'])
+			$html = true;
+
+		if(trim($to) == '')
+		{
+			# An alle Benutzer versenden
+
+			$to = array();
+			$dh = opendir(DB_PLAYERS);
+			while(($uname = readdir($dh)) !== false)
+			{
+				if(!is_file(DB_PLAYERS.'/'.$uname) || !is_readable(DB_PLAYERS.'/'.$uname))
+					continue;
+				$to[urldecode($uname)] = 6;
+			}
+			closedir($dh);
+		}
+		else
+		{
+			$to2 = explode("\r\n", $to);
+			$to = array();
+			foreach($to2 as $to_v)
+				$to[$to_v] = 6;
+		}
+
+		messages::new_message($to, $from, $subject, $_POST['message_text'], $html);
+	}
+
 	admin_gui::html_head();
 ?>
 <p>Willkommen im Adminbereich. Wählen Sie aus der Liste eine der Funktionen, die Ihnen zur Verfügung stehen.</p>
@@ -221,7 +371,7 @@
 	if($admin_array['permissions'][0])
 	{
 ?>
-<h2>Benutzerliste einsehen</h2>
+<h2 id="action-0">Benutzerliste einsehen</h2>
 <form action="userlist.php" method="get">
 	<ul>
 		<li><button type="submit">Unsortiert</button></li>
@@ -234,7 +384,7 @@
 	if($admin_array['permissions'][1])
 	{
 ?>
-<h2>Als Geist als ein Benutzer anmelden</h2>
+<h2 id="action-1">Als Geist als ein Benutzer anmelden</h2>
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="ghost-input">Benutzername</label></dt>
@@ -248,7 +398,7 @@
 	if($admin_array['permissions'][2])
 	{
 ?>
-<h2>Das Passwort eines Benutzers ändern</h2>
+<h2 id="action-2">Das Passwort eines Benutzers ändern</h2>
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="passwd-name-input">Benutzername</label></dt>
@@ -265,7 +415,7 @@
 	if($admin_array['permissions'][3])
 	{
 ?>
-<h2>Einen Benutzer löschen</h2>
+<h2 id="action-3">Einen Benutzer löschen</h2>
 <p><strong>Bitte nicht wegen Regelverstoßes durchführen (dann Benutzer sperren), nur bei fehlerhaften Registrierungen oder Ähnlichem.</strong></p>
 <form action="index.php" method="post">
 	<dl>
@@ -280,7 +430,7 @@
 	if($admin_array['permissions'][4])
 	{
 ?>
-<h2>Einen Benutzer sperren / entsperren</h2>
+<h2 id="action-4">Einen Benutzer sperren / entsperren</h2>
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="lock-input">Benutzername</label></dt>
@@ -294,14 +444,57 @@
 	if($admin_array['permissions'][5])
 	{
 ?>
-<h2><a href="edit_todo.php"><span xml:lang="en">Todo</span>-Liste bearbeiten</a></h2>
+<h2 id="action-5">Einen Benutzer umbenennen</h2>
+<form action="index.php" method="post">
+	<dl>
+		<dt><label for="rename-from">Alter Name</label></dt>
+		<dd><input type="text" name="rename_old" id="rename-from" /></dd>
+
+		<dt><label for="rename-to">Neuer Name</label></dt>
+		<dd><input type="text" name="rename_new" id="rename-to" /></dd>
+	</dl>
+	<div><button type="submit">Umbenennen</button></div>
+</form>
 <?php
 	}
 
 	if($admin_array['permissions'][6])
 	{
 ?>
-<h2><a href="edit_changelog.php"><span xml:lang="en">Changelog</span> bearbeiten</a></h2>
+<h2 id="action-6"><a href="edit_todo.php"><span xml:lang="en">Todo</span>-Liste bearbeiten</a></h2>
+<?php
+	}
+
+	if($admin_array['permissions'][7])
+	{
+?>
+<h2 id="action-7"><a href="edit_changelog.php"><span xml:lang="en">Changelog</span> bearbeiten</a></h2>
+<?php
+	}
+
+	if($admin_array['permissions'][8])
+	{
+?>
+<h2 id="action-8">Nachricht versenden</h2>
+<form action="index.php" method="post">
+	<dl>
+		<dt><label for="message-absender-input">Absender</label></dt>
+		<dd><input type="text" name="message_from" id="message-absender-input" /></dd>
+
+		<dt><label for="message-empfaenger-textarea">Empfänger</label></dt>
+		<dd><textarea cols="20" rows="4" name="message_to" id="message-empfaenger-textarea"></textarea> Bleibt dieses Feld leer, wird an alle Benutzer verschickt.</dd>
+
+		<dt><label for="message-betreff-input">Betreff</label></dt>
+		<dd><input type="text" name="message_subject" id="message-betreff-input" /></dd>
+
+		<dt><label for="message-html-checkbox"><abbr title="Hypertext Markup Language" xml:lang="en"><span xml:lang="de">HTML</span></abbr>?</label></dt>
+		<dd><input type="checkbox" name="message_html" id="message-html-checkbox" /></dd>
+
+		<dt><label for="message-text-textarea">Text</label></dt>
+		<dd><textarea cols="50" rows="10" name="message_text" id="message-text-textarea"></textarea></dd>
+	</dl>
+	<div><button type="submit">Absenden</button></div>
+</form>
 <?php
 	}
 ?>
