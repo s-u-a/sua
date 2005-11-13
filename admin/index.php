@@ -8,7 +8,7 @@
 		$_SESSION['ghost'] = true;
 		$_SESSION['resume'] = true;
 
-		$url = 'http://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php?'.SESSION_COOKIE.'='.urlencode(session_id());
+		$url = 'https://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php?'.SESSION_COOKIE.'='.urlencode(session_id());
 		header('Location: '.$url, true, 303);
 		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 	}

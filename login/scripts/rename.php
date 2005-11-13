@@ -138,7 +138,7 @@
 
 			write_user_array();
 
-			$url = 'http://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php?planet=';
+			$url = PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php?planet=';
 			if(isset($user_array['planets'][$_SESSION['act_planet']]))
 				$url .= urlencode($_SESSION['act_planet']);
 			else

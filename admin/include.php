@@ -1,18 +1,25 @@
 <?php
 	require('../engine/include.php');
 
+	if(PROTOCOL != 'https')
+	{
+		$url = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		header('Location: '.$url, true, 307);
+		die('Please use SSL: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
+	}
+
 	$admins = get_admin_list();
 
 	session_start();
 
-	if((isset($_SESSION['ip']) && $_SESSION['ip'] != $_SERVER['REMOTE_ADDR']) || (isset($_GET['logout']) && $_GET['logout']))
+	if((isset($_SESSION['ip']) && $_SESSION['ip'] != $_SERVER['REMOTE_ADDR']) || (isset($_GET['logout']) && $_GET['logout']) || (isset($_SESSION['last_admin_access']) && time()-$_SESSION['last_admin_access'] > 600))
 	{
 		if(isset($_COOKIE[SESSION_COOKIE]))
 			setcookie(SESSION_COOKIE, '');
 		unset($_SESSION);
 		$_SESSION = array();
 	}
-	if(isset($_GET['logout']) && $_GET['logout'])
+	if((isset($_GET['logout']) && $_GET['logout']) || (isset($_SESSION['last_admin_access']) && time()-$_SESSION['last_admin_access'] > 600))
 		session_destroy();
 
 	if(!isset($_SESSION['admin_username']) || !isset($admins[$_SESSION['admin_username']]))
@@ -28,10 +35,10 @@
 ?>
 <form action="<?=htmlentities($_SERVER['REQUEST_URI'])?>" method="post">
 	<dl>
-		<dt><label for="admin-benutzername-input">Benutzername</dt>
+		<dt><label for="admin-benutzername-input">Benutzername</label></dt>
 		<dd><input type="text" name="admin_username" id="admin-benutzername-input" /></dd>
 
-		<dt><label for="admin-passwort-input">Passwort</dt>
+		<dt><label for="admin-passwort-input">Passwort</label></dt>
 		<dd><input type="password" name="admin_password" id="admin-passwort-input" /></dd>
 	</dl>
 	<div><button type="submit">Anmelden</button></div>

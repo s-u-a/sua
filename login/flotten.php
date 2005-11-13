@@ -35,7 +35,7 @@
 		$fast_action = true;
 
 		$this_pos = explode(':', $this_planet['pos']);
-		$action_back_url = 'http://'.$_SERVER['HTTP_HOST'].h_root.'/login/karte.php?';
+		$action_back_url = PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/karte.php?';
 		if($_GET['action_galaxy'] != $this_pos[0] || $_GET['action_system'] != $this_pos[1])
 			$action_back_url .= 'galaxy='.urlencode($_GET['action_galaxy']).'&system='.urlencode($_GET['action_system']).'&';
 		$action_back_url .= SESSION_COOKIE.'='.urlencode(session_id());

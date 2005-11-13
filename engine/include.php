@@ -44,6 +44,28 @@
 	$EMAIL_FROM = 'webmaster@s-u-a.net';
 	$MAX_PLANETS = 15;
 	$SESSION_COOKIE = ini_get('session.name');
+	if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
+		$PROTOCOL = 'https';
+	else
+		$PROTOCOL = 'http';
+
+	if(isset($_GET['nossl']))
+	{
+		if($_GET['nossl'] && (!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl']))
+		{
+			setcookie('use_ssl', '0', time()+4838400, h_root);
+			$_COOKIE['use_ssl'] = '0';
+		}
+		elseif(!$_GET['nossl'] && isset($_COOKIE['use_ssl']) && !$_COOKIE['use_ssl'])
+		{
+			setcookie('use_ssl', '1', time()+4838400, h_root);
+			$_COOKIE['use_ssl'] = '1';
+		}
+	}
+	if(!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])
+		$USE_PROTOCOL = 'https';
+	else
+		$USE_PROTOCOL = 'http';
 
 	# Variablen als Konstanten speichern
 
@@ -67,6 +89,8 @@
 	define('EMAIL_FROM', $EMAIL_FROM);
 	define('MAX_PLANETS', $MAX_PLANETS);
 	define('SESSION_COOKIE', $SESSION_COOKIE);
+	define('PROTOCOL', $PROTOCOL);
+	define('USE_PROTOCOL', $USE_PROTOCOL);
 
 	header('Content-type: text/html; charset=UTF-8');
 
@@ -99,7 +123,7 @@
 
 		if($redirect)
 		{
-			$url = 'http://'.$hostname.$_SERVER['PHP_SELF'];
+			$url = PROTOCOL.'://'.$hostname.$_SERVER['PHP_SELF'];
 			if($_SERVER['QUERY_STRING'] != '')
 				$url .= '?'.$_SERVER['QUERY_STRING'];
 			header('Location: '.$url, true, 307);
@@ -543,7 +567,7 @@
 	</head>
 	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
 		<h1 id="logo"><a href="./" title="Zurück zur Startseite" xml:lang="en">Stars Under Attack</a></h1>
-		<form action="<?=h_root?>/login/index.php" method="post" id="login-form">
+		<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
 			<fieldset>
 				<legend>Anmelden</legend>
 				<dl>
@@ -554,19 +578,33 @@
 					<dd><input type="password" id="login-password" name="password" /></dd>
 				</dl>
 				<ul>
-					<li><button type="submit">Anmelden</button></li>
-					<li><a href="register.php">Registrieren</a></li>
-					<li><a href="passwd.php">Passwort vergessen?</a></li>
+					<li class="c-anmelden"><button type="submit">Anmelden</button></li>
+					<li class="c-registrieren"><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/register.php">Registrieren</a></li>
+					<li class="c-passwort-vergessen"><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/passwd.php">Passwort vergessen?</a></li>
+<?php
+			if(USE_PROTOCOL == 'https')
+			{
+?>
+					<li class="c-ssl-abschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=1"><abbr title="Secure Sockets Layer" xml:lang="en"><span xml:lang="de">SSL</span></abbr> abschalten</a></li>
+<?php
+			}
+			else
+			{
+?>
+					<li class="c-ssl-einschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=0"><abbr title="Secure Sockets Layer" xml:lang="en"><span xml:lang="de">SSL</span></abbr> einschalten</a></li>
+<?php
+			}
+?>
 				</ul>
 			</fieldset>
 		</form>
 		<ol id="navigation">
-			<li><a href="<?=h_root?>/index.php">Neuigkeiten</a></li>
-			<li><a href="<?=h_root?>/register.php">Registrieren</a></li>
-			<li><a href="<?=h_root?>/rules.php">Regeln</a></li>
-			<li><a href="<?=h_root?>/faq.php"><abbr title="Frequently Asked Questions" xml:lang="en">FAQ</abbr></a></li>
-			<li><a href="<?=h_root?>/forum/">Forum</a></li>
-			<li><a href="<?=h_root?>/impressum.php">Impressum</a></li>
+			<li><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/index.php">Neuigkeiten</a></li>
+			<li><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/register.php">Registrieren</a></li>
+			<li><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/rules.php">Regeln</a></li>
+			<li><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/faq.php"><abbr title="Frequently Asked Questions" xml:lang="en">FAQ</abbr></a></li>
+			<li><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/forum/">Forum</a></li>
+			<li><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/impressum.php">Impressum</a></li>
 		</ol>
 		<div id="content-9"><div id="content-10"><div id="content-11"><div id="content-12">
 <?php
@@ -789,7 +827,7 @@
 				$time = round(pow(($mass*$distance)/$speed, 0.3)*300);
 			#$time = round(pow(1.125*$mass*pow($distance, 2)/$speed, 0.33333)*10);
 
-			return $time*0+20;
+			return $time;
 		}
 
 		function get_tritium($mass, $distance)

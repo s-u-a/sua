@@ -21,7 +21,7 @@
 				$that_user_array['email_passwd'] = $send_id;
 				if(!write_user_array($_POST['benutzername'], $that_user_array))
 					$error = 'Datenbankfehler 2.';
-				elseif(!mail($that_user_array['email'], 'Passwort�nderung in S-U-A', "Jemand (vermutlich Sie) hat in S-U-A die \xe2\x80\x9ePasswort vergessen\xe2\x80\x9c-Funktion mit Ihrem Account benutzt. Diese Nachricht ist deshalb an jene E-Mail-Adresse adressiert, die Sie in Ihren Einstellungen in S-U-A eingetragen haben.\nSollten Sie eine Änderung Ihres Passworts nicht erwünschen, ignorieren – oder besser löschen – Sie diese Nachricht einfach.\n\nUm Ihr Passwort zu ändern, rufen Sie bitte die folgende Adresse in Ihrem Browser auf und folgen Sie den Anweisungen:\nhttp://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".$EMAIL_FROM."\r\nReply-To: ".$EMAIL_FROM))
+				elseif(!mail($that_user_array['email'], 'Passwort�nderung in S-U-A', "Jemand (vermutlich Sie) hat in S-U-A die \xe2\x80\x9ePasswort vergessen\xe2\x80\x9c-Funktion mit Ihrem Account benutzt. Diese Nachricht ist deshalb an jene E-Mail-Adresse adressiert, die Sie in Ihren Einstellungen in S-U-A eingetragen haben.\nSollten Sie eine Änderung Ihres Passworts nicht erwünschen, ignorieren – oder besser löschen – Sie diese Nachricht einfach.\n\nUm Ihr Passwort zu ändern, rufen Sie bitte die folgende Adresse in Ihrem Browser auf und folgen Sie den Anweisungen:\nhttps://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."\n(Ohne SSL: http://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".$EMAIL_FROM."\r\nReply-To: ".$EMAIL_FROM))
 					$error = 'Fehler beim Versand der E-Mail-Nachricht.';
 				else
 				{
@@ -101,7 +101,7 @@
 			if($continue)
 			{
 ?>
-<form action="passwd.php?name=<?=htmlentities(urlencode($_GET['name']))?>&amp;id=<?=htmlentities(urlencode($_GET['id']))?>" method="post">
+<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/passwd.php?name='.urlencode($_GET['name']).'&id='.urlencode($_GET['id']))?>" method="post">
 	<dl>
 		<dt><label for="neues-passwort-input">Neues Passwort</label></dt>
 		<dd><input type="password" name="new_password" id="neues-passwort-input" /></dd>
@@ -138,7 +138,7 @@
 <p>Sollten Sie im Spiel keine g�ltige <span xml:lang="en">E-Mail</span>-Adresse angegeben haben, <a href="faq.php#administrators" title="FAQ: Wie kann ich die Administratoren erreichen?">wenden Sie sich bitte an einen der Administratoren</a>.</p>
 <hr />
 <p>Um Ihr Passwort �ndern zu k�nnen, f�llen Sie bitte in das folgende Formular Ihren Benutzernamen und diejenige <span xml:lang="en">E-Mail</span>-Adresse an, die Sie im Spiel in Ihren Einstellungen gespeichert haben.</p>
-<form action="passwd.php" method="post">
+<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/passwd.php')?>" method="post">
 	<dl>
 		<dt><label for="benutzername-input">Benutzername</label></dt>
 		<dd><input type="text" name="benutzername" id="benutzername-input" /></dd>

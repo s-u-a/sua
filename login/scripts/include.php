@@ -89,7 +89,7 @@
 		{
 			if(isset($user_array['last_planet']) && isset($user_array['planets'][$_SESSION['act_planet']]))
 				$_SESSION['act_planet'] = $user_array['last_planet'];
-			$url = 'http://'.$_SERVER['HTTP_HOST'].$user_array['last_request'];
+			$url = PROTOCOL.'://'.$_SERVER['HTTP_HOST'].$user_array['last_request'];
 			$url = explode('?', $url, 2);
 			if(isset($url[1]))
 				$url[1] = explode('&', $url[1]);
@@ -366,7 +366,7 @@
 	function delete_request()
 	{
 		$_SESSION['last_click_ignore'] = true;
-		$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.SESSION_COOKIE.'='.urlencode(session_id());
+		$url = PROTOCOL.'://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.SESSION_COOKIE.'='.urlencode(session_id());
 		header('Location: '.$url, true, 303);
 		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 	}

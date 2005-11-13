@@ -180,7 +180,7 @@
 	}
 
 ?>
-<form action="register.php" method="post" id="register-form">
+<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/register.php')?>" method="post" id="register-form">
 	<fieldset>
 		<legend>Registrieren</legend>
 		<dl>
