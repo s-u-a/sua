@@ -189,6 +189,7 @@
 		function action($type)
 		{
 			global $this_planet;
+			global $_SESSION;
 
 			$cols = func_get_args();
 			if(isset($this_planet)) array_unshift($cols, $this_planet['pos']);
@@ -234,24 +235,24 @@
 			switch($type)
 			{
 				case '0': return sprintf('Schnellklicksperre (Klickabstand %f)', $array[0]);
-				case '1': return sprintf('Registrierung (E-Mail-Adresse: %s)', $array[0]);
+				case '1': return sprintf('Registrierung (E-Mail-Adresse: %s)', utf8_htmlentities($array[0]));
 				case '2': return sprintf('Anmeldung');
 				case '2.1': return sprintf('Anmeldung mit falschem Passwort');
 				case '3': return sprintf('Abgemeldet');
 				case '3.1': return sprintf('Zwangsabgemeldet (Richtige IP wäre %s)', $array[0]);
 				case '4': return sprintf('Passwort zugeschickt');
-				case '4.1': return sprintf('Passwort nicht zugeschickt (falsch: %s, richtig: %s)', $array[0], $array[1]);
+				case '4.1': return sprintf('Passwort nicht zugeschickt (falsch: %s, richtig: %s)', utf8_htmlentities($array[0]), utf8_htmlentities($array[1]));
 				case '5': return sprintf('Passwort geändert');
 				case '6': return sprintf('Rohstoffproduktion gespeichert');
 				case '7':
-					if($array[1]) return sprintf('Gebäuderückbau (%s)', $items['gebaeude'][$array[0]]['name']);
-					else return sprintf('Gebäudeausbau (%s)', $items['gebaeude'][$array[0]]['name']);
-				case '8': return sprintf('Gebäude-Abbruch (%s)', $items['gebaeude'][$array[0]]['name']);
-				case '9': return sprintf('Forschung (%s, %s)', $items['forschung'][$array[0]]['name'], ($array[1] ? 'global' : 'lokal'));
-				case '10': return sprintf('Forschungs-Abbruch (%s)', $items['forschung'][$array[0]]['name']);
+					if($array[1]) return sprintf('Gebäuderückbau (%s)', utf8_htmlentities($items['gebaeude'][$array[0]]['name']));
+					else return sprintf('Gebäudeausbau (%s)', utf8_htmlentities($items['gebaeude'][$array[0]]['name']));
+				case '8': return sprintf('Gebäude-Abbruch (%s)', utf8_htmlentities($items['gebaeude'][$array[0]]['name']));
+				case '9': return sprintf('Forschung (%s, %s)', utf8_htmlentities($items['forschung'][$array[0]]['name']), ($array[1] ? 'global' : 'lokal'));
+				case '10': return sprintf('Forschungs-Abbruch (%s)', utf8_htmlentities($items['forschung'][$array[0]]['name']));
 				case '11': return sprintf('<span title="%s">Roboterbau</span>', logfile::crowd_to_human($array[0]));
-				case '12': return sprintf('<span title="%s; %s; %s">Flotte</span> nach %s (%s, %u%%, ID: %s)', logfile::crowd_to_human($array[1]), logfile::ress_to_human($array[4]), logfile::crowd_to_human($array[5]), $array[0], $type_names[$array[2]], $array[3]*100, $array[6]);
-				case '13': return sprintf('Flottenrückruf (%s)', $array[0]);
+				case '12': return sprintf('<span title="%s; %s; %s">Flotte</span> nach %s (%s, %u%%, ID: %s)', logfile::crowd_to_human($array[1]), logfile::ress_to_human($array[4]), logfile::crowd_to_human($array[5]), $array[0], $type_names[$array[2]], $array[3]*100, utf8_htmlentities($array[6]));
+				case '13': return sprintf('Flottenrückruf (%s)', utf8_htmlentities($array[0]));
 				case '14': return sprintf('<span title="%s">Schiffsbau</span>', logfile::crowd_to_human($array[0]));
 				case '15': return sprintf('<span title="%s">Verteidigungsbau</span>', logfile::crowd_to_human($array[0]));
 				case '16': return sprintf('Benutzerinfo angeschaut (%s)', utf8_htmlentities($array[0]));
@@ -261,8 +262,8 @@
 				case '19': return sprintf('Bündnisanfrage abgelehnt (%s)', utf8_htmlentities($array[0]));
 				case '20': return sprintf('Bündnis gekündigt (%s)', utf8_htmlentities($array[0]));
 				case '21': return sprintf('<span title="%s">Nachricht</span> an %s (%s)', utf8_htmlentities($array[2]), utf8_htmlentities($array[1]), $array[0]);
-				case '22': return sprintf('Nachricht gelesen (%s)', $array[0]);
-				case '23': return sprintf('Nachricht gelöscht (%s)', $array[0]);
+				case '22': return sprintf('Nachricht gelesen (%s)', utf8_htmlentities($array[0]));
+				case '23': return sprintf('Nachricht gelöscht (%s)', utf8_htmlentities($array[0]));
 				case '24': return sprintf('Urlaubsmodus %s', ($array[0] ? 'betreten' : 'verlassen'));
 				default: return 'Unbekannte Aktion';
 			}

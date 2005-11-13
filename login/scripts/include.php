@@ -215,9 +215,12 @@
 		<link rel="stylesheet" href="<?=utf8_htmlentities($skin_path)?>" type="text/css" />
 <?php
 			}
+
+			$this_pos = explode(':', $this_planet['pos']);
+			$class = 'planet-'.universe::get_planet_class($this_pos[0], $this_pos[1], $this_pos[2]);
 ?>
 	</head>
-	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
+	<body class="<?=$class?>"><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
 		<dl id="time">
 			<script type="text/javascript">
 				// <![CDATA[
