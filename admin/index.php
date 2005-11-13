@@ -497,7 +497,20 @@
 </form>
 <?php
 	}
+
+	if($admin_array['permissions'][9])
+	{
 ?>
+<h2 id="action-9"><span xml:lang="en">Log</span>dateien einsehen</h2>
+<ul>
+	<li><a href="logfiles.php?action=select_username">Nach Benutzernamen filtern</a></li>
+	<li><a href="logfiles.php?action=select_ip">Nach <abbr title="Internet Protocol" xml:lang="en"><span xml:lang="de">IP</span></abbr>-Adressen filtern</a></li>
+	<li><a href="logfiles.php?action=select_session">Nach <span xml:lang="en">Sessions</span> filtern</a></li>
+	<li><a href="logfiles.php?action=scan_multis">Nach Multi-<span xml:lang="en">Accounts</span> suchen</a></li>
+	<li><a href="logfiles.php?action=whole">Gesamte Logdatei einsehen</a></li>
+</ul>
 <?php
+	}
+
 	admin_gui::html_foot();
 ?>
