@@ -62,6 +62,7 @@
 				<th title="Die Benutzerliste einsehen">Liste</th>
 				<th title="Als Geist als ein Benutzer anmelden">Geist</th>
 				<th title="Das Passwort eines Benutzers ändern">Passwort</th>
+				<th title="Die Passwörter zweier Benutzer vergleichen"><abbr title="Passwort">Pwd.</abbr>-<abbr title="Vergleich">Vergl.</abbr></th>
 				<th title="Einen Benutzer löschen">Löschen</th>
 				<th title="Einen Benutzer sperren/entsperren">Sperren</th>
 				<th title="Einen Benutzer umbenennen">Umbenennen</th>
@@ -83,7 +84,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="15"><button type="submit">Hinzufügen</button></td>
+				<td colspan="16"><button type="submit">Hinzufügen</button></td>
 			</tr>
 		</tfoot>
 	</table>
@@ -200,7 +201,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="14"><button type="submit">Speichern</button></td>
+				<td colspan="15"><button type="submit">Speichern</button></td>
 			</tr>
 		</tfoot>
 	</table>
