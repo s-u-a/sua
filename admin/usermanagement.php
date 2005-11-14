@@ -49,7 +49,7 @@
 			<tr>
 				<th rowspan="2" title="Name des Administrators">Name</th>
 				<th rowspan="2">Passwort</th>
-				<th colspan="6">Benutzeraktionen</th>
+				<th colspan="7">Benutzeraktionen</th>
 				<th rowspan="2" xml:lang="en" title="Todo-Liste bearbeiten">Todo</th>
 				<th rowspan="2" xml:lang="en" title="Changelog bearbeiten">Changelog</th>
 				<th rowspan="2" title="Nachricht versenden">Nachricht</th>
@@ -133,7 +133,7 @@
 					$new_admins[$this_name]['permissions'] = array();
 					for($i=0; $i<=13; $i++)
 						$new_admins[$this_name]['permissions'][$i] = (isset($admin[$i+1]) ? '1' : '0');
-					$new_admins[$_SESSION['admin_username']]['permissions'][10] = '1';
+					$new_admins[$_SESSION['admin_username']]['permissions'][11] = '1';
 				}
 				write_admin_list($new_admins);
 				$admins = $new_admins;
@@ -176,7 +176,7 @@
 				for($j=0; $j<=13; $j++)
 				{
 ?>
-				<td><input type="checkbox" name="admin_array[<?=htmlentities($i)?>][<?=htmlentities($j+1)?>]" value="1"<?=$settings['permissions'][$j] ? ' checked="checked"' : ''?><?=($j==10 && $name==$_SESSION['admin_username'])? ' disabled="disabled"' : ''?> /></td>
+				<td><input type="checkbox" name="admin_array[<?=htmlentities($i)?>][<?=htmlentities($j+1)?>]" value="1"<?=$settings['permissions'][$j] ? ' checked="checked"' : ''?><?=($j==11 && $name==$_SESSION['admin_username'])? ' disabled="disabled"' : ''?> /></td>
 <?php
 				}
 
