@@ -26,6 +26,7 @@
 
 	$EVENT_FILE = $DB_DIR.'/events';
 	$LOG_FILE = $DB_DIR.'/logfile';
+	$LOCK_FILE = $DB_DIR.'/locked';
 	$DB_PLAYERS = $DB_DIR.'/players';
 	$DB_UNIVERSE = $DB_DIR.'/universe';
 	$DB_ITEMS = $DB_DIR.'/items';
@@ -265,7 +266,7 @@
 				case '22': return sprintf('Nachricht gelesen (%s)', utf8_htmlentities($array[0]));
 				case '23': return sprintf('Nachricht gelöscht (%s)', utf8_htmlentities($array[0]));
 				case '24': return sprintf('Urlaubsmodus %s', ($array[0] ? 'betreten' : 'verlassen'));
-				default: return 'Unbekannte Aktion';
+				default: return sprintf('Unbekannte Aktion (%s)', $type);
 			}
 		}
 
@@ -273,13 +274,16 @@
 		{
 			global $items;
 
+			if(trim($crowd2) == '')
+				return '';
+
 			$return = array();
-			$crowd = explode(' ', $crowd2);
+			$crowd = explode(' ', trim($crowd2));
 
 			for($i=0; $i<count($crowd); $i+=2)
 				$return[] = utf8_htmlentities($items['ids'][$crowd[$i]]['name']).': '.ths($crowd[$i+1]);
 
-			$return = implode(', ', $crowd);
+			$return = implode(', ', $return);
 			return $return;
 		}
 
@@ -1722,6 +1726,32 @@
 		}
 
 		return $admins;
+	}
+
+	function write_admin_list($admins)
+	{
+		$admin_file = array();
+		foreach($admins as $name=>$settings)
+		{
+			$this = &$admin_file[];
+			$this = $name;
+			$this .= "\t".$settings['password'];
+			if(count($this['permissions']) > 0)
+				$this .= "\t".implode("\t", $this['permissions']);
+			unset($this);
+		}
+
+		$fh = fopen(DB_ADMINS, 'w');
+		if(!$fh)
+			return false;
+		flock($fh, LOCK_EX);
+
+		fwrite($fh, implode("\n", $admin_file));
+
+		flock($fh, LOCK_UN);
+		fclose($fh);
+
+		return true;
 	}
 
 	########################################

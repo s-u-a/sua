@@ -512,5 +512,16 @@
 <?php
 	}
 
+	if($admin_array['permissions'][10])
+	{
+?>
+<h2 id="action-10">Benutzerverwaltung</h2>
+<ul>
+	<li><a href="usermanagement.php?action=edit">Bestehende Benutzer bearbeiten</a></li>
+	<li><a href="usermanagement.php?action=add">Neuen Benutzer anlegen</a></li>
+</ul>
+<?php
+	}
+
 	admin_gui::html_foot();
 ?>

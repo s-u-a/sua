@@ -227,7 +227,7 @@
 ?>
 		<div id="beispiel-1" class="handelsrechner-beispiel">
 			<h4>Beispiel 1</h4>
-			<p>Sie möchten gerne 10<?=THS_HTML?>000&nbsp;Tritium verscherbeln. Dafür hätten Sie gerne Carbon und Radium. Sie würden diese Carbon und dieses Radium gerne im Verhältnis 1:1 ausgezahlt bekommen, das heißt, dass Sie für die eine Hälfte Ihres Tritiums Carbon haben wollen, für die andere aber Radium.</p>
+			<p>Sie möchten <?=ths(10000)?>&nbsp;Tritium verscherbeln. Dafür hätten Sie gerne Carbon und Radium. Sie wollen dieses Carbon und dieses Radium im Verhältnis 1:1 ausgezahlt bekommen, das heißt, dass Sie für die eine Hälfte Ihres Tritiums Carbon haben wollen, für die andere aber Radium.</p>
 			<p>Sie tippen dazu einfach ins Carbon-Verhältnisfeld (das kleinere Feld links vom Carbonfeld auf der rechten Seite) eine 1 ein, ebenso ins Radium-Verhältnisfeld. (Verhältnis: 1:1)</p>
 			<hr />
 		</div>
@@ -254,7 +254,7 @@
 ?>
 		<div id="beispiel-2" class="handelsrechner-beispiel">
 			<h4>Beispiel 2</h4>
-			<p>Sie möchten einen Handel betreiben, für den Sie 10<?=THS_HTML?>000&nbsp;Carbon und 7<?=THS_HTML?>000&nbsp;Aluminium erhalten wollen. Sie möchten dafür in Wolfram und Radium bezahlen. Die Bezahlung soll im Verhältnis 2:1 geschehen, das heißt, Sie möchten zwei Drittel des Preises in Wolfram und ein Drittel in Radium bezahlen. Dazu tippen Sie nun einfach in das kleine Feld vor dem Wolframfeld auf der linken Seite eine 2, in das vor dem Radiumfeld eine 1 ein.</p>
+			<p>Sie möchten einen Handel betreiben, für den Sie <?=ths(10000)?>&nbsp;Carbon und <?=ths(7000)?>&nbsp;Aluminium erhalten. Sie möchten dafür in Wolfram und Radium bezahlen. Die Bezahlung soll im Verhältnis 2:1 geschehen, das heißt, Sie möchten zwei Drittel des Preises in Wolfram und ein Drittel in Radium bezahlen. Dazu tippen Sie nun einfach in das kleine Feld vor dem Wolframfeld auf der linken Seite eine 2, in das vor dem Radiumfeld eine 1 ein.</p>
 			<hr />
 		</div>
 <?php

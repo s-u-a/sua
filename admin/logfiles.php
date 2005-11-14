@@ -1,6 +1,9 @@
 <?php
 	require('include.php');
 
+	if(!$admin_array['permissions'][9])
+		die('No access.');
+
 	if(!isset($_GET['action']))
 	{
 		$url = PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/admin/index.php';
@@ -101,6 +104,7 @@
 			# Nach Multi-Accounts suchen
 
 			$users = array();
+			$users_min_max = array();
 			$flotten = array();
 
 			$fh = gzopen(LOG_FILE, 'r');
@@ -114,12 +118,29 @@
 					continue;
 
 				if(!isset($users[$line[1]]))
+				{
 					$users[$line[1]] = array($line[2]);
-				elseif(array_search($line[2], $users[$line[1]]) === false)
-					$users[$line[1]][] = $line[2];
+					$users_min_max[$line[1]] = array(array($line[0], $line[0]));
+				}
+				else
+				{
+					$ip_key = array_search($line[2], $users[$line[1]]);
+					if($ip_key === false)
+						$ip_key = count($users[$line[1]]);
+					$users[$line[1]][$ip_key] = $line[2];
+					if(isset($users_min_max[$line[1]][$ip_key]))
+					{
+						if($line[0] < $users_min_max[$line[1]][$ip_key][0])
+							$users_min_max[$line[1]][$ip_key][0] = $line[0];
+						if($line[0] > $users_min_max[$line[1]][$ip_key][1])
+							$users_min_max[$line[1]][$ip_key][1] = $line[0];
+					}
+					else
+						$users_min_max[$line[1]][$ip_key] = array($line[0], $line[0]);
+				}
 
 				if($line[5] == '12' && ($line[8] == 3 || $line[8] == 4))
-					$flotten[$line[12]] = array($line[1], $line[6]);
+					$flotten[$line[12]] = array($line[1], $line[6], $line[0]);
 				elseif($line[5] == '13' && isset($flotten[$line[6]]))
 					unset($flotten[$line[6]]);
 			}
@@ -135,16 +156,25 @@
 				list(,$owner) = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
 				if($owner && isset($users[$flotte[0]]) && isset($users[$owner]))
 				{
-					$multi = false;
-					foreach($users[$flotte[0]] as $ip)
+					$ip_1 = array();
+					$ip_2 = array();
+					foreach($users[$flotte[0]] as $key=>$ip)
 					{
-						if(in_array($ip, $users[$owner]))
-						{
-							$multi = true;
-							break;
-						}
+						if($flotte[2] < $users_min_max[$flotte[0]][$key][0] && $users_min_max[$flotte[0]][$key][0]-$flotte[2] > 86400)
+							continue;
+						elseif($flotte[2] > $users_min_max[$flotte[0]][$key][1] && $flotte[2]-$users_min_max[$flotte[0]][$key][1] > 86400)
+							continue;
+						$ip_1[] = $ip;
 					}
-					if($multi)
+					foreach($users[$owner] as $key=>$ip)
+					{
+						if($flotte[2] < $users_min_max[$flotte[0]][$key][0] && $users_min_max[$flotte[0]][$key][0]-$flotte[2] > 86400)
+							continue;
+						elseif($flotte[2] > $users_min_max[$flotte[0]][$key][1] && $flotte[2]-$users_min_max[$flotte[0]][$key][1] > 86400)
+							continue;
+						$ip_2[] = $ip;
+					}
+					if(count(array_intersect($ip_1, $ip_2)) > 0)
 					{
 						if(isset($multis[$flotte[0]."\n".$owner]))
 							$multis[$flotte[0]."\n".$owner]++;

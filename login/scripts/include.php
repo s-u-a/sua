@@ -148,7 +148,7 @@
 
 	if(isset($_GET['planet']) && $_GET['planet'] != '' && isset($user_array['planets'][$_GET['planet']])) # Planeten wechseln
 		$_SESSION['act_planet'] = $_GET['planet'];
-	if(!isset($user_array['planets'][$_SESSION['act_planet']]))
+	if(!isset($_SESSION['act_planet']) || !isset($user_array['planets'][$_SESSION['act_planet']]))
 		$_SESSION['act_planet'] = 0;
 
 	$this_planet = & $user_array['planets'][$_SESSION['act_planet']];
