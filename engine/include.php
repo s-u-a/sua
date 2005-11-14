@@ -73,6 +73,7 @@
 	define('DB_DIR', $DB_DIR);
 	define('EVENT_FILE', $EVENT_FILE);
 	define('LOG_FILE', $LOG_FILE);
+	define('LOCK_FILE', $LOCK_FILE);
 	define('DB_PLAYERS', $DB_PLAYERS);
 	define('DB_UNIVERSE', $DB_UNIVERSE);
 	define('DB_ITEMS', $DB_ITEMS);
@@ -1251,7 +1252,19 @@
 	{
 		if(!is_file(DB_PLAYERS.'/'.urlencode($username)) || !is_readable(DB_PLAYERS.'/'.urlencode($username)))
 			return false;
-		return unserialize(gzuncompress(file_get_contents(DB_PLAYERS.'/'.urlencode($username))));
+		$user_array = unserialize(gzuncompress(file_get_contents(DB_PLAYERS.'/'.urlencode($username))));
+		if(file_exists(LOCK_FILE))
+		{
+			# Spiel ist gesperrt
+			if(isset($user_array['umode']))
+				$user_array['umode.sav'] = $user_array['umode'];
+			if(isset($user_array['locked']))
+				$user_array['locked.sav'] = $user_array['locked'];
+			$user_array['locked'] = $user_array['umode'] = true;
+			$user_array['game_locked'] = true;
+		}
+
+		return $user_array;
 	}
 
 	function write_user_array($username=false, $that_user_array=false)
@@ -1269,7 +1282,27 @@
 		if(isset($_SESSION['username']) && $username == $_SESSION['username'])
 		{
 			global $user_array;
-			$that_user_array = &$user_array;
+			if(isset($user_array['game_locked']) && $user_array['game_locked'])
+				$that_user_array = $user_array;
+			else
+				$that_user_array = &$user_array;
+		}
+
+		if(isset($that_user_array['game_locked']) && $that_user_array['game_locked'])
+		{
+			unset($that_user_array['locked']);
+			unset($that_user_array['locked.sav']);
+			if(isset($that_user_array['locked.sav']))
+			{
+				$that_user_array['locked'] = $that_user_array['locked.sav'];
+				unset($that_user_array['locked.sav']);
+			}
+			if(isset($that_user_array['umode.sav']))
+			{
+				$that_user_array['umode'] = $that_user_array['umode.sav'];
+				unset($that_user_array['umode.sav']);
+			}
+			unset($that_user_array['game_locked']);
 		}
 
 		if(!isset($that_user_array['username']) || $that_user_array['username'] != $username)
@@ -1736,8 +1769,8 @@
 			$this = &$admin_file[];
 			$this = $name;
 			$this .= "\t".$settings['password'];
-			if(count($this['permissions']) > 0)
-				$this .= "\t".implode("\t", $this['permissions']);
+			if(count($settings['permissions']) > 0)
+				$this .= "\t".implode("\t", $settings['permissions']);
 			unset($this);
 		}
 

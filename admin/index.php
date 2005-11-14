@@ -24,7 +24,7 @@
 		write_user_array($_POST['passwd_username'], $that_user_array);
 	}
 
-	if($admin_array['permissions'][3] && isset($_POST['delete_username']) && is_file(DB_PLAYERS.'/'.urlencode(trim($_POST['delete_username']))) && is_readable(DB_PLAYERS.'/'.urlencode(trim($_POST['delete_username']))))
+	if($admin_array['permissions'][4] && isset($_POST['delete_username']) && is_file(DB_PLAYERS.'/'.urlencode(trim($_POST['delete_username']))) && is_readable(DB_PLAYERS.'/'.urlencode(trim($_POST['delete_username']))))
 	{
 		# Benutzer loeschen
 
@@ -169,7 +169,7 @@
 		}
 	}
 
-	if($admin_array['permissions'][4] && isset($_POST['lock_username']) && is_file(DB_PLAYERS.'/'.urlencode(trim($_POST['lock_username']))) && is_readable(DB_PLAYERS.'/'.urlencode(trim($_POST['lock_username']))))
+	if($admin_array['permissions'][5] && isset($_POST['lock_username']) && is_file(DB_PLAYERS.'/'.urlencode(trim($_POST['lock_username']))) && is_readable(DB_PLAYERS.'/'.urlencode(trim($_POST['lock_username']))))
 	{
 		# Benutzer sperren / entsperren
 
@@ -211,7 +211,7 @@
 		write_user_array($_POST['lock_username'], $that_user_array);
 	}
 
-	if($admin_array['permissions'][5] && isset($_POST['rename_old']) && isset($_POST['rename_new']) && is_file(DB_PLAYERS.'/'.urlencode(trim($_POST['rename_old']))) && is_readable(DB_PLAYERS.'/'.urlencode(trim($_POST['rename_old']))) && !file_exists(DB_PLAYERS.'/'.urlencode(substr(trim($_POST['rename_new']), 0, 20))))
+	if($admin_array['permissions'][6] && isset($_POST['rename_old']) && isset($_POST['rename_new']) && is_file(DB_PLAYERS.'/'.urlencode(trim($_POST['rename_old']))) && is_readable(DB_PLAYERS.'/'.urlencode(trim($_POST['rename_old']))) && !file_exists(DB_PLAYERS.'/'.urlencode(substr(trim($_POST['rename_new']), 0, 20))))
 	{
 		# Benutzer umbenennen
 
@@ -324,7 +324,7 @@
 		write_user_array($_POST['rename_new'], $that_user_array);
 	}
 
-	if($admin_array['permissions'][8] && isset($_POST['message_text']) && trim($_POST['message_text']) != '')
+	if($admin_array['permissions'][9] && isset($_POST['message_text']) && trim($_POST['message_text']) != '')
 	{
 		$from = $to = $subject = '';
 		$html = false;
@@ -362,15 +362,139 @@
 		messages::new_message($to, $from, $subject, $_POST['message_text'], $html);
 	}
 
+	if($admin_array['permissions'][12] && isset($_POST['wartungsarbeiten']))
+	{
+		if($_POST['wartungsarbeiten'] && !is_file('../.htaccess.wartungsarbeiten.sav'))
+		{
+			if(!file_exists('../.htaccess'))
+				touch('../.htaccess');
+			if(rename('../.htaccess', '../.htaccess.wartungsarbeiten.sav'))
+			{
+				$fh = fopen('../.htaccess', 'w');
+				flock($fh, LOCK_EX);
+
+				fwrite($fh, "Order Deny,Allow\n");
+				fwrite($fh, "Deny from All\n");
+				fwrite($fh, "ErrorDocument 403 /wartungsarbeiten.html.gz\n");
+				fwrite($fh, "<Files \"wartungsarbeiten.html.gz\">\n");
+				fwrite($fh, "\tDeny from None\n");
+				fwrite($fh, "</Files>\n");
+
+				flock($fh, LOCK_UN);
+				fclose($fh);
+			}
+		}
+		elseif(!$_POST['wartungsarbeiten'] && is_file('../.htaccess.wartungsarbeiten.sav'))
+		{
+			if(is_file('../.htaccess'))
+				unlink('../.htaccess');
+			rename('../.htaccess.wartungsarbeiten.sav', '../.htaccess');
+		}
+	}
+
+	if($admin_array['permissions'][13] && isset($_POST['lock']))
+	{
+		include_once('../login/scripts/eventhandler.php');
+
+		if($_POST['lock'] && !file_exists(LOCK_FILE))
+		{
+			# Bei allen Benutzern den Eventhandler ausfuehren
+
+			$dh = opendir(DB_PLAYERS);
+			while(($player = readdir($dh)) !== false)
+			{
+				if(!is_file(DB_PLAYERS.'/'.$player) || !is_readable(DB_PLAYERS.'/'.$player))
+					continue;
+				eventhandler::run_eventhandler(urldecode($player));
+			}
+			closedir($dh);
+
+			touch(LOCK_FILE);
+		}
+		elseif(!$_POST['lock'] && file_exists(LOCK_FILE))
+		{
+			# Bei allen Benutzern den Eventhandler ausfuehren
+
+			$dh = opendir(DB_PLAYERS);
+			while(($player = readdir($dh)) !== false)
+			{
+				if(!is_file(DB_PLAYERS.'/'.$player) || !is_readable(DB_PLAYERS.'/'.$player))
+					continue;
+				eventhandler::run_eventhandler(urldecode($player));
+			}
+			closedir($dh);
+
+			unlink(LOCK_FILE);
+		}
+	}
+
 	admin_gui::html_head();
 ?>
 <p>Willkommen im Adminbereich. Wählen Sie aus der Liste eine der Funktionen, die Ihnen zur Verfügung stehen.</p>
 <p>Denken Sie immer daran: <strong>Benutzen Sie niemals Dinge aus dem Adminbereich zu Ihrem eigenen Vorteil im Spiel und geben Sie keine Informationen an Personen weiter, die sich diese Informationen nicht selbst beschaffen könnten.</strong></p>
+<hr />
+<ol>
+	<li><a href="#passwort-aendern">Adminpasswort ändern</a></li>
+<?php if($admin_array['permissions'][0]){?>	<li><a href="#action-0">Benutzerliste einsehen</a></li>
+<?php }if($admin_array['permissions'][1]){?>	<li><a href="#action-1">Als Geist als ein Benutzer anmelden</a></li>
+<?php }if($admin_array['permissions'][2]){?>	<li><a href="#action-2">Das Passwort eines Benutzers ändern</a></li>
+<?php }if($admin_array['permissions'][3]){?>	<li><a href="#action-3">Die Passwörter zweier Benutzer vergleichen</a></li>
+<?php }if($admin_array['permissions'][4]){?>	<li><a href="#action-4">Einen Benutzer löschen</a></li>
+<?php }if($admin_array['permissions'][5]){?>	<li><a href="#action-5">Einen Benutzer sperren / entsperren</a></li>
+<?php }if($admin_array['permissions'][6]){?>	<li><a href="#action-6">Einen Benutzer umbenennen</a></li>
+<?php }if($admin_array['permissions'][7]){?>	<li><a href="#action-7"><span xml:lang="en">Todo</span>-Liste bearbeiten</a></li>
+<?php }if($admin_array['permissions'][8]){?>	<li><a href="#action-8"><span xml:lang="en">Changelog</span> bearbeiten</a></li>
+<?php }if($admin_array['permissions'][9]){?>	<li><a href="#action-9">Nachricht versenden</a></li>
+<?php }if($admin_array['permissions'][10]){?>	<li><a href="#action-10"><span xml:lang="en">Log</span>dateien einsehen</a></li>
+<?php }if($admin_array['permissions'][11]){?>	<li><a href="#action-11">Benutzerverwaltung</a></li>
+<?php }if($admin_array['permissions'][12]){?>	<li><a href="#action-12">Wartungsarbeiten</a></li>
+<?php }if($admin_array['permissions'][13]){?>	<li><a href="#action-13">Spiel sperren</a></li>
+<?php }?></ol>
+<hr />
+<h2 id="passwort-aendern">Adminpasswort ändern</h2>
+<?php
+	if(isset($_POST['old_password']) && isset($_POST['new_password']) && isset($_POST['new_password2']))
+	{
+		if(md5($_POST['old_password']) != $admin_array['password'])
+		{
+?>
+<p class="error"><strong>Sie haben das falsche alte Passwort eingegeben.</strong></p>
+<?php
+		}
+		elseif($_POST['new_password'] != $_POST['new_password2'])
+		{
+?>
+<p class="error"><strong>Die beiden neuen Passwörter stimmen nicht überein.</strong></p>
+<?php
+		}
+		else
+		{
+			$admin_array['password'] = md5($_POST['new_password']);
+			write_admin_list($admins);
+?>
+<p class="successful"><strong>Das Passwort wurde erfolgreich geändert.</strong></p>
+<?php
+		}
+	}
+?>
+<form action="index.php" method="post">
+	<dl>
+		<dt><label for="old-password-input">Altes Passwort</label></dt>
+		<dd><input type="password" name="old_password" id="old-password-input" /></dd>
 
+		<dt><label for="new-password-input">Neues Passwort</label></dt>
+		<dd><input type="password" name="new_password" id="new-password-input" /></dd>
+
+		<dt><label for="new-password2-input">Neues Passwort wiederholen</label></dt>
+		<dd><input type="password" name="new_password2" id="new-password2-input" /></dd>
+	</dl>
+	<div><button type="submit">Passwort ändern</button></div>
+</form>
 <?php
 	if($admin_array['permissions'][0])
 	{
 ?>
+<hr />
 <h2 id="action-0">Benutzerliste einsehen</h2>
 <form action="userlist.php" method="get">
 	<ul>
@@ -384,6 +508,7 @@
 	if($admin_array['permissions'][1])
 	{
 ?>
+<hr />
 <h2 id="action-1">Als Geist als ein Benutzer anmelden</h2>
 <form action="index.php" method="post">
 	<dl>
@@ -398,6 +523,7 @@
 	if($admin_array['permissions'][2])
 	{
 ?>
+<hr />
 <h2 id="action-2">Das Passwort eines Benutzers ändern</h2>
 <form action="index.php" method="post">
 	<dl>
@@ -415,7 +541,42 @@
 	if($admin_array['permissions'][3])
 	{
 ?>
-<h2 id="action-3">Einen Benutzer löschen</h2>
+<hr />
+<h2 id="action-3">Die Passwörter zweier Benutzer vergleichen</h2>
+<?php
+		if(isset($_POST['compare_1']) && isset($_POST['compare_2']) && is_file(DB_PLAYERS.'/'.urlencode($_POST['compare_1'])) && is_readable(DB_PLAYERS.'/'.urlencode($_POST['compare_1'])) && is_file(DB_PLAYERS.'/'.urlencode($_POST['compare_2'])) && is_readable(DB_PLAYERS.'/'.urlencode($_POST['compare_2'])))
+		{
+			$user_array_1 = get_user_array($_POST['compare_1']);
+			$user_array_2 = get_user_array($_POST['compare_2']);
+			if($user_array_1['password'] == $user_array_2['password'])
+			{
+?>
+<p><strong>Die Passwörter der Benutzer &bdquo;<?=utf8_htmlentities($_POST['compare_1'])?>&ldquo; und &bdquo;<?=utf8_htmlentities($_POST['compare_2'])?>&ldquo; stimmen überein.</strong></p>
+<?php
+			}
+			else
+			{
+?>
+<p><strong>Die Passwörter der Benutzer &bdquo;<?=utf8_htmlentities($_POST['compare_1'])?>&ldquo; und &bdquo;<?=utf8_htmlentities($_POST['compare_2'])?>&ldquo; unterscheiden sich.</strong></p>
+<?php
+			}
+		}
+?>
+<form action="index.php#action-3" method="post">
+	<ul>
+		<li><input type="text" name="compare_1" /></li>
+		<li><input type="text" name="compare_2" /></li>
+	</ul>
+	<div><button type="submit">Vergleichen</button></div>
+</form>
+<?php
+	}
+
+	if($admin_array['permissions'][4])
+	{
+?>
+<hr />
+<h2 id="action-4">Einen Benutzer löschen</h2>
 <p><strong>Bitte nicht wegen Regelverstoßes durchführen (dann Benutzer sperren), nur bei fehlerhaften Registrierungen oder Ähnlichem.</strong></p>
 <form action="index.php" method="post">
 	<dl>
@@ -427,10 +588,11 @@
 <?php
 	}
 
-	if($admin_array['permissions'][4])
+	if($admin_array['permissions'][5])
 	{
 ?>
-<h2 id="action-4">Einen Benutzer sperren / entsperren</h2>
+<hr />
+<h2 id="action-5">Einen Benutzer sperren / entsperren</h2>
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="lock-input">Benutzername</label></dt>
@@ -441,10 +603,11 @@
 <?php
 	}
 
-	if($admin_array['permissions'][5])
+	if($admin_array['permissions'][6])
 	{
 ?>
-<h2 id="action-5">Einen Benutzer umbenennen</h2>
+<hr />
+<h2 id="action-6">Einen Benutzer umbenennen</h2>
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="rename-from">Alter Name</label></dt>
@@ -458,24 +621,27 @@
 <?php
 	}
 
-	if($admin_array['permissions'][6])
-	{
-?>
-<h2 id="action-6"><a href="edit_todo.php"><span xml:lang="en">Todo</span>-Liste bearbeiten</a></h2>
-<?php
-	}
-
 	if($admin_array['permissions'][7])
 	{
 ?>
-<h2 id="action-7"><a href="edit_changelog.php"><span xml:lang="en">Changelog</span> bearbeiten</a></h2>
+<hr />
+<h2 id="action-7"><a href="edit_todo.php"><span xml:lang="en">Todo</span>-Liste bearbeiten</a></h2>
 <?php
 	}
 
 	if($admin_array['permissions'][8])
 	{
 ?>
-<h2 id="action-8">Nachricht versenden</h2>
+<hr />
+<h2 id="action-8"><a href="edit_changelog.php"><span xml:lang="en">Changelog</span> bearbeiten</a></h2>
+<?php
+	}
+
+	if($admin_array['permissions'][9])
+	{
+?>
+<hr />
+<h2 id="action-9">Nachricht versenden</h2>
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="message-absender-input">Absender</label></dt>
@@ -498,10 +664,11 @@
 <?php
 	}
 
-	if($admin_array['permissions'][9])
+	if($admin_array['permissions'][10])
 	{
 ?>
-<h2 id="action-9"><span xml:lang="en">Log</span>dateien einsehen</h2>
+<hr />
+<h2 id="action-10"><span xml:lang="en">Log</span>dateien einsehen</h2>
 <ul>
 	<li><a href="logfiles.php?action=select_username">Nach Benutzernamen filtern</a></li>
 	<li><a href="logfiles.php?action=select_ip">Nach <abbr title="Internet Protocol" xml:lang="en"><span xml:lang="de">IP</span></abbr>-Adressen filtern</a></li>
@@ -512,15 +679,64 @@
 <?php
 	}
 
-	if($admin_array['permissions'][10])
+	if($admin_array['permissions'][11])
 	{
 ?>
-<h2 id="action-10">Benutzerverwaltung</h2>
+<hr />
+<h2 id="action-11">Benutzerverwaltung</h2>
 <ul>
 	<li><a href="usermanagement.php?action=edit">Bestehende Benutzer bearbeiten</a></li>
 	<li><a href="usermanagement.php?action=add">Neuen Benutzer anlegen</a></li>
 </ul>
 <?php
+	}
+
+	if($admin_array['permissions'][12])
+	{
+?>
+<hr />
+<h2 id="action-12">Wartungsarbeiten</h2>
+<?php
+		if(is_file('../.htaccess.wartungsarbeiten.sav'))
+		{
+?>
+<form action="index.php" method="post">
+	<div><input type="hidden" name="wartungsarbeiten" value="0" /><button type="submit">Wartungsarbeiten deaktivieren</button></div>
+</form>
+<?php
+		}
+		else
+		{
+?>
+<form action="index.php" method="post">
+	<div><input type="hidden" name="wartungsarbeiten" value="1" /><button type="submit">Wartungsarbeiten aktivieren</button></div>
+</form>
+<?php
+		}
+	}
+
+	if($admin_array['permissions'][13])
+	{
+		if(file_exists(LOCK_FILE))
+		{
+?>
+<hr />
+<h2 id="action-13">Spiel entsperren</h2>
+<form action="index.php" method="post">
+	<div><input type="hidden" name="lock" value="0" /><button type="submit">Entsperren</button></div>
+</form>
+<?php
+		}
+		else
+		{
+?>
+<hr />
+<h2 id="action-12">Spiel sperren</h2>
+<form action="index.php" method="post">
+	<div><input type="hidden" name="lock" value="1" /><button type="submit">Sperren</button></div>
+</form>
+<?php
+		}
 	}
 
 	admin_gui::html_foot();

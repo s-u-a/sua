@@ -1,7 +1,7 @@
 <?php
 	require('include.php');
 
-	if(!$admin_array['permissions'][7])
+	if(!$admin_array['permissions'][8])
 		die('No access.');
 
 	if(isset($_GET['delete']))

@@ -42,7 +42,7 @@
 	<p>Falls Sie sich von der Meldung gestört fühlen, haben Sie folgende Möglichkeiten, sie zu vermeiden.</p>
 	<ul>
 		<li>Sie verzichten auf eine verschlüsselte Verbindung, indem Sie rechts auf der Seite <abbr title="Secure Sockets Layer" xml:lang="en"><span xml:lang="de">SSL</span></abbr> abschalten. Dies ist aber weniger sicher und ist deshalb nicht empfohlen.</li>
-		<li>Sie laden sich das Zertifikat herunter und installieren es bei sich. Keine Sorge, das Zertifikat ist nur eine kleine Textdatei, die auf Ihrem <span xml:lang="en">Computer</span> unter den etlichen anderen Zertifikaten, die schon auf Ihrem Betriebssystem vorinstalliert sind, gespeichert wird. Es kann keinerlei Schaden anrichten. Um die Installation zu starten, <a href="s-u-a.net.crt">öffnen Sie das Zertifikat</a> und folgen den Anweisungen. (In manchen <span xml:lang="en">Browser</span>n müssen Sie zusätzlich noch auf &bdquo;Öffnen&ldquo; klicken.)</p>
+		<li>Sie laden sich das Zertifikat herunter und installieren es bei sich. Keine Sorge, das Zertifikat ist nur eine kleine Textdatei, die auf Ihrem <span xml:lang="en">Computer</span> unter den etlichen anderen Zertifikaten, die schon auf Ihrem Betriebssystem vorinstalliert sind, gespeichert wird. Es kann keinerlei Schaden anrichten. Um die Installation zu starten, <a href="http://www.cacert.org/certs/root.crt">öffnen Sie das Zertifikat</a> und folgen den Anweisungen. (In manchen <span xml:lang="en">Browser</span>n müssen Sie zusätzlich noch auf &bdquo;Öffnen&ldquo; klicken.)</p>
 	</ul>
 </div>
 

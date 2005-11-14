@@ -311,10 +311,16 @@
 			</dl>
 			<div id="content-10"><div id="content-11"><div id="content-12"><div id="content-13">
 <?php
-			if(isset($user_array['locked']) && $user_array['locked'])
+			if(isset($user_array['game_locked']) && $user_array['game_locked'])
 			{
 ?>
-				<p id="gesperrt-hinweis"><strong>Ihr Benutzeraccount ist gesperrt.</strong></p>
+				<p id="gesperrt-hinweis" class="spiel"><strong>Das Spiel ist derzeit gesperrt.</strong></p>
+<?php
+			}
+			elseif(isset($user_array['locked']) && $user_array['locked'])
+			{
+?>
+				<p id="gesperrt-hinweis" class="account"><strong>Ihr Benutzeraccount ist gesperrt.</strong></p>
 <?php
 			}
 ?>

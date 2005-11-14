@@ -32,8 +32,19 @@
 		else
 		{
 			admin_gui::html_head();
+
+			$request_uri = $_SERVER['PHP_SELF'];
+			$request_string = array();
+			foreach($_GET as $key=>$val)
+			{
+				if($key != 'logout')
+					$request_string[] = urlencode($key).'='.urlencode($val);
+			}
+			$request_string = implode('&', $request_string);
+			if($request_string != '')
+				$request_uri .= '?'.$request_string;
 ?>
-<form action="<?=htmlentities($_SERVER['REQUEST_URI'])?>" method="post">
+<form action="<?=htmlentities($request_uri)?>" method="post">
 	<dl>
 		<dt><label for="admin-benutzername-input">Benutzername</label></dt>
 		<dd><input type="text" name="admin_username" id="admin-benutzername-input" /></dd>
