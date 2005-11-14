@@ -154,7 +154,7 @@
 			{
 				$pos = explode(':', $flotte[1]);
 				list(,$owner) = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
-				if($owner && isset($users[$flotte[0]]) && isset($users[$owner]))
+				if($owner && $owner != $flotte[0] && isset($users[$flotte[0]]) && isset($users[$owner]))
 				{
 					$ip_1 = array();
 					$ip_2 = array();
