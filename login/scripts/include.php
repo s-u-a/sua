@@ -5,6 +5,7 @@
 	$resume = false;
 	$del_email_passwd = false;
 	session_start();
+	header('Cache-Control: no-cache', true);
 	if(!isset($_SESSION['username']) || !is_file(DB_PLAYERS.'/'.urlencode($_SESSION['username'])) || !is_readable(DB_PLAYERS.'/'.urlencode($_SESSION['username'])))
 	{
 		if(isset($_POST['username']) && isset($_POST['password']))
