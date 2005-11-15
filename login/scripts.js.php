@@ -26,8 +26,8 @@ function time_up()
 {
 	local_time_up = new Date();
 	server_time_up = new Date(local_time_up.getTime() - time_diff*1000);
-	document.getElementById('time-local').innerHTML = mk2(local_time_up.getHours())+':'+mk2(local_time_up.getMinutes())+':'+mk2(local_time_up.getSeconds());
-	document.getElementById('time-server').innerHTML = mk2(server_time_up.getHours())+':'+mk2(server_time_up.getMinutes())+':'+mk2(server_time_up.getSeconds());
+	document.getElementById('time-local').firstChild.data = mk2(local_time_up.getHours())+':'+mk2(local_time_up.getMinutes())+':'+mk2(local_time_up.getSeconds());
+	document.getElementById('time-server').firstChild.data = mk2(server_time_up.getHours())+':'+mk2(server_time_up.getMinutes())+':'+mk2(server_time_up.getSeconds());
 
 	for(var codo_key in countdowns)
 	{
@@ -38,7 +38,14 @@ function time_up()
 
 		if(this_remain < 0)
 		{
-			document.getElementById('restbauzeit-'+codo[0]).innerHTML = '<a href="?'+window.session_cookie+'='+encodeURIComponent(window.session_id)+'" class="fertig" title="Seite neu laden.">Fertig.</a>';
+			while(document.getElementById('restbauzeit-'+codo[0]).firstChild)
+				document.getElementById('restbauzeit-'+codo[0]).removeChild(document.getElementById('restbauzeit-'+codo[0]).firstChild);
+			var link_fertig = document.createElement('a');
+			link_fertig.setAttribute('href', '?'+window.session_cookie+'='+encodeURIComponent(window.session_id));
+			link_fertig.className = 'fertig';
+			link_fertig.setAttribute('title', 'Seite neu laden.');
+			link_fertig.appendChild(document.createTextNode('Fertig.'));
+			document.getElementById('restbauzeit-'+codo[0]).appendChild(link_fertig);
 			delete countdowns[codo_key];
 			continue;
 		}
@@ -54,10 +61,8 @@ function time_up()
 		}
 
 		this_timestring += mk2(Math.floor(this_remain/3600))+':'+mk2(Math.floor((this_remain%3600)/60))+':'+mk2(Math.floor(this_remain%60));
-		if(codo[2])
-			this_timestring += ' <a href="?cancel='+encodeURIComponent(codo[0])+'&amp;'+window.session_cookie+'='+encodeURIComponent(window.session_id)+'" class="abbrechen">Abbrechen</a>';
 
-		document.getElementById('restbauzeit-'+codo[0]).innerHTML = this_timestring;
+		document.getElementById('restbauzeit-'+codo[0]).firstChild.data = this_timestring;
 	}
 }
 
@@ -75,7 +80,22 @@ function init_countdown(obj_id, f_time)
 	title_string += mk2(remote_date.getHours())+':'+mk2(remote_date.getMinutes())+':'+mk2(remote_date.getSeconds())+', '+remote_date.getFullYear()+'-'+mk2(remote_date.getMonth()+1)+'-'+mk2(remote_date.getDate())+' (Serverzeit)';
 
 	document.getElementById('restbauzeit-'+obj_id).setAttribute('title', title_string);
-	window.countdowns.push(new Array(obj_id, f_time, show_cancel));
+
+	while(document.getElementById('restbauzeit-'+obj_id).firstChild)
+		document.getElementById('restbauzeit-'+obj_id).removeChild(document.getElementById('restbauzeit-'+obj_id).firstChild);
+
+	document.getElementById('restbauzeit-'+obj_id).appendChild(document.createTextNode(''));
+
+	if(show_cancel)
+	{
+		var cancel_link = document.createElement('a');
+		cancel_link.setAttribute('href', '?cancel='+encodeURIComponent(obj_id)+'&amp;'+window.session_cookie+'='+encodeURIComponent(window.session_id));
+		cancel_link.className = 'abbrechen';
+		cancel_link.appendChild(document.createTextNode('Abbrechen'));
+		document.getElementById('restbauzeit-'+obj_id).appendChild(cancel_link);
+	}
+
+	window.countdowns.push(new Array(obj_id, f_time));
 
 	time_up();
 }
