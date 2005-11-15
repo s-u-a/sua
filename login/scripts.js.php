@@ -89,7 +89,7 @@ function init_countdown(obj_id, f_time)
 	if(show_cancel)
 	{
 		var cancel_link = document.createElement('a');
-		cancel_link.setAttribute('href', '?cancel='+encodeURIComponent(obj_id)+'&amp;'+window.session_cookie+'='+encodeURIComponent(window.session_id));
+		cancel_link.setAttribute('href', '?cancel='+encodeURIComponent(obj_id)+'&'+window.session_cookie+'='+encodeURIComponent(window.session_id));
 		cancel_link.className = 'abbrechen';
 		cancel_link.appendChild(document.createTextNode('Abbrechen'));
 		document.getElementById('restbauzeit-'+obj_id).appendChild(cancel_link);
