@@ -284,14 +284,6 @@
 
 						if(!in_array($_POST['auftrag'], $types))
 							$show_form2 = true;
-						elseif(isset($_SESSION['doppelklick']) && isset($_POST['doppelklick']) && $_POST['doppelklick'] == $_SESSION['doppelklick'])
-						{
-?>
-<p class="error">
-	Doppelklickschutz &ndash; Sie wollten die Flotte zweimal abschicken.
-</p>
-<?php
-						}
 						else
 						{
 							$that_user_array = get_user_array($info[1]);
@@ -498,9 +490,6 @@
 								}
 								else
 								{
-									if(isset($_POST['doppelklick']))
-										$_SESSION['doppelklick'] = $_POST['doppelklick'];
-
 									if(!isset($user_array['flotten']))
 										$user_array['flotten'] = array();
 
@@ -623,7 +612,7 @@
 							$time2 = $time;
 						$time_string .= add_nulls(floor($time2/3600), 2).':'.add_nulls(floor(($time2%3600)/60), 2).':'.add_nulls(($time2%60), 2);
 ?>
-<form action="flotten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2">
+<form action="flotten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
 	<dl>
 		<dt class="c-ziel">Ziel</dt>
 		<dd class="c-ziel"><?=utf8_htmlentities($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'])?> &ndash; <?=$info[1] ? utf8_htmlentities($info[2]).' <span class="playername">('.utf8_htmlentities($info[1]).')</span>' : 'Unbesiedelt'?></dd>
@@ -964,7 +953,6 @@
 		<input type="hidden" name="galaxie" value="<?=utf8_htmlentities($_POST['galaxie'])?>" />
 		<input type="hidden" name="system" value="<?=utf8_htmlentities($_POST['system'])?>" />
 		<input type="hidden" name="planet" value="<?=utf8_htmlentities($_POST['planet'])?>" />
-		<input type="hidden" name="doppelklick" value="<?=htmlentities(md5(microtime()))?>" />
 		<button type="submit" accesskey="d">Absen<kbd>d</kbd>en</button>
 	</div>
 </form>
