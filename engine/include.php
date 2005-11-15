@@ -896,7 +896,7 @@
 			if($speed <= 0)
 				$time = 900;
 			else
-				$time = round(pow(($mass*$distance)/$speed, 0.3)*300);
+				$time = round((pow($mass, 0.95)/$speed)*pow($distance, 0.3)*100);
 			#$time = round(pow(1.125*$mass*pow($distance, 2)/$speed, 0.33333)*10);
 
 			return $time;

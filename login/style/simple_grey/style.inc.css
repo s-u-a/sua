@@ -325,8 +325,11 @@ h2#punkte { clear:right; }
 #flotten .rueckflug .beschreibung { color:#bbb; }
 #flotten .beschreibung:hover { color:#ccc; }
 #flotten .rueckflug .beschreibung:hover { color:#888; }
-#flotten .beschreibung[title=""] { color:inherit !important; cursor:inherit; }
-#flotten .beschreibung[title=""]:hover { color:inherit !important; }
+#flotten .beschreibung[class],#flotten .beschreibung[class]:hover { color:inherit; cursor:inherit; }
+#flotten .beschreibung[title] { color:#fff; cursor:help; }
+#flotten .rueckflug .beschreibung[title] { color:#bbb; }
+#flotten .beschreibung[title]:hover { color:#ccc; }
+#flotten .rueckflug .beschreibung[title]:hover { color:#888; }
 
 .highscores { width:50%; margin:.5em auto; border-spacing:0; border-collapse:collapse; font-weight:bold; }
 .highscores td,.highscores th { border:.1em solid #aaa; padding:.1em .3em; }

@@ -198,7 +198,10 @@
 
 			$ress_string = implode(', ', $ress_string);
 
-			$string .= '<span class="beschreibung transport" title="'.$ress_string.'">';
+			$string .= '<span class="beschreibung transport"';
+			if(strlen($ress_string) > 0)
+				$string .= ' title="'.$ress_string.'"';
+			$string .= '>';
 			if(isset($type_names[$flotte[2]]))
 				$string .= htmlentities($type_names[$flotte[2]]);
 			else
