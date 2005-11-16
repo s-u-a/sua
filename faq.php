@@ -8,6 +8,7 @@
 	Hier eine Liste der Fragen. Sollte die Frage, die Sie suchen, nicht dabei sein, schreiben Sie einfach ins <a href="forum/">Forum</a>.
 </p>
 <ol id="question-list">
+	<li><a href="#requirements">Was brauche ich, um <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> zu spielen?</a></li>
 	<li><a href="#register">Wie kann ich mich anmelden?</a></li>
 	<li><a href="#certification">Warum bekomme ich immer eine Meldung &bdquo;Ungültiges Zertifikat&ldquo;?</a></li>
 	<li><a href="#scores">Wie bekomme ich Punkte?</a></li>
@@ -30,6 +31,22 @@
 	<li><a href="#distance">Wie berechnet sich die Entfernung zwischen zwei Planeten?</a></li>
 	<li><a href="#download">Wie kann ich mir das Spiel herunterladen?</a></li>
 </ol>
+
+<div class="faq">
+	<h3 id="requirements">Was brauche ich, um <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> zu spielen?</a></li>
+	<p>Um das Spiel zu spielen, benötigen Sie lediglich einen <span xml:lang="en">Internetbrowser</span>, der <abbr title="Hypertext Markup Language" xml:lang="en"><span xml:lang="de">HTML</span></abbr>&thinsp;4 unterstützt. Sie können also quasi jeden <span xml:lang="en">Browser</span> verwenden, vom normalen <span xml:lang="en">Firefox</span> über den <span xml:lang="en">Terminalbrowser</span> bis hin zum Vorleseprogramm für Blinde.</p>
+	<p>Um das <span xml:lang="en">Design</span> in seinen vollen Zügen zu genießen, benötigen Sie einen Browser aus der folgenden Liste.</p>
+	<ul>
+		<li>Mozilla <span xml:lang="en">Firefox</span> (oder gleichwertige <span xml:lang="en">Gecko</span>-<span xml:lang="en">Browser</span>, wie <span xml:lang="en">Netscape Navigator</span> oder Mozilla<span xml:lang="en"> Suite</span>)</li>
+		<li><span xml:lang="en">Konqueror</span> (in einer neueren Version, bestenfalls 3.2 oder neuer)</li>
+		<li>Safari (siehe <span xml:lang="en">Konqueror</span></li>
+		<li>Opera (ab Version 7)</li>
+		<li><span xml:lang="en">Internet Explorer</span> (ab Version 5.5)</li>
+	</ul>
+	<p>Für einige praktische <span xml:lang="en">Features</span> können Sie außerdem <span xml:lang="en">JavaScript</span> aktivieren.</li>
+	<p>Wir möchten Sie wärmstens darum bitten, nicht den <span xml:lang="en">Internet Explorer</span> zu verwenden, sofern Sie die Möglichkeit dazu haben, da dieser keine Kompression unterstützt und Sie uns somit etwa das Zehnfache des Datenvolumens erzeugen, dass andere <span xml:lang="en">Browser</span> verursachen.</p>
+</div>
+
 <div class="faq">
 	<h3 id="register">Wie kann ich mich anmelden?</h3>
 	<p>Bereits registrierte Benutzer müssen das Formular, das auf der rechten Seite zu sehen ist, einfach nur ausfüllen (mit Benutzernamen und Passwort) und auf &bdquo;Anmelden&ldquo; klicken.</p>
