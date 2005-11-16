@@ -673,9 +673,9 @@
 
 									$k = $transport/$truemmerfeld_ges;
 									$mitnahme[0] = floor($mitnahme[0]*$k);
-									$mitnahme[1] = floor($mitnahme[0]*$k);
-									$mitnahme[2] = floor($mitnahme[0]*$k);
-									$mitnahme[3] = floor($mitnahme[0]*$k);
+									$mitnahme[1] = floor($mitnahme[1]*$k);
+									$mitnahme[2] = floor($mitnahme[2]*$k);
+									$mitnahme[3] = floor($mitnahme[3]*$k);
 
 									# Rundungsfehler ausmerzen
 									$uebrig = $transport-array_sum($mitnahme);
