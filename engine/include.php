@@ -1967,7 +1967,7 @@
 		$now_mtime = explode(' ', microtime());
 		$start_mtime = explode(' ', start_mtime);
 
-		$string .= '<!-- '.(array_sum($now_mtime)-array_sum($start_mtime)).' -->'."\n";
+		#$string .= '<!-- '.(array_sum($now_mtime)-array_sum($start_mtime)).' -->'."\n";
 
 		return utf8_encode($string);
 	}
