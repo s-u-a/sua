@@ -35,7 +35,7 @@
 				$admins[$_POST['new_admin'][0]]['password'] = md5($_POST['new_admin'][1]);
 				$admins[$_POST['new_admin'][0]]['permissions'] = array();
 
-				for($i=0; $i<=13; $i++)
+				for($i=0; $i<=14; $i++)
 					$admins[$_POST['new_admin'][0]]['permissions'][$i] = (isset($_POST['new_admin'][$i+2]) ? '1' : '0');
 
 				write_admin_list($admins);
@@ -57,6 +57,7 @@
 				<th rowspan="2" title="Adminstratoren verwalten"><span xml:lang="en">Admins</span></th>
 				<th rowspan="2" title="Wartungsarbeiten ein-/ausschalten">Wartung</th>
 				<th rowspan="2" title="Spiel sperren/entsperren">Spiel sperren</th>
+				<th rowspan="2" title="News bearbeiten"><span xml:lang="en">News</span></th>
 			</tr>
 			<tr>
 				<th title="Die Benutzerliste einsehen">Liste</th>
@@ -73,7 +74,7 @@
 				<td><input type="text" name="new_admin[0]" /></td>
 				<td><input type="text" name="new_admin[1]" /></td>
 <?php
-				for($j=0; $j<=13; $j++)
+				for($j=0; $j<=14; $j++)
 				{
 ?>
 				<td><input type="checkbox" name="new_admin[<?=htmlentities($j+2)?>]" value="1" /></td>
@@ -131,7 +132,7 @@
 					$new_admins[$this_name] = array();
 					$new_admins[$this_name]['password'] = $this_password;
 					$new_admins[$this_name]['permissions'] = array();
-					for($i=0; $i<=13; $i++)
+					for($i=0; $i<=14; $i++)
 						$new_admins[$this_name]['permissions'][$i] = (isset($admin[$i+1]) ? '1' : '0');
 					$new_admins[$_SESSION['admin_username']]['permissions'][11] = '1';
 				}
@@ -152,6 +153,7 @@
 				<th rowspan="2" title="Adminstratoren verwalten"><span xml:lang="en">Admins</span></th>
 				<th rowspan="2" title="Wartungsarbeiten ein-/ausschalten">Wartung</th>
 				<th rowspan="2" title="Spiel sperren/entsperren">Spiel sperren</th>
+				<th rowspan="2" title="News bearbeiten"><span xml:lang="en">News</span></th>
 				<th rowspan="2">Löschen</th>
 			</tr>
 			<tr>
@@ -173,7 +175,7 @@
 			<tr>
 				<td><input type="text" name="admin_array[<?=htmlentities($i)?>][0]" value="<?=utf8_htmlentities($name)?>" /></td>
 <?php
-				for($j=0; $j<=13; $j++)
+				for($j=0; $j<=14; $j++)
 				{
 ?>
 				<td><input type="checkbox" name="admin_array[<?=htmlentities($i)?>][<?=htmlentities($j+1)?>]" value="1"<?=$settings['permissions'][$j] ? ' checked="checked"' : ''?><?=($j==11 && $name==$_SESSION['admin_username'])? ' disabled="disabled"' : ''?> /></td>

@@ -32,6 +32,7 @@ ln -s $CWD/schiffe $1/items/schiffe
 ln -s $CWD/verteidigung $1/items/verteidigung
 touch $1/logfile
 mkdir $1/messages
+touch $1/news
 mkdir $1/players
 ln -s $CWD/show_player_info $1/show_player_info
 mkdir $1/truemmerfelder
@@ -40,16 +41,14 @@ ln -s $CWD/create_galaxy $1/universe/create_galaxy
 touch $1/admins
 read -p "Enter Admin user name: " ADMIN_USERNAME
 read -s -p "Enter Admin password: " ADMIN_PASSWD
-
-ADMIN_PASSWD=`md5sum << $ADMIN_PASSWD`
-for i in $ADMIN_PASSWD; do
-ADMIN_PASSWD=$i
-break
-done
+export ADMIN_PASSWD
+ADMIN_PASSWD=`php -r "echo md5(\$_ENV['ADMIN_PASSWD']);"`
 
 echo -n $ADMIN_USERNAME >> $1/admin
 echo -ne "\t" >> $1/admin
 echo -n $ADMIN_PASSWD >> $1/admin
+
+unset ADMIN_PASSWD
 
 OLD_PWD=`pwd`
 cd $1/universe

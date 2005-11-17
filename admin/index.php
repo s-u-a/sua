@@ -449,6 +449,7 @@
 <?php }if($admin_array['permissions'][11]){?>	<li><a href="#action-11">Benutzerverwaltung</a></li>
 <?php }if($admin_array['permissions'][12]){?>	<li><a href="#action-12">Wartungsarbeiten</a></li>
 <?php }if($admin_array['permissions'][13]){?>	<li><a href="#action-13">Spiel sperren</a></li>
+<?php }if($admin_array['permissions'][14]){?>	<li><a href="#action-14"><span xml:lang="en">News</span> bearbeiten</a></li>
 <?php }?></ol>
 <hr />
 <h2 id="passwort-aendern">Adminpasswort ändern</h2>
@@ -731,12 +732,20 @@
 		{
 ?>
 <hr />
-<h2 id="action-12">Spiel sperren</h2>
+<h2 id="action-13">Spiel sperren</h2>
 <form action="index.php" method="post">
 	<div><input type="hidden" name="lock" value="1" /><button type="submit">Sperren</button></div>
 </form>
 <?php
 		}
+	}
+
+	if($admin_array['permissions'][14])
+	{
+?>
+<hr />
+<h2 id="action-14"><a href="news.php"><span xml:lang="en">News</span> bearbeiten</a></h2>
+<?php
 	}
 
 	admin_gui::html_foot();

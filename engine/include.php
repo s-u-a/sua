@@ -37,6 +37,7 @@
 	$DB_HANDEL = $DB_DIR.'/handel';
 	$DB_HANDELSKURS = $DB_DIR.'/handelskurs';
 	$DB_ADMINS = $DB_DIR.'/admins';
+	$DB_NEWS = $DB_DIR.'/news';
 	$EVENTHANDLER_INTERVAL = 30;
 	$THS_HTML = '&nbsp;';
 	$THS_UTF8 = "\xc2\xa0";
@@ -84,6 +85,7 @@
 	define('DB_HANDEL', $DB_HANDEL);
 	define('DB_HANDELSKURS', $DB_HANDELSKURS);
 	define('DB_ADMINS', $DB_ADMINS);
+	define('DB_NEWS', $DB_NEWS);
 	define('EVENTHANDLER_INTERVAL', $EVENTHANDLER_INTERVAL);
 	define('THS_HTML', $THS_HTML);
 	define('THS_UTF8', $THS_UTF8);
