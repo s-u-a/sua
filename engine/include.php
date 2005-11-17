@@ -643,8 +643,9 @@
 		<title xml:lang="en">S-U-A &ndash; Stars Under Attack</title>
 		<link rel="stylesheet" href="<?=h_root?>/style.css" type="text/css" />
 	</head>
-	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
+	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4">
 		<h1 id="logo"><a href="./" title="Zurück zur Startseite" xml:lang="en">Stars Under Attack</a></h1>
+		<div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
 		<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
 			<fieldset>
 				<legend>Anmelden</legend>

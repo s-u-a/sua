@@ -61,7 +61,7 @@
 		logfile::action('3.1', $_SESSION['ip']);
 		if(isset($_COOKIE[SESSION_COOKIE]))
 			setcookie(SESSION_COOKIE, '');
-		die('Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte neu anmelden.');
+		die('Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte <a href="'.htmlentities(h_root).'/index.php">neu anmelden</a>.');
 	}
 
 	$user_array = get_user_array($_SESSION['username']);

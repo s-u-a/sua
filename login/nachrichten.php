@@ -320,9 +320,9 @@
 ?>
 <p class="successful">Die Nachricht wurde erfolgreich weitergeleitet.</p>
 <?php
-							unset($_POST['weiterleitung-to']);
-
 							logfile::action('21', $id, $_POST['weiterleitung-to'], 'Fwd: '.$message['subject']);
+
+							unset($_POST['weiterleitung-to']);
 						}
 					}
 ?>
