@@ -854,6 +854,7 @@
 										$verteidiger_flotte[$id] = array($anzahl, $items['verteidigung'][$id]['def']*$anzahl*pow(1.05, $verteidiger_verteid));
 								}
 
+
 								# Namen
 								$angreifer_name = $start_info[1];
 								$verteidiger_name = $target_info[1];
@@ -997,20 +998,21 @@
 										$nachrichten_text .= "<div class=\"runde\">\n";
 										$nachrichten_text .= "\t<h3>Runde ".(($runde+1)/2)."</h3>\n";
 									}
-									$nachrichten_text .= "\t<h4><span class=\"name\">".utf8_htmlentities(${$runde_starter.'_name'})."</span> ist am Zug</h4>\n";
-									$nachrichten_text .= "\t<ol>\n";
 
 									# Flottengesamtstaerke
 									$staerke = 0;
 									foreach($a as $id=>$anzahl)
 									{
-										if(!isset($items['ids'][$id]) || (!isset($items['schiffe'][$id]) && !isset($items['schiffe'][$id])))
+										if(!isset($items['ids'][$id]) || (!isset($items['schiffe'][$id]) && !isset($items['verteidigung'][$id])))
 											continue;
 										$staerke += $items['ids'][$id]['att']*$anzahl[0];
 									}
 									$staerke *= pow(1.05, ${$runde_starter.'_waffentechnik'});
 
-									while($staerke > 0 && count($d))
+									$nachrichten_text .= "\t<h4><span class=\"name\">".utf8_htmlentities(${$runde_starter.'_name'})."</span> ist am Zug (Gesamtst\xc3\xa4rke ".round($staerke).")</h4>\n";
+									$nachrichten_text .= "\t<ol>\n";
+
+									while($staerke > 0 && count($d) > 0)
 									{
 										# Prozentual meistgeschwaechte Einheit herausfinden
 										$angriff = array(1, array());
@@ -1054,7 +1056,7 @@
 												$tf_anzahl = $diff;
 											}
 											else
-												$nachrichten_text .= "\t\t<li>Ein Schiff des Typs ".utf8_htmlentities($items['ids'][$angriff]['name'])." wird angeschossen.</li>\n";
+												$nachrichten_text .= "\t\t<li>Eine Einheit des Typs ".utf8_htmlentities($items['ids'][$angriff]['name'])." wird angeschossen.</li>\n";
 											$staerke = 0;
 										}
 
@@ -1337,7 +1339,10 @@
 									$flotte[5][0][2] += $erbeut[2];
 									$flotte[5][0][3] += $erbeut[3];
 									$flotte[5][0][4] += $erbeut[4];
+								}
 
+								if(count($angreifer_flotte) > 0)
+								{
 									# Flotte umkehren
 
 									# Zeit neu berechnen

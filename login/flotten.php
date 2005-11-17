@@ -156,6 +156,7 @@
 		if(!$show_versenden)
 		{
 			$info = universe::get_planet_info($_POST['galaxie'], $_POST['system'], $_POST['planet']);
+			$status_info = universe::get_planet_info($_POST['galaxie'], $_POST['system'], $_POST['planet'], true);
 			if($info === false)
 				$show_versenden = true;
 
@@ -195,7 +196,7 @@
 				if(($truemmerfeld === false || array_sum($truemmerfeld) <= 0) && isset($types[2])) # Sammeln, kein Truemmerfeld
 					unset($types[2]);
 
-				if($this_planet['pos'] == $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'] || substr($info[1], -4) == ' (U)')
+				if($this_planet['pos'] == $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'] || substr($status_info[1], -4) == ' (U)')
 				{ # Selber Planet / Urlaubsmodus, nur Sammeln
 					if($truemmerfeld && isset($types[2]))
 						$types = array(2 => 0);
@@ -289,7 +290,7 @@
 							$that_user_array = get_user_array($info[1]);
 
 							$noob = false;
-							if($_POST['auftrag'] == '3' && substr($info[1], -4) != ' (g)')
+							if($_POST['auftrag'] == '3' && (!isset($that_user_array['locked']) || !$that_user_array['locked']))
 							{
 								# Anfaengerschutz ueberpruefen
 								$that_punkte = $that_user_array['punkte'][0]+$that_user_array['punkte'][1]+$that_user_array['punkte'][2]+$that_user_array['punkte'][3]+$that_user_array['punkte'][4]+$that_user_array['punkte'][5]+$that_user_array['punkte'][6];

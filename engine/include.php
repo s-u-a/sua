@@ -299,7 +299,7 @@
 
 	class universe
 	{
-		function get_planet_info($check_galaxy, $check_system=false, $check_planet=false) # Findet die Groesse, Eigentuemer und Namen des Planeten heraus
+		function get_planet_info($check_galaxy, $check_system=false, $check_planet=false, $show_status=false) # Findet die Groesse, Eigentuemer und Namen des Planeten heraus
 		{ # unter den angegebenen Koordinaten heraus.
 			if($check_system !== false && $check_planet !== false)
 			{
@@ -310,6 +310,7 @@
 			{
 				$check_planets = $check_galaxy;
 				$return_array = true;
+				$show_status = $check_system;
 			}
 
 			uasort($check_planets, 'sort_koords');
@@ -380,6 +381,11 @@
 
 							$size = bindec(substr($bin, 5+($planet-1)*9, 9))+100;
 							$owner_name = trim(bin2string(substr($bin, 275+($planet-1)*192, 192)));
+							if(!$show_status)
+							{
+								if(substr($owner_name, -4) == ' (U)' || substr($owner_name, -4) == ' (g)')
+									$owner_name = substr($owner_name, 0, -4);
+							}
 							$planet_name = trim(bin2string(substr($bin, 6035+($planet-1)*192, 192)));
 
 							$info[$galaxy.':'.$system.':'.$planet] = array($size, $owner_name, $planet_name);

@@ -25,6 +25,8 @@
 				$error = 'Dieser Spieler existiert bereits. Bitte wähle einen anderen Namen.';
 			elseif(substr($_POST['username'], -4) == ' (U)')
 				$error = 'Der Benutzername darf nicht auf (U) enden.';
+			elseif(substr($_POST['username'], -4) == ' (g)')
+				$error = 'Der Benutzername darf nicht auf (g) enden.';
 			else
 			{
 				touch(DB_PLAYERS.'/'.urlencode($_POST['username']));

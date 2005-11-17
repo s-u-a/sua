@@ -33,13 +33,13 @@
 </ol>
 
 <div class="faq">
-	<h3 id="requirements">Was brauche ich, um <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> zu spielen?</a></li>
+	<h3 id="requirements">Was brauche ich, um <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> zu spielen?</a></h3>
 	<p>Um das Spiel zu spielen, benötigen Sie lediglich einen <span xml:lang="en">Internetbrowser</span>, der <abbr title="Hypertext Markup Language" xml:lang="en"><span xml:lang="de">HTML</span></abbr>&thinsp;4 unterstützt. Sie können also quasi jeden <span xml:lang="en">Browser</span> verwenden, vom normalen <span xml:lang="en">Firefox</span> über den <span xml:lang="en">Terminalbrowser</span> bis hin zum Vorleseprogramm für Blinde.</p>
 	<p>Um das <span xml:lang="en">Design</span> in seinen vollen Zügen zu genießen, benötigen Sie einen Browser aus der folgenden Liste.</p>
 	<ul>
 		<li>Mozilla <span xml:lang="en">Firefox</span> (oder gleichwertige <span xml:lang="en">Gecko</span>-<span xml:lang="en">Browser</span>, wie <span xml:lang="en">Netscape Navigator</span> oder Mozilla<span xml:lang="en"> Suite</span>)</li>
 		<li><span xml:lang="en">Konqueror</span> (in einer neueren Version, bestenfalls 3.2 oder neuer)</li>
-		<li>Safari (siehe <span xml:lang="en">Konqueror</span></li>
+		<li>Safari (siehe <span xml:lang="en">Konqueror</span>)</li>
 		<li>Opera (ab Version 7)</li>
 		<li><span xml:lang="en">Internet Explorer</span> (ab Version 5.5)</li>
 	</ul>
