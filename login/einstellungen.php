@@ -139,7 +139,6 @@
 	}
 ?>
 <form action="einstellungen.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular">
-	<div class="einstellungen-speichern-1"><button type="submit" title="[W]">Speichern</button></div>
 	<fieldset class="verschiedene-einstellungen">
 		<legend>Verschiedene Einstellungen</legend>
 		<dl>
@@ -237,6 +236,7 @@
 			</tbody>
 		</table>
 	</fieldset>
+	<div class="einstellungen-speichern-1"><button type="submit" title="[W]">Speichern</button></div>
 <?php
 	if(!isset($user_array['locked']) || !$user_array['locked'])
 	{
