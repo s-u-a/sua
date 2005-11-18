@@ -84,7 +84,7 @@ function init_countdown(obj_id, f_time)
 	while(document.getElementById('restbauzeit-'+obj_id).firstChild)
 		document.getElementById('restbauzeit-'+obj_id).removeChild(document.getElementById('restbauzeit-'+obj_id).firstChild);
 
-	document.getElementById('restbauzeit-'+obj_id).appendChild(document.createTextNode(''));
+	document.getElementById('restbauzeit-'+obj_id).appendChild(document.createTextNode('.'));
 
 	if(show_cancel)
 	{
