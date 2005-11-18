@@ -290,8 +290,9 @@
 			return $return;
 		}
 
-		function ress_to_human($ress)
+		function ress_to_human($ress2)
 		{
+			$ress = explode('.', $ress2);
 			$return = 'Carbon: '.ths($ress[0]).', Aluminium: '.ths($ress[1]).', Wolfram: '.ths($ress[2]).', Radium: '.ths($ress[3]).', Tritium: '.ths($ress[4]);
 			return $return;
 		}

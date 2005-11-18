@@ -1052,6 +1052,8 @@
 								select_obj.selectedIndex = 0;
 						}
 					}
+
+					syncronise(true);
 				// ]]>
 			</script>
 		</dl>
