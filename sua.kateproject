@@ -1,3 +1,7 @@
+[Dir admin]
+Dirs=
+Files=
+
 [Dir db_things]
 Dirs=
 Files=create_database/create_galaxy/forschung/gebaeude/roboter/schiffe/show_player_info/verteidigung
