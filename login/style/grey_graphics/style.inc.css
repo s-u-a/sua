@@ -100,3 +100,5 @@ body.planet-20 { background-image:url(grey_graphics/images/image.php?planets_alp
 .planet_18 .c-planet { background-image:url(grey_graphics/images/image.php?planets_extra_small%2fplanet18.png); }
 .planet_19 .c-planet { background-image:url(grey_graphics/images/image.php?planets_extra_small%2fplanet19.png); }
 .planet_20 .c-planet { background-image:url(grey_graphics/images/image.php?planets_extra_small%2fplanet20.png); }
+
+* html body { background-image:none; }
