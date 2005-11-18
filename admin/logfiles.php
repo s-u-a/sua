@@ -168,9 +168,9 @@
 					}
 					foreach($users[$owner] as $key=>$ip)
 					{
-						if($flotte[2] < $users_min_max[$flotte[0]][$key][0] && $users_min_max[$flotte[0]][$key][0]-$flotte[2] > 86400)
+						if($flotte[2] < $users_min_max[$owner][$key][0] && $users_min_max[$owner][$key][0]-$flotte[2] > 86400)
 							continue;
-						elseif($flotte[2] > $users_min_max[$flotte[0]][$key][1] && $flotte[2]-$users_min_max[$flotte[0]][$key][1] > 86400)
+						elseif($flotte[2] > $users_min_max[$owner][$key][1] && $flotte[2]-$users_min_max[$owner][$key][1] > 86400)
 							continue;
 						$ip_2[] = $ip;
 					}
