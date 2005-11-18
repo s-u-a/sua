@@ -88,41 +88,6 @@
 				messages::new_messages(array($start_info[1], $types_message_types[$flotte[2]]), '', "Flotte zur\xc3\xbcckgerufen", "Ihre Flotte befand sich auf dem Weg zum Planeten \xe2\x80\x9e".$this_planet['name']."\xe2\x80\x9c (".$this_planet['pos'].", Eigent\xc3\xbcmer: ".$_SESSION['username']."). Soeben wurde jener Planet verlassen, weshalb Ihre Flotte sich auf den R\xc3\xbcckweg zu Ihrem Planeten \xe2\x80\x9e".$start_info[2]."\xe2\x80\x9c (".$flotte[3][0].") macht.");
 			}
 
-			# Punkte abziehen
-
-			# Gebaeudepunkte
-			foreach($this_planet['gebaeude'] as $id=>$level)
-			{
-				if(!isset($items['gebaeude'][$id]))
-					continue;
-				$costs = $items['gebaeude'][$id]['ress'];
-				for($i = 1; $i <= $level; $i++)
-					$user_array['punkte'][0] -= array_sum($costs)*pow($i, 2.4)/1000;
-			}
-
-			# Roboterpunkte werden nicht abgezogen, siehe FAQ
-
-			# Schiffspunkte
-			foreach($this_planet['schiffe'] as $id=>$level)
-			{
-				if(!isset($items['schiffe'][$id]))
-					continue;
-				$costs = $items['schiffe'][$id]['ress'];
-				$user_array['punkte'][3] -= array_sum($costs)*$level/1000;
-			}
-
-			# Verteidigungspukte
-			foreach($this_planet['verteidigung'] as $id=>$level)
-			{
-				if(!isset($items['verteidigung'][$id]))
-					continue;
-				$costs = $items['verteidigung'][$id]['ress'];
-				$user_array['punkte'][4] -= array_sum($costs)*$level/1000;
-			}
-
-			# Highscores neu berechnen
-			highscores::recalc();
-
 			# Planeten aus der Karte loeschen
 			$this_pos = explode(':', $this_planet['pos']);
 			universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], rand(100, 500), '', '');
@@ -135,6 +100,9 @@
 				$i++;
 			}
 			unset($user_array['planets'][$i]);
+			
+			# Highscores neu berechnen
+			highscores::recalc2();
 
 			write_user_array();
 

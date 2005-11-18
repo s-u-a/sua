@@ -128,15 +128,9 @@
 
 					$geb_punkte = ($ress[0]+$ress[1]+$ress[2]+$ress[3])/1000; # Gebaeudepunkte
 					if($this_planet['building']['gebaeude'][2]) # Abriss
-					{
-						$user_array['punkte'][0] -= $geb_punkte*2/2.4;
 						$this_planet['size'][0] -= $needed_fields;
-					}
 					else
-					{
-						$user_array['punkte'][0] += $geb_punkte;
 						$this_planet['size'][0] += $needed_fields;
-					}
 
 					# Bau aus der Warteschleife entfernen
 					unset($this_planet['building']['gebaeude']);
@@ -144,14 +138,7 @@
 					write_user_array();
 
 					# Punkte haben sich veraendert, Highscores neu berechnen
-					highscores::recalc();
-
-					# Aus dem Eventhandler streichen
-
-					# Loggen nicht vergessen!
-
-					# FEHLT NOCH!
-					# Rohstoffe neu berechnen
+					highscores::recalc2();
 				}
 
 				if(isset($this_planet['building']['forschung']) && trim($this_planet['building']['forschung'][0]) != '' && $this_planet['building']['forschung'][1] <= time())
@@ -208,10 +195,6 @@
 
 					# Punkte haben sich veraendert, Highscores neu berechnen
 					highscores::recalc();
-
-					# Aus dem Eventhandler streichen
-
-					# Loggen nicht vergessen!
 				}
 
 				if(isset($this_planet['building']['roboter']))
@@ -276,13 +259,6 @@
 						# Punkte haben sich veraendert, Highscores neu berechnen
 						highscores::recalc();
 					}
-
-					# Aus dem Eventhandler streichen
-
-					# Loggen nicht vergessen!
-
-					# FEHLT NOCH!
-					# Rohstoffe neu berechnen
 				}
 
 				if(isset($this_planet['building']['schiffe']))
@@ -304,9 +280,6 @@
 							$user_array['punkte'][9] += $ress[2]; # Verbautes Wolfram
 							$user_array['punkte'][10] += $ress[3]; # Verbautes Radium
 
-							$sch_punkte = ($ress[0]+$ress[1]+$ress[2]+$ress[3])/1000; # Flottenpunkte
-							$user_array['punkte'][3] += $sch_punkte;
-
 							# Schiffe bauen
 							$anzahl = 0;
 							if(isset($this_planet['schiffe'][$sch[0]]))
@@ -326,14 +299,8 @@
 						write_user_array();
 
 						# Punkte haben sich veraendert, Highscores neu berechnen
-						highscores::recalc();
+						highscores::recalc2();
 					}
-
-					# Handelsmoeglichkeit neu ueberpruefen?
-
-					# Aus dem Eventhandler streichen
-
-					# Loggen nicht vergessen!
 				}
 
 				if(isset($this_planet['building']['verteidigung']))
@@ -355,9 +322,6 @@
 							$user_array['punkte'][9] += $ress[2]; # Verbautes Wolfram
 							$user_array['punkte'][10] += $ress[3]; # Verbautes Radium
 
-							$def_punkte = ($ress[0]+$ress[1]+$ress[2]+$ress[3])/1000; # Verteidigungspunkte
-							$user_array['punkte'][4] += $def_punkte;
-
 							# Schiffe bauen
 							$anzahl = 0;
 							if(isset($this_planet['verteidigung'][$def[0]]))
@@ -377,14 +341,8 @@
 						write_user_array();
 
 						# Punkte haben sich veraendert, Highscores neu berechnen
-						highscores::recalc();
+						highscores::recalc2();
 					}
-
-					# Handelsmoeglichkeit neu ueberpruefen?
-
-					# Aus dem Eventhandler streichen
-
-					# Loggen nicht vergessen!
 				}
 			}
 
@@ -546,12 +504,8 @@
 										}
 									}
 
-									# Punkte fuer ein Besiedelungsschiff abziehen
-									$points = array_sum($items['schiffe']['S6']['ress'])/1000;
-									$user_array['punkte'][3] -= $points;
-
 									# Statistiken neu berechnen
-									highscores::recalc();
+									highscores::recalc2();
 
 									if((count($flotte[0]) == 1 && isset($flotte[0]['S6']) && $flotte[0]['S6'] <= 1) || count($flotte[0]) < 1)
 									{
@@ -1467,8 +1421,8 @@
 								# Highscores neu berechnen
 								if($angreifer_punkte > 0 || $verteidiger_punkte > 0)
 								{
-									highscores::recalc($start_info[1]);
-									highscores::recalc($target_info[1]);
+									highscores::recalc2($start_info[1]);
+									highscores::recalc2($target_info[1]);
 								}
 							}
 							elseif($flotte[2] == 5)

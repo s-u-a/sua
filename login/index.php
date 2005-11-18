@@ -149,7 +149,7 @@
 				{
 					$string .= 'von Ihrem Planeten &bdquo;'.utf8_htmlentities($from_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][0]).') erreicht ';
 					if($to_info[1] == $_SESSION['username'])
-						$string .= 'Ihrem Planeten &bdquo;'.utf8_htmlentities($to_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][1]).')';
+						$string .= 'Ihren Planeten &bdquo;'.utf8_htmlentities($to_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][1]).')';
 					else
 					{
 						$string .= 'den Planeten ';
@@ -160,7 +160,7 @@
 					}
 				}
 				else
-					$string .= 'vom Planeten &bdquo;'.utf8_htmlentities($from_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][0]).', Eigentümer: '.utf8_htmlentities($from_info[1]).') erreicht deinen Planeten &bdquo;'.utf8_htmlentities($to_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][1]).')';
+					$string .= 'vom Planeten &bdquo;'.utf8_htmlentities($from_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][0]).', Eigentümer: '.utf8_htmlentities($from_info[1]).') erreicht Ihren Planeten &bdquo;'.utf8_htmlentities($to_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][1]).')';
 				$string .= '. Ihr Auftrag lautet ';
 			}
 			else # Rueckflug

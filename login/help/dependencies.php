@@ -226,7 +226,7 @@
 				$dep = explode('-', $dep);
 				$this = &$items['ids'][$dep[0]];
 ?>
-					<li class="deps-<?=(isset($this_planet['ids'][$dep[0]]) && $this_planet['ids'][$dep[0]] >= $dep[1]) ? 'ja' : 'nein'?>"><?=utf8_htmlentities($this['name'])?> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($dep[1])?>)</span></li>
+					<li class="deps-<?=(isset($this_planet['ids'][$dep[0]]) && $this_planet['ids'][$dep[0]] >= $dep[1]) ? 'ja' : 'nein'?>"><a href="#deps-<?=htmlentities($dep[0])?>" title="Zu diesem Gegenstand scrollen."><?=utf8_htmlentities($this['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($dep[1])?>)</span></li>
 <?php
 			}
 ?>

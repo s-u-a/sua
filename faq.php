@@ -44,7 +44,7 @@
 		<li><span xml:lang="en">Internet Explorer</span> (ab Version 5.5)</li>
 	</ul>
 	<p>Für einige praktische <span xml:lang="en">Features</span> können Sie außerdem <span xml:lang="en">JavaScript</span> aktivieren.</li>
-	<p>Wir möchten Sie wärmstens darum bitten, nicht den <span xml:lang="en">Internet Explorer</span> zu verwenden, sofern Sie die Möglichkeit dazu haben, da dieser keine Kompression unterstützt und Sie uns somit etwa das Zehnfache des Datenvolumens erzeugen, dass andere <span xml:lang="en">Browser</span> verursachen.</p>
+	<p>Wir möchten Sie wärmstens darum bitten, nicht den <span xml:lang="en">Internet Explorer</span> zu verwenden, sofern Sie die Möglichkeit dazu haben, da dieser keine Kompression unterstützt und Sie uns somit etwa das Zehnfache des Datenvolumens erzeugen, das andere <span xml:lang="en">Browser</span> verursachen.</p>
 </div>
 
 <div class="faq">

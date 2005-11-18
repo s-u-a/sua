@@ -1064,7 +1064,12 @@
 
 	class highscores
 	{
-		function recalc($use_username=false)
+		function recalc2($use_username=false)
+		{
+			highscores::recalc($use_username, true);
+		}
+
+		function recalc($use_username=false, $recalc_scores=false)
 		{
 			if($use_username === false && !isset($_SESSION['username']))
 				return false;
@@ -1080,6 +1085,61 @@
 
 			$old_position = $user_array['punkte'][12];
 			$old_position_f = ($old_position-1)*32;
+
+			if($recalc_scores)
+			{
+				# Gebaeude-, Schiffs- und Verteidigungspunkte neu berechnen
+
+				global $items;
+
+				$user_array['punkte'][0] = 0;
+				$user_array['punkte'][3] = 0;
+				$user_array['punkte'][4] = 0;
+
+				$planets = array_keys($user_array['planets']);
+				$koords = array();
+				foreach($planets as $planet)
+				{
+					foreach($user_array['planets'][$planet]['gebaeude'] as $geb=>$stufe)
+					{
+						if(isset($items['gebaeude'][$geb]))
+						{
+							$ress = array_sum($items['gebaeude'][$geb]['ress']);
+							for($i=0; $i<$stufe; $i++,$ress*=2.4)
+								$user_array['punkte'][0] += $ress;
+						}
+					}
+					foreach($user_array['planets'][$planet]['schiffe'] as $sch=>$anzahl)
+					{
+						if(isset($items['schiffe'][$geb]))
+							$user_array['punkte'][3] += array_sum($items['schiffe'][$sch]['ress'])*$anzahl;
+					}
+					foreach($user_array['planets'][$planet]['verteidigung'] as $ver=>$anzahl)
+					{
+						if(isset($items['verteidigung'][$geb]))
+							$user_array['punkte'][4] += array_sum($items['verteidigung'][$ver]['ress'])*$anzahl;
+					}
+
+					$koords[] = $user_array['planets'][$planet]['pos'];
+				}
+
+				foreach($user_array['flotten'] as $flotte)
+				{
+					if(($flotte[7] && in_array($flotte[3][1], $koords)) || (!$flotte[7] && in_array($flotte[3][0], $koords)))
+					{
+						# Eigene Flotte
+						foreach($flotte[0] as $sch=>$anzahl)
+						{
+							if(isset($items['schiffe'][$geb]))
+								$user_array['punkte'][3] += array_sum($items['schiffe'][$sch]['ress'])*$anzahl;
+						}
+					}
+				}
+
+				$user_array['punkte'][0] /= 1000;
+				$user_array['punkte'][3] /= 1000;
+				$user_array['punkte'][4] /= 1000;
+			}
 
 			$new_points = floor($user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6]);
 			$new_points_bin = add_nulls(base_convert($new_points, 10, 2), 64);
