@@ -983,6 +983,9 @@
 ?>
 <?php
 			$this_pos = explode(':', $this_planet['pos']);
+			if(isset($_GET['action_galaxy'])) $this_pos[0] = $_GET['action_galaxy'];
+			if(isset($_GET['action_system'])) $this_pos[1] = $_GET['action_system'];
+			if(isset($_GET['action_planet'])) $this_pos[2] = $_GET['action_planet'];
 ?>
 <form action="flotten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="flotte-versenden">
 <?php

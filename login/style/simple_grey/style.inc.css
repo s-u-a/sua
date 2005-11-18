@@ -185,7 +185,7 @@ legend { font-weight:bold; }
 .karte-system th,.karte-system td { border:.1em solid #aaa; padding:.2em; font-weight:bold; }
 .karte-system th.c-planet,.karte-system th.c-aktionen { width:1px; }
 .karte-system td.c-aktionen ul { margin:0; padding:0; list-style-type:none; }
-.karte-system td.c-aktionen li { width:1ex; overflow:hidden; float:left; display:block; margin-right:.3em; font-family:monospace; }
+.karte-system td.c-aktionen li { width:1ex; overflow:hidden; float:left; display:block; margin-right:.3em; font-family:monospace; white-space:nowrap; }
 .karte-system td.c-aktionen a { font-family:monospace; }
 
 .karte-system .eigen .playername a,.highscores .eigen .playername { color:#8f8; }

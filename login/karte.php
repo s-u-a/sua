@@ -126,55 +126,44 @@
 		}
 
 		$show_sammeln = (!$user_array['umode'] && isset($this_planet['schiffe']['S3']) && $this_planet['schiffe']['S3'] > 0 && array_sum($truemmerfeld) > 0);
-
-		if($that_uname == $_SESSION['username'] && !$show_sammeln)
-		{
-?>
-			<td class="c-aktionen"></td>
-<?php
-		}
-		else
-		{
 ?>
 			<td class="c-aktionen">
 				<ul>
+					<li class="c-koordinaten-verwenden"><a href="flotten.php?action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten ins Flottenmenü einsetzen">Koordinaten verwenden</a></li>
 <?php
-			if($that_uname != $_SESSION['username'])
+		if($that_uname != $_SESSION['username'])
+		{
+			if($suffix != ' (U)' && !$user_array['umode'] && isset($this_planet['schiffe']['S5']) && $this_planet['schiffe']['S5'] > 0)
 			{
-				if($suffix != ' (U)' && !$user_array['umode'] && isset($this_planet['schiffe']['S5']) && $this_planet['schiffe']['S5'] > 0)
-				{
 ?>
 					<li class="c-spionieren"><a href="flotten.php?action=spionage&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Spionieren Sie diesen Planeten aus">Spionieren</a></li>
 <?php
-				}
+			}
 
-				if($planet[1])
-				{
+			if($planet[1])
+			{
 ?>
 					<li class="c-nachricht"><a href="nachrichten.php?to=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Schreiben Sie diesem Spieler eine Nachricht">Nachricht</a></li>
 <?php
-				}
+			}
 
-				if(!$planet[1] && !$user_array['umode'] && count($user_array['planets']) < 15 && isset($this_planet['schiffe']['S6']) && $this_planet['schiffe']['S6'] > 0)
-				{
+			if(!$planet[1] && !$user_array['umode'] && count($user_array['planets']) < 15 && isset($this_planet['schiffe']['S6']) && $this_planet['schiffe']['S6'] > 0)
+			{
 ?>
 					<li class="c-besiedeln"><a href="flotten.php?action=besiedeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Schicken Sie ein Besiedelungsschiff zu diesem Planeten">Besiedeln</a></li>
 <?php
-				}
 			}
+		}
 
-			if($show_sammeln)
-			{
+		if($show_sammeln)
+		{
 ?>
 					<li class="c-truemmerfeld"><a href="flotten.php?action=sammeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Schicken Sie ausreichend Sammler zu diesem Trümmerfeld">Trümmerfeld</a></li>
 <?php
-			}
+		}
 ?>
 				</ul>
 			</td>
-<?php
-		}
-?>
 		</tr>
 <?php
 	}
