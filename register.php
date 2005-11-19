@@ -9,7 +9,9 @@
 	{
 		$error = '';
 
-		if(strlen(trim($_POST['username'])) > 24)
+		if(!isset($_POST['nutzungsbedingungen']) || !$_POST['nutzungsbedingungen'])
+			$error = 'Sie müssen die Nutzungsbedingungen lesen und akzeptieren, um am Spiel teilnehmen zu können.';
+		elseif(strlen(trim($_POST['username'])) > 24)
 			$error = 'Der Benutzername darf maximal 24 Bytes groß sein.';
 		elseif(strlen(trim($_POST['hauptplanet'])) > 24)
 			$error = 'Der Name des Hauptplanets darf maximal 24 Bytes groß sein.';
@@ -201,6 +203,7 @@
 			<dt><label for="hauptplanet">Gewünschter Name des Hauptplaneten</label></dt>
 			<dd><input type="text" id="hauptplanet" name="hauptplanet"<?=isset($_POST['hauptplanet']) ? ' value="'.utf8_htmlentities($_POST['hauptplanet']).'"' : ''?> maxlength="24" /></dd>
 		</dl>
+		<div><input type="checkbox" name="nutzungsbedingungen" id="nutzungsbedingungen" /> <label for="nutzungsbedigungen">Ich habe die <a href="rules.php">Nutzungsbedingungen</a> gelesen und akzeptiere sie.</label></div>
 		<ul>
 			<li><button type="submit">Registrieren</button></li>
 			<li><a href="./">Zurück zur Startseite</a></li>
