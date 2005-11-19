@@ -1106,7 +1106,7 @@
 						if(isset($items['gebaeude'][$geb]))
 						{
 							$ress = array_sum($items['gebaeude'][$geb]['ress']);
-							for($i=1; $i<=$stufe; $i++,$factor*=2.4)
+							for($i=1; $i<=$stufe; $i++)
 								$user_array['punkte'][0] += $ress*pow($i, 2.4);
 						}
 					}

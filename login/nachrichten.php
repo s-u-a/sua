@@ -260,8 +260,9 @@
 						if(substr($re_betreff, 0, 4) != 'Re: ')
 							$re_betreff = 'Re: '.$message['subject'];
 ?>
-<form action="nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="get" class="nachricht-antworten-formular">
+<form action="nachrichten.php" method="get" class="nachricht-antworten-formular">
 	<div>
+		<input type="hidden" name="<?=htmlentities(SESSION_COOKIE)?>" value="<?=htmlentities(session_id())?>" />
 		<input type="hidden" name="to" value="<?=utf8_htmlentities($message['from'])?>" />
 		<input type="hidden" name="subject" value="<?=utf8_htmlentities($re_betreff)?>" />
 		<button type="submit" accesskey="w" tabindex="1">Ant<kbd>w</kbd>orten</button>
