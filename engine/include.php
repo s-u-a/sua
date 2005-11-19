@@ -1105,12 +1105,10 @@
 					{
 						if(isset($items['gebaeude'][$geb]))
 						{
-							$ress = array_sum($items['gebaeude'][$geb]['ress']);
-							for($i=0; $i<$stufe; $i++)
-							{
-								$user_array['punkte'][0] += $ress;
-								$ress *= 2.4;
-							}
+							$ress = array_sum$items['gebaeude'][$geb]['ress']);
+							$factor = 1;
+							for($i=0; $i<$stufe; $i++,$factor*=2.4)
+								$user_array['punkte'][0] += $ress*$factor;
 						}
 					}
 					foreach($user_array['planets'][$planet]['schiffe'] as $sch=>$anzahl)
