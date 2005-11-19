@@ -44,6 +44,7 @@ form dd { display:block; margin:0 0 0 40%; padding:0; }
 form ul { margin:0; padding:0; list-style-type:none; text-align:center; }
 input { border:.1em solid #000; margin:.1em; background-image:url(images/halb2.png); background-color:transparent; width:100%; }
 input:hover,input:focus { background-color:#679; }
+input[type=checkbox],input[type=radio] { width:auto; }
 fieldset { border:.1em solid #679; }
 legend { font-weight:bold; }
 button { border:.1em solid #000; background-color:transparent; background-image:url(images/halb2.png); }
@@ -68,6 +69,6 @@ p { text-align:justify; }
 .successful { font-size:1.2em; color:#0f0; font-weight:bold; border:.2em solid #008; padding:.5em; text-align:center; }
 
 .news { position:relative; border:.1em solid #679; margin-top:1em; padding:.5em; }
-.news h3 { padding:0; margin:0; }
+.news h3 { padding:0; margin:0; background-color:#457; position:relative; z-index:500; display:inline; }
 .news h3 .author { font-size:0.666667em; text-decoration:none; font-weight:normal; }
-.news .time { position:absolute; top:.5em; right:.5em; }
+.news .time { position:absolute; top:.5em; right:.5em; z-index:400; }

@@ -1106,18 +1106,21 @@
 						if(isset($items['gebaeude'][$geb]))
 						{
 							$ress = array_sum($items['gebaeude'][$geb]['ress']);
-							for($i=0; $i<$stufe; $i++,$ress*=2.4)
+							for($i=0; $i<$stufe; $i++)
+							{
 								$user_array['punkte'][0] += $ress;
+								$ress *= 2.4;
+							}
 						}
 					}
 					foreach($user_array['planets'][$planet]['schiffe'] as $sch=>$anzahl)
 					{
-						if(isset($items['schiffe'][$geb]))
+						if(isset($items['schiffe'][$sch]))
 							$user_array['punkte'][3] += array_sum($items['schiffe'][$sch]['ress'])*$anzahl;
 					}
 					foreach($user_array['planets'][$planet]['verteidigung'] as $ver=>$anzahl)
 					{
-						if(isset($items['verteidigung'][$geb]))
+						if(isset($items['verteidigung'][$ver]))
 							$user_array['punkte'][4] += array_sum($items['verteidigung'][$ver]['ress'])*$anzahl;
 					}
 
