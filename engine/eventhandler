@@ -115,8 +115,8 @@
 			}
 
 			$age = time()-$message_array['time'];
-			if($age*86400 > $max_age && unlink(DB_MESSAGES.'/'.$fname))
-				$messages_deleted;
+			if($age/86400 > $max_age && unlink(DB_MESSAGES.'/'.$fname))
+				$messages_deleted++;
 		}
 		closedir($dh);
 
