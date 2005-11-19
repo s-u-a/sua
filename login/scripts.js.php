@@ -53,10 +53,7 @@ function time_up()
 		var this_timestring = '';
 		if(this_remain >= 86400)
 		{
-			this_timestring += Math.floor(this_remain/86400)+'&thinsp;<abbr title="Tag';
-			if(this_remain >= 172800)
-				this_timestring += 'e';
-			this_timestring += '">d</abbr> ';
+			this_timestring += Math.floor(this_remain/86400)+'\u2009d ';
 			this_remain = this_remain % 86400;
 		}
 
