@@ -192,7 +192,7 @@ function load_titles()
 	var js_title = document.createElement('div');
 	js_title.setAttribute('id', 'js-title');
 	js_title.style.position = 'absolute';
-	js_title.appendChild(document.createTextNode(''));
+	js_title.appendChild(document.createTextNode('.'));
 	js_title.className = 'hidden';
 	document.getElementsByTagName('body')[0].appendChild(js_title);
 
