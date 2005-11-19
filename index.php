@@ -18,7 +18,7 @@
 <?php
 	$news_array = array();
 	if(is_file(DB_NEWS) && filesize(DB_NEWS) > 0 && is_readable(DB_NEWS))
-		$news_array = unserialize(gzuncompress(file_get_contents(DB_NEWS)));
+		$news_array = array_reverse(unserialize(gzuncompress(file_get_contents(DB_NEWS))));
 
 	foreach($news_array as $news)
 	{

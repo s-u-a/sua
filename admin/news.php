@@ -7,11 +7,15 @@
 	$news_array = array();
 	if(is_file(DB_NEWS) && filesize(DB_NEWS) > 0 && is_readable(DB_NEWS))
 		$news_array = array_values(unserialize(gzuncompress(file_get_contents(DB_NEWS))));
+	$news_keys = array_reverse(array_keys($news_array));
+	$news_array = array_reverse($news_array);
 
 	if(isset($_POST['news']))
 	{
-		foreach($_POST['news'] as $i=>$news)
+		foreach($_POST['news'] as $i2=>$news)
 		{
+			$i = $news_keys[$i2];
+
 			if(isset($_POST['delete']) && $_POST['delete'] && isset($news_array[$i]))
 			{
 				unset($news_array[$i]);
@@ -58,8 +62,10 @@
 	</fieldset>
 </form>
 <?php
-	foreach($news_array as $i=>$news)
+	foreach($news_array as $i2=>$news)
 	{
+		$i = $news_keys[$i2];
+
 		if(!isset($news['text']))
 			$news['text'] = '';
 ?>
