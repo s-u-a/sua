@@ -38,7 +38,7 @@
 		if($fh)
 		{
 			flock($fh, LOCK_EX);
-			fwrite($fh, gzcompress(serialize($news_array)));
+			fwrite($fh, gzcompress(serialize(array_reverse($news_array))));
 			flock($fh, LOCK_UN);
 			fclose($fh);
 		}
