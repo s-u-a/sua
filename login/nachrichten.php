@@ -7,7 +7,7 @@
 	{
 		# Neue Nachricht verfassen
 ?>
-<h2><a href="nachrichten.php" title="Zurück zur Nachrichtenkategorienübersicht [W]" accesskey="w" tabindex="5">Nachrichten</a></h2>
+<h2><a href="nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" accesskey="w" tabindex="5">Nachrichten</a></h2>
 <?php
 		$error = '';
 		$show_form = true;

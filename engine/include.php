@@ -100,8 +100,8 @@
 
 	if(!isset($USE_OB) || $USE_OB)
 	{
-		ob_start('ob_gzhandler');
-		ob_start('ob_utf8');
+		#ob_start('ob_gzhandler');
+		#ob_start('ob_utf8');
 	}
 
 	if(!isset($_SESSION))

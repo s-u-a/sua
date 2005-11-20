@@ -1,4 +1,4 @@
-html { font-size:1em; color:#fff; font-style:normal; }
+html { font-size:1em; color:#fff; font-style:normal; font-family:sans-serif; }
 *,#planets .active dt { font-size:inherit; color:inherit; font-weight:inherit; font-style:inherit; font-variant:normal; text-decoration:inherit; font-family:inherit; }
 * html h1,* html h2,* html h3,* html h4 { font-size:100.01%; }
 * html *,* html #planets .active dt { font-size:11px; font-family:sans-serif; }

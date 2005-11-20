@@ -282,7 +282,7 @@
 		foreach($that_user_array['verbuendete'] as $verbuendeter)
 		{
 			$verb_user_array = get_user_array($verbuendeter);
-			$verb_key = array_search($_POST['delete_username'], $verb_user_array['verbuendete']);
+			$verb_key = array_search($_POST['rename_old'], $verb_user_array['verbuendete']);
 			if($verb_key !== false)
 			{
 				$verb_user_array['verbuendete'][$verb_key] = $_POST['rename_new'];
@@ -295,7 +295,7 @@
 			foreach($that_user_array['verbuendete_bewerbungen'] as $verbuendeter)
 			{
 				$verb_user_array = get_user_array($verbuendeter);
-				$verb_key = array_search($_POST['delete_username'], $verb_user_array['verbuendete_anfragen']);
+				$verb_key = array_search($_POST['rename_old'], $verb_user_array['verbuendete_anfragen']);
 				if($verb_key !== false)
 				{
 					$verb_user_array['verbuendete_anfragen'][$verb_key] = $_POST['rename_new'];
@@ -309,7 +309,7 @@
 			foreach($that_user_array['verbuendete_anfragen'] as $verbuendeter)
 			{
 				$verb_user_array = get_user_array($verbuendeter);
-				$verb_key = array_search($_POST['delete_username'], $verb_user_array['verbuendete_bewerbungen']);
+				$verb_key = array_search($_POST['rename_old'], $verb_user_array['verbuendete_bewerbungen']);
 				if($verb_key !== false)
 				{
 					$verb_user_array['verbuendete_bewerbungen'][$verb_key] = $_POST['rename_new'];
