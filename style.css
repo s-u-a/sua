@@ -42,14 +42,15 @@ form dt { display:block; margin:0; padding:0; float:left; width:40%; clear:left;
 form dt:after { content:":\a0"; }
 form dd { display:block; margin:0 0 0 40%; padding:0; }
 form ul { margin:0; padding:0; list-style-type:none; text-align:center; }
-input { border:.1em solid #000; margin:.1em; background-image:url(images/halb2.png); background-color:transparent; width:100%; }
-input:hover,input:focus { background-color:#679; }
-input[type=checkbox],input[type=radio] { width:auto; }
+input,textarea { border:.1em solid #000; margin:.1em; background-image:url(images/halb2.png); background-color:transparent; width:100%; }
+input:hover,input:focus,textarea:hover,textarea:focus { background-color:#679; }
+input[type=checkbox],input[type=radio],textarea { width:auto; }
 fieldset { border:.1em solid #679; }
 legend { font-weight:bold; }
 button { border:.1em solid #000; background-color:transparent; background-image:url(images/halb2.png); }
 button:hover,button:focus { background-color:#679; }
 input,button { filter:Alpha(opacity=50,style=0); width:25ex; }
+button { width:75%; margin:.2em; }
 
 h2 { font-size:2em; font-family:Georgia,serif; font-variant:small-caps; text-align:center; border-bottom:.1em solid #679; margin:0 5%; font-weight:bold; }
 h3 { font-size:1.5em; font-family:Georgia,serif; font-variant:small-caps; text-align:left; text-decoration:underline; font-weight:bold; }
@@ -62,6 +63,8 @@ img { border-style:none; }
 
 a { color:#fff; font-variant:small-caps; text-decoration:underline; }
 a:hover,a:focus { color:#fff; text-decoration:underline; border-bottom:.1em solid #fff; }
+a:visited { color:#aaa; }
+a:visited:hover,a:visited:focus { color:#aaa; border-bottom:.1em solid #aaa; }
 
 p { text-align:justify; }
 
@@ -72,3 +75,28 @@ p { text-align:justify; }
 .news h3 { padding:0; margin:0; background-color:#457; position:relative; z-index:500; display:inline; }
 .news h3 .author { font-size:0.666667em; text-decoration:none; font-weight:normal; }
 .news .time { position:absolute; top:.5em; right:.5em; z-index:400; }
+
+body.forum ul { list-style-type:none; text-align:center; margin:0; padding:0; border-top:.1em solid #679; border-bottom:.1em solid #679; margin:.5em; padding:.5em; }
+body.forum ul li { display:inline; border-left:.1em solid #679; border-right:.1em solid #679; margin:0; padding:0 .2em; }
+
+body.forum ol#root { border-top:.1em solid #679; border-bottom:.1em solid #679; margin:.5em 0; padding:.5em; list-style-type:none; }
+body.forum ol#root li { margin:.5em 0; }
+body.forum ol#root ul { border-style:none; text-align:left; }
+body.forum ol#root ul li { margin:0; border-style:none; }
+body.forum ol#root ul ul { border-left:.1em solid #679; margin:0 0 0 2em; padding:0 0 0 1em; }
+body.forum p#bottom { border-top:.2em solid #679; font-size:.8em; text-align:center; margin-top:1.5em; padding-top:.5em; }
+body.forum p.motd { margin:.3em 0; padding:.3em; border-top:.1em solid #679; border-bottom:.1em solid #679; }
+body.forum form dt { width:30%; }
+body.forum form dd { width:70%; margin-left:30%; }
+body.forum form div { text-align:center; }
+body.forum ol#root span.vip { color:#f86; }
+body.forum #nachricht-text { border-top:.5em double #679; border-bottom:.5em double #679; margin:1em 0; padding:1em 0; }
+body.forum ol#root #active-post .title { font-weight:bold; }
+body.forum .option { text-align:left; }
+body.forum .formular { margin:.5em 0; border:.2em solid #679; padding:.5em; }
+body#suaforum-benutzereinstellungen-bearbeiten form h2 { margin-top:1em; }
+body#suaforum-benutzereinstellungen-bearbeiten h3 { margin:.3em 0; padding:0; }
+body.forum .section { border-top:.1em solid #679; border-bottom:.1em solid #679; padding:1em 0; }
+body.forum .mehrere-checkboxen { height:5em; overflow:auto; width:30ex; margin:0 auto; border:.1em solid #679; padding:.5em; }
+body.forum .mehrere-checkboxen div { text-align:left; }
+body.forum #save + p { text-align:center; }
