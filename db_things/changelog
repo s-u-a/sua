@@ -1,3 +1,4 @@
+1132499680	Bug behoben: Bei Gebäuden ohne Rohstoffproduktion wurde die benötigte Felderzahl nicht angezeigt.
 1132499461	Bug behoben: Firefox zeigte merkwürdige HTML-Code-Fragmente im Handelsrechner an.
 1132494981	Bug behoben: Man kann jetzt auch über die Karte sein eigenes Trümmerfeld abernten.
 1132486605	Bug, dass der Internet Explorer automatisch in den Urlaubsmodus wechselte, behoben.

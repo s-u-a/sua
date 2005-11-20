@@ -44,7 +44,7 @@
 ?>
 </div>
 <?php
-		if(isset($items['gebaeude'][$_GET['id']]) && ($i['prod'][0] != 0 || $i['prod'][1] != 0 || $i['prod'][2] != 0 || $i['prod'][3] != 0 || $i['prod'][4] != 0 || $i['prod'][5] != 0))
+		if(isset($items['gebaeude'][$_GET['id']]))
 		{
 			# Es handelt sich um ein Gebaeude
 			# Produktion ausgeben
@@ -66,6 +66,10 @@
 		</tbody>
 	</table>
 </div>
+<?php
+			($i['prod'][0] != 0 || $i['prod'][1] != 0 || $i['prod'][2] != 0 || $i['prod'][3] != 0 || $i['prod'][4] != 0 || $i['prod'][5] != 0)
+			{
+?>
 <div class="desc-prod">
 	<h3>Produktion pro Stunde</h3>
 	<table>
@@ -73,102 +77,103 @@
 			<tr>
 				<th class="c-stufe">Stufe</th>
 <?php
-			if($i['prod'][0] != 0)
-			{
-?>
-				<th class="c-carbon">Kohle</th>
-<?php
-			}
-			if($i['prod'][1] != 0)
-			{
-?>
-				<th class="c-aluminium">Aluminium</th>
-<?php
-			}
-			if($i['prod'][2] != 0)
-			{
-?>
-				<th class="c-wolfram">Wolfram</th>
-<?php
-			}
-			if($i['prod'][3] != 0)
-			{
-?>
-				<th class="c-radium">Radium</th>
-<?php
-			}
-			if($i['prod'][4] != 0)
-			{
-?>
-				<th class="c-tritium">Tritium</th>
-<?php
-			}
-			if($i['prod'][5] != 0)
-			{
-?>
-				<th class="c-energie">Energie</th>
-<?php
-			}
-?>
-		</thead>
-		<tbody>
-<?php
-			$start_lvl = $lvl-3;
-			if($start_lvl < 1)
-				$start_lvl = 1;
-
-			for($x=0; $x <= 10; $x++)
-			{
-				$act_lvl = $start_lvl+$x;
-?>
-			<tr<?=($act_lvl == $lvl) ? ' class="active"' : ''?>>
-				<th><?=ths($act_lvl)?></th>
-<?php
 				if($i['prod'][0] != 0)
 				{
 ?>
-				<td class="c-carbon"><?=ths($i['prod'][0]*pow($act_lvl, 2))?></td>
+				<th class="c-carbon">Kohle</th>
 <?php
 				}
 				if($i['prod'][1] != 0)
 				{
 ?>
-				<td class="c-aluminium"><?=ths($i['prod'][1]*pow($act_lvl, 2))?></td>
+				<th class="c-aluminium">Aluminium</th>
 <?php
 				}
 				if($i['prod'][2] != 0)
 				{
 ?>
-				<td class="c-wolfram"><?=ths($i['prod'][2]*pow($act_lvl, 2))?></td>
+				<th class="c-wolfram">Wolfram</th>
 <?php
 				}
 				if($i['prod'][3] != 0)
 				{
 ?>
-				<td class="c-radium"><?=ths($i['prod'][3]*pow($act_lvl, 2))?></td>
+				<th class="c-radium">Radium</th>
 <?php
 				}
 				if($i['prod'][4] != 0)
 				{
 ?>
-				<td class="c-tritium"><?=ths($i['prod'][4]*pow($act_lvl, 2))?></td>
+				<th class="c-tritium">Tritium</th>
 <?php
 				}
 				if($i['prod'][5] != 0)
 				{
 ?>
-				<td class="c-energie"><?=ths($i['prod'][5]*pow($act_lvl, 2))?></td>
+				<th class="c-energie">Energie</th>
 <?php
 				}
 ?>
+		</thead>
+		<tbody>
+<?php
+				$start_lvl = $lvl-3;
+				if($start_lvl < 1)
+					$start_lvl = 1;
+
+				for($x=0; $x <= 10; $x++)
+				{
+					$act_lvl = $start_lvl+$x;
+?>
+			<tr<?=($act_lvl == $lvl) ? ' class="active"' : ''?>>
+				<th><?=ths($act_lvl)?></th>
+<?php
+					if($i['prod'][0] != 0)
+					{
+?>
+				<td class="c-carbon"><?=ths($i['prod'][0]*pow($act_lvl, 2))?></td>
+<?php
+					}
+					if($i['prod'][1] != 0)
+					{
+?>
+				<td class="c-aluminium"><?=ths($i['prod'][1]*pow($act_lvl, 2))?></td>
+<?php
+					}
+					if($i['prod'][2] != 0)
+					{
+?>
+				<td class="c-wolfram"><?=ths($i['prod'][2]*pow($act_lvl, 2))?></td>
+<?php
+					}
+					if($i['prod'][3] != 0)
+					{
+?>
+				<td class="c-radium"><?=ths($i['prod'][3]*pow($act_lvl, 2))?></td>
+<?php
+					}
+					if($i['prod'][4] != 0)
+					{
+?>
+				<td class="c-tritium"><?=ths($i['prod'][4]*pow($act_lvl, 2))?></td>
+<?php
+					}
+					if($i['prod'][5] != 0)
+					{
+?>
+				<td class="c-energie"><?=ths($i['prod'][5]*pow($act_lvl, 2))?></td>
+<?php
+					}
+?>
 			</tr>
 <?php
-			}
+				}
 ?>
 		</tbody>
 	</table>
 </div>
 <?php
+			}
 		}
 
 		if(isset($items['schiffe'][$_GET['id']]))
