@@ -23,12 +23,12 @@
 
 <h4>Grafik &amp; <span xml:lang="en">Testing</span></h4>
 <ul>
-	<li>Alexander Bender</li>
+	<li>Soltari</li>
 </ul>
 
 <h4><span xml:lang="en">Design</span>, Hauptseite &amp; <span xml:lang="en">Items</span></h4>
 <ul>
-	<li>Ren&eacute; M&uuml;ller</li>
+	<li>rmueller</li>
 </ul>
 <?php
 	gui::html_foot();
