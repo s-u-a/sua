@@ -34,18 +34,7 @@
 	{
 		$fast_action = true;
 
-		$this_pos = explode(':', $this_planet['pos']);
-		$action_back_url = PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/karte.php?';
-		if($_GET['action_galaxy'] != $this_pos[0] || $_GET['action_system'] != $this_pos[1])
-			$action_back_url .= 'galaxy='.urlencode($_GET['action_galaxy']).'&system='.urlencode($_GET['action_system']).'&';
-		$action_back_url .= SESSION_COOKIE.'='.urlencode(session_id());
-
 		$target_info = universe::get_planet_info($_GET['action_galaxy'], $_GET['action_system'], $_GET['action_planet']);
-		if(!$target_info || $target_info[1] == $_SESSION['username'])
-		{
-			header('Location: '.$action_back_url, true, 307);
-			die('HTTP redirect: <a href="'.htmlentities($action_back_url).'">'.htmlentities($action_back_url).'</a>');
-		}
 		if($my_flotten >= $max_flotten)
 		{
 ?>
@@ -596,8 +585,10 @@
 					{
 						if($fast_action)
 						{
-							header('Location: '.$action_back_url, true, 307);
-							die('HTTP redirect: <a href="'.htmlentities($action_back_url).'">'.htmlentities($action_back_url).'</a>');
+							header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
+							ob_end_clean();
+							ob_end_clean();
+							die();
 						}
 
 						$time = fleet::get_time($mass, $distance, $speed);
@@ -969,8 +960,10 @@
 	{
 		if($fast_action)
 		{
-			header('Location: '.$action_back_url, true, 307);
-			die('HTTP redirect: <a href="'.htmlentities($action_back_url).'">'.htmlentities($action_back_url).'</a>');
+			header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
+			ob_end_clean();
+			ob_end_clean();
+			die();
 		}
 ?>
 <h3>Flotte versenden</h3>
