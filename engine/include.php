@@ -179,6 +179,27 @@
 
 	$types_message_types = array(1=>5, 2=>4, 3=>1, 4=>3, 5=>2, 6=>3);
 
+
+	function stripslashes_r($var)
+	{
+		if(is_array($var))
+		{
+			foreach($var as $key=>$val)
+				$var[$key] = stripslashes_r($val);
+		}
+		else
+			$var = stripslashes($var);
+		return $var;
+	}
+	# magic_quotes_gpc abschalten
+	if(get_magic_quotes_gpc())
+	{
+		stripslashes_r(&$_POST);
+		stripslashes_r(&$_GET);
+		stripslashes_r(&$_COOKIE);
+	}
+
+
 	########################################
 	### Hier beginnen die Klassen
 	########################################
