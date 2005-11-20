@@ -255,7 +255,7 @@
 		if(isset($planet['building']['gebaeude']) && trim($planet['building']['gebaeude'][0]) != '')
 		{
 ?>
-			<dd class="c-gebaeudebau"><?=utf8_htmlentities($items['gebaeude'][$planet['building']['gebaeude'][0]]['name'])?> <span class="restbauzeit" id="restbauzeit-ge-<?=utf8_htmlentities($no)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $planet['building']['gebaeude'][1])?> (Serverzeit)</span>
+			<dd class="c-gebaeudebau"><?=utf8_htmlentities($items['gebaeude'][$planet['building']['gebaeude'][0]]['name'])?> <span class="restbauzeit" id="restbauzeit-ge-<?=utf8_htmlentities($no)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $planet['building']['gebaeude'][1])?> (Serverzeit)</span></dd>
 <?php
 			$countdowns[] = array('ge-'.$no, $planet['building']['gebaeude'][1]);
 		}
@@ -275,7 +275,7 @@
 			if(isset($planet['building']['forschung']) && trim($planet['building']['forschung'][0]) != '')
 			{
 ?>
-			<dd class="c-forschung"><?=utf8_htmlentities($items['forschung'][$planet['building']['forschung'][0]]['name'])?> <span id="restbauzeit-fo-<?=utf8_htmlentities($no)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $planet['building']['forschung'][1])?> (Serverzeit)</span>
+			<dd class="c-forschung"><?=utf8_htmlentities($items['forschung'][$planet['building']['forschung'][0]]['name'])?> <span id="restbauzeit-fo-<?=utf8_htmlentities($no)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $planet['building']['forschung'][1])?> (Serverzeit)</span></dd>
 <?php
 				$countdowns[] = array('fo-'.$no, $planet['building']['forschung'][1]);
 			}

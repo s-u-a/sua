@@ -161,22 +161,6 @@
 				</select>
 				<input type="text" name="skin" id="skin" value="<?=htmlentities($user_array['skin'])?>" tabindex="2" />
 			</dd>
-			<script type="text/javascript">
-				function recalc_skin()
-				{
-					var skin = document.getElementById('skin-choice').value;
-					if(skin == '')
-					{
-						document.getElementById('skin').removeAttribute('readonly');
-					}
-					else
-					{
-						document.getElementById('skin').setAttribute('readonly', 'readonly');
-						document.getElementById('skin').value = skin;
-					}
-				}
-				recalc_skin();
-			</script>
 
 			<dt class="c-benutzerbeschreibung"><label for="benutzerbeschreibung">Ben<kbd>u</kbd>tzerbeschreibung</label></dt>
 			<dd class="c-benutzerbeschreibung"><textarea name="benutzerbeschreibung" id="benutzerbeschreibung" cols="50" rows="10" accesskey="u" tabindex="3"><?=preg_replace("/[\r\n\t]/e", '\'&#\'.ord(\'$0\').\';\'', utf8_htmlentities($user_array['description']))?></textarea></dd>
@@ -196,6 +180,22 @@
 			<dt class="c-auto-refresh"><label for="autorefresh">Auto-Refresh</label></dt>
 			<dd class="c-auto-refresh"><input type="text" name="autorefresh" id="autorefresh" value="<?=utf8_htmlentities($user_array['ress_refresh'])?>" title="Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion erzeugt keinen zusätzlichen Traffic)" tabindex="8" /></dd>
 		</dl>
+		<script type="text/javascript">
+			function recalc_skin()
+			{
+				var skin = document.getElementById('skin-choice').value;
+				if(skin == '')
+				{
+					document.getElementById('skin').removeAttribute('readonly');
+				}
+				else
+				{
+					document.getElementById('skin').setAttribute('readonly', 'readonly');
+					document.getElementById('skin').value = skin;
+				}
+			}
+			recalc_skin();
+		</script>
 	</fieldset>
 	<fieldset class="nachrichtentypen-empfangen">
 		<legend>Nachrichtentypen empfangen<input type="hidden" name="change-receive" value="1" /></legend>

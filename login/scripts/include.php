@@ -40,8 +40,13 @@
 			$url = explode('/', $_SERVER['PHP_SELF']);
 			array_pop($url); array_pop($url);
 			$url = 'http://'.$_SERVER['HTTP_HOST'].implode('/', $url).'/index.php';
-			header('Location: '.$url, true, 303);
-			die('Not logged in. Please <a href="'.htmlentities($url).'">relogin</a>.');
+			if(!isset($_POST['username']) || !isset($_POST['password']))
+			{
+				header('Location: '.$url, true, 303);
+				die('Not logged in. Please <a href="'.htmlentities($url).'">relogin</a>.');
+			}
+			else
+				die('Anmeldung fehlgeschlagen. Haben Sie Groß-Klein-Schreibung sowohl beim Passwort als auch beim Benutzernamen beachtet? <a href="'.htmlentities($url).'">Probieren Sie es noch einmal.</a>');
 		}
 		else
 		{
@@ -218,16 +223,18 @@
 	</head>
 	<body class="<?=$class?>"><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
 		<dl id="time">
-			<script type="text/javascript">
-				// <![CDATA[
-				document.write('<dt>Lokalzeit</dt>');
-				document.write('<dd id="time-local">'+mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2(local_time_obj.getSeconds())+'</dd>');
-				// ]]>
-			</script>
 			<dt>Serverzeit</dt>
 			<dd id="time-server"><?=date('H:i:s', time()+1)?></dd>
 		</dl>
 		<script type="text/javascript">
+			var dd_element = document.createElement('dd');
+			dd_element.setAttribute('id', 'time-local');
+			dd_element.appendChild(document.createTextNode(mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2(local_time_obj.getSeconds())));
+			var dt_element = document.createElement('dt');
+			dt_element.appendChild(document.createTextNode('Lokalzeit'));
+			var time_element = document.getElementById('time');
+			time_element.insertBefore(time_element.firstChild, dd_element);
+			time_element.insertBefore(dd_element, dt_element);
 			setInterval('time_up()', 1000);
 		</script>
 		<div id="navigation">
@@ -245,7 +252,7 @@
 			}
 ?>
 					</select>
-					<noscript><button type="submit">Wechseln</button></noscript>
+					<noscript><div><button type="submit">Wechseln</button></div></noscript>
 				</fieldset>
 			</form>
 			<ul id="main-navigation">
@@ -262,7 +269,7 @@
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlentities(h_root)?>/login/karte.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="k"><kbd>K</kbd>arte</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/handelsrechner.php') ? ' class="active"' : ''?> id="navigation-handel"><a href="<?=htmlentities(h_root)?>/login/handelsrechner.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="d">Han<kbd>d</kbd>elsrechner</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlentities(h_root)?>/login/verbuendete.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="e">V<kbd>e</kbd>rbündete</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlentities(h_root)?>/login/highscores.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" id="navigation-highscores" xml:lang="en" accesskey="h"><kbd>H</kbd>ighscores</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlentities(h_root)?>/login/highscores.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" xml:lang="en" accesskey="h"><kbd>H</kbd>ighscores</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlentities(h_root)?>/login/nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="c">Na<kbd>c</kbd>hrichten</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/help/dependencies.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlentities(h_root)?>/login/help/dependencies.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="a"><kbd>A</kbd>bhängigkeiten</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlentities(h_root)?>/login/einstellungen.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="t">Eins<kbd>t</kbd>ellungen</a></li>

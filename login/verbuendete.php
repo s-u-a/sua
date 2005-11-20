@@ -87,7 +87,7 @@
 			}
 			else
 			{
-				messages::new_message(array($_GET['anfrage']=>7), $_SESSION['username'], "B\xc3\xbcnsnisanfrage abgelehnt", "Der Spieler ".utf8_htmlentities($_SESSION['username'])." hat Ihre B\xc3\xbcndnisanfrage abgelehnt.");
+				messages::new_message(array($_GET['anfrage']=>7), $_SESSION['username'], "B\xc3\xbcndnisanfrage abgelehnt", "Der Spieler ".utf8_htmlentities($_SESSION['username'])." hat Ihre B\xc3\xbcndnisanfrage abgelehnt.");
 				logfile::action('19', $_GET['anfrage']);
 			}
 		}

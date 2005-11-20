@@ -406,6 +406,7 @@
 				}
 ?>
 <script type="text/javascript">
+// <![CDATA[
 	function toggle_selection()
 	{
 		var formular = document.getElementById('nachrichten-liste').elements;
@@ -415,6 +416,7 @@
 				formular[i].checked = !formular[i].checked;
 		}
 	}
+// ]]>
 </script>
 <form action="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="nachrichten-liste type-<?=utf8_htmlentities($_GET['type'])?>" id="nachrichten-liste">
 	<table>
@@ -474,7 +476,7 @@
 						// ]]>
 					</script>
 				</td>
-				<td colspan="3"><button type="submit" name="delete" class="loeschen-button" accesskey="n" tabindex="2">Lösche<kbd>n</kbd></button> <button type="submit" name="read" class="als-gelesen-markieren-button" tabindex="3" accesskey="u" title="[U]">Als gelesen markieren</a></td>
+				<td colspan="3"><button type="submit" name="delete" class="loeschen-button" accesskey="n" tabindex="2">Lösche<kbd>n</kbd></button> <button type="submit" name="read" class="als-gelesen-markieren-button" tabindex="3" accesskey="u" title="[U]">Als gelesen markieren</button></td>
 			</tr>
 		</tfoot>
 	</table>

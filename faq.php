@@ -33,7 +33,7 @@
 </ol>
 
 <div class="faq">
-	<h3 id="requirements">Was brauche ich, um <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> zu spielen?</a></h3>
+	<h3 id="requirements">Was brauche ich, um <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> zu spielen?</h3>
 	<p>Um das Spiel zu spielen, benötigen Sie lediglich einen <span xml:lang="en">Internetbrowser</span>, der <abbr title="Hypertext Markup Language" xml:lang="en"><span xml:lang="de">HTML</span></abbr>&thinsp;4 unterstützt. Sie können also quasi jeden <span xml:lang="en">Browser</span> verwenden, vom normalen <span xml:lang="en">Firefox</span> über den <span xml:lang="en">Terminalbrowser</span> bis hin zum Vorleseprogramm für Blinde.</p>
 	<p>Um das <span xml:lang="en">Design</span> in seinen vollen Zügen zu genießen, benötigen Sie einen Browser aus der folgenden Liste.</p>
 	<ul>
@@ -43,7 +43,7 @@
 		<li>Opera (ab Version 7)</li>
 		<li><span xml:lang="en">Internet Explorer</span> (ab Version 5.5)</li>
 	</ul>
-	<p>Für einige praktische <span xml:lang="en">Features</span> können Sie außerdem <span xml:lang="en">JavaScript</span> aktivieren.</li>
+	<p>Für einige praktische <span xml:lang="en">Features</span> können Sie außerdem <span xml:lang="en">JavaScript</span> aktivieren.</p>
 	<p>Wir möchten Sie wärmstens darum bitten, nicht den <span xml:lang="en">Internet Explorer</span> zu verwenden, sofern Sie die Möglichkeit dazu haben, da dieser keine Kompression unterstützt und Sie uns somit etwa das Zehnfache des Datenvolumens erzeugen, das andere <span xml:lang="en">Browser</span> verursachen.</p>
 </div>
 
@@ -59,7 +59,7 @@
 	<p>Falls Sie sich von der Meldung gestört fühlen, haben Sie folgende Möglichkeiten, sie zu vermeiden.</p>
 	<ul>
 		<li>Sie verzichten auf eine verschlüsselte Verbindung, indem Sie rechts auf der Seite <abbr title="Secure Sockets Layer" xml:lang="en"><span xml:lang="de">SSL</span></abbr> abschalten. Dies ist aber weniger sicher und ist deshalb nicht empfohlen.</li>
-		<li>Sie laden sich das Zertifikat herunter und installieren es bei sich. Keine Sorge, das Zertifikat ist nur eine kleine Textdatei, die auf Ihrem <span xml:lang="en">Computer</span> unter den etlichen anderen Zertifikaten, die schon auf Ihrem Betriebssystem vorinstalliert sind, gespeichert wird. Es kann keinerlei Schaden anrichten. Um die Installation zu starten, <a href="http://www.cacert.org/certs/root.crt">öffnen Sie das Zertifikat</a> und folgen den Anweisungen. (In manchen <span xml:lang="en">Browser</span>n müssen Sie zusätzlich noch auf &bdquo;Öffnen&ldquo; klicken.)</p>
+		<li>Sie laden sich das Zertifikat herunter und installieren es bei sich. Keine Sorge, das Zertifikat ist nur eine kleine Textdatei, die auf Ihrem <span xml:lang="en">Computer</span> unter den etlichen anderen Zertifikaten, die schon auf Ihrem Betriebssystem vorinstalliert sind, gespeichert wird. Es kann keinerlei Schaden anrichten. Um die Installation zu starten, <a href="http://www.cacert.org/certs/root.crt">öffnen Sie das Zertifikat</a> und folgen den Anweisungen. (In manchen <span xml:lang="en">Browser</span>n müssen Sie zusätzlich noch auf &bdquo;Öffnen&ldquo; klicken.)</li>
 	</ul>
 </div>
 
@@ -86,7 +86,7 @@
 </div>
 
 <div class="faq">
-	<h3 id="times">Wie kann man die Bauzeiten verkürzen?</a></h3>
+	<h3 id="times">Wie kann man die Bauzeiten verkürzen?</h3>
 	<p>Gebäudebauzeiten können Sie durch Roboter verkürzen. (&rarr; <a href="#robots">Wie funktionieren die Roboter?</a>)</p>
 	<p>Die Zeiten der lokalen Forschung werden pro Ausbaulevel des Forschungslabors um 2,5&thinsp;<abbr title="Prozent">%</abbr> verkürzt. Zusätzlich wirkt auf die globale Forschung jeder Ausbaulevel eines jeden Forschungslabors auf einem anderen Planeten um 1&thinsp;<abbr title="Prozent">%</abbr>.</p>
 	<p>Roboterbauzeiten verkürzen Sie durch den Ausbau der Roboterfabrik. Jede Ausbaustufe der Roboterfabrik verschnellert den Bau Ihrer Roboter um 5&thinsp;<abbr title="Prozent">%</abbr>.</p>

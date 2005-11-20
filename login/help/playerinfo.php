@@ -33,7 +33,7 @@
 		if(!isset($player_info['punkte'][10])) $player_info['punkte'][10] = 0;
 		if(!isset($player_info['punkte'][11])) $player_info['punkte'][11] = 0;
 ?>
-<h3 id="punkte">Punkte</h2>
+<h3 id="punkte">Punkte</h3>
 <dl class="punkte">
 	<dt class="c-gebaeude">Gebäude</dt>
 	<dd class="c-gebaeude"><?=ths($player_info['punkte'][0])?></dd>

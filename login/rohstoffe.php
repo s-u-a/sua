@@ -172,69 +172,9 @@
 				<td class="c-energie <?=get_prod_class($ges_prod[5])?>"><?=ths($ges_prod[5])?></td>
 				<td class="c-produktion"></td>
 			</tr>
-<?php
-	$day_prod = array($ges_prod[0]*24, $ges_prod[1]*24, $ges_prod[2]*24, $ges_prod[3]*24, $ges_prod[4]*24);
-?>
-			<script type="text/javascript">
-				function recalc_perday()
-				{
-					var show_days = parseFloat(document.getElementById('show_days').value);
-
-					var carbon,aluminium,wolfram,radium,tritium;
-					if(isNaN(show_days))
-					{
-						carbon = 0;
-						aluminium = 0;
-						wolfram = 0;
-						radium = 0;
-						tritium = 0;
-					}
-					else
-					{
-						carbon = <?=floor($day_prod[0])?>*show_days;
-						aluminium = <?=floor($day_prod[1])?>*show_days;
-						wolfram = <?=floor($day_prod[2])?>*show_days;
-						radium = <?=floor($day_prod[3])?>*show_days;
-						tritium = <?=floor($day_prod[4])?>*show_days;
-					}
-
-					document.getElementById('taeglich-carbon').innerHTML = ths(carbon);
-					document.getElementById('taeglich-aluminium').innerHTML = ths(aluminium);
-					document.getElementById('taeglich-wolfram').innerHTML = ths(wolfram);
-					document.getElementById('taeglich-radium').innerHTML = ths(radium);
-					document.getElementById('taeglich-tritium').innerHTML = ths(tritium);
-
-					var carbon_class,aluminium_class,wolfram_class,radium_class,tritium_class;
-
-					if(carbon > 0) carbon_class = 'positiv';
-					else if(carbon < 0) carbon_class = 'negativ';
-					else carbon_class = 'null';
-
-					if(aluminium > 0) aluminium_class = 'positiv';
-					else if(aluminium < 0) aluminium_class = 'negativ';
-					else aluminium_class = 'null';
-
-					if(wolfram > 0) wolfram_class = 'positiv';
-					else if(wolfram < 0) wolfram_class = 'negativ';
-					else wolfram_class = 'null';
-
-					if(radium > 0) radium_class = 'positiv';
-					else if(radium < 0) radium_class = 'negativ';
-					else radium_class = 'null';
-
-					if(tritium > 0) tritium_class = 'positiv';
-					else if(tritium < 0) tritium_class = 'negativ';
-					else tritium_class = 'null';
-
-					document.getElementById('taeglich-carbon').className = 'c-carbon '+carbon_class;
-					document.getElementById('taeglich-aluminium').className = 'c-aluminium '+aluminium_class;
-					document.getElementById('taeglich-wolfram').className = 'c-wolfram '+wolfram_class;
-					document.getElementById('taeglich-radium').className = 'c-radium '+radium_class;
-					document.getElementById('taeglich-tritium').className = 'c-tritium '+tritium_class;
-				}
-			</script>
 			<tr class="c-tag">
 <?php
+	$day_prod = array($ges_prod[0]*24, $ges_prod[1]*24, $ges_prod[2]*24, $ges_prod[3]*24, $ges_prod[4]*24);
 	$show_days = 1;
 	if(isset($user_array['prod_show_days']))
 		$show_days = $user_array['prod_show_days'];
@@ -252,9 +192,69 @@
 				<td class="c-tritium <?=get_prod_class($day_prod[4])?>" id="taeglich-tritium"><?=ths($day_prod[4])?></td>
 				<td class="c-speichern" colspan="2"><button type="submit" tabindex="<?=$tabindex+1?>" accesskey="n">Speicher<kbd>n</kbd></button></td>
 			</tr>
-		</foot>
+		</tfoot>
 	</table>
 </form>
+<script type="text/javascript">
+// <![CDATA[
+	function recalc_perday()
+	{
+		var show_days = parseFloat(document.getElementById('show_days').value);
+
+		var carbon,aluminium,wolfram,radium,tritium;
+		if(isNaN(show_days))
+		{
+			carbon = 0;
+			aluminium = 0;
+			wolfram = 0;
+			radium = 0;
+			tritium = 0;
+		}
+		else
+		{
+			carbon = <?=floor($day_prod[0])?>*show_days;
+			aluminium = <?=floor($day_prod[1])?>*show_days;
+			wolfram = <?=floor($day_prod[2])?>*show_days;
+			radium = <?=floor($day_prod[3])?>*show_days;
+			tritium = <?=floor($day_prod[4])?>*show_days;
+		}
+
+		document.getElementById('taeglich-carbon').innerHTML = ths(carbon);
+		document.getElementById('taeglich-aluminium').innerHTML = ths(aluminium);
+		document.getElementById('taeglich-wolfram').innerHTML = ths(wolfram);
+		document.getElementById('taeglich-radium').innerHTML = ths(radium);
+		document.getElementById('taeglich-tritium').innerHTML = ths(tritium);
+
+		var carbon_class,aluminium_class,wolfram_class,radium_class,tritium_class;
+
+		if(carbon > 0) carbon_class = 'positiv';
+		else if(carbon < 0) carbon_class = 'negativ';
+		else carbon_class = 'null';
+
+		if(aluminium > 0) aluminium_class = 'positiv';
+		else if(aluminium < 0) aluminium_class = 'negativ';
+		else aluminium_class = 'null';
+
+		if(wolfram > 0) wolfram_class = 'positiv';
+		else if(wolfram < 0) wolfram_class = 'negativ';
+		else wolfram_class = 'null';
+
+		if(radium > 0) radium_class = 'positiv';
+		else if(radium < 0) radium_class = 'negativ';
+		else radium_class = 'null';
+
+		if(tritium > 0) tritium_class = 'positiv';
+		else if(tritium < 0) tritium_class = 'negativ';
+		else tritium_class = 'null';
+
+		document.getElementById('taeglich-carbon').className = 'c-carbon '+carbon_class;
+		document.getElementById('taeglich-aluminium').className = 'c-aluminium '+aluminium_class;
+		document.getElementById('taeglich-wolfram').className = 'c-wolfram '+wolfram_class;
+		document.getElementById('taeglich-radium').className = 'c-radium '+radium_class;
+		document.getElementById('taeglich-tritium').className = 'c-tritium '+tritium_class;
+	}
+// ]]>
+</script>
 <?php
 	login_gui::html_foot();
 ?>
