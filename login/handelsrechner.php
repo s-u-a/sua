@@ -185,7 +185,9 @@
 			<dd><input type="text" name="zurueck-anteil-tritium" id="zurueck-anteil-tritium" size="3" title="Anteil (fortgeschrittener Modus)" class="handelsrechner-anteil" onkeyup="calc();" onmouseup="calc();" onchange="calc();" value="<?=isset($_POST['zurueck-anteil-tritium']) ? htmlentities($_POST['zurueck-anteil-tritium']) : '0'?>" tabindex="21" /> <input type="text" name="zurueck-tritium" id="zurueck-tritium" value="<?=htmlentities($zurueck_tritium)?>" onkeyup="calc();" onmouseup="calc();" onchange="calc();" tabindex="22" /></dd>
 		</dl>
 	</fieldset>
-	<noscript><div><button type="submit" tabindex="30">Berechnen</button></div></noscript>
+	<noscript>
+		<div><button type="submit" tabindex="30">Berechnen</button></div>
+	</noscript>
 	<p id="fortgeschrittener-modus" class="handelsrechner-fortgeschrittener-modus">
 		<input type="checkbox" name="fortgeschrittener-modus" id="fortgeschrittener-modus-input"<?=isset($_POST['fortgeschrittener-modus']) ? ' checked="checked"' : ''?> onchange="refresh_modus();" onclick="refresh_modus();" onkeyup="refresh_modus();" accesskey="u" tabindex="29" /> <label for="fortgeschrittener-modus-input">Fortgeschrittener Mod<kbd>u</kbd>s</label> (<a href="handelsrechner.php?hilfe=0&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" onclick="show_hilfe(); return false;">Hilfe</a>)
 	</p>
