@@ -368,7 +368,7 @@ h2#punkte { clear:right; }
 .handelsrechner fieldset div input { float:right; }
 .handelsrechner-angebot dl input,.handelsrechner-erhalten dl input { width:8em; }
 .handelsrechner-angebot input.handelsrechner-anteil,.handelsrechner-erhalten input.handelsrechner-anteil { width:5ex; }
-.handelsrechner noscript,.handelsrechner div { text-align:center; display:block; }
+.handelsrechner noscript,.handelsrechner div { text-align:center; } }
 .handelsrechner noscript button,.handelsrechner div button { margin:.5em auto; width:95%; }
 .handelsrechner-fortgeschrittener-modus { text-align:right; font-weight:normal; }
 .handelsrechner-fortgeschrittener-modus label { font-weight:bold; }
