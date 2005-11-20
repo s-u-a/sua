@@ -67,7 +67,7 @@
 	</table>
 </div>
 <?php
-			($i['prod'][0] != 0 || $i['prod'][1] != 0 || $i['prod'][2] != 0 || $i['prod'][3] != 0 || $i['prod'][4] != 0 || $i['prod'][5] != 0)
+			if($i['prod'][0] != 0 || $i['prod'][1] != 0 || $i['prod'][2] != 0 || $i['prod'][3] != 0 || $i['prod'][4] != 0 || $i['prod'][5] != 0)
 			{
 ?>
 <div class="desc-prod">
