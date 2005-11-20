@@ -11,6 +11,7 @@
 		Berthold-Hupmann-Stra&szlig;e 58<br />
 		88400 Biberach an der Riss<br />
 		Deutschland
+		<a href="mailto:webmaster@cdauth.de">webmaster@cdauth.de</a>
 	</address>
 </p>
 

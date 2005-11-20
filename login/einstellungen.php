@@ -236,7 +236,7 @@
 			</tbody>
 		</table>
 	</fieldset>
-	<div class="einstellungen-speichern-1"><button type="submit" title="[W]">Speichern</button></div>
+	<div class="einstellungen-speichern-1"><input type="submit" title="[W]" value="Speichern" /></div>
 <?php
 	if(!isset($user_array['locked']) || !$user_array['locked'])
 	{
@@ -249,7 +249,7 @@
 			if(time()-$user_array['umode_time'] >= 259200)
 			{
 ?>
-		<div><button name="umode" value="on" tabindex="17" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich betreten?');">Urlaubsmodus</button></div>
+		<div><input type="submit" name="umode" value="Urlaubsmodus" tabindex="17" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich betreten?');" /></div>
 		<p>Sie werden frühestens nach drei Tagen (<?=date('Y-m-d, H:i', time()+259200)?>, Serverzeit) aus dem Urlaubsmodus zurückkehren können.</p>
 <?php
 			}
@@ -263,7 +263,7 @@
 		elseif(time()-$user_array['umode_time'] >= 259200)
 		{
 ?>
-		<div><button name="umode" value="on" tabindex="17" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich verlassen?');">Urlaubsmodus verlassen</button></div>
+		<div><input type="submit" name="umode" value="Urlaubsmodus verlassen" tabindex="17" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich verlassen?');" /></div>
 <?php
 		}
 		else

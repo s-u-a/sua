@@ -1,6 +1,6 @@
 B0	Carbonfabrik	40.15.0.0	146		40.0.0.0.0.-5	1	Produziert Carbon, welches essentiell für Gebäude und Raumschiffe ist.
 B1	Aluminiumgießerei	63.20.0.0	206		0.26.0.0.0.-7	1	Liefert Aluminium, welches in sämtlichen Bereichen Verwendung findet.
-B2	Wolframextraktor	120.50.0.0	358	B0-3 B1-2	0.0.12.0.0.-10	1	Extrahiert Wolfram, ein hitzebeständiges Metall, das für Raumschiffe und hochbelastete Gebäude notwenig ist.
+B2	Wolframextraktor	120.50.0.0	358	B0-3 B1-2	0.0.16.0.0.-10	1	Extrahiert Wolfram, ein hitzebeständiges Metall, das für Raumschiffe und hochbelastete Gebäude notwenig ist.
 B3	Radiumgrube	250.130.0.0	486	B0-6 B1-5 B2-3	0.0.0.5.0.-40	1	Liefert Radium. Dies ermöglicht Kernreaktionen und wird für fast alle Forschungen gebraucht.
 B4	Tritiumgenerator	300.170.120.0	604	B2-1 F0-1	0.0.0.0.4.-35	2	Extrahiert Tritium, einen universal benutztbaren Treibstoff.
 B5	Solarkraftwerk	150.70.0.0	156		0.0.0.0.0.62	1	Nutzt die Sonnenenergie zur Energiegewinnung.
