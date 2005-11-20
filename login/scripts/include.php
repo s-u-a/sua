@@ -234,7 +234,7 @@
 			dt_element.appendChild(document.createTextNode('Lokalzeit'));
 			var time_element = document.getElementById('time');
 			time_element.insertBefore(time_element.firstChild, dd_element);
-			time_element.insertBefore(dd_element, dt_element);
+			time_element.insertBefore(time_element.firstChild, dt_element);
 			setInterval('time_up()', 1000);
 		</script>
 		<div id="navigation">
