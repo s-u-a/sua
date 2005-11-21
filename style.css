@@ -24,7 +24,7 @@ h1 { position:fixed; bottom:0; left:.5em; font-variant:small-caps; font-family:G
 #login-form { position:absolute; margin:0; top:0; right:1em; width:186px; border:.2em solid #679; padding:4px 7px; background-color:#457; z-index:11000; color:#000; }
 * html #login-form { width:200px; }
 #login-form fieldset { border-style:none; padding:.5em; margin:0; text-align:center; }
-#login-form legend { display:none; }
+#login-form legend { color:#fff; font-size:1.5em; text-align:center; font-family:Georgia,serif; font-variant:small-caps; margin:0 auto; padding:0; display:block; }
 #login-form dl { margin:0; padding:0; }
 #login-form dd { display:block; margin:0; padding:0; }
 #login-form dt { display:block; font-weight:bold; padding:.567em; width:auto; font-size:1.5em; font-family:Georgia,serif; font-variant:small-caps; margin:0 0 -2em 0; float:none; clear:none; }
@@ -92,6 +92,7 @@ body.forum form div { text-align:center; }
 body.forum ol#root span.vip { color:#f86; }
 body.forum #nachricht-text { border-top:.5em double #679; border-bottom:.5em double #679; margin:1em 0; padding:1em 0; }
 body.forum ol#root #active-post .title { font-weight:bold; }
+body.forum ol#root li { display:list-item; }
 body.forum .option { text-align:left; }
 body.forum .formular { margin:.5em 0; border:.2em solid #679; padding:.5em; }
 body#suaforum-benutzereinstellungen-bearbeiten form h2 { margin-top:1em; }
