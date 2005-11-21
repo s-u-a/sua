@@ -4,6 +4,46 @@
 	if(!$admin_array['permissions'][8])
 		die('No access.');
 
+	$old_version = $version = explode('.', get_version(), 3);
+	if(!isset($version[0])) $version[0] = '0';
+	if(!isset($version[1])) $version[1] = '0';
+	if(!isset($version[2])) $version[2] = '0';
+
+	if(isset($_POST['version']) && is_array($_POST['version']))
+	{
+		if(isset($_POST['version'][0]))
+			$version[0] = $_POST['version'][0];
+		if(isset($_POST['version'][1]))
+			$version[1] = $_POST['version'][1];
+		if(isset($_POST['version'][2]))
+			$version[2] = $_POST['version'][2];
+	}
+
+	if(isset($_POST['increase_version']) && is_array($_POST['increase_version']))
+	{
+		if(isset($_POST['increase_version'][0]))
+			$version[0]++;
+		if(isset($_POST['increase_version'][1]))
+			$version[1]++;
+		if(isset($_POST['increase_version'][2]))
+			$version[2]++;
+	}
+
+	if($version != $old_version)
+	{
+		$version_string = implode('.', $version);
+		$fh = fopen(s_root.'/db_things/version', 'w');
+		if($fh)
+		{
+			flock($fh, LOCK_EX);
+			fwrite($fh, $version_string);
+			flock($fh, LOCK_UN);
+			fclose($fh);
+
+			$_POST['add'] = 'Neue Versionsnummer: '.$version_string;
+		}
+	}
+
 	if(isset($_GET['delete']))
 	{
 		$old_changelog = '';
@@ -49,6 +89,14 @@
 
 	admin_gui::html_head();
 ?>
+<form action="edit_changelog.php" method="post">
+	<fieldset>
+		<legend>Version</legend>
+		<p>Achtung: Durch Drücken der <span xml:lang="en">Return</span>-Taste wird unter umständen nicht das erzielt, was man wünscht.</p>
+		<p><input name="version[0]" value="<?=utf8_htmlentities($version[0])?>" size="3" /><input type="submit" name="increase_version[0]" value="&uarr;" />&nbsp;.&nbsp;<input name="version[1]" value="<?=utf8_htmlentities($version[1])?>" size="3" /><input type="submit" name="increase_version[1]" value="&uarr;" />&nbsp;.&nbsp;<input name="version[2]" value="<?=utf8_htmlentities($version[2])?>" size="3" /><input type="submit" name="increase_version[2]" value="&uarr;" /></p>
+		<div><button type="submit">Speichern</button></div>
+	</fieldset>
+</form>
 <form action="edit_changelog.php" method="post">
 	<ul>
 		<li><input type="text" name="add" value="" /> <button type="submit">Hinzufügen</button></li>

@@ -29,7 +29,7 @@
 ?>
 		<tr class="<?=$class?>">
 			<th class="c-platz"><?=ths($platz)?></th>
-			<td class="c-spieler"><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($info[0]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen" class="playername"><?=utf8_htmlentities($info[0])?></a> <a href="nachrichten.php?to=<?=htmlentities(urlencode($info[0]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Schreiben Sie diesem Spieler eine Nachricht" class="nachricht-schreiben">[N]</a></td>
+			<td class="c-spieler"><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($info[0]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen" class="playername"><?=utf8_htmlentities($info[0])?></a><?php if($info[0] != $_SESSION['username']){?> <a href="nachrichten.php?to=<?=htmlentities(urlencode($info[0]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Schreiben Sie diesem Spieler eine Nachricht" class="nachricht-schreiben">[N]</a><?php }?></td>
 			<td class="c-punktzahl"><?=ths($info[1])?></td>
 		</tr>
 <?php
