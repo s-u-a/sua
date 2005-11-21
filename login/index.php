@@ -354,7 +354,7 @@
 	<dd class="c-kampferfahrung"><?=ths($user_array['punkte'][6])?></dd>
 
 	<dt class="c-gesamt">Gesamt</dt>
-	<dd class="c-gesamt"><?=ths($user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6])?> <span class="platz">(Platz&nbsp;<?=ths($user_array['punkte'][12])?> <span class="gesamt-spieler">(<?=ths(highscores::get_players_count())?>)</span>)</span></dd>
+	<dd class="c-gesamt"><?=ths($user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6])?> <span class="platz">(Platz&nbsp;<?=ths($user_array['punkte'][12])?> <span class="gesamt-spieler">von <?=ths(highscores::get_players_count())?>)</span></span></dd>
 </dl>
 <h2 id="ausgegebene-rohstoffe">Ausgegebene Rohstoffe</h2>
 <dl class="punkte">

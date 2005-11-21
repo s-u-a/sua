@@ -61,15 +61,15 @@
 		}
 	}
 
-	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
+	$user_array = get_user_array($_SESSION['username']);
+
+	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] && (!isset($user_array['ipcheck']) || $user_array['ipcheck']))
 	{
 		logfile::action('3.1', $_SESSION['ip']);
 		if(isset($_COOKIE[SESSION_COOKIE]))
 			setcookie(SESSION_COOKIE, '');
 		die('Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte <a href="'.htmlentities(h_root).'/index.php">neu anmelden</a>.');
 	}
-
-	$user_array = get_user_array($_SESSION['username']);
 
 	if($del_email_passwd && isset($user_array['email_passwd']))
 	{
@@ -217,6 +217,15 @@
 <?php
 			}
 
+			if(!isset($user_array['schrift']) || $user_array['schrift'])
+			{ # Schrift ueberschreiben
+?>
+		<style type="text/css">
+			html { font-size:9pt; font-family:Tahoma,"Adobe Helvetica",sans-serif; }
+		</style>
+<?php
+			}
+
 			$this_pos = explode(':', $this_planet['pos']);
 			$class = 'planet-'.universe::get_planet_class($this_pos[0], $this_pos[1], $this_pos[2]);
 ?>
@@ -271,7 +280,7 @@
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlentities(h_root)?>/login/verbuendete.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="e">V<kbd>e</kbd>rbündete</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlentities(h_root)?>/login/highscores.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" xml:lang="en" accesskey="h"><kbd>H</kbd>ighscores</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlentities(h_root)?>/login/nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="c">Na<kbd>c</kbd>hrichten</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/help/dependencies.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlentities(h_root)?>/login/help/dependencies.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="a"><kbd>A</kbd>bhängigkeiten</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/help/dependencies.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlentities(h_root)?>/login/help/dependencies.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="a">Forschungsb<kbd>a</kbd>um</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlentities(h_root)?>/login/einstellungen.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="t">Eins<kbd>t</kbd>ellungen</a></li>
 <?php
 			if(isset($_SESSION['admin_username']))

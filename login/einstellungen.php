@@ -19,6 +19,12 @@
 		}
 	}
 
+	if(isset($_POST['schrift']))
+	{
+		$user_array['schrift'] = ($_POST['schrift'] == true);
+		$changed = true;
+	}
+
 	if(isset($_POST['benutzerbeschreibung']))
 	{
 		$user_array['description'] = preg_replace("/\r\n|\r|\n/", "\n", $_POST['benutzerbeschreibung']);
@@ -56,6 +62,7 @@
 		$user_array['fastbuild'] = isset($_POST['fastbuild']);
 		$user_array['shortcuts'] = isset($_POST['shortcuts']);
 		$user_array['tooltips'] = isset($_POST['tooltips']);
+		$user_array['ipcheck'] = isset($_POST['ipcheck']);
 
 		$changed = true;
 	}
@@ -162,23 +169,34 @@
 				<input type="text" name="skin" id="skin" value="<?=htmlentities($user_array['skin'])?>" tabindex="2" />
 			</dd>
 
+			<dt class="c-schrift"><label for="schrift-choice">Schrift</label></dt>
+			<dd class="c-schrift">
+				<select name="schrift" id="schrift-choice" tabindex="3">
+					<option value="1"<?=(!isset($user_array['schrift']) || $user_array['schrift']) ? ' selected="selected"' : ''?>>Lieblingsschrift des Admins</option>
+					<option value="0"<?=(isset($user_array['schrift']) && !$user_array['schrift']) ? ' selected="selected"' : ''?>>Ihre Lieblingsschrift</option>
+				</select>
+			</dd>
+
 			<dt class="c-benutzerbeschreibung"><label for="benutzerbeschreibung">Ben<kbd>u</kbd>tzerbeschreibung</label></dt>
-			<dd class="c-benutzerbeschreibung"><textarea name="benutzerbeschreibung" id="benutzerbeschreibung" cols="50" rows="10" accesskey="u" tabindex="3"><?=preg_replace("/[\r\n\t]/e", '\'&#\'.ord(\'$0\').\';\'', utf8_htmlentities($user_array['description']))?></textarea></dd>
+			<dd class="c-benutzerbeschreibung"><textarea name="benutzerbeschreibung" id="benutzerbeschreibung" cols="50" rows="10" accesskey="u" tabindex="4"><?=preg_replace("/[\r\n\t]/e", '\'&#\'.ord(\'$0\').\';\'', utf8_htmlentities($user_array['description']))?></textarea></dd>
 
 			<dt class="c-spionagesonden"><label for="spionagesonden">Spionagesonden</label></dt>
-			<dd class="c-spionagesonden"><input type="text" name="spionagesonden" id="spionagesonden" value="<?=utf8_htmlentities($user_array['sonden'])?>" title="Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der Karte geschickt werden sollen [J]" accesskey="j" tabindex="4" /></dd>
+			<dd class="c-spionagesonden"><input type="text" name="spionagesonden" id="spionagesonden" value="<?=utf8_htmlentities($user_array['sonden'])?>" title="Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der Karte geschickt werden sollen [J]" accesskey="j" tabindex="5" /></dd>
 
 			<dt class="c-auto-schnellbau"><label for="fastbuild">Auto-Schnellbau</label></dt>
-			<dd class="c-auto-schnellbau"><input type="checkbox" name="fastbuild" id="fastbuild"<?=$user_array['fastbuild'] ? ' checked="checked"' : ''?> title="Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten unbeschäftigten Planeten gewechselt [Q]" accesskey="q" tabindex="5" /></dd>
+			<dd class="c-auto-schnellbau"><input type="checkbox" name="fastbuild" id="fastbuild"<?=$user_array['fastbuild'] ? ' checked="checked"' : ''?> title="Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten unbeschäftigten Planeten gewechselt [Q]" accesskey="q" tabindex="6" /></dd>
 
 			<dt class="c-schnell-shortcuts"><label for="shortcuts">Schnell-Shortcuts</label></dt>
-			<dd class="c-schnell-shortcuts"><input type="checkbox" name="shortcuts" id="shortcuts"<?=$user_array['shortcuts'] ? ' checked="checked"' : ''?> title="Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere Taste zu drücken [X]" accesskey="x" tabindex="6" /></dd>
+			<dd class="c-schnell-shortcuts"><input type="checkbox" name="shortcuts" id="shortcuts"<?=$user_array['shortcuts'] ? ' checked="checked"' : ''?> title="Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere Taste zu drücken [X]" accesskey="x" tabindex="7" /></dd>
 
 			<dt class="c-javascript-tooltips"><label for="tooltips">Javascript-Tooltips</label></dt>
-			<dd class="c-javascript-tooltips"><input type="checkbox" name="tooltips" id="tooltips"<?=$user_array['tooltips'] ? ' checked="checked"' : ''?> title="Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden die normalen Tooltips durch hübsche JavaScript-Tooltips ersetzt. [Y]" accesskey="y" tabindex="7" /></dd>
+			<dd class="c-javascript-tooltips"><input type="checkbox" name="tooltips" id="tooltips"<?=$user_array['tooltips'] ? ' checked="checked"' : ''?> title="Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden die normalen Tooltips durch hübsche JavaScript-Tooltips ersetzt. [Y]" accesskey="y" tabindex="8" /></dd>
 
 			<dt class="c-auto-refresh"><label for="autorefresh">Auto-Refresh</label></dt>
-			<dd class="c-auto-refresh"><input type="text" name="autorefresh" id="autorefresh" value="<?=utf8_htmlentities($user_array['ress_refresh'])?>" title="Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion erzeugt keinen zusätzlichen Traffic)" tabindex="8" /></dd>
+			<dd class="c-auto-refresh"><input type="text" name="autorefresh" id="autorefresh" value="<?=utf8_htmlentities($user_array['ress_refresh'])?>" title="Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion erzeugt keinen zusätzlichen Traffic)" tabindex="9" /></dd>
+
+			<dt class="c-ip-schutz"><label for="ipcheck">IP-Schutz</label></dt>
+			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=(!isset($user_array['ipcheck']) || $user_array['ipcheck']) ? ' checked="checked"' : ''?> title="Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)" /></dd>
 		</dl>
 		<script type="text/javascript">
 			function recalc_skin()

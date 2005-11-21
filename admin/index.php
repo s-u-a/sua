@@ -273,7 +273,7 @@
 		flock($fh, LOCK_EX);
 
 		fseek($fh, ($that_user_array['punkte'][12]-1)*32, SEEK_SET);
-		fwrite($fh, highscores::make_info($_POST['rename_new'], $that_user_array['punkte'][1]+$that_user_array['punkte'][2]+$that_user_array['punkte'][3]+$that_user_array['punkte'][4]+$that_user_array['punkte'][5]+$that_user_array['punkte'][6]));
+		fwrite($fh, highscores::make_info($_POST['rename_new'], $that_user_array['punkte'][0]+$that_user_array['punkte'][1]+$that_user_array['punkte'][2]+$that_user_array['punkte'][3]+$that_user_array['punkte'][4]+$that_user_array['punkte'][5]+$that_user_array['punkte'][6]));
 
 		flock($fh, LOCK_UN);
 		fclose($fh);
