@@ -72,6 +72,7 @@ p { text-align:justify; }
 .successful { font-size:1.2em; color:#0f0; font-weight:bold; border:.2em solid #008; padding:.5em; text-align:center; }
 
 .news { position:relative; border:.1em solid #679; margin-top:1em; padding:.5em; }
+* html .news { width:100%; }
 .news h3 { padding:0; margin:0; background-color:#457; position:relative; z-index:500; display:inline; }
 .news h3 .author { font-size:0.666667em; text-decoration:none; font-weight:normal; }
 .news .time { position:absolute; top:.5em; right:.5em; z-index:400; }
