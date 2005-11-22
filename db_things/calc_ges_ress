@@ -30,7 +30,7 @@
 		$ges_ress2[1] += $user_array['punkte'][8];
 		$ges_ress2[2] += $user_array['punkte'][9];
 		$ges_ress2[3] += $user_array['punkte'][10];
-		#$ges_ress2[4] += $user_array['punkte'][11];
+		$ges_ress2[4] += $user_array['punkte'][11];
 
 		unset($username);
 		unset($user_array);
@@ -86,7 +86,7 @@
 		$kurs2[1] = $ges_ress2[1]/$min2;
 		$kurs2[2] = $ges_ress2[2]/$min2;
 		$kurs2[3] = $ges_ress2[3]/$min2;
-		#$kurs2[4] = $ges_ress2[4]/$min2;
+		$kurs2[4] = $ges_ress2[4]/$min2;
 
 		foreach($kurs2 as $key=>$val)
 		{
@@ -98,11 +98,11 @@
 	unset($ges_ress2);
 
 	$kurs3 = array();
-	$kurs3[0] = $kurs[0]*$std_kurs[0]/$kurs2[0]; #+$std_kurs[0];
-	$kurs3[1] = $kurs[1]*$std_kurs[1]/$kurs2[1]; #+$std_kurs[1];
-	$kurs3[2] = $kurs[2]*$std_kurs[2]/$kurs2[2]; #+$std_kurs[2];
-	$kurs3[3] = $kurs[3]*$std_kurs[3]/$kurs2[3]; #+$std_kurs[3];
-	$kurs3[4] = $kurs[4]*$std_kurs[4]/$kurs2[3]; #+$std_kurs[4];
+	$kurs3[0] = $kurs[0]/$kurs2[0]; #+$std_kurs[0];
+	$kurs3[1] = $kurs[1]/$kurs2[1]; #+$std_kurs[1];
+	$kurs3[2] = $kurs[2]/$kurs2[2]; #+$std_kurs[2];
+	$kurs3[3] = $kurs[3]/$kurs2[3]; #+$std_kurs[3];
+	$kurs3[4] = $kurs[4]/$kurs2[4]; #+$std_kurs[4];
 	$min3 = min($kurs3);
 	$kurs3[0] /= $min3;
 	$kurs3[1] /= $min3;
