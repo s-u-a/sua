@@ -574,7 +574,7 @@
 
 		function get_planet_class($galaxy, $system, $planet)
 		{
-			$type = (((floor($system/100)+1)*(floor(($system%100)/10)+1)*(($system%10)+1)+$galaxy)%$planet)*$planet+$galaxy;
+			$type = (((floor($system/100)+1)*(floor(($system%100)/10)+1)*(($system%10)+1)+$galaxy)%$planet)*$planet+$system;
 			return $type%20+1;
 		}
 	}
