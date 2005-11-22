@@ -574,7 +574,7 @@
 
 		function get_planet_class($galaxy, $system, $planet)
 		{
-			$type = (floor($system/100)*floor(($system%100)/10)*($system%10)+$galaxy)*$planet;
+			$type = (floor($system/100)*floor(($system%100)/10)*($system%10)+$galaxy)%$planet;
 			return $type%20+1;
 		}
 	}
@@ -927,7 +927,7 @@
 			if($speed <= 0)
 				$time = 900;
 			else
-				$time = round((pow($mass, 0.85)/$speed)*pow($distance, 0.3)*100);
+				$time = round((pow($mass, 0.9)/$speed)*pow($distance, 0.3)*100);
 			#$time = round(pow(1.125*$mass*pow($distance, 2)/$speed, 0.33333)*10);
 
 			return $time;
