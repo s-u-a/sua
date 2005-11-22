@@ -185,9 +185,9 @@ legend { font-weight:bold; }
 .karte-system th,.karte-system td { border:.1em solid #aaa; padding:.2em; font-weight:bold; }
 .karte-system th.c-planet,.karte-system th.c-aktionen { width:1px; }
 .karte-system td.c-aktionen ul { margin:0; padding:0; list-style-type:none; }
-.karte-system td.c-aktionen li { width:1.5ex; overflow:hidden; float:left; display:block; margin-right:.3em; font-family:monospace; white-space:nowrap; line-height:1em; height:1em; }
+.karte-system td.c-aktionen li { width:1.5ex; overflow:hidden; float:left; display:block; margin-right:.3em; white-space:nowrap; line-height:1em; height:1em; }
 .karte-system td.c-aktionen li:first-letter,.karte-system td.c-aktionen a:first-letter { color:#fff !important; }
-.karte-system td.c-aktionen a { font-family:monospace; color:#777; }
+.karte-system td.c-aktionen a { color:#777; }
 
 .karte-system .eigen .playername a,.highscores .eigen .playername { color:#8f8; }
 .karte-system .verbuendet .playername a,.highscores .verbuendet .playername { color:#8bf; }
@@ -293,8 +293,9 @@ p.neue-nachrichten { font-weight:bold; margin:0; padding:.5em; }
 
 #planets { list-style-type:none; padding:0; margin:0; position:relative; min-height:10em; text-align:left; }
 #planets .c-felder { display:none; }
-#planets dt { margin:0; padding:0; width:1ex; overflow:hidden; display:block; float:left; font-family:monospace; }
-#planets dd { margin:0; padding:0; display:block; }
+#planets dt { margin:0; padding:0; width:1.5ex; overflow:hidden; display:block; float:left; color:#777; line-height:1.2em; height:1.2em; }
+#planets dt:first-letter { color:#fff; }
+#planets dd { margin:0; padding:0; display:block; line-height:1.2em; }
 #planets dd:before { content:":\a0"; }
 #planets dl { margin:0; padding:0; }
 #planets li { float:right; clear:right; width:40ex; padding:.5em 1ex; font-weight:bold; border-color:#aaa; border-width:.4ex; border-style:none none none solid; display:block; }
