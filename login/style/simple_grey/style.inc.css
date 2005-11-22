@@ -185,15 +185,17 @@ legend { font-weight:bold; }
 .karte-system th,.karte-system td { border:.1em solid #aaa; padding:.2em; font-weight:bold; }
 .karte-system th.c-planet,.karte-system th.c-aktionen { width:1px; }
 .karte-system td.c-aktionen ul { margin:0; padding:0; list-style-type:none; }
-.karte-system td.c-aktionen li { width:1ex; overflow:hidden; float:left; display:block; margin-right:.3em; font-family:monospace; white-space:nowrap; }
-.karte-system td.c-aktionen a { font-family:monospace; }
+.karte-system td.c-aktionen li { width:1.5ex; overflow:hidden; float:left; display:block; margin-right:.3em; font-family:monospace; white-space:nowrap; line-height:1em; height:1em; }
+.karte-system td.c-aktionen li:first-letter,.karte-system td.c-aktionen a:first-letter { color:#fff !important; }
+.karte-system td.c-aktionen a { font-family:monospace; color:#777; }
 
 .karte-system .eigen .playername a,.highscores .eigen .playername { color:#8f8; }
 .karte-system .verbuendet .playername a,.highscores .verbuendet .playername { color:#8bf; }
 
-.karte-wahl { width:26.6em; margin:0 auto; padding:0; font-weight:bold; }
+.karte-wahl { width:26.7em; margin:0 auto; padding:0; font-weight:bold; }
 .karte-galaxiewahl { float:left; width:13em; padding:0; margin:0 .1em 0 0; text-align:center; }
-.karte-systemwahl { width:13em; padding:0; margin:0 0 0 13.3em; text-align:center; }
+.karte-systemwahl { width:13em; padding:0; margin:0 0 0 auto; text-align:center; float:none; }
+* html .karte-systemwahl { margin:0 0 0 13.3em; }
 .karte-wahl input { width:5ex; text-align:center; }
 .karte-wahl ul { margin:0; padding:0; list-style-type:none; }
 .karte-wahl li { display:inline; }

@@ -732,7 +732,7 @@
 
 		# Bauzeitberechnung mit der aktuellen Ausbaustufe
 
-		$time *= pow($level+1, 2);
+		$time *= pow($level+1, 1.5);
 
 		# Roboter einberechnen
 		$robs = 0;

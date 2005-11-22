@@ -175,21 +175,22 @@
 			<tr class="c-tag">
 <?php
 	$day_prod = array($ges_prod[0]*24, $ges_prod[1]*24, $ges_prod[2]*24, $ges_prod[3]*24, $ges_prod[4]*24);
+	$show_day_prod = $day_prod;
 	$show_days = 1;
 	if(isset($user_array['prod_show_days']))
 		$show_days = $user_array['prod_show_days'];
-	$day_prod[0] *= $show_days;
-	$day_prod[1] *= $show_days;
-	$day_prod[2] *= $show_days;
-	$day_prod[3] *= $show_days;
-	$day_prod[4] *= $show_days;
+	$show_day_prod[0] *= $show_days;
+	$show_day_prod[1] *= $show_days;
+	$show_day_prod[2] *= $show_days;
+	$show_day_prod[3] *= $show_days;
+	$show_day_prod[4] *= $show_days;
 ?>
 				<th>Gesamt pr<kbd>o</kbd> <input type="text" class="prod-show-days" name="show_days" id="show_days" value="<?=utf8_htmlentities($show_days)?>" tabindex="<?=$tabindex?>" accesskey="o" onchange="recalc_perday();" onclick="recalc_perday();" onkeyup="recalc_perday();" />&nbsp;Tage</th>
-				<td class="c-carbon <?=get_prod_class($day_prod[0])?>" id="taeglich-carbon"><?=ths($day_prod[0])?></td>
-				<td class="c-aluminium <?=get_prod_class($day_prod[1])?>" id="taeglich-aluminium"><?=ths($day_prod[1])?></td>
-				<td class="c-wolfram <?=get_prod_class($day_prod[2])?>" id="taeglich-wolfram"><?=ths($day_prod[2])?></td>
-				<td class="c-radium <?=get_prod_class($day_prod[3])?>" id="taeglich-radium"><?=ths($day_prod[3])?></td>
-				<td class="c-tritium <?=get_prod_class($day_prod[4])?>" id="taeglich-tritium"><?=ths($day_prod[4])?></td>
+				<td class="c-carbon <?=get_prod_class($show_day_prod[0])?>" id="taeglich-carbon"><?=ths($show_day_prod[0])?></td>
+				<td class="c-aluminium <?=get_prod_class($show_day_prod[1])?>" id="taeglich-aluminium"><?=ths($show_day_prod[1])?></td>
+				<td class="c-wolfram <?=get_prod_class($show_day_prod[2])?>" id="taeglich-wolfram"><?=ths($show_day_prod[2])?></td>
+				<td class="c-radium <?=get_prod_class($show_day_prod[3])?>" id="taeglich-radium"><?=ths($show_day_prod[3])?></td>
+				<td class="c-tritium <?=get_prod_class($show_day_prod[4])?>" id="taeglich-tritium"><?=ths($show_day_prod[4])?></td>
 				<td class="c-speichern" colspan="2"><button type="submit" tabindex="<?=$tabindex+1?>" accesskey="n">Speicher<kbd>n</kbd></button></td>
 			</tr>
 		</tfoot>
