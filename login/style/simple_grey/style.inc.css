@@ -306,7 +306,7 @@ p.neue-nachrichten { font-weight:bold; margin:0; padding:.5em; }
 #planets li.active > * { font-size:1.2em; }
 #planets li.active dl { margin:0; width:auto; }
 * html #planets li.active dl { width:1px; }
-#planets .active dt { display:inline; width:auto; float:none; clear:none; }
+#planets .active dt { display:inline; width:auto; float:none; clear:none; color:#fff; }
 #planets .active dt:after { content:":\a0"; }
 * html #planets .active dt { display:block; float:left; width:50%; text-align:right; margin:0; padding:0; clear:left; }
 #planets .active dd { display:inline; }
