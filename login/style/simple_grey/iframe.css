@@ -12,3 +12,5 @@ html,body { padding:0; margin:0; }
 * html #content-11 { text-align:left; }
 
 #content-12 { position:relative; }
+
+#version { right:20px; }
