@@ -622,13 +622,8 @@
 				if(isset($_SESSION['username']) && isset($user_array) && $user == $_SESSION['username'])
 					$user_array['messages'][$type][$id] = true;
 
-				$fh_ua = fopen(DB_PLAYERS.'/'.urlencode($user), 'w');
-				if(!$fh_ua)
+				if(!write_user_array($user, $that_user_array))
 					continue;
-				flock($fh_ua, LOCK_EX);
-				fwrite($fh_ua, gzcompress(serialize($that_user_array)));
-				flock($fh_ua, LOCK_UN);
-				fclose($fh_ua);
 
 				unset($that_user_array);
 
@@ -1222,11 +1217,7 @@
 						# In dessen User-Array speichern
 						$this_user_array = get_user_array($this_user);
 						$this_user_array['punkte'][12]++;
-						$this_fh = fopen(DB_PLAYERS.'/'.urlencode($this_user), 'w');
-						flock($this_fh, LOCK_EX);
-						fwrite($this_fh, gzcompress(serialize($this_user_array)));
-						flock($this_fh, LOCK_UN);
-						fclose($this_fh);
+						write_user_array($this_user, $this_user_array);
 					}
 					else
 					{
@@ -1261,11 +1252,7 @@
 						# In dessen User-Array speichern
 						$this_user_array = get_user_array($this_user);
 						$this_user_array['punkte'][12]--;
-						$this_fh = fopen(DB_PLAYERS.'/'.urlencode($this_user), 'w');
-						flock($this_fh, LOCK_EX);
-						fwrite($this_fh, gzcompress(serialize($this_user_array)));
-						flock($this_fh, LOCK_UN);
-						fclose($this_fh);
+						write_user_array($this_user, $this_user_array);
 					}
 					else
 					{

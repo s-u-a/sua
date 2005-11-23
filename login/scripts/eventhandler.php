@@ -1383,31 +1383,9 @@
 
 								# User-Arrays speichern
 								if(!$start_own)
-								{
-									$fh = fopen(DB_PLAYERS.'/'.urlencode($start_info[1]), 'w');
-									if($fh)
-									{
-										flock($fh, LOCK_EX);
-
-										fwrite($fh, gzcompress(serialize($start_user_array)));
-
-										flock($fh, LOCK_UN);
-										fclose($fh);
-									}
-								}
+									write_user_array($start_info[1], $start_user_array);
 								if(!$target_own)
-								{
-									$fh = fopen(DB_PLAYERS.'/'.urlencode($target_info[1]), 'w');
-									if($fh)
-									{
-										flock($fh, LOCK_EX);
-
-										fwrite($fh, gzcompress(serialize($target_user_array)));
-
-										flock($fh, LOCK_UN);
-										fclose($fh);
-									}
-								}
+									write_user_array($target_info[1], $target_user_array);
 
 								# Nachrichten versenden
 								messages::new_message(array($start_info[1]=>1), '', 'Angriff Ihrer Flotte auf '.$flotte[3][0], $nachrichten_text, true);
@@ -1487,16 +1465,7 @@
 									if($target_info[1])
 									{
 										unset($target_user_array['flotten'][$i]);
-										$fh = fopen(DB_PLAYERS.'/'.urlencode($target_info[1]), 'w');
-										if($fh)
-										{
-											flock($fh, LOCK_EX);
-
-											fwrite($fh, gzcompress(serialize($target_user_array)));
-
-											flock($fh, LOCK_UN);
-											fclose($fh);
-										}
+										$fh = write_user_array($target_info[1], $target_user_array);
 									}
 									else
 										$fh = true;
@@ -1514,18 +1483,8 @@
 									uasort($start_user_array['flotten'], 'usort_fleet');
 									eventhandler::add_event($new_flotte[1][1], $start_info[1]);
 
-									$fh = fopen(DB_PLAYERS.'/'.urlencode($start_info[1]), 'w');
-									if($fh)
-									{
-										flock($fh, LOCK_EX);
-
-										fwrite($fh, gzcompress(serialize($start_user_array)));
-
-										flock($fh, LOCK_UN);
-										fclose($fh);
-
+									if(write_user_array($start_info[1], $start_user_array))
 										unset($user_array['flotten'][$i]);
-									}
 								}
 
 								if($fh)
@@ -1801,22 +1760,14 @@
 											$user_array['flotten'][$i] = $new_flotte;
 											usort($user_array['flotten'], 'usort_fleet');
 											unset($target_user_array['flotten'][$i]);
-											$fh = fopen(DB_PLAYERS.'/'.urlencode($target_info[1]), 'w');
-											flock($fh, LOCK_EX);
-											fwrite($fh, gzcompress(serialize($target_user_array)));
-											flock($fh, LOCK_UN);
-											fclose($fh);
+											write_user_array($target_info[1], $target_user_array);
 										}
 										elseif(!$start_own && $target_own)
 										{
 											unset($user_array['flotten'][$i]);
 											$start_user_array['flotten'][$i] = $new_flotte;
 											usort($start_user_array['flotten'], 'usort_fleet');
-											$fh = fopen(DB_PLAYERS.'/'.urlencode($start_info[1]), 'w');
-											flock($fh, LOCK_EX);
-											fwrite($fh, gzcompress(serialize($start_user_array)));
-											flock($fh, LOCK_UN);
-											fclose($fh);
+											write_user_array($start_info[1], $start_user_array);
 										}
 
 										# Nachrichten verschicken
