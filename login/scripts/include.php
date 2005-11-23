@@ -299,7 +299,7 @@
 			</ul>
 		</div>
 		<div id="version">
-			<a href="<?=htmlentities(h_root)?>/changelog.php" title="Versionsänderungen anzeigen">Version <?=VERSION?></a>
+			<a href="<?=htmlentities(h_root)?>/login/changelog.php" title="Changelog anzeigen">Version <?=VERSION?></a>
 		</div>
 		<div id="content-9">
 			<dl id="ress" class="ress">

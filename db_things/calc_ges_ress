@@ -98,11 +98,11 @@
 	unset($ges_ress2);
 
 	$kurs3 = array();
-	$kurs3[0] = pow($kurs[0], 2.5)/$kurs2[0]; #+$std_kurs[0];
-	$kurs3[1] = pow($kurs[1], 2.5)/$kurs2[1]; #+$std_kurs[1];
-	$kurs3[2] = pow($kurs[2], 2.5)/$kurs2[2]; #+$std_kurs[2];
-	$kurs3[3] = pow($kurs[3], 2.5)/$kurs2[3]; #+$std_kurs[3];
-	$kurs3[4] = pow($kurs[4], 2.5)/$kurs2[4]; #+$std_kurs[4];
+	$kurs3[0] = pow($kurs[0], 5)/$kurs2[0]; #+$std_kurs[0];
+	$kurs3[1] = pow($kurs[1], 5)/$kurs2[1]; #+$std_kurs[1];
+	$kurs3[2] = pow($kurs[2], 5)/$kurs2[2]; #+$std_kurs[2];
+	$kurs3[3] = pow($kurs[3], 5)/$kurs2[3]; #+$std_kurs[3];
+	$kurs3[4] = pow($kurs[4], 5)/$kurs2[4]; #+$std_kurs[4];
 	$min3 = min($kurs3);
 	$kurs3[0] /= $min3;
 	$kurs3[1] /= $min3;
