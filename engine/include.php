@@ -2049,8 +2049,7 @@
 
 		#$string .= '<!-- '.(array_sum($now_mtime)-array_sum($start_mtime)).' -->'."\n";
 
-		if(defined('database_locked') && database_locked)
-			unlock_database();
+		unlock_database();
 
 		return utf8_encode($string);
 	}
@@ -2138,21 +2137,28 @@
 		return sort_koords($a['pos'], $b['pos']);
 	}
 
+	$database_locked_by_me = false;
+
 	function lock_database()
 	{
-		for($i=0; file_exists(DB_LOCK_FILE)&&$i<600; $i++)
-			usleep(50000);
-		if(file_exists(DB_LOCK_FILE))
-			die('Couldn\'t get exclusive lock on database.');
-		touch(DB_LOCK_FILE);
+		if(!isset($GLOBALS['database_locked_by_me']) || !$GLOBALS['database_locked_by_me'])
+		{
+			for($i=0; file_exists(DB_LOCK_FILE)&&$i<600; $i++)
+				usleep(50000);
+			if(file_exists(DB_LOCK_FILE))
+				die('Couldn\'t get exclusive lock on database.');
+			touch(DB_LOCK_FILE);
 
-		if(!defined('database_locked'))
-			define('database_locked', true);
+			$GLOBALS['database_locked_by_me'] = true;
+		}
 	}
 
 	function unlock_database()
 	{
-		if(defined('database_locked') && database_locked)
+		if(isset($GLOBALS['database_locked_by_me']) && $GLOBALS['database_locked_by_me'])
+		{
 			unlink(DB_LOCK_FILE);
+			$GLOBALS['database_locked_by_me'] = false;
+		}
 	}
 ?>

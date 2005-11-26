@@ -1,0 +1,44 @@
+#!/usr/bin/php
+<?php
+	require('../engine/include.php');
+
+	lock_database();
+
+	$highscores = array();
+
+	$dh = opendir(DB_PLAYERS);
+	while(($fname = readdir($dh)) !== false)
+	{
+		if(!is_file(DB_PLAYERS.'/'.$fname) || !is_readable(DB_PLAYERS.'/'.$fname))
+			continue;
+
+		$this_user_array = get_user_array(urldecode($fname));
+
+		if($this_user_array === false)
+			continue;
+
+		$new_points = floor($this_user_array['punkte'][0]+$this_user_array['punkte'][1]+$this_user_array['punkte'][2]+$this_user_array['punkte'][3]+$this_user_array['punkte'][4]+$this_user_array['punkte'][5]+$this_user_array['punkte'][6]);
+		unset($this_user_array);
+
+		$highscores[urldecode($fname)] = $new_points;
+	}
+	closedir($dh);
+
+	arsort($highscores, SORT_NUMERIC);
+
+	$platz = 1;
+	$fh = fopen(DB_HIGHSCORES, 'w');
+	foreach($highscores as $player=>$punkte)
+	{
+		fwrite($fh, highscores::make_info($player, $punkte));
+
+		$this_user_array = get_user_array($player);
+		$this_user_array['punkte'][12] = $platz;
+		write_user_array($player, $this_user_array);
+		unset($this_user_array);
+
+		$platz++;
+	}
+
+	unlock_database();
+?>
