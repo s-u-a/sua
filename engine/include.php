@@ -31,6 +31,7 @@
 	$DB_UNIVERSE = $DB_DIR.'/universe';
 	$DB_ITEMS = $DB_DIR.'/items';
 	$DB_MESSAGES = $DB_DIR.'/messages';
+	$DB_MESSAGES_PUBLIC = $DB_DIR.'/messages_public';
 	$DB_HIGHSCORES = $DB_DIR.'/highscores';
 	$DB_TRUEMMERFELDER = $DB_DIR.'/truemmerfelder';
 	$DB_HOSTNAME = $DB_DIR.'/hostname';
@@ -80,6 +81,7 @@
 	define('DB_UNIVERSE', $DB_UNIVERSE);
 	define('DB_ITEMS', $DB_ITEMS);
 	define('DB_MESSAGES', $DB_MESSAGES);
+	define('DB_MESSAGES_PUBLIC', $DB_MESSAGES_PUBLIC);
 	define('DB_HIGHSCORES', $DB_HIGHSCORES);
 	define('DB_TRUEMMERFELDER', $DB_TRUEMMERFELDER);
 	define('DB_HOSTNAME', $DB_HOSTNAME);

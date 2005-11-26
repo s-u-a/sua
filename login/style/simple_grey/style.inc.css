@@ -256,6 +256,8 @@ p.neue-nachrichten { font-weight:bold; margin:0; padding:.5em; }
 .nachricht-antworten-formular div,.nachricht-loeschen-formular div { display:inline; }
 .nachricht-antworten-formular button,.nachricht-loeschen-formular button { width:10em; }
 
+#nachricht-veroeffentlichen { font-weight:bold; text-align:center; list-style-type:none; }
+
 .flotte-anzahl { font-weight:bold; margin:.5em; padding:.5em; border:.1em solid #aaa; }
 .flotte-anzahl.voll { color:#f00; }
 .flotte-versenden,.flotte-versenden dl { margin:0; padding:0; }

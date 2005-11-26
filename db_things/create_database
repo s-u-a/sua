@@ -31,6 +31,7 @@ ln -s $CWD/schiffe $1/items/schiffe
 ln -s $CWD/verteidigung $1/items/verteidigung
 touch $1/logfile
 mkdir $1/messages
+mkdir $1/messages_public
 touch $1/news
 mkdir $1/players
 ln -s $CWD/show_player_info $1/show_player_info

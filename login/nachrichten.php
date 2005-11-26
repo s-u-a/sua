@@ -205,7 +205,7 @@
 						elseif($len == 2)
 							return "\n\t\t</p>\n\t\t<p>\n\t";
 						elseif($len > 2)
-							return "\n\t\t</p>\n".str_repeat('<br />', $len-2)."\n<p>\n\t";
+							return "\n\t\t</p>\n\t\t".str_repeat('<br />', $len-2)."\n<p>\n\t";
 					}
 
 					function repl_links($a, $b, $c)
@@ -226,7 +226,8 @@
 								$url[2] = '';
 
 							if($url[1] != '')
-								$url[1] .= '&';
+
+					$url[1] .= '&';
 							$url[1] .= SESSION_COOKIE.'='.urlencode(session_id());
 
 							$url2 = $url[0].'?'.$url[1];
@@ -325,6 +326,48 @@
 
 							unset($_POST['weiterleitung-to']);
 						}
+					}
+
+					if(isset($_GET['publish']) && $_GET['publish'] && !file_exists(DB_MESSAGES_PUBLIC.'/'.$_GET['message']))
+					{
+						$public_message_array = array (
+							'from' => $message['from'],
+							'to' => $_SESSION['username'],
+							'subject' => $message['subject'],
+							'time' => $message['time'],
+							'last_view' => time(),
+							'type' => $_GET['type'],
+							'text' => $message['text'],
+							'html' => $message['html']
+						);
+
+						$fh = fopen(DB_MESSAGES_PUBLIC.'/'.$_GET['message'], 'w');
+						if($fh)
+						{
+							flock($fh, LOCK_EX);
+							fwrite($fh, gzcompress(serialize($public_message_array)));
+							flock($fh, LOCK_UN);
+							fclose($fh);
+						}
+
+						unset($public_message_array);
+					}
+
+					if(file_exists(DB_MESSAGES_PUBLIC.'/'.$_GET['message']))
+					{
+?>
+<p id="nachricht-veroeffentlichen">
+	Sie können diese Nachricht öffentlich verlinken: <a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/public_message.php?id=<?=htmlentities($_GET['message'])?>">http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/public_message.php?id=<?=htmlentities($_GET['message'])?></a>.
+</p>
+<?php
+					}
+					else
+					{
+?>
+<ul id="nachricht-veroeffentlichen">
+	<li><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($_GET['message']))?>&amp;publish=1&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>#nachricht-veroeffentlichen">Nachricht veröffentlichen</a></li>
+</ul>
+<?php
 					}
 ?>
 <form action="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($_GET['message']))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>#nachricht-weiterleiten-formular" method="post" id="nachricht-weiterleiten-formular" class="nachricht-weiterleiten-formular">
