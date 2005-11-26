@@ -13,4 +13,4 @@ html,body { padding:0; margin:0; }
 
 #content-12 { position:relative; }
 
-#version { right:20px; }
+#version { right:20px; z-index:40000; }
