@@ -329,11 +329,11 @@ h2#punkte { clear:right; }
 #flotten .rueckflug .beschreibung { color:#bbb; }
 #flotten .beschreibung:hover { color:#ccc; }
 #flotten .rueckflug .beschreibung:hover { color:#888; }
-#flotten .beschreibung[class],#flotten .beschreibung[class]:hover { color:inherit; cursor:inherit; }
-#flotten .beschreibung[title],#flotten .beschreibung[titleAttr] { color:#fff; cursor:help; }
-#flotten .rueckflug .beschreibung[title],#flotten .rueckflug .beschreibung[titleAttr] { color:#bbb; }
-#flotten .beschreibung[title]:hover,#flotten .beschreibung[titleAttr]:hover { color:#ccc; }
-#flotten .rueckflug .beschreibung[title]:hover,#flotten .rueckflug .beschreibung[titleAttr]:hover { color:#888; }
+#flotten .beschreibung[class],#flotten .beschreibung[class]:hover,#flotten .rueckflug .beschreibung[class]:hover { color:inherit; cursor:inherit; }
+#flotten .beschreibung[title],#flotten .beschreibung[titleAttribute] { color:#fff; cursor:help; }
+#flotten .rueckflug .beschreibung[title],#flotten .rueckflug .beschreibung[titleAttribute] { color:#bbb; }
+#flotten .beschreibung[title]:hover,#flotten .beschreibung[titleAttribute]:hover { color:#ccc; }
+#flotten .rueckflug .beschreibung[title]:hover,#flotten .rueckflug .beschreibung[titleAttribute]:hover { color:#888; }
 
 .highscores { width:50%; margin:.5em auto; border-spacing:0; border-collapse:collapse; font-weight:bold; }
 .highscores td,.highscores th { border:.1em solid #aaa; padding:.1em .3em; }
