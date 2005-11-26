@@ -9,7 +9,7 @@
 	Candid Dauth<br />
 	Berthold-Hupmann-Stra&szlig;e 58<br />
 	88400 Biberach an der Riss<br />
-	Deutschland
+	Deutschland<br />
 	<a href="mailto:webmaster@s-u-a.net">webmaster@s-u-a.net</a>
 </address>
 
@@ -26,7 +26,7 @@
 
 <h4><span xml:lang="en">Design</span>, Hauptseite &amp; <span xml:lang="en">Items</span></h4>
 <ul>
-	<li>rmueller</li>
+	<li>rmueller (<a href="mailto:rmueller@s-u-a.net">rmueller@s-u-a.net</a>)</li>
 </ul>
 <?php
 	gui::html_foot();

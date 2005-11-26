@@ -1,6 +1,9 @@
 <?php
 	require('scripts/include.php');
 
+	if(isset($_GET['recalc_highscores']) && $_GET['recalc_highscores'] && isset($_SESSION['admin_username']))
+		highscores::recalc();
+
 	if(isset($_GET['cancel']) && isset($user_array['flotten'][$_GET['cancel']]) && !$user_array['flotten'][$_GET['cancel']][7] && fleet::check_own($user_array['flotten'][$_GET['cancel']]))
 	{
 		# Flotte zurueckrufen
@@ -354,7 +357,7 @@
 	<dd class="c-kampferfahrung"><?=ths($user_array['punkte'][6])?></dd>
 
 	<dt class="c-gesamt">Gesamt</dt>
-	<dd class="c-gesamt"><?=ths($user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6])?> <span class="platz">(Platz&nbsp;<?=ths($user_array['punkte'][12])?> <span class="gesamt-spieler">von <?=ths(highscores::get_players_count())?>)</span></span></dd>
+	<dd class="c-gesamt"><?=ths($user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6])?> <span class="platz">(Platz&nbsp;<?=ths($user_array['punkte'][12])?> <span class="gesamt-spieler">von <?=ths(highscores::get_players_count())?>)</span><?=isset($_SESSION['admin_username']) ? ' <a href="?recalc_highscores=1&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">Neu berechnen</a>' : ''?></span></dd>
 </dl>
 <h2 id="ausgegebene-rohstoffe">Ausgegebene Rohstoffe</h2>
 <dl class="punkte">

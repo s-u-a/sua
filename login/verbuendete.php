@@ -45,11 +45,11 @@
 			else
 				messages::new_message(array($_POST['empfaenger']=>7), $_SESSION['username'], "Anfrage auf ein B\xc3\xbcndnis", "Der Spieler ".utf8_htmlentities($_SESSION['username'])." hat Ihnen eine mitteilungslose B\xc3\xbcndnisanfrage gestellt.");
 
+			logfile::action('17', $_POST['empfaenger']);
+
 			unset($_POST['empfaenger']);
 			if(isset($_POST['mitteilung']))
 				unset($_POST['mitteilung']);
-
-			logfile::action('17', $_POST['empfaenger']);
 		}
 	}
 
