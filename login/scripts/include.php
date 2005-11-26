@@ -223,7 +223,7 @@
 			{ # Schrift ueberschreiben
 ?>
 		<style type="text/css">
-			html { font-size:9pt; font-family:Tahoma,"Adobe Helvetica",sans-serif; }
+			html { font-size:9pt; font-family:Arial,Tahoma,"Adobe Helvetica",sans-serif; }
 		</style>
 <?php
 			}
