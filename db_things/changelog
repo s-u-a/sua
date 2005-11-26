@@ -1,3 +1,4 @@
+1133008471	Verbaute Rohstoffe zählen jetzt nicht mehr in den Handelskurs hinein, es werden nur noch vorhandene Rohstoffe benutzt.
 1133002644	Neue Versionsnummer: 0.0.5
 1133002641	Besserer DB-Locking-Mechanismus, hoffen wir, dass dieser ein paar Bugs behebt.
 1133001344	Aufgrund eines Tippfehlers wurde bis jetzt bei der Neuberechnung der Punktzahl vergessen, Flotten, die unterwegs waren, miteinzubeziehen.
