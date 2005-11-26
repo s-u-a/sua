@@ -100,7 +100,7 @@
 				$i++;
 			}
 			unset($user_array['planets'][$i]);
-			
+
 			# Highscores neu berechnen
 			highscores::recalc2();
 
@@ -114,6 +114,33 @@
 			$url .= '&'.SESSION_COOKIE.'='.urlencode(session_id());
 			header('Location: '.$url, true, 303);
 			die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
+		}
+	}
+
+	$planets = array_keys($user_array['planets']);
+
+	if(isset($_GET['down']) && isset($user_array['planets'][$_GET['down']]))
+	{
+		$which = array_search($_GET['down'], $planets);
+		if(isset($planets[$which+1]))
+			$_GET['up'] = $planets[$which+1];
+		else
+			unset($_GET['down']);
+	}
+	if(isset($_GET['up']) && isset($user_array['planets'][$_GET['up']]))
+	{
+		$which = array_search($_GET['up'], $planets);
+		if(!isset($planets[$which-1]))
+			unset($_GET['up']);
+		else
+		{
+			list($user_array['planets'][$planets[$which]], $user_array['planets'][$planets[$which-1]]) = array($user_array['planets'][$planets[$which-1]], $user_array['planets'][$planets[$which]]);
+			write_user_array();
+
+			if($_SESSION['act_planet'] == $planets[$which])
+				$_SESSION['act_planet'] = $planets[$which-1];
+			elseif($_SESSION['act_planet'] == $planets[$which-1])
+				$_SESSION['act_planet'] = $planets[$which];
 		}
 	}
 
@@ -176,6 +203,26 @@
 		<div><button type="submit" tabindex="4">Aufgeben</button></div>
 	</fieldset>
 </form>
+<?php
+	}
+
+	if(count($user_array['planets']) > 0)
+	{
+?>
+<fieldset class="planeten-reihenfolge">
+	<legend>Planeten-Reihenfolge</legend>
+	<ol>
+<?php
+		$planets = array_keys($user_array['planets']);
+		foreach($planets as $i=>$planet)
+		{
+?>
+		<li><?=utf8_htmlentities($user_array['planets'][$planet]['name'])?> <span class="pos">(<?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?>)</span><span class="aktionen"><?php if($i != 0){?> &ndash; <a href="rename.php?up=<?=htmlentities(urlencode($planet))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i != count($planets)-1){?> &ndash; <a href="rename.php?down=<?=htmlentities(urlencode($planet))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="runter">[Runter]</a><?php }?></span></li>
+<?php
+		}
+?>
+	</ol>
+</fieldset>
 <?php
 	}
 
