@@ -2,6 +2,8 @@
 	$include_filename = substr(__FILE__, 0, strrpos(__FILE__, '/')).'/../../engine/include.php';
 	require($include_filename);
 
+	lock_database();
+
 	$resume = false;
 	$del_email_passwd = false;
 	session_start();

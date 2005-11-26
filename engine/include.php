@@ -38,6 +38,7 @@
 	$DB_HANDELSKURS = $DB_DIR.'/handelskurs';
 	$DB_ADMINS = $DB_DIR.'/admins';
 	$DB_NEWS = $DB_DIR.'/news';
+	$DB_LOCK_FILE = '/dev/shm/suadb_lock';
 	$EVENTHANDLER_INTERVAL = 30;
 	$THS_HTML = '&nbsp;';
 	$THS_UTF8 = "\xc2\xa0";
@@ -86,6 +87,7 @@
 	define('DB_HANDELSKURS', $DB_HANDELSKURS);
 	define('DB_ADMINS', $DB_ADMINS);
 	define('DB_NEWS', $DB_NEWS);
+	define('DB_LOCK_FILE', $DB_LOCK_FILE);
 	define('EVENTHANDLER_INTERVAL', $EVENTHANDLER_INTERVAL);
 	define('THS_HTML', $THS_HTML);
 	define('THS_UTF8', $THS_UTF8);
@@ -1147,7 +1149,7 @@
 						# Eigene Flotte
 						foreach($flotte[0] as $sch=>$anzahl)
 						{
-							if(isset($items['schiffe'][$geb]))
+							if(isset($items['schiffe'][$sch]))
 								$user_array['punkte'][3] += array_sum($items['schiffe'][$sch]['ress'])*$anzahl;
 						}
 					}
@@ -2047,6 +2049,9 @@
 
 		#$string .= '<!-- '.(array_sum($now_mtime)-array_sum($start_mtime)).' -->'."\n";
 
+		if(defined('database_locked') && database_locked)
+			unlock_database();
+
 		return utf8_encode($string);
 	}
 
@@ -2131,5 +2136,23 @@
 	function sort_planets($a, $b)
 	{
 		return sort_koords($a['pos'], $b['pos']);
+	}
+
+	function lock_database()
+	{
+		for($i=0; file_exists(DB_LOCK_FILE)&&$i<600; $i++)
+			usleep(50000);
+		if(file_exists(DB_LOCK_FILE))
+			die('Couldn\'t get exclusive lock on database.');
+		touch(DB_LOCK_FILE);
+
+		if(!defined('database_locked'))
+			define('database_locked', true);
+	}
+
+	function unlock_database()
+	{
+		if(defined('database_locked') && database_locked)
+			unlink(DB_LOCK_FILE);
 	}
 ?>

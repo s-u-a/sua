@@ -1,3 +1,6 @@
+1133002644	Neue Versionsnummer: 0.0.5
+1133002641	Besserer DB-Locking-Mechanismus, hoffen wir, dass dieser ein paar Bugs behebt.
+1133001344	Aufgrund eines Tippfehlers wurde bis jetzt bei der Neuberechnung der Punktzahl vergessen, Flotten, die unterwegs waren, miteinzubeziehen.
 1132776960	Neue Versionsnummer: 0.0.4
 1132776958	Interne Änderungen, mehr Sicherheit in der Datenbank.
 1132776942	Neuer Algorithmus für den Handelskurs, hoffen wir, dass dieser funktioniert.
