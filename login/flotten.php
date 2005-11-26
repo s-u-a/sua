@@ -832,7 +832,7 @@
 				if(!isNaN(speed))
 					tritium = Math.floor(tritium*speed);
 				document.getElementById('tritium-verbrauch').innerHTML = ths(tritium)+'&thinsp;<abbr title="Tonnen">t</abbr>';
-				document.getElementById('tritium-verbrauch').setAttribute('class', 'c-tritiumverbrauch '+((<?=$this_planet['ress'][4]?> >= tritium) ? 'ja' : 'nein'));
+				document.getElementById('tritium-verbrauch').className = 'c-tritiumverbrauch '+((<?=$this_planet['ress'][4]?> >= tritium) ? 'ja' : 'nein');
 
 				// Flugzeit
 <?php
