@@ -94,7 +94,7 @@
 					$user_array['planets'][0]['last_refresh'] = time();
 					$user_array['forschung'] = array();
 					$user_array['verbuendete'] = array();
-					$user_array['punkte'] = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, floor(filesize(DB_HIGHSCORES)/32)+1);
+					$user_array['punkte'] = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, floor(filesize(DB_HIGHSCORES)/38)+1);
 					$user_array['registration'] = time();
 					$user_array['messages'] = array();
 					$user_array['description'] = '';
@@ -130,7 +130,7 @@
 						# Planeten besetzen
 						$k = explode(':', $koords);
 						$old_info = universe::get_planet_info($k[0], $k[1], $k[2]);
-						if(!$old_info || !universe::set_planet_info($k[0], $k[1], $k[2], $old_info[0], $_POST['username'], $_POST['hauptplanet']))
+						if(!$old_info || !universe::set_planet_info($k[0], $k[1], $k[2], $old_info[0], $_POST['username'], $_POST['hauptplanet'], ''))
 						{
 							$error = 'Der Planet konnte nicht besetzt werden.';
 							fclose($fh);
@@ -150,7 +150,7 @@
 								fwrite($fh, $_POST['username']);
 								if(strlen($_POST['username']) < 24)
 									fwrite($fh, str_repeat(' ', 24-strlen($_POST['username'])));
-								fwrite($fh, "\0\0\0\0\0\0\0\0      ");
+								fwrite($fh, "      \0\0\0\0\0\0\0\0");
 
 								flock($fh, LOCK_UN);
 								fclose($fh);

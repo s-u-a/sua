@@ -79,7 +79,7 @@
 			{
 				$pos = explode(':', $user_array['planets'][$planet]['pos']);
 				$info = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
-				universe::set_planet_info($pos[0], $pos[1], $pos[2], $info[0], $new_username, $info[2]);
+				universe::set_planet_info($pos[0], $pos[1], $pos[2], $info[0], $new_username, $info[2], $info[3]);
 			}
 
 			$user_array['umode'] = true;
@@ -92,7 +92,7 @@
 			{
 				$pos = explode(':', $user_array['planets'][$planet]['pos']);
 				$info = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
-				universe::set_planet_info($pos[0], $pos[1], $pos[2], $info[0], $_SESSION['username'], $info[2]);
+				universe::set_planet_info($pos[0], $pos[1], $pos[2], $info[0], $_SESSION['username'], $info[2], $info[3]);
 			}
 
 			$user_array['umode'] = false;

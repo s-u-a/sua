@@ -1,0 +1,53 @@
+#!/usr/bin/php
+<?php
+	require('../engine/include.php');
+	
+	$dh = opendir(DB_UNIVERSE);
+	while(($fname = readdir($dh)) !== false)
+	{
+		if(!is_file(DB_UNIVERSE.'/'.$fname) || !is_readable(DB_UNIVERSE.'/'.$fname) || !is_writeable(DB_UNIVERSE.'/'.$fname) || filesize(DB_UNIVERSE.'/'.$fname) != 1473525)
+			continue;
+		
+		$fh = fopen(DB_UNIVERSE.'/'.$fname, 'r+');
+		flock($fh, LOCK_EX);
+		
+		fseek($fh, 1473525, SEEK_SET);
+		fwrite($fh, str_repeat(' ', 1653345-1473525));
+		
+		$append = str_repeat('      ', 30);
+		
+		for($system = 999; $system >= 1; $system--)
+		{
+			fseek($fh, ($system-1)*1475, SEEK_SET);
+			$system_string = fread($fh, 1475);
+			$system_bin = '';
+			for($i=0; $i<strlen($system_string); $i++)
+				$system_bin .= add_nulls(decbin(ord($system_string{$i})), 8);
+			$player_names = bin2string(substr($system_bin, 275, 5760));
+			$planet_names = bin2string(substr($system_bin, 6035, 5760));
+			$other = substr($system_string, 0, 34).chr((ord(substr($system_string, 34, 1))>>5)<<5);
+			fseek($fh, ($system-1)*1655, SEEK_SET);
+			fwrite($fh, $other.$player_names.$planet_names.$append);
+		}
+		
+		flock($fh, LOCK_UN);
+		fclose($fh);
+	}
+	closedir($dh);
+	
+	# Allianzen setzen
+	$dh = opendir(DB_PLAYERS);
+	while(($fname = readdir($dh)) !== false)
+	{
+		if(!is_file(DB_PLAYERS.'/'.$fname) || !is_readable(DB_PLAYERS.'/'.$fname) || !is_writeable(DB_PLAYERS.'/'.$fname))
+			continue;
+		$this_user_array = get_user_array(urldecode($fname));
+		if($this_user_array !== false && !isset($this_user_array['alliance']))
+		{
+			$this_user_array['alliance'] = '';
+			write_user_array(urldecode($fname), $this_user_array);
+		}
+		unset($this_user_array);
+	}
+	closedir($dh);
+?>

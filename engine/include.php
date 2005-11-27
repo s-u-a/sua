@@ -361,7 +361,7 @@
 			{
 				$filesize[$galaxy] = filesize(DB_UNIVERSE.'/'.$galaxy);
 				$system_keys = array_keys($systems);
-				while($filesize[$galaxy] < ($last_key = array_pop($system_keys))*1475) # System existiert nicht
+				while($filesize[$galaxy] < ($last_key = array_pop($system_keys))*1655) # System existiert nicht
 					unset($planets_ass[$galaxy][$last_key]);
 				if(count($planets_ass[$galaxy]) <= 0)
 					unset($planets_ass[$galaxy]);
@@ -381,8 +381,8 @@
 				$system_keys = array_keys($systems);
 				foreach($system_keys as $system)
 				{
-					fseek($fh, ($system-1)*1475, SEEK_SET);
-					$strings[$galaxy][$system] = fread($fh, 1475);
+					fseek($fh, ($system-1)*1655, SEEK_SET);
+					$strings[$galaxy][$system] = fread($fh, 1655);
 				}
 
 				flock($fh, LOCK_UN);
@@ -396,27 +396,27 @@
 				foreach($systems as $system=>$planets)
 				{
 					$this_string = & $strings[$galaxy][$system];
-					$planets_count = floor(ord($this_string{0})/8)+10;
+					$planets_count = (ord($this_string{0})<<3)+10;
 
 					foreach($planets as $i=>$planet)
 					{
 						if($planet <= $planets_count)
 						{
 							$bin = '';
-							$len = strlen($this_string);
-							for($i=0; $i < $len; $i++)
+							for($i=0; $i < 35; $i++)
 								$bin .= add_nulls(decbin(ord($this_string{$i})), 8);
 
 							$size = bindec(substr($bin, 5+($planet-1)*9, 9))+100;
-							$owner_name = trim(bin2string(substr($bin, 275+($planet-1)*192, 192)));
+							$owner_name = trim(substr($this_string, 35+($planet-1)*24, 24));
 							if(!$show_status)
 							{
 								if(substr($owner_name, -4) == ' (U)' || substr($owner_name, -4) == ' (g)')
 									$owner_name = substr($owner_name, 0, -4);
 							}
-							$planet_name = trim(bin2string(substr($bin, 6035+($planet-1)*192, 192)));
+							$planet_name = trim(substr($this_string, 755+($planet-1)*24, 24));
+							$alliance_name = trim(substr($this_string, 1475+($planet-1)*6, 6));
 
-							$info[$galaxy.':'.$system.':'.$planet] = array($size, $owner_name, $planet_name);
+							$info[$galaxy.':'.$system.':'.$planet] = array($size, $owner_name, $planet_name, $alliance_name);
 							unset($bin);
 						}
 					}
@@ -435,59 +435,61 @@
 				return array_shift($info);
 		}
 
-		function set_planet_info($galaxy, $system, $planet, $size, $owner, $name)
+		function set_planet_info($galaxy, $system, $planet, $size, $owner, $name, $alliance)
 		{
 			if($planet%1 != 0 || $planet < 1 || $system%1 != 0 || $system < 1 || !is_file(DB_UNIVERSE.'/'.$galaxy) || !is_readable(DB_UNIVERSE.'/'.$galaxy))
 				return false;
 
 			$filesize = filesize(DB_UNIVERSE.'/'.$galaxy);
 
-			if($filesize < ($system)*1475) # System existiert nicht
+			if($filesize < ($system)*1655) # System existiert nicht
 				return false;
 
 			$fh = fopen(DB_UNIVERSE.'/'.$galaxy, 'rb');
 			flock($fh, LOCK_SH);
 
-			fseek($fh, ($system-1)*1475, SEEK_SET);
-			$string = fread($fh, 1475);
+			fseek($fh, ($system-1)*1655, SEEK_SET);
+			$string = fread($fh, 1655);
 
 			flock($fh, LOCK_UN);
 			fclose($fh);
 
 			$bin = '';
 
-			for($i=0; $i < strlen($string); $i++)
+			for($i=0; $i < 35; $i++)
 				$bin .= add_nulls(decbin(ord($string{$i})), 8);
 
 			$planet_count = bindec(substr($bin, 0, 5))+10;
 			if($planet > $planet_count) # Der Planet existiert nicht
 				return false;
 
-			$strlen = strlen($bin);
-
 			$bin = substr($bin, 0, 5+($planet-1)*9).add_nulls(decbin($size-100), 9).substr($bin, 5+$planet*9);
 
-			while(strlen($owner) < 24)
-				$owner .= ' ';
+			$string2 = '';
+			for($i=0; $i < strlen($bin); $i+=8)
+				$string2 .= chr(bindec(substr($bin, $i, 8)));
+			$string = $string2.substr($string, 35);
+
+			if(strlen($owner) < 24)
+				$owner .= str_repeat(' ', 24-strlen($owner));
 			$owner = substr($owner, 0, 24);
+			$string = substr($string, 0, 35+($planet-1)*24).$owner.substr($string, 35+$planet*24);
 
-			$bin = substr($bin, 0, 275+($planet-1)*192).string2bin($owner).substr($bin, 275+$planet*192);
-
-			while(strlen($name) < 24)
-				$name .= ' ';
+			if(strlen($name) < 24)
+				$name .= str_repeat(' ', 24-strlen($name));
 			$name = substr($name, 0, 24);
-			$bin = substr($bin, 0, 6035+($planet-1)*192).string2bin($name).substr($bin, 6035+$planet*192);
+			$string = substr($string, 0, 755+($planet-1)*24).$name.substr($string, 755+$planet*24);
 
-
-			if(strlen($bin) != $strlen)
-				return false;
+			if(strlen($alliance) < 6)
+				$alliance .= str_repeat(' ', 6-strlen($alliance));
+			$alliance = substr($name, 0, 6);
+			$string = substr($string, 0, 1475+($planet-1)*6).$name.substr($string, 1475+$planet*6);
 
 			$fh = fopen(DB_UNIVERSE.'/'.$galaxy, 'r+b');
 			flock($fh, LOCK_EX);
-			fseek($fh, ($system-1)*1475, SEEK_SET);
+			fseek($fh, ($system-1)*1655, SEEK_SET);
 
-			for($i=0; $i < strlen($bin); $i+=8)
-				fwrite($fh, chr(bindec(substr($bin, $i, 8))));
+			fwrite($fh, $string);
 
 			flock($fh, LOCK_UN);
 			fclose($fh);
@@ -515,14 +517,14 @@
 
 			$filesize = filesize(DB_UNIVERSE.'/'.$galaxy);
 
-			if($filesize < ($system)*1475) # System existiert nicht
+			if($filesize < ($system)*1655) # System existiert nicht
 				return false;
 
 			$fh = fopen(DB_UNIVERSE.'/'.$galaxy, 'rb');
 			flock($fh, LOCK_SH);
 
-			fseek($fh, ($system-1)*1475, SEEK_SET);
-			$planet_count = floor(ord(fread($fh, 1))/8)+10;
+			fseek($fh, ($system-1)*1655, SEEK_SET);
+			$planet_count = (ord(fread($fh, 1))<<3)+10;
 
 			flock($fh, LOCK_UN);
 			fclose($fh);
@@ -543,8 +545,8 @@
 			$fh = fopen(DB_UNIVERSE.'/'.$galaxy, 'rb');
 			flock($fh, LOCK_SH);
 
-			fseek($fh, ($system-1)*1475, SEEK_SET);
-			$string = fread($fh, 1475);
+			fseek($fh, ($system-1)*1655, SEEK_SET);
+			$string = fread($fh, 1655);
 
 			flock($fh, LOCK_UN);
 			fclose($fh);
@@ -553,25 +555,26 @@
 
 			$planet_count = floor(ord(substr($string, 0, 1))/8)+10;
 
-			for($i=0; $i < strlen($string); $i++)
+			for($i=0; $i < 35; $i++)
 				$bin .= add_nulls(decbin(ord($string{$i})), 8);
 
 			$planets = array();
 
 			# Groessen
-			$max_pos = $planet_count*9+5;
 			for($i=1, $pos=5; $i <= $planet_count; $i++, $pos+=9)
 				$planets[$i] = array(bindec(substr($bin, $pos, 9))+100);
 
 			# Eigentuemer
-			$max_pos = $planet_count*192+275;
-			for($i=1, $pos=275; $i <= $planet_count; $i++, $pos+=192)
-				$planets[$i][1] = trim(bin2string(substr($bin, $pos, 192)));
+			for($i=1, $pos=35; $i <= $planet_count; $i++, $pos+=24)
+				$planets[$i][1] = trim(substr($string, $pos, 24));
 
 			# Name
-			$max_pos = $planet_count*192+6035;
-			for($i=1, $pos=6035; $i <= $planet_count; $i++, $pos+=192)
-				$planets[$i][2] = trim(bin2string(substr($bin, $pos, 192)));
+			for($i=1, $pos=755; $i <= $planet_count; $i++, $pos+=24)
+				$planets[$i][2] = trim(substr($string, $pos, 24));
+
+			# Allianz
+			for($i=1, $pos=1475; $i <= $planet_count; $i++, $pos+=6)
+				$planets[$i][3] = trim(substr($string, $pos, 6));
 
 			return $planets;
 		}

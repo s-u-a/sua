@@ -39,7 +39,7 @@
 			foreach($planets as $planet)
 			{
 				$pos = explode(':', $that_user_array['planets'][$planet]['pos']);
-				universe::set_planet_info($pos[0], $pos[1], $pos[2], rand(100, 500), '', '');
+				universe::set_planet_info($pos[0], $pos[1], $pos[2], rand(100, 500), '', '', '');
 				$that_poses[] = $that_user_array['planets'][$planet]['pos'];
 			}
 
@@ -200,12 +200,12 @@
 			if($unlock)
 			{
 				if($that_user_array['umode'])
-					universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], substr($_POST['lock_username'], 0, 20).' (U)', $old_info[2]);
+					universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], substr($_POST['lock_username'], 0, 20).' (U)', $old_info[2], $old_info[3]);
 				else
 					universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['lock_username'], $old_info[2]);
 			}
 			else
-				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], substr($_POST['lock_username'], 0, 20).' (g)', $old_info[2]);
+				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], substr($_POST['lock_username'], 0, 20).' (g)', $old_info[2], $old_info[3]);
 		}
 
 		write_user_array($_POST['lock_username'], $that_user_array);
@@ -229,11 +229,11 @@
 			$pos = explode(':', $that_user_array['planets'][$planet]['pos']);
 			$old_info = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
 			if(isset($that_user_array['locked']) && $that_user_array['locked'])
-				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['rename_new'].' (g)', $old_info[2]);
+				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['rename_new'].' (g)', $old_info[2], $old_info[3]);
 			elseif($that_user_array['umode'])
-				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['rename_new'].' (U)', $old_info[2]);
+				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['rename_new'].' (U)', $old_info[2], $old_info[3]);
 			else
-				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['rename_new'], $old_info[2]);
+				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['rename_new'], $old_info[2], $old_info[3]);
 		}
 
 		# Nachrichten durchforsten

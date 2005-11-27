@@ -17,7 +17,7 @@
 				$pos = explode(':', $this_planet['pos']);
 
 				$old_info = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
-				if(!$old_info || !universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $old_info[1], $_POST['planet_name']))
+				if(!$old_info || !universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $old_info[1], $_POST['planet_name'], $old_info[3]))
 				{
 					$this_planet['name'] = $old_name;
 					write_user_array();
@@ -90,7 +90,7 @@
 
 			# Planeten aus der Karte loeschen
 			$this_pos = explode(':', $this_planet['pos']);
-			universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], rand(100, 500), '', '');
+			universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], rand(100, 500), '', '', '');
 
 			$i = $_SESSION['act_planet'];
 			$max = count($user_array['planets'])-1;

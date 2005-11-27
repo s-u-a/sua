@@ -485,7 +485,7 @@
 									foreach($user_array['forschung'] as $id=>$level)
 										$new_planet_array['ids'][$id] = & $user_array['forschung'][$id];
 
-									universe::set_planet_info($koords[0], $koords[1], $koords[2], $planet_info[0], $ev_username, $new_planet_array['name']);
+									universe::set_planet_info($koords[0], $koords[1], $koords[2], $planet_info[0], $ev_username, $new_planet_array['name'], $user_array['alliance']);
 
 									$user_array['planets'][] = $new_planet_array;
 
