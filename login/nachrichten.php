@@ -273,7 +273,7 @@
 					}
 ?>
 <form action="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="nachricht-loeschen-formular">
-	<div><input type="hidden" name="message[<?=htmlentities($_GET['message'])?>]" value="on" /><button type="submit" name="delete" accesskey="n" tabindex="2">Lösche<kbd>n</kbd></button></div>
+	<div><input type="hidden" name="message[<?=htmlentities($_GET['message'])?>]" value="on" /><input type="submit" name="delete" accesskey="n" tabindex="2" value="Löschen" title="[N]" /></div>
 </form>
 <?php
 					if(isset($_POST['weiterleitung-to']))
@@ -519,7 +519,7 @@
 						// ]]>
 					</script>
 				</td>
-				<td colspan="3"><button type="submit" name="delete" class="loeschen-button" accesskey="n" tabindex="2">Lösche<kbd>n</kbd></button> <button type="submit" name="read" class="als-gelesen-markieren-button" tabindex="3" accesskey="u" title="[U]">Als gelesen markieren</button></td>
+				<td colspan="3"><input type="submit" name="delete" class="loeschen-button" accesskey="n" tabindex="2" value="Löschen" title="[N]" /> <input type="submit" name="read" class="als-gelesen-markieren-button" tabindex="3" accesskey="u" title="[U]" value="Als gelesen markieren" /></td>
 			</tr>
 		</tfoot>
 	</table>
