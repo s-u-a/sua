@@ -108,19 +108,19 @@
 			}
 
 			# Aus den Highscores entfernen
-			$pos = ($that_user_array['punkte'][12]-1)*32;
+			$pos = ($that_user_array['punkte'][12]-1)*38;
 
 			$fh = fopen(DB_HIGHSCORES, 'r+');
 			flock($fh, LOCK_EX);
 
-			$filesize = filesize(DB_HIGHSCORES)-32;
+			$filesize = filesize(DB_HIGHSCORES)-38;
 			fseek($fh, $pos, SEEK_SET);
 
-			while(ftell($fh) <= $filesize-32)
+			while(ftell($fh) <= $filesize-38)
 			{
-				fseek($fh, 32, SEEK_CUR);
-				$bracket = fread($fh, 32);
-				fseek($fh, -64, SEEK_CUR);
+				fseek($fh, 38, SEEK_CUR);
+				$bracket = fread($fh, 38);
+				fseek($fh, -76, SEEK_CUR);
 				fwrite($fh, $bracket);
 
 				list($high_username) = highscores::get_info($bracket);
@@ -272,7 +272,7 @@
 		$fh = fopen(DB_HIGHSCORES, 'r+');
 		flock($fh, LOCK_EX);
 
-		fseek($fh, ($that_user_array['punkte'][12]-1)*32, SEEK_SET);
+		fseek($fh, ($that_user_array['punkte'][12]-1)*38, SEEK_SET);
 		fwrite($fh, highscores::make_info($_POST['rename_new'], $that_user_array['punkte'][0]+$that_user_array['punkte'][1]+$that_user_array['punkte'][2]+$that_user_array['punkte'][3]+$that_user_array['punkte'][4]+$that_user_array['punkte'][5]+$that_user_array['punkte'][6]));
 
 		flock($fh, LOCK_UN);

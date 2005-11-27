@@ -1105,7 +1105,7 @@
 			$use_username = $user_array['username'];
 
 			$old_position = $user_array['punkte'][12];
-			$old_position_f = ($old_position-1)*32;
+			$old_position_f = ($old_position-1)*38;
 
 			if($recalc_scores)
 			{
@@ -1163,17 +1163,7 @@
 			}
 
 			$new_points = floor($user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6]);
-			$new_points_bin = add_nulls(base_convert($new_points, 10, 2), 64);
-			$new_points_str = '';
-			for($i = 0; $i < strlen($new_points_bin); $i+=8)
-				$new_points_str .= chr(bindec(substr($new_points_bin, $i, 8)));
-			unset($new_points_bin);
-			$my_string = substr($use_username, 0, 24);
-			if(strlen($use_username) < 24)
-				$my_string .= str_repeat(' ', 24-strlen($use_username));
-			if(strlen($use_username) > 24)
-				$my_string = substr($my_string, 0, 24);
-			$my_string .= $new_points_str;
+			$my_string = highscores::make_info($user_array['username'], $new_points, $user_array['alliance']);
 
 			$filesize = filesize(DB_HIGHSCORES);
 
@@ -1187,11 +1177,11 @@
 			$up = true;
 
 			# Ueberpruefen, ob man in den Highscores abfaellt
-			if($filesize-$old_position_f >= 64)
+			if($filesize-$old_position_f >= 76)
 			{
-				fseek($fh, 32, SEEK_CUR);
-				list(,$this_points) = highscores::get_info(fread($fh, 32));
-				fseek($fh, -64, SEEK_CUR);
+				fseek($fh, 38, SEEK_CUR);
+				list(,$this_points) = highscores::get_info(fread($fh, 38));
+				fseek($fh, -76, SEEK_CUR);
 
 				if($this_points > $new_points)
 					$up = false;
@@ -1207,8 +1197,8 @@
 						fwrite($fh, $my_string);
 						break;
 					}
-					fseek($fh, -32, SEEK_CUR);
-					$cur = fread($fh, 32);
+					fseek($fh, -38, SEEK_CUR);
+					$cur = fread($fh, 38);
 					list($this_user,$this_points) = highscores::get_info($cur);
 
 					if($this_points < $new_points)
@@ -1217,7 +1207,7 @@
 
 						# Aktuellen Eintrag nach unten verschieben
 						fwrite($fh, $cur);
-						fseek($fh, -64, SEEK_CUR);
+						fseek($fh, -76, SEEK_CUR);
 						# In dessen User-Array speichern
 						$this_user_array = get_user_array($this_user);
 						$this_user_array['punkte'][12]++;
@@ -1236,16 +1226,16 @@
 
 				while(true)
 				{
-					if($filesize-ftell($fh) <= 32) # Schon auf dem letzten Platz
+					if($filesize-ftell($fh) < 76) # Schon auf dem letzten Platz
 					{
 						fwrite($fh, $my_string);
 						break;
 					}
 
-					fseek($fh, 32, SEEK_CUR);
-					$cur = fread($fh, 32);
+					fseek($fh, 38, SEEK_CUR);
+					$cur = fread($fh, 38);
 					list($this_user, $this_points) = highscores::get_info($cur);
-					fseek($fh, -64, SEEK_CUR);
+					fseek($fh, -76, SEEK_CUR);
 
 					if($this_points > $new_points)
 					{
@@ -1271,7 +1261,7 @@
 			flock($fh, LOCK_UN);
 			fclose($fh);
 
-			$act_platz = $act_position/32;
+			$act_platz = $act_position/38;
 			if($act_platz != $old_position)
 			{
 				$user_array['punkte'][12] = $act_platz;
@@ -1284,7 +1274,8 @@
 		function get_info($string)
 		{
 			$username = trim(substr($string, 0, 24));
-			$points_str = substr($string, 24);
+			$alliance = trim(substr($string, 24, 6));
+			$points_str = substr($string, 30);
 
 			$points_bin = '';
 			for($i = 0; $i < strlen($points_str); $i++)
@@ -1292,14 +1283,17 @@
 
 			$points = base_convert($points_bin, 2, 10);
 
-			return array($username, $points);
+			return array($username, $points, $alliance);
 		}
 
-		function make_info($username, $points)
+		function make_info($username, $points, $alliance='')
 		{
 			$string = substr($username, 0, 24);
 			if(strlen($string) < 24)
 				$string .= str_repeat(' ', 24-strlen($string));
+			$string .= $alliance;
+			if(strlen($string) < 30)
+				$string .= str_repeat(' ', 30-strlen($string));
 			$points_bin = add_nulls(base_convert($points, 10, 2), 64);
 			for($i = 0; $i < strlen($points_bin); $i+=8)
 				$string .= chr(bindec(substr($points_bin, $i, 8)));
@@ -1311,7 +1305,7 @@
 			$filesize = filesize(DB_HIGHSCORES);
 			if($filesize === false)
 				return false;
-			$players = floor($filesize/32);
+			$players = floor($filesize/38);
 			return $players;
 		}
 	}

@@ -114,6 +114,7 @@
 					$user_array['umode_time'] = 0;
 					$user_array['ress_refresh'] = 0;
 					$user_array['flotten'] = array();
+					$user_array['alliance'] = '';
 
 					if(isset($_POST['email']))
 						$user_array['email'] = $_POST['email'];
@@ -149,7 +150,7 @@
 								fwrite($fh, $_POST['username']);
 								if(strlen($_POST['username']) < 24)
 									fwrite($fh, str_repeat(' ', 24-strlen($_POST['username'])));
-								fwrite($fh, "\0\0\0\0\0\0\0\0");
+								fwrite($fh, "\0\0\0\0\0\0\0\0      ");
 
 								flock($fh, LOCK_UN);
 								fclose($fh);

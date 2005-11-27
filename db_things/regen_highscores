@@ -20,7 +20,9 @@
 		$new_points = floor($this_user_array['punkte'][0]+$this_user_array['punkte'][1]+$this_user_array['punkte'][2]+$this_user_array['punkte'][3]+$this_user_array['punkte'][4]+$this_user_array['punkte'][5]+$this_user_array['punkte'][6]);
 		unset($this_user_array);
 
-		$highscores[urldecode($fname)] = $new_points;
+		if(!isset($this_user_array['alliance']))
+			$this_user_array['alliance'] = '';
+		$highscores[urldecode($fname)] = array($new_points, $this_user_array['alliance']);
 	}
 	closedir($dh);
 
@@ -30,7 +32,7 @@
 	$fh = fopen(DB_HIGHSCORES, 'w');
 	foreach($highscores as $player=>$punkte)
 	{
-		fwrite($fh, highscores::make_info($player, $punkte));
+		fwrite($fh, highscores::make_info($player, $punkte[0], $punkte[1]));
 
 		$this_user_array = get_user_array($player);
 		$this_user_array['punkte'][12] = $platz;

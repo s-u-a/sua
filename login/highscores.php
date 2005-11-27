@@ -17,7 +17,7 @@
 
 	$fh = fopen(DB_HIGHSCORES, 'r');
 	flock($fh, LOCK_SH);
-	while($bracket = fread($fh, 32))
+	while($bracket = fread($fh, 38))
 	{
 		$info = highscores::get_info($bracket);
 
