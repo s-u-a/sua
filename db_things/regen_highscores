@@ -2,6 +2,16 @@
 <?php
 	require('../engine/include.php');
 
+	function sort_highscores($a, $b)
+	{
+		if($a[0] < $b[0])
+			return 1;
+		elseif($a[0] > $b[0])
+			return -1;
+		else
+			return 0;
+	}
+
 	lock_database();
 
 	$highscores = array();
@@ -26,7 +36,7 @@
 	}
 	closedir($dh);
 
-	arsort($highscores, SORT_NUMERIC);
+	uasort($highscores, 'sort_highscores');
 
 	$platz = 1;
 	$fh = fopen(DB_HIGHSCORES, 'w');
