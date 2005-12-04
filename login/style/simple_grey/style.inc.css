@@ -62,7 +62,7 @@ unnecessary code that's only here to satisfy IE. */
 a:hover,a:focus { color:#ccc; }
 #navigation a:hover,#navigation a:focus { color:#fff; }
 
-select,input,textarea,button { border:.1em solid #999; background-color:#888; color:#fff; font-weight:bold; }
+select,input,textarea,button { border:.1em solid #999; background-color:#888; color:#fff; font-weight:bold; padding:0 .2em; }
 button { text-align:center; }
 input[type=submit],input[type=reset],input[type=button] { text-align:center; }
 select:hover,select:focus,select:active,input:hover,input:focus,input:active,textarea:hover,textarea:focus,textarea:active,button:hover,button:focus,button:active { background-color:#999; }
@@ -305,7 +305,7 @@ p.neue-nachrichten { font-weight:bold; margin:0; padding:.5em; }
 .flotte-versandt dd { margin:0 0 0 27ex; border-bottom:.1em solid #aaa; padding:.3em 1ex; }
 
 #planets { list-style-type:none; padding:0; margin:0; position:relative; min-height:10em; text-align:left; }
-* html #planets { height:10em; }
+* html #planets { height:10em; width:100%; text-align:center; }
 #planets .c-felder { display:none; }
 #planets dt { margin:0; padding:0; width:1.5ex; overflow:hidden; display:block; float:left; color:#777; line-height:1.2em; height:1.2em; }
 #planets dt:first-letter { color:#fff; }
@@ -313,10 +313,10 @@ p.neue-nachrichten { font-weight:bold; margin:0; padding:.5em; }
 #planets dd:before { content:":\a0"; }
 #planets dl { margin:0; padding:0; }
 #planets li { float:right; clear:right; width:40ex; padding:.5em 1ex; font-weight:bold; border-color:#aaa; border-width:.4ex; border-style:none none none solid; display:block; }
-* html #planets li { width:42.8ex; }
+* html #planets li { width:48.2ex; text-align:left; float:none; clear:none; border-width:.1em .4ex; border-style:solid; padding:.2em .5em; }
 #planets li .koords,#planets li dl { font-weight:normal; }
 #planets li.active { position:absolute; width:auto; top:0; left:0; right:42ex; border-right:.4ex solid #aaa; text-align:center; border-left-style:none; min-height:10em; }
-* html #planets li.active { position:static !important; float:left; border-right-style:none; }
+* html #planets li.active { position:static !important; border-right-style:none; border-top:.1em solid #aaa; border-bottom:.1em solid #aaa; padding:.5em; }
 #planets li.active > * { font-size:1.2em; }
 #planets li.active dl { margin:0; width:auto; }
 * html #planets li.active dl { width:1px; }
