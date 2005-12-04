@@ -115,7 +115,7 @@
 		if($planet[1])
 		{
 ?>
-			<td class="c-name"><?=utf8_htmlentities($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($that_uname)?></a><?=htmlentities($suffix)?>)</span></td>
+			<td class="c-name"><?php if($planet[3]){?><span class="allianz">[<a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($planet[3]))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($planet[3])?></a>]</span> <?php }?><?=utf8_htmlentities($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($that_uname)?></a><?=htmlentities($suffix)?>)</span></td>
 <?php
 		}
 		else

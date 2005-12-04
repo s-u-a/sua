@@ -28,6 +28,7 @@
 	if(isset($_POST['benutzerbeschreibung']))
 	{
 		$user_array['description'] = preg_replace("/\r\n|\r|\n/", "\n", $_POST['benutzerbeschreibung']);
+		$user_array['description_parsed'] = parse_html($user_array['description']);
 		$changed = true;
 	}
 

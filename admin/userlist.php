@@ -48,7 +48,7 @@
 			if(!is_file(DB_PLAYERS.'/'.$uname) || !is_readable(DB_PLAYERS.'/'.$uname))
 				continue;
 ?>
-	<li><?=utf8_htmlentities($uname)?></li>
+	<li><?=utf8_htmlentities(urldecode($uname))?></li>
 <?php
 			flush();
 		}

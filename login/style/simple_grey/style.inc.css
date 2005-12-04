@@ -161,14 +161,23 @@ legend { font-weight:bold; }
 .prod-show-days { width:3ex; height:1.2em; }
 .ress-prod button { width:100%; }
 
-.punkte,.daten,.buendnis-informationen,.playerinfo-planeten { width:70%; margin:.5em 15%; padding:0; border:.1em solid #aaa; white-space:nowrap; text-align:left; }
-* html .punkte,* html .daten { width:100%; }
-.punkte dt,.daten dt { float:left; width:35%; padding:.2em; border-bottom:.1em solid #aaa; border-right:.1em solid #aaa; margin-right:.2em; font-weight:bold; }
-.punkte dd,.daten dd { margin:0 0 0 35%; padding:.2em; border-bottom:.1em solid #aaa; font-weight:bold; }
-.punkte dt.c-gesamt,.punkte dd.c-gesamt,.punkte dt.c-registrierung,.punkte dd.c-registrierung { border-bottom-style:none; }
+.punkte,.daten,.buendnis-informationen,.playerinfo-planeten,.allianceinfo { width:70%; margin:.5em 15%; padding:0; border:.1em solid #aaa; white-space:nowrap; text-align:left; }
+* html .punkte,* html .daten,* html .allianceinfo { width:100%; }
+.punkte dt,.daten dt,.allianceinfo dt { float:left; width:35%; padding:.2em; border-bottom:.1em solid #aaa; border-right:.1em solid #aaa; margin-right:.2em; font-weight:bold; }
+.punkte dd,.daten dd,.allianceinfo dd { margin:0 0 0 35%; padding:.2em; border-bottom:.1em solid #aaa; font-weight:bold; }
+.punkte dt.c-gesamt,.punkte dd.c-gesamt,.punkte dt.c-registrierung,.punkte dd.c-registrierung,.allianceinfo dt.c-punktzahl,.allianceinfo dd.c-punktzahl { border-bottom-style:none; }
 .buendnis-informationen,.playerinfo-planeten { text-align:center; font-weight:bold; list-style-type:none; border-bottom-style:none; }
 .buendnis-informationen li,.playerinfo-planeten li { border-bottom:.1em solid #aaa; }
-.benutzerbeschreibung { text-align:left; padding:.5em; }
+.benutzerbeschreibung,.allianz-internes,.allianz-externes { text-align:left; padding:.5em; }
+.benutzerbeschreibung table,.allianz-internes table,.allianz-externes table { width:100%; border-spacing:0; border-collapse:collapse; border:.2em solid #aaa; }
+.benutzerbeschreibung td,.benutzerbeschreibung th,.allianz-internes td,.allianz-internes th,.allianz-externes td,.allianz-externes th { border:.1em solid #aaa; padding:.1em .3em; vertical-align:top; }
+.benutzerbeschreibung th,.allianz-internes th,.allianz-externes th { font-weight:bold; text-align:center; }
+.benutzerbeschreibung thead,.allianz-internes thead,.allianz-externes thead { border-bottom:.2em solid #aaa; }
+.benutzerbeschreibung tfoot,.allianz-internes tfoot,.allianz-externes tfoot { border-top:.2em solid #aaa; }
+.benutzerbeschreibung dl,.allianz-internes dl.allianz-externes dl { width:100%; margin:0; padding:0; }
+.benutzerbeschreibung dt,.allianz-internes dt,.allianz-externes dt { width:30%; float:left; margin:0; padding:0; text-align:right; font-weight:bold; }
+.benutzerbeschreibung dt:after,.allianz-internes dt:after,.allianz-externes dt:after { content:":\a0"; }
+.benutzerbeschreibung dd,.allianz-internes dd,.allianz-externes dd { margin:0 0 0 30%; padding:0; text-align:left; }
 
 .fertig { color:#0f0; font-weight:bold; }
 .fertig:hover,.fertig:focus { color:#0c0; }
@@ -296,6 +305,7 @@ p.neue-nachrichten { font-weight:bold; margin:0; padding:.5em; }
 .flotte-versandt dd { margin:0 0 0 27ex; border-bottom:.1em solid #aaa; padding:.3em 1ex; }
 
 #planets { list-style-type:none; padding:0; margin:0; position:relative; min-height:10em; text-align:left; }
+* html #planets { height:10em; }
 #planets .c-felder { display:none; }
 #planets dt { margin:0; padding:0; width:1.5ex; overflow:hidden; display:block; float:left; color:#777; line-height:1.2em; height:1.2em; }
 #planets dt:first-letter { color:#fff; }
@@ -327,8 +337,8 @@ h2#punkte { clear:right; }
 #planeten { clear:left; }
 #flotten dt.hinflug.eigen { color:#0f0; }
 #flotten dt.rueckflug.eigen { color:#0b0; }
-#flotten dt.type-4.fremd { color:#0cf; }
-#flotten dt.type-3.fremd,#flotten dt.type-5.fremd { color:#f00; }
+#flotten dt.fremd.type-4 { color:#0cf; }
+#flotten dt.fremd.type-3,#flotten dt.fremd.type-5 { color:#f00; }
 #flotten .beschreibung { color:#fff; cursor:help; }
 #flotten .rueckflug .beschreibung { color:#bbb; }
 #flotten .beschreibung:hover { color:#ccc; }
@@ -346,14 +356,14 @@ h2#punkte { clear:right; }
 .highscores a.nachricht-schreiben { font-weight:normal; }
 .highscores th { text-align:center; }
 
-.buendnisse-liste { margin:.5em; padding:0; }
-.buendnisse-liste dt { width:50%; margin:0; padding:.1em 0; border-style:none; float:left; text-align:right; display:block; font-weight:bold; }
-.buendnisse-liste dd { width:50%; margin:0 0 0 50%; padding:.1em 0; border-style:none; text-align:left; display:block; }
-.buendnisse-liste ul { margin:0; padding:0; display:inline; list-style-type:none; }
-.buendnisse-liste ul li { display:inline; border-left:.1em solid #aaa; margin:0 0 0 .5ex; padding:0 0 0 .5ex; font-size:.9em; }
-.buendnisse-liste .nachricht-schreiben { font-weight:normal; }
-.buendnisse-eingehen { margin:.5em; }
-.buendnisse { border:.1em solid #aaa; }
+.buendnisse-liste,.allianz-laufende-bewerbungen { margin:.5em; padding:0; }
+.buendnisse-liste dt,.allianz-laufende-bewerbungen dt { width:50%; margin:0; padding:.1em 0; border-style:none; float:left; text-align:right; display:block; font-weight:bold; }
+.buendnisse-liste dd,.allianz-laufende-bewerbungen dd { width:50%; margin:0 0 0 50%; padding:.1em 0; border-style:none; text-align:left; display:block; }
+.buendnisse-liste ul,.allianz-laufende-bewerbungen ul { margin:0; padding:0; display:inline; list-style-type:none; }
+.buendnisse-liste ul li,.allianz-laufende-bewerbungen ul li { display:inline; border-left:.1em solid #aaa; margin:0 0 0 .5ex; padding:0 0 0 .5ex; font-size:.9em; }
+.buendnisse-liste .nachricht-schreiben,.allianz-laufende-bewerbungen .allianz-rundschreiben-form { font-weight:normal; }
+.buendnisse-eingehen,.allianz-laufende-bewerbungen { margin:.5em; }
+.buendnisse,.allianz-laufende-bewerbungen { border:.1em solid #aaa; }
 .buendnisse-rundschreiben div { text-align:center; }
 
 #js-title { position:absolute; z-index:50000; border:.2em solid #aaa; padding:.5em; font-weight:bold; background-color:#888; margin:0 10px 10px 0; }
@@ -409,3 +419,22 @@ br.clear { clear:both; }
 .planeten-reihenfolge .aktionen { position:absolute; top:0; right:0; color:#777; word-spacing:-.5ex; padding:.2em .5em; }
 .planeten-reihenfolge .aktionen a { color:#fff; }
 .planeten-reihenfolge .aktionen a:hover,.planeten-reihenfolge .aktionen a:focus { color:#ccc; }
+
+.allianz-moeglichkeiten { text-align:center; font-weight:bold; border-top:.1em solid #aaa; border-bottom:.1em solid #aaa; margin:.5em 0; }
+.allianz-moeglichkeiten ul { margin:0; padding:0; list-style-type:none; }
+.allianz-moeglichkeiten li { margin:.5em; }
+
+.allianz-bewerben { border-top:.1em solid #aaa; font-weight:bold; margin:0; padding:0; list-style-type:none; padding:.5em; }
+
+.allianz-aktionen { font-weight:bold; margin:.5em 0; list-style-type:none; padding:.5em; border-top:.1em solid #aaa; border-bottom:.1em solid #aaa; }
+
+.allianz-rechte-form table,.allianz-liste { border-spacing:0; border-collapse:collapse; margin:.5em auto; width:95%; }
+.allianz-rechte-form table thead,.allianz-liste thead { text-align:center; font-weight:bold; }
+.allianz-rechte-form table tbody th,.allianz-liste tbody th { text-align:left; font-weight:bold; }
+.allianz-rechte-form table tbody td,.allianz-liste tbody td { text-align:center; }
+.allianz-rechte-form th,.allianz-rechte-form td,.allianz-liste th,.allianz-liste td { padding:.1em .3em; border:.1em solid #aaa; }
+
+.allianz-suchergebnisse { margin:.5em; padding:.5em; border:.1em solid #aaa; font-weight:bold; list-style-type:none; }
+
+.allianz-laufende-bewerbung { font-weight:bold; }
+.allianz-laufende-bewerbung-aktionen { margin:0; padding:.5em; list-style-type:none; font-weight:bold; }

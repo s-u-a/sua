@@ -9,4 +9,7 @@ Gesamt ausgegebene Rohstoffe in die Imperiumsübersicht verlagern.
 Allianzsystem
 Adminbereich: Bei Scan nach Multis auch nach doppelten E-Mail-Adressen nachschauen
 Screenshots auf die Startseite einfügen.
-Bei Kolonisierung stimmt der aktive Planet vielleicht nicht mehr.
+Koordinaten aus veröffentlichten Nachrichten entfernen.
+Allianz-Highscores
+Unbenutzte veröffentlichte Nachrichten vom Eventhandler löschen lassen.
+Allianz und U-Modus-Informationen in die playerinfo.php schreiben.

@@ -206,7 +206,7 @@
 <?php
 	}
 
-	if(count($user_array['planets']) > 0)
+	if(count($user_array['planets']) > 1)
 	{
 ?>
 <fieldset class="planeten-reihenfolge">

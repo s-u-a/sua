@@ -80,7 +80,7 @@
 				if($i['prod'][0] != 0)
 				{
 ?>
-				<th class="c-carbon">Kohle</th>
+				<th class="c-carbon">Carbon</th>
 <?php
 				}
 				if($i['prod'][1] != 0)

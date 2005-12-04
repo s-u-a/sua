@@ -20,6 +20,7 @@ CWD=`pwd`
 echo 'Order Deny,Allow' >> $1/.htaccess
 echo 'Deny from All' >> $1/.htaccess
 echo 'Allow from None' >> $1/.htaccess
+mkdir $1/alliances
 touch $1/events
 touch $1/handelskurs
 touch $1/highscores

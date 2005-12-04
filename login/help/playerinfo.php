@@ -18,6 +18,14 @@
 <h2>Spielerinfo <em class="playername"><?=utf8_htmlentities($_GET['player'])?></em></h2>
 <?php
 		$player_info = get_user_array($_GET['player']);
+		$verbuendet = ($_GET['player'] == $_SESSION['username'] || in_array($_GET['player'], $user_array['verbuendete']));
+
+		if($user_array['alliance'] && $player_info['alliance'] == $user_array['alliance'] && !$verbuendet)
+		{
+			$alliance_array = get_alliance_array($user_array['alliance']);
+			if($alliance_array['members'][$_SESSION['username']]['permissions'][1])
+				$verbuendet = true;
+		}
 ?>
 <?php
 		if(!isset($player_info['punkte'][0])) $player_info['punkte'][0] = 0;
@@ -60,7 +68,7 @@
 	<dd class="c-gesamt"><?=ths($player_info['punkte'][0]+$player_info['punkte'][1]+$player_info['punkte'][2]+$player_info['punkte'][3]+$player_info['punkte'][4]+$player_info['punkte'][5]+$player_info['punkte'][6])?> <span class="platz">(Platz&nbsp;<?=ths($player_info['punkte'][12])?>)</span></dd>
 </dl>
 <?php
-		if($_GET['player'] == $_SESSION['username'] || in_array($_GET['player'], $user_array['verbuendete']))
+		if($verbuendet)
 		{
 ?>
 <h3 id="ausgegebene-rohstoffe">Ausgegebene Rohstoffe</h3>
@@ -89,18 +97,13 @@
 <h3 id="benutzerbeschreibung">Benutzerbeschreibung</h3>
 <div class="benutzerbeschreibung">
 <?php
-		function repl_nl($nls)
+		if(!isset($player_info['description_parsed']))
 		{
-			$len = strlen($nls);
-			if($len == 1)
-				return "<br />\n\t\t";
-			elseif($len == 2)
-				return "\n\t</p>\n\t<p>\n\t\t";
-			elseif($len > 2)
-				return "\n\t</p>\n\t".str_repeat('<br />', $len-2)."\n\t<p>\n\t";
+			$player_info['description_parsed'] = parse_html($player_info['description']);
+			write_user_array($_GET['player'], $player_info);
 		}
 
-		echo "\t<p>\n\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', utf8_htmlentities($player_info['description']))."\n\t</p>\n";
+		print($player_info['description_parsed']);
 ?>
 </div>
 <h3 id="buendnisse">Bündnisse</h3>
@@ -164,7 +167,7 @@
 ?>
 </dl>
 <?php
-		if($_GET['player'] == $_SESSION['username'] || in_array($_GET['player'], $user_array['verbuendete']))
+		if($verbuendet)
 		{
 ?>
 <h3 id="planeten">Planeten</h3>

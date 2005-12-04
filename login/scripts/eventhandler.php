@@ -69,6 +69,7 @@
 				{
 					write_user_array();
 					unset($user_array);
+					global $user_array;
 				}
 				$GLOBALS['user_array'] = get_user_array($ev_username);
 				$user_array = &$GLOBALS['user_array'];
@@ -1391,6 +1392,7 @@
 							elseif($flotte[2] == 5)
 							{
 								# Spionieren
+								# Spionage
 
 								# Planeten herausfinden, der spioniert werden soll
 								$start_pos = explode(':', $flotte[3][0]);
@@ -1857,7 +1859,7 @@
 
 										$tritium = $flotte[4][0]/2;
 										$flugerfahrung = $tritium/1000;
-										$message_text .= "\n\nDie Flotte liefert ".ths(round($tritium), true)." \xc3\xbcbersch\xc3\xbcssigen Tritiums ab. Diese Flug hat Ihnen ".ths(round($flugerfahrung), true).$nbsp.'Flugerfahrungspunkte eingebracht.';
+										$message_text .= "\n\nDie Flotte liefert ".ths(round($tritium), true)." \xc3\xbcbersch\xc3\xbcssigen Tritiums ab. Dieser Flug hat Ihnen ".ths(round($flugerfahrung), true).$nbsp.'Flugerfahrungspunkte eingebracht.';
 
 										$user_array['punkte'][5] += $flugerfahrung;
 

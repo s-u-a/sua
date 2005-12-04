@@ -267,7 +267,7 @@
 				</fieldset>
 			</form>
 			<ul id="main-navigation">
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/index.php') ? ' class="active"' : ''?> id="navigation-index"><a href="<?=htmlentities(h_root)?>/login/index.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="i">Übers<kbd>i</kbd>cht</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/index.php') ? ' class="active"' : ''?> id="navigation-index"><a href="<?=htmlentities(h_root)?>/login/index.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="ü"><kbd>Ü</kbd>bersicht</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/rohstoffe.php') ? ' class="active"' : ''?> id="navigation-rohstoffe"><a href="<?=htmlentities(h_root)?>/login/rohstoffe.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="r"><kbd>R</kbd>ohstoffe</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/gebaeude.php') ? ' class="active"' : ''?> id="navigation-gebaeude"><a href="<?=htmlentities(h_root)?>/login/gebaeude.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="g"><kbd>G</kbd>ebäude</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/forschung.php') ? ' class="active"' : ''?> id="navigation-forschung"><a href="<?=htmlentities(h_root)?>/login/forschung.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="f"><kbd>F</kbd>orschung</a></li>
@@ -279,6 +279,7 @@
 			<ul id="action-navigation">
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlentities(h_root)?>/login/karte.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="k"><kbd>K</kbd>arte</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/handelsrechner.php') ? ' class="active"' : ''?> id="navigation-handel"><a href="<?=htmlentities(h_root)?>/login/handelsrechner.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="d">Han<kbd>d</kbd>elsrechner</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/allianz.php') ? ' class="active"' : ''?> id="navigation-allianz"><a href="<?=htmlentities(h_root)?>/login/allianz.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="i">All<kbd>i</kbd>anz</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlentities(h_root)?>/login/verbuendete.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="e">V<kbd>e</kbd>rbündete</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlentities(h_root)?>/login/highscores.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" xml:lang="en" accesskey="h"><kbd>H</kbd>ighscores</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlentities(h_root)?>/login/nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="c">Na<kbd>c</kbd>hrichten</a></li>

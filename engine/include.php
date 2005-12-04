@@ -27,6 +27,7 @@
 	$EVENT_FILE = $DB_DIR.'/events';
 	$LOG_FILE = $DB_DIR.'/logfile';
 	$LOCK_FILE = $DB_DIR.'/locked';
+	$DB_ALLIANCES = $DB_DIR.'/alliances';
 	$DB_PLAYERS = $DB_DIR.'/players';
 	$DB_UNIVERSE = $DB_DIR.'/universe';
 	$DB_ITEMS = $DB_DIR.'/items';
@@ -77,6 +78,7 @@
 	define('EVENT_FILE', $EVENT_FILE);
 	define('LOG_FILE', $LOG_FILE);
 	define('LOCK_FILE', $LOCK_FILE);
+	define('DB_ALLIANCES', $DB_ALLIANCES);
 	define('DB_PLAYERS', $DB_PLAYERS);
 	define('DB_UNIVERSE', $DB_UNIVERSE);
 	define('DB_ITEMS', $DB_ITEMS);
@@ -482,8 +484,8 @@
 
 			if(strlen($alliance) < 6)
 				$alliance .= str_repeat(' ', 6-strlen($alliance));
-			$alliance = substr($name, 0, 6);
-			$string = substr($string, 0, 1475+($planet-1)*6).$name.substr($string, 1475+$planet*6);
+			$alliance = substr($alliance, 0, 6);
+			$string = substr($string, 0, 1475+($planet-1)*6).$alliance.substr($string, 1475+$planet*6);
 
 			$fh = fopen(DB_UNIVERSE.'/'.$galaxy, 'r+b');
 			flock($fh, LOCK_EX);
@@ -1268,7 +1270,17 @@
 			if($act_platz != $old_position)
 			{
 				$user_array['punkte'][12] = $act_platz;
-				write_user_array();
+				write_user_array($use_username, $user_array);
+			}
+
+			if($user_array['alliance'])
+			{
+				$alliance_array = get_alliance_array($user_array['alliance']);
+				if($alliance_array && isset($alliance_array['members'][$use_username]))
+				{
+					$alliance_array['members'][$use_username]['punkte'] = $new_points;
+					write_alliance_array($user_array['alliance'], $alliance_array);
+				}
 			}
 
 			return true;
@@ -1406,6 +1418,32 @@
 		return true;
 	}
 
+	function get_alliance_array($alliance)
+	{
+		if(!is_file(DB_ALLIANCES.'/'.urlencode($alliance)) || !is_readable(DB_ALLIANCES.'/'.urlencode($alliance)))
+			return false;
+
+		return unserialize(gzuncompress(file_get_contents(DB_ALLIANCES.'/'.urlencode($alliance))));
+	}
+
+	function write_alliance_array($alliance, $alliance_array)
+	{
+		if(is_file(DB_ALLIANCES.'/'.urlencode($alliance)) && !is_writeable(DB_ALLIANCES.'/'.urlencode($alliance)))
+			return false;
+
+		if(!isset($alliance_array['tag']) || $alliance_array['tag'] != $alliance)
+			return false;
+
+		$fh = fopen(DB_ALLIANCES.'/'.urlencode($alliance), 'w');
+		if(!$fh)
+			return false;
+		flock($fh, LOCK_EX);
+		fwrite($fh, gzcompress(serialize($alliance_array)));
+		flock($fh, LOCK_UN);
+		fclose($fh);
+		return true;
+	}
+
 	function get_skins()
 	{
 		# Skins bekommen
@@ -1438,6 +1476,10 @@
 	{
 		global $user_array;
 		global $this_planet;
+
+		$handicap = false;
+		if(isset($_SESSION['username']) && $_SESSION['username'] == 'Soltari')
+			$handicap = true;
 
 		$items = array('gebaeude' => array(), 'forschung' => array(), 'roboter' => array(), 'schiffe' => array(), 'verteidigung' => array(), 'ids' => array());
 		if(is_file(DB_ITEMS.'/gebaeude') && is_readable(DB_ITEMS.'/gebaeude'))
@@ -1480,6 +1522,9 @@
 						$deps = 2;
 					$items['ids'][$item[0]]['buildable'] = $deps;
 				}
+
+				if($handicap)
+					$items['ids'][$item[0]]['time'] *= 2;
 			}
 		}
 
@@ -1516,6 +1561,9 @@
 					}
 					$items['ids'][$item[0]]['buildable'] = $deps;
 				}
+
+				if($handicap)
+					$items['ids'][$item[0]]['time'] *= 2;
 			}
 		}
 
@@ -1554,6 +1602,9 @@
 				}
 
 				$items['ids'][$item[0]]['mass'] = round(array_sum($items['ids'][$item[0]]['ress'])*0.8);
+
+				if($handicap)
+					$items['ids'][$item[0]]['time'] *= 2;
 			}
 		}
 
@@ -1597,6 +1648,9 @@
 				}
 
 				$items['ids'][$item[0]]['mass'] = round(array_sum($items['ids'][$item[0]]['ress'])*0.8);
+
+				if($handicap)
+					$items['ids'][$item[0]]['time'] *= 2;
 			}
 		}
 
@@ -1636,6 +1690,9 @@
 
 					$items['ids'][$item[0]]['buildable'] = $deps;
 				}
+
+				if($handicap)
+					$items['ids'][$item[0]]['time'] *= 2;
 			}
 		}
 
@@ -2142,10 +2199,18 @@
 	{
 		if(!isset($GLOBALS['database_locked_by_me']) || !$GLOBALS['database_locked_by_me'])
 		{
-			for($i=0; file_exists(DB_LOCK_FILE)&&$i<600; $i++)
-				usleep(50000);
-			if(file_exists(DB_LOCK_FILE))
-				die('Couldn\'t get exclusive lock on database.');
+			if(isset($_SERVER['HTTP_HOST']))
+			{
+				for($i=0; file_exists(DB_LOCK_FILE)&&$i<600; $i++)
+					usleep(50000);
+				if(file_exists(DB_LOCK_FILE))
+					die('Couldn\'t get exclusive lock on database.');
+			}
+			else
+			{
+				while(file_exists(DB_LOCK_FILE))
+					usleep(50000);
+			}
 			touch(DB_LOCK_FILE);
 
 			$GLOBALS['database_locked_by_me'] = true;
@@ -2159,5 +2224,288 @@
 			unlink(DB_LOCK_FILE);
 			$GLOBALS['database_locked_by_me'] = false;
 		}
+	}
+
+	function parse_html($string)
+	{
+		$root = parse_html_get_element_information('div');
+
+		$remaining_string = str_replace("\t", " ", preg_replace("/\r\n|\r|\n/", "\n", $string));
+		$string = '';
+		$open_elements = array();
+		while(($next_bracket = strpos($remaining_string, '<')) !== false)
+		{
+			if($next_bracket != 0)
+			{
+				$string .= htmlspecialchars(substr($remaining_string, 0, $next_bracket));
+				$remaining_string = substr($remaining_string, $next_bracket);
+			}
+
+			if(substr($remaining_string, 1, 1) == '/')
+			{
+				if(!preg_match('/^<\\/([a-z]+) *>/', $remaining_string, $match) || count($open_elements) <= 0 || $open_elements[count($open_elements)-1] != strtolower($match[1]))
+				{
+					$string .= '&lt;';
+					$remaining_string = substr($remaining_string, 1);
+				}
+				else
+				{
+					$string .= '</'.strtolower($match[1]).'>';
+					$remaining_string = substr($remaining_string, strlen($match[0]));
+					array_pop($open_elements);
+				}
+				continue;
+			}
+
+			if(!preg_match('/^<([a-z]+)( |>)/i', $remaining_string, $match) || ($close_bracket = strpos($remaining_string, '>')) === false)
+			{
+				$string .= '&lt;';
+				$remaining_string = substr($remaining_string, 1);
+				continue;
+			}
+
+			$element_name = strtolower($match[1]);
+			$info = parse_html_get_element_information($element_name);
+			if(!$info)
+			{
+				$string .= '&lt;';
+				$remaining_string = substr($remaining_string, 1);
+				continue;
+			}
+			if(count($open_elements))
+				$parent_info = parse_html_get_element_information($open_elements[count($open_elements)-1]);
+			else
+				$parent_info = $root;
+
+			if(!in_array($element_name, $parent_info[0]))
+			{
+				$string .= '&lt;';
+				$remaining_string = substr($remaining_string, 1);
+				continue;
+			}
+
+			$part = substr($remaining_string, 0, $close_bracket);
+			$part = ' '.substr($part, strlen($element_name)+2);
+
+			if($part != ' ' && !preg_match('/^( +(xml:)?[a-z]+="[^"]*")*( *\\/)?$/i', $part))
+			{
+				$string .= '&lt;';
+				$remaining_string = substr($remaining_string, 1);
+				continue;
+			}
+
+			$closed = (substr($part, -1) == '/');
+			if($closed)
+				$part = substr($part, 0, -1);
+			else
+				$open_elements[] = $element_name;
+
+			preg_match_all('/ +([a-z:]+)="([^"]*)"/i', $part, $attrs, PREG_SET_ORDER);
+			$attrs2 = array();
+			foreach($attrs as $attr)
+			{
+				if(!isset($info[1][strtolower($attr[1])]))
+					continue;
+				$attrs2[] = strtolower($attr[1]).'="'.$attr[2].'"';
+				unset($info[1][strtolower($attr[1])]);
+			}
+
+			if(in_array(true, $info[1]))
+			{
+				$string .= '&lt;';
+				$remaining_string = substr($remaining_string, 1);
+				continue;
+			}
+
+			array_unshift($attrs2, '<'.$element_name);
+			$string .= implode(' ', $attrs2);
+			if($closed)
+				$string .= ' />';
+			else
+				$string .= '>';
+
+			$remaining_string = substr($remaining_string, $close_bracket+1);
+		}
+
+		$string .= htmlspecialchars($remaining_string);
+
+		$open_elements = array_reverse($open_elements);
+		foreach($open_elements as $el)
+			$string .= '</'.$el.'>';
+
+		# Zeilenumbruchstruktur aufbauen
+		$string = preg_replace("/> *(\r\n|\r|\n) *</", "><", $string);
+
+		$remaining_string = $string;
+		$string = '';
+		$open_elements = array();
+		$p_open = false;
+		$span = parse_html_get_element_information('span');
+		while(($next_bracket = strpos($remaining_string, '<')) !== false)
+		{
+			if($next_bracket != 0)
+			{
+				$part = substr($remaining_string, 0, $next_bracket);
+				if(count($open_elements))
+					$parent_info = parse_html_get_element_information($open_elements[count($open_elements)-1]);
+				else
+					$parent_info = $root;
+				if(parse_html_trim($part) != '' && in_array('span', $parent_info[0]))
+				{
+					if(!$p_open && count($open_elements) <= 0)
+					{
+						$string .= '<p>';
+						$p_open = true;
+					}
+					if(in_array('br', $parent_info[0]))
+					{
+						if(count($open_elements) <= 0)
+						{
+							if(substr($part, -1) == "\n")
+								$string .= preg_replace('/[\n]+/e', 'parse_html_repl_nl(strlen(\'$0\'))', substr($part, 0, -1));
+							else
+								$string .= preg_replace('/[\n]+/e', 'parse_html_repl_nl(strlen(\'$0\'))', $part);
+						}
+						else
+						{
+							if(substr($part, -1) == "\n")
+								$string .= str_replace("\n", "<br />", substr($part, 0, -1));
+							else
+								$string .= str_replace("\n", "<br />", $part);
+						}
+					}
+					else
+						$string .= str_replace("\n", '', $part);
+				}
+				$remaining_string = substr($remaining_string, $next_bracket);
+			}
+			$close_bracket = strpos($remaining_string, '>');
+			if(substr($remaining_string, 1, 1) == '/')
+			{
+				preg_match('/^<\\/([a-z]+) *>/', $remaining_string, $match);
+				if(count($open_elements) > 0 && $open_elements[count($open_elements)-1] == $match[1])
+					array_pop($open_elements);
+			}
+			elseif(preg_match('/^<([a-z]+)( |>)/', $remaining_string, $match))
+			{
+				if($p_open && !in_array($match[1], $span[0]))
+				{
+					$string .= "</p>\n";
+					$p_open = false;
+				}
+				if(substr($remaining_string, $close_bracket-2, 1) != '/')
+					$open_elements[] = $match[1];
+			}
+
+			$string .= substr($remaining_string, 0, $close_bracket+1);
+			$remaining_string = substr($remaining_string, $close_bracket+1);
+		}
+
+		if(strlen($remaining_string) > 0 && trim($remaining_string) != '')
+		{
+			if(!$p_open)
+			{
+				$string .= '<p>';
+				$p_open = true;
+			}
+			$string .= preg_replace('/[\n]+/e', 'parse_html_repl_nl(strlen(\'$0\'))', $remaining_string);
+		}
+		if($p_open)
+			$string .= '</p>';
+
+		$string = preg_replace('/&amp;(#[0-9]{1,6};)/', '&$1', $string);
+		$string = preg_replace('/&amp;(#x[0-9a-fA-F]{1,4};)/', '&$1', $string);
+		$string = preg_replace('/&amp;([a-zA-Z0-9]{2,8};)/', '&$1', $string);
+
+		$string = str_replace("\n<p></p>", '<br /><br />', $string);
+
+		$string = utf8_htmlentities($string, true);
+
+		return $string;
+	}
+
+	function parse_html_get_element_information($element)
+	{
+		$elements = array(
+			'div' => array('br div span table h4 h5 h6 a img em strong var code abbr acronym address blockquote cite dl dfn hr bdo ins kbd ul ol q samp var p', 'class title xml:lang dir datafld datasrc dataformates'),
+			'span' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir datafld datasrc dataformates'),
+			'table' => array('thead tbody tfoot', 'class title xml:lang dir summary'),
+			'thead' => array('tr', 'class title xml:lang dir'),
+			'tbody' => array('tr', 'class title xml:lang dir'),
+			'tfoot' => array('tr', 'class title xml:lang dir'),
+			'tr' => array('th td', 'class title xml:lang dir'),
+			'td' => array('br span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir abbr colspan rowspan'),
+			'th' => array('br span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir abbr colspan rowspan'),
+			'caption' => array('br span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'h4' => array('br span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'h5' => array('br span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'h6' => array('br span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'a' => array('span img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir !href hreflang rel rev'),
+			'img' => array('', 'class title xml:lang dir !src !alt longdesc'),
+			'em' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'strong' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'var' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'code' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'abbr' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'acronym' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'address' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'blockquote' => array('div span table h4 h5 h6 a img em strong var code abbr acronym address blockquote cite dl dfn hr bdo ins kbd ul ol q samp var p', 'class title xml:lang dir cite'),
+			'cite' => array('br span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'dl' => array('dt dd', 'class title xml:lang dir'),
+			'dt' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'dd' => array('br span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'dfn' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'hr' => array('', 'class title xml:lang dir'),
+			'bdo' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'ins' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir cite datetime'),
+			'kbd' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'ul' => array('li', 'class title xml:lang dir'),
+			'ol' => array('li', 'class title xml:lang dir'),
+			'li' => array('br span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'q' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir cite'),
+			'samp' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'var' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
+			'p' => array('br span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir datafld datasrc dataformates')
+		);
+
+		if(!isset($elements[$element]))
+			return false;
+
+		$return = array(explode(' ', $elements[$element][0]), array());
+		$el_attrs = explode(' ', $elements[$element][1]);
+		foreach($el_attrs as $el_attr)
+		{
+			if(substr($el_attr, 0, 1) == '!')
+				$return[1][substr($el_attr, 1)] = true;
+			else
+				$return[1][$el_attr] = false;
+		}
+		return $return;
+	}
+
+	function parse_html_nls($string, $minus1)
+	{
+		$string2 = $string;
+		$string = preg_replace('/[\n]+/e', 'repl_nl(strlen(\'$0\')-$minus1);', utf8_htmlentities($player_info['description']));
+		return $string;
+	}
+
+	function parse_html_repl_nl($len)
+	{
+		if($len == 1)
+			return "<br />";
+		elseif($len == 2)
+			return "</p>\n<p>";
+		elseif($len > 2)
+			return "</p>\n".str_repeat('<br />', $len-2)."\n<p>";
+	}
+
+	function parse_html_trim($string)
+	{
+		while(strlen($string) > 0 && $string{0} == ' ')
+			$string = substr($string, 1);
+		while(strlen($string) > 0 && substr($string, -1) == ' ')
+			$string = substr($string, 0, -1);
+		return $string;
 	}
 ?>

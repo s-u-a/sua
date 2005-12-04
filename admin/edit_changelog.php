@@ -22,9 +22,16 @@
 	if(isset($_POST['increase_version']) && is_array($_POST['increase_version']))
 	{
 		if(isset($_POST['increase_version'][0]))
+		{
 			$version[0]++;
+			$version[1] = '0';
+			$version[2] = '0';
+		}
 		if(isset($_POST['increase_version'][1]))
+		{
 			$version[1]++;
+			$version[2] = '0';
+		}
 		if(isset($_POST['increase_version'][2]))
 			$version[2]++;
 	}
