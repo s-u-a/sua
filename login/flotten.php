@@ -279,7 +279,7 @@
 							$that_user_array = get_user_array($info[1]);
 
 							$noob = false;
-							if(($_POST['auftrag'] == '3' || $_POST['auftrag'] == '5') && (!isset($that_user_array['locked']) || !$that_user_array['locked']))
+							if($info[1] && ($_POST['auftrag'] == '3' || $_POST['auftrag'] == '5') && (!isset($that_user_array['locked']) || !$that_user_array['locked']))
 							{
 								# Anfaengerschutz ueberpruefen
 								$that_punkte = $that_user_array['punkte'][0]+$that_user_array['punkte'][1]+$that_user_array['punkte'][2]+$that_user_array['punkte'][3]+$that_user_array['punkte'][4]+$that_user_array['punkte'][5]+$that_user_array['punkte'][6];
