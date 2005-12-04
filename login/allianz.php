@@ -327,6 +327,8 @@
 			{
 				$member_names = array_keys($liste);
 				natcasesort($member_names);
+				if(isset($_GET['invert']) && $_GET['invert'])
+					$member_names = array_reverse($member_names);
 			}
 
 			$changed = false;
@@ -344,6 +346,7 @@
 
 					messages::new_message(array($member_name=>7), '', "Allianzmitgliedschaft gek\xc3\xbcndigt", "Sie wurden aus der Allianz ".$user_array['alliance']." geworfen.");
 
+					$planets = array_keys($that_user_array['planets']);
 					$pos = array();
 					foreach($planets as $planet)
 						$pos[] = $that_user_array['planets'][$planet]['pos'];
@@ -469,6 +472,7 @@
 				$user_array['alliance'] = false;
 				write_user_array();
 
+				$planets = array_keys($user_array['planets']);
 				$pos = array();
 				foreach($planets as $planet)
 					$pos[] = $user_array['planets'][$planet]['pos'];
