@@ -341,9 +341,23 @@
 					$that_user_array = get_user_array($member_name);
 					$that_user_array['alliance'] = false;
 					write_user_array($member_name, $that_user_array);
-					unset($that_user_array);
 
 					messages::new_message(array($member_name=>7), '', "Allianzmitgliedschaft gek\xc3\xbcndigt", "Sie wurden aus der Allianz ".$user_array['alliance']." geworfen.");
+
+					$pos = array();
+					foreach($planets as $planet)
+						$pos[] = $that_user_array['planets'][$planet]['pos'];
+					$infos = universe::get_planet_info($pos);
+					foreach($planets as $planet)
+					{
+						$this_pos = explode(':', $that_user_array['planets'][$planet]['pos']);
+						$this_info = array_shift($infos);
+						universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], '');
+					}
+
+					unset($that_user_array);
+
+					highscores::recalc($member_name);
 
 					continue;
 				}
@@ -434,12 +448,39 @@
 					$that_user_array = get_user_array($member);
 					$that_user_array['alliance'] = false;
 					write_user_array($member, $that_user_array);
+
+					$planets = array_keys($that_user_array['planets']);
+					$pos = array();
+					foreach($planets as $planet)
+						$pos[] = $that_user_array['planets'][$planet]['pos'];
+					$infos = universe::get_planet_info($pos);
+					foreach($planets as $planet)
+					{
+						$this_pos = explode(':', $that_user_array['planets'][$planet]['pos']);
+						$this_info = array_shift($infos);
+						universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], '');
+					}
+
+					highscores::recalc($member);
 				}
 
 				unlink(DB_ALLIANCES.'/'.urlencode($user_array['alliance']));
 
 				$user_array['alliance'] = false;
 				write_user_array();
+
+				$pos = array();
+				foreach($planets as $planet)
+					$pos[] = $user_array['planets'][$planet]['pos'];
+				$infos = universe::get_planet_info($pos);
+				foreach($planets as $planet)
+				{
+					$this_pos = explode(':', $user_array['planets'][$planet]['pos']);
+					$this_info = array_shift($infos);
+					universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], '');
+				}
+
+				highscores::recalc();
 ?>
 <h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
 <p class="successful">Die Allianz wurde aufgelöst.</p>
@@ -602,7 +643,22 @@
 						unset($that_user_array['alliance_bewerbung']);
 						$that_user_array['alliance'] = $user_array['alliance'];
 						write_user_array($_GET['which'], $that_user_array);
+
+						$planets = array_keys($that_user_array['planets']);
+						$pos = array();
+						foreach($planets as $planet)
+							$pos[] = $that_user_array['planets'][$planet]['pos'];
+						$infos = universe::get_planet_info($pos);
+						foreach($planets as $planet)
+						{
+							$this_pos = explode(':', $that_user_array['planets'][$planet]['pos']);
+							$this_info = array_shift($infos);
+							universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], $user_array['alliance']);
+						}
+
 						unset($that_user_array);
+
+						highscores::recalc($_GET['which']);
 					}
 					elseif($action == 'ablehnen' && isset($_GET['which']) && isset($alliance_array['bewerbungen']) && in_array($_GET['which'], $alliance_array['bewerbungen']))
 					{
