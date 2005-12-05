@@ -161,7 +161,7 @@
 		{
 			if(!isset($_GET['for']))
 				$_GET['for'] = '';
-			if(!is_file(DB_ALLIANCES.'/'.$_GET['for']))
+			if(!is_file(DB_ALLIANCES.'/'.urlencode($_GET['for'])))
 			{
 ?>
 <h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>

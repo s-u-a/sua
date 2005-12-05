@@ -2202,14 +2202,20 @@
 			if(isset($_SERVER['HTTP_HOST']))
 			{
 				for($i=0; file_exists(DB_LOCK_FILE)&&$i<600; $i++)
+				{
 					usleep(50000);
+					clearstatcache();
+				}
 				if(file_exists(DB_LOCK_FILE))
 					die('Couldn\'t get exclusive lock on database.');
 			}
 			else
 			{
 				while(file_exists(DB_LOCK_FILE))
+				{
 					usleep(50000);
+					clearstatcache();
+				}
 			}
 			touch(DB_LOCK_FILE);
 
