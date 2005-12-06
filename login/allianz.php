@@ -133,7 +133,7 @@
 						foreach($planets as $planet)
 						{
 							$this_pos = explode(':', $user_array['planets'][$planet]['pos']);
-							$this_info = array_shift($infos);
+							$this_info = $infos[$user_array['planets'][$planet]['pos']];
 							universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], $user_array['alliance']);
 						}
 ?>
@@ -354,7 +354,7 @@
 					foreach($planets as $planet)
 					{
 						$this_pos = explode(':', $that_user_array['planets'][$planet]['pos']);
-						$this_info = array_shift($infos);
+						$this_info = $infos[$that_user_array['planets'][$planet]['pos']];
 						universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], '');
 					}
 
@@ -460,7 +460,7 @@
 					foreach($planets as $planet)
 					{
 						$this_pos = explode(':', $that_user_array['planets'][$planet]['pos']);
-						$this_info = array_shift($infos);
+						$this_info = $infos[$that_user_array['planets'][$planet]['pos']];
 						universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], '');
 					}
 
@@ -480,7 +480,7 @@
 				foreach($planets as $planet)
 				{
 					$this_pos = explode(':', $user_array['planets'][$planet]['pos']);
-					$this_info = array_shift($infos);
+					$this_info = $infos[$user_array['planets'][$planet]['pos']];
 					universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], '');
 				}
 
@@ -656,7 +656,7 @@
 						foreach($planets as $planet)
 						{
 							$this_pos = explode(':', $that_user_array['planets'][$planet]['pos']);
-							$this_info = array_shift($infos);
+							$this_info = $infos[$that_user_array['planets'][$planet]['pos']];
 							universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], $user_array['alliance']);
 						}
 
