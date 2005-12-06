@@ -57,7 +57,7 @@
 			{
 				$_POST['auftrag'] = 5;
 				$_POST['flotte'] = array('S5' => 1);
-				if($target_info[1])
+				if($target_info[1] && !in_array($target_info[1], $user_array['verbuendete']))
 					$_POST['flotte']['S5'] = $user_array['sonden'];
 				if(!isset($this_planet['schiffe']['S5']) || $this_planet['schiffe']['S5'] < 1)
 				{
