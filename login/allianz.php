@@ -286,7 +286,7 @@
 			if($alliance_array['members'][$_SESSION['username']]['permissions'][6])
 			{
 ?>
-<form action="allianz.php?action=liste&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="allianz-liste-form">
+<form action="allianz.php?action=liste<?=isset($_GET['sortby']) ? '&amp;sortby='.htmlentities(urlencode($_GET['sortby'])) : ''?><?=isset($_GET['invert']) ? '&amp;invert='.htmlentities(urlencode($_GET['invert'])) : ''?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="allianz-liste-form">
 <?php
 			}
 			if($alliance_array['members'][$_SESSION['username']]['permissions'][5])
