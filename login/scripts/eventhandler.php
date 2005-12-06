@@ -1237,33 +1237,33 @@
 
 									# Im Verhaeltnis mit Ladekapazitaet abgleichen
 									$erbeut_sum = array_sum($erbeut);
-									if($erbeut_sum <= 0)
-										$k = 0;
-									else
-										$k = $transport/array_sum($erbeut);
-									if($k < 1)
+									if($erbeut_sum > 0)
 									{
-										$erbeut[0] = floor($erbeut[0]*$k);
-										$erbeut[1] = floor($erbeut[1]*$k);
-										$erbeut[2] = floor($erbeut[2]*$k);
-										$erbeut[3] = floor($erbeut[3]*$k);
-										$erbeut[4] = floor($erbeut[4]*$k);
-
-										# Rundungsfehler ausmerzen
-										$uebrig = $transport-array_sum($erbeut);
-										$jedes = floor($uebrig/5);
-										$erbeut[0] += $jedes;
-										$erbeut[1] += $jedes;
-										$erbeut[2] += $jedes;
-										$erbeut[3] += $jedes;
-										$erbeut[4] += $jedes;
-										$uebrig = $uebrig%5;
-										switch($uebrig)
+										$k = $transport/$erbeut_sum;
+										if($k < 1)
 										{
-											case 4: $erbeut[3]++;
-											case 3: $erbeut[2]++;
-											case 2: $erbeut[1]++;
-											case 1: $erbeut[0]++;
+											$erbeut[0] = floor($erbeut[0]*$k);
+											$erbeut[1] = floor($erbeut[1]*$k);
+											$erbeut[2] = floor($erbeut[2]*$k);
+											$erbeut[3] = floor($erbeut[3]*$k);
+											$erbeut[4] = floor($erbeut[4]*$k);
+
+											# Rundungsfehler ausmerzen
+											$uebrig = $transport-array_sum($erbeut);
+											$jedes = floor($uebrig/5);
+											$erbeut[0] += $jedes;
+											$erbeut[1] += $jedes;
+											$erbeut[2] += $jedes;
+											$erbeut[3] += $jedes;
+											$erbeut[4] += $jedes;
+											$uebrig = $uebrig%5;
+											switch($uebrig)
+											{
+												case 4: $erbeut[3]++;
+												case 3: $erbeut[2]++;
+												case 2: $erbeut[1]++;
+												case 1: $erbeut[0]++;
+											}
 										}
 									}
 

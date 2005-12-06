@@ -34,6 +34,7 @@
 	$DB_MESSAGES = $DB_DIR.'/messages';
 	$DB_MESSAGES_PUBLIC = $DB_DIR.'/messages_public';
 	$DB_HIGHSCORES = $DB_DIR.'/highscores';
+	$DB_HIGHSCORES_ALLIANCES = $DB_DIR.'/highscores_alliances';
 	$DB_TRUEMMERFELDER = $DB_DIR.'/truemmerfelder';
 	$DB_HOSTNAME = $DB_DIR.'/hostname';
 	$DB_HANDEL = $DB_DIR.'/handel';
@@ -85,6 +86,7 @@
 	define('DB_MESSAGES', $DB_MESSAGES);
 	define('DB_MESSAGES_PUBLIC', $DB_MESSAGES_PUBLIC);
 	define('DB_HIGHSCORES', $DB_HIGHSCORES);
+	define('DB_HIGHSCORES_ALLIANCES', $DB_HIGHSCORES_ALLIANCES);
 	define('DB_TRUEMMERFELDER', $DB_TRUEMMERFELDER);
 	define('DB_HOSTNAME', $DB_HOSTNAME);
 	define('DB_HANDEL', $DB_HANDEL);
@@ -1322,6 +1324,21 @@
 				return false;
 			$players = floor($filesize/38);
 			return $players;
+		}
+	}
+
+	class highscores_alliances
+	{
+		function recalc($alliance_name=false)
+		{
+		}
+
+		function get_info($info)
+		{
+		}
+
+		function make_info($alliancename, $points)
+		{
 		}
 	}
 
