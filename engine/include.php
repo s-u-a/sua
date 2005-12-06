@@ -2531,4 +2531,9 @@
 			$string = substr($string, 0, -1);
 		return $string;
 	}
+
+	function report_error($error_number)
+	{
+		return mail('webmaster@s-u-a.net', 'Fehlermeldung auf S-U-A', 'Fehlernummer: '.$error_number);
+	}
 ?>

@@ -207,7 +207,6 @@
 		<div><input type="checkbox" name="nutzungsbedingungen" id="nutzungsbedingungen" /> <label for="nutzungsbedingungen">Ich habe die <a href="rules.php">Nutzungsbedingungen</a> gelesen und akzeptiere sie.</label></div>
 		<ul>
 			<li><button type="submit">Registrieren</button></li>
-			<li><a href="./">Zurück zur Startseite</a></li>
 		</ul>
 	</fieldset>
 </form>

@@ -71,8 +71,7 @@
 					unset($user_array);
 					global $user_array;
 				}
-				$GLOBALS['user_array'] = get_user_array($ev_username);
-				$user_array = &$GLOBALS['user_array'];
+				$user_array = get_user_array($ev_username);
 			}
 
 			if($ev_username === false)
@@ -350,7 +349,7 @@
 			unset($this_planet);
 
 			if(isset($_SESSION['act_planet']))
-				$GLOBALS['this_planet'] = &$GLOBALS['user_array'][$_SESSION['act_planet']];
+				$GLOBALS['this_planet'] = &$GLOBALS['user_array']['planets'][$_SESSION['act_planet']];
 
 			if(isset($user_array['flotten']) && $check_fleet)
 			{
@@ -703,7 +702,7 @@
 							{
 								# Angriff
 
-								# Planeten herausfinden, der spioniert werden soll
+								# Planeten herausfinden, der angegriffen werden soll
 								$start_pos = explode(':', $flotte[3][0]);
 								$start_info = universe::get_planet_info($start_pos[0], $start_pos[1], $start_pos[2]);
 								$start_own = ($start_info[1] == $ev_username);
@@ -1312,20 +1311,32 @@
 									# Rueckflug?
 									$flotte[7] = true;
 
+									if(!isset($start_user_array['flotten'][$i]))
+										report_error(1);
 									$start_user_array['flotten'][$i] = $flotte;
 									uasort($start_user_array['flotten'], 'usort_fleet');
 									eventhandler::add_event($flotte[1][1]);
 								}
 								else
+								{
+									if(!isset($start_user_array['flotten'][$i]))
+										report_error(2);
 									unset($start_user_array['flotten'][$i]);
+								}
 
+								if(!isset($target_user_array['flotten'][$i]))
+									report_error(3);
 								unset($target_user_array['flotten'][$i]);
 
 								# Dem Verteidiger Verteidigungsrohstoffe zurueckerstatten
-								$that_planet['ress'][0] += $verteidiger_ress[0]*0.25;
-								$that_planet['ress'][1] += $verteidiger_ress[1]*0.25;
-								$that_planet['ress'][2] += $verteidiger_ress[2]*0.25;
-								$that_planet['ress'][3] += $verteidiger_ress[3]*0.25;
+								$verteidiger_ress[0] *= 0.25;
+								$verteidiger_ress[1] *= 0.25;
+								$verteidiger_ress[2] *= 0.25;
+								$verteidiger_ress[3] *= 0.25;
+								$that_planet['ress'][0] += $verteidiger_ress[0];
+								$that_planet['ress'][1] += $verteidiger_ress[1];
+								$that_planet['ress'][2] += $verteidiger_ress[2];
+								$that_planet['ress'][3] += $verteidiger_ress[3];
 
 								# Punkte in Nachrichten eintragen
 								$nachrichten_text .= "<p>\n";
@@ -1364,6 +1375,10 @@
 
 								$vert_nachrichten_text .= "<p>\n";
 								$vert_nachrichten_text .= "\tDieser Kampf hat Ihnen ".ths(round($angreifer_punkte/1000))."&nbsp;Kampferfahrungspunkte eingebracht.\n";
+								$vert_nachrichten_text .= "</p>\n";
+
+								$vert_nachrichten_text .= "<p>\n";
+								$vert_nachrichten_text .= "\t".ths($verteidiger_ress[0])."&nbsp;Carbon, ".ths($verteidiger_ress[1])."&nbsp;Aluminium, ".ths($verteidiger_ress[2])."&nbsp;Wolfram und ".ths($verteidiger_ress[3])."&nbsp;Radium konnten aus den Trümmern der zerstörten Verteidigungsanlagen wiederhergestellt werden.\n";
 								$vert_nachrichten_text .= "</p>";
 
 
@@ -1894,6 +1909,8 @@
 
 						if(isset($user_array['flotten'][$i]))
 							$flotte = $user_array['flotten'][$i];
+						else
+							continue;
 
 						if($flotte[7] && $flotte[1][1] <= time())
 						{

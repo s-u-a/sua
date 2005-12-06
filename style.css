@@ -29,9 +29,10 @@ h1 { position:fixed; bottom:0; left:.5em; font-variant:small-caps; font-family:G
 #login-form dd { display:block; margin:0; padding:0; }
 #login-form dt { display:block; font-weight:bold; padding:.567em; width:auto; font-size:1.5em; font-family:Georgia,serif; font-variant:small-caps; margin:0 0 -2em 0; float:none; clear:none; }
 #login-form dt:after { content:""; }
-#login-form input { width:100%; background-color:transparent; background-image:url(images/halb2.png); border:.067em solid #000; padding:0; font-size:1.5em; font-family:Georgia,serif; line-height:1.3em; height:1.6em; }
+#login-form input { width:100%; background-color:transparent; background-image:url(images/halb2.png); border:.067em solid #000; padding:.1em .2em; font-size:1.5em; margin:0 -.18em; font-family:Georgia,serif; line-height:1.3em; height:1.6em }
 #login-form input:hover,#login-form input:focus { background-color:#679; }
-#login-form button,#login-form a { border:.067em solid #000; width:100%; text-align:center; background-image:url(images/halb2.png); background-color:transparent; font-weight:bold; font-size:1.5em; font-variant:small-caps; font-family:Georgia,serif; display:block; padding:.3em 0; margin:.2em 0; color:#000; text-decoration:none; line-height:1.3em; cursor:pointer; }
+#login-form button,#login-form a { border:.067em solid #000; width:100%; text-align:center; background-image:url(images/halb2.png); background-color:transparent; font-weight:bold; font-size:1.5em; font-variant:small-caps; font-family:Georgia,serif; display:block; padding:.3em .2em; margin:.2em -.18em; color:#000; text-decoration:none; line-height:1.3em; cursor:pointer; }
+* html #login-form button { padding:.1em 0; }
 #login-form button:hover,#login-form button:focus,#login-form a:hover,#login-form a:focus { background-color:#679; }
 * html #login-form input,* html #login-form button,* html #login-form a { filter:Alpha(opacity=50,style=0); width:99%; }
 * html #login-form input:hover,* html #login-form input:focus,* html #login-form button:hover,* html #login-form button:focus,* html #login-form a:hover,* html #login-form a:focus { filter:none; background-color:#ACAEC5; background-image:none; }
@@ -42,7 +43,7 @@ form dt { display:block; margin:0; padding:0; float:left; width:40%; clear:left;
 form dt:after { content:":\a0"; }
 form dd { display:block; margin:0 0 0 40%; padding:0; }
 form ul { margin:0; padding:0; list-style-type:none; text-align:center; }
-input,textarea { border:.1em solid #000; margin:.1em; background-image:url(images/halb2.png); background-color:transparent; width:100%; }
+input,textarea { border:.1em solid #000; margin:.1em; background-image:url(images/halb2.png); background-color:transparent; width:100%; padding:.1em .2em; }
 input:hover,input:focus,textarea:hover,textarea:focus { background-color:#679; }
 input[type=checkbox],input[type=radio],textarea { width:auto; }
 fieldset { border:.1em solid #679; }
