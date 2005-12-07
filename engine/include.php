@@ -1432,6 +1432,10 @@
 		fwrite($fh, gzcompress(serialize($that_user_array)));
 		flock($fh, LOCK_UN);
 		fclose($fh);
+
+		if(isset($_SESSION['debug']) && $_SESSION['debug'])
+			echo "User-Array gespeichert: ".utf8_htmlentities($username)."<br />\n";
+
 		return true;
 	}
 

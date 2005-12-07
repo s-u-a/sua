@@ -59,6 +59,9 @@
 			$resume = true;
 			$del_email_passwd = true;
 
+			if($_SESSION['username'] == 'Candid Dauth')
+				$_SESSION['debug'] = true;
+
 			logfile::action('2');
 		}
 	}
