@@ -1485,7 +1485,7 @@
 									uasort($start_user_array['flotten'], 'usort_fleet');
 									eventhandler::add_event($new_flotte[1][1], $start_info[1]);
 
-									if(write_user_array($start_info[1], $start_user_array))
+									if($fh = write_user_array($start_info[1], $start_user_array))
 										unset($user_array['flotten'][$i]);
 								}
 
@@ -1636,6 +1636,8 @@
 										messages::new_message(array($target_info[1]=>2), $start_info[1], 'Fremde Flotte auf dem Planeten '.$flotte[3][1], "Eine fremde Flotte vom Planeten \xe2\x80\x9e".$start_info[2]."\xe2\x80\x9c (".$flotte[3][0].", Eigent\xc3\xbcmer: ".$start_info[1].") wurde von Ihrem Planeten \xe2\x80\x9e".$target_info[2]."\xe2\x80\x9c (".$flotte[3][1].') aus bei der Spionage gesichtet.');
 									}
 								}
+								else
+									report_error(10);
 								unset($start_user_array);
 								if($target_info[1])
 									unset($target_user_array);
