@@ -400,7 +400,7 @@
 				foreach($systems as $system=>$planets)
 				{
 					$this_string = & $strings[$galaxy][$system];
-					$planets_count = (ord($this_string{0})<<3)+10;
+					$planets_count = (ord($this_string{0})>>3)+10;
 
 					foreach($planets as $i=>$planet)
 					{
@@ -557,7 +557,7 @@
 
 			$bin = '';
 
-			$planet_count = floor(ord(substr($string, 0, 1))/8)+10;
+			$planet_count = (ord($string{0})>>3)+10;
 
 			for($i=0; $i < 35; $i++)
 				$bin .= add_nulls(decbin(ord($string{$i})), 8);
