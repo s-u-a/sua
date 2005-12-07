@@ -28,6 +28,7 @@
 		{
 			$_SESSION['admin_username'] = $_POST['admin_username'];
 			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+			$_SESSION['debug'] = true;
 		}
 		else
 		{
