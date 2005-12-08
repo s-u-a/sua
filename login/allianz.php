@@ -588,7 +588,7 @@
 					$member_info = $alliance_array['members'][$member_name];
 ?>
 			<tr>
-				<th><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($member_name))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($member_name)?></a></th>
+				<th><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($member_name))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($member_name)?></a><input type="hidden" name="permissions[<?=utf8_htmlentities($i)?>][9]" value="on" /></th>
 				<td><input type="checkbox" name="permissions[<?=utf8_htmlentities($i)?>][0]"<?=$member_info['permissions'][0] ? ' checked="checked"' : ''?> /></td>
 				<td><input type="checkbox" name="permissions[<?=utf8_htmlentities($i)?>][1]"<?=$member_info['permissions'][1] ? ' checked="checked"' : ''?> /></td>
 				<td><input type="checkbox" name="permissions[<?=utf8_htmlentities($i)?>][2]"<?=$member_info['permissions'][2] ? ' checked="checked"' : ''?> /></td>

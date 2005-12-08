@@ -62,6 +62,7 @@
 	}
 
 	$admin_array = &$admins[$_SESSION['admin_username']];
+	$_SESSION['last_admin_access'] = time();
 
 	class admin_gui
 	{
