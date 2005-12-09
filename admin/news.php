@@ -28,6 +28,7 @@
 			if(isset($news[0]))
 				$news_array[$i]['title'] = $news[0];
 			$news_array[$i]['text'] = $news[1];
+			$news_array[$i]['text_parsed'] = parse_html($news_array[$i]['text']);
 		}
 		$news_array = array_values($news_array);
 		$fh = fopen(DB_NEWS, 'w');

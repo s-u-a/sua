@@ -22,7 +22,7 @@
 
 	foreach($news_array as $news)
 	{
-		if(!is_array($news) || !isset($news['text']))
+		if(!is_array($news) || !isset($news['text_parsed']))
 			continue;
 
 		$title = 'Kein Titel';
@@ -43,7 +43,7 @@
 <?php
 		}
 
-	echo parse_html($news['text']);
+	print($news['text_parsed']);
 ?>
 </div>
 <?php
