@@ -1380,15 +1380,8 @@
 
 	function write_user_array($username=false, $that_user_array=false)
 	{
-		if(isset($_SESSION['debug']) && $_SESSION['debug'])
-			echo "User-Array speichern: ".utf8_htmlentities($username)." &ndash; ";
-		
 		if($username !== false && $that_user_array === false)
-		{
-			if(isset($_SESSION['debug']) && $_SESSION['debug'])
-				echo "Fehlgeschlagen<br />\n";
 			return false;
-		}
 		if($username === false)
 		{
 			if(!isset($_SESSION['username']))
@@ -1396,6 +1389,9 @@
 			else
 				$username = $_SESSION['username'];
 		}
+		
+		if(isset($_SESSION['debug']) && $_SESSION['debug'])
+			echo "User-Array speichern: ".utf8_htmlentities($username)." &ndash; ";
 
 		if(isset($_SESSION['username']) && $username == $_SESSION['username'])
 		{
