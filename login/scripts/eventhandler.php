@@ -577,7 +577,7 @@
 
 										$user_array['flotten'][$i] = $flotte;
 
-										usort($user_array['flotten'], 'usort_fleet');
+										uasort($user_array['flotten'], 'usort_fleet');
 									}
 								}
 							}
@@ -1674,7 +1674,7 @@
 
 									$user_array['flotten'][$i] = $flotte;
 
-									usort($user_array['flotten'], 'usort_fleet');
+									uasort($user_array['flotten'], 'usort_fleet');
 
 									messages::new_message(array($ev_username=>3), '', 'Transport fehlgeschlagen', 'Ihre Flotte erreicht den Planeten '.$flotte[3][0]." und will ihre Rohstoffe dort abliefern, jedoch findet Sie niemanden vor, der die Rohstoffe entgegennimmt. Frustriert, dass sie umsonst einen so weiten Flug durchgef\xc3\xbchrt hat, tritt sie den Heimweg an.");
 								}
@@ -1757,12 +1757,12 @@
 										if($start_own && $target_own)
 										{
 											$user_array['flotten'][$i] = $new_flotte;
-											usort($user_array['flotten'], 'usort_fleet');
+											uasort($user_array['flotten'], 'usort_fleet');
 										}
 										elseif($start_own && !$target_own)
 										{
 											$user_array['flotten'][$i] = $new_flotte;
-											usort($user_array['flotten'], 'usort_fleet');
+											uasort($user_array['flotten'], 'usort_fleet');
 											unset($target_user_array['flotten'][$i]);
 											write_user_array($target_info[1], $target_user_array);
 										}
@@ -1770,7 +1770,7 @@
 										{
 											unset($user_array['flotten'][$i]);
 											$start_user_array['flotten'][$i] = $new_flotte;
-											usort($start_user_array['flotten'], 'usort_fleet');
+											uasort($start_user_array['flotten'], 'usort_fleet');
 											write_user_array($start_info[1], $start_user_array);
 										}
 
