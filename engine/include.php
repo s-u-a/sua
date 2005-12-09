@@ -5,8 +5,8 @@
 	ignore_user_abort();
 
 	# Konstanten, die wichtige Pfade enthalten
-	$DB_DIR = '../sua.db'; # Relativ zum Hauptverzeichnis des Spiels
 	if(isset($_SERVER['SUA_DB_DIR'])) $DB_DIR = $_SERVER['SUA_DB_DIR'];
+	else logfile::panic('Es wurde kein Datenbankverzeichnis angegeben. Der Administrator solle bitte die Umgebungsvariable SUA_DB_DIR setzen.');
 
 		# Auswertung von $DB_DIR
 		if(substr($DB_DIR, 0, 1) != '/')
