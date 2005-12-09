@@ -6,6 +6,7 @@
 
 	# Konstanten, die wichtige Pfade enthalten
 	$DB_DIR = '../sua.db'; # Relativ zum Hauptverzeichnis des Spiels
+	if(isset($_ENV['SUA_DB_DIR'])) $DB_DIR = $_ENV['SUA_DB_DIR'];
 
 		# Auswertung von $DB_DIR
 		if(substr($DB_DIR, 0, 1) != '/')
@@ -935,6 +936,8 @@
 			else
 				$time = round((pow($mass, 0.9)/$speed)*pow($distance, 0.3)*100);
 			#$time = round(pow(1.125*$mass*pow($distance, 2)/$speed, 0.33333)*10);
+			# Physikalisch korrekt:
+			# $time = round(pow(2*$distance*$distance*$mass/$speed, 0.33333));
 
 			return $time;
 		}

@@ -1727,7 +1727,7 @@
 										# Transport
 
 										/* FEHLT NOCH!
-										Bei ankommenden Robotern Bauzeit verkürzen, Produktion aktualisieren. */
+										Bei ankommenden Robotern Bauzeit verkürzen. */
 
 										$new_flotte = $flotte;
 
@@ -2037,6 +2037,7 @@
 								unset($that_planet);
 							}
 						}
+						write_user_array();
 					}
 				}
 			}
