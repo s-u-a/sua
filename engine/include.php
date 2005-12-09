@@ -6,7 +6,7 @@
 
 	# Konstanten, die wichtige Pfade enthalten
 	$DB_DIR = '../sua.db'; # Relativ zum Hauptverzeichnis des Spiels
-	if(isset($_ENV['SUA_DB_DIR'])) $DB_DIR = $_ENV['SUA_DB_DIR'];
+	if(isset($_SERVER['SUA_DB_DIR'])) $DB_DIR = $_SERVER['SUA_DB_DIR'];
 
 		# Auswertung von $DB_DIR
 		if(substr($DB_DIR, 0, 1) != '/')
