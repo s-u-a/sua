@@ -34,9 +34,9 @@
 
 			flock($fh, LOCK_EX);
 
-			foreach($time as $i=>$time)
+			foreach($time as $time_o)
 			{
-				$time_bin = add_nulls(base_convert($time, 10, 2), 64);
+				$time_bin = add_nulls(base_convert($time_o, 10, 2), 64);
 				$string = '';
 				for($i = 0; $i < strlen($time_bin); $i+=8)
 					$string .= chr(bindec(substr($time_bin, $i, 8)));
@@ -1474,8 +1474,8 @@
 
 									if($fh)
 									{
-										$user_array['flotten'][$i] = $new_flotte;
-										uasort($user_array['flotten'], 'usort_fleet');
+										$start_user_array['flotten'][$i] = $new_flotte;
+										uasort($start_user_array['flotten'], 'usort_fleet');
 										eventhandler::add_event($new_flotte[1][1]);
 									}
 								}
@@ -1486,7 +1486,7 @@
 									eventhandler::add_event($new_flotte[1][1], $start_info[1]);
 
 									if($fh = write_user_array($start_info[1], $start_user_array))
-										unset($user_array['flotten'][$i]);
+										unset($start_user_array['flotten'][$i]);
 								}
 
 								if($fh)

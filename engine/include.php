@@ -1380,8 +1380,15 @@
 
 	function write_user_array($username=false, $that_user_array=false)
 	{
+		if(isset($_SESSION['debug']) && $_SESSION['debug'])
+			echo "User-Array speichern: ".utf8_htmlentities($username)." &ndash; ";
+		
 		if($username !== false && $that_user_array === false)
+		{
+			if(isset($_SESSION['debug']) && $_SESSION['debug'])
+				echo "Fehlgeschlagen<br />\n";
 			return false;
+		}
 		if($username === false)
 		{
 			if(!isset($_SESSION['username']))
@@ -1430,15 +1437,18 @@
 
 		$fh = fopen(DB_PLAYERS.'/'.urlencode($username), 'w');
 		if(!$fh)
+		{
+			if(isset($_SESSION['debug']) && $_SESSION['debug'])
+				echo "Fehlgeschlagen<br />\n";
 			return false;
+		}
 		flock($fh, LOCK_EX);
 		fwrite($fh, gzcompress(serialize($that_user_array)));
 		flock($fh, LOCK_UN);
 		fclose($fh);
 
 		if(isset($_SESSION['debug']) && $_SESSION['debug'])
-			echo "User-Array gespeichert: ".utf8_htmlentities($username)."<br />\n";
-
+			echo "Erfolgreich<br />\n";
 		return true;
 	}
 
