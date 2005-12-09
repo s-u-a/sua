@@ -43,7 +43,7 @@
 <?php
 		}
 
-		echo "\t<p>\n\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', utf8_htmlentities($news['text']))."\n\t</p>\n";
+	echo parse_html($news['text']);
 ?>
 </div>
 <?php
