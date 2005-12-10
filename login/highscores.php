@@ -89,7 +89,7 @@
 ?>
 		<tr class="<?=$class?>">
 			<th class="c-platz"><?=ths($platz)?></th>
-			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info[2]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info[2])?></a></td>
+			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info[2]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info[1])?></a></td>
 			<td class="c-punktzahl"><?=ths($info[1])?></td>
 		</tr>
 <?php
