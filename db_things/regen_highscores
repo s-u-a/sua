@@ -74,23 +74,27 @@
 			continue;
 
 		$new_points = 0;
+		foreach($this_alliance_array['members'] as $member)
+			$new_points += $member['punkte'];
+		$new_points = floor($new_points);
+		
 		unset($this_alliance_array);
 		
-		$highscores[urldecode($fname)] = $new_points;
+		$alliance_highscores[urldecode($fname)] = $new_points;
 	}
 	closedir($dh);
 	
-	arsort($highscores, SORT_NUMERIC);
+	arsort($alliance_highscores, SORT_NUMERIC);
 	
 	$platz = 1;
 	$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'w');
-	foreach($highscores as $alliance=>$punkte)
+	foreach($alliance_highscores as $alliance=>$punkte)
 	{
 		fwrite($fh, highscores_alliances::make_info($alliance, $punkte[0]));
 
 		$this_alliance_array = get_alliance_array($alliance);
 		$this_alliance_array['platz'] = $platz;
-		write_user_array($alliance, $this_alliance_array);
+		write_alliance_array($alliance, $this_alliance_array);
 		unset($this_alliance_array);
 
 		$platz++;
