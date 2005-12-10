@@ -368,8 +368,8 @@
 				foreach($planets as $i=>$planet)
 				{
 					$anzahl = 0;
-					if(isset($user_array['planets'][$planet]['roboter'][$id]))
-						$anzahl = $user_array['planets'][$planet]['roboter'][$id];
+					if(isset($user_array['planets'][$planet]['ids'][$id]))
+						$anzahl = $user_array['planets'][$planet]['ids'][$id];
 					if(!isset($ges[$i]))
 						$ges[$i] = 0;
 					$ges_ges += $anzahl;
