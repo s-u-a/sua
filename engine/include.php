@@ -713,7 +713,7 @@
 			<li><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/register.php">Registrieren</a></li>
 			<li><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/rules.php">Regeln</a></li>
 			<li><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/faq.php"><abbr title="Frequently Asked Questions" xml:lang="en">FAQ</abbr></a></li>
-			<li><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/forum/">Forum</a></li>
+			<li><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/forum/index">Forum</a></li>
 			<li><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/impressum.php">Impressum</a></li>
 		</ol>
 		<div id="content-9"><div id="content-10"><div id="content-11"><div id="content-12">
