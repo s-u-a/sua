@@ -2,7 +2,7 @@
 <?php
 	if(!isset($_SERVER['argv'][1]))
 	{
-		echo 'Usage: '.$_SERVER['argv'][0].' [Database dir]';
+		echo "Usage: ".$_SERVER['argv'][0]." [Database dir]\n";
 		exit(1);
 	}
 	else
