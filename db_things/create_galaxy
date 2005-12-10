@@ -59,21 +59,21 @@
 
 			$this_bin .= add_nulls(decbin($size-100), 9);
 		}
-
-		if($planet_count != 30)
-			$this_bin .= str_repeat('000000000', 30-$planet_count); # Null-Bits, stellvertretend fuer nicht existierende Planeten
-
-		$this_bin .= str_repeat('00100000', 24*$planet_count); # Spielernamen, werden spaeter eingefuegt
-		if($planet_count != 30)
-			$this_bin .= str_repeat('00000000', (30-$planet_count)*24); # Null-Bytes fuer Spieler auf nicht existierenden Planeten
-
-		$this_bin .= str_repeat('00100000', 24*$planet_count); # Planetennamen, werden spaeter eingefuegt
-		if($planet_count != 30)
-			$this_bin .= str_repeat('00000000', (30-$planet_count)*24); # Null-Bytes fuer Planetennamen nichtexistierender Planeten
-
-		$this_bin .= '00000'; # Null-Bits, damit ganze Bytes entstehen
-
+		
+		$this_bin .= '00000';
+		
 		fwrite($fh, bin2string($this_bin));
+
+		if($planet_count != 30)
+			fwrite($fh, str_repeat("\0", 30-$planet_count*24)); # Null-Bits, stellvertretend fuer nicht existierende Planeten
+
+		fwrite($fh, str_repeat(' ', 24*$planet_count));
+		if($planet_count != 30)
+			fwrite($fh, str_repeat("\0", (30-$planet_count)*24)); # Null-Bytes fuer Spieler auf nicht existierenden Planeten
+
+		$this_bin .= str_repeat(' ', 24*$planet_count); # Planetennamen, werden spaeter eingefuegt
+		if($planet_count != 30)
+			fwrite($fh, str_repeat("\0", (30-$planet_count)*24)); # Null-Bytes fuer Planetennamen nichtexistierender Planeten
 	}
 
 	flock($fh, LOCK_UN);
