@@ -79,6 +79,11 @@
 
 			if(isset($_SESSION['username']))
 				$username_save = $_SESSION['username'];
+			if(isset($_SESSION['act_planet']) && (!isset($_SESSION['username']) || $_SESSION['username'] != $ev_username))
+			{
+				$start_act_planet_save = $_SESSION['act_planet'];
+				unset($_SESSION['act_planet']);
+			}
 			$_SESSION['username'] = $ev_username;
 
 			if(!isset($items))
@@ -2053,6 +2058,8 @@
 				$GLOBALS['this_planet'] = & $user_array['planets'][$_SESSION['act_planet']];
 			if(!$start_isset_username && isset($_SESSION['username']))
 				unset($_SESSION['username']);
+			if(isset($start_act_planet_save))
+				$_SESSION['act_planet'] = $start_act_planet_save;
 		}
 	}
 ?>
