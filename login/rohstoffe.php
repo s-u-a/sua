@@ -220,11 +220,11 @@
 			tritium = <?=floor($day_prod[4])?>*show_days;
 		}
 
-		document.getElementById('taeglich-carbon').innerHTML = ths(carbon);
-		document.getElementById('taeglich-aluminium').innerHTML = ths(aluminium);
-		document.getElementById('taeglich-wolfram').innerHTML = ths(wolfram);
-		document.getElementById('taeglich-radium').innerHTML = ths(radium);
-		document.getElementById('taeglich-tritium').innerHTML = ths(tritium);
+		document.getElementById('taeglich-carbon').firstChild.data = ths(carbon);
+		document.getElementById('taeglich-aluminium').firstChild.data = ths(aluminium);
+		document.getElementById('taeglich-wolfram').firstChild.data = ths(wolfram);
+		document.getElementById('taeglich-radium').firstChild.data = ths(radium);
+		document.getElementById('taeglich-tritium').firstChild.data = ths(tritium);
 
 		var carbon_class,aluminium_class,wolfram_class,radium_class,tritium_class;
 

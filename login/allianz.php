@@ -505,6 +505,31 @@
 				}
 
 				highscores::recalc();
+				
+				# Aus den Allianz-Highscores entfernen
+				$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r+');
+				flock($fh, LOCK_EX);
+				fseek($fh, $alliance_array['platz']*14, SEEK_SET);
+				$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
+				
+				while(true)
+				{
+					if($filesize-ftell($fh) < 14)
+						break;
+					$line = fread($fh, 14);
+					$info = highscores_alliances::get_info($line);
+					$that_alliance_array = get_alliance_array($info[0]);
+					$that_alliance_array['platz']--;
+					write_alliance_array($info[0], $that_alliance_array);
+					
+					fseek($fh, -28, SEEK_CUR);
+					fwrite($fh, $line);
+					fseek($fh, 14, SEEK_CUR);
+				}
+				ftruncate($fh, $filesize-14);
+				
+				flock($fh, LOCK_UN);
+				fclose($fh);
 ?>
 <h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
 <p class="successful">Die Allianz wurde aufgelöst.</p>

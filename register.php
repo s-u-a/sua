@@ -24,7 +24,7 @@
 			$_POST['username'] = str_replace("\x0a", ' ', trim($_POST['username'])); # nbsp
 
 			if(file_exists(DB_PLAYERS.'/'.urlencode($_POST['username'])))
-				$error = 'Dieser Spieler existiert bereits. Bitte wähle einen anderen Namen.';
+				$error = 'Dieser Spieler existiert bereits. Bitte wählen Sie einen anderen Namen.';
 			elseif(substr($_POST['username'], -4) == ' (U)')
 				$error = 'Der Benutzername darf nicht auf (U) enden.';
 			elseif(substr($_POST['username'], -4) == ' (g)')
