@@ -1462,8 +1462,8 @@
 
 		function get_info($info)
 		{
-			$alliancename = trim(substr($string, 0, 6));
-			$points_str = substr($string, 6);
+			$alliancename = trim(substr($info, 0, 6));
+			$points_str = substr($info, 6);
 
 			$points_bin = '';
 			for($i = 0; $i < strlen($points_str); $i++)
