@@ -66,7 +66,7 @@
 	$dh = opendir(DB_ALLIANCES);
 	while(($fname = readdir($dh)) !== false)
 	{
-		if(!is_file(DB_PLAYERS.'/'.$fname) || !is_readable(DB_PLAYERS.'/'.$fname))
+		if(!is_file(DB_ALLIANCES.'/'.$fname) || !is_readable(DB_ALLIANCES.'/'.$fname))
 			continue;
 
 		$this_alliance_array = get_alliance_array(urldecode($fname));

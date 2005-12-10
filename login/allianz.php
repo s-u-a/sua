@@ -112,8 +112,10 @@
 						'inner_description' => '',
 						'inner_description_parsed' => ''
 					);
-
-					if(!write_alliance_array($_POST['tag'], $alliance_array))
+					
+					$highscores_info = highscores_alliances::make_info($_POST['tag'], $alliance_array['members'][$_SESSION['username']]['punkte']);
+					$fh = fopen(DB_HIGHSCORES, 'a');
+					if(!$fh)
 					{
 ?>
 <p class="error">Datenbankfehler.</p>
@@ -121,26 +123,44 @@
 					}
 					else
 					{
-						$user_array['alliance'] = $_POST['tag'];
-						write_user_array();
-						highscores::recalc();
-
-						$planets = array_keys($user_array['planets']);
-						$pos = array();
-						foreach($planets as $planet)
-							$pos[] = $user_array['planets'][$planet]['pos'];
-						$infos = universe::get_planet_info($pos);
-						foreach($planets as $planet)
+						flock($fh, LOCK_EX);
+						
+						fwrite($fh, $highscores_info);
+						
+						flock($fh, LOCK_UN);
+						fclose($fh);
+						
+						$alliance_array['platz'] = highscores_alliances::get_alliances_count();
+	
+						if(!write_alliance_array($_POST['tag'], $alliance_array))
 						{
-							$this_pos = explode(':', $user_array['planets'][$planet]['pos']);
-							$this_info = $infos[$user_array['planets'][$planet]['pos']];
-							universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], $user_array['alliance']);
+?>
+<p class="error">Datenbankfehler.</p>
+<?php
 						}
+						else
+						{
+							$user_array['alliance'] = $_POST['tag'];
+							write_user_array();
+							highscores::recalc();
+	
+							$planets = array_keys($user_array['planets']);
+							$pos = array();
+							foreach($planets as $planet)
+								$pos[] = $user_array['planets'][$planet]['pos'];
+							$infos = universe::get_planet_info($pos);
+							foreach($planets as $planet)
+							{
+								$this_pos = explode(':', $user_array['planets'][$planet]['pos']);
+								$this_info = $infos[$user_array['planets'][$planet]['pos']];
+								universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], $user_array['alliance']);
+							}
 ?>
 <p class="successful">Die Allianz <?=utf8_htmlentities($_POST['tag'])?> wurde erfolgreich gegründet.</p>
 <?php
-						login_gui::html_foot();
-						exit();
+							login_gui::html_foot();
+							exit();
+						}
 					}
 				}
 			}
