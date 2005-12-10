@@ -23,12 +23,14 @@
 	}
 	
 	login_gui::html_head();
+	
+	$tabindex = 1;
 ?>
 <h2>Imperium</h2>
 <ul class="imperium-modi">
-	<li class="c-rohstoffe<?=($action == 'ress') ? ' active' : ''?>"><a href="imperium.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Rohstoffe</a></li>
-	<li class="c-roboter<?=($action == 'roboter') ? ' active' : ''?>"><a href="imperium.php?action=roboter&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Roboter</a></li>
-	<li class="c-flotte<?=($action == 'flotte') ? ' active' : ''?>"><a href="imperium.php?action=flotte&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Flotten</a></li>
+	<li class="c-rohstoffe<?=($action == 'ress') ? ' active' : ''?>"><a href="imperium.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>"<?=($action == 'ress') ? '' : ' tabindex="'.htmlentities($tabindex++).'"'?>>Rohstoffe</a></li>
+	<li class="c-roboter<?=($action == 'roboter') ? ' active' : ''?>"><a href="imperium.php?action=roboter&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>"<?=($action == 'roboter') ? '' : ' tabindex="'.htmlentities($tabindex++).'"'?>>Roboter</a></li>
+	<li class="c-flotte<?=($action == 'flotte') ? ' active' : ''?>"><a href="imperium.php?action=flotte&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>"<?=($action == 'flotten') ? '' : ' tabindex="'.htmlentities($tabindex++).'"'?>>Flotten</a></li>
 </ul>
 <?php
 	switch($action)
@@ -87,7 +89,7 @@
 		</tr>
 	</tfoot>
 </table>
-<h3 id="rohstoffproduktion">Rohstoffproduktion</h3>
+<h3 id="rohstoffproduktion">Rohstoffproduktion pro Stunde</h3>
 <table class="imperium-tabelle imperium-rohstoffproduktion">
 	<thead>
 		<tr>
@@ -130,10 +132,22 @@
 		</tr>
 <?php
 			}
+			
+			$day_prod = array($ges[0]*24, $ges[1]*24, $ges[2]*24, $ges[3]*24, $ges[4]*24);
+			$show_day_prod = $day_prod;
+			$show_days = 1;
+			if(isset($user_array['prod_show_days']))
+				$show_days = $user_array['prod_show_days'];
+			$show_day_prod[0] *= $show_days;
+			$show_day_prod[1] *= $show_days;
+			$show_day_prod[2] *= $show_days;
+			$show_day_prod[3] *= $show_days;
+			$show_day_prod[4] *= $show_days;
+			$show_day_prod[5] = array_sum($show_day_prod);
 ?>
 	</tbody>
 	<tfoot>
-		<tr>
+		<tr class="gesamt-stuendlich">
 			<th class="c-planet">Gesamt</th>
 			<td class="c-carbon <?=get_prod_class($ges[0])?>"><?=ths($ges[0])?></td>
 			<td class="c-aluminium <?=get_prod_class($ges[1])?>"><?=ths($ges[1])?></td>
@@ -143,8 +157,86 @@
 			<td class="c-gesamt <?=get_prod_class($ges[6])?>"><?=ths($ges[6])?></td>
 			<td class="c-energie <?=get_prod_class($ges[5])?>"><?=ths($ges[5])?></td>
 		</tr>
+		<tr class="gesamt-taeglich">
+			<th class="c-planet">Pr<kbd>o</kbd> <input type="text" class="prod-show-days" name="show_days" id="show_days" value="<?=utf8_htmlentities($show_days)?>" tabindex="<?=htmlentities($tabindex++)?>" accesskey="o" onchange="recalc_perday();" onclick="recalc_perday();" onkeyup="recalc_perday();" />&nbsp;Tage</th>
+			<td class="c-carbon <?=get_prod_class($show_day_prod[0])?>" id="taeglich-carbon"><?=ths($show_day_prod[0])?></td>
+			<td class="c-aluminium <?=get_prod_class($show_day_prod[1])?>" id="taeglich-aluminium"><?=ths($show_day_prod[1])?></td>
+			<td class="c-wolfram <?=get_prod_class($show_day_prod[2])?>" id="taeglich-wolfram"><?=ths($show_day_prod[2])?></td>
+			<td class="c-radium <?=get_prod_class($show_day_prod[3])?>" id="taeglich-radium"><?=ths($show_day_prod[3])?></td>
+			<td class="c-tritium <?=get_prod_class($show_day_prod[4])?>" id="taeglich-tritium"><?=ths($show_day_prod[4])?></td>
+			<td class="c-gesamt <?=get_prod_class($show_day_prod[5])?>" id="taeglich-gesamt"><?=ths($show_day_prod[5])?></td>
+			<td class="c-energie"></td>
+		</tr>
 	</tfoot>
 </table>
+<script type="text/javascript">
+// <![CDATA[
+	function recalc_perday()
+	{
+		var show_days = parseFloat(document.getElementById('show_days').value);
+
+		var carbon,aluminium,wolfram,radium,tritium,gesamt;
+		if(isNaN(show_days))
+		{
+			carbon = 0;
+			aluminium = 0;
+			wolfram = 0;
+			radium = 0;
+			tritium = 0;
+			gesamt = 0;
+		}
+		else
+		{
+			carbon = <?=floor($day_prod[0])?>*show_days;
+			aluminium = <?=floor($day_prod[1])?>*show_days;
+			wolfram = <?=floor($day_prod[2])?>*show_days;
+			radium = <?=floor($day_prod[3])?>*show_days;
+			tritium = <?=floor($day_prod[4])?>*show_days;
+			gesamt = carbon+aluminium+wolfram+radium+tritium;
+		}
+
+		document.getElementById('taeglich-carbon').firstChild.data = ths(carbon);
+		document.getElementById('taeglich-aluminium').firstChild.data = ths(aluminium);
+		document.getElementById('taeglich-wolfram').firstChild.data = ths(wolfram);
+		document.getElementById('taeglich-radium').firstChild.data = ths(radium);
+		document.getElementById('taeglich-tritium').firstChild.data = ths(tritium);
+		document.getElementById('taeglich-gesamt').firstChild.data = ths(gesamt);
+
+		var carbon_class,aluminium_class,wolfram_class,radium_class,tritium_class;
+
+		if(carbon > 0) carbon_class = 'positiv';
+		else if(carbon < 0) carbon_class = 'negativ';
+		else carbon_class = 'null';
+
+		if(aluminium > 0) aluminium_class = 'positiv';
+		else if(aluminium < 0) aluminium_class = 'negativ';
+		else aluminium_class = 'null';
+
+		if(wolfram > 0) wolfram_class = 'positiv';
+		else if(wolfram < 0) wolfram_class = 'negativ';
+		else wolfram_class = 'null';
+
+		if(radium > 0) radium_class = 'positiv';
+		else if(radium < 0) radium_class = 'negativ';
+		else radium_class = 'null';
+
+		if(tritium > 0) tritium_class = 'positiv';
+		else if(tritium < 0) tritium_class = 'negativ';
+		else tritium_class = 'null';
+		
+		if(gesamt > 0) gesamt_class = 'positiv';
+		else if(gesamt < 0) gesamt_class = 'negativ';
+		else gesamt_class = 'null';
+
+		document.getElementById('taeglich-carbon').className = 'c-carbon '+carbon_class;
+		document.getElementById('taeglich-aluminium').className = 'c-aluminium '+aluminium_class;
+		document.getElementById('taeglich-wolfram').className = 'c-wolfram '+wolfram_class;
+		document.getElementById('taeglich-radium').className = 'c-radium '+radium_class;
+		document.getElementById('taeglich-tritium').className = 'c-tritium '+tritium_class;
+		document.getElementById('taeglich-gesamt').className = 'c-gesamt '+gesamt_class;
+	}
+// ]]>
+</script>
 <h3 id="ausgegebene-rohstoffe">Ausgegebene Rohstoffe</h3>
 <dl class="punkte">
 	<dt class="c-carbon">Carbon</dt>
@@ -165,7 +257,6 @@
 	<dt class="c-gesamt">Gesamt</dt>
 	<dd class="c-gesamt"><?=ths($user_array['punkte'][7]+$user_array['punkte'][8]+$user_array['punkte'][9]+$user_array['punkte'][10]+$user_array['punkte'][11])?></dd>
 </dl>
-
 <?php
 			break;
 		case 'roboter':
