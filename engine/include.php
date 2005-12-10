@@ -1286,6 +1286,7 @@
 					$alliance_array['members'][$use_username]['punkte'] = $new_points;
 					write_alliance_array($user_array['alliance'], $alliance_array);
 				}
+				highscores_alliances::recalc($user_array['alliance']);
 			}
 
 			return true;

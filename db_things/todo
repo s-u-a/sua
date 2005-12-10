@@ -10,13 +10,11 @@ Allianzsystem
 Adminbereich: Bei Scan nach Multis auch nach doppelten E-Mail-Adressen nachschauen
 Screenshots auf die Startseite einfügen.
 Koordinaten aus veröffentlichten Nachrichten entfernen.
-Allianz-Highscores
 Unbenutzte veröffentlichte Nachrichten vom Eventhandler löschen lassen.
 Allianz und U-Modus-Informationen in die playerinfo.php schreiben.
 Allianzaktionen müssen geloggt werden.
 Allianztag umbenennen können
 Allianzbewerbungen verbieten können
-Flugzeitenfaktor auf 0.925 drehen
 Flugzeitensystem komplett überarbeiten.
 Allianzsystem benutzbar machen
 Eventhandler-Abarbeitungs-Datei leeren lassen

@@ -8,6 +8,9 @@
 	if(!$mode)
 	{
 ?>
+<ul class="highscores-modus-allianzen">
+	<li><a href="highscores.php?alliances=1&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Allianzen</a></li>
+</ul>
 <table class="highscores spieler">
 	<thead>
 		<tr>
@@ -65,6 +68,9 @@
 	else
 	{
 ?>
+<ul class="highscores-modus-spieler">
+	<li><a href="highscores.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Spieler</a></li>
+</ul>
 <table class="highscores allianzen">
 	<thead>
 		<tr>
@@ -89,7 +95,7 @@
 ?>
 		<tr class="<?=$class?>">
 			<th class="c-platz"><?=ths($platz)?></th>
-			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info[2]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info[1])?></a></td>
+			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info[2]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info[0])?></a></td>
 			<td class="c-punktzahl"><?=ths($info[1])?></td>
 		</tr>
 <?php

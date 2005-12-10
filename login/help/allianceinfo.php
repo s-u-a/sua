@@ -32,7 +32,7 @@
 	<dd class="c-mitglieder"><?=htmlentities(count($alliance_array['members']))?></dd>
 
 	<dt class="c-punktzahl">Punktzahl</dt>
-	<dd class="c-punktzahl"><?=ths($punktzahl)?></dd>
+	<dd class="c-punktzahl"><?=ths($punktzahl)?> <span class="platz">(Platz <?=ths($alliance_array['platz'])?> von <?=ths(highscores_alliances::get_alliances_count())?>)</span></dd>
 </dl>
 <h3 id="allianzbeschreibung">Allianzbeschreibung</h3>
 <div class="allianz-externes">

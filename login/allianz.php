@@ -746,7 +746,7 @@
 	<dd class="c-mitglieder"><?=htmlentities(count($alliance_array['members']))?> <span class="liste">(<a href="allianz.php?action=liste&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Mitgliederliste der Allianz einsehen">Liste</a>)</span></dd>
 
 	<dt class="c-punktzahl">Punktzahl</dt>
-	<dd class="c-punktzahl"><?=ths($punktzahl)?></dd>
+	<dd class="c-punktzahl"><?=ths($punktzahl)?> <span class="platz">(Platz <?=ths($alliance_array['platz'])?> von <?=ths(highscores_alliances::get_alliances_count())?>)</span></dd>
 </dl>
 <?php
 				if($alliance_array['members'][$_SESSION['username']]['permissions'][8] || $austreten || $alliance_array['members'][$_SESSION['username']]['permissions'][2] || $alliance_array['members'][$_SESSION['username']]['permissions'][3] || $alliance_array['members'][$_SESSION['username']]['permissions'][7])
