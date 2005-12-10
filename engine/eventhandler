@@ -1,5 +1,13 @@
 #!/usr/bin/php
 <?php
+	if(!isset($_SERVER['argv'][1]))
+	{
+		echo 'Usage: '.$_SERVER['argv'][0].' [Database dir]';
+		exit(1);
+	}
+	else
+		$_SERVER['SUA_DB_DIR'] = $_SERVER['argv'][1];
+	
 	$USE_OB = false;
 	require_once('include.php');
 	require_once('../login/scripts/eventhandler.php');
