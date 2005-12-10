@@ -2428,7 +2428,7 @@
 				$remaining_string = substr($remaining_string, $next_bracket);
 			}
 
-			if(substr($remaining_string, -1, 1) == '/')
+			if(substr($remaining_string, 1, 1) == '/')
 			{
 				if(!preg_match('/^<\\/([a-z]+) *>/', $remaining_string, $match) || count($open_elements) <= 0 || $open_elements[count($open_elements)-1] != strtolower($match[1]))
 				{
@@ -2580,7 +2580,7 @@
 					$string .= "</p>\n";
 					$p_open = false;
 				}
-				if(substr($remaining_string, $close_bracket-2, 1) != '/')
+				if(substr($remaining_string, $close_bracket-1, 1) != '/')
 					$open_elements[] = $match[1];
 			}
 
@@ -2642,7 +2642,7 @@
 			'dt' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
 			'dd' => array('br span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
 			'dfn' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
-			'hr' => array('', 'class title xml:lang dir'),
+			'hr' => array('', 'class title xml:lang'),
 			'bdo' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
 			'ins' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir cite datetime'),
 			'kbd' => array('span a img em strong var abbr acronym cite dfn bdo ins kbd q samp var', 'class title xml:lang dir'),
