@@ -1,0 +1,120 @@
+#!/usr/bin/php
+<?php
+	$_SERVER['SUA_DB_DIR'] = '../database.testrunde2';
+	require('../engine/include.php');
+	
+	$planets = array();
+
+	$dh = opendir(DB_PLAYERS);
+	while(($fname = readdir($dh)) !== false)
+	{
+		if(!is_file(DB_PLAYERS.'/'.$fname) || !is_readable(DB_PLAYERS.'/'.$fname))
+			continue;
+
+		$that_username = urldecode($fname);
+		$that_user_array = get_user_array($that_username);
+
+		if(isset($that_user_array['locked.sav']) && $that_user_array['locked.sav'])
+			$that_username_universe = substr($that_username, 0, 20).' (g)';
+		elseif(isset($that_user_array['umode.sav']) && $that_user_array['umode.sav'])
+			$that_username_universe = substr($that_username, 0, 20).' (U)';
+		else
+			$that_username_universe = substr($that_username, 0, 24);
+
+		$that_alliance_universe = '';
+		if(isset($that_user_array['alliance']))
+			$that_alliance_universe = substr($that_user_array['alliance'], 0, 6);
+
+		$that_planets = array_keys($that_user_array['planets']);
+		foreach($that_planets as $planet)
+		{
+			$pos = explode(':', $that_user_array['planets'][$planet]['pos']);
+			if(!isset($planets[$pos[0]])) $planets[$pos[0]] = array();
+			if(!isset($planets[$pos[0]][$pos[1]])) $planets[$pos[0]][$pos[1]] = array();
+			$planets[$pos[0]][$pos[1]][$pos[2]] = array($that_username_universe, substr($that_user_array['planets'][$planet]['name'], 0, 24), $that_alliance_universe);
+		}
+		unset($that_user_array);
+	}
+	closedir($dh);
+
+	for($i=1; is_file(DB_UNIVERSE.'/'.$i); $i++)
+	{
+		$fh = fopen(DB_UNIVERSE.'/'.$i, 'r+');
+		flock($fh, LOCK_EX);
+		
+		for($system = 1; $system <= 999; $system++)
+		{
+			$this_bin = '';
+	
+			if(isset($planets[$i]) && isset($planets[$i][$system]) && max(array_keys($planets[$i][$system])) >= 10)
+				$planet_count = rand(max(array_keys($planets[$i][$system])), 30);
+			else
+				$planet_count = rand(10, 30);
+			$this_bin .= add_nulls(decbin($planet_count-10), 5);
+	
+			for($planet = 1; $planet <= $planet_count; $planet++)
+			{
+				$size = rand(100, 500); # Planetengroesse
+	
+				$this_bin .= add_nulls(decbin($size-100), 9);
+			}
+			
+			if($planet_count < 30)
+				$this_bin .= str_repeat('000000000', (30-$planet_count));
+			$this_bin .= '00000';
+			
+			fwrite($fh, bin2string($this_bin));
+
+
+			for($j=1; $j<=$planet_count; $j++)
+			{
+				if(isset($planets[$i]) && isset($planets[$i][$system]) && isset($planets[$i][$system][$j]))
+				{
+					fwrite($fh, $planets[$i][$system][$j][0]);
+					if(strlen($planets[$i][$system][$j][0]) < 24)
+						fwrite($fh, str_repeat(' ', 24-strlen($planets[$i][$system][$j][0])));
+				}
+				else
+					fwrite($fh, '                        ');
+			}
+			
+			if($planet_count < 30)
+				fwrite($fh, str_repeat("\0", (30-$planet_count)*24));
+
+			
+			for($j=1; $j<=$planet_count; $j++)
+			{
+				if(isset($planets[$i]) && isset($planets[$i][$system]) && isset($planets[$i][$system][$j]))
+				{
+					fwrite($fh, $planets[$i][$system][$j][1]);
+					if(strlen($planets[$i][$system][$j][1]) < 24)
+						fwrite($fh, str_repeat(' ', 24-strlen($planets[$i][$system][$j][1])));
+				}
+				else
+					fwrite($fh, '                        ');
+			}
+			
+			if($planet_count < 30)
+				fwrite($fh, str_repeat("\0", (30-$planet_count)*24));
+
+			
+			for($j=1; $j<=$planet_count; $j++)
+			{
+				if(isset($planets[$i]) && isset($planets[$i][$system]) && isset($planets[$i][$system][$j]))
+				{
+					fwrite($fh, $planets[$i][$system][$j][2]);
+					if(strlen($planets[$i][$system][$j][2]) < 6)
+						fwrite($fh, str_repeat(' ', 6-strlen($planets[$i][$system][$j][2])));
+				}
+				else
+					fwrite($fh, '      ');
+			}
+			
+			if($planet_count < 30)
+				fwrite($fh, str_repeat("\0", (30-$planet_count)*6));
+		}
+		
+		flock($fh, LOCK_UN);
+		fclose($fh);
+	}
+?>
