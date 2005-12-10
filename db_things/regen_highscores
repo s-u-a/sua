@@ -90,7 +90,7 @@
 
 		$this_alliance_array = get_alliance_array($alliance);
 		$this_alliance_array['platz'] = $platz;
-		write_user_array($player, $this_alliance_array);
+		write_user_array($alliance, $this_alliance_array);
 		unset($this_alliance_array);
 
 		$platz++;
