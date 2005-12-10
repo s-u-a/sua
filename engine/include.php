@@ -1352,7 +1352,7 @@
 			$new_points = 0;
 			foreach($alliance_array['members'] as $member)
 				$new_points += $member['punkte'];
-			$new_points = floor($points/count($alliance_array['members']));
+			$new_points = floor($new_points/count($alliance_array['members']));
 			$my_string = highscores_alliances::make_info($alliance_name, $new_points);
 
 			$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
