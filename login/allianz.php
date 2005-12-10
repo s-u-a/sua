@@ -114,7 +114,7 @@
 					);
 					
 					$highscores_info = highscores_alliances::make_info($_POST['tag'], $alliance_array['members'][$_SESSION['username']]['punkte']);
-					$fh = fopen(DB_HIGHSCORES, 'a');
+					$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'a');
 					if(!$fh)
 					{
 ?>

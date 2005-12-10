@@ -278,6 +278,7 @@
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/flotten.php') ? ' class="active"' : ''?> id="navigation-flotten"><a href="<?=htmlentities(h_root)?>/login/flotten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="l">F<kbd>l</kbd>otten</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/schiffswerft.php') ? ' class="active"' : ''?> id="navigation-schiffswerft"><a href="<?=htmlentities(h_root)?>/login/schiffswerft.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="s"><kbd>S</kbd>chiffswerft</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verteidigung.php') ? ' class="active"' : ''?> id="navigation-verteidigung"><a href="<?=htmlentities(h_root)?>/login/verteidigung.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="v"><kbd>V</kbd>erteidigung</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlentities(h_root)?>/login/imperium.php=<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="m">I<kbd>m</kbd>perium</a></li>
 			</ul>
 			<ul id="action-navigation">
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlentities(h_root)?>/login/karte.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="k"><kbd>K</kbd>arte</a></li>
@@ -292,13 +293,13 @@
 			if(isset($_SESSION['admin_username']))
 			{
 ?>
-				<li id="navigation-abmelden"><a href="<?=htmlentities(h_root)?>/admin/index.php" accesskey="m">Ad<kbd>m</kbd>inbereich</a></li>
+				<li id="navigation-abmelden"><a href="<?=htmlentities(h_root)?>/admin/index.php">Adminbereich</a></li>
 <?php
 			}
 			else
 			{
 ?>
-				<li id="navigation-abmelden"><a href="<?=htmlentities(h_root)?>/login/scripts/logout.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="m">Ab<kbd>m</kbd>elden</a></li>
+				<li id="navigation-abmelden"><a href="<?=htmlentities(h_root)?>/login/scripts/logout.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>">Abmelden</a></li>
 <?php
 			}
 ?>

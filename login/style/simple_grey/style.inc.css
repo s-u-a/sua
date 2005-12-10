@@ -165,11 +165,11 @@ legend { font-weight:bold; }
 .prod-show-days { width:3ex; height:1.2em; }
 .ress-prod button { width:100%; }
 
-.punkte,.daten,.buendnis-informationen,.playerinfo-planeten,.allianceinfo { width:70%; margin:.5em 15%; padding:0; border:.1em solid #aaa; white-space:nowrap; text-align:left; }
-* html .punkte,* html .daten,* html .allianceinfo { width:100%; }
-.punkte dt,.daten dt,.allianceinfo dt { float:left; width:35%; padding:.2em; border-bottom:.1em solid #aaa; border-right:.1em solid #aaa; margin-right:.2em; font-weight:bold; }
-.punkte dd,.daten dd,.allianceinfo dd { margin:0 0 0 35%; padding:.2em; border-bottom:.1em solid #aaa; font-weight:bold; }
-.punkte dt.c-gesamt,.punkte dd.c-gesamt,.punkte dt.c-registrierung,.punkte dd.c-registrierung,.allianceinfo dt.c-punktzahl,.allianceinfo dd.c-punktzahl { border-bottom-style:none; }
+.punkte,.daten,.buendnis-informationen,.playerinfo-planeten,.allianceinfo,.imperium-roboter-auswirkungsgrade { width:70%; margin:.5em 15%; padding:0; border:.1em solid #aaa; white-space:nowrap; text-align:left; }
+* html .punkte,* html .daten,* html .allianceinfo,* html .imperium-roboter-auswirkungsgrade { width:100%; }
+.punkte dt,.daten dt,.allianceinfo dt,.imperium-roboter-auswirkungsgrade dt { float:left; width:35%; padding:.2em; border-bottom:.1em solid #aaa; border-right:.1em solid #aaa; margin-right:.2em; font-weight:bold; }
+.punkte dd,.daten dd,.allianceinfo dd,.imperium-roboter-auswirkungsgrade dd { margin:0 0 0 35%; padding:.2em; border-bottom:.1em solid #aaa; font-weight:bold; }
+.punkte dt.c-gesamt,.punkte dd.c-gesamt,.punkte dt.c-registrierung,.punkte dd.c-registrierung,.allianceinfo dt.c-punktzahl,.allianceinfo dd.c-punktzahl,.imperium-roboter-auswirkungsgrade dt.c-minenroboter,.imperium-roboter-auswirkungsgrade dd.c-minenroboter { border-bottom-style:none; }
 .buendnis-informationen,.playerinfo-planeten { text-align:center; font-weight:bold; list-style-type:none; border-bottom-style:none; }
 .buendnis-informationen li,.playerinfo-planeten li { border-bottom:.1em solid #aaa; }
 .benutzerbeschreibung,.allianz-internes,.allianz-externes { text-align:left; padding:.5em; }
@@ -446,10 +446,20 @@ br.clear { clear:both; }
 .allianz-laufende-bewerbung { font-weight:bold; }
 .allianz-laufende-bewerbung-aktionen { margin:0; padding:.5em; list-style-type:none; font-weight:bold; }
 
-.imperium-tabelle { border-spacing:0; border-collapse:collapse; background-color:#777; }
+.imperium-tabelle { border-spacing:0; border-collapse:collapse; background-color:#777; margin:.5em; }
 .imperium-tabelle th,.imperium-tabelle td { border:.1em solid #aaa; padding:.1em .2em; }
 .imperium-tabelle td { text-align:right; }
 .imperium-tabelle th { font-weight:bold; text-align:center; }
-.imperium-tabelle th.c-planet { border-right-style:double; border-right-width:.3em; }
+.imperium-tabelle th.c-planet,.imperium-tabelle th.c-einheit { border-right-style:double; border-right-width:.3em; }
 .imperium-tabelle thead th,.imperium-tabelle thead td { border-bottom-style:double; border-bottom-width:.3em; }
 .imperium-tabelle tfoot th,.imperium-tabelle tfoot td { border-top-style:double; border-top-width:.3em; }
+.imperium-tabelle .c-gesamt { border-left-style:double; border-left-width:.3em; }
+.imperium-rohstoffproduktion .c-gesamt { border-right:double; border-right-width:.3em; }
+.imperium-rohstoffproduktion .positiv { color:#0f0; }
+.imperium-rohstoffproduktion .negativ { color:#f00; }
+
+.imperium-modi { list-style-type:none; margin:0; padding:0; height:1.5em; margin:.5em; font-weight:bold; }
+.imperium-modi li { float:left; width:33%; border:.1em solid #aaa; margin-right:-.1em; line-height:1.5em; }
+.imperium-modi a { display:block; }
+.imperium-modi a:hover,.imperium-modi a:focus { background-color:#888; }
+.imperium-modi .active a { background-color:#777; }

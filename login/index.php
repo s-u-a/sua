@@ -315,24 +315,6 @@
 <?php
 	}
 ?>
-<?php
-	if(count($user_array['punkte']) != 13)
-	{
-		if(!isset($user_array['punkte'][0])) $user_array['punkte'][0] = 0;
-		if(!isset($user_array['punkte'][1])) $user_array['punkte'][1] = 0;
-		if(!isset($user_array['punkte'][2])) $user_array['punkte'][2] = 0;
-		if(!isset($user_array['punkte'][3])) $user_array['punkte'][3] = 0;
-		if(!isset($user_array['punkte'][4])) $user_array['punkte'][4] = 0;
-		if(!isset($user_array['punkte'][5])) $user_array['punkte'][5] = 0;
-		if(!isset($user_array['punkte'][6])) $user_array['punkte'][6] = 0;
-		if(!isset($user_array['punkte'][7])) $user_array['punkte'][7] = 0;
-		if(!isset($user_array['punkte'][8])) $user_array['punkte'][8] = 0;
-		if(!isset($user_array['punkte'][9])) $user_array['punkte'][9] = 0;
-		if(!isset($user_array['punkte'][10])) $user_array['punkte'][10] = 0;
-		if(!isset($user_array['punkte'][11])) $user_array['punkte'][11] = 0;
-		write_user_array();
-	}
-?>
 <h2 id="punkte">Punkte</h2>
 <dl class="punkte">
 	<dt class="c-gebaeude">Gebäude</dt>
@@ -358,26 +340,6 @@
 
 	<dt class="c-gesamt">Gesamt</dt>
 	<dd class="c-gesamt"><?=ths($user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6])?> <span class="platz">(Platz&nbsp;<?=ths($user_array['punkte'][12])?> <span class="gesamt-spieler">von <?=ths(highscores::get_players_count())?>)</span><?=isset($_SESSION['admin_username']) ? ' <a href="?recalc_highscores=1&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">[Neu berechnen]</a>' : ''?></span></dd>
-</dl>
-<h2 id="ausgegebene-rohstoffe">Ausgegebene Rohstoffe</h2>
-<dl class="punkte">
-	<dt class="c-carbon">Carbon</dt>
-	<dd class="c-carbon"><?=ths($user_array['punkte'][7])?></dd>
-
-	<dt class="c-eisenerz">Aluminium</dt>
-	<dd class="c-eisenerz"><?=ths($user_array['punkte'][8])?></dd>
-
-	<dt class="c-wolfram">Wolfram</dt>
-	<dd class="c-wolfram"><?=ths($user_array['punkte'][9])?></dd>
-
-	<dt class="c-radium">Radium</dt>
-	<dd class="c-radium"><?=ths($user_array['punkte'][10])?></dd>
-
-	<dt class="c-tritium">Tritium</dt>
-	<dd class="c-tritium"><?=ths($user_array['punkte'][11])?></dd>
-
-	<dt class="c-gesamt">Gesamt</dt>
-	<dd class="c-gesamt"><?=ths($user_array['punkte'][7]+$user_array['punkte'][8]+$user_array['punkte'][9]+$user_array['punkte'][10]+$user_array['punkte'][11])?></dd>
 </dl>
 <?php
 	login_gui::html_foot();
