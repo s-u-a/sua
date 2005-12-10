@@ -372,6 +372,7 @@
 						$anzahl = $user_array['planets'][$planet]['ids'][$id];
 					if(!isset($ges[$i]))
 						$ges[$i] = 0;
+					$ges[$i] += $anzahl;
 					$ges_ges += $anzahl;
 					$this_ges += $anzahl;
 ?>
