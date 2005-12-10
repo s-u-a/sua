@@ -443,3 +443,11 @@ br.clear { clear:both; }
 
 .allianz-laufende-bewerbung { font-weight:bold; }
 .allianz-laufende-bewerbung-aktionen { margin:0; padding:.5em; list-style-type:none; font-weight:bold; }
+
+.imperium-tabelle { border-spacing:0; border-collapse:collapse; background-color:#777; }
+.imperium-tabelle th,.imperium-tabelle td { border:.1em solid #aaa; padding:.1em .2em; }
+.imperium-tabelle td { text-align:right; }
+.imperium-tabelle th { font-weight:bold; text-align:center; }
+.imperium-tabelle th.c-planet { border-right-style:double; border-right-width:.3em; }
+.imperium-tabelle thead th,.imperium-tabelle thead td { border-bottom-style:double; border-bottom-width:.3em; }
+.imperium-tabelle tfoot th,.imperium-tabelle tfoot td { border-top-style:double; border-top-width:.3em; }

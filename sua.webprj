@@ -6,84 +6,87 @@
     <email>webmaster@s-u-a.net</email>
     <defaultDTD>-//W3C//DTD XHTML 1.0 Strict//EN</defaultDTD>
     <item url="" uploadstatus="1" />
-    <item url="faq.php" />
-    <item url="impressum.php" />
-    <item url="index.php" />
-    <item url="passwd.php" />
-    <item url="public_message.php" />
-    <item url="register.php" />
-    <item url="robots.txt" />
-    <item url="rules.php" />
-    <item url="style.css" />
-    <item url="todo.php" />
-    <item url="wartungsarbeiten.html" />
-    <item url="admin/" />
-    <item url="admin/edit_changelog.php" />
-    <item url="admin/logfiles.php" />
-    <item url="admin/userlist.php" />
-    <item url="admin/.htaccess" />
-    <item url="admin/usermanagement.php" />
-    <item url="admin/index.php" />
-    <item url="admin/edit_todo.php" />
-    <item url="admin/news.php" />
-    <item url="admin/include.php" />
-    <item url="db_things/" />
-    <item url="db_things/todo" />
-    <item url="db_things/regen_highscores" />
-    <item url="db_things/create_galaxy" />
-    <item url="db_things/schiffe" />
-    <item url="db_things/roboter" />
-    <item url="db_things/gebaeude" />
-    <item url="db_things/changelog" />
-    <item url="db_things/verteidigung" />
-    <item url="db_things/update_universe" />
-    <item url="db_things/create_database" />
-    <item url="db_things/show_player_info" />
-    <item url="db_things/calc_ges_ress" />
-    <item url="db_things/forschung" />
-    <item url="db_things/version" />
-    <item url="engine/" />
-    <item url="engine/eventhandler" />
-    <item url="engine/include.php" />
-    <item url="forum/" />
-    <item url="login/" />
-    <item url="login/help/" />
-    <item url="login/allianz.php" />
-    <item url="login/style/" />
-    <item url="login/karte.php" />
-    <item url="login/scripts.js.php" />
-    <item url="login/scripts/" />
-    <item url="login/schiffswerft.php" />
-    <item url="login/changelog.php" />
-    <item url="login/forschung.php" />
-    <item url="login/index.php" />
-    <item url="login/highscores.php" />
-    <item url="login/verteidigung.php" />
-    <item url="login/roboter.php" />
-    <item url="login/flotten.php" />
-    <item url="login/rohstoffe.php" />
-    <item url="login/handelsrechner.php" />
-    <item url="login/einstellungen.php" />
-    <item url="login/nachrichten.php" />
-    <item url="login/gebaeude.php" />
-    <item url="login/verbuendete.php" />
-    <item url="login/help/allianceinfo.php" />
-    <item url="login/help/playerinfo.php" />
-    <item url="login/help/dependencies.php" />
-    <item url="login/help/description.php" />
-    <item url="login/style/skins" />
-    <item url="login/style/skin.php" />
-    <item url="login/style/simple_blue/" />
-    <item url="login/style/simple_grey/" />
-    <item url="login/style/grey_graphics/" />
-    <item url="login/scripts/eventhandler.php" />
-    <item url="login/scripts/include.php" />
-    <item url="login/scripts/rename.php" />
-    <item url="login/scripts/logout.php" />
-    <item url="login/style/simple_grey/style.inc.css" />
-    <item url="login/style/simple_grey/iframe.css" />
-    <item url="login/style/simple_grey/fixed.css" />
-    <item url="login/style/simple_blue/style.inc.css" />
-    <item url="login/style/grey_graphics/style.inc.css" />
+    <item url="faq.php" uploadstatus="1" />
+    <item url="impressum.php" uploadstatus="1" />
+    <item url="index.php" uploadstatus="1" />
+    <item url="passwd.php" uploadstatus="1" />
+    <item url="public_message.php" uploadstatus="1" />
+    <item url="register.php" uploadstatus="1" />
+    <item url="robots.txt" uploadstatus="1" />
+    <item url="rules.php" uploadstatus="1" />
+    <item url="style.css" uploadstatus="1" />
+    <item url="todo.php" uploadstatus="1" />
+    <item url="wartungsarbeiten.html" uploadstatus="1" />
+    <item url="admin/" uploadstatus="1" />
+    <item url="admin/edit_changelog.php" uploadstatus="1" />
+    <item url="admin/logfiles.php" uploadstatus="1" />
+    <item url="admin/userlist.php" uploadstatus="1" />
+    <item url="admin/.htaccess" uploadstatus="1" />
+    <item url="admin/usermanagement.php" uploadstatus="1" />
+    <item url="admin/index.php" uploadstatus="1" />
+    <item url="admin/edit_todo.php" uploadstatus="1" />
+    <item url="admin/news.php" uploadstatus="1" />
+    <item url="admin/include.php" uploadstatus="1" />
+    <item url="db_things/" uploadstatus="1" />
+    <item url="db_things/todo" uploadstatus="1" />
+    <item url="db_things/regen_highscores" uploadstatus="1" />
+    <item url="db_things/create_galaxy" uploadstatus="1" />
+    <item url="db_things/schiffe" uploadstatus="1" />
+    <item url="db_things/roboter" uploadstatus="1" />
+    <item url="db_things/gebaeude" uploadstatus="1" />
+    <item url="db_things/changelog" uploadstatus="1" />
+    <item url="db_things/verteidigung" uploadstatus="1" />
+    <item url="db_things/update_universe" uploadstatus="1" />
+    <item url="db_things/create_database" uploadstatus="1" />
+    <item url="db_things/show_player_info" uploadstatus="1" />
+    <item url="db_things/calc_ges_ress" uploadstatus="1" />
+    <item url="db_things/forschung" uploadstatus="1" />
+    <item url="db_things/version" uploadstatus="1" />
+    <item url="engine/" uploadstatus="1" />
+    <item url="engine/eventhandler" uploadstatus="1" />
+    <item url="engine/include.php" uploadstatus="1" />
+    <item url="forum/" uploadstatus="1" />
+    <item url="login/" uploadstatus="1" />
+    <item url="login/help/" uploadstatus="1" />
+    <item url="login/allianz.php" uploadstatus="1" />
+    <item url="login/style/" uploadstatus="1" />
+    <item url="login/karte.php" uploadstatus="1" />
+    <item url="login/scripts.js.php" uploadstatus="1" />
+    <item url="login/scripts/" uploadstatus="1" />
+    <item url="login/schiffswerft.php" uploadstatus="1" />
+    <item url="login/changelog.php" uploadstatus="1" />
+    <item url="login/forschung.php" uploadstatus="1" />
+    <item url="login/index.php" uploadstatus="1" />
+    <item url="login/highscores.php" uploadstatus="1" />
+    <item url="login/verteidigung.php" uploadstatus="1" />
+    <item url="login/roboter.php" uploadstatus="1" />
+    <item url="login/flotten.php" uploadstatus="1" />
+    <item url="login/rohstoffe.php" uploadstatus="1" />
+    <item url="login/handelsrechner.php" uploadstatus="1" />
+    <item url="login/einstellungen.php" uploadstatus="1" />
+    <item url="login/nachrichten.php" uploadstatus="1" />
+    <item url="login/gebaeude.php" uploadstatus="1" />
+    <item url="login/verbuendete.php" uploadstatus="1" />
+    <item url="login/help/allianceinfo.php" uploadstatus="1" />
+    <item url="login/help/playerinfo.php" uploadstatus="1" />
+    <item url="login/help/dependencies.php" uploadstatus="1" />
+    <item url="login/help/description.php" uploadstatus="1" />
+    <item url="login/style/skins" uploadstatus="1" />
+    <item url="login/style/skin.php" uploadstatus="1" />
+    <item url="login/style/simple_blue/" uploadstatus="1" />
+    <item url="login/style/simple_grey/" uploadstatus="1" />
+    <item url="login/style/grey_graphics/" uploadstatus="1" />
+    <item url="login/scripts/eventhandler.php" uploadstatus="1" />
+    <item url="login/scripts/include.php" uploadstatus="1" />
+    <item url="login/scripts/rename.php" uploadstatus="1" />
+    <item url="login/scripts/logout.php" uploadstatus="1" />
+    <item url="login/style/simple_grey/style.inc.css" uploadstatus="1" />
+    <item url="login/style/simple_grey/iframe.css" uploadstatus="1" />
+    <item url="login/style/simple_grey/fixed.css" uploadstatus="1" />
+    <item url="login/style/simple_blue/style.inc.css" uploadstatus="1" />
+    <item url="login/style/grey_graphics/style.inc.css" uploadstatus="1" />
+    <templates>templates/</templates>
+    <toolbars>toolbars/</toolbars>
+    <item url="login/imperium.php" />
   </project>
 </webproject>

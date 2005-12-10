@@ -2428,7 +2428,7 @@
 				$remaining_string = substr($remaining_string, $next_bracket);
 			}
 
-			if(substr($remaining_string, 1, 1) == '/')
+			if(substr($remaining_string, -1, 1) == '/')
 			{
 				if(!preg_match('/^<\\/([a-z]+) *>/', $remaining_string, $match) || count($open_elements) <= 0 || $open_elements[count($open_elements)-1] != strtolower($match[1]))
 				{
