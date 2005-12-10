@@ -1334,14 +1334,164 @@
 	{
 		function recalc($alliance_name=false)
 		{
+			if($alliance_name === false)
+			{
+				global $user_array;
+				if(!isset($user_array) || !isset($user_array['alliance']) || !$user_array['alliance'])
+					return false;
+				else
+					$alliance_name = $user_array['alliance'];
+			}
+			
+			$alliance_array = get_alliance_array($alliance_name);
+
+			$old_position = $alliance_array['platz'];
+			$old_position_f = ($old_position-1)*14;
+
+			$new_points = 0;
+			foreach($alliance_array['members'] as $member)
+				$new_points += $member['punkte'];
+			$new_points = floor($points);
+			$my_string = highscores_alliances::make_info($alliance_name, $new_points);
+
+			$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
+
+			$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r+');
+			if(!$fh)
+				return false;
+			flock($fh, LOCK_EX);
+
+			fseek($fh, $old_position_f, SEEK_SET);
+
+			$up = true;
+
+			# Ueberpruefen, ob man in den Highscores abfaellt
+			if($filesize-$old_position_f >= 28)
+			{
+				fseek($fh, 14, SEEK_CUR);
+				list(,$this_points) = highscores::get_info(fread($fh, 14));
+				fseek($fh, -28, SEEK_CUR);
+
+				if($this_points > $new_points)
+					$up = false;
+			}
+
+			if($up)
+			{
+				# In den Highscores nach oben rutschen
+				while(true)
+				{
+					if(ftell($fh) == 0) # Schon auf Platz 1
+					{
+						fwrite($fh, $my_string);
+						break;
+					}
+					fseek($fh, -14, SEEK_CUR);
+					$cur = fread($fh, 14);
+					list($this_alliance,$this_points) = highscores::get_info($cur);
+
+					if($this_points < $new_points)
+					{
+						# Es muss weiter nach oben verschoben werden
+
+						# Aktuellen Eintrag nach unten verschieben
+						fwrite($fh, $cur);
+						fseek($fh, -28, SEEK_CUR);
+						# In dessen User-Array speichern
+						$this_alliance_array = get_alliance_array($this_alliance);
+						$this_alliance_array['platz']++;
+						write_user_array($this_alliance, $this_alliance_array);
+					}
+					else
+					{
+						fwrite($fh, $my_string);
+						break;
+					}
+				}
+			}
+			else
+			{
+				# In den Highscores nach unten rutschen
+
+				while(true)
+				{
+					if($filesize-ftell($fh) < 28) # Schon auf dem letzten Platz
+					{
+						fwrite($fh, $my_string);
+						break;
+					}
+
+					fseek($fh, 14, SEEK_CUR);
+					$cur = fread($fh, 14);
+					list($this_alliance, $this_points) = highscores::get_info($cur);
+					fseek($fh, -28, SEEK_CUR);
+
+					if($this_points > $new_points)
+					{
+						# Es muss weiter nach unten verschoben werden
+
+						# Aktuellen Eintrag nach oben verschieben
+						fwrite($fh, $cur);
+						# In dessen User-Array speichern
+						$this_alliance_array = get_alliance_array($this_alliance);
+						$this_alliance_array['rang']--;
+						write_alliance_array($this_alliance, $this_alliance_array);
+					}
+					else
+					{
+						fwrite($fh, $my_string);
+						break;
+					}
+				}
+			}
+
+			$act_position = ftell($fh);
+
+			flock($fh, LOCK_UN);
+			fclose($fh);
+
+			$act_platz = $act_position/14;
+			if($act_platz != $old_position)
+			{
+				$alliance_array['platz'] = $act_platz;
+				write_alliance_array($alliance_name, $alliance_array);
+			}
+
+			return true;
 		}
 
 		function get_info($info)
 		{
+			$alliancename = trim(substr($string, 0, 6));
+			$points_str = substr($string, 6);
+
+			$points_bin = '';
+			for($i = 0; $i < strlen($points_str); $i++)
+				$points_bin .= add_nulls(decbin(ord($points_str{$i})), 8);
+
+			$points = base_convert($points_bin, 2, 10);
+
+			return array($alliancename, $points);
 		}
 
 		function make_info($alliancename, $points)
 		{
+			$string = substr($alliancename, 0, 6);
+			if(strlen($string) < 6)
+				$string .= str_repeat(' ', 6-strlen($string));
+			$points_bin = add_nulls(base_convert($points, 10, 2), 64);
+			for($i = 0; $i < strlen($points_bin); $i+=8)
+				$string .= chr(bindec(substr($points_bin, $i, 8)));
+			return $string;
+		}
+		
+		function get_alliances_count()
+		{
+			$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
+			if($filesize === false)
+				return false;
+			$alliances = floor($filesize/14);
+			return $alliances;
 		}
 	}
 

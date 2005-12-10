@@ -1,5 +1,13 @@
 #!/usr/bin/php
 <?php
+	if(!isset($_SERVER['argv'][1]))
+	{
+		echo "Usage: ".$_SERVER['argv'][0]." [Database dir]\n";
+		exit(1);
+	}
+	else
+		$_SERVER['SUA_DB_DIR'] = $_SERVER['argv'][1];
+	
 	require('../engine/include.php');
 
 	function sort_highscores($a, $b)
@@ -51,6 +59,43 @@
 
 		$platz++;
 	}
+	fclose($fh);
+	
+	$alliance_highscores = array();
+	$dh = opendir(DB_ALLIANCES);
+	while(($fname = readdir($dh)) !== false)
+	{
+		if(!is_file(DB_PLAYERS.'/'.$fname) || !is_readable(DB_PLAYERS.'/'.$fname))
+			continue;
+
+		$this_alliance_array = get_alliance_array(urldecode($fname));
+
+		if($this_alliance_array === false)
+			continue;
+
+		$new_points = 0;
+		unset($this_alliance_array);
+		
+		$highscores[urldecode($fname)] = $new_points;
+	}
+	closedir($dh);
+	
+	arsort($highscores, SORT_NUMERIC);
+	
+	$platz = 1;
+	$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'w');
+	foreach($highscores as $alliance=>$punkte)
+	{
+		fwrite($fh, highscores_alliances::make_info($alliance, $punkte[0]));
+
+		$this_alliance_array = get_alliance_array($alliance);
+		$this_alliance_array['platz'] = $platz;
+		write_user_array($player, $this_alliance_array);
+		unset($this_alliance_array);
+
+		$platz++;
+	}
+	fclose($fh);
 
 	unlock_database();
 ?>
