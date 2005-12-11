@@ -214,7 +214,7 @@
 	<dt class="<?=$own ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($flotte[2])?> <?=$flotte[7] ? 'rueck' : 'hin'?>flug">
 		<?=$string."\n"?>
 	</dt>
-	<dd class="<?=$own ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($flotte[2])?> <?=$flotte[7] ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($i)?>">Ankunft: <?=date('H:i:s, Y-m-d', $flotte[1][1])?> (Serverzeit), <a href="index.php?cancel=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a></dd>
+	<dd class="<?=$own ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($flotte[2])?> <?=$flotte[7] ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($i)?>">Ankunft: <?=date('H:i:s, Y-m-d', $flotte[1][1])?> (Serverzeit)<?php if($flotte[7] || !$own){?>, <a href="index.php?cancel=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
 <?php
 			$countdowns[] = array($i, $flotte[1][1], ($flotte[7] || !$own));
 		}

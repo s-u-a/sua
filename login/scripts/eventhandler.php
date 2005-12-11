@@ -1491,7 +1491,7 @@
 									eventhandler::add_event($new_flotte[1][1], $start_info[1]);
 
 									if($fh = write_user_array($start_info[1], $start_user_array))
-										unset($start_user_array['flotten'][$i]);
+										unset($target_user_array['flotten'][$i]);
 								}
 
 								if($fh)
