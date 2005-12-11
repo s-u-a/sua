@@ -87,6 +87,7 @@
     <item url="login/style/grey_graphics/style.inc.css" uploadstatus="1" />
     <templates>templates/</templates>
     <toolbars>toolbars/</toolbars>
-    <item url="login/imperium.php" />
+    <item url="login/imperium.php" uploadstatus="1" />
+    <annotations/>
   </project>
 </webproject>

@@ -22,7 +22,11 @@ echo 'Deny from All' >> $1/.htaccess
 echo 'Allow from None' >> $1/.htaccess
 mkdir $1/alliances
 touch $1/events
-touch $1/handelskurs
+echo 10 >> $1/handelskurs
+echo 5 >> $1/handelskurs
+echo 3.75 >> $1/handelskurs
+echo 2.5 >> $1/handelskurs
+echo 1 >> $1/handelskurs
 touch $1/highscores
 touch $1/highscores_alliances
 mkdir $1/items

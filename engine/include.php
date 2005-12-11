@@ -1401,7 +1401,7 @@
 						# In dessen User-Array speichern
 						$this_alliance_array = get_alliance_array($this_alliance);
 						$this_alliance_array['platz']++;
-						write_user_array($this_alliance, $this_alliance_array);
+						write_alliance_array($this_alliance, $this_alliance_array);
 					}
 					else
 					{
