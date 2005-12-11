@@ -1,7 +1,9 @@
 body { padding:3.5em 1em 3.5em 12em; }
+body.mit-werbung { padding:3.5em 120px 3.5em 10em; margin:1em 10em; }
 
 #time { position:fixed; right:0; border-left:.2em solid #aaa; }
 #ress { position:fixed; }
-#navigation { position:fixed; top:3.5em; left:1em; width:10em;  }
+#navigation { position:fixed; top:3.5em; left:1em; width:10em; }
+#werbung { position:absolute; top:3.5em; right:1em; width:120px; height:600px; }
 
 #content-13 { position:relative; }

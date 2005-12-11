@@ -64,6 +64,7 @@
 		$user_array['shortcuts'] = isset($_POST['shortcuts']);
 		$user_array['tooltips'] = isset($_POST['tooltips']);
 		$user_array['ipcheck'] = isset($_POST['ipcheck']);
+		$user_array['noads'] = isset($_POST['noads']);
 
 		$changed = true;
 	}
@@ -197,7 +198,10 @@
 			<dd class="c-auto-refresh"><input type="text" name="autorefresh" id="autorefresh" value="<?=utf8_htmlentities($user_array['ress_refresh'])?>" title="Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion erzeugt keinen zusätzlichen Traffic)" tabindex="9" /></dd>
 
 			<dt class="c-ip-schutz"><label for="ipcheck">IP-Schutz</label></dt>
-			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=(!isset($user_array['ipcheck']) || $user_array['ipcheck']) ? ' checked="checked"' : ''?> title="Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)" /></dd>
+			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=(!isset($user_array['ipcheck']) || $user_array['ipcheck']) ? ' checked="checked"' : ''?> title="Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)" tabindex="10" /></dd>
+			
+			<dt class="c-werbung-ausblenden"><label for="noads">Werbung ausblenden</label></dt>
+			<dd class="c-werbung-ausblenden"><input type="checkbox" name="noads" id="noads"<?=(isset($user_array['noads']) && $user_array['noads']) ? ' checked="checked"' : ''?> title="Wenn Sie die Werbung eingeblendet lassen, helfen Sie, die Finanzen des Spiels zu decken." tabindex="11" /></dd>
 		</dl>
 		<script type="text/javascript">
 			function recalc_skin()
@@ -230,27 +234,27 @@
 				<tr>
 					<th class="c-nachrichtentyp">Kämpfe</th>
 					<td class="c-ankunft leer"></td>
-					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[1][1]" tabindex="9"<?=$user_array['receive'][1][1] ? ' checked="checked"' : ''?> /></td>
+					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[1][1]" tabindex="12"<?=$user_array['receive'][1][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 				<tr>
 					<th class="c-nachrichtentyp">Spionage</th>
 					<td class="c-ankunft leer"></td>
-					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[2][1]" tabindex="10"<?=$user_array['receive'][2][1] ? ' checked="checked"' : ''?> /></td>
+					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[2][1]" tabindex="13"<?=$user_array['receive'][2][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 				<tr>
 					<th class="c-nachrichtentyp">Transport</th>
-					<td class="c-ankunft"><input type="checkbox" name="nachrichten[3][0]" tabindex="11"<?=$user_array['receive'][3][0] ? ' checked="checked"' : ''?> /></td>
-					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[3][1]" tabindex="12"<?=$user_array['receive'][3][1] ? ' checked="checked"' : ''?> /></td>
+					<td class="c-ankunft"><input type="checkbox" name="nachrichten[3][0]" tabindex="14"<?=$user_array['receive'][3][0] ? ' checked="checked"' : ''?> /></td>
+					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[3][1]" tabindex="15"<?=$user_array['receive'][3][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 				<tr>
 					<th class="c-nachrichtentyp">Sammeln</th>
 					<td class="c-ankunft leer"></td>
-					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[4][1]" tabindex="13"<?=$user_array['receive'][4][1] ? ' checked="checked"' : ''?> /></td>
+					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[4][1]" tabindex="16"<?=$user_array['receive'][4][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 				<tr>
 					<th class="c-nachrichtentyp">Besiedelung</th>
-					<td class="c-ankunft"><input type="checkbox" name="nachrichten[5][0]" tabindex="14"<?=$user_array['receive'][5][0] ? ' checked="checked"' : ''?> /></td>
-					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[5][1]" tabindex="15"<?=$user_array['receive'][5][1] ? ' checked="checked"' : ''?> /></td>
+					<td class="c-ankunft"><input type="checkbox" name="nachrichten[5][0]" tabindex="17"<?=$user_array['receive'][5][0] ? ' checked="checked"' : ''?> /></td>
+					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[5][1]" tabindex="18"<?=$user_array['receive'][5][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
 			</tbody>
 		</table>
@@ -268,7 +272,7 @@
 			if(time()-$user_array['umode_time'] >= 259200)
 			{
 ?>
-		<div><input type="submit" name="umode" value="Urlaubsmodus" tabindex="17" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich betreten?');" /></div>
+		<div><input type="submit" name="umode" value="Urlaubsmodus" tabindex="20" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich betreten?');" /></div>
 		<p>Sie werden frühestens nach drei Tagen (<?=date('Y-m-d, H:i', time()+259200)?>, Serverzeit) aus dem Urlaubsmodus zurückkehren können.</p>
 <?php
 			}
@@ -282,7 +286,7 @@
 		elseif(time()-$user_array['umode_time'] >= 259200)
 		{
 ?>
-		<div><input type="submit" name="umode" value="Urlaubsmodus verlassen" tabindex="17" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich verlassen?');" /></div>
+		<div><input type="submit" name="umode" value="Urlaubsmodus verlassen" tabindex="20" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich verlassen?');" /></div>
 <?php
 		}
 		else
@@ -300,23 +304,23 @@
 		<legend>E-Mail-Adresse</legend>
 		<dl>
 			<dt class="c-email-adresse"><label for="email">E-Mail-Adresse</label></dt>
-			<dd class="c-email-adresse"><input type="text" name="email" id="email" value="<?=utf8_htmlentities($user_array['email'])?>" title="Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben. [Z]" tabindex="18" accesskey="z" /></dd>
+			<dd class="c-email-adresse"><input type="text" name="email" id="email" value="<?=utf8_htmlentities($user_array['email'])?>" title="Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben. [Z]" tabindex="21" accesskey="z" /></dd>
 		</dl>
 	</fieldset>
 	<fieldset class="passwort-aendern">
 		<legend>Passwort ändern</legend>
 		<dl>
 			<dt class="c-altes-passwort"><label for="old-password">Altes Passw<kbd>o</kbd>rt</label></dt>
-			<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password" tabindex="19" accesskey="o" /></dd>
+			<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password" tabindex="22" accesskey="o" /></dd>
 
 			<dt class="c-neues-passwort"><label for="new-password">Neues Passwort</label></dt>
-			<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password" tabindex="20" /></dd>
+			<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password" tabindex="23" /></dd>
 
 			<dt class="c-neues-passwort-wiederholen"><label for="new-password2">Neues Passwort wiederholen</label></dt>
-			<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2" tabindex="21" /></dd>
+			<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2" tabindex="24" /></dd>
 		</dl>
 	</fieldset>
-	<div class="einstellungen-speichern-2"><button type="submit" tabindex="16" accesskey="w" title="[W]">Speichern</button></div>
+	<div class="einstellungen-speichern-2"><button type="submit" tabindex="19" accesskey="w" title="[W]">Speichern</button></div>
 </form>
 <?php
 	login_gui::html_foot();

@@ -230,6 +230,10 @@
 
 			$this_pos = explode(':', $this_planet['pos']);
 			$class = 'planet-'.universe::get_planet_class($this_pos[0], $this_pos[1], $this_pos[2]);
+			if(!isset($user_array['noads']) || !$user_array['noads'])
+				$class .= ' mit-werbung';
+			else
+				$class .= ' ohne-werbung';
 ?>
 	</head>
 	<body class="<?=$class?>"><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
@@ -350,7 +354,31 @@
 			global $this_planet;
 			global $ges_prod;
 ?>
-			</div></div></div></div>
+			</div></div>
+<?php
+			if(!isset($user_array['noads']) || !$user_array['noads'])
+			{
+?>
+			<div id="werbung">
+				<script type="text/javascript">
+					google_ad_client = "pub-2073027150149821";
+					google_ad_width = 120;
+					google_ad_height = 600;
+					google_ad_format = "120x600_as";
+					google_ad_type = "text_image";
+					google_ad_channel ="";
+					google_color_border = "556688";
+					google_color_text = "FFFFFF";
+					google_color_bg = "445577";
+					google_color_link = "FFFFFF";
+					google_color_url = "FFFFFF";
+				</script>
+				<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
+			</div>
+<?php
+			}
+?>
+		</div></div>
 		</div>
 		</div></div></div></div></div></div></div></div>
 <?php
