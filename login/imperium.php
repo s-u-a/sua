@@ -368,8 +368,10 @@
 				foreach($planets as $i=>$planet)
 				{
 					$anzahl = 0;
-					if(isset($user_array['planets'][$planet]['ids'][$id]))
-						$anzahl = $user_array['planets'][$planet]['ids'][$id];
+					if(isset($user_array['planets'][$planet]['schiffe'][$id]))
+						$anzahl = $user_array['planets'][$planet]['schiffe'][$id];
+					elseif(isset($user_array['planets'][$planet]['verteidigung'][$id]))
+						$anzahl = $user_array['planets'][$planet]['verteidigung'][$id];
 					if(!isset($ges[$i]))
 						$ges[$i] = 0;
 					$ges[$i] += $anzahl;
