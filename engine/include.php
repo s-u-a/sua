@@ -1369,7 +1369,7 @@
 			if($filesize-$old_position_f >= 28)
 			{
 				fseek($fh, 14, SEEK_CUR);
-				list(,$this_points) = highscores::get_info(fread($fh, 14));
+				list(,$this_points) = highscores_alliances::get_info(fread($fh, 14));
 				fseek($fh, -28, SEEK_CUR);
 
 				if($this_points > $new_points)
@@ -1388,7 +1388,7 @@
 					}
 					fseek($fh, -14, SEEK_CUR);
 					$cur = fread($fh, 14);
-					list($this_alliance,$this_points) = highscores::get_info($cur);
+					list($this_alliance,$this_points) = highscores_alliances::get_info($cur);
 
 					if($this_points < $new_points)
 					{
@@ -1423,7 +1423,7 @@
 
 					fseek($fh, 14, SEEK_CUR);
 					$cur = fread($fh, 14);
-					list($this_alliance, $this_points) = highscores::get_info($cur);
+					list($this_alliance, $this_points) = highscores_alliances::get_info($cur);
 					fseek($fh, -28, SEEK_CUR);
 
 					if($this_points > $new_points)
