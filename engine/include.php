@@ -644,7 +644,6 @@
 
 			if(!$one)
 			{
-				die('felse');
 				flock($fh, LOCK_UN);
 				fclose($fh);
 				unlink(DB_MESSAGES.'/'.$id);
@@ -1540,9 +1539,6 @@
 			else
 				$username = $_SESSION['username'];
 		}
-		
-		if(isset($_SESSION['debug']) && $_SESSION['debug'])
-			echo "User-Array speichern: ".utf8_htmlentities($username)." &ndash; ";
 
 		if(isset($_SESSION['username']) && $username == $_SESSION['username'])
 		{
@@ -1583,19 +1579,11 @@
 		}
 
 		$fh = fopen(DB_PLAYERS.'/'.urlencode($username), 'w');
-		if(!$fh)
-		{
-			if(isset($_SESSION['debug']) && $_SESSION['debug'])
-				echo "Fehlgeschlagen<br />\n";
-			return false;
-		}
 		flock($fh, LOCK_EX);
 		fwrite($fh, gzcompress(serialize($that_user_array)));
 		flock($fh, LOCK_UN);
 		fclose($fh);
-
-		if(isset($_SESSION['debug']) && $_SESSION['debug'])
-			echo "Erfolgreich<br />\n";
+		
 		return true;
 	}
 
