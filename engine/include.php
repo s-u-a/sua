@@ -1284,8 +1284,8 @@
 				{
 					$alliance_array['members'][$use_username]['punkte'] = $new_points;
 					write_alliance_array($user_array['alliance'], $alliance_array);
+					highscores_alliances::recalc($user_array['alliance']);
 				}
-				highscores_alliances::recalc($user_array['alliance']);
 			}
 
 			return true;
@@ -1597,11 +1597,14 @@
 
 	function write_alliance_array($alliance, $alliance_array)
 	{
-		if(is_file(DB_ALLIANCES.'/'.urlencode($alliance)) && !is_writeable(DB_ALLIANCES.'/'.urlencode($alliance)))
+		if((!is_file(DB_ALLIANCES.'/'.urlencode($alliance)) && !is_writeable(DB_ALLIANCES)) || (is_file(DB_ALLIANCES.'/'.urlencode($alliance)) && !is_writeable(DB_ALLIANCES.'/'.urlencode($alliance))))
 			return false;
 
 		if(!isset($alliance_array['tag']) || $alliance_array['tag'] != $alliance)
+		{
+			echo "Alliance write error: '".$alliance['tag']."\n";
 			return false;
+		}
 
 		$fh = fopen(DB_ALLIANCES.'/'.urlencode($alliance), 'w');
 		if(!$fh)

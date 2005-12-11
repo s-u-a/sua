@@ -95,7 +95,8 @@
 
 		$this_alliance_array = get_alliance_array($alliance);
 		$this_alliance_array['platz'] = $platz;
-		write_alliance_array($alliance, $this_alliance_array);
+		if(!write_alliance_array($alliance, $this_alliance_array))
+			echo 'false';
 		unset($this_alliance_array);
 
 		$platz++;
