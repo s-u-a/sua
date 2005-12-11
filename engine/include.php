@@ -1659,9 +1659,7 @@
 		global $this_planet;
 
 		$handicap = false;
-		if(isset($_SESSION['username']) && $_SESSION['username'] == 'Soltari')
-			$handicap = true;
-
+		
 		$items = array('gebaeude' => array(), 'forschung' => array(), 'roboter' => array(), 'schiffe' => array(), 'verteidigung' => array(), 'ids' => array());
 		if(is_file(DB_ITEMS.'/gebaeude') && is_readable(DB_ITEMS.'/gebaeude'))
 		{
