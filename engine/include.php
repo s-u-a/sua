@@ -1434,7 +1434,7 @@
 						fwrite($fh, $cur);
 						# In dessen User-Array speichern
 						$this_alliance_array = get_alliance_array($this_alliance);
-						$this_alliance_array['rang']--;
+						$this_alliance_array['platz']--;
 						write_alliance_array($this_alliance, $this_alliance_array);
 					}
 					else
