@@ -1,5 +1,7 @@
 body { padding:3.5em 1em 3.5em 12em; }
-body.mit-werbung { padding:3.5em 120px 3.5em 10em; margin:1em 10em; }
+
+body.mit-werbung #content-10 { margin-right:120px; }
+body.mit-werbung #content-9 { margin-right:1em; }
 
 #time { position:fixed; right:0; border-left:.2em solid #aaa; }
 #ress { position:fixed; }

@@ -305,6 +305,17 @@
 			}
 ?>
 			</ul>
+<?php
+			if(isset($user_array['show_extern']) && $user_array['show_extern'])
+			{
+?>
+			<ul id="external-navigation">
+				<li id="navigation-board" xml:lang="en"><a href="http://board.s-u-a.net/">Board</a></li>
+				<li id="navigation-faq" xml:lang="en"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/faq.php"><abbr title="Frequently Asked Questions">FAQ</abbr></a></li>
+			</ul>
+<?php
+			}
+?>
 		</div>
 		<div id="version">
 			<a href="<?=htmlentities(h_root)?>/login/changelog.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Changelog anzeigen">Version <?=VERSION?></a>
