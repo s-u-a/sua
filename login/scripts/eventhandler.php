@@ -662,7 +662,7 @@
 								}
 								$time_diff = fleet::get_time($mass, $distance, $speed);
 								# Geschwindigkeitsfaktor
-								$time_diff *= $flotte[6];
+								$time_diff /= $flotte[6];
 								$flotte[1] = array($flotte[1][1], $flotte[1][1]+$time_diff);
 
 								# Koordinaten vertauschen
@@ -1310,7 +1310,7 @@
 									}
 									$time_diff = fleet::get_time($mass, $distance, $speed);
 									# Geschwindigkeitsfaktor
-									$time_diff *= $flotte[6];
+									$time_diff /= $flotte[6];
 									$flotte[1] = array($flotte[1][1], $flotte[1][1]+$time_diff);
 
 									# Rueckflug?
