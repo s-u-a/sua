@@ -30,7 +30,7 @@ form { text-align:left; }
 #navigation a { display:block; margin:0; padding:0; line-height:1.25em; position:relative; }
 * html #navigation a { width:100%; position:relative; }
 #navigation .active a, #navigation a:hover,#navigation a:focus { background-color:#888; }
-#navigation #navigation-karte { border-top:1em solid #888; }
+#navigation #navigation-karte,#navigation #navigation-board { border-top:1em solid #888; }
 #navigation button { width:100%; padding:0; margin:0 -.1em; }
 
 * html #navigation { position:absolute; }

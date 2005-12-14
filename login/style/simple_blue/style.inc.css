@@ -8,7 +8,7 @@
 #navigation li { border-color:#568; }
 #navigation li.active,#navigation li:hover { border-color:#678; }
 #navigation .active a, #navigation a:hover,#navigation a:focus { background-color:#568; }
-#navigation #navigation-karte { border-color:#568; }
+#navigation #navigation-karte,#navigation #navigation-board { border-color:#568; }
 #change-planet select { background-color:#568; border-color:#678; }
 
 select,option,textarea,input,button,#js-title { background-color:#568; border-color:#679; }
