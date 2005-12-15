@@ -21,15 +21,17 @@
 			continue;
 		$username = urldecode($filename);
 		$user_array = get_user_array($username);
+		
+		$days = ceil((time()-$user_array['last_active'])/86400);
 
 		$planets = array_keys($user_array['planets']);
 		foreach($planets as $planet)
 		{
-			$ges_ress[0] += $user_array['planets'][$planet]['ress'][0];
-			$ges_ress[1] += $user_array['planets'][$planet]['ress'][1];
-			$ges_ress[2] += $user_array['planets'][$planet]['ress'][2];
-			$ges_ress[3] += $user_array['planets'][$planet]['ress'][3];
-			$ges_ress[4] += $user_array['planets'][$planet]['ress'][4];
+			$ges_ress[0] += $user_array['planets'][$planet]['ress'][0]/$days;
+			$ges_ress[1] += $user_array['planets'][$planet]['ress'][1]/$days;
+			$ges_ress[2] += $user_array['planets'][$planet]['ress'][2]/$days;
+			$ges_ress[3] += $user_array['planets'][$planet]['ress'][3]/$days;
+			$ges_ress[4] += $user_array['planets'][$planet]['ress'][4]/$days;
 		}
 
 		unset($username);
