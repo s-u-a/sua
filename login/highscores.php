@@ -102,6 +102,36 @@
 	}
 	else
 	{
+		$start = 1;
+		$count = highscores_alliances::get_alliances_count();
+		if(isset($_GET['start']) && $_GET['start'] <= $count && $_GET['start'] >= 1)
+			$start = (int) $_GET['start'];
+		if($count > 100)
+		{
+?>
+<ul class="highscores-seiten">
+<?php
+			if($start > 1)
+			{
+				$start_prev = $start-100;
+				if($start_prev < 1) $start_prev = 1;
+?>
+	<li class="c-vorige"><a href="highscores.php?start=<?=htmlentities(urlencode($start_prev))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">&larr; <?=htmlentities($start_prev)?>&ndash;<?=htmlentities($start_prev+99)?></a></li>
+<?php
+			}
+			if($start+100 <= $count)
+			{
+				$start_next = $start+100;
+				$end_next = $start_next+100;
+				if($end_next > $count) $end_next = $count;
+?>
+	<li class="c-naechste"><a href="highscores.php?start=<?=htmlentities(urlencode($start_next))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>"><?=htmlentities($start_next)?>&ndash;<?=htmlentities($end_next)?> &rarr;</a></li>
+<?php
+			}
+?>
+</ul>
+<?php
+		}
 ?>
 <table class="highscores allianzen">
 	<thead>
@@ -113,11 +143,11 @@
 	</thead>
 	<tbody>
 <?php
-		$platz = 1;
+		$platz = $start;
 	
 		$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r');
 		flock($fh, LOCK_SH);
-		while($bracket = fread($fh, 14))
+		while($platz < $start+100 && $bracket = fread($fh, 14))
 		{
 			$info = highscores_alliances::get_info($bracket);
 	
