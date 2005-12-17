@@ -1505,7 +1505,7 @@
 						fseek($fh, -52, SEEK_CUR);
 						# In dessen User-Array speichern
 						$this_alliance_array = get_alliance_array($this_alliance);
-						$this_alliance_array['platz']++;
+						$this_alliance_array['platz2']++;
 						write_alliance_array($this_alliance, $this_alliance_array);
 					}
 					else
@@ -1540,7 +1540,7 @@
 						fwrite($fh, $cur);
 						# In dessen User-Array speichern
 						$this_alliance_array = get_alliance_array($this_alliance);
-						$this_alliance_array['platz']--;
+						$this_alliance_array['platz2']--;
 						write_alliance_array($this_alliance, $this_alliance_array);
 					}
 					else
