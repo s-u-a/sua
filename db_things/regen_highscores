@@ -2,15 +2,15 @@
 <?php
 	function highscores_by_average($a, $b)
 	{
-		if($a[1] > $b[1]) return 1;
-		elseif($a[1] < $b[1]) return -1;
+		if($a[1] < $b[1]) return 1;
+		elseif($a[1] > $b[1]) return -1;
 		else return 0;
 	}
 	
 	function highscores_by_overall($a, $b)
 	{
-		if($a[2] > $b[2]) return 1;
-		elseif($a[2] < $b[2]) return -1;
+		if($a[2] < $b[2]) return 1;
+		elseif($a[2] > $b[2]) return -1;
 		else return 0;
 	}
 
