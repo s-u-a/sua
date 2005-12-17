@@ -138,9 +138,9 @@
 		<tr>
 			<th class="c-platz">Platz</th>
 			<th class="c-allianz">Allianz</th>
-			<th class="c-mitglieder">Mitglieder</th>
 			<th class="c-punkteschnitt"><?=($_GET['alliances']=='2') ? '<a href="highscores.php?alliances=1&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">Punkteschnitt</a>' : 'Punkteschnitt'?></th>
 			<th class="c-gesamtpunkte"><?=($_GET['alliances']=='2') ? 'Gesamtpunkte' : '<a href="highscores.php?alliances=2&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">Gesamtpunkte</a>'?></th>
+			<th class="c-mitglieder">Mitglieder</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -163,9 +163,9 @@
 		<tr class="<?=$class?>">
 			<th class="c-platz"><?=ths($platz)?></th>
 			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info[0]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info[0])?></a></td>
-			<td class="c-mitglieder"><?=ths($info[1])?></td>
 			<td class="c-punkteschnitt"><?=ths($info[2])?></td>
 			<td class="c-gesamtpunkte"><?=ths($info[3])?></td>
+			<td class="c-mitglieder"><?=ths($info[1])?></td>
 		</tr>
 <?php
 			$platz++;
