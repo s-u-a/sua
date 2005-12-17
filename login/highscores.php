@@ -19,7 +19,7 @@
 		if($count > 100)
 		{
 ?>
-<ul class="highscores-pages">
+<ul class="highscores-seiten">
 <?php
 			if($start > 1)
 			{
