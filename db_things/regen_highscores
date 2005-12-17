@@ -1,5 +1,19 @@
 #!/usr/bin/php
 <?php
+	function highscores_by_average($a, $b)
+	{
+		if($a[1] > $b[1]) return 1;
+		elseif($a[1] < $b[1]) return -1;
+		else return 0;
+	}
+	
+	function highscores_by_overall($a, $b)
+	{
+		if($a[2] > $b[2]) return 1;
+		elseif($a[2] < $b[2]) return -1;
+		else return 0;
+	}
+
 	if(!isset($_SERVER['argv'][1]))
 	{
 		echo "Usage: ".$_SERVER['argv'][0]." [Database dir]\n";
@@ -63,6 +77,7 @@
 	fclose($fh);
 	
 	$alliance_highscores = array();
+	
 	$dh = opendir(DB_ALLIANCES);
 	while(($fname = readdir($dh)) !== false)
 	{
@@ -74,27 +89,45 @@
 		if($this_alliance_array === false)
 			continue;
 
-		$new_points = 0;
+		$overall = 0;
 		foreach($this_alliance_array['members'] as $member)
-			$new_points += $member['punkte'];
-		$new_points = floor($new_points/count($this_alliance_array['members']));
+			$overall += $member['punkte'];
+		$average = floor($overall/count($this_alliance_array['members']));
+		
+		$alliance_highscores[urldecode($fname)] = array(count($this_alliance_array['members']), $average, $overall);
 		
 		unset($this_alliance_array);
-		
-		$alliance_highscores[urldecode($fname)] = $new_points;
 	}
 	closedir($dh);
 	
-	arsort($alliance_highscores, SORT_NUMERIC);
+	$alliance_highscores2 = $alliance_highscores;
+	uasort($alliance_highscores, 'highscores_by_average');
+	uasort($alliance_highscores2, 'highscores_by_overall');
 	
 	$platz = 1;
 	$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'w');
-	foreach($alliance_highscores as $alliance=>$punkte)
+	foreach($alliance_highscores as $alliance=>$info)
 	{
-		fwrite($fh, highscores_alliances::make_info($alliance, $punkte));
+		fwrite($fh, highscores_alliances::make_info($alliance, $info[0], $info[1], $info[2]));
 
 		$this_alliance_array = get_alliance_array($alliance);
 		$this_alliance_array['platz'] = $platz;
+		if(!write_alliance_array($alliance, $this_alliance_array))
+			echo 'false';
+		unset($this_alliance_array);
+
+		$platz++;
+	}
+	fclose($fh);
+	
+	$platz = 1;
+	$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'w');
+	foreach($alliance_highscores2 as $alliance=>$info)
+	{
+		fwrite($fh, highscores_alliances::make_info($alliance, $info[0], $info[1], $info[2]));
+
+		$this_alliance_array = get_alliance_array($alliance);
+		$this_alliance_array['platz2'] = $platz;
 		if(!write_alliance_array($alliance, $this_alliance_array))
 			echo 'false';
 		unset($this_alliance_array);

@@ -15,10 +15,10 @@
 	{
 		$alliance_array = get_alliance_array($_GET['alliance']);
 
-		$punktzahl = 0;
+		$overall = 0;
 		foreach($alliance_array['members'] as $member)
-			$punktzahl += $member['punkte'];
-		$punktzahl = floor($punktzahl/count($alliance_array['members']));
+			$overall += $member['punkte'];
+		$average = floor($overall/count($alliance_array['members']));
 ?>
 <h2>Allianzinfo <em class="alliancename"><?=utf8_htmlentities($_GET['alliance'])?></em></h2>
 <dl class="allianceinfo">
@@ -31,8 +31,11 @@
 	<dt class="c-mitglieder">Mitglieder</dt>
 	<dd class="c-mitglieder"><?=htmlentities(count($alliance_array['members']))?></dd>
 
-	<dt class="c-punktzahl">Punktzahl</dt>
-	<dd class="c-punktzahl"><?=ths($punktzahl)?> <span class="platz">(Platz <?=ths($alliance_array['platz'])?> von <?=ths(highscores_alliances::get_alliances_count())?>)</span></dd>
+	<dt class="c-punkteschnitt">Punkteschnitt</dt>
+	<dd class="c-punkteschnitt"><?=ths($average)?> <span class="platz">(Platz <?=ths($alliance_array['platz'])?> von <?=ths(highscores_alliances::get_alliances_count())?>)</span></dd>
+	
+	<dt class="c-gesamtpunkte">Gesamtpunkte</dt>
+	<dd class="c-gesamtpunkte"><?=ths($overall)?> <span class="platz">(Platz <?=ths($alliance_array['platz2'])?> von <?=ths(highscores_alliances::get_alliances_count())?>)</span></dd>
 </dl>
 <h3 id="allianzbeschreibung">Allianzbeschreibung</h3>
 <div class="allianz-externes">

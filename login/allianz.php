@@ -130,7 +130,7 @@
 						flock($fh, LOCK_UN);
 						fclose($fh);
 						
-						$alliance_array['platz'] = highscores_alliances::get_alliances_count();
+						$alliance_array['platz'] = $alliance_array['platz2'] = highscores_alliances::get_alliances_count();
 	
 						if(!write_alliance_array($_POST['tag'], $alliance_array))
 						{
@@ -509,24 +509,48 @@
 				# Aus den Allianz-Highscores entfernen
 				$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r+');
 				flock($fh, LOCK_EX);
-				fseek($fh, $alliance_array['platz']*14, SEEK_SET);
+				fseek($fh, ($alliance_array['platz']-1)*26, SEEK_SET);
 				$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
 				
 				while(true)
 				{
-					if($filesize-ftell($fh) < 14)
+					if($filesize-ftell($fh) < 26)
 						break;
-					$line = fread($fh, 14);
+					$line = fread($fh, 26);
 					$info = highscores_alliances::get_info($line);
 					$that_alliance_array = get_alliance_array($info[0]);
 					$that_alliance_array['platz']--;
 					write_alliance_array($info[0], $that_alliance_array);
 					
-					fseek($fh, -28, SEEK_CUR);
+					fseek($fh, -52, SEEK_CUR);
 					fwrite($fh, $line);
-					fseek($fh, 14, SEEK_CUR);
+					fseek($fh, 26, SEEK_CUR);
 				}
-				ftruncate($fh, $filesize-14);
+				ftruncate($fh, $filesize-26);
+				
+				flock($fh, LOCK_UN);
+				fclose($fh);
+				
+				$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'r+');
+				flock($fh, LOCK_EX);
+				fseek($fh, ($alliance_array['platz2']-1)*26, SEEK_SET);
+				$filesize = filesize(DB_HIGHSCORES_ALLIANCES2);
+				
+				while(true)
+				{
+					if($filesize-ftell($fh) < 26)
+						break;
+					$line = fread($fh, 26);
+					$info = highscores_alliances::get_info($line);
+					$that_alliance_array = get_alliance_array($info[0]);
+					$that_alliance_array['platz2']--;
+					write_alliance_array($info[0], $that_alliance_array);
+					
+					fseek($fh, -52, SEEK_CUR);
+					fwrite($fh, $line);
+					fseek($fh, 26, SEEK_CUR);
+				}
+				ftruncate($fh, $filesize-26);
 				
 				flock($fh, LOCK_UN);
 				fclose($fh);
@@ -768,10 +792,10 @@
 <?php
 					}
 				}
-				$punktzahl = 0;
+				$overall = 0;
 				foreach($alliance_array['members'] as $member)
-					$punktzahl += $member['punkte'];
-				$punktzahl = floor($punktzahl/count($alliance_array['members']));
+					$overall += $member['punkte'];
+				$average = floor($overall/count($alliance_array['members']));
 ?>
 <dl class="allianceinfo">
 	<dt class="c-allianztag">Allianz<span xml:lang="en">tag</span></dt>
@@ -786,8 +810,11 @@
 	<dt class="c-mitglieder">Mitglieder</dt>
 	<dd class="c-mitglieder"><?=htmlentities(count($alliance_array['members']))?> <span class="liste">(<a href="allianz.php?action=liste&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Mitgliederliste der Allianz einsehen">Liste</a>)</span></dd>
 
-	<dt class="c-punktzahl">Punktzahl</dt>
-	<dd class="c-punktzahl"><?=ths($punktzahl)?> <span class="platz">(Platz <?=ths($alliance_array['platz'])?> von <?=ths(highscores_alliances::get_alliances_count())?>)</span></dd>
+	<dt class="c-punkteschnitt">Punkteschnitt</dt>
+	<dd class="c-punkteschnitt"><?=ths($average)?> <span class="platz">(Platz <?=ths($alliance_array['platz'])?> von <?=ths(highscores_alliances::get_alliances_count())?>)</span></dd>
+	
+	<dt class="c-gesamtpunkte">Gesamtpunkte</dt>
+	<dd class="c-gesamtpunkte"><?=ths($overall)?> <span class="platz">(Platz <?=ths($alliance_array['platz2'])?> von <?=ths(highscores_alliances::get_alliances_count())?>)</span></dd>
 </dl>
 <?php
 				if($alliance_array['members'][$_SESSION['username']]['permissions'][8] || $austreten || $alliance_array['members'][$_SESSION['username']]['permissions'][2] || $alliance_array['members'][$_SESSION['username']]['permissions'][3] || $alliance_array['members'][$_SESSION['username']]['permissions'][7])

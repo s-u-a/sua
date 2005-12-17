@@ -36,6 +36,7 @@
 	$DB_MESSAGES_PUBLIC = $DB_DIR.'/messages_public';
 	$DB_HIGHSCORES = $DB_DIR.'/highscores';
 	$DB_HIGHSCORES_ALLIANCES = $DB_DIR.'/highscores_alliances';
+	$DB_HIGHSCORES_ALLIANCES2 = $DB_DIR.'/highscores_alliances2';
 	$DB_TRUEMMERFELDER = $DB_DIR.'/truemmerfelder';
 	$DB_HOSTNAME = $DB_DIR.'/hostname';
 	$DB_HANDEL = $DB_DIR.'/handel';
@@ -88,6 +89,7 @@
 	define('DB_MESSAGES_PUBLIC', $DB_MESSAGES_PUBLIC);
 	define('DB_HIGHSCORES', $DB_HIGHSCORES);
 	define('DB_HIGHSCORES_ALLIANCES', $DB_HIGHSCORES_ALLIANCES);
+	define('DB_HIGHSCORES_ALLIANCES2', $DB_HIGHSCORES_ALLIANCES2);
 	define('DB_TRUEMMERFELDER', $DB_TRUEMMERFELDER);
 	define('DB_HOSTNAME', $DB_HOSTNAME);
 	define('DB_HANDEL', $DB_HANDEL);
@@ -1345,14 +1347,14 @@
 			
 			$alliance_array = get_alliance_array($alliance_name);
 
-			$old_position = $alliance_array['platz'];
-			$old_position_f = ($old_position-1)*14;
-
-			$new_points = 0;
+			$overall = 0;
 			foreach($alliance_array['members'] as $member)
-				$new_points += $member['punkte'];
-			$new_points = floor($new_points/count($alliance_array['members']));
-			$my_string = highscores_alliances::make_info($alliance_name, $new_points);
+				$overall += $member['punkte'];
+			$average = floor($overall/count($alliance_array['members']));
+			$my_string = highscores_alliances::make_info($alliance_name, count($alliance_array['members']), $average, $overall);
+			
+			$old_position = $alliance_array['platz'];
+			$old_position_f = ($old_position-1)*26;
 
 			$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
 
@@ -1366,13 +1368,13 @@
 			$up = true;
 
 			# Ueberpruefen, ob man in den Highscores abfaellt
-			if($filesize-$old_position_f >= 28)
+			if($filesize-$old_position_f >= 52)
 			{
-				fseek($fh, 14, SEEK_CUR);
-				list(,$this_points) = highscores_alliances::get_info(fread($fh, 14));
-				fseek($fh, -28, SEEK_CUR);
+				fseek($fh, 26, SEEK_CUR);
+				list(,,$this_points) = highscores_alliances::get_info(fread($fh, 26));
+				fseek($fh, -52, SEEK_CUR);
 
-				if($this_points > $new_points)
+				if($this_points > $average)
 					$up = false;
 			}
 
@@ -1386,17 +1388,17 @@
 						fwrite($fh, $my_string);
 						break;
 					}
-					fseek($fh, -14, SEEK_CUR);
-					$cur = fread($fh, 14);
-					list($this_alliance,$this_points) = highscores_alliances::get_info($cur);
+					fseek($fh, -26, SEEK_CUR);
+					$cur = fread($fh, 26);
+					list($this_alliance,,$this_points) = highscores_alliances::get_info($cur);
 
-					if($this_points < $new_points)
+					if($this_points < $average)
 					{
 						# Es muss weiter nach oben verschoben werden
 
 						# Aktuellen Eintrag nach unten verschieben
 						fwrite($fh, $cur);
-						fseek($fh, -28, SEEK_CUR);
+						fseek($fh, -52, SEEK_CUR);
 						# In dessen User-Array speichern
 						$this_alliance_array = get_alliance_array($this_alliance);
 						$this_alliance_array['platz']++;
@@ -1415,18 +1417,18 @@
 
 				while(true)
 				{
-					if($filesize-ftell($fh) < 28) # Schon auf dem letzten Platz
+					if($filesize-ftell($fh) < 52) # Schon auf dem letzten Platz
 					{
 						fwrite($fh, $my_string);
 						break;
 					}
 
-					fseek($fh, 14, SEEK_CUR);
-					$cur = fread($fh, 14);
-					list($this_alliance, $this_points) = highscores_alliances::get_info($cur);
-					fseek($fh, -28, SEEK_CUR);
+					fseek($fh, 26, SEEK_CUR);
+					$cur = fread($fh, 26);
+					list($this_alliance,,$this_points) = highscores_alliances::get_info($cur);
+					fseek($fh, -52, SEEK_CUR);
 
-					if($this_points > $new_points)
+					if($this_points > $average)
 					{
 						# Es muss weiter nach unten verschoben werden
 
@@ -1450,12 +1452,114 @@
 			flock($fh, LOCK_UN);
 			fclose($fh);
 
-			$act_platz = $act_position/14;
-			if($act_platz != $old_position)
+			$act_platz = $act_position/26;
+			$alliance_array['platz'] = $act_platz;
+			
+			############# Gesamtpunkte ##############
+			
+			$old_position = $alliance_array['platz2'];
+			$old_position_f = ($old_position-1)*26;
+
+			$filesize = filesize(DB_HIGHSCORES_ALLIANCES2);
+
+			$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'r+');
+			if(!$fh)
+				return false;
+			flock($fh, LOCK_EX);
+
+			fseek($fh, $old_position_f, SEEK_SET);
+
+			$up = true;
+
+			# Ueberpruefen, ob man in den Highscores abfaellt
+			if($filesize-$old_position_f >= 52)
 			{
-				$alliance_array['platz'] = $act_platz;
-				write_alliance_array($alliance_name, $alliance_array);
+				fseek($fh, 26, SEEK_CUR);
+				list(,,,$this_points) = highscores_alliances::get_info(fread($fh, 26));
+				fseek($fh, -52, SEEK_CUR);
+
+				if($this_points > $overall)
+					$up = false;
 			}
+
+			if($up)
+			{
+				# In den Highscores nach oben rutschen
+				while(true)
+				{
+					if(ftell($fh) == 0) # Schon auf Platz 1
+					{
+						fwrite($fh, $my_string);
+						break;
+					}
+					fseek($fh, -26, SEEK_CUR);
+					$cur = fread($fh, 26);
+					list($this_alliance,,,$this_points) = highscores_alliances::get_info($cur);
+
+					if($this_points < $overall)
+					{
+						# Es muss weiter nach oben verschoben werden
+
+						# Aktuellen Eintrag nach unten verschieben
+						fwrite($fh, $cur);
+						fseek($fh, -52, SEEK_CUR);
+						# In dessen User-Array speichern
+						$this_alliance_array = get_alliance_array($this_alliance);
+						$this_alliance_array['platz']++;
+						write_alliance_array($this_alliance, $this_alliance_array);
+					}
+					else
+					{
+						fwrite($fh, $my_string);
+						break;
+					}
+				}
+			}
+			else
+			{
+				# In den Highscores nach unten rutschen
+
+				while(true)
+				{
+					if($filesize-ftell($fh) < 52) # Schon auf dem letzten Platz
+					{
+						fwrite($fh, $my_string);
+						break;
+					}
+
+					fseek($fh, 26, SEEK_CUR);
+					$cur = fread($fh, 26);
+					list($this_alliance,,,$this_points) = highscores_alliances::get_info($cur);
+					fseek($fh, -52, SEEK_CUR);
+
+					if($this_points > $overall)
+					{
+						# Es muss weiter nach unten verschoben werden
+
+						# Aktuellen Eintrag nach oben verschieben
+						fwrite($fh, $cur);
+						# In dessen User-Array speichern
+						$this_alliance_array = get_alliance_array($this_alliance);
+						$this_alliance_array['platz']--;
+						write_alliance_array($this_alliance, $this_alliance_array);
+					}
+					else
+					{
+						fwrite($fh, $my_string);
+						break;
+					}
+				}
+			}
+
+			$act_position = ftell($fh);
+
+			flock($fh, LOCK_UN);
+			fclose($fh);
+			
+			$act_platz = $act_position/26;
+			$alliance_array['platz2'] = $act_platz;
+			
+			write_alliance_array($alliance_name, $alliance_array);
 
 			return true;
 		}
@@ -1463,25 +1567,43 @@
 		function get_info($info)
 		{
 			$alliancename = trim(substr($info, 0, 6));
-			$points_str = substr($info, 6);
-
-			$points_bin = '';
-			for($i = 0; $i < strlen($points_str); $i++)
-				$points_bin .= add_nulls(decbin(ord($points_str{$i})), 8);
-
-			$points = base_convert($points_bin, 2, 10);
-
-			return array($alliancename, $points);
+			
+			$members_str = substr($info, 6, 4);
+			$members_bin = '';
+			for($i=0; $i < strlen($members_str); $i++)
+				$members_bin .= add_nulls(decbin(ord($members_str{$i})), 8);
+			$members = base_convert($members_bin, 2, 10);
+			
+			$average_str = substr($info, 10, 8);
+			$average_bin = '';
+			for($i=0; $i < strlen($average_str); $i++)
+				$average_bin .= add_nulls(decbin(ord($average_str{$i})), 8);
+			$average = base_convert($average_bin, 2, 10);
+			
+			$overall_str = substr($info, 18, 8);
+			$overall_bin = '';
+			for($i=0; $i < strlen($overall_str); $i++)
+				$overall_bin .= add_nulls(decbin(ord($overall_str{$i})), 8);
+			$overall = base_convert($overall_bin, 2, 10);
+			
+			return array($alliancename, $members, $average, $overall);
 		}
 
-		function make_info($alliancename, $points)
+		function make_info($alliancename, $members, $average, $overall)
 		{
 			$string = substr($alliancename, 0, 6);
 			if(strlen($string) < 6)
 				$string .= str_repeat(' ', 6-strlen($string));
-			$points_bin = add_nulls(base_convert($points, 10, 2), 64);
-			for($i = 0; $i < strlen($points_bin); $i+=8)
-				$string .= chr(bindec(substr($points_bin, $i, 8)));
+			$members_bin = add_nulls(base_convert($members, 10, 2), 32);
+			for($i = 0; $i < strlen($members_bin); $i+=8)
+				$string .= chr(bindec(substr($members_bin, $i, 8)));
+			$average_bin = add_nulls(base_convert($average, 10, 2), 64);
+			for($i = 0; $i < strlen($average_bin); $i+=8)
+				$string .= chr(bindec(substr($average_bin, $i, 8)));
+			$overall_bin = add_nulls(base_convert($overall, 10, 2), 64);
+			for($i = 0; $i < strlen($overall_bin); $i+=8)
+				$string .= chr(bindec(substr($overall_bin, $i, 8)));
+			
 			return $string;
 		}
 		
@@ -1490,7 +1612,7 @@
 			$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
 			if($filesize === false)
 				return false;
-			$alliances = floor($filesize/14);
+			$alliances = floor($filesize/26);
 			return $alliances;
 		}
 	}

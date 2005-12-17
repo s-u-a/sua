@@ -138,16 +138,21 @@
 		<tr>
 			<th class="c-platz">Platz</th>
 			<th class="c-allianz">Allianz</th>
-			<th class="c-punktzahl">Punktzahl</th>
+			<th class="c-mitglieder">Mitglieder</th>
+			<th class="c-punkteschnitt"><a href="highscores.php?alliances=1&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Punkteschnitt</a></th>
+			<th class="c-gesamtpunkte"><a href="highscores.php?alliances=2&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Gesamtpunkte</a></th>
 		</tr>
 	</thead>
 	<tbody>
 <?php
 		$platz = $start;
-	
-		$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r');
+
+		if($_GET['alliances'] == '2')
+			$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'r');
+		else
+			$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r');
 		flock($fh, LOCK_SH);
-		while($platz < $start+100 && $bracket = fread($fh, 14))
+		while($platz < $start+100 && $bracket = fread($fh, 26))
 		{
 			$info = highscores_alliances::get_info($bracket);
 	
@@ -158,7 +163,9 @@
 		<tr class="<?=$class?>">
 			<th class="c-platz"><?=ths($platz)?></th>
 			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info[0]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info[0])?></a></td>
-			<td class="c-punktzahl"><?=ths($info[1])?></td>
+			<td class="c-mitglieder"><?=ths($info[1])?></td>
+			<td class="c-punkteschnitt"><?=ths($info[2])?></td>
+			<td class="c-gesamtpunkte"><?=ths($info[3])?></td>
 		</tr>
 <?php
 			$platz++;
