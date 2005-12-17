@@ -4,13 +4,45 @@
 	login_gui::html_head();
 	
 	$mode = (isset($_GET['alliances']) && $_GET['alliances']);
-	
+?>
+<ul class="highscores-modi">
+	<li class="c-spieler<?=$mode ? '' : ' active'?>"><a href="highscores.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Spieler</a></li>
+	<li class="c-allianzen<?=$mode ? ' active' : ''?>"><a href="highscores.php?alliances=1&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Allianzen</a></li>
+</ul>
+<?php
 	if(!$mode)
 	{
+		$start = 1;
+		$count = highscores::get_players_count();
+		if(isset($_GET['start']) && $_GET['start'] <= $count)
+			$start = (int) $_GET['start'];
+		if($count > 100)
+		{
 ?>
-<ul class="highscores-modus-allianzen">
-	<li><a href="highscores.php?alliances=1&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Allianzen</a></li>
+<ul class="highscores-pages">
+<?php
+			if($start > 1)
+			{
+				$start_prev = $start-100;
+				if($start_prev < 1) $start_prev = 1;
+?>
+	<li class="c-vorige"><a href="highscores.php?start=<?=htmlentities(urlencode($start_prev))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">&larr; <?=htmlentities($start_prev)?>&ndash;<?=htmlentities($start_prev+99)?></a></li>
+<?php
+			}
+			if($start+100 <= $count)
+			{
+				$start_next = $start+100;
+				$end_next = $start_next+100;
+				if($end_next > $count) $end_next = $count;
+?>
+	<li class="c-naechste"><a href="highscores.php?start=<?=htmlentities(urlencode($start_prev))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">&larr; <?=htmlentities($start_next)?>&ndash;<?=htmlentities($end_next)?></a></li>
+<?php
+			}
+?>
 </ul>
+<?php
+		}
+?>
 <table class="highscores spieler">
 	<thead>
 		<tr>
@@ -22,11 +54,14 @@
 	</thead>
 	<tbody>
 <?php
-		$platz = 1;
+		$platz = $start;
 	
 		$fh = fopen(DB_HIGHSCORES, 'r');
 		flock($fh, LOCK_SH);
-		while($bracket = fread($fh, 38))
+		
+		fseek($fh, ($start-1)*38, SEEK_SET);
+		
+		while($platz < $start+100 && $bracket = fread($fh, 38))
 		{
 			$info = highscores::get_info($bracket);
 	
@@ -68,9 +103,6 @@
 	else
 	{
 ?>
-<ul class="highscores-modus-spieler">
-	<li><a href="highscores.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Spieler</a></li>
-</ul>
 <table class="highscores allianzen">
 	<thead>
 		<tr>

@@ -461,8 +461,10 @@ br.clear { clear:both; }
 .imperium-rohstoffproduktion .positiv { color:#0f0; }
 .imperium-rohstoffproduktion .negativ { color:#f00; }
 
-.imperium-modi { list-style-type:none; margin:0; padding:0; height:1.5em; margin:.5em; font-weight:bold; }
-.imperium-modi li { float:left; width:33%; border:.1em solid #aaa; margin-right:-.1em; line-height:1.5em; }
-.imperium-modi a { display:block; }
-.imperium-modi a:hover,.imperium-modi a:focus { background-color:#888; }
-.imperium-modi .active a { background-color:#777; }
+.imperium-modi,.highscores-modi { list-style-type:none; padding:0; height:1.5em; margin:.5em; font-weight:bold; text-align:center; }
+.imperium-modi li,.highscores-modi li { float:left; border:.1em solid #aaa; margin-right:-.1em; line-height:1.5em; }
+.imperium-modi li { width:33%; }
+.highscores-modi li { width:49.5%; }
+.imperium-modi a,.highscores-modi a { display:block; }
+.imperium-modi a:hover,.imperium-modi a:focus,.highscores-modi a:hover,.highscores-modi a:focus { background-color:#888; }
+.imperium-modi .active a,.highscores-modi .active a { background-color:#777; }
