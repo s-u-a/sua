@@ -6,7 +6,6 @@ Nachrichtenarchivierungssystem.
 Schiffsbeschreibungen hinzufügen.
 Adminbereich: Bei Scan nach Multis auch nach doppelten E-Mail-Adressen nachschauen
 Screenshots auf die Startseite einfügen.
-Koordinaten aus veröffentlichten Nachrichten entfernen.
 Unbenutzte veröffentlichte Nachrichten vom Eventhandler löschen lassen.
 Allianz und U-Modus-Informationen in die playerinfo.php schreiben.
 Allianzaktionen müssen geloggt werden.

@@ -545,9 +545,25 @@
 
 				unset($alliance_array['members'][$_SESSION['username']]);
 				write_alliance_array($user_array['alliance'], $alliance_array);
+				
+				highscores_alliances::recalc($user_array['alliance']);
 
 				$user_array['alliance'] = false;
 				write_user_array();
+				
+				$planets = array_keys($user_array['planets']);
+				$pos = array();
+				foreach($planets as $planet)
+					$pos[] = $user_array['planets'][$planet]['pos'];
+				$infos = universe::get_planet_info($pos);
+				foreach($planets as $planet)
+				{
+					$this_pos = explode(':', $user_array['planets'][$planet]['pos']);
+					$this_info = $infos[$user_array['planets'][$planet]['pos']];
+					universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], '');
+				}
+				
+				highscores::recalc();
 ?>
 <h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
 <p class="successful">Sie haben die Allianz verlassen.</p>

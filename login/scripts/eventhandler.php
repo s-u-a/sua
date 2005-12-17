@@ -805,9 +805,9 @@
 
 								# Nachrichtentext
 								$nachrichten_text = "<p>\n";
-								$nachrichten_text .= "\tEine Flotte vom Planeten \xe2\x80\x9e".utf8_htmlentities($start_info[2])."\xe2\x80\x9c (".utf8_htmlentities($flotte[3][0]).", Eigent\xc3\xbcmer: ".utf8_htmlentities($start_info[1]).") greift den Planeten \xe2\x80\x9e".utf8_htmlentities($target_info[2])."\xe2\x80\x9c (".utf8_htmlentities($flotte[3][1]).", Eigent\xc3\xbcmer: ".$target_info[1].") an.\n";
+								$nachrichten_text .= "\tEine Flotte vom Planeten <span class=\"koords\">\xe2\x80\x9e".utf8_htmlentities($start_info[2])."\xe2\x80\x9c (".utf8_htmlentities($flotte[3][0]).", Eigent\xc3\xbcmer: ".utf8_htmlentities($start_info[1]).")</span> greift den Planeten <span class=\"koords\">\xe2\x80\x9e".utf8_htmlentities($target_info[2])."\xe2\x80\x9c (".utf8_htmlentities($flotte[3][1]).", Eigent\xc3\xbcmer: ".$target_info[1].")</span> an.\n";
 								$nachrichten_text .= "</p>\n";
-								$nachrichten_text .= "<h3>Flotten des Angreifers ".utf8_htmlentities($start_info[1])."</h3>\n";
+								$nachrichten_text .= "<h3>Flotten des Angreifers <span class=\"koords\">".utf8_htmlentities($start_info[1])."</span></h3>\n";
 								$nachrichten_text .= "<table>\n";
 								$nachrichten_text .= "\t<thead>\n";
 								$nachrichten_text .= "\t\t<tr>\n";
@@ -847,7 +847,7 @@
 								$nachrichten_text .= "\t</tfoot>\n";
 								$nachrichten_text .= "</table>\n";
 
-								$nachrichten_text .= "<h3>Flotten des Verteidigers ".utf8_htmlentities($target_info[1])."</h3>\n";
+								$nachrichten_text .= "<h3>Flotten des Verteidigers <span class=\"koords\">".utf8_htmlentities($target_info[1])."</span></h3>\n";
 								if(count($verteidiger_flotte) > 0)
 								{
 									$nachrichten_text .= "<table>\n";
@@ -903,7 +903,7 @@
 									$runde_anderer = 'verteidiger';
 
 									$nachrichten_text .= "<p class=\"erstschlag angreifer\">\n";
-									$nachrichten_text .= "\tDie Sensoren des Angreifers ".utf8_htmlentities($start_info[1])." sind st\xc3\xa4rker ausgebildet und erm\xc3\xb6glichen es ihm, den Erstschlag auszuf\xc3\xbchren.\n";
+									$nachrichten_text .= "\tDie Sensoren des Angreifers <span class=\"koords\">".utf8_htmlentities($start_info[1])."</span> sind st\xc3\xa4rker ausgebildet und erm\xc3\xb6glichen es ihm, den Erstschlag auszuf\xc3\xbchren.\n";
 									$nachrichten_text .= "</p>\n";
 								}
 								else
@@ -912,7 +912,7 @@
 									$runde_anderer = 'angreifer';
 
 									$nachrichten_text .= "<p class=\"erstschlag verteidiger\">\n";
-									$nachrichten_text .= "\tDie Sensoren des Angreifers sind denen des Verteidigers ".utf8_htmlentities($target_info[1])." nicht \xc3\xbcberlegen, weshalb letzterer den Erstschlag ausf\xc3\xbchrt.\n";
+									$nachrichten_text .= "\tDie Sensoren des Angreifers sind denen des Verteidigers <span class=\"koords\">".utf8_htmlentities($target_info[1])."</span> nicht \xc3\xbcberlegen, weshalb letzterer den Erstschlag ausf\xc3\xbchrt.\n";
 									$nachrichten_text .= "</p>\n";
 								}
 
@@ -1039,15 +1039,15 @@
 								$nachrichten_text .= "<p>\n";
 								$nachrichten_text .= "\tDer Kampf ist vor\xc3\xbcber. ";
 								if(count($angreifer_flotte) == 0)
-									$nachrichten_text .= "Gewinner ist der Verteidiger ".utf8_htmlentities($target_info[1]).".";
+									$nachrichten_text .= "Gewinner ist der Verteidiger <span class=\"koords\">".utf8_htmlentities($target_info[1])."</span>.";
 								elseif(count($verteidiger_flotte) == 0)
-									$nachrichten_text .= "Gewinner ist der Angreifer ".utf8_htmlentities($start_info[1]).".";
+									$nachrichten_text .= "Gewinner ist der Angreifer <span class=\"koords\">".utf8_htmlentities($start_info[1])."</span>.";
 								else
 									$nachrichten_text .= "Er endet unentschieden.";
 								$nachrichten_text .= "\n";
 								$nachrichten_text .= "</p>\n";
 
-								$nachrichten_text .= "<h3>Flotten des Angreifers ".utf8_htmlentities($start_info[1])."</h3>\n";
+								$nachrichten_text .= "<h3>Flotten des Angreifers <span class=\"koords\">".utf8_htmlentities($start_info[1])."</span></h3>\n";
 								if(count($angreifer_flotte) > 0)
 								{
 									$nachrichten_text .= "<table>\n";
@@ -1096,7 +1096,7 @@
 									$nachrichten_text .= "</p>\n";
 								}
 
-								$nachrichten_text .= "<h3>Flotten des Verteidigers ".utf8_htmlentities($target_info[1])."</h3>\n";
+								$nachrichten_text .= "<h3>Flotten des Verteidigers <span class=\"koords\">".utf8_htmlentities($target_info[1])."</span></h3>\n";
 								if(count($verteidiger_flotte) > 0)
 								{
 									$nachrichten_text .= "<table>\n";
@@ -1345,7 +1345,7 @@
 
 								# Punkte in Nachrichten eintragen
 								$nachrichten_text .= "<p>\n";
-								$nachrichten_text .= "\tDer Angreifer ".utf8_htmlentities($start_info[1])." hat ".ths(round($angreifer_punkte))."&nbsp;Punkte verloren. Der Verteidiger ".utf8_htmlentities($target_info[1])." hat ".ths(round($verteidiger_punkte_schiffe+$verteidiger_punkte_vert))."&nbsp;Punkte verloren.";
+								$nachrichten_text .= "\tDer Angreifer <span class=\"koords\">".utf8_htmlentities($start_info[1])."</span> hat ".ths(round($angreifer_punkte))."&nbsp;Punkte verloren. Der Verteidiger <span class=\"koords\">".utf8_htmlentities($target_info[1])."</span> hat ".ths(round($verteidiger_punkte_schiffe+$verteidiger_punkte_vert))."&nbsp;Punkte verloren.";
 								$nachrichten_text .= "</p>\n";
 
 								if(count($verteidiger_flotte) <= 0)

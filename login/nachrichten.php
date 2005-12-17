@@ -226,8 +226,7 @@
 								$url[2] = '';
 
 							if($url[1] != '')
-
-					$url[1] .= '&';
+								$url[1] .= '&';
 							$url[1] .= SESSION_COOKIE.'='.urlencode(session_id());
 
 							$url2 = $url[0].'?'.$url[1];
@@ -340,6 +339,15 @@
 							'text' => $message['text'],
 							'html' => $message['html']
 						);
+						
+						if($public_message_array['html'])
+						{
+							$public_message_array['text'] = preg_replace('/ ?<span class="koords">.*?<\\/span>/', '', $public_message_array['text']);
+							$public_message_array['text'] = preg_replace('/ ?<span class="name">.*?<\\/span>/', '&mdash;&mdash;&mdash;', $public_message_array['text']);
+							
+							if($public_message_array['type'] == 1 && isset($public_message_array['from']))
+								$public_message_array['from'] = '';
+						}
 
 						$fh = fopen(DB_MESSAGES_PUBLIC.'/'.$_GET['message'], 'w');
 						if($fh)
