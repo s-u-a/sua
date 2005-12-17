@@ -139,8 +139,8 @@
 			<th class="c-platz">Platz</th>
 			<th class="c-allianz">Allianz</th>
 			<th class="c-mitglieder">Mitglieder</th>
-			<th class="c-punkteschnitt"><a href="highscores.php?alliances=1&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Punkteschnitt</a></th>
-			<th class="c-gesamtpunkte"><a href="highscores.php?alliances=2&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Gesamtpunkte</a></th>
+			<th class="c-punkteschnitt"><?=($_GET['alliances']=='2') ? '<a href="highscores.php?alliances=1&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">Punkteschnitt</a>' : 'Punkteschnitt'?></th>
+			<th class="c-gesamtpunkte"><?=($_GET['alliances']=='2') ? 'Gesamtpunkte' : '<a href="highscores.php?alliances=2&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">Gesamtpunkte</a>'?></th>
 		</tr>
 	</thead>
 	<tbody>
