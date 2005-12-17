@@ -14,7 +14,7 @@
 	{
 		$start = 1;
 		$count = highscores::get_players_count();
-		if(isset($_GET['start']) && $_GET['start'] <= $count)
+		if(isset($_GET['start']) && $_GET['start'] <= $count && $_GET['start'] >= 1)
 			$start = (int) $_GET['start'];
 		if($count > 100)
 		{
@@ -35,7 +35,7 @@
 				$end_next = $start_next+100;
 				if($end_next > $count) $end_next = $count;
 ?>
-	<li class="c-naechste"><a href="highscores.php?start=<?=htmlentities(urlencode($start_prev))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">&larr; <?=htmlentities($start_next)?>&ndash;<?=htmlentities($end_next)?></a></li>
+	<li class="c-naechste"><a href="highscores.php?start=<?=htmlentities(urlencode($start_next))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>"><?=htmlentities($start_next)?>&ndash;<?=htmlentities($end_next)?> &rarr;</a></li>
 <?php
 			}
 ?>
