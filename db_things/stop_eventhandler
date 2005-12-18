@@ -1,0 +1,48 @@
+#!/usr/bin/php
+<?php
+	require('../engine/include.php');
+	
+	touch(DB_EVENTHANDLER_STOP_FILE);
+	
+	echo "Waiting for eventhandlers to stop...\n";
+	
+	$running = 0;
+	$tries = EVENTHANDLER_INTERVAL*2;
+	
+	while(true)
+	{
+		exec('ps ax', $ps_ax);
+		
+		$current_running = 0;
+		foreach($ps_ax as $p)
+		{
+			if(strpos($p, 'eventhandler') !== false)
+				$current_running++;
+		}
+		
+		if($current_running == 0)
+		{
+			echo "All eventhandlers stopped.\n";
+			exit(0);
+		}
+		
+		if($current_running != $running)
+		{
+			$running = $current_running;
+			if($running == 1)
+				echo "1 eventhandler running.\n";
+			else
+				echo $running." eventhandlers running.\n";
+		}
+		
+		if($tries == 0)
+		{
+			echo "Couldn't stop all eventhandlers.\n";
+			exit(1);
+		}
+		
+		$tries--;
+		
+		sleep(1);
+	}
+?>

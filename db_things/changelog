@@ -1,3 +1,5 @@
+1134913981	Neue Versionsnummer: 0.1.6
+1134913979	Das Herunterfahren des Eventhandlers wird nun sauber durchgeführt, das „Exclusive lock“-Problem sollte also nicht mehr auftreten.
 1134912055	Neue Versionsnummer: 0.1.5
 1134912054	Man kann Nachrichten nun archivieren, archivierte Nachrichten werden nicht automatisch nach einem bestimmen Zeitraum gelöscht.
 1134906302	Die Standardskins wurden ummodelliert und funktionieren jetzt alle im Internet Explorer.

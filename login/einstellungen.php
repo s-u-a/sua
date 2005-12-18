@@ -70,7 +70,7 @@
 		$changed = true;
 	}
 
-	if((!isset($user_array['locked']) || !$user_array['locked']) && isset($_POST['umode']) && time()-$user_array['umode_time'] >= 259200)
+	if((!isset($user_array['locked']) || !$user_array['locked']) && isset($_POST['umode']) && (time()-$user_array['umode_time'] >= 259200 || isset($_SESSION['admin_username'])))
 	{
 		if(!$user_array['umode'])
 		{
@@ -287,7 +287,7 @@
 <?php
 			}
 		}
-		elseif(time()-$user_array['umode_time'] >= 259200)
+		elseif(time()-$user_array['umode_time'] >= 259200 || isset($_SESSION['admin_username']))
 		{
 ?>
 		<div><input type="submit" name="umode" value="Urlaubsmodus verlassen" tabindex="21" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich verlassen?');" /></div>

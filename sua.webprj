@@ -88,5 +88,6 @@
     <toolbars>toolbars/</toolbars>
     <item url="login/imperium.php" uploadstatus="1" />
     <annotations/>
+    <item url="db_things/stop_eventhandler" />
   </project>
 </webproject>

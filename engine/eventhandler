@@ -81,6 +81,9 @@
 		}
 
 		unlock_database();
+		
+		if(file_exists(DB_EVENTHANDLER_STOP_FILE))
+			exit(0);
 
 		sleep(EVENTHANDLER_INTERVAL);
 	}
