@@ -28,6 +28,8 @@
 				$current_running++;
 		}
 		
+		unset($ps_ax);
+		
 		if($current_running == 0)
 		{
 			echo "All eventhandlers stopped.\n";
