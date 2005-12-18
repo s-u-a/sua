@@ -281,17 +281,6 @@
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verteidigung.php') ? ' class="active"' : ''?> id="navigation-verteidigung"><a href="<?=htmlentities(h_root)?>/login/verteidigung.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="v"><kbd>V</kbd>erteidigung</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlentities(h_root)?>/login/imperium.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="m">I<kbd>m</kbd>perium</a></li>
 			</ul>
-<?php
-			if(isset($user_array['show_extern']) && $user_array['show_extern'])
-			{
-?>
-			<ul id="external-navigation">
-				<li id="navigation-board" xml:lang="en"><a href="http://board.s-u-a.net/">Board</a></li>
-				<li id="navigation-faq" xml:lang="en"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/faq.php"><abbr title="Frequently Asked Questions">FAQ</abbr></a></li>
-			</ul>
-<?php
-			}
-?>
 			<ul id="action-navigation">
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlentities(h_root)?>/login/karte.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="k"><kbd>K</kbd>arte</a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/handelsrechner.php') ? ' class="active"' : ''?> id="navigation-handel"><a href="<?=htmlentities(h_root)?>/login/handelsrechner.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="d">Han<kbd>d</kbd>elsrechner</a></li>
@@ -316,6 +305,17 @@
 			}
 ?>
 			</ul>
+<?php
+			if(isset($user_array['show_extern']) && $user_array['show_extern'])
+			{
+?>
+			<ul id="external-navigation">
+				<li id="navigation-board" xml:lang="en"><a href="http://board.s-u-a.net/">Board</a></li>
+				<li id="navigation-faq" xml:lang="en"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/faq.php"><abbr title="Frequently Asked Questions">FAQ</abbr></a></li>
+			</ul>
+<?php
+			}
+?>
 		</div>
 		<div id="version">
 			<a href="<?=htmlentities(h_root)?>/login/changelog.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Changelog anzeigen">Version <?=VERSION?></a>
