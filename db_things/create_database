@@ -49,11 +49,11 @@ touch $1/admins
 read -p "Enter Admin user name: " ADMIN_USERNAME
 read -s -p "Enter Admin password: " ADMIN_PASSWD
 export ADMIN_PASSWD
-ADMIN_PASSWD=`php -r "echo md5(\$_ENV['ADMIN_PASSWD']);"`
+ADMIN_PASSWD=`php -r 'echo md5($_ENV["ADMIN_PASSWD"]);'`
 
-echo -n $ADMIN_USERNAME >> $1/admin
+echo -n $ADMIN_USERNAME >> $1/admins
 echo -ne "\t" >> $1/admin
-echo -n $ADMIN_PASSWD >> $1/admin
+echo -n $ADMIN_PASSWD >> $1/admins
 
 unset ADMIN_PASSWD
 
