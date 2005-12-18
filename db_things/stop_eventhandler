@@ -16,7 +16,7 @@
 		$current_running = 0;
 		foreach($ps_ax as $p)
 		{
-			if(strpos($p, 'eventhandler') !== false)
+			if(strpos($p, 'eventhandler') !== false && strpos($p, 'stop_eventhandler') === false)
 				$current_running++;
 		}
 		
