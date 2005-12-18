@@ -20,8 +20,8 @@ body.mit-werbung #content-9 { margin-right:1em; }
 * html #navigation { position:absolute; top:3.5em; left:1em; width:10em;  }
 * html #werbung { position:absolute; top:3.5em; right:1em; width:120px; height:600px; }
 
-* html #content-9 { position:absolute; top:0; left:0; bottom:0; right:0; overflow:auto; height:100%; width:100%; padding-top:3.6em; padding-left:12em; text-align:center; }
-* html #content-10 { margin:2.6em 0 0 12em; padding:1.1em 0 3.6em 0; }
+* html #content-9 { position:absolute; top:0; left:0; bottom:0; right:0; overflow:auto; height:100%; width:100%; padding-top:3.6em; padding-left:12em; }
+* html #content-10 { margin:2.6em 0 0 12em; padding:1.1em 0 3.6em 0; text-align:center; }
 * html body.mit-werbung #content-10 { margin:2.6em 120px 0 12em; padding:1.1em 1em 3.6em 0; }
 * html body.mit-werbung #content-9 { margin:0; }
 * html #content-12 { text-align:left; }
