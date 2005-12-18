@@ -1,6 +1,14 @@
 #!/usr/bin/php
 <?php
+	$_SERVER['SUA_DB_DIR'] = false;
+	$USE_OB = false;
 	require('../engine/include.php');
+	
+	if(file_exists(DB_EVENTHANDLER_STOP_FILE))
+	{
+		echo "Another eventhandler stopping process is already running.\n";
+		exit(1);
+	}
 	
 	touch(DB_EVENTHANDLER_STOP_FILE);
 	
@@ -23,6 +31,7 @@
 		if($current_running == 0)
 		{
 			echo "All eventhandlers stopped.\n";
+			unlink(DB_EVENTHANDLER_STOP_FILE);
 			exit(0);
 		}
 		
@@ -38,6 +47,7 @@
 		if($tries == 0)
 		{
 			echo "Couldn't stop all eventhandlers.\n";
+			unlink(DB_EVENTHANDLER_STOP_FILE);
 			exit(1);
 		}
 		
