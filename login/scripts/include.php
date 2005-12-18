@@ -357,6 +357,63 @@
 ?>
 				<h1>Planet <em><?=utf8_htmlentities($this_planet['name'])?></em> <span class="koords">(<?=utf8_htmlentities($this_planet['pos'])?>)</span></h1>
 <?php
+			if(isset($user_array['notify']) && $user_array['notify'])
+			{
+				global $message_type_names;
+				
+				$ncount = array(
+					1 => 0,
+					2 => 0,
+					3 => 0,
+					4 => 0,
+					5 => 0,
+					6 => 0,
+					7 => 0
+				);
+				$ges_ncount = 0;
+			
+				if(isset($user_array['messages']))
+				{
+					foreach($user_array['messages'] as $cat=>$messages)
+					{
+						foreach($messages as $message_id=>$unread)
+						{
+							if(!is_file(DB_MESSAGES.'/'.$message_id) || !is_readable(DB_MESSAGES.'/'.$message_id))
+								continue;
+			
+							if($unread && $cat != 8)
+							{
+								$ncount[$cat]++;
+								$ges_ncount++;
+							}
+						}
+					}
+				}
+			
+				if($ges_ncount > 0)
+				{
+					$title = array();
+					$link = 'nachrichten.php';
+					foreach($ncount as $type=>$count)
+					{
+						if($count > 0)
+							$title[] = htmlentities($message_type_names[$type]).':&nbsp;'.htmlentities($count);
+						if($count == $ges_ncount)
+							$link .= '?type='.urlencode($type);
+					}
+					$title = implode('; ', $title);
+					if(strpos($link, '?') === false)
+						$link .= '?';
+					else
+						$link .= '&';
+					$link .= SESSION_COOKIE.'='.urlencode(session_id());
+?>
+<p class="neue-nachrichten">
+	<a href="<?=htmlentities($link)?>" title="<?=$title?>">Sie haben <?=htmlentities($ges_ncount)?> neue <kbd>N</kbd>achricht<?=($ges_ncount != 1) ? 'en' : ''?>.</a>
+</p>
+<?php
+				}
+			}
 		}
 
 		function html_foot()

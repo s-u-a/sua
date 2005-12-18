@@ -56,57 +56,60 @@
 	<li><a href="scripts/rename.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>
 </ul>
 <?php
-	$ncount = array(
-		1 => 0,
-		2 => 0,
-		3 => 0,
-		4 => 0,
-		5 => 0,
-		6 => 0,
-		7 => 0
-	);
-	$ges_ncount = 0;
-
-	if(isset($user_array['messages']))
+	if(!isset($user_array['notify']) || !$user_array['notify'])
 	{
-		foreach($user_array['messages'] as $cat=>$messages)
+		$ncount = array(
+			1 => 0,
+			2 => 0,
+			3 => 0,
+			4 => 0,
+			5 => 0,
+			6 => 0,
+			7 => 0
+		);
+		$ges_ncount = 0;
+	
+		if(isset($user_array['messages']))
 		{
-			foreach($messages as $message_id=>$unread)
+			foreach($user_array['messages'] as $cat=>$messages)
 			{
-				if(!is_file(DB_MESSAGES.'/'.$message_id) || !is_readable(DB_MESSAGES.'/'.$message_id))
-					continue;
-
-				if($unread && $cat != 8)
+				foreach($messages as $message_id=>$unread)
 				{
-					$ncount[$cat]++;
-					$ges_ncount++;
+					if(!is_file(DB_MESSAGES.'/'.$message_id) || !is_readable(DB_MESSAGES.'/'.$message_id))
+						continue;
+	
+					if($unread && $cat != 8)
+					{
+						$ncount[$cat]++;
+						$ges_ncount++;
+					}
 				}
 			}
 		}
-	}
-
-	if($ges_ncount > 0)
-	{
-		$title = array();
-		$link = 'nachrichten.php';
-		foreach($ncount as $type=>$count)
+	
+		if($ges_ncount > 0)
 		{
-			if($count > 0)
-				$title[] = htmlentities($message_type_names[$type]).':&nbsp;'.htmlentities($count);
-			if($count == $ges_ncount)
-				$link .= '?type='.urlencode($type);
-		}
-		$title = implode('; ', $title);
-		if(strpos($link, '?') === false)
-			$link .= '?';
-		else
-			$link .= '&';
-		$link .= SESSION_COOKIE.'='.urlencode(session_id());
+			$title = array();
+			$link = 'nachrichten.php';
+			foreach($ncount as $type=>$count)
+			{
+				if($count > 0)
+					$title[] = htmlentities($message_type_names[$type]).':&nbsp;'.htmlentities($count);
+				if($count == $ges_ncount)
+					$link .= '?type='.urlencode($type);
+			}
+			$title = implode('; ', $title);
+			if(strpos($link, '?') === false)
+				$link .= '?';
+			else
+				$link .= '&';
+			$link .= SESSION_COOKIE.'='.urlencode(session_id());
 ?>
 <p class="neue-nachrichten">
 	<a href="<?=htmlentities($link)?>" title="<?=$title?>" accesskey="n" tabindex="1">Sie haben <?=htmlentities($ges_ncount)?> neue <kbd>N</kbd>achricht<?=($ges_ncount != 1) ? 'en' : ''?>.</a>
 </p>
 <?php
+		}
 	}
 
 	if(isset($user_array['flotten']) && count($user_array['flotten']) > 0)
