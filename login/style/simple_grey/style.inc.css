@@ -242,8 +242,9 @@ legend { font-weight:bold; }
 .nachrichten-liste .c-auswaehlen { width:1px; text-align:center; }
 .nachrichten-liste .c-absender,.nachrichten-liste .c-datum { width:25%; white-space:nowrap; }
 .nachrichten-liste .auswahl-button { width:90%; text-align:center; padding:0; }
-.nachrichten-liste .alt a { color:#bbb; }
-.nachrichten-liste .alt a:hover,.nachrichten-liste .alt a:focus { color:#888; }
+.nachrichten-liste .alt a,.nachrichten-liste .archiviert a { color:#bbb; }
+.nachrichten-liste .alt a:hover,.nachrichten-liste .alt a:focus,.nachrichten-liste .archiviert a:hover,.nachrichten-liste .archiviert a:focus { color:#888; }
+.nachrichten-liste .archiviert a { font-style:italic; }
 
 .nachricht-informationen { margin:0; padding:0; text-align:left; font-weight:bold; }
 .nachricht-informationen dt { margin:0; padding:.2em .5em; width:10em; float:left; border-bottom:.1em solid #aaa; clear:left; }

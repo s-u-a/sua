@@ -272,7 +272,7 @@
 					}
 ?>
 <form action="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="nachricht-loeschen-formular">
-	<div><input type="hidden" name="message[<?=htmlentities($_GET['message'])?>]" value="on" /><input type="submit" name="delete" accesskey="n" tabindex="2" value="Löschen" title="[N]" /></div>
+	<div><input type="hidden" name="message[<?=htmlentities($_GET['message'])?>]" value="on" /><input type="submit" name="delete" accesskey="n" tabindex="2" value="Löschen" title="[N]" /> <input type="submit" name="archive" tabindex="3" value="Archivieren" /></div>
 </form>
 <?php
 					if(isset($_POST['weiterleitung-to']))
@@ -408,7 +408,7 @@
 					{
 						if(!isset($user_array['messages'][$_GET['type']][$message_id]))
 							continue;
-						$user_array['messages'][$_GET['type']][$message_id] = false;
+						$user_array['messages'][$_GET['type']][$message_id] = 0;
 						$changed = true;
 
 						logfile::action('22', $message_id);
@@ -455,6 +455,22 @@
 					if($changed)
 						write_user_array();
 				}
+				elseif(isset($_POST['archive']) && isset($_POST['message']) && is_array($_POST['message']))
+				{
+					# Archivieren
+					$changed = false;
+					foreach($_POST['message'] as $message_id=>$v)
+					{
+						if(!isset($user_array['messages'][$_GET['type']][$message_id]))
+							continue;
+						$user_array['messages'][$_GET['type']][$message_id] = 2;
+						$changed = true;
+
+						logfile::action('22.5', $message_id);
+					}
+					if($changed)
+						write_user_array();
+				}
 ?>
 <script type="text/javascript">
 // <![CDATA[
@@ -475,14 +491,7 @@
 			<tr>
 				<th class="c-auswaehlen"></th>
 				<th class="c-betreff">Betreff</th>
-<?php
-	#if($_GET['type'] == 6 || $_GET['type'] == 7)
-	{
-?>
 				<th class="c-absender">Absender</th>
-<?php
-	}
-?>
 				<th class="c-datum">Datum</th>
 			</tr>
 		</thead>
@@ -500,18 +509,17 @@
 					$message = unserialize(gzuncompress(file_get_contents(DB_MESSAGES.'/'.$message_id)));
 					if(!$message)
 						continue;
+					if($unread == 2)
+						$class = 'archiviert';
+					elseif($unread == 1 && $_GET['type'] != 8)
+						$class = 'neu';
+					else
+						$class = 'alt';
 ?>
-			<tr class="<?=($unread && $_GET['type'] != 8) ? 'neu' : 'alt'?>">
+			<tr class="<?=$class?>">
 				<td class="c-auswaehlen"><input type="checkbox" name="message[<?=htmlentities($message_id)?>]" tabindex="<?=$tabindex++?>" /></td>
 				<td class="c-betreff"><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($message_id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" tabindex="<?=$tabindex++?>"><?=(trim($message['subject']) != '') ? utf8_htmlentities($message['subject']) : 'Kein Betreff'?></a></td>
-<?php
-	#if($_GET['type'] == 6 || $_GET['type'] == 7)
-	{
-?>
 				<td class="c-absender"><?=utf8_htmlentities($message['from'])?></td>
-<?php
-	}
-?>
 				<td class="c-datum"><?=date('H:i:s, Y-m-d', $message['time'])?></td>
 			</tr>
 <?php
@@ -527,7 +535,7 @@
 						// ]]>
 					</script>
 				</td>
-				<td colspan="3"><input type="submit" name="delete" class="loeschen-button" accesskey="n" tabindex="2" value="Löschen" title="[N]" /> <input type="submit" name="read" class="als-gelesen-markieren-button" tabindex="3" accesskey="u" title="[U]" value="Als gelesen markieren" /></td>
+				<td colspan="3"><input type="submit" name="delete" class="loeschen-button" accesskey="n" tabindex="2" value="Löschen" title="[N]" /> <input type="submit" name="read" class="als-gelesen-markieren-button" tabindex="3" accesskey="u" title="[U]" value="Als gelesen markieren" /> <input type="submit" name="archive" class="archivieren-button" tabindex="4" value="Archivieren" /></td>
 			</tr>
 		</tfoot>
 	</table>
@@ -562,7 +570,7 @@
 					$ncount[$cat][1]++;
 					$ges_ncount[1]++;
 
-					if($unread && $cat != 8)
+					if($unread == 1 && $cat != 8)
 					{
 						$ncount[$cat][0]++;
 						$ges_ncount[0]++;

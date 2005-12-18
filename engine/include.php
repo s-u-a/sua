@@ -631,10 +631,10 @@
 					$that_user_array['messages'] = array();
 				if(!isset($that_user_array['messages'][$type]))
 					$that_user_array['messages'][$type] = array();
-				$that_user_array['messages'][$type][$id] = true;
+				$that_user_array['messages'][$type][$id] = 1;
 
 				if(isset($_SESSION['username']) && isset($user_array) && $user == $_SESSION['username'])
-					$user_array['messages'][$type][$id] = true;
+					$user_array['messages'][$type][$id] = 1;
 
 				if(!write_user_array($user, $that_user_array))
 					continue;

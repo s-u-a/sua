@@ -20,7 +20,6 @@
 	<li><a href="#robots">Wie funktionieren die Roboter?</a></li>
 	<li><a href="#fleet">Wieviele Flotten kann ich gleichzeitig verschicken?</a></li>
 	<li><a href="#alliance">Was bringt mir ein Bündnis?</a></li>
-	<li><a href="#scrolling">Ich kann im Spiel mein <span xml:lang="en">Scroll</span>rad nicht benutzen. Woran liegt das?</a></li>
 	<li><a href="#resources">Die Rohstoffanzeige passt nicht in mein <span xml:lang="en">Browser</span>fenster und Quer<span xml:lang="en">scrollen</span> ist nicht möglich.</a></li>
 	<li><a href="#chat">Hat das Spiel einen <span xml:lang="en">Chat?</span></a></li>
 	<li><a href="#administrators">Wie kann ich die Administratoren erreichen?</a></li>
@@ -126,11 +125,6 @@
 		<li>In der Spielerinformation sehen Sie die Koordinaten Ihrer Verbündeten und deren ausgegebene Rohstoffe.</li>
 		<li>Bündnisrundschreiben machen es möglich, dass Sie all Ihren Verbündeten gleichzeitig eine Nachricht zukommen lassen.</li>
 	</ul>
-</div>
-
-<div class="faq">
-	<h3 id="scrolling">Ich kann im Spiel mein <span xml:lang="en">Scroll</span>rad nicht benutzen. Woran liegt das?</h3>
-	<p>Herzlichen Glückwunsch, Sie scheinen sich für einen modernen <span xml:lang="en">Browser</span> entschieden zu haben. Einige <span xml:lang="en">Browser</span> haben derzeit noch Probleme, bei <span xml:lang="en">Scoll</span>balken innerhalb der Seite <span xml:lang="en">Scroll</span>räder zu unterstützen. Stellen Sie sich einfach in den Einstellungen die Variante &bdquo;<span xml:lang="en">fixed style, non-IE</span>&ldquo; Ihres bevorzugten <span xml:lang="en">Skins</span> ein.</p>
 </div>
 
 <div class="faq">
