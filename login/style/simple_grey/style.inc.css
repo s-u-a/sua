@@ -3,6 +3,9 @@ html { font-size:1em; color:#fff; font-style:normal; }
 * html h1,* html h2,* html h3,* html h4 { font-size:100.01%; }
 * html *,* html #planets .active dt { font-size:11px; font-family:sans-serif; }
 
+/* IE6 sucks */
+* html li,* html a,* html td,* html th,* html dt,* html dd,* html p { position:relative; top:0; left:0; }
+
 #time { bottom:0; text-align:right; display:block; margin:0; border-top:.2em solid #aaa; padding:.2em; background-color:#222; word-spacing:-1.1em; line-height:2em; height:2em; white-space:nowrap; z-index:20000; }
 * html #time { word-spacing:0; }
 #time dt { margin:0 0 0 .25em; padding:.2em 0 .2em .3em; display:inline; background-color:#777; color:#fff; font-weight:bold; border-width:.1em; border-color:#aaa; border-style:solid none solid solid; font-family:monospace; }

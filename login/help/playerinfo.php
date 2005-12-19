@@ -89,7 +89,7 @@
 	<dd class="c-tritium"><?=ths($player_info['punkte'][11])?></dd>
 
 	<dt class="c-gesamt">Gesamt</dt>
-	<dd class="c-gesamt"><?=ths($player_info['punkte'][7]+$player_info['punkte'][8]+$player_info['punkte'][9]+$player_info['punkte'][10]+$player_info['punkte'][11])?></dd>
+	<dd class="c-gesamt"><?=ths($player_info['punkte'][7]+$player_info['punkte'][8]+$player_info['punkte'][9]+$player_info['punkte'][10]+$player_info['punkte'][11])?> <span class="platz">(Platz&nbsp;<?=ths($user_array['punkte'][12])?> <span class="gesamt-spieler">von <?=ths(highscores::get_players_count())?>)</span></span></dd>
 </dl>
 <?php
 		}
