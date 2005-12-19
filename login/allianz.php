@@ -113,7 +113,7 @@
 						'inner_description_parsed' => ''
 					);
 					
-					$highscores_info = highscores_alliances::make_info($_POST['tag'], $alliance_array['members'][$_SESSION['username']]['punkte']);
+					$highscores_info = highscores_alliances::make_info($_POST['tag'], 1, $alliance_array['members'][$_SESSION['username']]['punkte'], $alliance_array['members'][$_SESSION['username']]['punkte']);
 					$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'a');
 					if(!$fh)
 					{
@@ -457,103 +457,7 @@
 
 			if($alliance_array['members'][$_SESSION['username']]['permissions'][8] && $action == 'aufloesen')
 			{
-				$members = array_keys($alliance_array['members']);
-
-				$recipients = array();
-				foreach($members as $member)
-					$recipients[$member] = 7;
-				messages::new_message($recipients, $_SESSION['username'], "Allianz aufgel\xc3\xb6st", 'Die Allianz '.$user_array['alliance']." wurde aufgel\xc3\xb6st.");
-
-				foreach($members as $member)
-				{
-					if($member == $_SESSION['username'])
-						continue;
-					$that_user_array = get_user_array($member);
-					$that_user_array['alliance'] = false;
-					write_user_array($member, $that_user_array);
-
-					$planets = array_keys($that_user_array['planets']);
-					$pos = array();
-					foreach($planets as $planet)
-						$pos[] = $that_user_array['planets'][$planet]['pos'];
-					$infos = universe::get_planet_info($pos);
-					foreach($planets as $planet)
-					{
-						$this_pos = explode(':', $that_user_array['planets'][$planet]['pos']);
-						$this_info = $infos[$that_user_array['planets'][$planet]['pos']];
-						universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], '');
-					}
-
-					highscores::recalc($member);
-				}
-
-				unlink(DB_ALLIANCES.'/'.urlencode($user_array['alliance']));
-
-				$user_array['alliance'] = false;
-				write_user_array();
-
-				$planets = array_keys($user_array['planets']);
-				$pos = array();
-				foreach($planets as $planet)
-					$pos[] = $user_array['planets'][$planet]['pos'];
-				$infos = universe::get_planet_info($pos);
-				foreach($planets as $planet)
-				{
-					$this_pos = explode(':', $user_array['planets'][$planet]['pos']);
-					$this_info = $infos[$user_array['planets'][$planet]['pos']];
-					universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], '');
-				}
-
-				highscores::recalc();
-				
-				# Aus den Allianz-Highscores entfernen
-				$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r+');
-				flock($fh, LOCK_EX);
-				fseek($fh, ($alliance_array['platz']-1)*26, SEEK_SET);
-				$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
-				
-				while(true)
-				{
-					if($filesize-ftell($fh) < 26)
-						break;
-					$line = fread($fh, 26);
-					$info = highscores_alliances::get_info($line);
-					$that_alliance_array = get_alliance_array($info[0]);
-					$that_alliance_array['platz']--;
-					write_alliance_array($info[0], $that_alliance_array);
-					
-					fseek($fh, -52, SEEK_CUR);
-					fwrite($fh, $line);
-					fseek($fh, 26, SEEK_CUR);
-				}
-				ftruncate($fh, $filesize-26);
-				
-				flock($fh, LOCK_UN);
-				fclose($fh);
-				
-				$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'r+');
-				flock($fh, LOCK_EX);
-				fseek($fh, ($alliance_array['platz2']-1)*26, SEEK_SET);
-				$filesize = filesize(DB_HIGHSCORES_ALLIANCES2);
-				
-				while(true)
-				{
-					if($filesize-ftell($fh) < 26)
-						break;
-					$line = fread($fh, 26);
-					$info = highscores_alliances::get_info($line);
-					$that_alliance_array = get_alliance_array($info[0]);
-					$that_alliance_array['platz2']--;
-					write_alliance_array($info[0], $that_alliance_array);
-					
-					fseek($fh, -52, SEEK_CUR);
-					fwrite($fh, $line);
-					fseek($fh, 26, SEEK_CUR);
-				}
-				ftruncate($fh, $filesize-26);
-				
-				flock($fh, LOCK_UN);
-				fclose($fh);
+				delete_alliance($user_array['alliance']);
 ?>
 <h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
 <p class="successful">Die Allianz wurde aufgelöst.</p>

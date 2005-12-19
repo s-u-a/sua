@@ -63,10 +63,10 @@
 		foreach($users as $username=>$bla)
 		{
 			eventhandler::run_eventhandler($username);
-			echo date('Y-m-d, H:i:s');
+			/*echo date('Y-m-d, H:i:s');
 			echo ' -- ';
 			echo $username;
-			echo "\n";
+			echo "\n";*/
 		}
 
 		if(date('H')*3600+date('i')*60+60 > 16200 && $last_handelskurs != date('Y-m-d')) // 4:30 Uhr
@@ -76,6 +76,7 @@
 			echo date('Y-m-d, H:i:s')." -- Handelskurs recalculated.\n\n";
 
 			delete_old_messages();
+			delete_inactive_players();
 
 			$last_handelskurs = date('Y-m-d');
 		}

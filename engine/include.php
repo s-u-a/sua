@@ -1739,6 +1739,253 @@
 		fclose($fh);
 		return true;
 	}
+	
+	function delete_user($username)
+	{
+		$that_user_array = get_user_array($username);
+		if(!$that_user_array)
+			return false;
+		
+		# Planeten zuruecksetzen
+		$planets = array_keys($that_user_array['planets']);
+		$that_poses = array();
+		foreach($planets as $planet)
+		{
+			$pos = explode(':', $that_user_array['planets'][$planet]['pos']);
+			universe::set_planet_info($pos[0], $pos[1], $pos[2], rand(100, 500), '', '', '');
+			$that_poses[] = $that_user_array['planets'][$planet]['pos'];
+		}
+
+		# Buendnispartner entfernen
+		foreach($that_user_array['verbuendete'] as $verbuendeter)
+		{
+			$verb_user_array = get_user_array($verbuendeter);
+			$verb_key = array_search($username, $verb_user_array['verbuendete']);
+			if($verb_key !== false)
+			{
+				unset($verb_user_array['verbuendete'][$verb_key]);
+				write_user_array($verbuendeter, $verb_user_array);
+			}
+			unset($verb_user_array);
+		}
+		if(isset($that_user_array['verbuendete_bewerbungen']))
+		{
+			foreach($that_user_array['verbuendete_bewerbungen'] as $verbuendeter)
+			{
+				$verb_user_array = get_user_array($verbuendeter);
+				$verb_key = array_search($username, $verb_user_array['verbuendete_anfragen']);
+				if($verb_key !== false)
+				{
+					unset($verb_user_array['verbuendete_anfragen'][$verb_key]);
+					write_user_array($verbuendeter, $verb_user_array);
+				}
+				unset($verb_user_array);
+			}
+		}
+		if(isset($that_user_array['verbuendete_anfragen']))
+		{
+			foreach($that_user_array['verbuendete_anfragen'] as $verbuendeter)
+			{
+				$verb_user_array = get_user_array($verbuendeter);
+				$verb_key = array_search($username, $verb_user_array['verbuendete_bewerbungen']);
+				if($verb_key !== false)
+				{
+					unset($verb_user_array['verbuendete_bewerbungen'][$verb_key]);
+					write_user_array($verbuendeter, $verb_user_array);
+				}
+				unset($verb_user_array);
+			}
+		}
+
+		# Flotten entfernen
+		foreach($that_user_array['flotten'] as $id=>$flotte)
+		{
+			$change = false;
+			if(!in_array($flotte[3][0], $poses))
+				$change = $flotte[3][0];
+			elseif(!in_array($flotte[3][1], $poses))
+				$change = $flotte[3][1];
+
+			if($change)
+			{
+				$pos = explode(':', $change);
+				$info = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
+
+				$fleet_user_array = get_user_array($info[1]);
+				if(isset($fleet_user_array['flotten'][$id]))
+				{
+					unset($fleet_user_array['flotten'][$id]);
+					write_user_array($info[1], $fleet_user_array);
+				}
+			}
+		}
+
+		# Aus den Highscores entfernen
+		$pos = ($that_user_array['punkte'][12]-1)*38;
+
+		$fh = fopen(DB_HIGHSCORES, 'r+');
+		flock($fh, LOCK_EX);
+
+		$filesize = filesize(DB_HIGHSCORES)-38;
+		fseek($fh, $pos, SEEK_SET);
+
+		while(ftell($fh) <= $filesize-38)
+		{
+			fseek($fh, 38, SEEK_CUR);
+			$bracket = fread($fh, 38);
+			fseek($fh, -76, SEEK_CUR);
+			fwrite($fh, $bracket);
+
+			list($high_username) = highscores::get_info($bracket);
+			$high_user_array = get_user_array($high_username);
+			if($high_user_array)
+			{
+				$high_user_array['punkte'][12]--;
+				write_user_array($high_username, $high_user_array);
+				unset($high_user_array);
+			}
+		}
+
+		ftruncate($fh, $filesize);
+
+		flock($fh, LOCK_UN);
+		fclose($fh);
+
+		# Nachrichten entfernen
+		foreach($that_user_array['messages'] as $type=>$messages)
+		{
+			foreach($messages as $message)
+			{
+				if(!is_file(DB_MESSAGES.'/'.$message) || !is_readable(DB_MESSAGES.'/'.$message))
+					continue;
+				$mess = unserialize(gzuncompress(file_get_contents(DB_MESSAGES.'/'.$message)));
+				if(isset($mess['users'][$username]))
+				{
+					unset($mess['users'][$username]);
+					if(count($mess['users']) == 0)
+						unlink(DB_MESSAGES.'/'.$message);
+					else
+					{
+						$fh = fopen(DB_MESSAGES.'/'.$message, 'w');
+						flock($fh, LOCK_EX);
+						fwrite($fh, gzcompress(serialize($mess)));
+						flock($fh, LOCK_UN);
+						fclose($fh);
+					}
+				}
+				unset($mess);
+			}
+		}
+		
+		# Aus der Allianz austreten
+		if($that_user_array['alliance'] && ($alliance_array = get_alliance_array($that_user_array['alliance'])))
+		{
+			unset($alliance_array['members'][$username]);
+			write_alliance_array($that_user_array['alliance'], $alliance_array);
+			
+			if(count($alliance_array['members']) <= 0)
+				delete_alliance($that_user_array['alliance']);
+		}
+
+		return (unlink(DB_PLAYERS.'/'.urlencode($username)) || chmod(DB_PLAYERS.'/'.urlencode($username), 0));
+	}
+	
+	function delete_alliance($alliance)
+	{
+		global $user_array;
+		
+		$alliance_array = get_alliance_array($alliance);
+		if(!$alliance_array)
+			return false;
+		
+		if(!unlink(DB_ALLIANCES.'/'.urlencode($alliance)))
+			return false;
+		
+		if(count($alliance_array['members']) > 0)
+		{
+			$members = array_keys($alliance_array['members']);
+	
+			$recipients = array();
+			foreach($members as $member)
+				$recipients[$member] = 7;
+			messages::new_message($recipients, '', "Allianz aufgel\xc3\xb6st", 'Die Allianz '.$alliance." wurde aufgel\xc3\xb6st.");
+	
+			foreach($members as $member)
+			{
+				if(isset($_SESSION['username']) && $member == $_SESSION['username'])
+					$that_user_array = & $user_array;
+				else
+					$that_user_array = get_user_array($member);
+				$that_user_array['alliance'] = false;
+				write_user_array($member, $that_user_array);
+	
+				$planets = array_keys($that_user_array['planets']);
+				$pos = array();
+				foreach($planets as $planet)
+					$pos[] = $that_user_array['planets'][$planet]['pos'];
+				$infos = universe::get_planet_info($pos);
+				foreach($planets as $planet)
+				{
+					$this_pos = explode(':', $that_user_array['planets'][$planet]['pos']);
+					$this_info = $infos[$that_user_array['planets'][$planet]['pos']];
+					universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], $this_info[0], $this_info[1], $this_info[2], '');
+				}
+	
+				highscores::recalc($member);
+			}
+		}
+		
+		# Aus den Allianz-Highscores entfernen
+		$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r+');
+		flock($fh, LOCK_EX);
+		fseek($fh, ($alliance_array['platz']-1)*26, SEEK_SET);
+		$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
+		
+		while(true)
+		{
+			if($filesize-ftell($fh) < 26)
+				break;
+			$line = fread($fh, 26);
+			$info = highscores_alliances::get_info($line);
+			$that_alliance_array = get_alliance_array($info[0]);
+			$that_alliance_array['platz']--;
+			write_alliance_array($info[0], $that_alliance_array);
+			
+			fseek($fh, -52, SEEK_CUR);
+			fwrite($fh, $line);
+			fseek($fh, 26, SEEK_CUR);
+		}
+		ftruncate($fh, $filesize-26);
+		
+		flock($fh, LOCK_UN);
+		fclose($fh);
+		
+		$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'r+');
+		flock($fh, LOCK_EX);
+		fseek($fh, ($alliance_array['platz2']-1)*26, SEEK_SET);
+		$filesize = filesize(DB_HIGHSCORES_ALLIANCES2);
+		
+		while(true)
+		{
+			if($filesize-ftell($fh) < 26)
+				break;
+			$line = fread($fh, 26);
+			$info = highscores_alliances::get_info($line);
+			$that_alliance_array = get_alliance_array($info[0]);
+			$that_alliance_array['platz2']--;
+			write_alliance_array($info[0], $that_alliance_array);
+			
+			fseek($fh, -52, SEEK_CUR);
+			fwrite($fh, $line);
+			fseek($fh, 26, SEEK_CUR);
+		}
+		ftruncate($fh, $filesize-26);
+		
+		flock($fh, LOCK_UN);
+		fclose($fh);
+		
+		return true;
+	}
 
 	function get_skins()
 	{
