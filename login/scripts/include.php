@@ -428,6 +428,11 @@
 			{
 ?>
 			<div id="werbung">
+<?php
+				global $DISABLE_ADS;
+				if(!isset($DISABLE_ADS) || !$DISABLE_ADS)
+				{
+?>
 				<script type="text/javascript">
 					google_ad_client = "pub-2073027150149821";
 					google_ad_width = 120;
@@ -442,6 +447,9 @@
 					google_color_url = "FFFFFF";
 				</script>
 				<script type="text/javascript" src="<?=htmlentities(h_root)?>/show_ads.js"></script>
+<?php
+				}
+?>
 			</div>
 <?php
 			}

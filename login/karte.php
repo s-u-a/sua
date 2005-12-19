@@ -1,6 +1,7 @@
 <?php
 	require('scripts/include.php');
 
+	$DISABLE_ADS = true;
 	login_gui::html_head();
 
 	$pos = explode(':', $this_planet['pos']);
