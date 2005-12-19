@@ -509,7 +509,7 @@
 					$message = unserialize(gzuncompress(file_get_contents(DB_MESSAGES.'/'.$message_id)));
 					if(!$message)
 						continue;
-					if($unread == 2)
+					if($unread === 2)
 						$class = 'archiviert';
 					elseif($unread == 1 && $_GET['type'] != 8)
 						$class = 'neu';
