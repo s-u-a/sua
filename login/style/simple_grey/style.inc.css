@@ -3,9 +3,6 @@ html { font-size:1em; color:#fff; font-style:normal; }
 * html h1,* html h2,* html h3,* html h4 { font-size:100.01%; }
 * html *,* html #planets .active dt { font-size:11px; font-family:sans-serif; }
 
-/* IE6 sucks */
-* html li,* html a,* html p { position:relative; top:0; left:0; }
-
 #time { bottom:0; text-align:right; display:block; margin:0; border-top:.2em solid #aaa; padding:.2em; background-color:#222; word-spacing:-1.1em; line-height:2em; height:2em; white-space:nowrap; z-index:20000; }
 * html #time { word-spacing:0; }
 #time dt { margin:0 0 0 .25em; padding:.2em 0 .2em .3em; display:inline; background-color:#777; color:#fff; font-weight:bold; border-width:.1em; border-color:#aaa; border-style:solid none solid solid; font-family:monospace; }
@@ -347,8 +344,8 @@ h2#punkte { clear:right; }
 * html #planets li.active .planet-info { width:100%; }
 
 #flotten { margin:-.1em 0 0 0; padding:0; }
-#flotten dt { margin:0; float:left; width:78%; border-top:.1em solid #aaa; padding:.5em 1%; text-align:left; font-weight:bold; }
-#flotten dd { margin:0; float:left; width:18%; border-top:.1em solid #aaa; padding:.5em 1%; }
+#flotten dt { margin:0; float:left; width:78%; border-top:.1em solid #aaa; padding:.5em 1%; text-align:left; font-weight:bold; position:relative; }
+#flotten dd { margin:0; float:left; width:18%; border-top:.1em solid #aaa; padding:.5em 1%; position:relative; }
 #planeten { clear:left; }
 #flotten dt.hinflug.eigen { color:#0f0; }
 #flotten dt.rueckflug.eigen { color:#0b0; }
@@ -391,7 +388,7 @@ h2#punkte { clear:right; }
 .handelsrechner-handelskurs dl dd { display:inline; float:none; margin:0; padding:0; width:auto; }
 .handelsrechner-handelskurs input { width:6ex; text-align:center; }
 .handelsrechner-handelskurs button { width:20ex; margin:0 auto; }
-.handelsrechner-angebot { width:45%; margin:0 .5em; float:left; }
+.handelsrechner-angebot { width:45%; margin:0 .5em; float:left; position:relative; }
 .handelsrechner-erhalten { width:45%; margin:0 .5em; }
 * html .handelsrechner-erhalten { width:100%; }
 .handelsrechner input { padding:0 .2em; }
@@ -473,3 +470,5 @@ br.clear { clear:both; }
 .imperium-modi a,.highscores-modi a { display:block; }
 .imperium-modi a:hover,.imperium-modi a:focus,.highscores-modi a:hover,.highscores-modi a:focus { background-color:#888; }
 .imperium-modi .active a,.highscores-modi .active a { background-color:#777; }
+
+.allianz-gruenden-form dt { position:relative; }
