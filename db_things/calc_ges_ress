@@ -24,7 +24,10 @@
 		$username = urldecode($filename);
 		$user_array = get_user_array($username);
 		
-		$days = ceil((time()-$user_array['last_active'])/86400);
+		if(isset($user_array['last_active']))
+			$days = ceil((time()-$user_array['last_active'])/86400);
+		else
+			$days = ceil((time()-$user_array['registration'])/86400);
 		
 		# Wenn der Spieler inaktiv ist, loeschen
 		if(isset($user_array['last_active']))
