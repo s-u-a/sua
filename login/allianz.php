@@ -165,7 +165,7 @@
 				}
 			}
 ?>
-<form action="allianz.php?action=gruenden&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="allianz-grunden-form">
+<form action="allianz.php?action=gruenden&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="allianz-gruenden-form">
 	<dl>
 		<dt><label for="allianztag-input">Allianz<span xml:lang="en">tag</span></label></dt>
 		<dd><input type="text" name="tag" id="allianztag-input" value="<?=isset($_POST['tag']) ? utf8_htmlentities($_POST['tag']) : ''?>" title="Das Allianztag wird in der Karte und in den Highscores vor dem Benutzernamen angezeigt." maxlength="6" /></dd>
