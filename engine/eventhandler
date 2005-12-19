@@ -84,7 +84,10 @@
 		unlock_database();
 		
 		if(file_exists(DB_EVENTHANDLER_STOP_FILE))
+		{
+			echo date('Y-m-d, H:i:s')." -- Eventhandler stopped.\n\n";
 			exit(0);
+		}
 
 		sleep(EVENTHANDLER_INTERVAL);
 	}
