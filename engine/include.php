@@ -1938,7 +1938,7 @@
 		# Aus den Allianz-Highscores entfernen
 		$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r+');
 		flock($fh, LOCK_EX);
-		fseek($fh, ($alliance_array['platz']-1)*26, SEEK_SET);
+		fseek($fh, $alliance_array['platz']*26, SEEK_SET);
 		$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
 		
 		while(true)
@@ -1962,7 +1962,7 @@
 		
 		$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'r+');
 		flock($fh, LOCK_EX);
-		fseek($fh, ($alliance_array['platz2']-1)*26, SEEK_SET);
+		fseek($fh, $alliance_array['platz2']*26, SEEK_SET);
 		$filesize = filesize(DB_HIGHSCORES_ALLIANCES2);
 		
 		while(true)
