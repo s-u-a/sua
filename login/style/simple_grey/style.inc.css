@@ -189,6 +189,7 @@ legend { font-weight:bold; }
 .benutzerbeschreibung hr,.allianz-internes hr,.allianz-externes hr { height:0; padding:0; border-style:solid none none none; border-width:.2em; border-color:#aaa; }
 .benutzerbeschreibung strong,.allianz-internes strong,.allianz-externes strong { font-weight:bold; font-style:normal; text-decoration:none; }
 .benutzerbeschreibung em,.allianz-internes em,.allianz-externes em { font-weight:normal; font-style:normal; text-decoration:underline; }
+.playerinfo-nachricht dt { position:relative; }
 
 .fertig { color:#0f0; font-weight:bold; }
 .fertig:hover,.fertig:focus { color:#0c0; }
@@ -224,7 +225,7 @@ legend { font-weight:bold; }
 .karte-wahl legend { margin:0 auto; text-align:center; }
 
 .nachrichten-kategorien { display:block; padding:0; margin:0; font-weight:bold; }
-.nachrichten-kategorien dt { float:left; margin:0; padding:.2em .3em; display:block; }
+.nachrichten-kategorien dt { float:left; margin:0; padding:.2em .3em; display:block; position:relative; }
 .nachrichten-kategorien dd { margin:0; padding:.2em .3em; text-align:right; display:block; border-top:.1em solid #aaa; vertical-align:middle; }
 .nachrichten-kategorien dd.c-postausgang { border-width:.3em; border-style:double none none none; }
 .nachrichten-kategorien dt.c-gesamt { margin-top:.3em; }
@@ -238,7 +239,7 @@ legend { font-weight:bold; }
 .nachrichten-liste table { width:80%; border-spacing:0; border-collapse:collapse; margin:.5em auto; }
 .nachrichten-liste th,.nachrichten-liste td { border:.1em solid #aaa; padding:.2em; }
 .nachrichten-liste th { font-weight:bold; }
-.nachrichten-liste td { text-align:left; }
+#content-11 .nachrichten-liste td { text-align:left; }
 .nachrichten-liste td.c-betreff { font-weight:bold; }
 .nachrichten-liste .c-auswaehlen { width:1px; text-align:center; }
 .nachrichten-liste .c-absender,.nachrichten-liste .c-datum { width:25%; white-space:nowrap; }
@@ -248,7 +249,7 @@ legend { font-weight:bold; }
 .nachrichten-liste .archiviert a { font-style:italic; }
 
 .nachricht-informationen { margin:0; padding:0; text-align:left; font-weight:bold; }
-.nachricht-informationen dt { margin:0; padding:.2em .5em; width:10em; float:left; border-bottom:.1em solid #aaa; clear:left; }
+.nachricht-informationen dt { margin:0; padding:.2em .5em; width:10em; float:left; border-bottom:.1em solid #aaa; clear:left; position:relative; }
 .nachricht-informationen dt:after { content:":"; }
 .nachricht-informationen dd { margin:0 0 0 11em; padding:.2em .5em; border-left:.1em solid #aaa; border-bottom:.1em solid #aaa; }
 .nachricht-informationen .c-nachricht { border-bottom-style:none; }
@@ -377,6 +378,8 @@ h2#punkte { clear:right; }
 .buendnisse-eingehen,.allianz-laufende-bewerbungen { margin:.5em; }
 .buendnisse,.allianz-laufende-bewerbungen { border:.1em solid #aaa; }
 .buendnisse-rundschreiben div { text-align:center; }
+* html .buendnisse-liste { height:1%; }
+.buendnisse-eingehen dt { position:relative; }
 
 #js-title { position:absolute; z-index:50000; border:.2em solid #aaa; padding:.5em; font-weight:bold; background-color:#888; margin:0 10px 10px 0; }
 #js-title.hidden { display:none; }
@@ -471,4 +474,4 @@ br.clear { clear:both; }
 .imperium-modi a:hover,.imperium-modi a:focus,.highscores-modi a:hover,.highscores-modi a:focus { background-color:#888; }
 .imperium-modi .active a,.highscores-modi .active a { background-color:#777; }
 
-.allianz-gruenden-form dt { position:relative; }
+.allianz-bewerben-form dt,.allianz-gruenden-form dt,.allianz-intern-form dt,.allianz-extern-form dt { position:relative; }
