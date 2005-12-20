@@ -506,7 +506,7 @@
 
 										if($user_array['receive'][5][0])
 										{
-											$message_text = 'Ihr '.$items['schiffe']['S6']['name'].' erreicht den Planeten '.$flotte[3][1].' und beginnt mit seiner Besiedelung. Durch den Abbau des Schiffes konnten folgende Rohstoffe gewonnen werden: '.ths(round($items['schiffe']['S6']['ress'][0]*0.8), true).$nbsp.'Carbon, '.ths(round($items['schiffe']['S6']['ress'][1]*0.8), true).$nbsp.'Aluminium, '.ths(round($items['schiffe']['S6']['ress'][2]*0.8), true).$nbsp.'Wolfram, '.ths(round($items['schiffe']['S6']['ress'][3]*0.8), true).$nbsp.'Radium. Das Besiedelungsschiff liefert außerdem '.ths(round($tritium), true).' überflüssigen Tritiums ab.';
+											$message_text = 'Ihr '.$items['schiffe']['S6']['name'].' erreicht den Planeten '.$flotte[3][1].' und beginnt mit seiner Besiedelung. Durch den Abbau des Schiffes konnten folgende Rohstoffe gewonnen werden: '.ths(round($items['schiffe']['S6']['ress'][0]*0.4), true).$nbsp.'Carbon, '.ths(round($items['schiffe']['S6']['ress'][1]*0.4), true).$nbsp.'Aluminium, '.ths(round($items['schiffe']['S6']['ress'][2]*0.4), true).$nbsp.'Wolfram, '.ths(round($items['schiffe']['S6']['ress'][3]*0.4), true).$nbsp.'Radium. Das Besiedelungsschiff liefert außerdem '.ths(round($tritium), true).' überflüssigen Tritiums ab.';
 											messages::new_message(array($ev_username=>5), '', 'Besiedelung von '.$flotte[3][1], $message_text);
 										}
 
@@ -524,7 +524,7 @@
 												$schiffe_string[] = $items['schiffe'][$id]['name'].': '.ths($anzahl, true);
 											}
 											$schiffe_string = implode(', ', $schiffe_string);
-											$message_text = 'Eine Ihrer Flotten ('.$schiffe_string.') erreicht den Planeten '.$flotte[3][1].' und beginnt mit seiner Besiedelung. Ein '.$items['schiffe']['S6']['name'].' wurde abgebaut, um folgende Rohstoffe auf dem Planeten zur Verfügung zu stellen: '.ths(round($items['schiffe']['S6']['ress'][0]*0.8), true).$nbsp.'Carbon, '.ths(round($items['schiffe']['S6']['ress'][1]*0.8), true).$nbsp.'Aluminium, '.ths(round($items['schiffe']['S6']['ress'][2]*0.8), true).$nbsp.'Wolfram, '.ths(round($items['schiffe']['S6']['ress'][3]*0.8), true).$nbsp.'Radium, '.ths(round($items['schiffe']['S6']['ress'][3]*0.8), true).$nbsp.'Tritium. Das abgebaute Schiff liefert außerdem '.ths(round($tritium), true).' überflüssigen Tritiums ab.';
+											$message_text = 'Eine Ihrer Flotten ('.$schiffe_string.') erreicht den Planeten '.$flotte[3][1].' und beginnt mit seiner Besiedelung. Ein '.$items['schiffe']['S6']['name'].' wurde abgebaut, um folgende Rohstoffe auf dem Planeten zur Verfügung zu stellen: '.ths(round($items['schiffe']['S6']['ress'][0]*0.4), true).$nbsp.'Carbon, '.ths(round($items['schiffe']['S6']['ress'][1]*0.4), true).$nbsp.'Aluminium, '.ths(round($items['schiffe']['S6']['ress'][2]*0.4), true).$nbsp.'Wolfram, '.ths(round($items['schiffe']['S6']['ress'][3]*0.4), true).$nbsp.'Radium. Das abgebaute Schiff liefert außerdem '.ths(round($tritium), true).' überflüssigen Tritiums ab.';
 											$rohstoff_sum = array_sum($flotte[5][0]);
 											$roboter_sum = array_sum($flotte[5][1]);
 											if($rohstoff_sum > 0 || $roboter_sum > 0)
