@@ -6,7 +6,7 @@
 
 	# Konstanten, die wichtige Pfade enthalten
 	if(isset($_SERVER['SUA_DB_DIR'])) $DB_DIR = $_SERVER['SUA_DB_DIR'];
-	else logfile::panic('Es wurde kein Datenbankverzeichnis angegeben. Der Administrator solle bitte die Umgebungsvariable SUA_DB_DIR setzen.');
+	else { echo "Es wurde kein Datenbankverzeichnis angegeben. Der Administrator solle bitte die Umgebungsvariable SUA_DB_DIR setzen.\n"; exit(1); }
 
 		# Auswertung von $DB_DIR
 		if(substr($DB_DIR, 0, 1) != '/')
