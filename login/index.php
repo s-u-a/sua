@@ -78,7 +78,7 @@
 					if(!is_file(DB_MESSAGES.'/'.$message_id) || !is_readable(DB_MESSAGES.'/'.$message_id))
 						continue;
 	
-					if($unread && $cat != 8)
+					if($unread == 1 && $cat != 8)
 					{
 						$ncount[$cat]++;
 						$ges_ncount++;
