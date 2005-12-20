@@ -424,10 +424,10 @@
 
 									# Neue Rohstoffe errechnen
 									$new_planet_array['ress'] = array();
-									$new_planet_array['ress'][0] = round($items['schiffe']['S6']['ress'][0]*0.8);
-									$new_planet_array['ress'][1] = round($items['schiffe']['S6']['ress'][1]*0.8);
-									$new_planet_array['ress'][2] = round($items['schiffe']['S6']['ress'][2]*0.8);
-									$new_planet_array['ress'][3] = round($items['schiffe']['S6']['ress'][3]*0.8);
+									$new_planet_array['ress'][0] = round($items['schiffe']['S6']['ress'][0]*0.4);
+									$new_planet_array['ress'][1] = round($items['schiffe']['S6']['ress'][1]*0.4);
+									$new_planet_array['ress'][2] = round($items['schiffe']['S6']['ress'][2]*0.4);
+									$new_planet_array['ress'][3] = round($items['schiffe']['S6']['ress'][3]*0.4);
 									$new_planet_array['ress'][4] = 0;
 
 									# Mitgenommene Rohstoffe hinzuzaehlen

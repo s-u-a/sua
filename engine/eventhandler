@@ -76,7 +76,6 @@
 			echo date('Y-m-d, H:i:s')." -- Handelskurs recalculated.\n\n";
 
 			delete_old_messages();
-			delete_inactive_players();
 
 			$last_handelskurs = date('Y-m-d');
 		}
