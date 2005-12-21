@@ -258,6 +258,17 @@
 	<dd class="c-gesamt"><?=ths($user_array['punkte'][7]+$user_array['punkte'][8]+$user_array['punkte'][9]+$user_array['punkte'][10]+$user_array['punkte'][11])?></dd>
 </dl>
 <?php
+				$etech = 0;
+				if(isset($user_array['forschung']['F3']))
+					$etech = $user_array['forschung']['F3'];
+				$energie = round((pow(1.05, $etech)-1)*100, 3);
+?>
+<h3 id="forschungsverbesserungen">Forschungsverbesserungen</h3>
+<dl class="imperium-rohstoffe-auswirkungsgrade">
+	<dt class="c-energieproduktion">Energieproduktion</dt>
+	<dd class="c-energieproduktion"><?=str_replace('.', ',', $energie)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+</dl>
+<?php
 			break;
 		case 'roboter':
 ?>
@@ -403,6 +414,55 @@
 		</tr>
 	</tfoot>
 </table>
+<?php
+			$rueckstoss = 0;
+			if(isset($user_array['forschung']['F6']))
+				$rueckstoss = $user_array['forschung']['F6'];
+			$ionen = 0;
+			if(isset($user_array['forschung']['F7']))
+				$ionen = $user_array['forschung']['F7'];
+			$kern = 0;
+			if(isset($user_array['forschung']['F8']))
+				$kern = $user_array['forschung']['F8'];
+			$antriebe = round((pow(1.025, $rueckstoss)*pow(1.05, $ionen)*pow(1.5, $kern)-1)*100, 3);
+			
+			$waffen = 0;
+			if(isset($user_array['forschung']['F4']))
+				$waffen = $user_array['forschung']['F4'];
+			$waffen = round((pow(1.05, $waffen)-1)*100, 3);
+			
+			$schilde = 0;
+			if(isset($user_array['forschung']['F5']))
+				$schilde = $user_array['forschung']['F5'];
+			$schilde = round((pow(1.05, $schilde)-1)*100, 3);
+			
+			$schildregen = 0;
+			if(isset($user_array['forschung']['F10']))
+				$schildregen = $user_array['forschung']['F10'];
+			$schildregen = round((pow(1.025, $schildregen)-1)*100, 3);
+			
+			$laderaum = 0;
+			if(isset($user_array['forschung']['F11']))
+				$laderaum = $user_array['forschung']['F11'];
+			$laderaum = round((pow(1.2, $laderaum)-1)*100, 3);
+?>
+<h3 id="forschungsverbesserungen">Forschungsverbesserungen</h3>
+<dl class="imperium-schiffe-auswirkungsgrade">
+	<dt class="c-antriebe">Antriebe</dt>
+	<dd class="c-antriebe"><?=str_replace('.', ',', $antriebe)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	
+	<dt class="c-waffen">Waffen</dt>
+	<dd class="c-waffen"><?=str_replace('.', ',', $waffen)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	
+	<dt class="c-schilde">Schilde</dt>
+	<dd class="c-schilde"><?=str_replace('.', ',', $schilde)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	
+	<dt class="c-schildreparatur-pro-runde">Schildreparatur pro Runde</dt>
+	<dd class="c-schildreparatur-pro-runde"><?=str_replace('.', ',', $schildregen)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	
+	<dt class="c-laderaumvergroesserung">Laderaumvergrößerung</dt>
+	<dd class="c-laderaumvergroesserung"><?=str_replace('.', ',', $laderaum)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+</dl>
 <?php
 	}
 	

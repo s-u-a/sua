@@ -169,11 +169,11 @@ legend { font-weight:bold; }
 .prod-show-days { width:3ex; height:1.2em; }
 .ress-prod button { width:100%; }
 
-.punkte,.daten,.buendnis-informationen,.playerinfo-planeten,.allianceinfo,.imperium-roboter-auswirkungsgrade { width:70%; margin:.5em 15%; padding:0; border:.1em solid #aaa; white-space:nowrap; text-align:left; }
-* html .punkte,* html .daten,* html .allianceinfo,* html .imperium-roboter-auswirkungsgrade { width:100%; }
-.punkte dt,.daten dt,.allianceinfo dt,.imperium-roboter-auswirkungsgrade dt { float:left; width:35%; padding:.2em; border-bottom:.1em solid #aaa; border-right:.1em solid #aaa; margin-right:.2em; font-weight:bold; }
-.punkte dd,.daten dd,.allianceinfo dd,.imperium-roboter-auswirkungsgrade dd { margin:0 0 0 35%; padding:.2em; border-bottom:.1em solid #aaa; font-weight:bold; }
-.punkte dt.c-gesamt,.punkte dd.c-gesamt,.punkte dt.c-registrierung,.punkte dd.c-registrierung,.allianceinfo dt.c-punktzahl,.allianceinfo dd.c-punktzahl,.imperium-roboter-auswirkungsgrade dt.c-minenroboter,.imperium-roboter-auswirkungsgrade dd.c-minenroboter { border-bottom-style:none; }
+.punkte,.daten,.buendnis-informationen,.playerinfo-planeten,.allianceinfo,.imperium-roboter-auswirkungsgrade,.imperium-rohstoffe-auswirkungsgrade,.imperium-schiffe-auswirkungsgrade { width:70%; margin:.5em 15%; padding:0; border:.1em solid #aaa; white-space:nowrap; text-align:left; }
+* html .punkte,* html .daten,* html .allianceinfo,* html .imperium-roboter-auswirkungsgrade,* html .imperium-rohstoffe-auswirkungsgrade,* html .imperium-schiffe-auswirkungsgrade { width:100%; }
+.punkte dt,.daten dt,.allianceinfo dt,.imperium-roboter-auswirkungsgrade dt,.imperium-rohstoffe-auswirkungsgrade dt,.imperium-schiffe-auswirkungsgrade dt { float:left; width:35%; padding:.2em; border-bottom:.1em solid #aaa; border-right:.1em solid #aaa; margin-right:.2em; font-weight:bold; }
+.punkte dd,.daten dd,.allianceinfo dd,.imperium-roboter-auswirkungsgrade dd,.imperium-rohstoffe-auswirkungsgrade dd,.imperium-schiffe-auswirkungsgrade dd { margin:0 0 0 35%; padding:.2em; border-bottom:.1em solid #aaa; font-weight:bold; }
+.punkte dt.c-gesamt,.punkte dd.c-gesamt,.punkte dt.c-registrierung,.punkte dd.c-registrierung,.allianceinfo dt.c-punktzahl,.allianceinfo dd.c-punktzahl,.imperium-roboter-auswirkungsgrade dt.c-minenroboter,.imperium-roboter-auswirkungsgrade dd.c-minenroboter,.imperium-rohstoffe-auswirkungsgrade .c-energieproduktion,.imperium-schiffe-auswirkungsgrade .c-laderaumvergroesserung { border-bottom-style:none; }
 .buendnis-informationen,.playerinfo-planeten { text-align:center; font-weight:bold; list-style-type:none; border-bottom-style:none; }
 .buendnis-informationen li,.playerinfo-planeten li { border-bottom:.1em solid #aaa; }
 .benutzerbeschreibung,.allianz-internes,.allianz-externes { text-align:left; padding:.5em; }
