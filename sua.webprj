@@ -84,8 +84,6 @@
     <item url="login/style/grey_graphics/style.inc.css" uploadstatus="1" />
     <templates>templates/</templates>
     <toolbars>toolbars/</toolbars>
-    <item url="login/imperium.php" uploadstatus="1" />
-    <annotations/>
     <item url="db_things/stop_eventhandler" />
     <author>Candid Dauth</author>
     <email>webmaster@s-u-a.net</email>
