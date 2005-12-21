@@ -22,6 +22,12 @@
 	else
 	{
 			$message = unserialize(gzuncompress(file_get_contents(DB_MESSAGES_PUBLIC.'/'.$_GET['id'])));
+			$message['last_view'] = time();
+			$fh = fopen(DB_MESSAGES_PUBLIC.'/'.$_GET['id'], 'w');
+			flock($fh, LOCK_EX);
+			fwrite($fh, gzcompress(serialize($message)));
+			flock($fh, LOCK_UN);
+			fclose($fh);
 ?>
 		<dl class="nachricht-informationen type-<?=utf8_htmlentities($message['type'])?><?=$message['html'] ? ' html' : ''?>">
 <?php
