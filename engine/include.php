@@ -935,7 +935,6 @@
 		function get_time($mass, $distance, $speed)
 		{
 			# Umrechnung der Entfernung in physikalisch verwertbare Einheiten
-			$distance /= 50;
 			
 			if($speed <= 0)
 				$time = 900;
@@ -944,7 +943,7 @@
 				#$time = round(pow(1.125*$mass*pow($distance, 2)/$speed, 0.33333)*10);
 				# Physikalisch korrekt:
 				#$time = round(pow(2*$distance*$distance*$mass/$speed, 0.33333));
-				$time = round(2*$distance*$mass/$speed);
+				$time = round(2*sqrt($distance)*$mass/$speed);
 
 			return $time;
 		}
