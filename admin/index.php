@@ -114,10 +114,10 @@
 				$changed = true;
 			}
 
-			if(isset($msg['from'][$_POST['rename_old']]))
+			if(isset($msg['users'][$_POST['rename_old']]))
 			{
-				$msg['from'][$_POST['rename_new']] = $msg['from'][$_POST['rename_old']];
-				unset($msg['from'][$_POST['rename_old']]);
+				$msg['users'][$_POST['rename_new']] = $msg['users'][$_POST['rename_old']];
+				unset($msg['users'][$_POST['rename_old']]);
 				$changed = true;
 			}
 
