@@ -43,7 +43,7 @@
 	$DB_HANDELSKURS = $DB_DIR.'/handelskurs';
 	$DB_ADMINS = $DB_DIR.'/admins';
 	$DB_NEWS = $DB_DIR.'/news';
-	$DB_LOCK_FILE = '/dev/shm/suadb_lock';
+	$DB_LOCK_FILE = '/dev/shm/suadb_lock_'.md5($DB_DIR);
 	$DB_EVENTHANDLER_STOP_FILE = '/dev/shm/stop_eventhandler';
 	$EVENTHANDLER_INTERVAL = 30;
 	$THS_HTML = '&nbsp;';

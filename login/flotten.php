@@ -320,6 +320,7 @@
 									$auftrag_array[6] = 1;
 
 								$auftrag_array[4] = array(fleet::get_tritium($leermasse, $distance)*$auftrag_array[6]*2, 0); # Tritium (Verbrauch, Ueberschuessig)
+								$mass += $auftrag_array[4][0];
 
 								$auftrag_array[5] = array(array(0,0,0,0,0), array()); # Mitnahme: Rohstoffe, Roboter
 								if(($auftrag_array[2] == 1 || $auftrag_array[2] == 4 || $auftrag_array[2] == 6))
@@ -465,7 +466,7 @@
 										$mass += $items['roboter'][$id]['mass']*$anzahl;
 								}
 
-								# Geschwindigkeit und Tritiumverbrauch nun berechnen
+								# Geschwindigkeit nun berechnen
 								$auftrag_array[1][1] = time()+round(fleet::get_time($mass, $distance, $speed)/$auftrag_array[6]); # Ankunftszeit
 
 								$auftrag_array[7] = false; # Rueckflug?
@@ -594,6 +595,7 @@
 						$time = fleet::get_time($mass, $distance, $speed);
 						$tritium = fleet::get_tritium($mass, $distance);
 						$tritium *= 2;
+						$mass += $tritium;
 						$time_string = '';
 						if($time >= 86400)
 						{
@@ -741,7 +743,7 @@
 
 
 				// Masse
-				var masse = <?=$mass?>;
+				var masse = <?=$mass-$tritium?>;
 <?php
 						if($transport[0] > 0 || $transport[1] > 0)
 						{
@@ -831,6 +833,7 @@
 				var tritium = <?=$tritium?>;
 				if(!isNaN(speed))
 					tritium = Math.floor(tritium*speed);
+				masse += tritium;
 				document.getElementById('tritium-verbrauch').innerHTML = ths(tritium)+'&thinsp;<abbr title="Tonnen">t</abbr>';
 				document.getElementById('tritium-verbrauch').className = 'c-tritiumverbrauch '+((<?=$this_planet['ress'][4]?> >= tritium) ? 'ja' : 'nein');
 

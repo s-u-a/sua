@@ -447,6 +447,7 @@
 									$mass = $items['schiffe']['S6']['mass'];
 									$speed = $items['schiffe']['S6']['speed'];
 									$tritium = fleet::get_tritium($mass, $distance, $speed)*$flotte[6];
+									$mass += $tritium;
 									$new_planet_array['ress'][4] += round($tritium);
 
 									$new_planet_array['last_refresh'] = time();
@@ -570,6 +571,7 @@
 										}
 
 										# Tritiumverbrauch und Flugzeit neu berechnen
+										$mass += fleet::get_tritium($mass, $distance)*$flotte[6];
 										$time = fleet::get_time($mass, $distance, $speed);
 
 										$time /= $flotte[6];
@@ -660,6 +662,7 @@
 										continue;
 									$mass += $items['roboter'][$id]['mass']*$anzahl;
 								}
+								$mass += fleet::get_tritium($mass, $distance);
 								$time_diff = fleet::get_time($mass, $distance, $speed);
 								# Geschwindigkeitsfaktor
 								$time_diff /= $flotte[6];
@@ -1308,6 +1311,7 @@
 											continue;
 										$mass += $items['roboter'][$id]['mass']*$anzahl;
 									}
+									$mass += fleet::get_tritium($mass, $distance);
 									$time_diff = fleet::get_time($mass, $distance, $speed);
 									# Geschwindigkeitsfaktor
 									$time_diff /= $flotte[6];
@@ -1747,6 +1751,7 @@
 											$speed += $items['schiffe'][$id]['speed']*$anzahl;
 										}
 										$distance = fleet::get_distance($new_flotte[3][1], $new_flotte[3][0]);
+										$mass += fleet::get_tritium($mass, $distance);
 										$time = fleet::get_time($mass, $distance, $speed);
 										$new_flotte[1] = array($new_flotte[1][1], $new_flotte[1][1]+$time);
 
