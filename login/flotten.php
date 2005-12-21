@@ -847,7 +847,8 @@
 ?>
 				//var time = Math.pow(1.125*masse*Math.pow(<?=$distance?>, 2)/<?=$speed?>, 0.33333)*10;
 				//var time = Math.pow((masse*<?=$distance?>)/<?=$speed?>, 0.3)*300;
-				var time = (Math.pow(masse, 0.9)/<?=$speed?>)*<?=pow($distance, 0.3)*100?>;
+				//var time = (Math.pow(masse, 0.9)/<?=$speed?>)*<?=pow($distance, 0.3)*100?>;
+				var time = 2*<?=$distance/50?>*mass/<?=$speed?>;
 				if(!isNaN(speed))
 					time /= speed;
 				time = Math.round(time);

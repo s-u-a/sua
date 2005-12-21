@@ -887,7 +887,7 @@
 					if($this_pos[2] == $that_pos[2]) # Selber Planet
 						$distance = 0.001;
 					else # Anderer Planet
-						$distance = 0.01*diff($this_pos[2], $that_pos[2]);
+						$distance = 0.1*diff($this_pos[2], $that_pos[2]);
 				}
 				else
 				{
@@ -944,7 +944,7 @@
 				#$time = round(pow(1.125*$mass*pow($distance, 2)/$speed, 0.33333)*10);
 				# Physikalisch korrekt:
 				#$time = round(pow(2*$distance*$distance*$mass/$speed, 0.33333));
-				$time = round(2*$distance*$mass/$speed, 0.333333);
+				$time = round(2*$distance*$mass/$speed);
 
 			return $time;
 		}
