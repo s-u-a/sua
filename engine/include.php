@@ -2734,42 +2734,18 @@
 		return sort_koords($a['pos'], $b['pos']);
 	}
 
-	$database_locked_by_me = false;
-
 	function lock_database()
 	{
-		if(!isset($GLOBALS['database_locked_by_me']) || !$GLOBALS['database_locked_by_me'])
-		{
-			if(isset($_SERVER['HTTP_HOST']))
-			{
-				for($i=0; file_exists(DB_LOCK_FILE)&&$i<600; $i++)
-				{
-					usleep(50000);
-					clearstatcache();
-				}
-				if(file_exists(DB_LOCK_FILE))
-					die('Couldn\'t get exclusive lock on database.');
-			}
-			else
-			{
-				while(file_exists(DB_LOCK_FILE))
-				{
-					usleep(50000);
-					clearstatcache();
-				}
-			}
-			touch(DB_LOCK_FILE);
-
-			$GLOBALS['database_locked_by_me'] = true;
-		}
+		$GLOBALS['database_lock_file_pointer'] = fopen(DB_LOCK_FILE, 'w');
+		flock($GLOBALS['database_lock_file_pointer'], LOCK_EX);
 	}
 
 	function unlock_database()
 	{
-		if(isset($GLOBALS['database_locked_by_me']) && $GLOBALS['database_locked_by_me'])
+		if(isset($GLOBALS['database_lock_file_pointer']) && $GLOBALS['database_lock_file_pointer'])
 		{
-			unlink(DB_LOCK_FILE);
-			$GLOBALS['database_locked_by_me'] = false;
+			flock($GLOBALS['database_lock_file_pointer'], LOCK_UN);
+			fclose($GLOBALS['database_lock_file_pointer']);
 		}
 	}
 

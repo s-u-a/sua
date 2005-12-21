@@ -1,10 +1,8 @@
 <!DOCTYPE webproject>
 <webproject>
-  <project type="Local" name="Stars Under Attack" encoding="iso 8859-1" >
+  <project type="Local" name="Stars Under Attack" encoding="iso 8859-1" enableEvents="true" >
     <upload/>
-    <author>Candid Dauth</author>
-    <email>webmaster@s-u-a.net</email>
-    <defaultDTD>-//W3C//DTD XHTML 1.0 Strict//EN</defaultDTD>
+    <defaultDTD>-//w3c//dtd xhtml 1.0 strict//en</defaultDTD>
     <item url="" uploadstatus="1" />
     <item url="faq.php" uploadstatus="1" />
     <item url="impressum.php" uploadstatus="1" />
@@ -89,5 +87,30 @@
     <item url="login/imperium.php" uploadstatus="1" />
     <annotations/>
     <item url="db_things/stop_eventhandler" />
+    <author>Candid Dauth</author>
+    <email>webmaster@s-u-a.net</email>
+    <debuggerclient persistentWatches="0" persistentBreakpoints="0" >Kein Debugger</debuggerclient>
+    <exclude cvsignore="false" ></exclude>
+    <teamdata>
+      <taskleaders/>
+      <subprojectleaders/>
+      <member task="Testing" >
+        <name>Alexander Bender</name>
+        <nickName>Soltari</nickName>
+        <email>alex@s-u-a.net</email>
+      </member>
+      <leader>
+        <name>Candid Dauth</name>
+        <nickName>Candid</nickName>
+        <email>webmaster@s-u-a.net</email>
+      </leader>
+      <member task="Design, Hauptseite, Items" >
+        <name>René Müller</name>
+        <nickName>rmueller</nickName>
+        <email>rmueller@s-u-a.net</email>
+      </member>
+      <mailinglist address="" />
+    </teamdata>
+    <events/>
   </project>
 </webproject>

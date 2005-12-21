@@ -1,3 +1,4 @@
+1135173060	Neuer Datenbank-Locking-Mechanismus, das bisherige Problem sollte nun definitiv nicht mehr auftreten.
 1135031913	In der Karte wird die Werbung nun ausgeblendet, falls man sie aktiviert hat.
 1135019621	Neue Versionsnummer: 0.1.7
 1135019618	Inaktive Benutzer werden nun automatisch gelöscht.
