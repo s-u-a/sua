@@ -132,16 +132,6 @@
 		}
 		closedir($dh);
 
-		# Eintrag in Highscores aendern
-		$fh = fopen(DB_HIGHSCORES, 'r+');
-		flock($fh, LOCK_EX);
-
-		fseek($fh, ($that_user_array['punkte'][12]-1)*38, SEEK_SET);
-		fwrite($fh, highscores::make_info($_POST['rename_new'], $that_user_array['punkte'][0]+$that_user_array['punkte'][1]+$that_user_array['punkte'][2]+$that_user_array['punkte'][3]+$that_user_array['punkte'][4]+$that_user_array['punkte'][5]+$that_user_array['punkte'][6]));
-
-		flock($fh, LOCK_UN);
-		fclose($fh);
-
 		# Buendnisparter auswechseln
 		foreach($that_user_array['verbuendete'] as $verbuendeter)
 		{
@@ -182,10 +172,21 @@
 				unset($verb_user_array);
 			}
 		}
+		
+		# Allianz
+		if($that_user_array['alliance'])
+		{
+			$alliance_array = get_alliance_array($that_user_array['alliance']);
+			$alliance_array['members'][$_POST['rename_new']] = $alliance_array['members'][$_POST['rename_old']];
+			unset($alliance_array['members'][$_POST['rename_old']]);
+			write_alliance_array($that_user_array['alliance'], $alliance_array);
+		}
 
 		# Datei umbenennen und schreiben
 		rename(DB_PLAYERS.'/'.urlencode($_POST['rename_old']), DB_PLAYERS.'/'.urlencode($_POST['rename_new']));
 		write_user_array($_POST['rename_new'], $that_user_array);
+		
+		highscores::recalc($_POST['rename_new']);
 	}
 
 	if($admin_array['permissions'][9] && isset($_POST['message_text']) && trim($_POST['message_text']) != '')
