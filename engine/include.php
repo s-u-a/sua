@@ -623,7 +623,7 @@
 			if(isset($SHOW_META_DESCRIPTION) && $SHOW_META_DESCRIPTION)
 			{
 ?>
-		<meta name="description" value="S-U-A &ndash; Stars Under Attack ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit Hunderten anderer Spielern." />
+		<meta name="description" content="S-U-A &ndash; Stars Under Attack ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit Hunderten anderer Spielern." />
 <?php
 			}
 ?>
