@@ -1,31 +1,39 @@
 <?php
 	$include_filename = substr(__FILE__, 0, strrpos(__FILE__, '/')).'/../../engine/include.php';
+	$LOGIN = true;
 	require($include_filename);
-
-	lock_database();
 
 	$resume = false;
 	$del_email_passwd = false;
 	session_start();
 	header('Cache-Control: no-cache', true);
-	if(!isset($_SESSION['username']) || !is_file(DB_PLAYERS.'/'.urlencode($_SESSION['username'])) || !is_readable(DB_PLAYERS.'/'.urlencode($_SESSION['username'])))
+	
+	$databases = get_databases();
+	if(isset($_SESSION['database']) && isset($databases[$_SESSION['database']]))
+		define_globals($databases[$_SESSION['database']][0]);
+	
+	if(!isset($_SESSION['username']) || !isset($_SESSION['database']) || (isset($_SESSION['database']) && (!isset($databases[$_SESSION['database']]) || !is_file(DB_PLAYERS.'/'.urlencode($_SESSION['username'])) || !is_readable(DB_PLAYERS.'/'.urlencode($_SESSION['username'])))))
 	{
-		if(isset($_POST['username']) && isset($_POST['password']))
+		if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['database']))
 		{
 			# Anmelden
-
-			if(!is_file(DB_PLAYERS.'/'.urlencode($_POST['username'])))
+			
+			if(!isset($databases[$_POST['database']]))
 				$loggedin = false;
 			else
 			{
-				$user_array = get_user_array($_POST['username']);
-				if(md5($_POST['password']) != $user_array['password'])
+				define_globals($databases[$_POST['database']][0]);
+				if(!is_file(DB_PLAYERS.'/'.urlencode($_POST['username'])))
 					$loggedin = false;
 				else
-					$loggedin = true;
+				{
+					$user_array = get_user_array($_POST['username']);
+					if(md5($_POST['password']) != $user_array['password'])
+						$loggedin = false;
+					else
+						$loggedin = true;
+				}
 			}
-
-			# Loggen nicht vergessen!
 		}
 		else
 			$loggedin = false;
@@ -34,7 +42,8 @@
 		{
 			if(isset($_POST['username']))
 				$_SESSION['username'] = $_POST['username'];
-			logfile::action('2.1');
+			if(defined('LOG_FILE'))
+				logfile::action('2.1');
 			if(isset($_SESSION['username']))
 				unset($_SESSION['username']);
 
@@ -56,12 +65,15 @@
 			$_SESSION['username'] = $_POST['username'];
 			$_SESSION['act_planet'] = 0;
 			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+			$_SESSION['database'] = $_POST['database'];
 			$resume = true;
 			$del_email_passwd = true;
 
 			logfile::action('2');
 		}
 	}
+	
+	lock_database();
 
 	$user_array = get_user_array($_SESSION['username']);
 
@@ -86,43 +98,42 @@
 	}
 
 	# Wiederherstellen
-	if($resume && isset($user_array['last_request']))
+	if($resume)
 	{
-		if($_SERVER['REQUEST_URI'] != $user_array['last_request'])
+		if(!isset($user_array['last_request']))
+			$user_array['last_request'] = $_SERVER['REQUEST_URI'];
+		if(isset($user_array['last_planet']) && isset($user_array['planets'][$_SESSION['act_planet']]))
+			$_SESSION['act_planet'] = $user_array['last_planet'];
+		$url = 'http://'.$databases[$_SESSION['database']][2].$user_array['last_request'];
+		$url = explode('?', $url, 2);
+		if(isset($url[1]))
+			$url[1] = explode('&', $url[1]);
+		else
+			$url[1] = array();
+		$one = false;
+		foreach($url[1] as $key=>$val)
 		{
-			if(isset($user_array['last_planet']) && isset($user_array['planets'][$_SESSION['act_planet']]))
-				$_SESSION['act_planet'] = $user_array['last_planet'];
-			$url = PROTOCOL.'://'.$_SERVER['HTTP_HOST'].$user_array['last_request'];
-			$url = explode('?', $url, 2);
-			if(isset($url[1]))
-				$url[1] = explode('&', $url[1]);
-			else
-				$url[1] = array();
-			$one = false;
-			foreach($url[1] as $key=>$val)
+			$val = explode("=", $val, 2);
+			if($val[0] == SESSION_COOKIE)
 			{
-				$val = explode("=", $val, 2);
-				if($val[0] == SESSION_COOKIE)
-				{
-					$url[1][$key] = SESSION_COOKIE.'='.urlencode(session_id());
-					$one = true;
-				}
+				$url[1][$key] = SESSION_COOKIE.'='.urlencode(session_id());
+				$one = true;
 			}
-			$url2 = $url[0];
-			if(count($url[1]) > 0)
-				$url2 .= '?'.implode('&', $url[1]);
-			$url = $url2;
-			if(!$one)
-			{
-				if(strpos($url, '?') === false)
-					$url .= '?';
-				else
-					$url .= '&';
-				$url .= SESSION_COOKIE.'='.urlencode(session_id());
-			}
-			header('Location: '.$url, true, 303);
-			die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 		}
+		$url2 = $url[0];
+		if(count($url[1]) > 0)
+			$url2 .= '?'.implode('&', $url[1]);
+		$url = $url2;
+		if(!$one)
+		{
+			if(strpos($url, '?') === false)
+				$url .= '?';
+			else
+				$url .= '&';
+			$url .= SESSION_COOKIE.'='.urlencode(session_id());
+		}
+		header('Location: '.$url, true, 303);
+		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 	}
 
 	# Schnellklicksperre
@@ -186,6 +197,7 @@
 			global $this_planet;
 			global $ges_prod;
 			global $skins;
+			global $databases;
 ?>
 <?='<?xml version="1.0" encoding="UTF-8"?>'."\n"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -271,36 +283,36 @@
 				</fieldset>
 			</form>
 			<ul id="main-navigation">
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/index.php') ? ' class="active"' : ''?> id="navigation-index"><a href="<?=htmlentities(h_root)?>/login/index.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="ü"><kbd>Ü</kbd>bersicht</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/rohstoffe.php') ? ' class="active"' : ''?> id="navigation-rohstoffe"><a href="<?=htmlentities(h_root)?>/login/rohstoffe.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="r"><kbd>R</kbd>ohstoffe</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/gebaeude.php') ? ' class="active"' : ''?> id="navigation-gebaeude"><a href="<?=htmlentities(h_root)?>/login/gebaeude.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="g"><kbd>G</kbd>ebäude</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/forschung.php') ? ' class="active"' : ''?> id="navigation-forschung"><a href="<?=htmlentities(h_root)?>/login/forschung.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="f"><kbd>F</kbd>orschung</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/roboter.php') ? ' class="active"' : ''?> id="navigation-roboter"><a href="<?=htmlentities(h_root)?>/login/roboter.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="b">Ro<kbd>b</kbd>oter</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/flotten.php') ? ' class="active"' : ''?> id="navigation-flotten"><a href="<?=htmlentities(h_root)?>/login/flotten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="l">F<kbd>l</kbd>otten</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/schiffswerft.php') ? ' class="active"' : ''?> id="navigation-schiffswerft"><a href="<?=htmlentities(h_root)?>/login/schiffswerft.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="s"><kbd>S</kbd>chiffswerft</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verteidigung.php') ? ' class="active"' : ''?> id="navigation-verteidigung"><a href="<?=htmlentities(h_root)?>/login/verteidigung.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="v"><kbd>V</kbd>erteidigung</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlentities(h_root)?>/login/imperium.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="m">I<kbd>m</kbd>perium</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/index.php') ? ' class="active"' : ''?> id="navigation-index"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/index.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="ü"><kbd>Ü</kbd>bersicht</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/rohstoffe.php') ? ' class="active"' : ''?> id="navigation-rohstoffe"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/rohstoffe.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="r"><kbd>R</kbd>ohstoffe</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/gebaeude.php') ? ' class="active"' : ''?> id="navigation-gebaeude"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/gebaeude.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="g"><kbd>G</kbd>ebäude</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/forschung.php') ? ' class="active"' : ''?> id="navigation-forschung"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/forschung.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="f"><kbd>F</kbd>orschung</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/roboter.php') ? ' class="active"' : ''?> id="navigation-roboter"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/roboter.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="b">Ro<kbd>b</kbd>oter</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/flotten.php') ? ' class="active"' : ''?> id="navigation-flotten"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/flotten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="l">F<kbd>l</kbd>otten</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/schiffswerft.php') ? ' class="active"' : ''?> id="navigation-schiffswerft"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/schiffswerft.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="s"><kbd>S</kbd>chiffswerft</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verteidigung.php') ? ' class="active"' : ''?> id="navigation-verteidigung"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verteidigung.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="v"><kbd>V</kbd>erteidigung</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/imperium.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="m">I<kbd>m</kbd>perium</a></li>
 			</ul>
 			<ul id="action-navigation">
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlentities(h_root)?>/login/karte.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="k"><kbd>K</kbd>arte</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/handelsrechner.php') ? ' class="active"' : ''?> id="navigation-handel"><a href="<?=htmlentities(h_root)?>/login/handelsrechner.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="d">Han<kbd>d</kbd>elsrechner</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/allianz.php') ? ' class="active"' : ''?> id="navigation-allianz"><a href="<?=htmlentities(h_root)?>/login/allianz.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="i">All<kbd>i</kbd>anz</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlentities(h_root)?>/login/verbuendete.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="e">V<kbd>e</kbd>rbündete</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlentities(h_root)?>/login/highscores.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" xml:lang="en" accesskey="h"><kbd>H</kbd>ighscores</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlentities(h_root)?>/login/nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="c">Na<kbd>c</kbd>hrichten</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/help/dependencies.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlentities(h_root)?>/login/help/dependencies.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="a">Forschungsb<kbd>a</kbd>um</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlentities(h_root)?>/login/einstellungen.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="t">Eins<kbd>t</kbd>ellungen</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/karte.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="k"><kbd>K</kbd>arte</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/handelsrechner.php') ? ' class="active"' : ''?> id="navigation-handel"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/handelsrechner.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="d">Han<kbd>d</kbd>elsrechner</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/allianz.php') ? ' class="active"' : ''?> id="navigation-allianz"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/allianz.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="i">All<kbd>i</kbd>anz</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verbuendete.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="e">V<kbd>e</kbd>rbündete</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/highscores.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" xml:lang="en" accesskey="h"><kbd>H</kbd>ighscores</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="c">Na<kbd>c</kbd>hrichten</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/help/dependencies.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/help/dependencies.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="a">Forschungsb<kbd>a</kbd>um</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/einstellungen.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="t">Eins<kbd>t</kbd>ellungen</a></li>
 <?php
 			if(isset($_SESSION['admin_username']))
 			{
 ?>
-				<li id="navigation-abmelden"><a href="<?=htmlentities(h_root)?>/admin/index.php">Adminbereich</a></li>
+				<li id="navigation-abmelden"><a href="<?=htmlentities('https://'.$_SERVER['HTTP_HOST'].h_root)?>/admin/index.php">Adminbereich</a></li>
 <?php
 			}
 			else
 			{
 ?>
-				<li id="navigation-abmelden"><a href="<?=htmlentities(h_root)?>/login/scripts/logout.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>">Abmelden</a></li>
+				<li id="navigation-abmelden"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/scripts/logout.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>">Abmelden</a></li>
 <?php
 			}
 ?>
@@ -317,9 +329,11 @@
 			}
 ?>
 		</div>
-		<div id="version">
-			<a href="<?=htmlentities(h_root)?>/login/changelog.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Changelog anzeigen">Version <?=VERSION?></a>
-		</div>
+		<ul id="gameinfo">
+			<li><?=utf8_htmlentities($_SESSION['username'])?></li>
+			<li><?=utf8_htmlentities($databases[$_SESSION['database']][1])?></li>
+			<li><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/changelog.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Changelog anzeigen">Version <?=VERSION?></a></li>
+		</ul>
 		<div id="content-9">
 			<dl id="ress" class="ress">
 				<dt class="ress-carbon">Carbon</dt>
@@ -409,7 +423,7 @@
 					$link .= SESSION_COOKIE.'='.urlencode(session_id());
 ?>
 <p class="neue-nachrichten">
-	<a href="<?=htmlentities($link)?>" title="<?=$title?>">Sie haben <?=htmlentities($ges_ncount)?> neue <kbd>N</kbd>achricht<?=($ges_ncount != 1) ? 'en' : ''?>.</a>
+	<a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root.'/login/'.$link)?>" title="<?=$title?>">Sie haben <?=htmlentities($ges_ncount)?> neue <kbd>N</kbd>achricht<?=($ges_ncount != 1) ? 'en' : ''?>.</a>
 </p>
 <?php
 				}
@@ -446,7 +460,7 @@
 					google_color_link = "FFFFFF";
 					google_color_url = "FFFFFF";
 				</script>
-				<script type="text/javascript" src="<?=htmlentities(h_root)?>/show_ads.js"></script>
+				<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
 <?php
 				}
 ?>

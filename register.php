@@ -1,12 +1,16 @@
 <?php
 	require('engine/include.php');
 
+	$databases = get_databases();
+	
 	gui::html_head();
 ?>
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Registrieren</h2>
 <?php
-	if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['password2']))
+	if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['password2']) && isset($_POST['database']) && isset($databases[$_POST['database']]))
 	{
+		define_globals($databases[$_POST['database']][0]);
+		
 		$error = '';
 
 		if(!isset($_POST['nutzungsbedingungen']) || !$_POST['nutzungsbedingungen'])
@@ -189,6 +193,18 @@
 	<fieldset>
 		<legend>Registrieren</legend>
 		<dl>
+			<dt><label for="runde">Runde</label></dt>
+			<dd><select name="database" id="runde">
+<?php
+	foreach($databases as $id=>$info)
+	{
+?>
+				<option value="<?=utf8_htmlentities($id)?>"<?=(isset($_POST['database']) && $_POST['database'] == $id) ? ' selected="selected"' : ''?>><?=utf8_htmlentities($info[1])?></option>
+<?php
+	}
+?>
+			</select></dd>
+			
 			<dt><label for="username">Benutzername</label></dt>
 			<dd><input type="text" id="username" name="username"<?=isset($_POST['username']) ? ' value="'.utf8_htmlentities($_POST['username']).'"' : ''?> maxlength="24" /></dd>
 

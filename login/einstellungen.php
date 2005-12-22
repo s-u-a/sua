@@ -149,7 +149,7 @@
 <?php
 	}
 ?>
-<form action="einstellungen.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular">
+<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/einstellungen.php?'.SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular">
 	<fieldset class="verschiedene-einstellungen">
 		<legend>Verschiedene Einstellungen</legend>
 		<dl>

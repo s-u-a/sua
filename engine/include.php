@@ -4,110 +4,84 @@
 	error_reporting(2047);
 	ignore_user_abort();
 
-	# Konstanten, die wichtige Pfade enthalten
-	if(isset($_SERVER['SUA_DB_DIR'])) $DB_DIR = $_SERVER['SUA_DB_DIR'];
-	else { echo "Es wurde kein Datenbankverzeichnis angegeben. Der Administrator solle bitte die Umgebungsvariable SUA_DB_DIR setzen.\n"; exit(1); }
-
-		# Auswertung von $DB_DIR
-		if(substr($DB_DIR, 0, 1) != '/')
-		{ # Wenn der Pfad nicht absolut angegeben wurde, wird nun ein absoluter Pfad daraus
-			$this_filename = '/engine/include.php';
-			if(substr(__FILE__, -strlen($this_filename)) !== $this_filename)
-			{
-				logfile::panic('Der absolute Pfad der Datenbank konnte nicht ermittelt werden. Bitte gib ihn in der Datei /engine/include.php an.');
-				exit(1);
-			}
-			define('s_root', substr(__FILE__, 0, -strlen($this_filename)));
-			$DB_DIR = s_root.'/'.$DB_DIR;
-			$document_root = $_SERVER['DOCUMENT_ROOT'];
-			if(substr($document_root, -1) == '/')
-				$document_root = substr($document_root, 0, -1);
-			define('h_root', substr(s_root, strlen($document_root)));
-		}
-
-	$EVENT_FILE = $DB_DIR.'/events';
-	$LOG_FILE = $DB_DIR.'/logfile';
-	$LOCK_FILE = $DB_DIR.'/locked';
-	$DB_ALLIANCES = $DB_DIR.'/alliances';
-	$DB_PLAYERS = $DB_DIR.'/players';
-	$DB_UNIVERSE = $DB_DIR.'/universe';
-	$DB_ITEMS = $DB_DIR.'/items';
-	$DB_MESSAGES = $DB_DIR.'/messages';
-	$DB_MESSAGES_PUBLIC = $DB_DIR.'/messages_public';
-	$DB_HIGHSCORES = $DB_DIR.'/highscores';
-	$DB_HIGHSCORES_ALLIANCES = $DB_DIR.'/highscores_alliances';
-	$DB_HIGHSCORES_ALLIANCES2 = $DB_DIR.'/highscores_alliances2';
-	$DB_TRUEMMERFELDER = $DB_DIR.'/truemmerfelder';
-	$DB_HOSTNAME = $DB_DIR.'/hostname';
-	$DB_HANDEL = $DB_DIR.'/handel';
-	$DB_HANDELSKURS = $DB_DIR.'/handelskurs';
-	$DB_ADMINS = $DB_DIR.'/admins';
-	$DB_NEWS = $DB_DIR.'/news';
-	$DB_LOCK_FILE = '/dev/shm/suadb_lock_'.md5($DB_DIR);
-	$DB_EVENTHANDLER_STOP_FILE = '/dev/shm/stop_eventhandler';
-	$EVENTHANDLER_INTERVAL = 30;
-	$THS_HTML = '&nbsp;';
-	$THS_UTF8 = "\xc2\xa0";
-	#$THS_UTF8 = "\xe2\x80\x89";
-	$MIN_CLICK_DIFF = 0.5; # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
-	$EMAIL_FROM = 'webmaster@s-u-a.net';
-	$MAX_PLANETS = 15;
-	$SESSION_COOKIE = ini_get('session.name');
-	if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
-		$PROTOCOL = 'https';
-	else
-		$PROTOCOL = 'http';
-
-	if(isset($_GET['nossl']))
+	$this_filename = '/engine/include.php';
+	if(substr(__FILE__, -strlen($this_filename)) !== $this_filename)
 	{
-		if($_GET['nossl'] && (!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl']))
+		logfile::panic('Der absolute Pfad der Datenbank konnte nicht ermittelt werden. Bitte gib ihn in der Datei /engine/include.php an.');
+		exit(1);
+	}
+	define('s_root', substr(__FILE__, 0, -strlen($this_filename)));
+	$document_root = $_SERVER['DOCUMENT_ROOT'];
+	if(substr($document_root, -1) == '/')
+		$document_root = substr($document_root, 0, -1);
+	define('h_root', substr(s_root, strlen($document_root)));
+	
+	function define_globals($DB_DIR=false)
+	{
+		if($DB_DIR)
 		{
-			setcookie('use_ssl', '0', time()+4838400, h_root);
-			$_COOKIE['use_ssl'] = '0';
+			if(substr($DB_DIR, 0, 1) != '/')
+				$DB_DIR = s_root.'/'.$DB_DIR;
+			
+			define('DB_DIR', $DB_DIR);
+		
+			define('EVENT_FILE', DB_DIR.'/events');
+			define('LOG_FILE', DB_DIR.'/logfile');
+			define('LOCK_FILE', DB_DIR.'/locked');
+			define('DB_ALLIANCES', DB_DIR.'/alliances');
+			define('DB_PLAYERS', DB_DIR.'/players');
+			define('DB_UNIVERSE', DB_DIR.'/universe');
+			define('DB_ITEMS', DB_DIR.'/items');
+			define('DB_MESSAGES', DB_DIR.'/messages');
+			define('DB_MESSAGES_PUBLIC', DB_DIR.'/messages_public');
+			define('DB_HIGHSCORES', DB_DIR.'/highscores');
+			define('DB_HIGHSCORES_ALLIANCES', DB_DIR.'/highscores_alliances');
+			define('DB_HIGHSCORES_ALLIANCES2', DB_DIR.'/highscores_alliances2');
+			define('DB_TRUEMMERFELDER', DB_DIR.'/truemmerfelder');
+			define('DB_HOSTNAME', DB_DIR.'/hostname');
+			define('DB_HANDEL', DB_DIR.'/handel');
+			define('DB_HANDELSKURS', DB_DIR.'/handelskurs');
+			define('DB_ADMINS', DB_DIR.'/admins');
+			define('DB_LOCK_FILE', '/dev/shm/suadb_lock_'.md5(DB_DIR));
 		}
-		elseif(!$_GET['nossl'] && isset($_COOKIE['use_ssl']) && !$_COOKIE['use_ssl'])
+		
+		if(!defined('other_globals'))
 		{
-			setcookie('use_ssl', '1', time()+4838400, h_root);
-			$_COOKIE['use_ssl'] = '1';
+			define('DB_NEWS', s_root.'/db_things/news');
+			define('DB_EVENTHANDLER_STOP_FILE', '/dev/shm/stop_eventhandler');
+			define('EVENTHANDLER_INTERVAL', 30);
+			define('THS_HTML', '&nbsp;');
+			define('THS_UTF8', "\xc2\xa0");
+			define('MIN_CLICK_DIFF', 0.5); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
+			define('EMAIL_FROM', 'webmaster@s-u-a.net');
+			define('MAX_PLANETS', 15);
+			define('SESSION_COOKIE', session_name());
+			
+			if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
+				define('PROTOCOL', 'https');
+			else
+				define('PROTOCOL', 'http');
+			
+			if(isset($_GET['nossl']))
+			{
+				if($_GET['nossl'] && (!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl']))
+				{
+					setcookie('use_ssl', '0', time()+4838400, h_root);
+					$_COOKIE['use_ssl'] = '0';
+				}
+				elseif(!$_GET['nossl'] && isset($_COOKIE['use_ssl']) && !$_COOKIE['use_ssl'])
+				{
+					setcookie('use_ssl', '1', time()+4838400, h_root);
+					$_COOKIE['use_ssl'] = '1';
+				}
+			}
+			if(!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])
+				define('USE_PROTOCOL', 'https');
+			else
+				define('USE_PROTOCOL', 'http');
+			define('other_globals', true);
 		}
 	}
-	if(!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])
-		$USE_PROTOCOL = 'https';
-	else
-		$USE_PROTOCOL = 'http';
-
-	# Variablen als Konstanten speichern
-
-	define('DB_DIR', $DB_DIR);
-	define('EVENT_FILE', $EVENT_FILE);
-	define('LOG_FILE', $LOG_FILE);
-	define('LOCK_FILE', $LOCK_FILE);
-	define('DB_ALLIANCES', $DB_ALLIANCES);
-	define('DB_PLAYERS', $DB_PLAYERS);
-	define('DB_UNIVERSE', $DB_UNIVERSE);
-	define('DB_ITEMS', $DB_ITEMS);
-	define('DB_MESSAGES', $DB_MESSAGES);
-	define('DB_MESSAGES_PUBLIC', $DB_MESSAGES_PUBLIC);
-	define('DB_HIGHSCORES', $DB_HIGHSCORES);
-	define('DB_HIGHSCORES_ALLIANCES', $DB_HIGHSCORES_ALLIANCES);
-	define('DB_HIGHSCORES_ALLIANCES2', $DB_HIGHSCORES_ALLIANCES2);
-	define('DB_TRUEMMERFELDER', $DB_TRUEMMERFELDER);
-	define('DB_HOSTNAME', $DB_HOSTNAME);
-	define('DB_HANDEL', $DB_HANDEL);
-	define('DB_HANDELSKURS', $DB_HANDELSKURS);
-	define('DB_ADMINS', $DB_ADMINS);
-	define('DB_NEWS', $DB_NEWS);
-	define('DB_LOCK_FILE', $DB_LOCK_FILE);
-	define('DB_EVENTHANDLER_STOP_FILE', $DB_EVENTHANDLER_STOP_FILE);
-	define('EVENTHANDLER_INTERVAL', $EVENTHANDLER_INTERVAL);
-	define('THS_HTML', $THS_HTML);
-	define('THS_UTF8', $THS_UTF8);
-	define('MIN_CLICK_DIFF', $MIN_CLICK_DIFF);
-	define('EMAIL_FROM', $EMAIL_FROM);
-	define('MAX_PLANETS', $MAX_PLANETS);
-	define('SESSION_COOKIE', $SESSION_COOKIE);
-	define('PROTOCOL', $PROTOCOL);
-	define('USE_PROTOCOL', $USE_PROTOCOL);
 
 	header('Content-type: text/html; charset=UTF-8');
 
@@ -116,48 +90,15 @@
 		ob_start('ob_gzhandler');
 		ob_start('ob_utf8');
 	}
+	
+	if(!isset($LOGIN) || !$LOGIN)
+	{
+		define_globals();
+		check_hostname();
+	}
 
 	if(!isset($_SESSION))
 		$GLOBALS['_SESSION'] = array();
-
-	# Ueberpruefen, ob der Hostname korrekt ist
-	if(isset($_SERVER['HTTP_HOST']))
-	{
-		$redirect = false;
-		$hostname = $_SERVER['HTTP_HOST'];
-		if(is_file(DB_HOSTNAME) && is_readable(DB_HOSTNAME))
-		{
-			$hostname = trim(file_get_contents(DB_HOSTNAME));
-			if($_SERVER['HTTP_HOST'] != $hostname)
-				$redirect = true;
-		}
-
-		$request_uri = $_SERVER['REQUEST_URI'];
-		if(strpos($request_uri, '?') !== false)
-			$request_uri = substr($request_uri, 0, strpos($request_uri, '?'));
-		if(substr($request_uri, -1) == '/')
-			$redirect = true;
-
-		if($redirect)
-		{
-			$url = PROTOCOL.'://'.$hostname.$_SERVER['PHP_SELF'];
-			if($_SERVER['QUERY_STRING'] != '')
-				$url .= '?'.$_SERVER['QUERY_STRING'];
-			header('Location: '.$url, true, 307);
-
-			if(count($_POST) > 0)
-			{
-				echo '<form action="'.htmlentities($url).'" method="post">';
-				foreach($_POST as $key=>$val)
-					echo '<input type="hidden" name="'.htmlentities($key).'" value="'.htmlentities($val).'" />';
-				echo '<button type="submit">'.htmlentities($url).'</button>';
-				echo '</form>';
-			}
-			else
-				echo 'HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>';
-			die();
-		}
-	}
 
 	$message_type_names = array (
 		1 => 'Kämpfe',
@@ -684,6 +625,19 @@
 			<fieldset>
 				<legend>Anmelden</legend>
 				<dl>
+					<dt><label for="login-runde">Runde</label></dt>
+					<dd><select name="database" id="login-runde">
+<?php
+			$databases = get_databases();
+			foreach($databases as $id=>$info)
+			{
+?>
+						<option value="<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($info[1])?></option>
+<?php
+			}
+?>
+					</select></dd>
+					
 					<dt><label for="login-username">Name</label></dt>
 					<dd><input type="text" id="login-username" name="username" /></dd>
 
@@ -2417,6 +2371,81 @@
 		}
 
 		return $ges_prod;
+	}
+	
+	function get_databases()
+	{
+		if(!is_file(s_root.'/db_things/databases') || !is_readable(s_root.'/db_things/databases'))
+			return false;
+		
+		$databases = preg_split("/\r\n|\r|\n/", file_get_contents(s_root.'/db_things/databases'));
+		array_shift($databases);
+		
+		$return = array();
+		foreach($databases as $database)
+		{
+			$database = explode("\t", $database, 4);
+			if(count($database) < 4)
+				continue;
+			$return[array_shift($database)] = $database;
+		}
+		
+		return $return;
+	}
+	
+	function get_default_hostname()
+	{
+		if(!is_file(s_root.'/db_things/databases') || !is_readable(s_root.'/db_things/databases'))
+			return false;
+		
+		$fh = fopen(s_root.'/db_things/databases', 'r');
+		flock($fh, LOCK_SH);
+		
+		$hostname = trim(fgets($fh, 1024));
+		
+		flock($fh, LOCK_UN);
+		fclose($fh);
+		
+		return $hostname;
+	}
+	
+	function check_hostname()
+	{
+		if(isset($_SERVER['HTTP_HOST']))
+		{
+			$hostname = $_SERVER['HTTP_HOST'];
+			$real_hostname = get_default_hostname();
+			if(isset($_SESSION['database']))
+			{
+				$databases = get_databases();
+				if(isset($databases[$_SESSION['database']]))
+					$real_hostname = $databases[$_SESSION['database']][2];
+			}
+
+			$request_uri = $_SERVER['REQUEST_URI'];
+			if(strpos($request_uri, '?') !== false)
+				$request_uri = substr($request_uri, 0, strpos($request_uri, '?'));
+			
+			if(strtolower($hostname) == strtolower($real_hostname) && substr($request_uri, -1) != '/')
+				return true;
+	
+			$url = PROTOCOL.'://'.$hostname.$_SERVER['PHP_SELF'];
+			if($_SERVER['QUERY_STRING'] != '')
+				$url .= '?'.$_SERVER['QUERY_STRING'];
+			header('Location: '.$url, true, 307);
+
+			if(count($_POST) > 0)
+			{
+				echo '<form action="'.htmlentities($url).'" method="post">';
+				foreach($_POST as $key=>$val)
+					echo '<input type="hidden" name="'.htmlentities($key).'" value="'.htmlentities($val).'" />';
+				echo '<button type="submit">'.htmlentities($url).'</button>';
+				echo '</form>';
+			}
+			else
+				echo 'HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>';
+			die();
+		}
 	}
 
 	function get_admin_list()

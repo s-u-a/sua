@@ -1,16 +1,16 @@
 #!/usr/bin/php
 <?php
+	$USE_OB = false;
+	require_once('include.php');
+	require_once('../login/scripts/eventhandler.php');
+	
 	if(!isset($_SERVER['argv'][1]))
 	{
 		echo "Usage: ".$_SERVER['argv'][0]." [Database dir]\n";
 		exit(1);
 	}
 	else
-		$_SERVER['SUA_DB_DIR'] = $_SERVER['argv'][1];
-	
-	$USE_OB = false;
-	require_once('include.php');
-	require_once('../login/scripts/eventhandler.php');
+		define_globals($_SERVER['argv'][1]);
 
 	header('Content-type: text/plain');
 

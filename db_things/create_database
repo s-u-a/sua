@@ -39,7 +39,6 @@ ln -s $CWD/verteidigung $1/items/verteidigung
 touch $1/logfile
 mkdir $1/messages
 mkdir $1/messages_public
-touch $1/news
 mkdir $1/players
 ln -s $CWD/show_player_info $1/show_player_info
 mkdir $1/truemmerfelder
@@ -63,7 +62,5 @@ php ./create_galaxy
 cd $OLD_PWD
 
 chmod -R a+rw $1
-
-echo "Don't forget to put your desired hostname into \`$1/hostname'."
 
 exit 0;

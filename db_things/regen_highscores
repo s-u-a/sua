@@ -13,6 +13,8 @@
 		elseif($a[2] > $b[2]) return -1;
 		else return 0;
 	}
+	
+	require('../engine/include.php');
 
 	if(!isset($_SERVER['argv'][1]))
 	{
@@ -20,9 +22,7 @@
 		exit(1);
 	}
 	else
-		$_SERVER['SUA_DB_DIR'] = $_SERVER['argv'][1];
-	
-	require('../engine/include.php');
+		define_globals($_SERVER['argv'][1]);
 
 	function sort_highscores($a, $b)
 	{

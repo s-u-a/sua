@@ -1,3 +1,6 @@
+1135254021	Neue Versionsnummer: 0.2.0
+1135254020	Flexiblere Unterstützung für mehrere Runden (Datenbanken).
+1135254004	SSL wird nurnoch benutzt, wenn vertrauliche Daten wie Passwörter und Benutzernamen übertragen werden.
 1135207942	Die Imperiumsübersicht gibt nun mehr Informationen über Auswirkungsgrade der Forschung.
 1135184422	Neuer Flugzeitenalgorithmus.
 1135173060	Neuer Datenbank-Locking-Mechanismus, das bisherige Problem sollte nun definitiv nicht mehr auftreten.

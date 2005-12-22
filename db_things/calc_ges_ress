@@ -2,15 +2,15 @@
 <?php
 	# For full functionality, run once a day
 	
+	require_once('../engine/include.php');
+	
 	if(!isset($_SERVER['argv'][1]))
 	{
 		echo "Usage: ".$_SERVER['argv'][0]." [Database dir]\n";
 		exit(1);
 	}
 	else
-		$_SERVER['SUA_DB_DIR'] = $_SERVER['argv'][1];
-	
-	require_once('../engine/include.php');
+		define_globals($_SERVER['argv'][1]);
 
 	$ges_ress = array(0, 0, 0, 0, 0);
 
