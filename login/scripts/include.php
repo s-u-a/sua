@@ -445,7 +445,7 @@
 			<div id="werbung">
 <?php
 				global $DISABLE_ADS;
-				if(!isset($DISABLE_ADS) || !$DISABLE_ADS)
+				if((!isset($DISABLE_ADS) || !$DISABLE_ADS) && PROTOCOL == 'http')
 				{
 ?>
 				<script type="text/javascript">
