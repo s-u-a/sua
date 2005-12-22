@@ -13,7 +13,8 @@
 	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8"><div id="content-9"><div id="content-10"><div id="content-11"><div id="content-12"><div id="content-13">
 		<h1>Öffentliche Nachricht</h1>
 <?php
-	if(!isset($_GET['id']) || strpos($_GET['id'], '/') !== false || !is_file(DB_MESSAGES_PUBLIC.'/'.$_GET['id']) || !is_readable(DB_MESSAGES_PUBLIC.'/'.$_GET['id']))
+	$databases = get_databases();
+	if(!isset($_GET['database']) || isset($databases[$_GET['database']]) || !isset($_GET['id']) || strpos($_GET['id'], '/') !== false || !is_file(DB_MESSAGES_PUBLIC.'/'.$_GET['id']) || !is_readable(DB_MESSAGES_PUBLIC.'/'.$_GET['id']))
 	{
 ?>
 		<p class="error">Die gewünschte Nachricht existiert nicht.</p>
@@ -21,13 +22,15 @@
 	}
 	else
 	{
-			$message = unserialize(gzuncompress(file_get_contents(DB_MESSAGES_PUBLIC.'/'.$_GET['id'])));
-			$message['last_view'] = time();
-			$fh = fopen(DB_MESSAGES_PUBLIC.'/'.$_GET['id'], 'w');
-			flock($fh, LOCK_EX);
-			fwrite($fh, gzcompress(serialize($message)));
-			flock($fh, LOCK_UN);
-			fclose($fh);
+		define_globals($databases[$_GET['database']][0]);
+		
+		$message = unserialize(gzuncompress(file_get_contents(DB_MESSAGES_PUBLIC.'/'.$_GET['id'])));
+		$message['last_view'] = time();
+		$fh = fopen(DB_MESSAGES_PUBLIC.'/'.$_GET['id'], 'w');
+		flock($fh, LOCK_EX);
+		fwrite($fh, gzcompress(serialize($message)));
+		flock($fh, LOCK_UN);
+		fclose($fh);
 ?>
 		<dl class="nachricht-informationen type-<?=utf8_htmlentities($message['type'])?><?=$message['html'] ? ' html' : ''?>">
 <?php
