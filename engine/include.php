@@ -2429,7 +2429,7 @@
 			if(strtolower($hostname) == strtolower($real_hostname) && substr($request_uri, -1) != '/')
 				return true;
 	
-			$url = PROTOCOL.'://'.$hostname.$_SERVER['PHP_SELF'];
+			$url = PROTOCOL.'://'.$real_hostname.$_SERVER['PHP_SELF'];
 			if($_SERVER['QUERY_STRING'] != '')
 				$url .= '?'.$_SERVER['QUERY_STRING'];
 			header('Location: '.$url, true, 307);
