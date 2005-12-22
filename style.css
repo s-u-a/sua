@@ -29,6 +29,7 @@ h1 { position:fixed; bottom:0; left:.5em; font-variant:small-caps; font-family:G
 #login-form dd { display:block; margin:0; padding:0; }
 #login-form dt { display:block; font-weight:bold; padding:.567em; width:auto; font-size:1.5em; font-family:Georgia,serif; font-variant:small-caps; margin:0 0 -2em 0; float:none; clear:none; }
 #login-form dt:after { content:""; }
+#login-form dt.c-runde { display:none; }
 #login-form input { width:100%; background-color:transparent; background-image:url(images/halb2.png); border:.067em solid #000; padding:.1em .2em; font-size:1.5em; margin:0 -.18em; font-family:Georgia,serif; line-height:1.3em; height:1.6em }
 #login-form input:hover,#login-form input:focus { background-color:#679; }
 #login-form button,#login-form a { border:.067em solid #000; width:100%; text-align:center; background-image:url(images/halb2.png); background-color:transparent; font-weight:bold; font-size:1.5em; font-variant:small-caps; font-family:Georgia,serif; display:block; padding:.3em .2em; margin:.2em -.18em; color:#000; text-decoration:none; line-height:1.3em; cursor:pointer; }
@@ -77,29 +78,3 @@ p { text-align:justify; }
 .news h3 { padding:0; margin:0; background-color:#457; position:relative; z-index:500; display:inline; }
 .news h3 .author { font-size:0.666667em; text-decoration:none; font-weight:normal; }
 .news .time { position:absolute; top:.5em; right:.5em; z-index:400; }
-
-body.forum ul { list-style-type:none; text-align:center; margin:0; padding:0; border-top:.1em solid #679; border-bottom:.1em solid #679; margin:.5em; padding:.5em; }
-body.forum ul li { display:inline; border-left:.1em solid #679; border-right:.1em solid #679; margin:0; padding:0 .2em; }
-
-body.forum ol#root { border-top:.1em solid #679; border-bottom:.1em solid #679; margin:.5em 0; padding:.5em; list-style-type:none; }
-body.forum ol#root li { margin:.5em 0; }
-body.forum ol#root ul { border-style:none; text-align:left; }
-body.forum ol#root ul li { margin:0; border-style:none; }
-body.forum ol#root ul ul { border-left:.1em solid #679; margin:0 0 0 2em; padding:0 0 0 1em; }
-body.forum p#bottom { border-top:.2em solid #679; font-size:.8em; text-align:center; margin-top:1.5em; padding-top:.5em; }
-body.forum p.motd { margin:.3em 0; padding:.3em; border-top:.1em solid #679; border-bottom:.1em solid #679; }
-body.forum form dt { width:30%; }
-body.forum form dd { width:70%; margin-left:30%; }
-body.forum form div { text-align:center; }
-body.forum ol#root span.vip { color:#f86; }
-body.forum #nachricht-text { border-top:.5em double #679; border-bottom:.5em double #679; margin:1em 0; padding:1em 0; }
-body.forum ol#root #active-post .title { font-weight:bold; }
-body.forum ol#root li { display:list-item; }
-body.forum .option { text-align:left; }
-body.forum .formular { margin:.5em 0; border:.2em solid #679; padding:.5em; }
-body#suaforum-benutzereinstellungen-bearbeiten form h2 { margin-top:1em; }
-body#suaforum-benutzereinstellungen-bearbeiten h3 { margin:.3em 0; padding:0; }
-body.forum .section { border-top:.1em solid #679; border-bottom:.1em solid #679; padding:1em 0; }
-body.forum .mehrere-checkboxen { height:5em; overflow:auto; width:30ex; margin:0 auto; border:.1em solid #679; padding:.5em; }
-body.forum .mehrere-checkboxen div { text-align:left; }
-body.forum #save + p { text-align:center; }

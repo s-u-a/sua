@@ -626,8 +626,8 @@
 			<fieldset>
 				<legend>Anmelden</legend>
 				<dl>
-					<dt><label for="login-runde">Runde</label></dt>
-					<dd><select name="database" id="login-runde">
+					<dt class="c-runde"><label for="login-runde">Runde</label></dt>
+					<dd class="c-runde"><select name="database" id="login-runde">
 <?php
 			$databases = get_databases();
 			foreach($databases as $id=>$info)
@@ -639,11 +639,11 @@
 ?>
 					</select></dd>
 					
-					<dt><label for="login-username">Name</label></dt>
-					<dd><input type="text" id="login-username" name="username" /></dd>
+					<dt class="c-name"><label for="login-username">Name</label></dt>
+					<dd class="c-name"><input type="text" id="login-username" name="username" /></dd>
 
-					<dt><label for="login-password">Passwort</label></dt>
-					<dd><input type="password" id="login-password" name="password" /></dd>
+					<dt class="c-passwort"><label for="login-password">Passwort</label></dt>
+					<dd class="c-passwort"><input type="password" id="login-password" name="password" /></dd>
 				</dl>
 				<ul>
 					<li class="c-anmelden"><button type="submit">Anmelden</button></li>
