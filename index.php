@@ -12,6 +12,7 @@
 			return "\n\t</p>\n".str_repeat('<br />', $len-2)."\n\t<p>\n\t\t";
 	}
 
+	$SHOW_META_DESCRIPTION = true;
 	gui::html_head();
 ?>
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Neuigkeiten</h2>

@@ -610,6 +610,7 @@
 	{
 		function html_head()
 		{
+			global $SHOW_META_DESCRIPTION;
 ?>
 <?='<?xml version="1.0" encoding="UTF-8"?>'."\n"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -618,6 +619,14 @@
 	<head>
 		<title xml:lang="en">S-U-A &ndash; Stars Under Attack</title>
 		<link rel="stylesheet" href="<?=h_root?>/style.css" type="text/css" />
+<?php
+			if(isset($SHOW_META_DESCRIPTION) && $SHOW_META_DESCRIPTION)
+			{
+?>
+		<meta name="description" value="S-U-A &ndash; Stars Under Attack ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit Hunderten anderer Spielern." />
+<?php
+			}
+?>
 	</head>
 	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4">
 		<h1 id="logo"><a href="./" title="Zurück zur Startseite" xml:lang="en">Stars Under Attack</a></h1>
