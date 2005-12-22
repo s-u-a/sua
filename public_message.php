@@ -14,6 +14,8 @@
 		<h1>Öffentliche Nachricht</h1>
 <?php
 	$databases = get_databases();
+	if(isset($_GET['database']) && isset($database[$_GET['database']]))
+		define_globals($databases[$_GET['database']][0]);
 	if(!isset($_GET['database']) || !isset($databases[$_GET['database']]) || !isset($_GET['id']) || strpos($_GET['id'], '/') !== false || !is_file(DB_MESSAGES_PUBLIC.'/'.$_GET['id']) || !is_readable(DB_MESSAGES_PUBLIC.'/'.$_GET['id']))
 	{
 ?>
@@ -22,8 +24,6 @@
 	}
 	else
 	{
-		define_globals($databases[$_GET['database']][0]);
-		
 		$message = unserialize(gzuncompress(file_get_contents(DB_MESSAGES_PUBLIC.'/'.$_GET['id'])));
 		$message['last_view'] = time();
 		$fh = fopen(DB_MESSAGES_PUBLIC.'/'.$_GET['id'], 'w');
