@@ -38,7 +38,6 @@
 			define('DB_HIGHSCORES_ALLIANCES', DB_DIR.'/highscores_alliances');
 			define('DB_HIGHSCORES_ALLIANCES2', DB_DIR.'/highscores_alliances2');
 			define('DB_TRUEMMERFELDER', DB_DIR.'/truemmerfelder');
-			define('DB_HOSTNAME', DB_DIR.'/hostname');
 			define('DB_HANDEL', DB_DIR.'/handel');
 			define('DB_HANDELSKURS', DB_DIR.'/handelskurs');
 			define('DB_ADMINS', DB_DIR.'/admins');

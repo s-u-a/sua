@@ -366,7 +366,7 @@
 
 					if(file_exists(DB_MESSAGES_PUBLIC.'/'.$_GET['message']))
 					{
-						$host = get_default_host();
+						$host = get_default_hostname();
 ?>
 <p id="nachricht-veroeffentlichen">
 	Sie können diese Nachricht öffentlich verlinken: <a href="http://<?=htmlentities($host.h_root)?>/public_message.php?id=<?=htmlentities(urlencode($_GET['message']))?>&amp;database=<?=htmlentities(urlencode($_SESSION['database']))?>">http://<?=htmlentities($host.h_root)?>/public_message.php?id=<?=htmlentities(urlencode($_GET['message']))?>&amp;database=<?=htmlentities(urlencode($_SESSION['database']))?></a>.
