@@ -14,7 +14,7 @@
 		<h1>Öffentliche Nachricht</h1>
 <?php
 	$databases = get_databases();
-	if(!isset($_GET['database']) || isset($databases[$_GET['database']]) || !isset($_GET['id']) || strpos($_GET['id'], '/') !== false || !is_file(DB_MESSAGES_PUBLIC.'/'.$_GET['id']) || !is_readable(DB_MESSAGES_PUBLIC.'/'.$_GET['id']))
+	if(!isset($_GET['database']) || !isset($databases[$_GET['database']]) || !isset($_GET['id']) || strpos($_GET['id'], '/') !== false || !is_file(DB_MESSAGES_PUBLIC.'/'.$_GET['id']) || !is_readable(DB_MESSAGES_PUBLIC.'/'.$_GET['id']))
 	{
 ?>
 		<p class="error">Die gewünschte Nachricht existiert nicht.</p>
