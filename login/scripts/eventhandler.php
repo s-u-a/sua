@@ -1815,7 +1815,7 @@
 											# Transport von eigenem zu fremden Planeten oder umgekehrt
 
 											$message_text_sender = "Ihre Flotte erreicht den Planeten \xe2\x80\x9e".$target_info[2]."\xe2\x80\x9c (".$flotte[3][1].", Eigent\xc3\xbcmer: ".$target_info[1].') und liefert ihre Waren ab: ';
-											$message_text_receiver = "Eine Flotte vom Planeten \xe2\x80\x9e".$start_info[2]."\xe2\x80\x9c (".$flotte[3][1].", Eigent\xc3\xbcmer: ".$start_info[1].") erreicht Ihren Planeten \xe2\x80\x9e".$target_info[2]."\xe2\x80\x9c (".$flotte[3][1].') und liefert ihre Waren ab: ';
+											$message_text_receiver = "Eine Flotte vom Planeten \xe2\x80\x9e".$start_info[2]."\xe2\x80\x9c (".$flotte[3][0].", Eigent\xc3\xbcmer: ".$start_info[1].") erreicht Ihren Planeten \xe2\x80\x9e".$target_info[2]."\xe2\x80\x9c (".$flotte[3][1].') und liefert ihre Waren ab: ';
 
 											$add = ths(&$flotte[5][0][0], true).$nbsp.'Carbon, '.ths(&$flotte[5][0][1], true).$nbsp.'Aluminium, '.ths(&$flotte[5][0][2], true).$nbsp.'Wolfram, '.ths(&$flotte[5][0][3], true).$nbsp.'Radium, '.ths(&$flotte[5][0][4], true).$nbsp.'Tritium';
 											if(array_sum($flotte[5][1]) > 0)
