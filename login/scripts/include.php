@@ -66,6 +66,7 @@
 			$_SESSION['act_planet'] = 0;
 			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
 			$_SESSION['database'] = $_POST['database'];
+			$_SESSION['use_protocol'] = USE_PROTOCOL;
 			$resume = true;
 			$del_email_passwd = true;
 

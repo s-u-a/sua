@@ -75,7 +75,9 @@
 					$_COOKIE['use_ssl'] = '1';
 				}
 			}
-			if(!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])
+			if(isset($_SESSION['use_protocol']))
+				define('USE_PROTOCOL', $_SESSION['use_protocol']);
+			elseif(!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])
 				define('USE_PROTOCOL', 'https');
 			else
 				define('USE_PROTOCOL', 'http');
