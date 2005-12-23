@@ -144,6 +144,8 @@
 			$show_day_prod[3] *= $show_days;
 			$show_day_prod[4] *= $show_days;
 			$show_day_prod[5] = array_sum($show_day_prod);
+			
+			$this_planet = &$user_array['planets'][$_SESSION['act_planet']];
 ?>
 	</tbody>
 	<tfoot>
