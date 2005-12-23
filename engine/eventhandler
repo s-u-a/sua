@@ -72,7 +72,7 @@
 		if(date('H')*3600+date('i')*60+60 > 16200 && $last_handelskurs != date('Y-m-d')) // 4:30 Uhr
 		{
 			echo "\n".date('Y-m-d, H:i:s')." -- Recalculating Handelskurs...\n";
-			system(s_root.'/db_things/calc_ges_ress '.$_SERVER['SUA_DB_DIR']);
+			system(s_root.'/db_things/calc_ges_ress \''.preg_replace('/[\'\\]/', '\\\\\\1', $_SERVER['argv'][1]));
 			echo date('Y-m-d, H:i:s')." -- Handelskurs recalculated.\n\n";
 
 			delete_old_messages();
