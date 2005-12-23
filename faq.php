@@ -5,7 +5,7 @@
 ?>
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; <abbr title="Frequently Asked Questions" xml:lang="en"><span xml:lang="de">FAQ</span></abbr></h2>
 <p>
-	Hier eine Liste der Fragen. Sollte die Frage, die Sie suchen, nicht dabei sein, schreiben Sie einfach ins <a href="forum/">Forum</a>.
+	Hier eine Liste der Fragen. Sollte die Frage, die Sie suchen, nicht dabei sein, schreiben Sie einfach ins <a href="http://board.s-u-a.net/index.php" xml:lang="en">Board</a>.
 </p>
 <ol id="question-list">
 	<li><a href="#requirements">Was brauche ich, um <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> zu spielen?</a></li>
