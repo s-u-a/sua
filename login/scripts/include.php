@@ -249,7 +249,7 @@
 				$class .= ' ohne-werbung';
 ?>
 	</head>
-	<body class="<?=$class?>"><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
+	<body class="<?=$class?>" id="body-root"><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
 		<dl id="time">
 			<dt>Serverzeit</dt>
 			<dd id="time-server"><?=date('H:i:s', time()+1)?></dd>

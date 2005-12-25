@@ -34,7 +34,6 @@
     <item url="db_things/gebaeude" uploadstatus="1" />
     <item url="db_things/changelog" uploadstatus="1" />
     <item url="db_things/verteidigung" uploadstatus="1" />
-    <item url="db_things/update_universe" uploadstatus="1" />
     <item url="db_things/create_database" uploadstatus="1" />
     <item url="db_things/show_player_info" uploadstatus="1" />
     <item url="db_things/calc_ges_ress" uploadstatus="1" />
@@ -84,11 +83,13 @@
     <item url="login/style/grey_graphics/style.inc.css" uploadstatus="1" />
     <templates>templates/</templates>
     <toolbars>toolbars/</toolbars>
-    <item url="db_things/stop_eventhandler" />
+    <item url="login/imperium.php" uploadstatus="1" />
+    <annotations/>
+    <item url="db_things/stop_eventhandler" uploadstatus="1" />
     <author>Candid Dauth</author>
     <email>webmaster@s-u-a.net</email>
     <debuggerclient persistentWatches="0" persistentBreakpoints="0" >Kein Debugger</debuggerclient>
-    <exclude cvsignore="false" ></exclude>
+    <exclude cvsignore="false" />
     <teamdata>
       <taskleaders/>
       <subprojectleaders/>
@@ -110,5 +111,6 @@
       <mailinglist address="" />
     </teamdata>
     <events/>
+    <item url="login/flotten_actions.php" uploadstatus="1" />
   </project>
 </webproject>

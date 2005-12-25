@@ -170,11 +170,11 @@ legend { font-weight:bold; }
 .prod-show-days { width:3ex; height:1.2em; }
 .ress-prod button { width:100%; }
 
-.punkte,.daten,.buendnis-informationen,.playerinfo-planeten,.allianceinfo,.imperium-roboter-auswirkungsgrade,.imperium-rohstoffe-auswirkungsgrade,.imperium-schiffe-auswirkungsgrade { width:70%; margin:.5em 15%; padding:0; border:.1em solid #aaa; white-space:nowrap; text-align:left; }
-* html .punkte,* html .daten,* html .allianceinfo,* html .imperium-roboter-auswirkungsgrade,* html .imperium-rohstoffe-auswirkungsgrade,* html .imperium-schiffe-auswirkungsgrade { width:100%; }
-.punkte dt,.daten dt,.allianceinfo dt,.imperium-roboter-auswirkungsgrade dt,.imperium-rohstoffe-auswirkungsgrade dt,.imperium-schiffe-auswirkungsgrade dt { float:left; width:35%; padding:.2em; border-bottom:.1em solid #aaa; border-right:.1em solid #aaa; margin-right:.2em; font-weight:bold; }
-.punkte dd,.daten dd,.allianceinfo dd,.imperium-roboter-auswirkungsgrade dd,.imperium-rohstoffe-auswirkungsgrade dd,.imperium-schiffe-auswirkungsgrade dd { margin:0 0 0 35%; padding:.2em; border-bottom:.1em solid #aaa; font-weight:bold; }
-.punkte dt.c-gesamt,.punkte dd.c-gesamt,.punkte dt.c-registrierung,.punkte dd.c-registrierung,.allianceinfo dt.c-punktzahl,.allianceinfo dd.c-punktzahl,.imperium-roboter-auswirkungsgrade dt.c-minenroboter,.imperium-roboter-auswirkungsgrade dd.c-minenroboter,.imperium-rohstoffe-auswirkungsgrade .c-energieproduktion,.imperium-schiffe-auswirkungsgrade .c-laderaumvergroesserung { border-bottom-style:none; }
+.punkte,.daten,.buendnis-informationen,.playerinfo-planeten,.allianceinfo,.imperium-roboter-auswirkungsgrade,.imperium-rohstoffe-auswirkungsgrade,.imperium-schiffe-auswirkungsgrade,.handel-ress { width:70%; margin:.5em 15%; padding:0; border:.1em solid #aaa; white-space:nowrap; text-align:left; }
+* html .punkte,* html .daten,* html .allianceinfo,* html .imperium-roboter-auswirkungsgrade,* html .imperium-rohstoffe-auswirkungsgrade,* html .imperium-schiffe-auswirkungsgrade,* html .handel-ress { width:100%; }
+.punkte dt,.daten dt,.allianceinfo dt,.imperium-roboter-auswirkungsgrade dt,.imperium-rohstoffe-auswirkungsgrade dt,.imperium-schiffe-auswirkungsgrade dt,.handel-ress dt { float:left; width:35%; padding:.2em; border-bottom:.1em solid #aaa; border-right:.1em solid #aaa; margin-right:.2em; font-weight:bold; }
+.punkte dd,.daten dd,.allianceinfo dd,.imperium-roboter-auswirkungsgrade dd,.imperium-rohstoffe-auswirkungsgrade dd,.imperium-schiffe-auswirkungsgrade dd,.handel-ress dd { margin:0 0 0 35%; padding:.2em; border-bottom:.1em solid #aaa; font-weight:bold; }
+.punkte dt.c-gesamt,.punkte dd.c-gesamt,.punkte dt.c-registrierung,.punkte dd.c-registrierung,.allianceinfo dt.c-punktzahl,.allianceinfo dd.c-punktzahl,.imperium-roboter-auswirkungsgrade dt.c-minenroboter,.imperium-roboter-auswirkungsgrade dd.c-minenroboter,.imperium-rohstoffe-auswirkungsgrade .c-energieproduktion,.imperium-schiffe-auswirkungsgrade .c-laderaumvergroesserung,.handel-ress { border-bottom-style:none; }
 .buendnis-informationen,.playerinfo-planeten { text-align:center; font-weight:bold; list-style-type:none; border-bottom-style:none; }
 .buendnis-informationen li,.playerinfo-planeten li { border-bottom:.1em solid #aaa; }
 .benutzerbeschreibung,.allianz-internes,.allianz-externes { text-align:left; padding:.5em; }
@@ -353,15 +353,17 @@ h2#punkte { clear:right; }
 #flotten dt.rueckflug.eigen { color:#0b0; }
 #flotten dt.fremd.type-4 { color:#0cf; }
 #flotten dt.fremd.type-3,#flotten dt.fremd.type-5 { color:#f00; }
-#flotten .beschreibung { color:#fff; cursor:help; }
+#flotten .beschreibung,#flotten .handel a { color:#fff; }
+#flotten .beschreibung { cursor:help; }
 #flotten .rueckflug .beschreibung { color:#bbb; }
-#flotten .beschreibung:hover { color:#ccc; }
+#flotten .beschreibung:hover,#flotten .handel a:hover,#flotten .handel a:focus { color:#ccc; }
 #flotten .rueckflug .beschreibung:hover { color:#888; }
 #flotten .beschreibung[class],#flotten .beschreibung[class]:hover,#flotten .rueckflug .beschreibung[class]:hover { color:inherit; cursor:inherit; }
 #flotten .beschreibung[title],#flotten .beschreibung[titleAttribute] { color:#fff; cursor:help; }
 #flotten .rueckflug .beschreibung[title],#flotten .rueckflug .beschreibung[titleAttribute] { color:#bbb; }
 #flotten .beschreibung[title]:hover,#flotten .beschreibung[titleAttribute]:hover { color:#ccc; }
 #flotten .rueckflug .beschreibung[title]:hover,#flotten .rueckflug .beschreibung[titleAttribute]:hover { color:#888; }
+#flotten .handel { text-align:center; }
 
 .highscores { width:50%; margin:.5em auto; border-spacing:0; border-collapse:collapse; font-weight:bold; }
 .highscores td,.highscores th { border:.1em solid #aaa; padding:.1em .3em; }

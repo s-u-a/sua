@@ -655,6 +655,7 @@
 									$mass += $items['schiffe'][$id]['mass']*$anzahl;
 									$speed += $items['schiffe'][$id]['speed']*$anzahl;
 								}
+								$mass += fleet::get_tritium($mass, $distance);
 								$mass += array_sum($flotte[5][0]);
 								foreach($flotte[5][1] as $id=>$anzahl)
 								{
@@ -662,7 +663,6 @@
 										continue;
 									$mass += $items['roboter'][$id]['mass']*$anzahl;
 								}
-								$mass += fleet::get_tritium($mass, $distance);
 								$time_diff = fleet::get_time($mass, $distance, $speed);
 								# Geschwindigkeitsfaktor
 								$time_diff /= $flotte[6];
@@ -1304,6 +1304,7 @@
 										$mass += $items['schiffe'][$id]['mass']*$anzahl;
 										$speed += $items['schiffe'][$id]['speed']*$anzahl;
 									}
+									$mass += fleet::get_tritium($mass, $distance);
 									$mass += array_sum($flotte[5][0]);
 									foreach($flotte[5][1] as $id=>$anzahl)
 									{
@@ -1311,7 +1312,6 @@
 											continue;
 										$mass += $items['roboter'][$id]['mass']*$anzahl;
 									}
-									$mass += fleet::get_tritium($mass, $distance);
 									$time_diff = fleet::get_time($mass, $distance, $speed);
 									# Geschwindigkeitsfaktor
 									$time_diff /= $flotte[6];
@@ -1741,6 +1741,16 @@
 										$new_flotte = $flotte;
 
 										# Flotte nun zurueckschicken
+										
+										# Rohstoffe entfernen
+										$new_flotte[5] = array(0=>array(0,0,0,0,0), 1=>array());
+										
+										# Bei Handel neue Rohstoffe hinzufuegen
+										if(isset($new_flotte[8]))
+										{
+											$new_flotte[5] = $new_flotte[8];
+											unset($new_flotte[8]);
+										}
 
 										# Masse neu berechnen
 										$mass = 0;
@@ -1750,16 +1760,20 @@
 											$mass += $items['schiffe'][$id]['mass']*$anzahl;
 											$speed += $items['schiffe'][$id]['speed']*$anzahl;
 										}
+										$mass += fleet::get_tritium($mass, $distance)*$flotte[6];
+										$mass += array_sum($new_flotte[5][0]);
+										foreach($new_flotte[5][1] as $id=>$anzahl)
+										{
+											if(!isset($items['roboter'][$id]))
+												continue;
+											$mass += $items['roboter'][$id]['mass']*$anzahl;
+										}
 										$distance = fleet::get_distance($new_flotte[3][1], $new_flotte[3][0]);
-										$mass += fleet::get_tritium($mass, $distance);
-										$time = fleet::get_time($mass, $distance, $speed);
+										$time = fleet::get_time($mass, $distance, $speed)/$flotte[6];
 										$new_flotte[1] = array($new_flotte[1][1], $new_flotte[1][1]+$time);
 
 										# Koordinaten vertauschen
 										list($new_flotte[3][0], $new_flotte[3][1]) = array($new_flotte[3][1], $new_flotte[3][0]);
-
-										# Rohstoffe entfernen
-										$new_flotte[5] = array(0=>array(0,0,0,0,0), 1=>array());
 
 										# Rueckflug?
 										$new_flotte[7] = true;
@@ -1806,6 +1820,25 @@
 													$message_text .= $roboter_text;
 												}
 												$message_text .= '.';
+												
+												if(isset($flotte[8]) && (array_sum($flotte[8][0]) > 0 || array_sum($flotte[8][1]) > 0))
+												{
+													$message_text .= "\n\nFolgende Rohstoffe werden gehandelt und mit auf den R\xc3\xbcckweg genommen: ";
+													$message_text .= ths($flotte[8][0][0], true).$nbsp.'Carbon, '.ths($flotte[8][0][1], true).$nbsp.'Aluminium, '.ths($flotte[8][0][2], true).$nbsp.'Wolfram, '.ths($flotte[8][0][3], true).$nbsp.'Radium, '.ths($flotte[8][0][4], true).$nbsp.'Tritium';
+													if(array_sum($flotte[8][1]) > 0)
+													{
+														$message_text .= "\n";
+														$handel_roboter = array();
+														foreach($flotte[8][1] as $id=>$anzahl)
+														{
+															if(!isset($items['roboter'][$id]))
+																continue;
+															$handel_roboter[] = $items['roboter'][$id]['name'].': '.ths($anzahl, true);
+														}
+														$message_text .= implode(', ', $handel_roboter);
+													}
+													$message_text .= '.';
+												}
 
 												messages::new_message(array($ev_username=>3), '', 'Ankunft Ihres Transportes auf '.$flotte[3][0], $message_text);
 											}
@@ -1832,6 +1865,26 @@
 												$add .= $roboter_text;
 											}
 											$add .= '.';
+											
+											if(isset($flotte[8]) && (array_sum($flotte[8][0]) > 0 || array_sum($flotte[8][1]) > 0))
+											{
+												$add .= "\n\nFolgende Rohstoffe werden gehandelt und mit auf den R\xc3\xbcckweg genommen: ";
+												$add .= ths($flotte[8][0][0], true).$nbsp.'Carbon, '.ths($flotte[8][0][1], true).$nbsp.'Aluminium, '.ths($flotte[8][0][2], true).$nbsp.'Wolfram, '.ths($flotte[8][0][3], true).$nbsp.'Radium, '.ths($flotte[8][0][4], true).$nbsp.'Tritium';
+												if(array_sum($flotte[8][1]) > 0)
+												{
+													$add .= "\n";
+													$handel_roboter = array();
+													foreach($flotte[8][1] as $id=>$anzahl)
+													{
+														if(!isset($items['roboter'][$id]))
+															continue;
+														$handel_roboter[] = $items['roboter'][$id]['name'].': '.ths($anzahl, true);
+													}
+													$add .= implode(', ', $handel_roboter);
+												}
+												$add .= '.';
+											}
+											
 											$message_text_sender .= $add;
 											$message_text_receiver .= $add;
 

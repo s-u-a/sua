@@ -27,23 +27,69 @@
 
 		uasort($user_array['flotten'], 'usort_fleet');
 
-		write_user_array();
-
 		eventhandler::add_event($flotte[1][1]);
 
 		# Wenn der Empfaenger ein fremder ist, muss bei ihm auch der Auftrag geloescht werden
 		$target = explode(':', $flotte[3][0]);
 		$target_info = universe::get_planet_info($target[0], $target[1], $target[2]);
-		if($target_info[1] && $target_info[1] != $_SESSION['username'])
-		{
+		if($target_info[1] != $_SESSION['username'])
 			$that_user_array = get_user_array($target_info[1]);
-			unset($that_user_array['flotten'][$_GET['cancel']]);
-			$fh = fopen(DB_PLAYERS.'/'.urlencode($target_info[1]), 'w');
-			flock($fh, LOCK_EX);
-			fwrite($fh, gzcompress(serialize($that_user_array)));
-			flock($fh, LOCK_UN);
-			fclose($fh);
+		else
+			$that_user_array = & $user_array;
+		
+		if(isset($flotte[8]))
+		{
+			$planets = array_keys($that_user_array['planets']);
+			foreach($planets as $planet)
+			{
+				if($that_user_array['planets'][$planet]['pos'] == $flotte[3][0])
+				{
+					$that_user_array['planets'][$planet]['ress'][0] += $flotte[8][0][0];
+					$that_user_array['planets'][$planet]['ress'][1] += $flotte[8][0][1];
+					$that_user_array['planets'][$planet]['ress'][2] += $flotte[8][0][2];
+					$that_user_array['planets'][$planet]['ress'][3] += $flotte[8][0][3];
+					$that_user_array['planets'][$planet]['ress'][4] += $flotte[8][0][4];
+					foreach($flotte[8][1] as $id=>$anzahl)
+					{
+						if(!isset($that_user_array['planets'][$planet]['roboter'][$id]))
+							$that_user_array['planets'][$planet]['roboter'][$id] = $anzahl;
+						else
+							$that_user_array['planets'][$planet]['roboter'][$id] += $anzahl;
+					}
+					break;
+				}
+			}
 		}
+		
+		write_user_array();
+		
+		if($target_info[1] != $_SESSION['username'])
+		{
+			unset($that_user_array['flotten'][$_GET['cancel']]);
+			write_user_array($target_info[1], $that_user_array);
+			
+			if($flotte[8] && (array_sum($flotte[8][0]) > 0 || array_sum($flotte[8][1]) > 0))
+			{
+				$message_text = 'Der Spieler '.$_SESSION['username']." hat den zu Ihrem Planeten \xe2\x80\x9e".$target_info[2]."\xe2\x80\x9c (".$flotte[3][0].") fliegenden Transport abgebrochen. Sie haben die von Ihnen zum Handel eingelagerten Rohstoffe zur\xc3\xbcckerhalten:\n";
+				$message_text .= 'Carbon: '.ths($flotte[8][0][0], true).', Aluminium: '.ths($flotte[8][0][1], true).', Wolfram: '.ths($flotte[8][0][2], true).', Radium: '.ths($flotte[8][0][3], true).', Tritium: '.ths($flotte[8][0][4], true);
+				if(array_sum($flotte[8][1]) > 0)
+				{
+					$roboter = array();
+					foreach($flotte[8][1] as $id=>$anzahl)
+					{
+						if(!isset($items['roboter'][$id]))
+							continue;
+						$roboter[] = $items['roboter'][$id]['name'].': '.ths($anzahl, true);
+					}
+					$message_text .= "\n".implode(', ', $roboter);
+				}
+				$message_text .= '.';
+				messages::new_message(array($target_info[1]=>3), $_SESSION['username'], 'Handel abgebrochen', $message_text);
+			}
+		}
+		
+		unset($that_user_array);
+		unset($flotte);
 
 		logfile::action('13', $_GET['cancel']);
 
@@ -213,9 +259,35 @@
 			else
 				$string .= utf8_htmlentities($flotte[2]);
 			$string .= '</span>.';
+			
+			if($flotte[2] == 4 && !$flotte[7] && isset($flotte[8]) && (array_sum($flotte[8][0]) > 0 || array_sum($flotte[8][1]) > 0))
+			{
+				$string .= ' Diese Flotte wird einen <span class="beschreibung handel" title="';
+				$string .= 'Carbon: '.ths($flotte[8][0][0]).', Aluminium: '.ths($flotte[8][0][1]).', Wolfram: '.ths($flotte[8][0][2]).', Radium: '.ths($flotte[8][0][3]).', Tritium: '.ths($flotte[8][0][4]);
+				if(array_sum($flotte[8][1]) > 0)
+				{
+					$string .= '; ';
+					$rob = array();
+					foreach($flotte[8][1] as $id=>$anzahl)
+					{
+						if(!isset($items['roboter'][$id]) || $anzahl <= 0)
+							$rob[] = utf8_htmlentities($items['roboter'][$id]['name']).': '.ths($anzahl);
+					}
+					$string .= implode(', ', $rob);
+				}
+				$string .= '">Handel</span> durchführen.';
+			}
 ?>
 	<dt class="<?=$own ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($flotte[2])?> <?=$flotte[7] ? 'rueck' : 'hin'?>flug">
 		<?=$string."\n"?>
+<?php
+			if($flotte[2] == 4 && !$flotte[7] && $to_info[1] == $_SESSION['username'])
+			{
+?>
+		<div class="handel"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Geben Sie dieser Flotte Ladung mit auf den Rückweg">Handel</a></div>
+<?php
+			}
+?>
 	</dt>
 	<dd class="<?=$own ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($flotte[2])?> <?=$flotte[7] ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($i)?>">Ankunft: <?=date('H:i:s, Y-m-d', $flotte[1][1])?> (Serverzeit)<?php if(!$flotte[7] && $own){?>, <a href="index.php?cancel=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
 <?php

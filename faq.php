@@ -129,7 +129,7 @@
 
 <div class="faq">
 	<h3 id="resources">Die Rohstoffanzeige passt nicht in mein <span xml:lang="en">Browser</span>fenster und Quer<span xml:lang="en">scrollen</span> ist nicht möglich.</h3>
-	<p>Dies ist eine kleine Einschränkung der derzeitigen Formatierungsmöglichkeiten, die einem <span xml:lang="en">Webdesigner</span> zur Verfügung stehen. Ein Quer<span xml:lang="en">scrollen</span> ist nur in der <span xml:lang="en">iframe</span>-Variante der <span xml:lang="en">Skins</span> verfügbar, wählen Sie in den Einstellungen einfach diese aus.</p>
+	<p>Dies ist eine kleine Einschränkung der derzeitigen Formatierungsmöglichkeiten, die einem <span xml:lang="en">Webdesigner</span> zur Verfügung stehen. Ein Quer<span xml:lang="en">scrollen</span> ist nur in der &bdquo;<span xml:lang="en">non-fixed ress</span>&ldquo;-Variante der <span xml:lang="en">Skins</span> verfügbar, wählen Sie in den Einstellungen einfach diese aus.</p>
 </div>
 
 <div class="faq">

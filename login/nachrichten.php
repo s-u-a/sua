@@ -125,9 +125,9 @@
 				else
 				{
 					# Als gelesen markieren
-					if($user_array['messages'][$_GET['type']][$_GET['message']])
+					if($user_array['messages'][$_GET['type']][$_GET['message']] == 1)
 					{
-						$user_array['messages'][$_GET['type']][$_GET['message']] = false;
+						$user_array['messages'][$_GET['type']][$_GET['message']] = 0;
 						write_user_array();
 
 						logfile::action('22', $_GET['message']);
