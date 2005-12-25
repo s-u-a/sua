@@ -1755,6 +1755,7 @@
 										# Masse neu berechnen
 										$mass = 0;
 										$speed = 0;
+										$distance = fleet::get_distance($new_flotte[3][1], $new_flotte[3][0]);
 										foreach($new_flotte[0] as $id=>$anzahl)
 										{
 											$mass += $items['schiffe'][$id]['mass']*$anzahl;
@@ -1768,7 +1769,6 @@
 												continue;
 											$mass += $items['roboter'][$id]['mass']*$anzahl;
 										}
-										$distance = fleet::get_distance($new_flotte[3][1], $new_flotte[3][0]);
 										$time = fleet::get_time($mass, $distance, $speed)/$flotte[6];
 										$new_flotte[1] = array($new_flotte[1][1], $new_flotte[1][1]+$time);
 
