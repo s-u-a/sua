@@ -52,6 +52,19 @@
 	}
 ?>
 </ul>
+<h3 xml:lang="en">Screenshots</h3>
+<ul class="screenshots">
+	<li><a href="images/screenshots/screenshot_01.png"><img src="images/screenshots/preview_01.jpg" alt="Screenshot 1" /></a></li>
+	<li><a href="images/screenshots/screenshot_02.png"><img src="images/screenshots/preview_02.jpg" alt="Screenshot 2" /></a></li>
+	<li><a href="images/screenshots/screenshot_03.png"><img src="images/screenshots/preview_03.jpg" alt="Screenshot 3" /></a></li>
+	<li><a href="images/screenshots/screenshot_04.png"><img src="images/screenshots/preview_04.jpg" alt="Screenshot 4" /></a></li>
+	<li><a href="images/screenshots/screenshot_05.png"><img src="images/screenshots/preview_05.jpg" alt="Screenshot 5" /></a></li>
+	<li><a href="images/screenshots/screenshot_06.png"><img src="images/screenshots/preview_06.jpg" alt="Screenshot 6" /></a></li>
+	<li><a href="images/screenshots/screenshot_07.png"><img src="images/screenshots/preview_07.jpg" alt="Screenshot 7" /></a></li>
+	<li><a href="images/screenshots/screenshot_08.png"><img src="images/screenshots/preview_08.jpg" alt="Screenshot 8" /></a></li>
+	<li><a href="images/screenshots/screenshot_09.png"><img src="images/screenshots/preview_09.jpg" alt="Screenshot 9" /></a></li>
+	<li><a href="images/screenshots/screenshot_10.png"><img src="images/screenshots/preview_10.jpg" alt="Screenshot 10" /></a></li>
+</ul>
 <?php
 	gui::html_foot();
 ?>

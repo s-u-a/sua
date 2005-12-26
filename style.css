@@ -79,3 +79,7 @@ p { text-align:justify; }
 .news h3 { padding:0; margin:0; background-color:#457; position:relative; z-index:500; display:inline; }
 .news h3 .author { font-size:0.666667em; text-decoration:none; font-weight:normal; }
 .news .time { position:absolute; top:.5em; right:.5em; z-index:400; }
+
+.screenshots { text-align:center; margin:0; padding:0; list-style-type:none; }
+.screenshots li { display:inline; }
+.screenshots img { border:.2em solid #679; }
