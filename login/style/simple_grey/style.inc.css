@@ -297,7 +297,7 @@ p.neue-nachrichten { font-weight:bold; margin:0; padding:.5em; }
 * html .flotte-versenden .flotte-koords dl { width:40ex; }
 .flotte-versenden .flotte-koords dt { width:10ex; padding:.3em 1ex; }
 .flotte-versenden .flotte-koords dd { margin:0 0 0 12ex; padding:.3em 1ex; }
-.flotte-versenden .flotte-koords .c-ziel input { width:4ex; text-align:center; }
+.flotte-versenden .flotte-koords .c-ziel input { width:5ex; text-align:center; padding:.2em; }
 
 .flotte-versenden-2 { font-weight:bold; text-align:center; }
 .flotte-versenden-2 dl { width:100%; max-width:65ex; margin:.5em auto; text-align:left; padding:0; border:.1em solid #aaa; }

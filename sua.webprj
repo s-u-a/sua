@@ -112,5 +112,6 @@
     </teamdata>
     <events/>
     <item url="login/flotten_actions.php" uploadstatus="1" />
+    <item url="features.php" />
   </project>
 </webproject>
