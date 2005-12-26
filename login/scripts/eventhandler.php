@@ -600,15 +600,24 @@
 
 								# Transportkapazitaet berechnen
 								$transport = 0;
+								$transport_sammler = 0;
 								foreach($flotte[0] as $id=>$anzahl)
+								{
 									$transport += $items['schiffe'][$id]['trans'][0]*$anzahl;
+									if($id == 'S3')
+										$transport_sammler += $items['schiffe'][$id]['trans'][0]*$anzahl;
+								}
 
 								# Laderaumerweiterung
 								$l_level = 0;
 								if(isset($user_array['forschung']['F11']))
 									$l_level = $user_array['forschung']['F11'];
-								$transport = floor($transport*pow(1.2, $l_level));
+								$l_faktor = pow(1.2, $l_level);
+								$transport = floor($transport*$l_faktor);
+								$transport_sammler = floor($transport_sammler*$l_faktor);
 								$transport -= array_sum($flotte[5][0]);
+								if($transport >= $transport_sammler)
+									$transport = $transport_sammler;
 
 								$mitnahme = $truemmerfeld;
 
@@ -686,7 +695,7 @@
 
 								# Nachricht verfassen
 								$nachrichten_text = "<p>\n";
-								$nachrichten_text .= "\tIhre Flotte erreicht das Tr\xc3\xbcmmerfeld auf ".$flotte[3][0]." und bel\xc3\xa4dt ihre ".ths($transport, true)."&nbsp;Tonnen \xc3\xbcbriger Transportkapazit\xc3\xa4t mit folgenden Rohstoffen: ".ths($mitnahme[0], true)."&nbsp;Carbon, ".ths($mitnahme[1], true)."&nbsp;Aluminium, ".ths($mitnahme[2], true)."&nbsp;Wolfram und ".ths($mitnahme[3], true)."&nbsp;Radium.\n";
+								$nachrichten_text .= "\tIhre Flotte erreicht das Tr\xc3\xbcmmerfeld auf ".$flotte[3][0]." und bel\xc3\xa4dt die ".ths($transport, true)."&nbsp;Tonnen \xc3\xbcbriger Transportkapazit\xc3\xa4t der mitfliegenden Sammler mit folgenden Rohstoffen: ".ths($mitnahme[0], true)."&nbsp;Carbon, ".ths($mitnahme[1], true)."&nbsp;Aluminium, ".ths($mitnahme[2], true)."&nbsp;Wolfram und ".ths($mitnahme[3], true)."&nbsp;Radium.\n";
 								$nachrichten_text .= "</p>\n";
 								$nachrichten_text .= "<h3>Verbleibende Rohstoffe im Tr\xc3\xbcmmerfeld</h3>\n";
 								$nachrichten_text .= "<dl class=\"ress truemmerfeld-verbleibend\">\n";
