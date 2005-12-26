@@ -39,7 +39,7 @@
 	<li>Flug- und Kampferfahrungspunkte verschaffen Vorteil</li>
 	<li><abbr title="Secure Hypertext Transfer Protocol" xml:lang="en"><span xml:lang="de">HTTPS</span></abbr> schützt vertrauliche Daten</li>
 	<li>Geplant: Lassen Sie Flotten von einem Planeten zum nächsten und von dort zu einem weiteren fliegen</li>
-	<li>Geplant: Stationieren Sie Flotten bei Ihren Verbündeten, um diese zu unterstützen</li>
+	<li>Geplant: Stationieren Sie Flotten bei Ihren Verbündeten, um diesen zu unterstützen</li>
 	<li>Geplant: Fliegen Sie gemeinsame Angriffe mit Ihren Verbündeten</li>
 	<li>derzeit <?=$players?> Spieler</li>
 	<li>derzeit <?=$alliances?> Allianzen</li>
