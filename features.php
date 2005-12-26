@@ -64,6 +64,8 @@
 	<li><a href="images/screenshots/screenshot_08.png"><img src="images/screenshots/preview_08.jpg" alt="Screenshot 8" /></a></li>
 	<li><a href="images/screenshots/screenshot_09.png"><img src="images/screenshots/preview_09.jpg" alt="Screenshot 9" /></a></li>
 	<li><a href="images/screenshots/screenshot_10.png"><img src="images/screenshots/preview_10.jpg" alt="Screenshot 10" /></a></li>
+	<li><a href="images/screenshots/screenshot_11.png"><img src="images/screenshots/preview_11.jpg" alt="Screenshot 11" /></a></li>
+	<li><a href="images/screenshots/screenshot_12.png"><img src="images/screenshots/preview_12.jpg" alt="Screenshot 12" /></a></li>
 </ul>
 <?php
 	gui::html_foot();
