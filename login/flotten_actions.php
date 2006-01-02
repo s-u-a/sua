@@ -289,10 +289,17 @@
 </form>
 <?php
 			}
+			
+			login_gui::html_foot();
+			
+			break;
 		
-		break;
-	}
+		default:
+			html_head();
 ?>
+<p class="error">Ungültige Aktion.</p>
 <?php
-	login_gui::html_foot();
+			html_foot();
+			break;
+	}
 ?>
