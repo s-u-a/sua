@@ -142,7 +142,7 @@
 				}
 				if(array_sum($beladen[1]) > 0)
 				{
-					$k = array_sum($transport[1])/array_sum($beladen[1]);
+					$k = $transport[1]/array_sum($beladen[1]);
 					if($k < 1)
 					{
 						foreach($beladen[1] as $id=>$anzahl)

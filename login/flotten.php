@@ -542,6 +542,9 @@
 											$logfile_roboter[] = $id.' '.$anzahl;
 										}
 										$logfile_roboter = implode(' ', $logfile_roboter);
+										
+										# FEHLT NOCH:
+										# Bei wegschickenden Robotern Bauzeiten verlaengern
 
 										uasort($user_array['flotten'], 'usort_fleet');
 										write_user_array();
