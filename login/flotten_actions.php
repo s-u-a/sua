@@ -295,11 +295,11 @@
 			break;
 		
 		default:
-			html_head();
+			login_gui::html_head();
 ?>
 <p class="error">Ungültige Aktion.</p>
 <?php
-			html_foot();
+			login_gui::html_foot();
 			break;
 	}
 ?>
