@@ -439,7 +439,8 @@
 ?>
 			</div></div>
 <?php
-			if(!isset($user_array['noads']) || !$user_array['noads'] || true) /* Werbung deaktiviert */
+			if(false)/* Werbung deaktiviert */
+			#if(!isset($user_array['noads']) || !$user_array['noads'])
 			{
 ?>
 			<div id="werbung">
