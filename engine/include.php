@@ -2471,12 +2471,12 @@
 			if(count($line) < 2)
 				continue;
 
-			$this = &$admins[urldecode(array_shift($line))];
-			$this = array();
-			$this['password'] = array_shift($line);
-			$this['permissions'] = $line;
+			$this_admin = &$admins[urldecode(array_shift($line))];
+			$this_admin = array();
+			$this_admin['password'] = array_shift($line);
+			$this_admin['permissions'] = $line;
 
-			unset($this);
+			unset($this_admin);
 		}
 
 		return $admins;
@@ -2487,12 +2487,12 @@
 		$admin_file = array();
 		foreach($admins as $name=>$settings)
 		{
-			$this = &$admin_file[];
-			$this = $name;
-			$this .= "\t".$settings['password'];
+			$this_admin = &$admin_file[];
+			$this_admin = $name;
+			$this_admin .= "\t".$settings['password'];
 			if(count($settings['permissions']) > 0)
 				$this .= "\t".implode("\t", $settings['permissions']);
-			unset($this);
+			unset($this_admin);
 		}
 
 		$fh = fopen(DB_ADMINS, 'w');

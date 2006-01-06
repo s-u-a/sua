@@ -1008,7 +1008,7 @@
 				foreach($planets as $planet)
 				{
 ?>
-					document.write('<option value="<?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?>"<?=($planet == $_SESSION['act_planet']) ? ' selected="selected"' : ''?>><?=utf8_htmlentities($user_array['planets'][$planet]['name'])?> (<?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?>)</option>');
+					document.write('<option value="<?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?>"<?=($planet == $_SESSION['act_planet']) ? ' selected="selected"' : ''?>><?=preg_replace('/[\'\\\\]/', '\\\\\\0', utf8_htmlentities($user_array['planets'][$planet]['name']))?> (<?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?>)</option>');
 <?php
 				}
 ?>

@@ -135,6 +135,18 @@
 		else
 		{
 			list($user_array['planets'][$planets[$which]], $user_array['planets'][$planets[$which-1]]) = array($user_array['planets'][$planets[$which-1]], $user_array['planets'][$planets[$which]]);
+
+			foreach($planets as $planet)
+			{
+				if(isset($user_array['planets'][$planet]['building']['forschung']) && isset($user_array['planets'][$planet]['building']['forschung'][4]))
+				{
+					if($user_array['planets'][$planet]['building']['forschung'][4] == $planets[$which])
+						$user_array['planets'][$planet]['building']['forschung'][4] = $planets[$which-1];
+					elseif($user_array['planets'][$planet]['building']['forschung'][4] == $planets[$which-1])
+						$user_array['planets'][$planet]['building']['forschung'][4] = $planets[$which];
+				}
+			}
+			
 			write_user_array();
 
 			if($_SESSION['act_planet'] == $planets[$which])

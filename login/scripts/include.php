@@ -215,6 +215,8 @@
 		</script>
 <?php
 			$skin_path = '';
+			$skin_keys = array_keys($skins);
+			$default_skin = array_shift($skin_keys);
 			if(isset($user_array['skin']))
 			{
 				if(isset($skins[$user_array['skin']]))
@@ -223,7 +225,7 @@
 					$skin_path = $user_array['skin'];
 			}
 			elseif(count($skins) > 0)
-				$skin_path = h_root.'/login/style/skin.php?'.urlencode(array_shift(array_keys($skins)));
+				$skin_path = h_root.'/login/style/skin.php?'.urlencode($default_skin);
 
 			if(trim($skin_path) != '')
 			{
