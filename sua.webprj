@@ -112,6 +112,14 @@
     </teamdata>
     <events/>
     <item url="login/flotten_actions.php" uploadstatus="1" />
-    <item url="features.php" />
+    <item url="features.php" uploadstatus="1" />
+    <item url="engine/classes/" uploadstatus="1" />
+    <item url="engine/classes/dataset.php" uploadstatus="1" />
+    <item url="engine/classes/user.php" uploadstatus="1" />
+    <item url="engine/classes/alliance.php" uploadstatus="1" />
+    <item url="engine/classes/message.php" uploadstatus="1" />
+    <item url="engine/classes/publicmessage.php" uploadstatus="1" />
+    <item url="engine/classes/item.php" uploadstatus="1" />
+    <item url="engine/classes/classes.php" uploadstatus="1" />
   </project>
 </webproject>

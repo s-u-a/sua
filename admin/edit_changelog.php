@@ -99,8 +99,7 @@
 <form action="edit_changelog.php" method="post">
 	<fieldset>
 		<legend>Version</legend>
-		<p>Achtung: Durch Drücken der <span xml:lang="en">Return</span>-Taste wird unter umständen nicht das erzielt, was man wünscht.</p>
-		<p><input name="version[0]" value="<?=utf8_htmlentities($version[0])?>" size="3" /><input type="submit" name="increase_version[0]" value="&uarr;" />&nbsp;.&nbsp;<input name="version[1]" value="<?=utf8_htmlentities($version[1])?>" size="3" /><input type="submit" name="increase_version[1]" value="&uarr;" />&nbsp;.&nbsp;<input name="version[2]" value="<?=utf8_htmlentities($version[2])?>" size="3" /><input type="submit" name="increase_version[2]" value="&uarr;" /></p>
+		<p><input name="version[0]" value="<?=utf8_htmlentities($version[0])?>" size="3" /><input type="submit" value="" style="display:none;" /><input type="submit" name="increase_version[0]" value="&uarr;" />&nbsp;.&nbsp;<input name="version[1]" value="<?=utf8_htmlentities($version[1])?>" size="3" /><input type="submit" value="" style="display:none;" /><input type="submit" name="increase_version[1]" value="&uarr;" />&nbsp;.&nbsp;<input name="version[2]" value="<?=utf8_htmlentities($version[2])?>" size="3" /><input type="submit" value="" style="display:none;" /><input type="submit" name="increase_version[2]" value="&uarr;" /></p>
 		<div><button type="submit">Speichern</button></div>
 	</fieldset>
 </form>

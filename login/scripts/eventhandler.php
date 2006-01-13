@@ -446,7 +446,7 @@
 									$distance = fleet::get_distance($flotte[3][0], $flotte[3][1]);
 									$mass = $items['schiffe']['S6']['mass'];
 									$speed = $items['schiffe']['S6']['speed'];
-									$tritium = fleet::get_tritium($mass, $distance, $speed)*$flotte[6];
+									$tritium = fleet::get_tritium($mass, $distance)*$flotte[6];
 									$mass += $tritium;
 									$new_planet_array['ress'][4] += round($tritium);
 
@@ -965,7 +965,7 @@
 									}
 									$staerke *= pow(1.05, ${$runde_starter.'_waffentechnik'});
 
-									$nachrichten_text .= "\t<h4><span class=\"name\">".utf8_htmlentities(${$runde_starter.'_name'})."</span> ist am Zug (Gesamtst\xc3\xa4rke ".round($staerke).")</h4>\n";
+									$nachrichten_text .= "\t<h4><span class=\"".$runde_starter."-name\">".utf8_htmlentities(${$runde_starter.'_name'})."</span> ist am Zug (Gesamtst\xc3\xa4rke ".round($staerke).")</h4>\n";
 									$nachrichten_text .= "\t<ol>\n";
 
 									while($staerke > 0 && count($d) > 0)

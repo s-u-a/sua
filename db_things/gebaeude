@@ -5,7 +5,7 @@ B3	Radiumgrube	250.130.0.0	187	B0-6 B1-5 B2-3	0.0.0.10.0.-40	1	Liefert Radium. D
 B4	Tritiumgenerator	300.170.120.0	242	B2-1 F0-1	0.0.0.0.8.-35	2	Extrahiert Tritium, einen universal benutztbaren Treibstoff.
 B5	Solarkraftwerk	150.70.0.0	62		0.0.0.0.0.62	1	Nutzt die Sonnenenergie zur Energiegewinnung.
 B6	Sonnenwindkraftwerk	1000.500.300.0	536	F3-3	0.0.0.0.0.97	0	Fängt Sonnenwind auf und extrahiert daraus Energie.
-B7	Wärmekraftwerk	5000000.5000000.5000000.5000000	14464	B2-30 F3-15 F9-1	0.120000.80000.30000.0.10000	3	Nutzt die Wärme des Planeteninneren zur Energiegewinnung und gewinnt gleichzeitig Aluminium, Wolfram und Radium.
+B7	Wärmekraftwerk	5000000.5000000.5000000.5000000	216892	B2-30 F3-15 F9-1	0.120000.80000.30000.0.10000	3	Nutzt die Wärme des Planeteninneren zur Energiegewinnung und gewinnt gleichzeitig Aluminium, Wolfram und Radium.
 B8	Forschungslabor	100.80.60.50	298	B2-5 B3-2	0.0.0.0.0.0	1	Sorgt für die Entwicklung neuer Technologien.
 B9	Roboterfabrik	60.50.20.10	250	B8-2	0.0.0.0.0.0	1	Produziert Roboter, welche in allen Bereichen nützlich sein können.
 B10	Werft	80.70.60.20	345	B4-2 F0-1 F6-1	0.0.0.0.0.0	1	Stellt Raumschiffe und Verteidigungsanlangen her und koordiniert diese.

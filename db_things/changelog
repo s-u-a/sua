@@ -1,3 +1,5 @@
+1136851793	Bei Nachrichten ist der Absender jetzt anklickbar, man gelangt zu dessen Benutzerbeschreibung.
+1136851773	Bug behoben: Wurde globale Forschung wieder abgebrochen, nachdem die Reihenfolge der Planeten verändert wurde, bekam man die Rohstoffe unter Umständen auf dem falschen Planeten zurück.
 1136220585	Bug in Bezug auf den Roboterhandel mit der Handelsfunktion behoben.
 1136219129	Wenn man in der Handelsfunktion den Planeten wechselte, erhielt man eine leere Seite, die man nicht verlassen konnte.
 1135609592	Beim Sammeln werden jetzt nur noch die Sammler mit Rohstoffen beladen.

@@ -318,15 +318,18 @@
 <?php
 	$countdowns = array();
 	$tabindex = 3;
-	foreach($user_array['planets'] as $no=>$planet)
+	$planets = $me->getPlanetsList();
+	$active_planet = $me->getActivePlanet();
+	foreach($planets as $planet)
 	{
-		$pos = explode(':', $planet['pos']);
-		$class = universe::get_planet_class($pos[0], $pos[1], $pos[2]);
+		$me->setActivePlanet($planet);
+		$pos = $me->getPos();
+		$class = $me->getPlanetClass();
 ?>
-	<li class="planet-<?=htmlentities($class)?><?=($no == $_SESSION['act_planet']) ? ' active' : ''?>"><?=($no != $_SESSION['act_planet']) ? '<a href="index.php?planet='.htmlentities(urlencode($no).'&'.SESSION_COOKIE.'='.urlencode(session_id())).'" tabindex="'.$tabindex.'">' : ''?><?=utf8_htmlentities($planet['name'])?><?=($no != $_SESSION['act_planet']) ? '</a>' : ''?> <span class="koords">(<?=utf8_htmlentities($planet['pos'])?>)</span>
+	<li class="planet-<?=htmlentities($class)?><?=($planet == $active_planet) ? ' active' : ''?>"><?=($planet != $active_planet) ? '<a href="index.php?planet='.htmlentities(urlencode($planet).'&'.urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?><?=utf8_htmlentities($me->planetName())?><?=($planet != $active_planet) ? '</a>' : ''?> <span class="koords">(<?=utf8_htmlentities($me->getPosString())?>)</span>
 		<dl class="planet-info">
 			<dt class="c-felder">Felder</dt>
-			<dd class="c-felder"><?=ths($planet['size'][0])?> <span class="gesamtgroesse">(<?=ths($planet['size'][1])?>)</span></dd>
+			<dd class="c-felder"><?=ths($me->getUsedFields())?> <span class="gesamtgroesse">(<?=ths($me->getTotalFields())?>)</span></dd>
 
 			<dt class="c-gebaeudebau">Gebäudebau</dt>
 <?php
@@ -368,8 +371,6 @@
 		</dl>
 	</li>
 <?php
-		if($no != $_SESSION['act_planet'])
-			$tabindex++;
 	}
 ?>
 </ol>
@@ -393,28 +394,28 @@
 <h2 id="punkte">Punkte</h2>
 <dl class="punkte">
 	<dt class="c-gebaeude">Gebäude</dt>
-	<dd class="c-gebaeude"><?=ths($user_array['punkte'][0])?></dd>
+	<dd class="c-gebaeude"><?=ths($me->getScores(0))?></dd>
 
 	<dt class="c-forschung">Forschung</dt>
-	<dd class="c-forschung"><?=ths($user_array['punkte'][1])?></dd>
+	<dd class="c-forschung"><?=ths($me->getScores(1))?></dd>
 
 	<dt class="c-roboter">Roboter</dt>
-	<dd class="c-roboter"><?=ths($user_array['punkte'][2])?></dd>
+	<dd class="c-roboter"><?=ths($me->getScores(2))?></dd>
 
 	<dt class="c-flotte">Flotte</dt>
-	<dd class="c-flotte"><?=ths($user_array['punkte'][3])?></dd>
+	<dd class="c-flotte"><?=ths($me->getScores(3))?></dd>
 
 	<dt class="c-verteidigung">Verteidigung</dt>
-	<dd class="c-verteidigung"><?=ths($user_array['punkte'][4])?></dd>
+	<dd class="c-verteidigung"><?=ths($me->getScores(4))?></dd>
 
 	<dt class="c-flugerfahrung">Flugerfahrung</dt>
-	<dd class="c-flugerfahrung"><?=ths($user_array['punkte'][5])?></dd>
+	<dd class="c-flugerfahrung"><?=ths($me->getScores(5))?></dd>
 
 	<dt class="c-kampferfahrung">Kampferfahrung</dt>
-	<dd class="c-kampferfahrung"><?=ths($user_array['punkte'][6])?></dd>
+	<dd class="c-kampferfahrung"><?=ths($me->getScores(6))?></dd>
 
 	<dt class="c-gesamt">Gesamt</dt>
-	<dd class="c-gesamt"><?=ths($user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6])?> <span class="platz">(Platz&nbsp;<?=ths($user_array['punkte'][12])?> <span class="gesamt-spieler">von <?=ths(highscores::get_players_count())?>)</span><?=isset($_SESSION['admin_username']) ? ' <a href="?recalc_highscores=1&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">[Neu berechnen]</a>' : ''?></span></dd>
+	<dd class="c-gesamt"><?=ths($me->getScores())?> <span class="gesamt-spieler">(Platz <?=ths($me->getRank())?> von <?=ths(highscores::get_players_count())?>)</span><?=isset($_SESSION['admin_username']) ? ' <a href="?recalc_highscores=1&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">[Neu berechnen]</a>' : ''?></span></dd>
 </dl>
 <?php
 	login_gui::html_foot();

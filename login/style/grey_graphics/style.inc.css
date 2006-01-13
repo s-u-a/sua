@@ -46,26 +46,26 @@ body.planet-20 { background-image:url(grey_graphics/images/image.php?planets_alp
 #planets .planet-20 { background-image:url(grey_graphics/images/image.php?planets_small%2fplanet20.gif); }
 
 #planets .active,#spionage-planet dl { background-repeat:no-repeat; background-position:center top; padding:250px 0 0 0 !important; }
-.planet-1 #planets .active,#spionage-planet dl.planet_1 { background-image:url(grey_graphics/images/image.php?planets%2fplanet01.gif); }
-.planet-2 #planets .active,#spionage-planet dl.planet_2 { background-image:url(grey_graphics/images/image.php?planets%2fplanet02.gif); }
-.planet-3 #planets .active,#spionage-planet dl.planet_3 { background-image:url(grey_graphics/images/image.php?planets%2fplanet03.gif); }
-.planet-4 #planets .active,#spionage-planet dl.planet_4 { background-image:url(grey_graphics/images/image.php?planets%2fplanet04.gif); }
-.planet-5 #planets .active,#spionage-planet dl.planet_5 { background-image:url(grey_graphics/images/image.php?planets%2fplanet05.gif); }
-.planet-6 #planets .active,#spionage-planet dl.planet_6 { background-image:url(grey_graphics/images/image.php?planets%2fplanet06.gif); }
-.planet-7 #planets .active,#spionage-planet dl.planet_7 { background-image:url(grey_graphics/images/image.php?planets%2fplanet07.gif); }
-.planet-8 #planets .active,#spionage-planet dl.planet_8 { background-image:url(grey_graphics/images/image.php?planets%2fplanet08.gif); }
-.planet-9 #planets .active,#spionage-planet dl.planet_9 { background-image:url(grey_graphics/images/image.php?planets%2fplanet09.gif); }
-.planet-10 #planets .active,#spionage-planet dl.planet_10 { background-image:url(grey_graphics/images/image.php?planets%2fplanet10.gif); }
-.planet-11 #planets .active,#spionage-planet dl.planet_11 { background-image:url(grey_graphics/images/image.php?planets%2fplanet11.gif); }
-.planet-12 #planets .active,#spionage-planet dl.planet_12 { background-image:url(grey_graphics/images/image.php?planets%2fplanet12.gif); }
-.planet-13 #planets .active,#spionage-planet dl.planet_13 { background-image:url(grey_graphics/images/image.php?planets%2fplanet13.gif); }
-.planet-14 #planets .active,#spionage-planet dl.planet_14 { background-image:url(grey_graphics/images/image.php?planets%2fplanet14.gif); }
-.planet-15 #planets .active,#spionage-planet dl.planet_15 { background-image:url(grey_graphics/images/image.php?planets%2fplanet15.gif); }
-.planet-16 #planets .active,#spionage-planet dl.planet_16 { background-image:url(grey_graphics/images/image.php?planets%2fplanet16.gif); }
-.planet-17 #planets .active,#spionage-planet dl.planet_17 { background-image:url(grey_graphics/images/image.php?planets%2fplanet17.gif); }
-.planet-18 #planets .active,#spionage-planet dl.planet_18 { background-image:url(grey_graphics/images/image.php?planets%2fplanet18.gif); }
-.planet-19 #planets .active,#spionage-planet dl.planet_19 { background-image:url(grey_graphics/images/image.php?planets%2fplanet19.gif); }
-.planet-20 #planets .active,#spionage-planet dl.planet_20 { background-image:url(grey_graphics/images/image.php?planets%2fplanet20.gif); }
+.planet-1 #planets .active,#spionage-planet dl.planet_1 { background-image:url(grey_graphics/images/image.php?planets%2fplanet01.png); }
+.planet-2 #planets .active,#spionage-planet dl.planet_2 { background-image:url(grey_graphics/images/image.php?planets%2fplanet02.png); }
+.planet-3 #planets .active,#spionage-planet dl.planet_3 { background-image:url(grey_graphics/images/image.php?planets%2fplanet03.png); }
+.planet-4 #planets .active,#spionage-planet dl.planet_4 { background-image:url(grey_graphics/images/image.php?planets%2fplanet04.png); }
+.planet-5 #planets .active,#spionage-planet dl.planet_5 { background-image:url(grey_graphics/images/image.php?planets%2fplanet05.png); }
+.planet-6 #planets .active,#spionage-planet dl.planet_6 { background-image:url(grey_graphics/images/image.php?planets%2fplanet06.png); }
+.planet-7 #planets .active,#spionage-planet dl.planet_7 { background-image:url(grey_graphics/images/image.php?planets%2fplanet07.png); }
+.planet-8 #planets .active,#spionage-planet dl.planet_8 { background-image:url(grey_graphics/images/image.php?planets%2fplanet08.png); }
+.planet-9 #planets .active,#spionage-planet dl.planet_9 { background-image:url(grey_graphics/images/image.php?planets%2fplanet09.png); }
+.planet-10 #planets .active,#spionage-planet dl.planet_10 { background-image:url(grey_graphics/images/image.php?planets%2fplanet10.png); }
+.planet-11 #planets .active,#spionage-planet dl.planet_11 { background-image:url(grey_graphics/images/image.php?planets%2fplanet11.png); }
+.planet-12 #planets .active,#spionage-planet dl.planet_12 { background-image:url(grey_graphics/images/image.php?planets%2fplanet12.png); }
+.planet-13 #planets .active,#spionage-planet dl.planet_13 { background-image:url(grey_graphics/images/image.php?planets%2fplanet13.png); }
+.planet-14 #planets .active,#spionage-planet dl.planet_14 { background-image:url(grey_graphics/images/image.php?planets%2fplanet14.png); }
+.planet-15 #planets .active,#spionage-planet dl.planet_15 { background-image:url(grey_graphics/images/image.php?planets%2fplanet15.png); }
+.planet-16 #planets .active,#spionage-planet dl.planet_16 { background-image:url(grey_graphics/images/image.php?planets%2fplanet16.png); }
+.planet-17 #planets .active,#spionage-planet dl.planet_17 { background-image:url(grey_graphics/images/image.php?planets%2fplanet17.png); }
+.planet-18 #planets .active,#spionage-planet dl.planet_18 { background-image:url(grey_graphics/images/image.php?planets%2fplanet18.png); }
+.planet-19 #planets .active,#spionage-planet dl.planet_19 { background-image:url(grey_graphics/images/image.php?planets%2fplanet19.png); }
+.planet-20 #planets .active,#spionage-planet dl.planet_20 { background-image:url(grey_graphics/images/image.php?planets%2fplanet20.png); }
 
 #ress dt { padding-left:21px !important; background-repeat:no-repeat; background-position:2px 50%; }
 #ress dt.ress-carbon { background-image:url(grey_graphics/images/image.php?resources%2fcarbon.png); }

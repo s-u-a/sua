@@ -4,7 +4,7 @@
 	$DISABLE_ADS = true;
 	login_gui::html_head();
 
-	$pos = explode(':', $this_planet['pos']);
+	$pos = $me->getPos();
 
 	$galaxy_n = $pos[0];
 	$system_n = $pos[1];
@@ -36,17 +36,17 @@
 	<fieldset class="karte-galaxiewahl">
 		<legend>Galaxie</legend>
 		<ul>
-			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($prev_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" tabindex="6" accesskey="u" title="[U]">Vorige</a></li>
+			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($prev_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="6" accesskey="u" title="[U]">Vorige</a></li>
 			<li><input type="text" name="galaxy" value="<?=utf8_htmlentities($galaxy_n)?>" tabindex="1" /></li>
-			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($next_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" tabindex="5" accesskey="x" title="[X]">Nächste</a></li>
+			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($next_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="5" accesskey="x" title="[X]">Nächste</a></li>
 		</ul>
 	</fieldset>
 	<fieldset class="karte-systemwahl">
 		<legend>System</legend>
 		<ul>
-			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;system=<?=htmlentities(urlencode($prev_system))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" tabindex="4" rel="prev" accesskey="o">V<kbd>o</kbd>rige</a></li>
+			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;system=<?=htmlentities(urlencode($prev_system))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="4" rel="prev" accesskey="o">V<kbd>o</kbd>rige</a></li>
 			<li><input type="text" name="system" value="<?=utf8_htmlentities($system_n)?>" tabindex="2" /></li>
-			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;system=<?=htmlentities(urlencode($next_system))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" tabindex="3" rel="next" accesskey="n"><kbd>N</kbd>ächste</a></li>
+			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;system=<?=htmlentities(urlencode($next_system))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="3" rel="next" accesskey="n"><kbd>N</kbd>ächste</a></li>
 		</ul>
 	</fieldset>
 	<div class="karte-wahl-absenden">
@@ -91,7 +91,7 @@
 		{
 			if($that_uname == $_SESSION['username'])
 				$class2 = 'eigen';
-			elseif(in_array($that_uname, $user_array['verbuendete']))
+			elseif($me->isVerbuendet($that_uname))
 				$class2 = 'verbuendet';
 			else
 				$class2 = 'fremd';
@@ -126,18 +126,18 @@
 <?php
 		}
 
-		$show_sammeln = (!$user_array['umode'] && isset($this_planet['schiffe']['S3']) && $this_planet['schiffe']['S3'] > 0 && array_sum($truemmerfeld) > 0);
+		$show_sammeln = ($me->permissionToAct() && $me->getItemLevel('S3', 'schiffe') > 0 && array_sum($truemmerfeld) > 0);
 ?>
 			<td class="c-aktionen">
 				<ul>
-					<li class="c-koordinaten-verwenden"><a href="flotten.php?action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten ins Flottenmenü einsetzen">Koordinaten verwenden</a></li>
+					<li class="c-koordinaten-verwenden"><a href="flotten.php?action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten ins Flottenmenü einsetzen">Koordinaten verwenden</a></li>
 <?php
 		if($that_uname != $_SESSION['username'])
 		{
-			if($suffix != ' (U)' && !$user_array['umode'] && isset($this_planet['schiffe']['S5']) && $this_planet['schiffe']['S5'] > 0)
+			if($suffix != ' (U)' && $me->permissionToAct() && $me->getItemLevel('S5', 'schiffe') > 0)
 			{
 ?>
-					<li class="c-spionieren"><a href="flotten.php?action=spionage&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Spionieren Sie diesen Planeten aus">Spionieren</a></li>
+					<li class="c-spionieren"><a href="flotten.php?action=spionage&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Spionieren Sie diesen Planeten aus">Spionieren</a></li>
 <?php
 			}
 
@@ -148,10 +148,10 @@
 <?php
 			}
 
-			if(!$planet[1] && !$user_array['umode'] && count($user_array['planets']) < 15 && isset($this_planet['schiffe']['S6']) && $this_planet['schiffe']['S6'] > 0)
+			if(!$planet[1] && $me->permissionToAct() && !$me->checkPlanetCount() && $me->getItemLevel('S6', 'schiffe') > 0)
 			{
 ?>
-					<li class="c-besiedeln"><a href="flotten.php?action=besiedeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Schicken Sie ein Besiedelungsschiff zu diesem Planeten">Besiedeln</a></li>
+					<li class="c-besiedeln"><a href="flotten.php?action=besiedeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Schicken Sie ein Besiedelungsschiff zu diesem Planeten">Besiedeln</a></li>
 <?php
 			}
 		}
@@ -159,7 +159,7 @@
 		if($show_sammeln)
 		{
 ?>
-					<li class="c-truemmerfeld"><a href="flotten.php?action=sammeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Schicken Sie ausreichend Sammler zu diesem Trümmerfeld">Trümmerfeld</a></li>
+					<li class="c-truemmerfeld"><a href="flotten.php?action=sammeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Schicken Sie ausreichend Sammler zu diesem Trümmerfeld">Trümmerfeld</a></li>
 <?php
 		}
 ?>

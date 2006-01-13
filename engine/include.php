@@ -2,7 +2,7 @@
 	define('start_mtime', microtime());
 
 	error_reporting(2047);
-	ignore_user_abort();
+	#ignore_user_abort(false);
 
 	$this_filename = '/engine/include.php';
 	if(substr(__FILE__, -strlen($this_filename)) !== $this_filename)
@@ -32,6 +32,7 @@
 			define('DB_PLAYERS', DB_DIR.'/players');
 			define('DB_UNIVERSE', DB_DIR.'/universe');
 			define('DB_ITEMS', DB_DIR.'/items');
+			define('DB_ITEM_DB', DB_DIR.'/items.db');
 			define('DB_MESSAGES', DB_DIR.'/messages');
 			define('DB_MESSAGES_PUBLIC', DB_DIR.'/messages_public');
 			define('DB_HIGHSCORES', DB_DIR.'/highscores');
@@ -83,14 +84,22 @@
 			define('other_globals', true);
 		}
 	}
-
-	header('Content-type: text/html; charset=UTF-8');
+	
+	function __autoload($class)
+	{
+		if(strtolower($class) == 'items') $class = 'Item';
+		$filename = s_root.'/engine/classes/'.strtolower($class).'.php';
+		if(is_file($filename) && is_readable($filename)) require_once($filename);
+	}
 
 	if(!isset($USE_OB) || $USE_OB)
 	{
+		header('Content-type: text/html; charset=UTF-8');
 		ob_start('ob_gzhandler');
 		ob_start('ob_utf8');
 	}
+	else
+		header('Content-type: text/html; charset=ISO-8859-1');
 	
 	if(!isset($LOGIN) || !$LOGIN)
 	{
@@ -543,9 +552,9 @@
 	{
 		function new_message($to, $from, $subject, $text, $html=false)
 		{
-			global $user_array;
-
-
+			do $id = substr(md5(rand()), 0, 16); while(file_exists(DB_MESSAGES.'/'.$id));
+			
+			$message = new Message($id);
 			$message_array = array('text' => $text, 'from' => $from, 'time' => time(), 'subject' => $subject, 'users' => array(), 'html' => $html);
 			if(!$message_array['html'])
 				$message_array['text'] = htmlspecialchars($message_array['text']);
@@ -560,8 +569,6 @@
 			if(count($message_array['users']) <= 0)
 				return false;
 
-			do $id = substr(md5(rand()), 0, 16); while(file_exists(DB_MESSAGES.'/'.$id));
-
 			$fh = fopen(DB_MESSAGES.'/'.$id, 'w');
 			if(!$fh)
 				return false;
@@ -570,20 +577,9 @@
 			$one = false;
 			foreach($message_array['users'] as $user=>$type)
 			{
-				$that_user_array = get_user_array($user);
-				if(!isset($that_user_array['messages']))
-					$that_user_array['messages'] = array();
-				if(!isset($that_user_array['messages'][$type]))
-					$that_user_array['messages'][$type] = array();
-				$that_user_array['messages'][$type][$id] = 1;
-
-				if(isset($_SESSION['username']) && isset($user_array) && $user == $_SESSION['username'])
-					$user_array['messages'][$type][$id] = 1;
-
-				if(!write_user_array($user, $that_user_array))
-					continue;
-
-				unset($that_user_array);
+				$that_user = Classes::User($user);
+				$that_user->addMessage($id, $type);
+				unset($that_user);
 
 				$one = true;
 			}
@@ -683,6 +679,7 @@
 			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/faq.php"><abbr title="Frequently Asked Questions" xml:lang="en">FAQ</abbr></a></li>
 			<li><a href="http://board.s-u-a.net/index.php" xml:lang="en">Board</a></li>
 			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/impressum.php">Impressum</a></li>
+			<li class="image"><a href="http://www.browsergames24.de/modules.php?name=Web_Links&amp;l_op=ratelink&amp;lid=1236"><img src="http://www.browsergames24.de/votebg.gif" alt="Bewerten Sie S-U-A bei Browsergames24" /></a></li>
 		</ol>
 		<div id="content-9"><div id="content-10"><div id="content-11"><div id="content-12">
 <?php
@@ -1604,25 +1601,18 @@
 
 	function get_user_array($username)
 	{
+		return false;
 		if(!is_file(DB_PLAYERS.'/'.urlencode($username)) || !is_readable(DB_PLAYERS.'/'.urlencode($username)))
 			return false;
 		$user_array = unserialize(gzuncompress(file_get_contents(DB_PLAYERS.'/'.urlencode($username))));
-		if(file_exists(LOCK_FILE))
-		{
-			# Spiel ist gesperrt
-			if(isset($user_array['umode']))
-				$user_array['umode.sav'] = $user_array['umode'];
-			if(isset($user_array['locked']))
-				$user_array['locked.sav'] = $user_array['locked'];
-			$user_array['locked'] = $user_array['umode'] = true;
-			$user_array['game_locked'] = true;
-		}
-
+		
 		return $user_array;
 	}
 
 	function write_user_array($username=false, $that_user_array=false)
 	{
+		# DEPRECATED
+		return true;
 		if($username !== false && $that_user_array === false)
 			return false;
 		if($username === false)
@@ -1640,23 +1630,6 @@
 				$that_user_array = $user_array;
 			else
 				$that_user_array = &$user_array;
-		}
-
-		if(isset($that_user_array['game_locked']) && $that_user_array['game_locked'])
-		{
-			unset($that_user_array['locked']);
-			unset($that_user_array['locked.sav']);
-			if(isset($that_user_array['locked.sav']))
-			{
-				$that_user_array['locked'] = $that_user_array['locked.sav'];
-				unset($that_user_array['locked.sav']);
-			}
-			if(isset($that_user_array['umode.sav']))
-			{
-				$that_user_array['umode'] = $that_user_array['umode.sav'];
-				unset($that_user_array['umode.sav']);
-			}
-			unset($that_user_array['game_locked']);
 		}
 
 		if(!isset($that_user_array['username']) || $that_user_array['username'] != $username)
@@ -2476,7 +2449,7 @@
 			$this_admin['password'] = array_shift($line);
 			$this_admin['permissions'] = $line;
 
-			unset($this_admin);
+			unset($this);
 		}
 
 		return $admins;
@@ -2491,7 +2464,7 @@
 			$this_admin = $name;
 			$this_admin .= "\t".$settings['password'];
 			if(count($settings['permissions']) > 0)
-				$this .= "\t".implode("\t", $settings['permissions']);
+				$this_admin .= "\t".implode("\t", $settings['permissions']);
 			unset($this_admin);
 		}
 
@@ -3079,5 +3052,57 @@
 	function report_error($error_number)
 	{
 		return mail('webmaster@s-u-a.net', 'Fehlermeldung auf S-U-A', 'Fehlernummer: '.$error_number);
+	}
+	
+	function message_repl_nl($nls)
+	{
+		$len = strlen($nls);
+		if($len == 1)
+			return "<br />\n\t";
+		elseif($len == 2)
+			return "\n</p>\n<p>\n\t";
+		elseif($len > 2)
+			return "\n</p>\n".str_repeat('<br />', $len-2)."\n<p>\n\t";
+	}
+
+	function message_repl_links($a, $b, $c)
+	{
+		if(!session_id())
+			return $a.$b.$c;
+		
+		$url2 = html_entity_decode($b);
+		if(substr($url2, 0, 7) != 'http://')
+		{
+			$url3 = explode('#', $url2);
+			$url3[0] = explode('?', $url3[0]);
+			$url = array($url3[0][0]);
+			if(isset($url3[0][1]))
+				$url[1] = $url3[0][1];
+			else
+				$url[1] = '';
+			if(isset($url3[1]))
+				$url[2] = $url[1];
+			else
+				$url[2] = '';
+
+			if($url[1] != '')
+				$url[1] .= '&';
+			$url[1] .= SESSION_COOKIE.'='.urlencode(session_id());
+
+			$url2 = $url[0].'?'.$url[1];
+			if($url[2] != '')
+				$url2 .= '#'.$url[2];
+		}
+
+		return $a.htmlentities($url2).$c;
+	}
+	
+	function stdround($a, $d=0)
+	{
+		$f = pow(10, $d);
+		$a *= $f;
+		$i = (int)($a+.5);
+		$a = $i/$f;
+		return $a;
 	}
 ?>

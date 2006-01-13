@@ -20,6 +20,8 @@ h1 { position:fixed; bottom:0; left:.5em; font-variant:small-caps; font-family:G
 #navigation li a:hover,#navigation li a:focus { background-color:#679; }
 * html #navigation a { filter:Alpha(opacity=50,style=0); width:99%; }
 * html #navigation a:hover,* html #navigation a:focus { filter:none; background-color:#ACAEC5; background-image:none; }
+#navigation li.image { border-style:none; padding:0; margin:0; position:relative; top:.5em; }
+#navigation li.image a { background:transparent; padding:0; margin:0; border-style:none; display:inline; }
 
 #login-form { position:absolute; margin:0; top:0; right:1em; width:186px; border:.2em solid #679; padding:4px 7px; background-color:#457; z-index:11000; color:#000; }
 * html #login-form { width:200px; }

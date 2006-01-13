@@ -16,76 +16,9 @@
 		$a_id = $_GET['global'];
 		$global = true;
 	}
-	if((!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B8') && isset($a_id) && !$user_array['umode'] && isset($items['forschung'][$a_id]) && $items['forschung'][$a_id]['buildable'] && (!isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0]) == '') && !in_array($a_id, $laufende_forschungen))
-	{
-		# Weiterforschen
-
-
-		# Ausbaulevel bis jetzt
-		$level = 0;
-		if(isset($user_array['forschung'][$a_id]))
-			$level = $user_array['forschung'][$a_id];
-
-		# Rohstoffkosten
-		$ress = $items['forschung'][$a_id]['ress'];
-		# Aktuelle Stufe einberechnen
-		$ress[0] *= pow($level+1, 3);
-		$ress[1] *= pow($level+1, 3);
-		$ress[2] *= pow($level+1, 3);
-		$ress[3] *= pow($level+1, 3);
-
-		$ress[0] = round($ress[0]);
-		$ress[1] = round($ress[1]);
-		$ress[2] = round($ress[2]);
-		$ress[3] = round($ress[3]);
-
-		if($this_planet['ress'][0] >= $ress[0] && $this_planet['ress'][1] >= $ress[1] && $this_planet['ress'][2] >= $ress[2] && $this_planet['ress'][3] >= $ress[3])
-		{
-			# Genuegend Rohstoffe zum Ausbau
-
-			# Bauzeit berechnen
-			$time = calc_btime_forschung($items['forschung'][$a_id]['time'], $level, $global+1);
-
-			# Zum Countdown eintragen
-			$build_array = array($a_id, time()+$time, $global, $ress);
-			if($global)
-			{
-				$build_array[] = $_SESSION['act_planet'];
-
-				$planets = array_keys($user_array['planets']);
-				foreach($planets as $planet)
-					$user_array['planets'][$planet]['building']['forschung'] = $build_array;
-			}
-			else
-				$this_planet['building']['forschung'] = $build_array;
-
-
-			# Rohstoffe abziehen
-			$this_planet['ress'][0] -= $ress[0];
-			$this_planet['ress'][1] -= $ress[1];
-			$this_planet['ress'][2] -= $ress[2];
-			$this_planet['ress'][3] -= $ress[3];
-
-			if(!write_user_array())
-			{
-				# Fehlgeschlagen, also alte Einstellungen wiederherstellen
-				unset($this_planet['building']['forschung']);
-				$this_planet['ress'][0] += $ress[0];
-				$this_planet['ress'][1] += $ress[1];
-				$this_planet['ress'][2] += $ress[2];
-				$this_planet['ress'][3] += $ress[3];
-			}
-			else
-			{
-				# Jetzt in den Eventhandler aufnehmen
-				eventhandler::add_event($build_array[1]);
-
-				logfile::action('9', $a_id, $global);
-			}
-		}
-
+	
+	if(isset($a_id) && $me->permissionToAct() && $me->buildForschung($a_id, $global))
 		delete_request();
-	}
 
 	if(isset($_GET['cancel']) && isset($this_planet['building']['forschung']) && trim($this_planet['building']['forschung'][0]) != '' && $this_planet['building']['forschung'][0] == $_GET['cancel'])
 	{

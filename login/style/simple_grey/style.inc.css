@@ -244,7 +244,7 @@ legend { font-weight:bold; }
 .nachrichten-liste td.c-betreff { font-weight:bold; }
 .nachrichten-liste .c-auswaehlen { width:1px; text-align:center; }
 .nachrichten-liste .c-absender,.nachrichten-liste .c-datum { width:25%; white-space:nowrap; }
-.nachrichten-liste .auswahl-button { width:90%; text-align:center; padding:0; }
+.nachrichten-liste .auswahl-button { width:3ex; text-align:center; padding:0; }
 .nachrichten-liste .alt a,.nachrichten-liste .archiviert a { color:#bbb; }
 .nachrichten-liste .alt a:hover,.nachrichten-liste .alt a:focus,.nachrichten-liste .archiviert a:hover,.nachrichten-liste .archiviert a:focus { color:#888; }
 .nachrichten-liste .archiviert a { font-style:italic; }

@@ -12,7 +12,7 @@
 	if(isset($_SESSION['database']) && isset($databases[$_SESSION['database']]))
 		define_globals($databases[$_SESSION['database']][0]);
 	
-	if(!isset($_SESSION['username']) || !isset($_SESSION['database']) || (isset($_SESSION['database']) && (!isset($databases[$_SESSION['database']]) || !is_file(DB_PLAYERS.'/'.urlencode($_SESSION['username'])) || !is_readable(DB_PLAYERS.'/'.urlencode($_SESSION['username'])))))
+	if(!isset($_SESSION['username']) || !isset($_SESSION['database']) || (isset($_SESSION['database']) && (!isset($databases[$_SESSION['database']]) || !User::userExists($_SESSION['username']))))
 	{
 		if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['database']))
 		{
@@ -23,12 +23,12 @@
 			else
 			{
 				define_globals($databases[$_POST['database']][0]);
-				if(!is_file(DB_PLAYERS.'/'.urlencode($_POST['username'])))
+				if(!User::userExists($_POST['username']))
 					$loggedin = false;
 				else
 				{
-					$user_array = get_user_array($_POST['username']);
-					if(md5($_POST['password']) != $user_array['password'])
+					$me = Classes::User($_POST['username']);
+					if(!$me->checkPassword($_POST['password']))
 						$loggedin = false;
 					else
 						$loggedin = true;
@@ -50,7 +50,7 @@
 			# Auf die Startseite zurueckleiten
 			$url = explode('/', $_SERVER['PHP_SELF']);
 			array_pop($url); array_pop($url);
-			$url = 'http://'.$_SERVER['HTTP_HOST'].implode('/', $url).'/index.php';
+			$url = 'http://'.get_default_hostname().implode('/', $url).'/index.php';
 			if(!isset($_POST['username']) || !isset($_POST['password']))
 			{
 				header('Location: '.$url, true, 303);
@@ -74,22 +74,14 @@
 		}
 	}
 	
-	lock_database();
+	$me = Classes::User($_SESSION['username']);
 
-	$user_array = get_user_array($_SESSION['username']);
-
-	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] && (!isset($user_array['ipcheck']) || $user_array['ipcheck']))
+	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] && $me->checkSetting('ipcheck'))
 	{
 		logfile::action('3.1', $_SESSION['ip']);
 		if(isset($_COOKIE[SESSION_COOKIE]))
 			setcookie(SESSION_COOKIE, '');
-		die('Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte <a href="'.htmlentities(h_root).'/index.php">neu anmelden</a>.');
-	}
-
-	if($del_email_passwd && isset($user_array['email_passwd']))
-	{
-		unset($user_array['email_passwd']);
-		write_user_array();
+		die('Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte <a href="http://'.htmlentities(get_default_hostname().h_root).'/index.php">neu anmelden</a>.');
 	}
 
 	if(isset($_SESSION['resume']) && $_SESSION['resume'])
@@ -101,11 +93,9 @@
 	# Wiederherstellen
 	if($resume)
 	{
-		if(!isset($user_array['last_request']))
-			$user_array['last_request'] = $_SERVER['REQUEST_URI'];
-		if(isset($user_array['last_planet']) && isset($user_array['planets'][$_SESSION['act_planet']]))
-			$_SESSION['act_planet'] = $user_array['last_planet'];
-		$url = 'http://'.$databases[$_SESSION['database']][2].$user_array['last_request'];
+		$last_request = $me->lastRequest();
+		$_SESSION['act_planet'] = $last_request[1];
+		$url = 'http://'.$databases[$_SESSION['database']][2].$last_request[0];
 		$url = explode('?', $url, 2);
 		if(isset($url[1]))
 			$url[1] = explode('&', $url[1]);
@@ -117,7 +107,7 @@
 			$val = explode("=", $val, 2);
 			if($val[0] == SESSION_COOKIE)
 			{
-				$url[1][$key] = SESSION_COOKIE.'='.urlencode(session_id());
+				$url[1][$key] = urlencode(SESSION_COOKIE).'='.urlencode(session_id());
 				$one = true;
 			}
 		}
@@ -131,7 +121,7 @@
 				$url .= '?';
 			else
 				$url .= '&';
-			$url .= SESSION_COOKIE.'='.urlencode(session_id());
+			$url .= urlencode(SESSION_COOKIE).'='.urlencode(session_id());
 		}
 		header('Location: '.$url, true, 303);
 		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
@@ -161,27 +151,21 @@
 		unset($_SESSION['last_click_ignore']);
 	$_SESSION['last_click'] = $now_time;
 
-	if(isset($_GET['planet']) && $_GET['planet'] != '' && isset($user_array['planets'][$_GET['planet']])) # Planeten wechseln
+	if(isset($_GET['planet']) && $me->planetExists($_GET['planet'])) # Planeten wechseln
 		$_SESSION['act_planet'] = $_GET['planet'];
-	if(!isset($_SESSION['act_planet']) || !isset($user_array['planets'][$_SESSION['act_planet']]))
-		$_SESSION['act_planet'] = 0;
-
-	$this_planet = & $user_array['planets'][$_SESSION['act_planet']];
-
-	if(!isset($_SESSION['ghost']) || !$_SESSION['ghost'])
+	if(!isset($_SESSION['act_planet']) || !$me->planetExists($_SESSION['act_planet']))
 	{
-		$user_array['last_request'] = $_SERVER['REQUEST_URI'];
-		$user_array['last_planet'] = $_SESSION['act_planet'];
-		$user_array['last_active'] = time();
+		$planets = $me->getPlanetsList();
+		$_SESSION['act_planet'] = array_shift($planets);
 	}
 
-	$items = get_items();
+	$me->setActivePlanet($_SESSION['act_planet']);
 
-	write_user_array();
+	if(!isset($_SESSION['ghost']) || !$_SESSION['ghost'])
+		$me->registerAction();
 
-	include(substr(__FILE__, 0, strrpos(__FILE__, '/')).'/eventhandler.php');
-	eventhandler::run_eventhandler();
-	$items = get_items();
+	#include(substr(__FILE__, 0, strrpos(__FILE__, '/')).'/eventhandler.php');
+	#eventhandler::run_eventhandler();
 
 	# Skins bekommen
 	$skins = get_skins();
@@ -194,9 +178,7 @@
 	{
 		function html_head()
 		{
-			global $user_array;
-			global $this_planet;
-			global $ges_prod;
+			global $me;
 			global $skins;
 			global $databases;
 ?>
@@ -215,17 +197,19 @@
 		</script>
 <?php
 			$skin_path = '';
-			$skin_keys = array_keys($skins);
-			$default_skin = array_shift($skin_keys);
-			if(isset($user_array['skin']))
+			$my_skin = $me->checkSetting('skin');
+			if($my_skin)
 			{
-				if(isset($skins[$user_array['skin']]))
-					$skin_path = h_root.'/login/style/skin.php?'.urlencode($user_array['skin']);
+				if(isset($skins[$my_skin]))
+					$skin_path = h_root.'/login/style/skin.php?'.urlencode($my_skin);
 				else
-					$skin_path = $user_array['skin'];
+					$skin_path = $my_skin;
 			}
 			elseif(count($skins) > 0)
-				$skin_path = h_root.'/login/style/skin.php?'.urlencode($default_skin);
+			{
+				$skin_keys = array_keys($skins);
+				$skin_path = h_root.'/login/style/skin.php?'.urlencode(array_shift($skin_keys));
+			}
 
 			if(trim($skin_path) != '')
 			{
@@ -234,7 +218,7 @@
 <?php
 			}
 
-			if(!isset($user_array['schrift']) || $user_array['schrift'])
+			if(!$me->checkSetting('schrift'))
 			{ # Schrift ueberschreiben
 ?>
 		<style type="text/css">
@@ -243,9 +227,8 @@
 <?php
 			}
 
-			$this_pos = explode(':', $this_planet['pos']);
-			$class = 'planet-'.universe::get_planet_class($this_pos[0], $this_pos[1], $this_pos[2]);
-			if(!isset($user_array['noads']) || !$user_array['noads'])
+			$class = 'planet-'.$me->getPlanetClass();
+			if(!$me->checkSetting('noads'))
 				$class .= ' mit-werbung';
 			else
 				$class .= ' ohne-werbung';
@@ -273,13 +256,15 @@
 					<legend>Planet wechseln<input type="hidden" name="<?=htmlentities(SESSION_COOKIE)?>" value="<?=htmlentities(session_id())?>" /></legend>
 					<select name="planet" onchange="if(this.value != <?=$_SESSION['act_planet']?>) this.form.submit();" onkeyup="if(this.value != <?=$_SESSION['act_planet']?>) this.form.submit();" accesskey="p" title="Ihre Planeten [P]">
 <?php
-			$planets = array_keys($user_array['planets']);
+			$planets = $me->getPlanetsList();
 			foreach($planets as $planet)
 			{
+				$me->setActivePlanet($planet);
 ?>
-						<option value="<?=utf8_htmlentities($planet)?>"<?=($planet == $_SESSION['act_planet']) ? ' selected="selected"' : ''?>><?=utf8_htmlentities($user_array['planets'][$planet]['name'])?> (<?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?>)</option>
+						<option value="<?=utf8_htmlentities($planet)?>"<?=($planet == $_SESSION['act_planet']) ? ' selected="selected"' : ''?>><?=utf8_htmlentities($me->planetName())?> (<?=utf8_htmlentities($me->getPosString())?>)</option>
 <?php
 			}
+			$me->setActivePlanet($_SESSION['act_planet']);
 ?>
 					</select>
 					<noscript><div><button type="submit">Wechseln</button></div></noscript>
@@ -287,24 +272,24 @@
 			</form>
 			<ul id="main-navigation">
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/index.php') ? ' class="active"' : ''?> id="navigation-index"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/index.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="ü"><kbd>Ü</kbd>bersicht</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/rohstoffe.php') ? ' class="active"' : ''?> id="navigation-rohstoffe"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/rohstoffe.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="r"><kbd>R</kbd>ohstoffe</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/gebaeude.php') ? ' class="active"' : ''?> id="navigation-gebaeude"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/gebaeude.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="g"><kbd>G</kbd>ebäude</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/forschung.php') ? ' class="active"' : ''?> id="navigation-forschung"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/forschung.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="f"><kbd>F</kbd>orschung</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/roboter.php') ? ' class="active"' : ''?> id="navigation-roboter"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/roboter.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="b">Ro<kbd>b</kbd>oter</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/flotten.php') ? ' class="active"' : ''?> id="navigation-flotten"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/flotten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="l">F<kbd>l</kbd>otten</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/schiffswerft.php') ? ' class="active"' : ''?> id="navigation-schiffswerft"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/schiffswerft.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="s"><kbd>S</kbd>chiffswerft</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verteidigung.php') ? ' class="active"' : ''?> id="navigation-verteidigung"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verteidigung.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="v"><kbd>V</kbd>erteidigung</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/imperium.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="m">I<kbd>m</kbd>perium</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/rohstoffe.php') ? ' class="active"' : ''?> id="navigation-rohstoffe"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/rohstoffe.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="r"><kbd>R</kbd>ohstoffe</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/gebaeude.php') ? ' class="active"' : ''?> id="navigation-gebaeude"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/gebaeude.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="g"><kbd>G</kbd>ebäude</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/forschung.php') ? ' class="active"' : ''?> id="navigation-forschung"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/forschung.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="f"><kbd>F</kbd>orschung</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/roboter.php') ? ' class="active"' : ''?> id="navigation-roboter"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/roboter.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="b">Ro<kbd>b</kbd>oter</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/flotten.php') ? ' class="active"' : ''?> id="navigation-flotten"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/flotten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="l">F<kbd>l</kbd>otten</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/schiffswerft.php') ? ' class="active"' : ''?> id="navigation-schiffswerft"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/schiffswerft.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="s"><kbd>S</kbd>chiffswerft</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verteidigung.php') ? ' class="active"' : ''?> id="navigation-verteidigung"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verteidigung.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="v"><kbd>V</kbd>erteidigung</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/imperium.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="m">I<kbd>m</kbd>perium</a></li>
 			</ul>
 			<ul id="action-navigation">
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/karte.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="k"><kbd>K</kbd>arte</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/handelsrechner.php') ? ' class="active"' : ''?> id="navigation-handel"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/handelsrechner.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="d">Han<kbd>d</kbd>elsrechner</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/allianz.php') ? ' class="active"' : ''?> id="navigation-allianz"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/allianz.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="i">All<kbd>i</kbd>anz</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verbuendete.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="e">V<kbd>e</kbd>rbündete</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/highscores.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" xml:lang="en" accesskey="h"><kbd>H</kbd>ighscores</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="c">Na<kbd>c</kbd>hrichten</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/help/dependencies.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/help/dependencies.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="a">Forschungsb<kbd>a</kbd>um</a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/einstellungen.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="t">Eins<kbd>t</kbd>ellungen</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/karte.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="k"><kbd>K</kbd>arte</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/handelsrechner.php') ? ' class="active"' : ''?> id="navigation-handel"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/handelsrechner.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="d">Han<kbd>d</kbd>elsrechner</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/allianz.php') ? ' class="active"' : ''?> id="navigation-allianz"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="i">All<kbd>i</kbd>anz</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verbuendete.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="e">V<kbd>e</kbd>rbündete</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/highscores.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" xml:lang="en" accesskey="h"><kbd>H</kbd>ighscores</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/nachrichten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="c">Na<kbd>c</kbd>hrichten</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/help/dependencies.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/help/dependencies.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="a">Forschungsb<kbd>a</kbd>um</a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/einstellungen.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" accesskey="t">Eins<kbd>t</kbd>ellungen</a></li>
 <?php
 			if(isset($_SESSION['admin_username']))
 			{
@@ -315,18 +300,18 @@
 			else
 			{
 ?>
-				<li id="navigation-abmelden"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/scripts/logout.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>">Abmelden</a></li>
+				<li id="navigation-abmelden"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/scripts/logout.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Abmelden</a></li>
 <?php
 			}
 ?>
 			</ul>
 <?php
-			if(isset($user_array['show_extern']) && $user_array['show_extern'])
+			if($me->checkSetting('show_extern'))
 			{
 ?>
 			<ul id="external-navigation">
 				<li id="navigation-board" xml:lang="en"><a href="http://board.s-u-a.net/">Board</a></li>
-				<li id="navigation-faq" xml:lang="en"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/faq.php"><abbr title="Frequently Asked Questions">FAQ</abbr></a></li>
+				<li id="navigation-faq" xml:lang="en"><a href="http://<?=htmlentities(get_default_hostname().h_root)?>/faq.php"><abbr title="Frequently Asked Questions">FAQ</abbr></a></li>
 			</ul>
 <?php
 			}
@@ -335,46 +320,55 @@
 		<ul id="gameinfo">
 			<li><?=utf8_htmlentities($_SESSION['username'])?></li>
 			<li><?=utf8_htmlentities($databases[$_SESSION['database']][1])?></li>
-			<li><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/changelog.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Changelog anzeigen">Version <?=VERSION?></a></li>
+			<li><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/changelog.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Changelog anzeigen">Version <?=VERSION?></a></li>
 		</ul>
+<?php
+			$cur_ress = $me->getRess();
+?>
 		<div id="content-9">
 			<dl id="ress" class="ress">
 				<dt class="ress-carbon">Carbon</dt>
-				<dd class="ress-carbon" id="ress-carbon"><?=ths(utf8_htmlentities($this_planet['ress'][0]))?></dd>
+				<dd class="ress-carbon" id="ress-carbon"><?=ths($cur_ress[0])?></dd>
 
 				<dt class="ress-aluminium">Aluminium</dt>
-				<dd class="ress-aluminium" id="ress-aluminium"><?=ths(utf8_htmlentities($this_planet['ress'][1]))?></dd>
+				<dd class="ress-aluminium" id="ress-aluminium"><?=ths($cur_ress[1])?></dd>
 
 				<dt class="ress-wolfram">Wolfram</dt>
-				<dd class="ress-wolfram" id="ress-wolfram"><?=ths(utf8_htmlentities($this_planet['ress'][2]))?></dd>
+				<dd class="ress-wolfram" id="ress-wolfram"><?=ths($cur_ress[2])?></dd>
 
 				<dt class="ress-radium">Radium</dt>
-				<dd class="ress-radium" id="ress-radium"><?=ths(utf8_htmlentities($this_planet['ress'][3]))?></dd>
+				<dd class="ress-radium" id="ress-radium"><?=ths($cur_ress[3])?></dd>
 
 				<dt class="ress-tritium">Tritium</dt>
-				<dd class="ress-tritium" id="ress-tritium"><?=ths(utf8_htmlentities($this_planet['ress'][4]))?></dd>
+				<dd class="ress-tritium" id="ress-tritium"><?=ths($cur_ress[4])?></dd>
 
 				<dt class="ress-energie">Energie</dt>
-				<dd class="ress-energie" id="ress-energie"><?=ths(utf8_htmlentities($ges_prod[5]))?></dd>
+				<dd class="ress-energie" id="ress-energie"><?=ths($cur_ress[5])?></dd>
 			</dl>
 			<div id="content-10"><div id="content-11"><div id="content-12"><div id="content-13">
 <?php
-			if(isset($user_array['game_locked']) && $user_array['game_locked'])
+			if($me->gameLocked())
 			{
 ?>
 				<p id="gesperrt-hinweis" class="spiel"><strong>Das Spiel ist derzeit gesperrt.</strong></p>
 <?php
 			}
-			elseif(isset($user_array['locked']) && $user_array['locked'])
+			elseif($me->userLocked())
 			{
 ?>
 				<p id="gesperrt-hinweis" class="account"><strong>Ihr Benutzeraccount ist gesperrt.</strong></p>
 <?php
 			}
+			elseif($me->umode())
+			{
 ?>
-				<h1>Planet <em><?=utf8_htmlentities($this_planet['name'])?></em> <span class="koords">(<?=utf8_htmlentities($this_planet['pos'])?>)</span></h1>
+				<p id="gesperrt-hinweis" class="urlaub"><strong>Ihr Benutzeraccount befindet sich im Urlaubsmodus.</strong></p>
 <?php
-			if(isset($user_array['notify']) && $user_array['notify'])
+			}
+?>
+				<h1>Planet <em><?=utf8_htmlentities($me->planetName())?></em> <span class="koords">(<?=utf8_htmlentities($me->getPosString())?>)</span></h1>
+<?php
+			if($me->checkSetting('notify'))
 			{
 				global $message_type_names;
 				
@@ -388,25 +382,22 @@
 					7 => 0
 				);
 				$ges_ncount = 0;
-			
-				if(isset($user_array['messages']))
+				
+				$cats = $me->getMessageCategoriesList();
+				foreach($cats as $cat)
 				{
-					foreach($user_array['messages'] as $cat=>$messages)
+					$message_ids = $me->getMessagesList($cat);
+					foreach($message_ids as $message)
 					{
-						foreach($messages as $message_id=>$unread)
+						$status = $me->checkMessageStatus($message, $cat);
+						if($status == 1 && $cat != 8)
 						{
-							if(!is_file(DB_MESSAGES.'/'.$message_id) || !is_readable(DB_MESSAGES.'/'.$message_id))
-								continue;
-			
-							if($unread == 1 && $cat != 8)
-							{
-								$ncount[$cat]++;
-								$ges_ncount++;
-							}
+							$ncount[$cat]++;
+							$ges_ncount++;
 						}
 					}
 				}
-			
+
 				if($ges_ncount > 0)
 				{
 					$title = array();
@@ -423,7 +414,7 @@
 						$link .= '?';
 					else
 						$link .= '&';
-					$link .= SESSION_COOKIE.'='.urlencode(session_id());
+					$link .= urlencode(SESSION_COOKIE).'='.urlencode(session_id());
 ?>
 <p class="neue-nachrichten">
 	<a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root.'/login/'.$link)?>" title="<?=$title?>">Sie haben <?=htmlentities($ges_ncount)?> neue <kbd>N</kbd>achricht<?=($ges_ncount != 1) ? 'en' : ''?>.</a>
@@ -435,14 +426,12 @@
 
 		function html_foot()
 		{
-			global $user_array;
-			global $this_planet;
-			global $ges_prod;
+			global $me;
 ?>
 			</div></div>
 <?php
 			if(false)/* Werbung deaktiviert */
-			#if(!isset($user_array['noads']) || !$user_array['noads'])
+			#if(!$me->checkSetting('noads'))
 			{
 ?>
 			<div id="werbung">
@@ -476,27 +465,29 @@
 		</div>
 		</div></div></div></div></div></div></div></div>
 <?php
-			if($user_array['tooltips'] || $user_array['shortcuts'] || $user_array['ress_refresh'] > 0)
+			if($me->checkSetting('tooltips') || $me->checkSetting('shortcuts') || $me->checkSetting('ress_refresh') > 0)
 			{
 ?>
 		<script type="text/javascript">
 <?php
-				if($user_array['shortcuts'])
+				if($me->checkSetting('shortcuts'))
 				{
 ?>
 			get_key_elements();
 <?php
 				}
-				if($user_array['tooltips'])
+				if($me->checkSetting('tooltips'))
 				{
 ?>
 			load_titles();
 <?php
 				}
-				if($user_array['ress_refresh'] > 0 && !$user_array['umode'])
+				if($me->checkSetting('ress_refresh') > 0)
 				{
+					$ress = $me->getRess();
+					$prod = $me->getProduction();
 ?>
-			refresh_ress(<?=$user_array['ress_refresh']*1000?>, <?=$this_planet['ress'][0]?>, <?=$this_planet['ress'][1]?>, <?=$this_planet['ress'][2]?>, <?=$this_planet['ress'][3]?>, <?=$this_planet['ress'][4]?>, <?=$ges_prod[0]?>, <?=$ges_prod[1]?>, <?=$ges_prod[2]?>, <?=$ges_prod[3]?>, <?=$ges_prod[4]?>);
+			refresh_ress(<?=$me->checkSetting('ress_refresh')?>*1000?>, <?=$ress[0]?>, <?=$ress[1]?>, <?=$ress[2]?>, <?=$ress[3]?>, <?=$ress[4]?>, <?=$prod[0]?>, <?=$prod[1]?>, <?=$prod[2]?>, <?=$prod[3]?>, <?=$prod[4]?>);
 <?php
 				}
 ?>

@@ -16,7 +16,7 @@
 
 	echo date('Y-m-d, H:i:s')." -- Eventhandler started.\n";
 
-	$last_handelskurs = false;
+	$last_handelskurs = date('Y-m-d');
 
 	while(true)
 	{

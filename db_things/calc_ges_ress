@@ -37,7 +37,7 @@
 				if($days == 175) # 25 Wochen: Nachricht
 				{
 					if(isset($user_array['email']) && trim($user_array['email']) != '')
-						mail($user_array['email'], "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben zwei Wochen Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$username, "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".$EMAIL_FROM."\r\nReply-To: ".$EMAIL_FROM);
+						mail($user_array['email'], "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben zwei Wochen Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$username, "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".EMAIL_FROM."\r\nReply-To: ".EMAIL_FROM);
 				}
 				elseif($days >= 189) # 27 Wochen: Loeschung
 				{
@@ -53,7 +53,7 @@
 				if($days == 21 || $days == 34)
 				{
 					if(isset($user_array['email']) && trim($user_array['email']) != '')
-						mail($user_array['email'], "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben ".(($days == 34) ? 'einen Tag' : 'zwei Wochen')." Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$username, "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".$EMAIL_FROM."\r\nReply-To: ".$EMAIL_FROM);
+						mail($user_array['email'], "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben ".(($days == 34) ? 'einen Tag' : 'zwei Wochen')." Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$username, "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".EMAIL_FROM."\r\nReply-To: ".EMAIL_FROM);
 				}
 				elseif($days >= 35)
 				{
@@ -68,7 +68,7 @@
 		elseif($days == 7)
 		{
 			if(isset($user_array['email']) && trim($user_array['email']) != '')
-				mail($user_array['email'], "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben eine Woche Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$username, "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".$EMAIL_FROM."\r\nReply-To: ".$EMAIL_FROM);
+				mail($user_array['email'], "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben eine Woche Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$username, "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".EMAIL_FROM."\r\nReply-To: ".EMAIL_FROM);
 		}
 		elseif($days >= 14)
 		{
