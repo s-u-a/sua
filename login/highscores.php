@@ -13,7 +13,7 @@
 	if(!$mode)
 	{
 		$start = 1;
-		$count = highscores::get_players_count();
+		$count = getUsersCount();
 		if(isset($_GET['start']) && $_GET['start'] <= $count && $_GET['start'] >= 1)
 			$start = (int) $_GET['start'];
 		if($count > 100)
@@ -63,22 +63,26 @@
 		
 		while($platz < $start+100 && $bracket = fread($fh, 38))
 		{
-			$info = highscores::get_info($bracket);
+			$info = decodeUserHighscoresString($bracket);
 	
 			$class = 'fremd';
 			if($info[0] == $_SESSION['username'])
 				$class = 'eigen';
-			elseif(in_array($info[0], $user_array['verbuendete']))
+			elseif($me->isVerbuendet($info[0]))
 				$class = 'verbuendet';
+			
+			$alliance_class = 'fremd';
+			if($info[2] && $me->allianceTag() == $info[2])
+				$alliance_class = 'verbuendet';
 ?>
-		<tr class="<?=$class?>">
+		<tr class="<?=$class?> allianz-<?=$alliance_class?>">
 			<th class="c-platz"><?=ths($platz)?></th>
-			<td class="c-spieler"><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($info[0]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen" class="playername"><?=utf8_htmlentities($info[0])?></a><?php if($info[0] != $_SESSION['username']){?> <a href="nachrichten.php?to=<?=htmlentities(urlencode($info[0]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Schreiben Sie diesem Spieler eine Nachricht" class="nachricht-schreiben">[N]</a><?php }?></td>
+			<td class="c-spieler"><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($info[0]))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen" class="playername"><?=utf8_htmlentities($info[0])?></a></td>
 <?php
-			if($info[0])
+			if($info[2])
 			{
 ?>
-			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info[2]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info[2])?></a></td>
+			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info[2]))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info[2])?></a></td>
 <?php
 			}
 			else
@@ -103,7 +107,7 @@
 	else
 	{
 		$start = 1;
-		$count = highscores_alliances::get_alliances_count();
+		$count = getAlliancesCount();
 		if(isset($_GET['start']) && $_GET['start'] <= $count && $_GET['start'] >= 1)
 			$start = (int) $_GET['start'];
 		if($count > 100)
@@ -154,15 +158,15 @@
 		flock($fh, LOCK_SH);
 		while($platz < $start+100 && $bracket = fread($fh, 26))
 		{
-			$info = highscores_alliances::get_info($bracket);
+			$info = decodeAllianceHighscoresString($bracket);
 	
 			$class = 'fremd';
-			if($info[0] == $user_array['alliance'])
+			if($info[0] == $me->allianceTag())
 				$class = 'verbuendet';
 ?>
 		<tr class="<?=$class?>">
 			<th class="c-platz"><?=ths($platz)?></th>
-			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info[0]))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info[0])?></a></td>
+			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info[0]))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info[0])?></a></td>
 			<td class="c-punkteschnitt"><?=ths($info[2])?></td>
 			<td class="c-gesamtpunkte"><?=ths($info[3])?></td>
 			<td class="c-mitglieder"><?=ths($info[1])?></td>

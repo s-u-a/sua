@@ -1,6 +1,8 @@
 <?php
 	require('scripts/include.php');
 	
+	$active_planet = $me->getActivePlanet();
+	
 	switch(isset($_GET['action']) ? $_GET['action'] : false)
 	{
 		case 'roboter':
@@ -53,24 +55,26 @@
 	<tbody>
 <?php
 			$ges = array(0, 0, 0, 0, 0, 0);
-			$planets = array_keys($user_array['planets']);
+			$planets = $me->getPlanetsList();
 			foreach($planets as $planet)
 			{
-				$ges[0] += $user_array['planets'][$planet]['ress'][0];
-				$ges[1] += $user_array['planets'][$planet]['ress'][1];
-				$ges[2] += $user_array['planets'][$planet]['ress'][2];
-				$ges[3] += $user_array['planets'][$planet]['ress'][3];
-				$ges[4] += $user_array['planets'][$planet]['ress'][4];
-				$this_ges = $user_array['planets'][$planet]['ress'][0]+$user_array['planets'][$planet]['ress'][1]+$user_array['planets'][$planet]['ress'][2]+$user_array['planets'][$planet]['ress'][3]+$user_array['planets'][$planet]['ress'][4];
+				$me->setActivePlanet($planet);
+				$ress = $me->getRess();
+				$ges[0] += $ress[0];
+				$ges[1] += $ress[1];
+				$ges[2] += $ress[2];
+				$ges[3] += $ress[3];
+				$ges[4] += $ress[4];
+				$this_ges = $ress[0]+$ress[1]+$ress[2]+$ress[3]+$ress[4];
 				$ges[5] += $this_ges;
 ?>
-		<tr>
-			<th class="c-planet" title="<?=utf8_htmlentities($user_array['planets'][$planet]['name'])?>"><?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?></th>
-			<td class="c-carbon"><?=ths($user_array['planets'][$planet]['ress'][0])?></td>
-			<td class="c-aluminium"><?=ths($user_array['planets'][$planet]['ress'][1])?></td>
-			<td class="c-wolfram"><?=ths($user_array['planets'][$planet]['ress'][2])?></td>
-			<td class="c-radium"><?=ths($user_array['planets'][$planet]['ress'][3])?></td>
-			<td class="c-tritium"><?=ths($user_array['planets'][$planet]['ress'][4])?></td>
+		<tr<?=($planet == $active_planet) ? ' class="active"' : ''?>>
+			<th class="c-planet" title="<?=utf8_htmlentities($me->planetName())?>"><a href="imperium.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>&amp;planet=<?=htmlentities(urlencode($planet))?>"><?=utf8_htmlentities($me->getPosString())?></a></th>
+			<td class="c-carbon"><?=ths($ress[0])?></td>
+			<td class="c-aluminium"><?=ths($ress[1])?></td>
+			<td class="c-wolfram"><?=ths($ress[2])?></td>
+			<td class="c-radium"><?=ths($ress[3])?></td>
+			<td class="c-tritium"><?=ths($ress[4])?></td>
 			<td class="c-gesamt"><?=ths($this_ges)?></td>
 		</tr>
 <?php
@@ -108,8 +112,8 @@
 			$ges = array(0, 0, 0, 0, 0, 0, 0);
 			foreach($planets as $planet)
 			{
-				$this_planet = &$user_array['planets'][$planet];
-				$this_prod = get_ges_prod();
+				$me->setActivePlanet($planet);
+				$this_prod = $me->getProduction();
 				
 				$ges[0] += $this_prod[0];
 				$ges[1] += $this_prod[1];
@@ -120,8 +124,8 @@
 				$this_ges = $this_prod[0]+$this_prod[1]+$this_prod[2]+$this_prod[3]+$this_prod[4];
 				$ges[6] += $this_ges;
 ?>
-		<tr>
-			<th class="c-planet" title="<?=utf8_htmlentities($this_planet['name'])?>"><?=utf8_htmlentities($this_planet['pos'])?></a></th>
+		<tr<?=($planet == $active_planet) ? ' class="active"' : ''?>>
+			<th class="c-planet" title="<?=utf8_htmlentities($me->planetName())?>"><a href="imperium.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>&amp;planet=<?=htmlentities(urlencode($planet))?>"><?=utf8_htmlentities($me->getPosString())?></a></th>
 			<td class="c-carbon <?=get_prod_class($this_prod[0])?>"><?=ths($this_prod[0])?></td>
 			<td class="c-aluminium <?=get_prod_class($this_prod[1])?>"><?=ths($this_prod[1])?></td>
 			<td class="c-wolfram <?=get_prod_class($this_prod[2])?>"><?=ths($this_prod[2])?></td>
@@ -135,17 +139,13 @@
 			
 			$day_prod = array($ges[0]*24, $ges[1]*24, $ges[2]*24, $ges[3]*24, $ges[4]*24);
 			$show_day_prod = $day_prod;
-			$show_days = 1;
-			if(isset($user_array['prod_show_days']))
-				$show_days = $user_array['prod_show_days'];
+			$show_days = $me->checkSetting('prod_show_days');
 			$show_day_prod[0] *= $show_days;
 			$show_day_prod[1] *= $show_days;
 			$show_day_prod[2] *= $show_days;
 			$show_day_prod[3] *= $show_days;
 			$show_day_prod[4] *= $show_days;
 			$show_day_prod[5] = array_sum($show_day_prod);
-			
-			$this_planet = &$user_array['planets'][$_SESSION['act_planet']];
 ?>
 	</tbody>
 	<tfoot>
@@ -242,33 +242,27 @@
 <h3 id="ausgegebene-rohstoffe">Ausgegebene Rohstoffe</h3>
 <dl class="punkte">
 	<dt class="c-carbon">Carbon</dt>
-	<dd class="c-carbon"><?=ths($user_array['punkte'][7])?></dd>
+	<dd class="c-carbon"><?=ths($me->getSpentRess(0))?></dd>
 
 	<dt class="c-eisenerz">Aluminium</dt>
-	<dd class="c-eisenerz"><?=ths($user_array['punkte'][8])?></dd>
+	<dd class="c-eisenerz"><?=ths($me->getSpentRess(1))?></dd>
 
 	<dt class="c-wolfram">Wolfram</dt>
-	<dd class="c-wolfram"><?=ths($user_array['punkte'][9])?></dd>
+	<dd class="c-wolfram"><?=ths($me->getSpentRess(2))?></dd>
 
 	<dt class="c-radium">Radium</dt>
-	<dd class="c-radium"><?=ths($user_array['punkte'][10])?></dd>
+	<dd class="c-radium"><?=ths($me->getSpentRess(3))?></dd>
 
 	<dt class="c-tritium">Tritium</dt>
-	<dd class="c-tritium"><?=ths($user_array['punkte'][11])?></dd>
+	<dd class="c-tritium"><?=ths($me->getSpentRess(4))?></dd>
 
 	<dt class="c-gesamt">Gesamt</dt>
-	<dd class="c-gesamt"><?=ths($user_array['punkte'][7]+$user_array['punkte'][8]+$user_array['punkte'][9]+$user_array['punkte'][10]+$user_array['punkte'][11])?></dd>
+	<dd class="c-gesamt"><?=ths($me->getSpentRess())?></dd>
 </dl>
-<?php
-				$etech = 0;
-				if(isset($user_array['forschung']['F3']))
-					$etech = $user_array['forschung']['F3'];
-				$energie = round((pow(1.05, $etech)-1)*100, 3);
-?>
 <h3 id="forschungsverbesserungen">Forschungsverbesserungen</h3>
 <dl class="imperium-rohstoffe-auswirkungsgrade">
 	<dt class="c-energieproduktion">Energieproduktion</dt>
-	<dd class="c-energieproduktion"><?=str_replace('.', ',', $energie)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dd class="c-energieproduktion"><?=str_replace('.', ',', round((pow(1.05, $me->getItemLevel('F3', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 </dl>
 <?php
 			break;
@@ -280,10 +274,12 @@
 		<tr>
 			<th class="c-planet">Planet</th>
 <?php
-			foreach($items['roboter'] as $id=>$roboter)
+			$roboter = $me->getItemsList('roboter');
+			foreach($roboter as $id)
 			{
+				$item_info = $me->getItemInfo($id, 'roboter');
 ?>
-			<td class="c-<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($roboter['name'])?></td>
+			<th class="c-<?=utf8_htmlentities($id)?>"><a href="help/description.php?id=<?=htmlentities(urlencode($id).'&'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a></th>
 <?php
 			}
 ?>
@@ -292,23 +288,33 @@
 	<tbody>
 <?php
 			$ges = array();
-			$planets = array_keys($user_array['planets']);
+			$ges_max = array();
+			$planets = $me->getPlanetsList();
 			foreach($planets as $planet)
 			{
+				$me->setActivePlanet($planet);
 ?>
-		<tr>
-			<th class="c-planet" title="<?=utf8_htmlentities($user_array['planets'][$planet]['name'])?>"><?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?></th>
+		<tr<?=($planet==$active_planet) ? ' class="active"' : ''?>>
+			<th class="c-planet" title="<?=utf8_htmlentities($me->planetName())?>"><a href="imperium.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>&amp;planet=<?=htmlentities(urlencode($planet))?>&amp;action=roboter"><?=utf8_htmlentities($me->getPosString())?></a></th>
 <?php
-				foreach($items['roboter'] as $id=>$roboter)
+				foreach($roboter as $id)
 				{
-					$anzahl = 0;
-					if(isset($user_array['planets'][$planet]['roboter'][$id]))
-						$anzahl = $user_array['planets'][$planet]['roboter'][$id];
-					if(!isset($ges[$id]))
-						$ges[$id] = 0;
-					$ges[$id] += $anzahl;
+					$count = $me->getItemLevel($id, 'roboter');
+					if(!isset($ges[$id])) $ges[$id] = 0;
+					$ges[$id] += $count;
+					switch($id)
+					{
+						case 'R01': $max = floor($me->getBasicFields()/2); break;
+						case 'R02': $max = $me->getItemLevel('B0'); break;
+						case 'R03': $max = $me->getItemLevel('B1'); break;
+						case 'R04': $max = $me->getItemLevel('B2'); break;
+						case 'R05': $max = $me->getItemLevel('B3'); break;
+						case 'R06': $max = $me->getItemLevel('B4'); break;
+					}
+					if(!isset($ges_max[$id])) $ges_max[$id] = 0;
+					$ges_max[$id] += $max;
 ?>
-			<td class="c-<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($anzahl)?></td>
+			<td class="c-<?=utf8_htmlentities($id)?>"><?=ths($count)?> <span class="maximal">(<?=ths($max)?>)</span></td>
 <?php
 				}
 ?>
@@ -321,29 +327,23 @@
 		<tr>
 			<th>Gesamt</th>
 <?php
-			foreach($items['roboter'] as $id=>$roboter)
+			foreach($roboter as $id)
 			{
 ?>
-			<td class="c-<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($ges[$id])?></td>
+			<td class="c-<?=utf8_htmlentities($id)?>"><?=ths($ges[$id])?> <span class="maximal">(<?=ths($ges_max[$id])?>)</span></td>
 <?php
 			}
 ?>
 		</tr>
 	</tfoot>
 </table>
-<?php
-			$robotech = 0;
-			if(isset($user_array['forschung']['F2']))
-				$robotech = $user_array['forschung']['F2'];
-			
-?>
 <h3 id="roboter-auswirkungsgrade">Roboter-Auswirkungsgrade</h3>
 <dl class="imperium-roboter-auswirkungsgrade">
 	<dt class="c-bauroboter">Bauroboter</dt>
-	<dd class="c-bauroboter"><?=str_replace('.', ',', $robotech*0.25)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dd class="c-bauroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.25)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 	
 	<dt class="c-minenroboter">Minenroboter</dt>
-	<dd class="c-minenroboter"><?=str_replace('.', ',', $robotech*0.0625)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dd class="c-minenroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.0625)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 </dl>
 <?php
 			break;
@@ -355,11 +355,12 @@
 		<tr>
 			<th class="c-einheit">Einheit</th>
 <?php
-			$planets = array_keys($user_array['planets']);
+			$planets = $me->getPlanetsList();
 			foreach($planets as $planet)
 			{
+				$me->setActivePlanet($planet);
 ?>
-			<th title="<?=utf8_htmlentities($user_array['planets'][$planet]['name'])?>"><?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?></th>
+			<th<?=($planet==$active_planet) ? ' class="active"' : ''?> title="<?=utf8_htmlentities($me->planetName())?>"><a href="imperium.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>&amp;planet=<?=htmlentities(urlencode($planet))?>&amp;action=flotte"><?=utf8_htmlentities($me->getPosString())?></a></th>
 <?php
 			}
 ?>
@@ -370,28 +371,25 @@
 <?php
 			$ges_ges = 0;
 			$ges = array();
-			$einheiten = array_merge($items['schiffe'], $items['verteidigung']);
-			foreach($einheiten as $id=>$einheit)
+			$einheiten = array_merge($me->getItemsList('schiffe'), $me->getItemsList('verteidigung'));
+			foreach($einheiten as $id)
 			{
+				$item_info = $me->getItemInfo($id);
 				$this_ges = 0;
 ?>
 		<tr>
-			<th class="c-einheit"><?=utf8_htmlentities($einheit['name'])?></th>
+			<th class="c-einheit"><a href="help/description.php?id=<?=htmlentities(urlencode($id).'&'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a></th>
 <?php
 				foreach($planets as $i=>$planet)
 				{
-					$anzahl = 0;
-					if(isset($user_array['planets'][$planet]['schiffe'][$id]))
-						$anzahl = $user_array['planets'][$planet]['schiffe'][$id];
-					elseif(isset($user_array['planets'][$planet]['verteidigung'][$id]))
-						$anzahl = $user_array['planets'][$planet]['verteidigung'][$id];
-					if(!isset($ges[$i]))
-						$ges[$i] = 0;
+					$me->setActivePlanet($planet);
+					$anzahl = $me->getItemLevel($id);
+					if(!isset($ges[$i])) $ges[$i] = 0;
 					$ges[$i] += $anzahl;
 					$ges_ges += $anzahl;
 					$this_ges += $anzahl;
 ?>
-			<td><?=utf8_htmlentities($anzahl)?></td>
+			<td<?=($planet==$active_planet) ? ' class="active"' : ''?>><?=ths($anzahl)?></td>
 <?php
 				}
 ?>
@@ -408,7 +406,7 @@
 			foreach($planets as $i=>$planet)
 			{
 ?>
-			<td><?=utf8_htmlentities($ges[$i])?></td>
+			<td<?=($planet==$active_planet) ? ' class="active"' : ''?>><?=ths($ges[$i])?></td>
 <?php
 			}
 ?>
@@ -416,57 +414,27 @@
 		</tr>
 	</tfoot>
 </table>
-<?php
-			$rueckstoss = 0;
-			if(isset($user_array['forschung']['F6']))
-				$rueckstoss = $user_array['forschung']['F6'];
-			$ionen = 0;
-			if(isset($user_array['forschung']['F7']))
-				$ionen = $user_array['forschung']['F7'];
-			$kern = 0;
-			if(isset($user_array['forschung']['F8']))
-				$kern = $user_array['forschung']['F8'];
-			$antriebe = round((pow(1.025, $rueckstoss)*pow(1.05, $ionen)*pow(1.5, $kern)-1)*100, 3);
-			
-			$waffen = 0;
-			if(isset($user_array['forschung']['F4']))
-				$waffen = $user_array['forschung']['F4'];
-			$waffen = round((pow(1.05, $waffen)-1)*100, 3);
-			
-			$schilde = 0;
-			if(isset($user_array['forschung']['F5']))
-				$schilde = $user_array['forschung']['F5'];
-			$schilde = round((pow(1.05, $schilde)-1)*100, 3);
-			
-			$schildregen = 0;
-			if(isset($user_array['forschung']['F10']))
-				$schildregen = $user_array['forschung']['F10'];
-			$schildregen = round((pow(1.025, $schildregen)-1)*100, 3);
-			
-			$laderaum = 0;
-			if(isset($user_array['forschung']['F11']))
-				$laderaum = $user_array['forschung']['F11'];
-			$laderaum = round((pow(1.2, $laderaum)-1)*100, 3);
-?>
 <h3 id="forschungsverbesserungen">Forschungsverbesserungen</h3>
 <dl class="imperium-schiffe-auswirkungsgrade">
 	<dt class="c-antriebe">Antriebe</dt>
-	<dd class="c-antriebe"><?=str_replace('.', ',', $antriebe)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dd class="c-antriebe"><?=str_replace('.', ',', round((pow(1.025, $me->getItemLevel('F6', 'forschung'))*pow(1.05, $me->getItemLevel('F7', 'forschung'))*pow(1.5, $me->getItemLevel('F8', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 	
 	<dt class="c-waffen">Waffen</dt>
-	<dd class="c-waffen"><?=str_replace('.', ',', $waffen)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dd class="c-waffen"><?=str_replace('.', ',', round((pow(1.05, $me->getItemLevel('F4', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 	
 	<dt class="c-schilde">Schilde</dt>
-	<dd class="c-schilde"><?=str_replace('.', ',', $schilde)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dd class="c-schilde"><?=str_replace('.', ',', round((pow(1.05, $me->getItemLevel('F5', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 	
 	<dt class="c-schildreparatur-pro-runde">Schildreparatur pro Runde</dt>
-	<dd class="c-schildreparatur-pro-runde"><?=str_replace('.', ',', $schildregen)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dd class="c-schildreparatur-pro-runde"><?=str_replace('.', ',', round((pow(1.025, $me->getItemLevel('F10', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 	
 	<dt class="c-laderaumvergroesserung">Laderaumvergrößerung</dt>
-	<dd class="c-laderaumvergroesserung"><?=str_replace('.', ',', $laderaum)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dd class="c-laderaumvergroesserung"><?=str_replace('.', ',', round((pow(1.2, $me->getItemLevel('F11', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 </dl>
 <?php
 	}
+	
+	$me->setActivePlanet($active_planet);
 	
 	login_gui::html_foot();
 ?>

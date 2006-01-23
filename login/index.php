@@ -4,106 +4,41 @@
 	if(isset($_GET['recalc_highscores']) && $_GET['recalc_highscores'] && isset($_SESSION['admin_username']))
 		highscores::recalc();
 
-	if(isset($_GET['cancel']) && isset($user_array['flotten'][$_GET['cancel']]) && !$user_array['flotten'][$_GET['cancel']][7] && fleet::check_own($user_array['flotten'][$_GET['cancel']]))
+	if(isset($_GET['cancel']))
 	{
 		# Flotte zurueckrufen
 
-		$flotte = & $user_array['flotten'][$_GET['cancel']];
-
-		$time_diff = $flotte[1][1]-$flotte[1][0];
-		$time_left = $flotte[1][1]-time();
-		$time_done = time()-$flotte[1][0];
-
-		$flotte[4][1] = round($flotte[4][0]*($time_left/$time_diff)); # Ueberschuessiges Tritium
-		$flotte[4][0] = 0; # Tritium soll nicht zu Punkten gerechnet werden
-
-		# Neue Zeiten definieren
-		$flotte[1][0] = time();
-		$flotte[1][1] = time()+$time_done;
-
-		$flotte[7] = true; # Rueckflug
-
-		list($flotte[3][0], $flotte[3][1]) = array($flotte[3][1], $flotte[3][0]); # Start- und Zielkoordinaten vertauschen
-
-		uasort($user_array['flotten'], 'usort_fleet');
-
-		eventhandler::add_event($flotte[1][1]);
-
-		# Wenn der Empfaenger ein fremder ist, muss bei ihm auch der Auftrag geloescht werden
-		$target = explode(':', $flotte[3][0]);
-		$target_info = universe::get_planet_info($target[0], $target[1], $target[2]);
-		if($target_info[1] != $_SESSION['username'])
-			$that_user_array = get_user_array($target_info[1]);
-		else
-			$that_user_array = & $user_array;
-		
-		if(isset($flotte[8]))
+		$flotte = Classes::Fleet($_GET['cancel']);
+		if($flotte->callBack($_SESSION['username']))
 		{
-			$planets = array_keys($that_user_array['planets']);
-			foreach($planets as $planet)
-			{
-				if($that_user_array['planets'][$planet]['pos'] == $flotte[3][0])
-				{
-					$that_user_array['planets'][$planet]['ress'][0] += $flotte[8][0][0];
-					$that_user_array['planets'][$planet]['ress'][1] += $flotte[8][0][1];
-					$that_user_array['planets'][$planet]['ress'][2] += $flotte[8][0][2];
-					$that_user_array['planets'][$planet]['ress'][3] += $flotte[8][0][3];
-					$that_user_array['planets'][$planet]['ress'][4] += $flotte[8][0][4];
-					foreach($flotte[8][1] as $id=>$anzahl)
-					{
-						if(!isset($that_user_array['planets'][$planet]['roboter'][$id]))
-							$that_user_array['planets'][$planet]['roboter'][$id] = $anzahl;
-						else
-							$that_user_array['planets'][$planet]['roboter'][$id] += $anzahl;
-					}
-					break;
-				}
-			}
+			logfile::action('13', $_GET['cancel']);
+			delete_request();
 		}
-		
-		write_user_array();
-		
-		if($target_info[1] != $_SESSION['username'])
-		{
-			unset($that_user_array['flotten'][$_GET['cancel']]);
-			write_user_array($target_info[1], $that_user_array);
-			
-			if($flotte[8] && (array_sum($flotte[8][0]) > 0 || array_sum($flotte[8][1]) > 0))
-			{
-				$message_text = 'Der Spieler '.$_SESSION['username']." hat den zu Ihrem Planeten \xe2\x80\x9e".$target_info[2]."\xe2\x80\x9c (".$flotte[3][0].") fliegenden Transport abgebrochen. Sie haben die von Ihnen zum Handel eingelagerten Rohstoffe zur\xc3\xbcckerhalten:\n";
-				$message_text .= 'Carbon: '.ths($flotte[8][0][0], true).', Aluminium: '.ths($flotte[8][0][1], true).', Wolfram: '.ths($flotte[8][0][2], true).', Radium: '.ths($flotte[8][0][3], true).', Tritium: '.ths($flotte[8][0][4], true);
-				if(array_sum($flotte[8][1]) > 0)
-				{
-					$roboter = array();
-					foreach($flotte[8][1] as $id=>$anzahl)
-					{
-						if(!isset($items['roboter'][$id]))
-							continue;
-						$roboter[] = $items['roboter'][$id]['name'].': '.ths($anzahl, true);
-					}
-					$message_text .= "\n".implode(', ', $roboter);
-				}
-				$message_text .= '.';
-				messages::new_message(array($target_info[1]=>3), $_SESSION['username'], 'Handel abgebrochen', $message_text);
-			}
-		}
-		
-		unset($that_user_array);
-		unset($flotte);
-
-		logfile::action('13', $_GET['cancel']);
-
-		delete_request();
 	}
-
+	
+	function makeFleetString($user, $fleet)
+	{
+		$user = Classes::User($user);
+		$flotte_string = array();
+		foreach($fleet as $id=>$anzahl)
+		{
+			if($anzahl > 0 && ($item_info = $user->getItemInfo($id, 'schiffe')))
+				$flotte_string[] = utf8_htmlentities($item_info['name']).': '.ths($anzahl);
+		}
+		$flotte_string = implode('; ', $flotte_string);
+		return $flotte_string;
+	}
+	
 	login_gui::html_head();
 ?>
 <ul id="planeten-umbenennen">
 	<li><a href="scripts/rename.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>
 </ul>
 <?php
-	if(!isset($user_array['notify']) || !$user_array['notify'])
+	if(!$me->checkSetting('notify'))
 	{
+		global $message_type_names;
+		
 		$ncount = array(
 			1 => 0,
 			2 => 0,
@@ -114,25 +49,22 @@
 			7 => 0
 		);
 		$ges_ncount = 0;
-	
-		if(isset($user_array['messages']))
+		
+		$cats = $me->getMessageCategoriesList();
+		foreach($cats as $cat)
 		{
-			foreach($user_array['messages'] as $cat=>$messages)
+			$message_ids = $me->getMessagesList($cat);
+			foreach($message_ids as $message)
 			{
-				foreach($messages as $message_id=>$unread)
+				$status = $me->checkMessageStatus($message, $cat);
+				if($status == 1 && $cat != 8)
 				{
-					if(!is_file(DB_MESSAGES.'/'.$message_id) || !is_readable(DB_MESSAGES.'/'.$message_id))
-						continue;
-	
-					if($unread == 1 && $cat != 8)
-					{
-						$ncount[$cat]++;
-						$ges_ncount++;
-					}
+					$ncount[$cat]++;
+					$ges_ncount++;
 				}
 			}
 		}
-	
+
 		if($ges_ncount > 0)
 		{
 			$title = array();
@@ -149,120 +81,158 @@
 				$link .= '?';
 			else
 				$link .= '&';
-			$link .= SESSION_COOKIE.'='.urlencode(session_id());
+			$link .= urlencode(SESSION_COOKIE).'='.urlencode(session_id());
 ?>
 <p class="neue-nachrichten">
-	<a href="<?=htmlentities($link)?>" title="<?=$title?>" accesskey="n" tabindex="1">Sie haben <?=htmlentities($ges_ncount)?> neue <kbd>N</kbd>achricht<?=($ges_ncount != 1) ? 'en' : ''?>.</a>
+	<a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root.'/login/'.$link)?>" title="<?=$title?>">Sie haben <?=htmlentities($ges_ncount)?> neue <kbd>N</kbd>achricht<?=($ges_ncount != 1) ? 'en' : ''?>.</a>
 </p>
 <?php
 		}
 	}
 
-	if(isset($user_array['flotten']) && count($user_array['flotten']) > 0)
+	$flotten = $me->getFleetsList();
+	if(count($flotten) > 0)
 	{
 ?>
 <h2>Flottenbewegungen</h2>
 <dl id="flotten">
 <?php
-		$infos = array();
-		foreach($user_array['flotten'] as $flotte)
-		{
-			if(!in_array($flotte[3][0], $infos))
-				$infos[] = $flotte[3][0];
-			if(!in_array($flotte[3][1], $infos))
-				$infos[] = $flotte[3][1];
-		}
-		$infos = universe::get_planet_info($infos);
-
 		$countdowns = array();
-		foreach($user_array['flotten'] as $i=>$flotte)
+		foreach($flotten as $flotte)
 		{
-			$own = fleet::check_own($flotte);
-			$flotte_string = array();
-			foreach($flotte[0] as $id=>$anzahl)
+			$fl = Classes::Fleet($flotte);
+			$users = $fl->getUsersList();
+			if(count($users) <= 0) continue;
+			
+			$me_in_users = array_search($_SESSION['username'], $users);
+			if($me_in_users !== false)
 			{
-				if($anzahl > 0 && isset($items['schiffe'][$id]))
-					$flotte_string[] = utf8_htmlentities($items['schiffe'][$id]['name']).': '.ths($anzahl);
+				$first_user = $_SESSION['username'];
+				unset($users[$me_in_users]);
 			}
-			$flotte_string = implode('; ', $flotte_string);
-
-			$from_info = $infos[$flotte[3][0]];
-			$to_info = $infos[$flotte[3][1]];
-
-			$string = 'Eine <span class="beschreibung schiffe" title="'.$flotte_string.'">';
-			if($own)
-				$string .= 'Ihrer Flotten';
+			else $first_user = array_shift($users);
+			
+			if($me_in_users !== false)
+			{
+				$active_planet = $me->getActivePlanet();
+				$me->setActivePlanet($me->getPlanetByPos($fl->from($first_user)));
+				$string = 'Ihre <span class="beschreibung schiffe" title="'.makeFleetString($first_user, $fl->getFleetList($first_user)).'">Flotte</span> vom Planeten &bdquo;'.utf8_htmlentities($me->planetName()).'&ldquo; ('.$me->getPosString().') erreicht';
+				$me->setActivePlanet($active_planet);
+			}
 			else
-				$string .= 'fremde Flotte';
-			$string .= '</span> ';
-			if(!$flotte[7]) # Hinflug
 			{
-				if($from_info[1] == $_SESSION['username'])
+				$from_pos = $fl->from($first_user);
+				$from_array = explode(':', $from_pos);
+				$from_galaxy = Classes::Galaxy($from_array[0]);
+				$planet_name = $from_galaxy->getPlanetName($from_array[1], $from_array[2]);
+				$string = 'Eine <span class="beschreibung schiffe" title="'.makeFleetString($first_user, $fl->getFleetList($first_user)).'">Flotte</span> vom Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$from_pos.', Eigentümer: '.utf8_htmlentities($from_user).') erreicht';
+			}
+			
+			if(count($users) > 0)
+			{
+				$other_strings = array();
+				foreach($users as $user)
 				{
-					$string .= 'von Ihrem Planeten &bdquo;'.utf8_htmlentities($from_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][0]).') erreicht ';
-					if($to_info[1] == $_SESSION['username'])
-						$string .= 'Ihren Planeten &bdquo;'.utf8_htmlentities($to_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][1]).')';
-					else
-					{
-						$string .= 'den Planeten ';
-						if($to_info[1])
-							$string .= '&bdquo;'.utf8_htmlentities($to_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][1]).', Eigentümer: '.utf8_htmlentities($to_info[1]).')';
-						else
-							$string .= utf8_htmlentities($flotte[3][1]).' (unbesiedelt)';
-					}
+					$from_pos = $fl->from($user);
+					$from_array = explode(':', $from_pos);
+					$from_galaxy = Classes::Galaxy($from_array[0]);
+					$planet_name = $from_galaxy->getPlanetName($from_array[1], $from_array[2]);
+					$other_strings[] = 'einer <span class="beschreibung schiffe" title="'.makeFleetString($user, $fl->getFleetList($user)).'">Flotte</span> vom Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$from_pos.', Eigentümer: '.utf8_htmlentities($user).')';
 				}
+				if(count($other_strings) == 1)
+					$string .= $other_strings[0];
 				else
-					$string .= 'vom Planeten &bdquo;'.utf8_htmlentities($from_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][0]).', Eigentümer: '.utf8_htmlentities($from_info[1]).') erreicht Ihren Planeten &bdquo;'.utf8_htmlentities($to_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][1]).')';
-				$string .= '. Ihr Auftrag lautet ';
+				{
+					$last_string = array_pop($other_strings);
+					$string .= 'zusammen mit '.implode(', ', $other_strings).' und '.$last_string;
+				}
 			}
-			else # Rueckflug
+			
+			$to_pos = $fl->getCurrentTarget();
+			if($me->isOwnPlanet($to_pos))
 			{
-				$string .= 'kommt ';
-				if($from_info[1] == $_SESSION['username'])
-					$string .= 'von Ihrem Planeten &bdquo;'.utf8_htmlentities($from_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][0]).')';
-				elseif($from_info[1])
-					$string .= 'vom Planeten &bdquo;'.utf8_htmlentities($from_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][0]).', Eigentümer: '.utf8_htmlentities($from_info[1]).')';
-				else
-					$string .= 'vom Planeten '.utf8_htmlentities($flotte[3][0]).' (unbesiedelt)';
-				$string .= ' zurück zu Ihrem Planeten &bdquo;'.utf8_htmlentities($to_info[2]).'&ldquo; ('.utf8_htmlentities($flotte[3][1]).'). Ihr Auftrag lautete ';
+				$active_planet = $me->getActivePlanet();
+				$me->setActivePlanet($me->getPlanetByPos($to_pos));
+				$string .= ' Ihren Planeten &bdquo;'.utf8_htmlentities($me->planetName()).'&ldquo; ('.$to_pos.').';
+				$me->setActivePlanet($active_planet);
 			}
+			else
+			{
+				$to_array = explode(':', $to_pos);
+				$to_galaxy = Classes::Galaxy($to_array[0]);
+				$planet_name = $to_galaxy->getPlanetName($to_array[1], $to_array[2]);
+				$planet_owner = $to_galaxy->getPlanetOwner($to_array[1], $to_array[2]);
+				$string .= ' den Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$to_pos.', Eigentümer: '.utf8_htmlentities($planet_owner).').';
+			}
+			
+			if($fl->isFlyingBack())
+				$string .= ' Ihr Auftrag lautete ';
+			else $string .= ' Ihr Auftrag lautet ';
 
+			$ress = array(array(0, 0, 0, 0, 0), array());
+			$users = $fl->getUsersList();
+			foreach($users as $user)
+			{
+				$this_ress = $fl->getTransport($user);
+				if(isset($this_ress[0][0])) $ress[0][0] += $this_ress[0][0];
+				if(isset($this_ress[0][1])) $ress[0][1] += $this_ress[0][1];
+				if(isset($this_ress[0][2])) $ress[0][2] += $this_ress[0][2];
+				if(isset($this_ress[0][3])) $ress[0][3] += $this_ress[0][3];
+				if(isset($this_ress[0][4])) $ress[0][4] += $this_ress[0][4];
+				foreach($this_ress[1] as $id=>$count)
+				{
+					if(isset($ress[1][$id])) $ress[1][$id] += $count;
+					else $ress[1][$id] = $count;
+				}
+			}
 			$ress_string = array();
-			if(array_sum($flotte[5][0]) > 0)
+			if(array_sum($ress[0]) > 0)
 			{
-				if(isset($flotte[5][0][0]))
-					$ress_string[] = 'Carbon: '.ths($flotte[5][0][0]);
-				if(isset($flotte[5][0][1]))
-					$ress_string[] = 'Aluminium: '.ths($flotte[5][0][1]);
-				if(isset($flotte[5][0][2]))
-					$ress_string[] = 'Wolfram: '.ths($flotte[5][0][2]);
-				if(isset($flotte[5][0][3]))
-					$ress_string[] = 'Radium: '.ths($flotte[5][0][3]);
-				if(isset($flotte[5][0][4]))
-					$ress_string[] = 'Tritium: '.ths($flotte[5][0][4]);
+				if(isset($ress[0][0])) $ress_string[] = 'Carbon: '.ths($ress[0][0]);
+				if(isset($ress[0][1])) $ress_string[] = 'Aluminium: '.ths($ress[0][1]);
+				if(isset($ress[0][2])) $ress_string[] = 'Wolfram: '.ths($ress[0][2]);
+				if(isset($ress[0][3])) $ress_string[] = 'Radium: '.ths($ress[0][3]);
+				if(isset($ress[0][4])) $ress_string[] = 'Tritium: '.ths($ress[0][4]);
 			}
 
-			foreach($flotte[5][1] as $id=>$anzahl)
+			foreach($ress[1] as $id=>$anzahl)
 			{
-				if($anzahl > 0 && isset($items['roboter'][$id]))
-					$ress_string[] = utf8_htmlentities($items['roboter'][$id]['name']).': '.ths($anzahl);
+				if($anzahl > 0 && ($item_info = $me->getItemInfo($id, 'roboter')))
+					$ress_string[] = utf8_htmlentities($item_info['name']).': '.ths($anzahl);
 			}
 
 			$ress_string = implode(', ', $ress_string);
 
 			$string .= '<span class="beschreibung transport"';
-			if(strlen($ress_string) > 0)
-				$string .= ' title="'.$ress_string.'"';
+			if(strlen($ress_string) > 0) $string .= ' title="'.$ress_string.'"';
 			$string .= '>';
-			if(isset($type_names[$flotte[2]]))
-				$string .= htmlentities($type_names[$flotte[2]]);
+			
+			$type = $fl->getCurrentType();
+			if(isset($type_names[$type]))
+				$string .= htmlentities($type_names[$type]);
 			else
-				$string .= utf8_htmlentities($flotte[2]);
+				$string .= utf8_htmlentities($type);
 			$string .= '</span>.';
 			
-			if($flotte[2] == 4 && !$flotte[7] && isset($flotte[8]) && (array_sum($flotte[8][0]) > 0 || array_sum($flotte[8][1]) > 0))
+			$handel = array(array(0, 0, 0, 0, 0), array());
+			foreach($users as $user)
 			{
-				$string .= ' Diese Flotte wird einen <span class="beschreibung handel" title="';
+				$this_handel = $fl->getHandel($user);
+				if(isset($this_handel[0][0])) $handel[0][0] += $this_handel[0][0];
+				if(isset($this_handel[0][1])) $handel[0][1] += $this_handel[0][1];
+				if(isset($this_handel[0][2])) $handel[0][2] += $this_handel[0][2];
+				if(isset($this_handel[0][3])) $handel[0][3] += $this_handel[0][3];
+				if(isset($this_handel[0][4])) $handel[0][4] += $this_handel[0][4];
+				foreach($this_handel[1] as $id=>$count)
+				{
+					if(isset($handel[1][$id])) $handel[1][$id] += $count;
+					else $handel[1][$id] = $count;
+				}
+			}
+			
+			if(array_sum($handel[0]) > 0 || array_sum($handel[1]) > 0)
+			{
+				$string .= ' Es wird ein <span class="beschreibung handel" title="';
 				$string .= 'Carbon: '.ths($flotte[8][0][0]).', Aluminium: '.ths($flotte[8][0][1]).', Wolfram: '.ths($flotte[8][0][2]).', Radium: '.ths($flotte[8][0][3]).', Tritium: '.ths($flotte[8][0][4]);
 				if(array_sum($flotte[8][1]) > 0)
 				{
@@ -275,23 +245,23 @@
 					}
 					$string .= implode(', ', $rob);
 				}
-				$string .= '">Handel</span> durchführen.';
+				$string .= '">Handel</span> durchgeführt werden.';
 			}
 ?>
-	<dt class="<?=$own ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($flotte[2])?> <?=$flotte[7] ? 'rueck' : 'hin'?>flug">
+	<dt class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug">
 		<?=$string."\n"?>
 <?php
-			if($flotte[2] == 4 && !$flotte[7] && $to_info[1] == $_SESSION['username'])
+			if($fl->getCurrentType() == 4 && !$fl->isFlyingBack() && $me->isOwnPlanet($fl->getCurrentTarget()))
 			{
 ?>
-		<div class="handel"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Geben Sie dieser Flotte Ladung mit auf den Rückweg">Handel</a></div>
+		<div class="handel"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Geben Sie dieser Flotte Ladung mit auf den Rückweg">Handel</a></div>
 <?php
 			}
 ?>
 	</dt>
-	<dd class="<?=$own ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($flotte[2])?> <?=$flotte[7] ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($i)?>">Ankunft: <?=date('H:i:s, Y-m-d', $flotte[1][1])?> (Serverzeit)<?php if(!$flotte[7] && $own){?>, <a href="index.php?cancel=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
+	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($flotte)?>">Ankunft: <?=date('H:i:s, Y-m-d', $fl->getNextArrival())?> (Serverzeit)<?php if(!isFlyingBack() && ($me_in_users !== false)){?>, <a href="index.php?cancel=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
 <?php
-			$countdowns[] = array($i, $flotte[1][1], ($flotte[7] || !$own));
+			$countdowns[] = array($flotte, $fl->getNextArrival(), ($fl->isFlyingBack() || ($me_in_users === false)));
 		}
 ?>
 </dl>
@@ -316,6 +286,7 @@
 <h2 id="planeten">Planeten</h2>
 <ol id="planets">
 <?php
+	$show_building = $me->checkSetting('show_building');
 	$countdowns = array();
 	$tabindex = 3;
 	$planets = $me->getPlanetsList();
@@ -323,42 +294,49 @@
 	foreach($planets as $planet)
 	{
 		$me->setActivePlanet($planet);
-		$pos = $me->getPos();
 		$class = $me->getPlanetClass();
 ?>
 	<li class="planet-<?=htmlentities($class)?><?=($planet == $active_planet) ? ' active' : ''?>"><?=($planet != $active_planet) ? '<a href="index.php?planet='.htmlentities(urlencode($planet).'&'.urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?><?=utf8_htmlentities($me->planetName())?><?=($planet != $active_planet) ? '</a>' : ''?> <span class="koords">(<?=utf8_htmlentities($me->getPosString())?>)</span>
 		<dl class="planet-info">
 			<dt class="c-felder">Felder</dt>
 			<dd class="c-felder"><?=ths($me->getUsedFields())?> <span class="gesamtgroesse">(<?=ths($me->getTotalFields())?>)</span></dd>
-
-			<dt class="c-gebaeudebau">Gebäudebau</dt>
 <?php
-		if(isset($planet['building']['gebaeude']) && trim($planet['building']['gebaeude'][0]) != '')
+		if($show_building['gebaeude'])
 		{
 ?>
-			<dd class="c-gebaeudebau"><?=utf8_htmlentities($items['gebaeude'][$planet['building']['gebaeude'][0]]['name'])?> <span class="restbauzeit" id="restbauzeit-ge-<?=utf8_htmlentities($no)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $planet['building']['gebaeude'][1])?> (Serverzeit)</span></dd>
+			<dt class="c-gebaeudebau">Gebäudebau</dt>
 <?php
-			$countdowns[] = array('ge-'.$no, $planet['building']['gebaeude'][1]);
-		}
-		else
-		{
+			$building_gebaeude = $me->checkBuildingThing('gebaeude');
+			if($building_gebaeude)
+			{
+				$item_info = $me->getItemInfo($building_gebaeude[0], 'gebaeude');
+?>
+			<dd class="c-gebaeudebau"><?=utf8_htmlentities($item_info['name'])?> <span class="restbauzeit" id="restbauzeit-ge-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building_gebaeude[1])?> (Serverzeit)</span></dd>
+<?php
+				$countdowns[] = array('ge-'.$planet, $building_gebaeude[1]);
+			}
+			else
+			{
 ?>
 			<dd class="c-gebaeudebau gelangweilt">Gelangweilt</dd>
 <?php
+			}
 		}
 
-		if(isset($planet['gebaeude']['B8']) && $planet['gebaeude']['B8'] > 0)
+		if($show_building['forschung'] && $me->getItemLevel('B8', 'gebaeude') > 0)
 		{
 ?>
 
 			<dt class="c-forschung">Forschung</dt>
 <?php
-			if(isset($planet['building']['forschung']) && trim($planet['building']['forschung'][0]) != '')
+			$building_forschung = $me->checkBuildingThing('forschung');
+			if($building_forschung)
 			{
+				$item_info = $me->getItemInfo($building_forschung[0], 'forschung');
 ?>
-			<dd class="c-forschung"><?=utf8_htmlentities($items['forschung'][$planet['building']['forschung'][0]]['name'])?> <span id="restbauzeit-fo-<?=utf8_htmlentities($no)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $planet['building']['forschung'][1])?> (Serverzeit)</span></dd>
+			<dd class="c-forschung"><?=utf8_htmlentities($item_info['name'])?> <span id="restbauzeit-fo-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building_forschung[1])?> (Serverzeit)</span></dd>
 <?php
-				$countdowns[] = array('fo-'.$no, $planet['building']['forschung'][1]);
+				$countdowns[] = array('fo-'.$planet, $building_forschung[1]);
 			}
 			else
 			{
@@ -367,11 +345,87 @@
 <?php
 			}
 		}
+		
+		if($show_building['roboter'] && $me->getItemLevel('B9', 'gebaeude') > 0)
+		{
+?>
+
+			<dt class="c-roboter">Roboter</dt>
+<?php
+			$building_roboter = $me->checkBuildingThing('roboter');
+			if($building_roboter)
+			{
+				$building_roboter = array_shift($building_roboter);
+				$item_info = $me->getItemInfo($building_roboter[0], 'roboter');
+				$finishing_time = $building_roboter[1]+$building_roboter[3];
+?>
+			<dd class="c-roboter"><?=utf8_htmlentities($item_info['name'])?> <span id="restbauzeit-ro-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
+<?php
+				$countdowns[] = array('ro-'.$planet, $finishing_time);
+			}
+			else
+			{
+?>
+			<dd class="c-roboter">Gelangweilt</dd>
+<?php
+			}
+		}
+		
+		if($show_building['schiffe'] && $me->getItemLevel('B10', 'gebaeude') > 0)
+		{
+?>
+
+			<dt class="c-schiffe">Schiffe</dt>
+<?php
+			$building_schiffe = $me->checkBuildingThing('schiffe');
+			if($building_schiffe)
+			{
+				$building_schiffe = array_shift($building_schiffe);
+				$item_info = $me->getItemInfo($building_schiffe[0], 'schiffe');
+				$finishing_time = $building_schiffe[1]+$building_schiffe[3];
+?>
+			<dd class="c-roboter"><?=utf8_htmlentities($item_info['name'])?> <span id="restbauzeit-sc-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
+<?php
+				$countdowns[] = array('sc-'.$planet, $finishing_time);
+			}
+			else
+			{
+?>
+			<dd class="c-schiffe">Gelangweilt</dd>
+<?php
+			}
+		}
+		
+		if($show_building['verteidigung'] && $me->getItemLevel('B9', 'gebaeude') > 0)
+		{
+?>
+
+			<dt class="c-verteidigung">Verteidigung</dt>
+<?php
+			$building_verteidigung = $me->checkBuildingThing('verteidigung');
+			if($building_verteidigung)
+			{
+				$building_verteidigung = array_shift($building_verteidigung);
+				$item_info = $me->getItemInfo($building_verteidigung[0], 'verteidigung');
+				$finishing_time = $building_verteidigung[1]+$building_verteidigung[3];
+?>
+			<dd class="c-verteidigung"><?=utf8_htmlentities($item_info['name'])?> <span id="restbauzeit-ve-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
+<?php
+				$countdowns[] = array('ve-'.$planet, $finishing_time);
+			}
+			else
+			{
+?>
+			<dd class="c-verteidigung">Gelangweilt</dd>
+<?php
+			}
+		}
 ?>
 		</dl>
 	</li>
 <?php
 	}
+	$me->setActivePlanet($active_planet);
 ?>
 </ol>
 <?php

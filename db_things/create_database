@@ -30,6 +30,7 @@ echo 1 >> $1/handelskurs
 touch $1/highscores
 touch $1/highscores_alliances
 touch $1/highscores_alliances2
+mkdir $1/fleets
 mkdir $1/items
 ln -s $CWD/gebaeude $1/items/gebaeude
 ln -s $CWD/forschung $1/items/forschung

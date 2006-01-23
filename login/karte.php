@@ -13,7 +13,8 @@
 	if(isset($_GET['system']))
 		$system_n = $_GET['system'];
 
-	$galaxy_count = universe::get_galaxies_count();
+	__autoload('Galaxy');
+	$galaxy_count = getGalaxiesCount();
 
 	$next_galaxy = $galaxy_n+1;
 	$prev_galaxy = $galaxy_n-1;
@@ -22,7 +23,8 @@
 	if($prev_galaxy < 1)
 		$prev_galaxy = $galaxy_count;
 
-	$system_count = universe::get_systems_count($galaxy_n);
+	$galaxy = Classes::Galaxy($galaxy_n);
+	$system_count = $galaxy->getSystemsCount();
 
 	$next_system = $system_n+1;
 	$prev_system = $system_n-1;
@@ -53,18 +55,6 @@
 		<button type="submit" tabindex="7" accesskey="w"><kbd>W</kbd>echseln</button><input type="hidden" name="<?=htmlentities(SESSION_COOKIE)?>" value="<?=htmlentities(session_id())?>" />
 	</div>
 </form>
-<?php
-	$system = universe::get_system_info($galaxy_n, $system_n);
-
-	if(!$system)
-	{
-?>
-<p class="error">
-	Datenbankfehler.
-</p>
-<?php
-	}
-?>
 <table class="karte-system">
 	<thead>
 		<tr>
@@ -75,9 +65,11 @@
 	</thead>
 	<tbody>
 <?php
-	foreach($system as $i=>$planet)
+	$planets_count = $galaxy->getPlanetsCount($system_n);
+	for($i=1; $i <= $planets_count; $i++)
 	{
-		$class = universe::get_planet_class($galaxy_n, $system_n, $i);
+		$planet = array(false, $galaxy->getPlanetOwner($system_n, $i), $galaxy->getPlanetName($system_n, $i), $galaxy->getPlanetOwnerAlliance($system_n, $i));
+		$class = $galaxy->getPlanetClass($system_n, $i);
 
 		$that_uname = $planet[1];
 		$suffix = '';
@@ -116,7 +108,7 @@
 		if($planet[1])
 		{
 ?>
-			<td class="c-name"><?php if($planet[3]){?><span class="allianz">[<a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($planet[3]))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($planet[3])?></a>]</span> <?php }?><?=utf8_htmlentities($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($that_uname)?></a><?=htmlentities($suffix)?>)</span></td>
+			<td class="c-name"><?php if($planet[3]){?><span class="allianz<?=($planet[3] == $me->allianceTag()) ? ' verbuendet' : ''?>">[<a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($planet[3]))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($planet[3])?></a>]</span> <?php }?><?=utf8_htmlentities($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($that_uname)?></a><?=htmlentities($suffix)?>)</span></td>
 <?php
 		}
 		else

@@ -22,14 +22,14 @@
 			return false;
 		}
 		
-		function checkDependencies($user)
+		function checkDependencies($user, $run_eventhandler=true)
 		{
 			if(!$user->getStatus()) return false;
 			
 			$deps = $this->getDependencies();
 			foreach($deps as $id=>$min_level)
 			{
-				if($user->getItemLevel($id) < $min_level)
+				if($user->getItemLevel($id, false, $run_eventhandler) < $min_level)
 					return false;
 			}
 			return true;
@@ -132,7 +132,7 @@
 						'caption' => $item[7]
 					);
 					if(trim($item[4]) == '')
-						$items['ids'][$item[0]]['deps'] = array();
+						$items['gebaeude'][$item[0]]['deps'] = array();
 				}
 				flock($fh, LOCK_UN);
 				fclose($fh);
@@ -146,7 +146,7 @@
 				{
 					$item = explode("\t", $item);
 					if(count($item) < 6) continue;
-					$items['ids'][$item[0]] = array (
+					$items['forschung'][$item[0]] = array (
 						'name' => $item[1],
 						'ress' => explode('.', $item[2]),
 						'time' => $item[3],
@@ -154,7 +154,7 @@
 						'caption' => $item[5]
 					);
 					if(trim($item[4]) == '')
-						$items['ids'][$item[0]]['deps'] = array();
+						$items['forschung'][$item[0]]['deps'] = array();
 				}
 				flock($fh, LOCK_UN);
 				fclose($fh);
@@ -168,7 +168,7 @@
 				{
 					$item = explode("\t", $item);
 					if(count($item) < 6) continue;
-					$items['ids'][$item[0]] = array (
+					$items['roboter'][$item[0]] = array (
 						'name' => $item[1],
 						'ress' => explode('.', $item[2]),
 						'time' => $item[3],
@@ -176,7 +176,7 @@
 						'caption' => $item[5]
 					);
 					if(trim($item[4]) == '')
-						$items['ids'][$item[0]]['deps'] = array();
+						$items['roboter'][$item[0]]['deps'] = array();
 				}
 				flock($fh, LOCK_UN);
 				fclose($fh);
@@ -190,7 +190,7 @@
 				{
 					$item = explode("\t", $item);
 					if(count($item) < 11) continue;
-					$items['ids'][$item[0]] = array (
+					$items['schiffe'][$item[0]] = array (
 						'name' => $item[1],
 						'ress' => explode('.', $item[2]),
 						'time' => $item[3],
@@ -203,7 +203,7 @@
 						'caption' => $item[10]
 					);
 					if(trim($item[4]) == '')
-						$items['ids'][$item[0]]['deps'] = array();
+						$items['schiffe'][$item[0]]['deps'] = array();
 				}
 			}
 	
@@ -215,7 +215,7 @@
 				{
 					$item = explode("\t", $item);
 					if(count($item) < 8) continue;
-					$items['ids'][$item[0]] = array (
+					$items['verteidigung'][$item[0]] = array (
 						'name' => $item[1],
 						'ress' => explode('.', $item[2]),
 						'time' => $item[3],
@@ -225,7 +225,7 @@
 						'caption' => $item[7]
 					);
 					if(trim($item[4]) == '')
-						$items['ids'][$item[0]]['deps'] = array();
+						$items['verteidigung'][$item[0]]['deps'] = array();
 				}
 				flock($fh, LOCK_UN);
 				fclose($fh);

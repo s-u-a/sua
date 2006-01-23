@@ -3,7 +3,10 @@
 
 	login_gui::html_head();
 
-	if(!isset($_GET['id']) || !isset($items['ids'][$_GET['id']]))
+	if(!isset($_GET['id'])) $item = false;
+	else $item = Classes::Item($_GET['id']);
+	
+	if($item && !$item->getInfo())
 	{
 ?>
 <p class="error">Dieser Gegenstand existiert nicht.</p>
@@ -11,21 +14,16 @@
 	}
 	else
 	{
-		$i = & $items['ids'][$_GET['id']];
-
-		if(isset($items['gebaeude'][$_GET['id']]) || isset($items['forschung'][$_GET['id']]))
-		{
-			$lvl = 0;
-			if(isset($this_planet['ids'][$_GET['id']]))
-				$lvl = $this_planet['ids'][$_GET['id']];
-		}
+		$type = $item->getType();
+		if($type == 'gebaeude' || $type == 'forschung')
+			$lvl = $me->getItemLevel($_GET['id']);
 		else
 			$lvl = -1;
 ?>
 <div class="desc">
-	<h2><?=utf8_htmlentities($i['name'])?><?php if($lvl >= 0){?> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($lvl)?>)</span><?php }?></h2>
+	<h2><?=utf8_htmlentities($item->getInfo('name'))?><?php if($lvl >= 0){?> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($lvl)?>)</span><?php }?></h2>
 <?php
-		$desc = $i['caption'];
+		$desc = $item->getInfo('caption');
 
 		function repl_nl($nls)
 		{
@@ -40,14 +38,12 @@
 
 		$desc = "\t<p>\n\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', utf8_htmlentities($desc))."\n\t</p>\n";
 
-		echo $desc;
+		print($desc);
 ?>
 </div>
 <?php
-		if(isset($items['gebaeude'][$_GET['id']]))
+		if($type == 'gebaeude')
 		{
-			# Es handelt sich um ein Gebaeude
-			# Produktion ausgeben
 ?>
 <div class="desc-values">
 	<h3>Eigenschaften</h3>
@@ -61,13 +57,14 @@
 		<tbody>
 			<tr>
 				<th>Benötigte Felderzahl</th>
-				<td><?=utf8_htmlentities($i['fields'])?></td>
+				<td><?=utf8_htmlentities($item->getInfo('fields'))?></td>
 			</tr>
 		</tbody>
 	</table>
 </div>
 <?php
-			if($i['prod'][0] != 0 || $i['prod'][1] != 0 || $i['prod'][2] != 0 || $i['prod'][3] != 0 || $i['prod'][4] != 0 || $i['prod'][5] != 0)
+			$prod = $item->getInfo('prod');
+			if(array_sum($prod) != 0)
 			{
 ?>
 <div class="desc-prod">
@@ -77,37 +74,37 @@
 			<tr>
 				<th class="c-stufe">Stufe</th>
 <?php
-				if($i['prod'][0] != 0)
+				if($prod[0] != 0)
 				{
 ?>
 				<th class="c-carbon">Carbon</th>
 <?php
 				}
-				if($i['prod'][1] != 0)
+				if($prod[1] != 0)
 				{
 ?>
 				<th class="c-aluminium">Aluminium</th>
 <?php
 				}
-				if($i['prod'][2] != 0)
+				if($prod[2] != 0)
 				{
 ?>
 				<th class="c-wolfram">Wolfram</th>
 <?php
 				}
-				if($i['prod'][3] != 0)
+				if($prod[3] != 0)
 				{
 ?>
 				<th class="c-radium">Radium</th>
 <?php
 				}
-				if($i['prod'][4] != 0)
+				if($prod[4] != 0)
 				{
 ?>
 				<th class="c-tritium">Tritium</th>
 <?php
 				}
-				if($i['prod'][5] != 0)
+				if($prod[5] != 0)
 				{
 ?>
 				<th class="c-energie">Energie</th>
@@ -128,40 +125,40 @@
 			<tr<?=($act_lvl == $lvl) ? ' class="active"' : ''?>>
 				<th><?=ths($act_lvl)?></th>
 <?php
-					if($i['prod'][0] != 0)
+					if($prod[0] != 0)
 					{
 ?>
-				<td class="c-carbon"><?=ths($i['prod'][0]*pow($act_lvl, 2))?></td>
+				<td class="c-carbon"><?=ths($prod[0]*pow($act_lvl, 2))?></td>
 <?php
 					}
-					if($i['prod'][1] != 0)
+					if($prod[1] != 0)
 					{
 ?>
-				<td class="c-aluminium"><?=ths($i['prod'][1]*pow($act_lvl, 2))?></td>
+				<td class="c-aluminium"><?=ths($prod[1]*pow($act_lvl, 2))?></td>
 <?php
 					}
-					if($i['prod'][2] != 0)
+					if($prod[2] != 0)
 					{
 ?>
-				<td class="c-wolfram"><?=ths($i['prod'][2]*pow($act_lvl, 2))?></td>
+				<td class="c-wolfram"><?=ths($prod[2]*pow($act_lvl, 2))?></td>
 <?php
 					}
-					if($i['prod'][3] != 0)
+					if($prod[3] != 0)
 					{
 ?>
-				<td class="c-radium"><?=ths($i['prod'][3]*pow($act_lvl, 2))?></td>
+				<td class="c-radium"><?=ths($prod[3]*pow($act_lvl, 2))?></td>
 <?php
 					}
-					if($i['prod'][4] != 0)
+					if($prod[4] != 0)
 					{
 ?>
-				<td class="c-tritium"><?=ths($i['prod'][4]*pow($act_lvl, 2))?></td>
+				<td class="c-tritium"><?=ths($prod[4]*pow($act_lvl, 2))?></td>
 <?php
 					}
-					if($i['prod'][5] != 0)
+					if($prod[5] != 0)
 					{
 ?>
-				<td class="c-energie"><?=ths($i['prod'][5]*pow($act_lvl, 2))?></td>
+				<td class="c-energie"><?=ths($prod[5]*pow($act_lvl, 2))?></td>
 <?php
 					}
 ?>
@@ -176,10 +173,9 @@
 			}
 		}
 
-		if(isset($items['schiffe'][$_GET['id']]))
+		if($type == 'schiffe')
 		{
-			# Es handelt sich um ein Schiff
-			# Werte ausgeben
+			$trans = $item->getInfo('trans');
 ?>
 <div class="desc-values">
 	<h3>Eigenschaften</h3>
@@ -193,26 +189,26 @@
 		<tbody>
 			<tr>
 				<th>Transportkapazität</th>
-				<td><?=ths($i['trans'][0])?>&nbsp;Tonnen, <?=ths($i['trans'][1])?>&nbsp;Roboter</td>
+				<td><?=ths($trans[0])?>&nbsp;Tonnen, <?=ths($trans[1])?>&nbsp;Roboter</td>
 			</tr>
 			<tr>
 				<th>Angriffsstärke</th>
-				<td><?=ths($i['att'])?></td>
+				<td><?=ths($item->getInfo('att'))?></td>
 			</tr>
 			<tr>
 				<th>Schild</th>
-				<td><?=ths($i['def'])?></td>
+				<td><?=ths($item->getInfo('def'))?></td>
 			</tr>
 			<tr>
 				<th>Antriebsstärke</th>
-				<td><?=ths($i['speed'])?>&nbsp;Megawatt</td>
+				<td><?=ths($item->getInfo('speed'))?>&nbsp;Megawatt</td>
 			</tr>
 			<tr>
 				<th>Unterstützte Auftragsarten</th>
 				<td>
 					<ul>
 <?php
-			foreach($i['types'] as $t)
+			foreach($item->getInfo('types') as $t)
 			{
 				if(isset($type_names[$t]))
 					$t = $type_names[$t];
@@ -230,10 +226,8 @@
 <?php
 		}
 
-		if(isset($items['verteidigung'][$_GET['id']]))
+		if($type == 'verteidigung')
 		{
-			# Es handelt sich um eine Verteidigungsanlange
-			# Werte ausgeben
 ?>
 <div class="desc-values">
 	<h3>Eigenschaften</h3>
@@ -247,11 +241,11 @@
 		<tbody>
 			<tr>
 				<th>Angriffsstärke</th>
-				<td><?=ths($i['att'])?></td>
+				<td><?=ths($item->getInfo('att'))?></td>
 			</tr>
 			<tr>
 				<th>Schild</th>
-				<td><?=ths($i['def'])?></td>
+				<td><?=ths($item->getInfo('def'))?></td>
 			</tr>
 		</tbody>
 	</table>

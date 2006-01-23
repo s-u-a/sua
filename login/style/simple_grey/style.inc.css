@@ -152,7 +152,7 @@ legend { font-weight:bold; }
 .desc-prod th,.desc-values th { font-weight:bold; }
 .desc-prod td,.desc-prod th,.desc-values td,.desc-values th { border-bottom:.1em solid #aaa; padding:.3em; text-align:center; border-left:.1em solid #aaa; }
 .desc-prod .c-stufe,.desc-values .c-stufe { border-left-style:none; }
-.desc-prod tr:hover td,.desc-prod tr:hover th,.desc-prod tr.active td,.desc-prod tr.active th,.desc-values tr:hover td,.desc-values tr:hover th { background-color:#888; }
+.desc-prod tr:hover td,.desc-prod tr:hover th,.desc-prod tr.active td,.desc-prod tr.active th,.desc-values tr:hover td,.desc-values tr:hover th,.imperium-tabelle tr.active td,.imperium-tabelle tr.active th,.imperium-tabelle tr:hover th,.imperium-tabelle tr:hover td,.imperium-tabelle td.active,.imperium-tabelle th.active { background-color:#888; }
 .desc-values ul { text-align:left; margin-top:0; padding-top:0; margin-bottom:0; padding-bottom:0; }
 
 .ress-prod { width:98%; border:.1em solid #aaa; border-spacing:0; border-collapse:collapse; margin:.5em; padding:0; background-color:#777; }
@@ -468,6 +468,7 @@ br.clear { clear:both; }
 .imperium-rohstoffproduktion .c-gesamt { border-right:double; border-right-width:.3em; }
 .imperium-rohstoffproduktion .positiv { color:#0f0; }
 .imperium-rohstoffproduktion .negativ { color:#f00; }
+.imperium-tabelle .maximal { font-size:.8em; }
 
 .imperium-modi,.highscores-modi { list-style-type:none; padding:0; height:1.5em; margin:.5em; font-weight:bold; text-align:center; }
 .imperium-modi li,.highscores-modi li { float:left; border:.1em solid #aaa; margin-right:-.1em; line-height:1.5em; }
@@ -475,6 +476,6 @@ br.clear { clear:both; }
 .highscores-modi li { width:49.5%; }
 .imperium-modi a,.highscores-modi a { display:block; }
 .imperium-modi a:hover,.imperium-modi a:focus,.highscores-modi a:hover,.highscores-modi a:focus { background-color:#888; }
-.imperium-modi .active a,.highscores-modi .active a { background-color:#777; }
+.imperium-modi .active a,.highscores-modi .active a { background-color:#999; }
 
 .allianz-bewerben-form dt,.allianz-gruenden-form dt,.allianz-intern-form dt,.allianz-extern-form dt { position:relative; }

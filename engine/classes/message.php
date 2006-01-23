@@ -95,10 +95,10 @@
 			if(isset($this->raw['users'][$user]))
 				return false;
 			
-			$user = Classes::User($user);
-			if(!$user->getStatus()) return false;
-			$user->addMessage($this->name, $type);
-			unset($user);
+			$user_obj = Classes::User($user);
+			if(!$user_obj->getStatus()) return false;
+			$user_obj->addMessage($this->name, $type);
+			unset($user_obj);
 			
 			$this->raw['users'][$user] = $type;
 			$this->changed = true;

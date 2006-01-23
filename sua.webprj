@@ -121,5 +121,7 @@
     <item url="engine/classes/publicmessage.php" uploadstatus="1" />
     <item url="engine/classes/item.php" uploadstatus="1" />
     <item url="engine/classes/classes.php" uploadstatus="1" />
+    <item url="engine/classes/fleet.php" />
+    <item url="engine/classes/galaxy.php" />
   </project>
 </webproject>

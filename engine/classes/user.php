@@ -44,6 +44,7 @@
 				if(isset($this->items['roboter'])) $this->planet_info['roboter'] = $this->items['roboter'];
 				if(isset($this->items['schiffe'])) $this->planet_info['schiffe'] = $this->items['schiffe'];
 				if(isset($this->items['verteidigung'])) $this->planet_info['verteidigung'] = $this->items['verteidigung'];
+				if(isset($this->ress)) $this->planet_info['ress'] = $this->ress;
 			}
 			
 			$this->active_planet = $planet;
@@ -166,7 +167,8 @@
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
 			$pos = $this->getPos();
-			return universe::get_planet_class($pos[0], $pos[1], $pos[2]);
+			$galaxy = Classes::galaxy($pos[0]);
+			return $galaxy->getPlanetClass($pos[1], $pos[2]);
 		}
 		
 		function removePlanet()
@@ -177,22 +179,32 @@
 			$fleets = $this->getFleetsWithPlanet();
 			foreach($fleets as $fleet)
 			{
-				$owner = $this->getFleetSender($fleet);
-				$this->cancelFleet($fleet);
-				
-				$message = Classes::Message();
-				if($message->create())
+				$fl = Classes::Fleet($fleet);
+				$users = $fl->getUsersList();
+				foreach($users as $user)
 				{
-					$message->addUser($owner[1], $types_message_types[$flotte[2]]);
-					$message->subject("Flotte zur\xc3\xbcckgerufen");
-					$message->from($_SESSION['username']);
-					$message->text("Ihre Flotte befand sich auf dem Weg zum Planeten \xe2\x80\x9e".$this->planetName()."\xe2\x80\x9c (".$this->getPosString().", Eigent\xc3\xbcmer: ".$_SESSION['username']."). Soeben wurde jener Planet verlassen, weshalb Ihre Flotte sich auf den R\xc3\xbcckweg zu Ihrem Planeten \xe2\x80\x9e".$owner[2]."\xe2\x80\x9c (".$owner[0].") macht.");
+					$pos_string = $fl->from($user);
+					$pos = explode(':', $pos_string);
+					$type = $fl->getCurrentType();
+					$fl->callBack($user);
+					
+					$this_galaxy = Classes::Galaxy($pos[0]);
+					
+					$message = Classes::Message();
+					if($message->create())
+					{
+						$message->addUser($user, $types_message_types[$type]);
+						$message->subject("Flotte zur\xc3\xbcckgerufen");
+						$message->from($this->getName());
+						$message->text("Ihre Flotte befand sich auf dem Weg zum Planeten \xe2\x80\x9e".$this->planetName()."\xe2\x80\x9c (".$this->getPosString().", Eigent\xc3\xbcmer: ".utf8_htmlentities($this->getName())."). Soeben wurde jener Planet verlassen, weshalb Ihre Flotte sich auf den R\xc3\xbcckweg zu Ihrem Planeten \xe2\x80\x9e".$this_galaxy->getPlanetName($pos[1], $pos[2])."\xe2\x80\x9c (".$pos_string.") macht.");
+					}
 				}
 			}
 			
 			# Planeten aus der Karte loeschen
 			$this_pos = $this->getPos();
-			universe::set_planet_info($this_pos[0], $this_pos[1], $this_pos[2], rand(100, 500), '', '', '');
+			$galaxy = Classes::galaxy($this_pos[0]);
+			$galaxy->resetPlanet($this_pos[1], $this_pos[2]);
 
 			$planets = $this->getPlanetsList();
 			$active_key = array_search($this->getActivePlanet(), $planets);
@@ -298,11 +310,31 @@
 				return $this->raw['punkte'][$i];
 		}
 		
+		function getSpentRess($i=false)
+		{
+			if(!$this->status) return false;
+			
+			if($i === false)
+			{
+				if(!isset($this->cache['getSpentRess']))
+					$this->cache['getSpentRess'] = $this->getScores(7)+$this->getScores(8)+$this->getScores(9)+$this->getScores(10)+$this->getScores(11);
+				return $this->cache['getSpentRess'];
+			}
+			else return $this->getScores($i+7);
+		}
+		
 		function getRank()
 		{
 			if(!$this->status) return false;
 			
 			return $this->raw['punkte'][12];
+		}
+		
+		function setRank($rank)
+		{
+			if(!$this->status) return false;
+			
+			$this->raw['punkte'][12] = (int) $rank;
 		}
 		
 		function planetName($name=false)
@@ -316,8 +348,8 @@
 				$this->planet_info['name'] = $name;
 				
 				$pos = $this->getPos();
-				$old_info = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
-				if(!$old_info || !universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $old_info[1], $_POST['planet_name'], $old_info[3]))
+				$galaxy = Classes::Galaxy($pos[0]);
+				if(!$galaxy->setPlanetName($pos[1], $pos[2], $name))
 				{
 					$this->planet_info['name'] = $old_name;
 					return false;
@@ -375,15 +407,30 @@
 			
 			if(!is_array($ress)) return false;
 			
-			if(isset($ress[0])) $this->ress[0] -= $ress[0];
-			if(isset($ress[1])) $this->ress[1] -= $ress[1];
-			if(isset($ress[2])) $this->ress[2] -= $ress[2];
-			if(isset($ress[3])) $this->ress[3] -= $ress[3];
-			if(isset($ress[4])) $this->ress[4] -= $ress[4];
+			if(isset($ress[0])){ $this->ress[0] -= $ress[0]; $this->raw['punkte'][7] += $ress[0]/1000; }
+			if(isset($ress[1])){ $this->ress[1] -= $ress[1]; $this->raw['punkte'][8] += $ress[1]/1000; }
+			if(isset($ress[2])){ $this->ress[2] -= $ress[2]; $this->raw['punkte'][9] += $ress[2]/1000; }
+			if(isset($ress[3])){ $this->ress[3] -= $ress[3]; $this->raw['punkte'][10] += $ress[3]/1000; }
+			if(isset($ress[4])){ $this->ress[4] -= $ress[4]; $this->raw['punkte'][11] += $ress[4]/1000; }
 			
-			if(isset($this->cache['getItemInfo']) && isset($this->cache['getItemInfo'][$this->getActivePlanet()])) unset($this->cache['getItemInfo'][$this->getActivePlanet()]);
+			if(isset($this->cache['getSpentRess'])) unset($this->cache['getSpentRess']);
 			
 			$this->changed = true;
+			
+			return true;
+		}
+		
+		function checkRess($ress)
+		{
+			if(!$this->status || !isset($this->planet_info)) return false;
+			
+			if(!is_array($ress)) return false;
+			
+			if(isset($ress[0]) && $ress[0] > $this->ress[0]) return false;
+			if(isset($ress[1]) && $ress[1] > $this->ress[1]) return false;
+			if(isset($ress[2]) && $ress[2] > $this->ress[2]) return false;
+			if(isset($ress[3]) && $ress[3] > $this->ress[3]) return false;
+			if(isset($ress[4]) && $ress[4] > $this->ress[4]) return false;
 			
 			return true;
 		}
@@ -408,13 +455,34 @@
 			return $return;
 		}
 		
+		function getFleetsList()
+		{
+			if(!$this->status) return false;
+			
+			if(isset($this->raw['flotten']))
+			{
+				foreach($this->raw['flotten'] as $i=>$flotte)
+				{
+					__autoload('Fleet');
+					if(!Fleet::fleetExists($flotte))
+					{
+						unset($this->raw['flotten'][$i]);
+						$this->changed = true;
+					}
+				}
+				return $this->raw['flotten'];
+			}
+			else return array();
+		}
+		
 		function checkOwnFleetWithPlanet()
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
-			foreach($this->raw['flotten'] as $i=>$flotte)
+			foreach($this->getFleetsList() as $flotte)
 			{
-				if($flotte[3][0] == $this->getPosString() || ($flotte[3][1] == $this->getPosString() && $this->isOwnPlanet($flotte[3][0])))
+				$fl = Classes::Fleet($flotte);
+				if(in_array($this->getName(), $fl->getUsersList()) && ($fl->from($this->getName()) == $this->getPosString() || $fl->isATarget($this->getPosString())))
 					return true;
 			}
 			return false;
@@ -425,116 +493,13 @@
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
 			$fleets = array();
-			foreach($this->raw['flotten'] as $i=>$flotte)
+			foreach($this->getFleetsList() as $flotte)
 			{
-				if($flotte[3][0] == $this->getPosString() || $flotte[3][1] == $this->getPosString())
-					$fleets[] = $i;
+				$fl = Classes::Fleet($flotte);
+				if(in_array($this->getName(), $fl->getUsersList()) && ($fl->from($this->getName()) == $this->getPosString() || $fl->isATarget($this->getPosString())))
+					$fleets[] = $flotte;
 			}
 			return $fleets;
-		}
-		
-		function getFleetSender($fleet)
-		{
-			if(!$this->status || !isset($this->raw['flotten'][$fleet])) return false;
-			
-			if(!isset($this->cache['getFleetSender'])) $this->cache['getFleetSender'] = array();
-			if(!isset($this->cache['getFleetSender'][$fleet]))
-			{
-				$flotte = & $this->raw['flotten'][$fleet];
-				if($flotte[7]) $pos = $flotte[3][1];
-				else $pos = $flotte[3][0];
-				$pos_array = explode(':', $pos);
-				$info = universe::get_planet_info($pos_array[0], $pos_array[1], $pos_array[2]);
-				$info[0] = $pos;
-				$this->cache['getFleetSender'][$fleet] = $info;
-			}
-			return $this->cache['getFleetSender'][$fleet];
-		}
-		
-		function getFleetReceiver($fleet)
-		{
-			if(!$this->status || !isset($this->raw['flotten'][$fleet])) return false;
-			
-			if(!isset($this->cache['getFleetReceiver'])) $this->cache['getFleetReceiver'] = array();
-			if(!isset($this->cache['getFleetReceiver'][$fleet]))
-			{
-				$flotte = & $this->raw['flotten'][$fleet];
-				if($flotte[7]) $pos = $flotte[3][0];
-				else $pos = $flotte[3][1];
-				$pos_array = explode(':', $pos);
-				$info = universe::get_planet_info($pos_array[0], $pos_array[1], $pos_array[2]);
-				$info[0] = $pos;
-				$this->cache['getFleetReceiver'][$fleet] = $info;
-			}
-			return $this->cache['getFleetReceiver'][$fleet];
-		}
-		
-		function cancelFleet($fleet, $punkte=false)
-		{
-			if(!$this->status || !isset($this->raw['flotten'][$fleet])) return false;
-			
-			list(,$sender_name) = $this->getFleetSender($fleet);
-			if(!$sender_name) return false;
-			
-			if($sender_name != $this->getName())
-			{
-				$sender = Classes::User($sender_name);
-				return $sender->cancelFleet($fleet, $punkte);
-			}
-			
-			list(,$receiver_name) = $this->getFleetReceiver($fleet);
-			if(!$receiver_name) return false;
-			
-			$flotte = &$this->raw['flotten'][$fleet];
-			
-			if($flotte[7]) return false;
-			
-			$distance_to_here1 = fleet::get_distance($flotte[3][0], $this->getPosString());
-			$distance_to_here2 = fleet::get_distance($flotte[3][1], $this->getPosString());
-			
-			$time_done = (time()-$flotte[1][0])/($flotte[1][1]-$flotte[1][0]);
-			$distance = abs($distance_to_here1-$distance_to_here2)*$time_done;
-			
-			# Masse und Antrieb berechnen
-			$mass = 0;
-			$speed = 0;
-			foreach($flotte[3][0] as $id=>$anzahl)
-			{
-				$info = $this->getItemInfo($id, 'schiffe');
-				if(!$info) continue;
-				$mass += $info['mass']*$anzahl;
-				$speed += $Info['speed']*$anzahl;
-			}
-			$time = fleet::get_time($mass, $distance, $speed);
-			
-			$flotte[3][1] = array(time(), $time);
-			
-			# Koordinaten vertauschen
-			list($flotte[3][0], $flotte[3][1]) = array($flotte[3][1], $flotte[3][0]);
-
-			# Ueberschuessiges Tritium
-			$flotte[4][1] = round($flotte[4][0]*($time_left/$time_diff));
-			if($punkte) $flotte[4][0] -= $flotte[4][1];
-			else $flotte[4][0] = 0;
-
-			# Rueckflug?
-			$flotte[7] = true;
-
-			uasort($this->raw['flotten'], 'usort_fleet');
-			
-			
-			# Beim Zielplaneten entfernen
-			$target_user = Classes::User($receiver_name);
-			$target_user->unsetFleet($fleet);
-			unset($target_user);
-		}
-		
-		function unsetFleet($fleet)
-		{
-			if(!$this->status || !isset($this->raw['flotten'][$fleet])) return false;
-			
-			unset($this->raw['flotten'][$fleet]);
-			$this->changed = true;
 		}
 		
 		function checkMessage($message_id, $type)
@@ -762,7 +727,7 @@
 			return $items_instance->getItemsList($type);
 		}
 		
-		function getItemInfo($id, $type=false)
+		function getItemInfo($id, $type=false, $run_eventhandler=true, $calc_scores=false)
 		{
 			if(!$this->status) return false;
 			
@@ -773,44 +738,63 @@
 			{
 				$item = Classes::Item($id);
 				if($type === false) $type = $item->getType();
+				$info['type'] = $type;
 				$info = $item->getInfo();
 				if(!$info) return false;
-				$info['buildable'] = $info['deps-okay'] = $item->checkDependencies($this);
-				$info['level'] = $this->getItemLevel($id, $type);
+				$info['buildable'] = $info['deps-okay'] = $item->checkDependencies($this, $run_eventhandler);
+				$info['level'] = $this->getItemLevel($id, $type, $run_eventhandler);
 				
 				switch($type)
 				{
 					case 'gebaeude':
-						$minen_rob = 1+0.000625*$this->getItemLevel('F2', 'forschung');
+						$level_f = pow($info['level'], 2);
+						$percent_f = $this->checkProductionFactor($id);
+						$info['prod'][0] *= $level_f*$percent_f;
+						$info['prod'][1] *= $level_f*$percent_f;
+						$info['prod'][2] *= $level_f*$percent_f;
+						$info['prod'][3] *= $level_f*$percent_f;
+						$info['prod'][4] *= $level_f*$percent_f;
+						$info['prod'][5] *= $level_f*$percent_f;
+						
+						$minen_rob = 1+0.0003125*$this->getItemLevel('F2', 'forschung', $run_eventhandler);
 						if($minen_rob > 1)
 						{
-							$rob = $this->getItemLevel('R02', 'roboter');
-							if($rob > $this->getItemLevel('B0', 'gebaeude')*10) $rob = $this->getItemLevel('B0', 'gebaeude')*10;
+							$rob = $this->getItemLevel('R02', 'roboter', $run_eventhandler);
+							if($rob > $this->getItemLevel('B0', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B0', 'gebaeude', $run_eventhandler);
 							$info['prod'][0] *= pow($minen_rob, $rob);
 							
-							$rob = $this->getItemLevel('R03', 'roboter');
-							if($rob > $this->getItemLevel('B1', 'gebaeude')*10) $rob = $this->getItemLevel('B1', 'gebaeude')*10;
+							$rob = $this->getItemLevel('R03', 'roboter', $run_eventhandler);
+							if($rob > $this->getItemLevel('B1', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B1', 'gebaeude', $run_eventhandler);
 							$info['prod'][1] *= pow($minen_rob, $rob);
 							
-							$rob = $this->getItemLevel('R04', 'roboter');
-							if($rob > $this->getItemLevel('B2', 'gebaeude')*10) $rob = $this->getItemLevel('B2', 'gebaeude')*10;
+							$rob = $this->getItemLevel('R04', 'roboter', $run_eventhandler);
+							if($rob > $this->getItemLevel('B2', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B2', 'gebaeude', $run_eventhandler);
 							$info['prod'][2] *= pow($minen_rob, $rob);
 							
-							$rob = $this->getItemLevel('R05', 'roboter');
-							if($rob > $this->getItemLevel('B3', 'gebaeude')*10) $rob = $this->getItemLevel('B3', 'gebaeude')*10;
+							$rob = $this->getItemLevel('R05', 'roboter', $run_eventhandler);
+							if($rob > $this->getItemLevel('B3', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B3', 'gebaeude', $run_eventhandler);
 							$info['prod'][3] *= pow($minen_rob, $rob);
 							
-							$rob = $this->getItemLevel('R06', 'roboter');
-							if($rob > $this->getItemLevel('B4', 'gebaeude')*15) $rob = $this->getItemLevel('B4', 'gebaeude')*15;
+							$rob = $this->getItemLevel('R06', 'roboter', $run_eventhandler);
+							if($rob > $this->getItemLevel('B4', 'gebaeude', $run_eventhandler)*2) $rob = $this->getItemLevel('B4', 'gebaeude', $run_eventhandler)*2;
 							$info['prod'][4] *= pow($minen_rob, $rob);
 						}
-						$info['prod'][5] *= pow(1.05, $this->getItemLevel('F3', 'forschung'));
+						$info['prod'][5] *= pow(1.05, $this->getItemLevel('F3', 'forschung', $run_eventhandler));
 						
 						$info['time'] *= pow($info['level']+1, 1.5);
-						$baurob = 1-0.0025*$this->getItemLevel('F2', 'forschung');
-						$rob = $this->getItemLevel('R01', 'roboter');
+						$baurob = 1-0.00125*$this->getItemLevel('F2', 'forschung', $run_eventhandler);
+						$rob = $this->getItemLevel('R01', 'roboter', $run_eventhandler);
 						if($rob > $this->getBasicFields()/2) $rob = floor($this->getBasicFields()/2);
 						$info['time'] *= pow($baurob, $rob);
+						
+						if($calc_scores)
+						{
+							$ress = array_sum($info['ress']);
+							$scores = 0;
+							for($i=1; $i<=$info['level']; $i++)
+								$scores += $ress*pow($i, 2.4);
+							$info['scores'] = $scores/1000;
+						}
 						
 						$ress_f = pow($info['level']+1, 2.4);
 						$info['ress'][0] *= $ress_f;
@@ -818,16 +802,9 @@
 						$info['ress'][2] *= $ress_f;
 						$info['ress'][3] *= $ress_f;
 						
-						$ress = $this->getRess(false);
-						if($info['buildable'])
-						{
-							if($ress[0] < $info['ress'][0] || $ress[1] < $info['ress'][1]
-							|| $ress[2] < $info['ress'][2] || $ress[3] < $info['ress'][3])
-								$info['buildable'] = false;
-							if($info['fields'] > $this->getRemainingFields())
-								$info['buildable'] = false;
-						}
-						$info['debuildable'] = ($info['level'] >= 1 && $ress[0]/2 >= $info['ress'][0] && $ress[1]/2 >= $info['ress'][1] && $ress[2]/2 >= $info['ress'][2] && $ress[3]/2 >= $info['ress'][3] && -$info['fields'] <= $this->getRemainingFields());
+						if($info['buildable'] && $info['fields'] > $this->getRemainingFields())
+							$info['buildable'] = false;
+						$info['debuildable'] = ($info['level'] >= 1 && -$info['fields'] <= $this->getRemainingFields());
 						
 						# Runden
 						stdround(&$info['prod'][0]);
@@ -853,14 +830,23 @@
 						foreach($planets as $planet)
 						{
 							$this->setActivePlanet($planet);
-							if($planet == $active_planet) $local_labs += $this->getItemLevel('B8', 'gebaeude');
-							else $global_labs += $this->getItemLevel('B8', 'gebaeude');
+							if($planet == $active_planet) $local_labs += $this->getItemLevel('B8', 'gebaeude', $run_eventhandler);
+							else $global_labs += $this->getItemLevel('B8', 'gebaeude', $run_eventhandler);
 						}
 						$this->setActivePlanet($active_planet);
 						
 						$info['time_local'] = $info['time']*pow(0.95, $local_labs);
 						unset($info['time']);
 						$info['time_global'] = $info['time_local']*pow(0.975, $global_labs);
+						
+						if($calc_scores)
+						{
+							$ress = array_sum($info['ress']);
+							$scores = 0;
+							for($i=1; $i<=$info['level']; $i++)
+								$scores += $ress*pow($i, 3);
+							$info['scores'] = $scores/1000;
+						}
 						
 						$ress_f = pow($info['level']+1, 3);
 						$info['ress'][0] *= $ress_f;
@@ -878,20 +864,26 @@
 						stdround(&$info['ress'][4]);
 						break;
 					case 'roboter':
-						$info['time'] *= pow(0.95, $this->getItemLevel('B9', 'gebaeude'));
+						$info['time'] *= pow(0.95, $this->getItemLevel('B9', 'gebaeude', $run_eventhandler));
+						
+						if($calc_scores)
+							$info['scores'] = array_sum($info['ress'])*$info['level']/1000;
 						
 						stdround(&$info['time']);
 						break;
 					case 'schiffe':
-						$info['att'] *= pow(1.05, $this->getItemLevel('F4', 'forschung'));
-						$info['def'] *= pow(1.05, $this->getItemLevel('F5', 'forschung'));
-						$lad_f = pow(1.2, $this->getItemLevel('F11', 'forschung'));
+						$info['att'] *= pow(1.05, $this->getItemLevel('F4', 'forschung', $run_eventhandler));
+						$info['def'] *= pow(1.05, $this->getItemLevel('F5', 'forschung', $run_eventhandler));
+						$lad_f = pow(1.2, $this->getItemLevel('F11', 'forschung', $run_eventhandler));
 						$info['trans'][0] *= $lad_f;
 						$info['trans'][1] *= $lad_f;
-						$info['time'] *= pow(0.95, $this->getItemLevel('B10', 'gebaeude'));
-						$info['speed'] *= pow(1.025, $this->getItemLevel('F6', 'forschung'));
-						$info['speed'] *= pow(1.05, $this->getItemLevel('F7', 'forschung'));
-						$info['speed'] *= pow(1.5, $this->getItemLevel('F8', 'forschung'));
+						$info['time'] *= pow(0.95, $this->getItemLevel('B10', 'gebaeude', $run_eventhandler));
+						$info['speed'] *= pow(1.025, $this->getItemLevel('F6', 'forschung', $run_eventhandler));
+						$info['speed'] *= pow(1.05, $this->getItemLevel('F7', 'forschung', $run_eventhandler));
+						$info['speed'] *= pow(1.5, $this->getItemLevel('F8', 'forschung', $run_eventhandler));
+						
+						if($calc_scores)
+							$info['scores'] = array_sum($info['ress'])*$info['level']/1000;
 						
 						# Runden
 						stdround(&$info['att']);
@@ -902,9 +894,12 @@
 						stdround(&$info['speed']);
 						break;
 					case 'verteidigung':
-						$info['att'] *= pow(1.05, $this->getItemLevel('F4', 'forschung'));
-						$info['def'] *= pow(1.05, $this->getItemLevel('F5', 'forschung'));
-						$info['time'] *= pow(0.95, $this->getItemLevel('B10', 'gebaeude'));
+						$info['att'] *= pow(1.05, $this->getItemLevel('F4', 'forschung', $run_eventhandler));
+						$info['def'] *= pow(1.05, $this->getItemLevel('F5', 'forschung', $run_eventhandler));
+						$info['time'] *= pow(0.95, $this->getItemLevel('B10', 'gebaeude', $run_eventhandler));
+						
+						if($calc_scores)
+							$info['scores'] = array_sum($info['ress'])*$info['level']/1000;
 						
 						stdround(&$info['att']);
 						stdround(&$info['def']);
@@ -930,11 +925,13 @@
 			return $this->items[$type][$id];
 		}
 		
-		function changeItemLevel($id, $value=1, $type=false, $time=false, &$action=false)
+		function changeItemLevel($id, $value=1, $type=false, $time=false, &$actions=false)
 		{
 			if(!$this->status) return false;
 			
 			if($time === false) $time = time();
+			
+			if($actions === false) $actions = array();
 			
 			if($type !== false && $type != 'ids')
 			{
@@ -1072,6 +1069,35 @@
 			return true;
 		}
 		
+		function checkProductionFactor($gebaeude)
+		{
+			if(!$this->status || !isset($this->planet_info)) return false;
+			
+			if(isset($this->planet_info['prod'][$gebaeude]))
+				return $this->planet_info['prod'][$gebaeude];
+			else return 1;
+		}
+		
+		function setProductionFactor($gebaeude, $factor)
+		{
+			if(!$this->status || !isset($this->planet_info)) return false;
+			
+			if(!$this->getItemInfo($gebaeude, 'gebaeude')) return false;
+			
+			$factor = (float) $factor;
+			
+			if($factor < 0) $factor = 0;
+			if($factor > 1) $factor = 1;
+			
+			$this->planet_info['prod'][$gebaeude] = $factor;
+			$this->changed = true;
+			
+			if(isset($this->cache['getProduction']) && isset($this->cache['getProduction'][$this->getActivePlanet()]))
+				unset($this->cache['getProduction'][$this->getActivePlanet()]);
+			
+			return true;
+		}
+		
 		function getProduction()
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
@@ -1099,7 +1125,8 @@
 						$prod[3] += $item['prod'][3];
 						$prod[4] += $item['prod'][4];
 					}
-	
+
+					$f = 1;
 					if($energie_need > $energie_prod) # Nicht genug Energie
 					{
 						$f = $energie_prod/$energie_need;
@@ -1118,10 +1145,11 @@
 					stdround(&$prod[3]);
 					stdround(&$prod[4]);
 					stdround(&$prod[5]);
+					
+					$prod[6] = $f;
 				}
 				$this->cache['getProduction'][$planet] = $prod;
 			}
-			
 			return $this->cache['getProduction'][$planet];
 		}
 		
@@ -1168,6 +1196,14 @@
 			return ((time()-$this->raw['umode_time']) > $min_days*86400);
 		}
 		
+		function getUmodeReturnTime()
+		{
+			if(!$this->status) return false;
+			
+			if($this->umode()) return $this->raw['umode_time']+3*86400;
+			else return time()+3*86400;
+		}
+		
 		function permissionToAct()
 		{
 			return !($this->gameLocked() || $this->userLocked() || $this->umode());
@@ -1187,7 +1223,15 @@
 					3 => array(true, false),
 					4 => array(true, true),
 					5 => array(true, false)
-				)
+				),
+				'show_building' => array(
+					'gebaeude' => true,
+					'forschung' => true,
+					'roboter' => false,
+					'schiffe' => false,
+					'verteidigung' => false
+				),
+				'prod_show_days' => 1
 			);
 			
 			$this->settings = array();
@@ -1221,9 +1265,22 @@
 			}
 		}
 		
-		function checkBuildingThing($type)
+		function checkBuildingThing($type, $run_eventhandler=true)
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
+			
+			if($run_eventhandler)
+			{
+				switch($type)
+				{
+					case 'gebaeude': $this->eventhandler(false, 1, 0, 0, 0, 0); break;
+					case 'forschung': $this->eventhandler(false, 0, 1, 0, 0, 0); break;
+					case 'roboter': $this->eventhandler(false, 0, 0, 1, 0, 0); break;
+					case 'schiffe': $this->eventhandler(false, 0, 0, 0, 1, 0); break;
+					case 'verteidigung': $this->eventhandler(false, 0, 0, 0, 0, 1); break;
+					default: return false;
+				}
+			}
 			
 			switch($type)
 			{
@@ -1232,7 +1289,7 @@
 						return false;
 					return $this->planet_info['building'][$type];
 				case 'roboter': case 'schiffe': case 'verteidigung':
-					if(!isset($this->planet_info['building']) || !isset($this->planet_info['building'][$type]) || count($this->planet_info['building'][$type]) > 0)
+					if(!isset($this->planet_info['building']) || !isset($this->planet_info['building'][$type]) || count($this->planet_info['building'][$type]) <= 0)
 						return array();
 					return $this->planet_info['building'][$type];
 				default: return false;
@@ -1274,11 +1331,9 @@
 					
 					return true;
 				case 'roboter': case 'schiffe': case 'verteidigung':
-					if(!isset($this->planet_info['building']) || !isset($this->planet_info['building'][$type]) || trim($this->planet_info['building'][$type][0]) == '')
+					if(!isset($this->planet_info['building']) || !isset($this->planet_info['building'][$type]) || count($this->planet_info['building'][$type]) <= 0)
 						return false;
-					$this->planet_info['building'][$type][0][2]--;
-					if($this->planet_info['building'][$type][0][2] <= 0)
-						array_shift($this->planet_info['building'][$type]);
+					unset($this->planet_info['building'][$type]);
 					$this->changed = true;
 					return true;
 			}
@@ -1299,59 +1354,87 @@
 			
 			$run = false;
 			
-			$building = $this->checkBuildingThing('gebaeude');
+			$recalc_gebaeude = false;
+			$recalc_forschung = false;
+			$recalc_roboter = false;
+			$recalc_schiffe = false;
+			$recalc_verteidigung = false;
+			
+			$building = $this->checkBuildingThing('gebaeude', false);
 			if($building !== false && $building[1] <= time() && $this->removeBuildingThing('gebaeude', false))
 			{
 				$stufen = 1;
 				if($building[2]) $stufen = -1;
 				$actions[] = array($building[1], $building[0], $stufen, true);
+				$recalc_gebaeude = true;
 				
 				if($check_gebaeude || $building[0]==$check_id) $run = true;
 			}
 			
 			
-			$building = $this->checkBuildingThing('forschung');
+			$building = $this->checkBuildingThing('forschung', false);
 			if($building !== false && $building[1] <= time() && $this->removeBuildingThing('forschung', false))
 			{
 				$actions[] = array($building[1], $building[0], 1, true);
+				$recalc_forschung = true;
 				if($check_forschung || $building[0]==$check_id) $run = true;
 			}
 			
 			
-			$building = $this->checkBuildingThing('roboter');
-			foreach($building as $items)
+			$building = $this->checkBuildingThing('roboter', false);
+			foreach($building as $j=>$items)
 			{
-				$info = $this->getItemInfo($items[0], 'roboter');
+				$info = $this->getItemInfo($items[0], 'roboter', false);
 				if(!$info) continue;
 				$punkte = array_sum($info['ress'])/1000;
 				$time = $items[1];
 				for($i=0; $i<$items[2]; $i++)
 				{
 					$time += $items[3];
-					if($time <= time() && $this->removeBuildingThing('roboter', false))
+					if($time <= time())
 					{
 						$actions[] = array($time, $items[0], 1, true);
+						$recalc_roboter = true;
 						if($check_roboter || $items[0]==$check_id) $run = true;
+						
+						# Roboter entfernen
+						$this->planet_info['building']['roboter'][$j][2]--;
+						if($this->planet_info['building']['roboter'][$j][2] <= 0)
+						{
+							unset($this->planet_info['building']['roboter'][$j]);
+							break;
+						}
+						else $this->planet_info['building']['roboter'][$j][1] += $this->planet_info['building']['roboter'][$j][3];
 					}
 					else
 						break 2;
 				}
 			}
 			
-			$building = $this->checkBuildingThing('schiffe');
-			foreach($building as $items)
+			$building = $this->checkBuildingThing('schiffe', false);
+			foreach($building as $j=>$items)
 			{
-				$info = $this->getItemInfo($items[0], 'schiffe');
+				$info = $this->getItemInfo($items[0], 'schiffe', false);
 				if(!$info) continue;
 				$punkte = array_sum($info['ress'])/1000;
 				$time = $items[1];
 				for($i=0; $i<$items[2]; $i++)
 				{
 					$time += $items[3];
-					if($time <= time() && $this->removeBuildingThing('schiffe', false))
+					if($time <= time())
 					{
 						$actions[] = array($time, $items[0], 1, true);
+						$recalc_schiffe = true;
 						if($check_schiffe || $items[0]==$check_id) $run = true;
+						
+						# Schiff entfernen
+						$this->planet_info['building']['schiffe'][$j][2]--;
+						if($this->planet_info['building']['schiffe'][$j][2] <= 0)
+						{
+							unset($this->planet_info['building']['schiffe'][$j]);
+							break;
+						}
+						else $this->planet_info['building']['schiffe'][$j][1] += $this->planet_info['building']['schiffe'][$j][3];
 					}
 					else
 						break 2;
@@ -1359,20 +1442,30 @@
 			}
 			
 			
-			$building = $this->checkBuildingThing('verteidigung');
-			foreach($building as $items)
+			$building = $this->checkBuildingThing('verteidigung', false);
+			foreach($building as $j=>$items)
 			{
-				$info = $this->getItemInfo($items[0], 'verteidigung');
+				$info = $this->getItemInfo($items[0], 'verteidigung', false);
 				if(!$info) continue;
 				$punkte = array_sum($info['ress'])/1000;
 				$time = $items[1];
 				for($i=0; $i<$items[2]; $i++)
 				{
 					$time += $items[3];
-					if($time <= time() && $this->removeBuildingThing('verteidigung', false))
+					if($time <= time())
 					{
 						$actions[] = array($time, $items[0], 1, true);
+						$recalc_verteidigung = true;
 						if($check_verteidigung || $items[0]==$check_id) $run = true;
+						
+						# Schiff entfernen
+						$this->planet_info['building']['verteidigung'][$j][2]--;
+						if($this->planet_info['building']['verteidigung'][$j][2] <= 0)
+						{
+							unset($this->planet_info['building']['verteidigung'][$j]);
+							break;
+						}
+						else $this->planet_info['building']['verteidigung'][$j][1] += $this->planet_info['building']['verteidigung'][$j][3];
 					}
 					else
 						break 2;
@@ -1390,16 +1483,16 @@
 					
 					$this->changeItemLevel($action[1], $action[2], false, $action[0], &$actions);
 					
-					if(isset($this->cache['getProduction']) && isset($this->cache['getProduction'][$this->getActivePlanet()]))
-						unset($this->cache['getProduction'][$this->getActivePlanet()]);
-					if(isset($this->cache['getItemInfo']) && isset($this->cache['getItemInfo'][$this->getActivePlanet()]) && isset($this->cache['getItemInfo'][$this->getActivePlanet()][$action[1]]))
-						unset($this->cache['getItemInfo'][$this->getActivePlanet()][$action[1]]);
+					if(isset($this->cache['getProduction']))
+						unset($this->cache['getProduction']);
+					if(isset($this->cache['getItemInfo']))
+						unset($this->cache['getItemInfo']);
 					
 					array_shift($actions);
 				}
 				
 				$this->changed = true;
-				highscores::recalc();
+				$this->recalcHighscores($recalc_gebaeude, $recalc_forschung, $recalc_roboter, $recalc_schiffe, $recalc_verteidigung);
 			}
 		}
 		
@@ -1407,8 +1500,276 @@
 		{
 			if(!$this->status) return false;
 			
+			if($user == $this->getName()) return true;
+			
 			if(!isset($this->raw['verbuendete'])) return false;
 			return in_array($user, $this->raw['verbuendete']);
+		}
+		
+		function existsVerbuendet($user)
+		{
+			if(!$this->status) return false;
+			
+			return (
+				$user == $this->getName()
+				|| (isset($this->raw['verbuendete']) && in_array($user, $this->raw['verbuendete']))
+				|| (isset($this->raw['verbuendete_bewerbungen']) && in_array($user, $this->raw['verbuendete_bewerbungen']))
+				|| (isset($this->raw['verbuendete_anfragen']) && in_array($user, $this->raw['verbuendete_anfragen']))
+			);
+		}
+		
+		function getVerbuendetList()
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['verbuendete'])) return array();
+			else return $this->raw['verbuendete'];
+		}
+		
+		function getVerbuendetApplicationList()
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['verbuendete_bewerbungen'])) return array();
+			else return $this->raw['verbuendete_bewerbungen'];
+		}
+		
+		function getVerbuendetRequestList()
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['verbuendete_anfragen'])) return array();
+			else return $this->raw['verbuendete_anfragen'];
+		}
+		
+		function _addVerbuendetRequest($user)
+		{
+			if(!$this->status) return false;
+			if($this->existsVerbuendet($user)) return false;
+			
+			if(!isset($this->raw['verbuendete_anfragen'])) $this->raw['verbuendete_anfragen'] = array();
+			$this->raw['verbuendete_anfragen'][] = $user;
+			
+			$this->changed = true;
+			return true;
+		}
+		
+		function _removeVerbuendetRequest($user)
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['verbuendete_anfragen']) || !in_array($user, $this->raw['verbuendete_anfragen']))
+				return false;
+			unset($this->raw['verbuendete_anfragen'][array_search($user, $this->raw['verbuendete_anfragen'])]);
+			$this->changed = true;
+			return true;
+		}
+		
+		function _removeVerbuendetApplication($user)
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['verbuendete_bewerbungen']) || !in_array($user, $this->raw['verbuendete_bewerbungen']))
+				return false;
+			
+			unset($this->raw['verbuendete_bewerbungen'][array_search($user, $this->raw['verbuendete_bewerbungen'])]);
+			$this->changed = true;
+			
+			return true;
+		}
+		
+		function _addVerbuendet($user)
+		{
+			if(!$this->status) return false;
+			
+			if($this->isVerbuendet($user)) return false;
+			
+			if(!isset($this->raw['verbuendete'])) $this->raw['verbuendete'] = array();
+			$this->raw['verbuendete'][] = $user;
+			$this->changed = true;
+			return true;
+		}
+		
+		function _removeVerbuendet($user)
+		{
+			if(!$this->status) return false;
+			
+			if(!$this->isVerbuendet($user)) return false;
+			unset($this->raw['verbuendete'][array_search($user, $this->raw['verbuendete'])]);
+			$this->changed = true;
+			return true;
+		}
+		
+		function applyVerbuendet($user, $text='')
+		{
+			if(!$this->status) return false;
+			if($this->existsVerbuendet($user)) return false;
+			
+			$that_user = Classes::User($user);
+			if($that_user->_addVerbuendetRequest($this->getName()))
+			{
+				if(!isset($this->raw['verbuendete_bewerbungen'])) $this->raw['verbuendete_bewerbungen'] = array();
+				$this->raw['verbuendete_bewerbungen'][] = $user;
+				$this->changed = true;
+				
+				$message = Classes::Message();
+				if($message->create())
+				{
+					$message->addUser($user, 7);
+					$message->subject("Anfrage auf ein B\xc3\xbcndnis");
+					$message->from($this->getName());
+					if(trim($text) == '')
+						$message->text("Der Spieler ".$this->getName()." hat Ihnen eine mitteilungslose B\xc3\xbcndnisanfrage gestellt.");
+					else
+						$message->text($text);
+				}
+				
+				return true;
+			}
+			else return false;
+		}
+		
+		function acceptVerbuendetApplication($user)
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['verbuendete_anfragen']) || !in_array($user, $this->raw['verbuendete_anfragen']))
+				return false;
+			
+			$user_obj = Classes::User($user);
+			if(!$user_obj->_removeVerbuendetApplication($this->getName())) return false;
+			
+			unset($this->raw['verbuendete_anfragen'][array_search($user, $this->raw['verbuendete_anfragen'])]);
+			
+			$user_obj->_addVerbuendet($this->getName());
+			$this->_addVerbuendet($user);
+			
+			$message = Classes::Message();
+			if($message->create())
+			{
+				$message->from($this->getName());
+				$message->subject("B\xc3\xbcndnisanfrage angenommen");
+				$message->text("Der Spieler ".$_SESSION['username']." hat Ihre B\xc3\xbcndnisanfrage angenommen.");
+				$message->addUser($user, 7);
+			}
+			
+			return true;
+		}
+		
+		function rejectVerbuendetApplication($user)
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['verbuendete_anfragen']) || !in_array($user, $this->raw['verbuendete_anfragen']))
+				return false;
+			
+			$user_obj = Classes::User($user);
+			if(!$user_obj->_removeVerbuendetApplication($this->getName())) return false;
+			
+			unset($this->raw['verbuendete_anfragen'][array_search($user, $this->raw['verbuendete_anfragen'])]);
+			
+			$message = Classes::Message();
+			if($message->create())
+			{
+				$message->from($this->getName());
+				$message->subject("B\xc3\xbcndnisanfrage abgelehnt");
+				$message->text("Der Spieler ".$this->getName()." hat Ihre B\xc3\xbcndnisanfrage abgelehnt.");
+				$message->addUser($user, 7);
+			}
+			
+			return true;
+		}
+		
+		function quitVerbuendet($user)
+		{
+			if(!$this->status) return false;
+			
+			if(!$this->isVerbuendet($user)) return false;
+			
+			$user_obj = Classes::User($user);
+			if($user_obj->_removeVerbuendet($user))
+			{
+				$this->_removeVerbuendet($user);
+				
+				$message = Classes::Message();
+				if($message->create())
+				{
+					$message->from($this->getName());
+					$message->subject("B\xc3\xbcndnis gek\xc3\xbcndigt");
+					$message->text("Der Spieler ".$this->getName()." hat sein B\xc3\xbcndnis mit Ihnen gek\xc3\xbcndigt.");
+					$message->addUser($user, 7);
+				}
+				
+				$this->changed = true;
+				
+				return true;
+			}
+			else return false;
+		}
+		
+		function verbuendetNewsletter($subject, $text)
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['verbuendete']) || count($this->raw['verbuendete']) <= 0) return false;
+			if(trim($text) == '') return false;
+			
+			$message = Classes::Message();
+			if($message->create())
+			{
+				$message->from($this->getName());
+				$message->subject($subject);
+				$message->text($text);
+				foreach($this->raw['verbuendete'] as $verbuendeter)
+					$message->addUser($verbuendeter, 7);
+			}
+			return true;
+		}
+		
+		function cancelVerbuendetApplication($user)
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['verbuendete_bewerbungen']) || !in_array($user, $this->raw['verbuendete_bewerbungen']))
+				return false;
+			
+			$user_obj = Classes::User($user);
+			if($user_obj->_removeVerbuendetRequest($this->getName()))
+			{
+				unset($this->raw['verbuendete_bewerbungen'][array_search($user, $this->raw['verbuendete_bewerbungen'])]);
+				
+				$message = Classes::Message();
+				if($message->create())
+				{
+					$message->from($this->getName());
+					$message->subject("B\xc3\xbcndnis gek\xc3\xbcndigt");
+					$message->text("Der Spieler ".$this->getName()." hat sein B\xc3\xbcndnis mit Ihnen gek\xc3\xbcndigt.");
+					$message->addUser($user, 7);
+				}
+				$this->changed = true;
+				return true;
+			}
+			else return false;
+		}
+		
+		function allianceTag($tag='')
+		{
+			if(!$this->status) return false;
+			
+			if($tag === '')
+			{
+				if(!isset($this->raw['alliance']) || trim($this->raw['alliance']) == '')
+					return false;
+				else return trim($this->raw['alliance']);
+			}
+			elseif($tag === false)
+			{
+				# Aus der Allianz austreten
+			}
+			else
+			{
+				# Allianz betreten
+			}
 		}
 		
 		function checkPlanetCount()
@@ -1443,6 +1804,7 @@
 				}
 	
 				# Genuegend Rohstoffe zum Ausbau
+				if(!$this->checkRess($ress)) return false;
 
 				$time = $item_info['time'];
 				if($rueckbau)
@@ -1465,7 +1827,7 @@
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
 			if($this->checkBuildingThing('forschung')) return false;
-			if($gebaeude = $this->checkBuildingThing('gebaeude') && $gebaeude[0] == 'B8') return false;
+			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B8') return false;
 			
 			$buildable = true;
 			$planets = $this->getPlanetsList();
@@ -1473,7 +1835,7 @@
 			foreach($planets as $planet)
 			{
 				$this->setActivePlanet($planet);
-				if(($global && $this->checkBuildingThing('forschung')) || (!$global && ($building = $this->getBuildingThing('forschung')) && $building[0] == $id))
+				if(($global && $this->checkBuildingThing('forschung')) || (!$global && ($building = $this->checkBuildingThing('forschung')) && $building[0] == $id))
 				{
 					$buildable = false;
 					break;
@@ -1482,9 +1844,9 @@
 			$this->setActivePlanet($active_planet);
 			
 			$item_info = $this->getItemInfo($id, 'forschung');
-			if($item_info && $item_info['buildable'])
+			if($item_info && $item_info['buildable'] && $this->checkRess($item_info['ress']))
 			{
-				$build_array = array($id, time()+$item_info['time'], $global, $item_info['ress']);
+				$build_array = array($id, time()+$item_info['time_'.($global ? 'global' : 'local')], $global, $item_info['ress']);
 				if($global)
 				{
 					$build_array[] = $_SESSION['act_planet'];
@@ -1497,14 +1859,583 @@
 					}
 					$this->setActivePlanet($active_planet);
 				}
-				else $this_planet['building']['forschung'] = $build_array;
+				else $this->planet_info['building']['forschung'] = $build_array;
 				
 				$this->subtractRess($item_info['ress']);
+				
+				$this->changed = true;
 				
 				return true;
 			}
 			return false;
 		}
+		
+		function buildRoboter($id, $anzahl)
+		{
+			if(!$this->status || !isset($this->planet_info)) return false;
+			
+			$anzahl = (int) $anzahl;
+			if($anzahl < 0) return false;
+			
+			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B9') return false;
+			
+			$item_info = $this->getItemInfo($id, 'roboter');
+			if(!$item_info || !$item_info['buildable']) return false;
+			
+			$ress = $item_info['ress'];
+			$ress[0] *= $anzahl;
+			$ress[1] *= $anzahl;
+			$ress[2] *= $anzahl;
+			$ress[3] *= $anzahl;
+			
+			if(!$this->checkRess($ress))
+			{
+				$planet_ress = $this->getRess();
+				$ress = $item_info['ress'];
+				$anzahlen = array();
+				if($ress[0] > 0) $anzahlen[] = (int) $planet_ress[0]/$ress[0];
+				if($ress[1] > 0) $anzahlen[] = (int) $planet_ress[1]/$ress[1];
+				if($ress[2] > 0) $anzahlen[] = (int) $planet_ress[2]/$ress[2];
+				if($ress[3] > 0) $anzahlen[] = (int) $planet_ress[3]/$ress[3];
+				$anzahl = min($anzahlen);
+				$ress[0] *= $anzahl;
+				$ress[1] *= $anzahl;
+				$ress[2] *= $anzahl;
+				$ress[3] *= $anzahl;
+			}
+			
+			if($anzahl <= 0) return false;
+			
+			$roboter = $this->checkBuildingThing('roboter');
+			$make_new = true;
+			$last_time = time();
+			if($roboter && count($roboter) > 0)
+			{
+				$roboter_keys = array_keys($this->planet_info['building']['roboter']);
+				$last = &$this->planet_info['building']['roboter'][array_pop($roboter_keys)];
+				$last_time = $last[1]+$last[2]*$last[3];
+				if($last[0] == $id && $last[3] == $item_info['time'])
+				{
+					$build_array = &$last;
+					$make_new = false;
+				}
+			}
+			if($make_new)
+			{
+				if(!isset($this->planet_info['building'])) $this->planet_info['building'] = array();
+				if(!isset($this->planet_info['building']['roboter'])) $this->planet_info['building']['roboter'] = array();
+				$build_array = &$this->planet_info['building']['roboter'][];
+				$build_array = array($id, $last_time, 0, $item_info['time']);
+			}
+			
+			$build_array[2] += $anzahl;
+			
+			$this->subtractRess($ress);
+			
+			$this->changed = true;
+			
+			return true;
+		}
+		
+		function buildSchiffe($id, $anzahl)
+		{
+			if(!$this->status || !isset($this->planet_info)) return false;
+			
+			$anzahl = (int) $anzahl;
+			if($anzahl < 0) return false;
+			
+			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B10') return false;
+			
+			$item_info = $this->getItemInfo($id, 'schiffe');
+			if(!$item_info || !$item_info['buildable']) return false;
+			
+			$ress = $item_info['ress'];
+			$ress[0] *= $anzahl;
+			$ress[1] *= $anzahl;
+			$ress[2] *= $anzahl;
+			$ress[3] *= $anzahl;
+			
+			if(!$this->checkRess($ress))
+			{
+				$planet_ress = $this->getRess();
+				$ress = $item_info['ress'];
+				$anzahlen = array();
+				if($ress[0] > 0) $anzahlen[] = (int) $planet_ress[0]/$ress[0];
+				if($ress[1] > 0) $anzahlen[] = (int) $planet_ress[1]/$ress[1];
+				if($ress[2] > 0) $anzahlen[] = (int) $planet_ress[2]/$ress[2];
+				if($ress[3] > 0) $anzahlen[] = (int) $planet_ress[3]/$ress[3];
+				$anzahl = min($anzahlen);
+				$ress[0] *= $anzahl;
+				$ress[1] *= $anzahl;
+				$ress[2] *= $anzahl;
+				$ress[3] *= $anzahl;
+			}
+			
+			if($anzahl <= 0) return false;
+			
+			$schiffe = $this->checkBuildingThing('schiffe');
+			$make_new = true;
+			$last_time = time();
+			if($schiffe && count($schiffe) > 0)
+			{
+				$schiffe_keys = array_keys($this->planet_info['building']['schiffe']);
+				$last = &$this->planet_info['building']['schiffe'][array_pop($schiffe_keys)];
+				$last_time = $last[1]+$last[2]*$last[3];
+				if($last[0] == $id && $last[3] == $item_info['time'])
+				{
+					$build_array = &$last;
+					$make_new = false;
+				}
+			}
+			if($make_new)
+			{
+				if(!isset($this->planet_info['building'])) $this->planet_info['building'] = array();
+				if(!isset($this->planet_info['building']['schiffe'])) $this->planet_info['building']['schiffe'] = array();
+				$build_array = &$this->planet_info['building']['schiffe'][];
+				$build_array = array($id, $last_time, 0, $item_info['time']);
+			}
+			
+			$build_array[2] += $anzahl;
+			
+			$this->subtractRess($ress);
+			
+			$this->changed = true;
+			
+			return true;
+		}
+		
+		function buildVerteidigung($id, $anzahl)
+		{
+			if(!$this->status || !isset($this->planet_info)) return false;
+			
+			$anzahl = (int) $anzahl;
+			if($anzahl < 0) return false;
+			
+			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B10') return false;
+			
+			$item_info = $this->getItemInfo($id, 'verteidigung');
+			if(!$item_info || !$item_info['buildable']) return false;
+			
+			$ress = $item_info['ress'];
+			$ress[0] *= $anzahl;
+			$ress[1] *= $anzahl;
+			$ress[2] *= $anzahl;
+			$ress[3] *= $anzahl;
+			
+			if(!$this->checkRess($ress))
+			{
+				$planet_ress = $this->getRess();
+				$ress = $item_info['ress'];
+				$anzahlen = array();
+				if($ress[0] > 0) $anzahlen[] = (int) $planet_ress[0]/$ress[0];
+				if($ress[1] > 0) $anzahlen[] = (int) $planet_ress[1]/$ress[1];
+				if($ress[2] > 0) $anzahlen[] = (int) $planet_ress[2]/$ress[2];
+				if($ress[3] > 0) $anzahlen[] = (int) $planet_ress[3]/$ress[3];
+				$anzahl = min($anzahlen);
+				$ress[0] *= $anzahl;
+				$ress[1] *= $anzahl;
+				$ress[2] *= $anzahl;
+				$ress[3] *= $anzahl;
+			}
+			
+			if($anzahl <= 0) return false;
+			
+			$verteidigung = $this->checkBuildingThing('verteidigung');
+			$make_new = true;
+			$last_time = time();
+			if($verteidigung && count($verteidigung) > 0)
+			{
+				$verteidigung_keys = array_keys($this->planet_info['building']['verteidigung']);
+				$last = &$this->planet_info['building']['verteidigung'][array_pop($verteidigung_keys)];
+				$last_time = $last[1]+$last[2]*$last[3];
+				if($last[0] == $id && $last[3] == $item_info['time'])
+				{
+					$build_array = &$last;
+					$make_new = false;
+				}
+			}
+			if($make_new)
+			{
+				if(!isset($this->planet_info['building'])) $this->planet_info['building'] = array();
+				if(!isset($this->planet_info['building']['verteidigung'])) $this->planet_info['building']['verteidigung'] = array();
+				$build_array = &$this->planet_info['building']['verteidigung'][];
+				$build_array = array($id, $last_time, 0, $item_info['time']);
+			}
+			
+			$build_array[2] += $anzahl;
+			
+			$this->subtractRess($ress);
+			
+			$this->changed = true;
+			
+			return true;
+		}
+		
+		function destroy()
+		{
+			if(!$this->status) return false;
+			
+			# Planeten zuruecksetzen
+			$planets = $this->getPlanetsList();
+			foreach($planets as $planet)
+			{
+				if(!$this->removePlanet()) return false;
+			}
+	
+			# Buendnispartner entfernen
+			# FEHLT NOCH!
+			/*foreach($that_user_array['verbuendete'] as $verbuendeter)
+			{
+				$verb_user_array = get_user_array($verbuendeter);
+				$verb_key = array_search($username, $verb_user_array['verbuendete']);
+				if($verb_key !== false)
+				{
+					unset($verb_user_array['verbuendete'][$verb_key]);
+					write_user_array($verbuendeter, $verb_user_array);
+				}
+				unset($verb_user_array);
+			}
+			if(isset($that_user_array['verbuendete_bewerbungen']))
+			{
+				foreach($that_user_array['verbuendete_bewerbungen'] as $verbuendeter)
+				{
+					$verb_user_array = get_user_array($verbuendeter);
+					$verb_key = array_search($username, $verb_user_array['verbuendete_anfragen']);
+					if($verb_key !== false)
+					{
+						unset($verb_user_array['verbuendete_anfragen'][$verb_key]);
+						write_user_array($verbuendeter, $verb_user_array);
+					}
+					unset($verb_user_array);
+				}
+			}
+			if(isset($that_user_array['verbuendete_anfragen']))
+			{
+				foreach($that_user_array['verbuendete_anfragen'] as $verbuendeter)
+				{
+					$verb_user_array = get_user_array($verbuendeter);
+					$verb_key = array_search($username, $verb_user_array['verbuendete_bewerbungen']);
+					if($verb_key !== false)
+					{
+						unset($verb_user_array['verbuendete_bewerbungen'][$verb_key]);
+						write_user_array($verbuendeter, $verb_user_array);
+					}
+					unset($verb_user_array);
+				}
+			}*/
+
+			# Aus den Highscores entfernen
+			$pos = ($this->getRank()-1)*38;
+
+			$fh = fopen(DB_HIGHSCORES, 'r+');
+			flock($fh, LOCK_EX);
+	
+			$filesize = filesize(DB_HIGHSCORES)-38;
+			fseek($fh, $pos, SEEK_SET);
+	
+			while(ftell($fh) <= $filesize-38)
+			{
+				fseek($fh, 38, SEEK_CUR);
+				$bracket = fread($fh, 38);
+				fseek($fh, -76, SEEK_CUR);
+				fwrite($fh, $bracket);
+	
+				list($high_username) = decodeUserHighscoresString($bracket);
+				$that_user = Classes::User($high_username);
+				$that_user->setRank($that_user->getRank()-1);
+				unset($that_user);
+			}
+	
+			ftruncate($fh, $filesize);
+	
+			flock($fh, LOCK_UN);
+			fclose($fh);
+	
+			# Nachrichten entfernen
+			$categories = $this->getMessageCategoriesList();
+			foreach($categories as $category)
+			{
+				$messages = $this->getMessagesList($category);
+				foreach($messages as $message)
+					$this->removeMessage($message, $category);
+			}
+			
+			# Aus der Allianz austreten
+			$this->allianceTag(false);
+	
+			$status = (unlink($this->filename) || chmod($this->filename, 0));
+			if($status)
+			{
+				$this->status = 0;
+				$this->changed = false;
+				return true;
+			}
+			else return false;
+		}
+		
+		function makeHighscoresString()
+		{
+			if(!$this->status) return false;
+		
+			return encodeUserHighscoresString($this->getName(), $this->getScores(), $this->allianceTag());
+		}
+		
+		function recalcHighscores($recalc_gebaeude=false, $recalc_forschung=false, $recalc_roboter=false, $recalc_schiffe=false, $recalc_verteidigung=false)
+		{
+			$old_position = $this->getRank();
+			$old_position_f = ($old_position-1)*38;
+
+			if($recalc_gebaeude || $recalc_forschung || $recalc_schiffe || $recalc_verteidigung)
+			{
+				if($recalc_gebaeude) $this->raw['punkte'][0] = 0;
+				if($recalc_forschung) $this->raw['punkte'][1] = 0;
+				if($recalc_roboter) $this->raw['punkte'][2] = 0;
+				if($recalc_schiffe) $this->raw['punkte'][3] = 0;
+				if($recalc_verteidigung) $this->raw['punkte'][4] = 0;
+				
+				$planets = $this->getPlanetsList();
+				$active_planet = $this->getActivePlanet();
+				foreach($planets as $planet)
+				{
+					$this->setActivePlanet($planet);
+					
+					if($recalc_gebaeude)
+					{
+						$items = $this->getItemsList('gebaeude');
+						foreach($items as $item)
+						{
+							$item_info = $this->getItemInfo($item, 'gebaeude', true, true);
+							$this->raw['punkte'][0] += $item_info['scores'];
+						}
+					}
+					
+					if($recalc_forschung)
+					{
+						$items = $this->getItemsList('forschung');
+						foreach($items as $item)
+						{
+							$item_info = $this->getItemInfo($item, 'forschung', true, true);
+							$this->raw['punkte'][1] += $item_info['scores'];
+						}
+					}
+					
+					if($recalc_roboter)
+					{
+						$items = $this->getItemsList('roboter');
+						foreach($items as $item)
+						{
+							$item_info = $this->getItemInfo($item, 'roboter', true, true);
+							$this->raw['punkte'][2] += $item_info['scores'];
+						}
+					}
+					
+					if($recalc_schiffe)
+					{
+						$items = $this->getItemsList('schiffe');
+						foreach($items as $item)
+						{
+							$item_info = $this->getItemInfo($item, 'schiffe', true, true);
+							$this->raw['punkte'][3] += $item_info['scores'];
+						}
+					}
+					
+					if($recalc_verteidigung)
+					{
+						$items = $this->getItemsList('verteidigung');
+						foreach($items as $item)
+						{
+							$item_info = $this->getItemInfo($item, 'verteidigung', true, true);
+							$this->raw['punkte'][4] += $item_info['scores'];
+						}
+					}
+				}
+				$this->setActivePlanet($active_planet);
+
+				foreach($this->getFleetsList() as $flotte)
+				{
+					$fl = Classes::Fleet($flotte);
+					if($fl->userExists($this->getName()))
+					{
+						$schiffe = $fl->getFleetList($this->getName());
+						foreach($schiffe as $id=>$count)
+						{
+							$item_info = $this->getItemInfo($id, 'schiffe', true, true);
+							$this->raw['punkte'][3] += $count*$item_info['scores']/$item_info['level'];
+						}
+						$transport = $fl->getTransport($this->getName());
+						foreach($transport[1] as $id=>$count)
+						{
+							$item_info = $this->getItemInfo($id, 'roboter', true, true);
+							$this->raw['punkte'][2] += $count*$item_info['scores']/$item_info['level'];
+						}
+					}
+					
+					# Handel miteinbeziehen
+					$users = $fl->getUsersList();
+					foreach($users as $user)
+					{
+						$handel = $fl->getHandel($user);
+						foreach($handel[1] as $id=>$count)
+						{
+							$item_info = $this->getItemInfo($id, 'roboter', true, true);
+							$this->raw['punkte'][2] += $count*$item_info['scores']/$item_info['level'];
+						}
+					}
+				}
+				
+				if(isset($this->cache['getScores'])) unset($this->cache['getScores']);
+			}
+
+			$new_points = $this->getScores();
+			$my_string = encodeUserHighscoresString($this->getName(), $new_points, $this->allianceTag());
+
+			$filesize = filesize(DB_HIGHSCORES);
+
+			$fh = fopen(DB_HIGHSCORES, 'r+');
+			if(!$fh)
+				return false;
+			flock($fh, LOCK_EX);
+
+			fseek($fh, $old_position_f, SEEK_SET);
+
+			$up = true;
+
+			# Ueberpruefen, ob man in den Highscores abfaellt
+			if($filesize-$old_position_f >= 76)
+			{
+				fseek($fh, 38, SEEK_CUR);
+				list(,$this_points) = decodeUserHighscoresString(fread($fh, 38));
+				fseek($fh, -76, SEEK_CUR);
+
+				if($this_points > $new_points)
+					$up = false;
+			}
+
+			if($up)
+			{
+				# In den Highscores nach oben rutschen
+				while(true)
+				{
+					if(ftell($fh) == 0) # Schon auf Platz 1
+					{
+						fwrite($fh, $my_string);
+						break;
+					}
+					fseek($fh, -38, SEEK_CUR);
+					$cur = fread($fh, 38);
+					list($this_user,$this_points) = decodeUserHighscoresString($cur);
+
+					if($this_points < $new_points)
+					{
+						# Es muss weiter nach oben verschoben werden
+
+						# Aktuellen Eintrag nach unten verschieben
+						fwrite($fh, $cur);
+						fseek($fh, -76, SEEK_CUR);
+						# In dessen User-Array speichern
+						$this_user = Classes::User($this_user);
+						$this_user->setRank($this_user->getRank()+1);
+						unset($this_user);
+					}
+					else
+					{
+						fwrite($fh, $my_string);
+						break;
+					}
+				}
+			}
+			else
+			{
+				# In den Highscores nach unten rutschen
+
+				while(true)
+				{
+					if($filesize-ftell($fh) < 76) # Schon auf dem letzten Platz
+					{
+						fwrite($fh, $my_string);
+						break;
+					}
+
+					fseek($fh, 38, SEEK_CUR);
+					$cur = fread($fh, 38);
+					list($this_user, $this_points) = decodeUserHighscoresString($cur);
+					fseek($fh, -76, SEEK_CUR);
+
+					if($this_points > $new_points)
+					{
+						# Es muss weiter nach unten verschoben werden
+
+						# Aktuellen Eintrag nach oben verschieben
+						fwrite($fh, $cur);
+						# In dessen User-Array speichern
+						$this_user = Classes::User($this_user);
+						$this_user->setRank($this_user->getRank()-1);
+						unset($this_user);
+					}
+					else
+					{
+						fwrite($fh, $my_string);
+						break;
+					}
+				}
+			}
+
+			$act_position = ftell($fh);
+
+			flock($fh, LOCK_UN);
+			fclose($fh);
+
+			$act_platz = $act_position/38;
+			if($act_platz != $old_position)
+				$this->setRank($act_platz);
+
+			$my_alliance = $this->allianceTag();
+			if($my_alliance)
+			{
+				$alliance = Classes::Alliance($my_alliance);
+				$alliance->setUserScores($this->getName(), $new_points);
+			}
+
+			return true;
+		}
+	}
+	
+	function encodeUserHighscoresString($username, $points, $alliance)
+	{
+		$string = substr($username, 0, 24);
+		if(strlen($string) < 24)
+			$string .= str_repeat(' ', 24-strlen($string));
+		$string .= $alliance;
+		if(strlen($string) < 30)
+			$string .= str_repeat(' ', 30-strlen($string));
+		$points_bin = add_nulls(base_convert($points, 10, 2), 64);
+		for($i = 0; $i < strlen($points_bin); $i+=8)
+			$string .= chr(bindec(substr($points_bin, $i, 8)));
+		return $string;
+	}
+	
+	function decodeUserHighscoresString($string)
+	{
+		$username = trim(substr($string, 0, 24));
+		$alliance = trim(substr($string, 24, 6));
+		$points_str = substr($string, 30);
+
+		$points_bin = '';
+		for($i = 0; $i < strlen($points_str); $i++)
+			$points_bin .= add_nulls(decbin(ord($points_str{$i})), 8);
+
+		$points = base_convert($points_bin, 2, 10);
+
+		return array($username, $points, $alliance);
+	}
+	
+	function getUsersCount()
+	{
+		$filesize = filesize(DB_HIGHSCORES);
+		if($filesize === false)
+			return false;
+		$players = floor($filesize/38);
+		return $players;
 	}
 	
 	function sortEventhandlerActions($a, $b)

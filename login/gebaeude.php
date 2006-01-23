@@ -124,34 +124,42 @@
 <div class="item gebaeude" id="item-<?=htmlentities($id)?>">
 	<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=ths($geb['level'])?>)</span></h3>
 <?php
-		if($me->permissionToAct() && ($id != 'B8' || !$me->checkBuildingThing('forschung')) && ($id != 'B9' || !$me->checkBuildingThing('roboter')) && ($id != 'B10' || (!$me->checkBuildingThing('schiffe') && !$me->checkBuildingThing('verteidigung'))))
+		if($me->permissionToAct() && ($geb['buildable'] || $geb['debuildable']) && !($building = $me->checkBuildingThing('gebaeude')) && ($id != 'B8' || !$me->checkBuildingThing('forschung')) && ($id != 'B9' || !$me->checkBuildingThing('roboter')) && ($id != 'B10' || (!$me->checkBuildingThing('schiffe') && !$me->checkBuildingThing('verteidigung'))))
 		{
-			$building = $me->checkBuildingThing('gebaeude');
-			if(!$building)
-			{
 ?>
 	<ul>
-		<li class="item-ausbau<?=$geb['buildable'] ? '' : ' no-ress'?>"><?=$geb['buildable'] ? '<a href="gebaeude.php?ausbau='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Ausbau auf Stufe&nbsp;<?=ths($geb['level']+1)?><?=$geb['buildable'] ? '</a>' : ''?></li>
 <?php
-				if($geb['level'] >= 1)
-				{
+			if($geb['buildable'])
+			{
+				$enough_ress = $me->checkRess($geb['ress']);
 ?>
-		<li class="item-rueckbau<?=$geb['debuildable'] ? '' : ' no-ress'?>"><?=$geb['debuildable'] ? '<a href="gebaeude.php?abbau='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">' : ''?>Rückbau auf Stufe&nbsp;<?=ths($geb['level']-1)?><?=$geb['debuildable'] ? '</a>' : ''?></li>
+		<li class="item-ausbau<?=$enough_ress ? '' : ' no-ress'?>"><?=$enough_ress ? '<a href="gebaeude.php?ausbau='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Ausbau auf Stufe&nbsp;<?=ths($geb['level']+1)?><?=$enough_ress ? '</a>' : ''?></li>
 <?php
-				}
+			}
+			if($geb['debuildable'])
+			{
+				$ress = $geb['ress'];
+				$ress[0] /= 2;
+				$ress[1] /= 2;
+				$ress[2] /= 2;
+				$ress[3] /= 2;
+				$enough_ress = $me->checkRess($ress);
+?>
+		<li class="item-rueckbau<?=$enough_ress ? '' : ' no-ress'?>"><?=$enough_ress ? '<a href="gebaeude.php?abbau='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">' : ''?>Rückbau auf Stufe&nbsp;<?=ths($geb['level']-1)?><?=$enough_ress ? '</a>' : ''?></li>
+<?php
+			}
 ?>
 	</ul>
 <?php
-			}
-			elseif($building[0] == $id)
-			{
+		}
+		elseif($building && $building[0] == $id)
+		{
 ?>
 	<div class="restbauzeit" id="restbauzeit-<?=htmlentities($building[0])?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building[1])?> (Serverzeit), <a href="gebaeude.php?cancel=<?=htmlentities(urlencode($building[0]))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a></div>
 	<script type="text/javascript">
 		init_countdown('<?=$building[0]?>', <?=$building[1]?>);
 	</script>
 <?php
-			}
 		}
 ?>
 	<dl>

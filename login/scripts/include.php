@@ -218,7 +218,7 @@
 <?php
 			}
 
-			if(!$me->checkSetting('schrift'))
+			if($me->checkSetting('schrift'))
 			{ # Schrift ueberschreiben
 ?>
 		<style type="text/css">
@@ -461,9 +461,13 @@
 <?php
 			}
 ?>
+			<div id="css-1"></div>
 		</div></div>
+		<div id="css-2"></div>
 		</div>
+		<div id="css-3"></div>
 		</div></div></div></div></div></div></div></div>
+		<div id="css-4"></div>
 <?php
 			if($me->checkSetting('tooltips') || $me->checkSetting('shortcuts') || $me->checkSetting('ress_refresh') > 0)
 			{
@@ -487,7 +491,7 @@
 					$ress = $me->getRess();
 					$prod = $me->getProduction();
 ?>
-			refresh_ress(<?=$me->checkSetting('ress_refresh')?>*1000?>, <?=$ress[0]?>, <?=$ress[1]?>, <?=$ress[2]?>, <?=$ress[3]?>, <?=$ress[4]?>, <?=$prod[0]?>, <?=$prod[1]?>, <?=$prod[2]?>, <?=$prod[3]?>, <?=$prod[4]?>);
+			refresh_ress(<?=$me->checkSetting('ress_refresh')*1000?>, <?=$ress[0]?>, <?=$ress[1]?>, <?=$ress[2]?>, <?=$ress[3]?>, <?=$ress[4]?>, <?=$prod[0]?>, <?=$prod[1]?>, <?=$prod[2]?>, <?=$prod[3]?>, <?=$prod[4]?>);
 <?php
 				}
 ?>

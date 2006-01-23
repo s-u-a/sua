@@ -5,35 +5,16 @@
 	{
 		$changed = false;
 		foreach($_POST['prod'] as $id=>$prod)
-		{
-			if(!isset($items['ids'][$id]))
-				continue;
-			if($prod < 0)
-				$prod = 0;
-			elseif($prod > 1)
-				$prod = 1;
-
-			$this_planet['prod'][$id] = $prod;
-			$changed = true;
-		}
+			$me->setProductionFactor($id, $prod);
 
 		if(isset($_POST['show_days']))
-		{
-			$user_array['prod_show_days'] = $_POST['show_days'];
-			$changed = true;
-		}
-
-		if($changed && write_user_array()) # Produktion neu berechnen
-		{
-			$ges_prod = get_ges_prod(true);
-			logfile::action('6');
-		}
+			$me->setSetting('prod_show_days', $_POST['show_days']);
 	}
 
 	login_gui::html_head();
 ?>
 <h2>Rohstoffproduktion pro Stunde</h2>
-<form action="rohstoffe.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post">
+<form action="rohstoffe.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post">
 	<table class="ress-prod">
 		<thead>
 			<tr>
@@ -61,80 +42,25 @@
 	}
 
 	$tabindex = 1;
-	$ges_prod = array(0, 0, 0, 0, 0, 0);
-	foreach($items['gebaeude'] as $id=>$gebaeude)
+	$ges_prod = $me->getProduction();
+	$ges_prod[5] = round($ges_prod[5]*$ges_prod[6]);
+	$gebaeude = $me->getItemsList('gebaeude');
+	foreach($gebaeude as $id)
 	{
-		if($gebaeude['prod'][0] == 0 && $gebaeude['prod'][1] == 0 && $gebaeude['prod'][2] == 0 && $gebaeude['prod'][3] == 0 && $gebaeude['prod'][4] == 0 && $gebaeude['prod'][5] == 0)
-			continue;
-
-		$level = 0;
-		if(isset($this_planet['gebaeude'][$id]))
-			$level = $this_planet['gebaeude'][$id];
-
-		if($level == 0)
-			continue;
-
-		$prod = 1;
-		if(isset($this_planet['prod'][$id]) && $this_planet['prod'][$id] <= 1 && $this_planet['prod'][$id] >= 0)
-			$prod = $this_planet['prod'][$id];
-		$prod = round($prod, 4);
-
-		# Ausbaustufe des Gebaeudes einberechnen
-		$gebaeude['prod'][0] *= pow($level, 2)*$prod;
-		$gebaeude['prod'][1] *= pow($level, 2)*$prod;
-		$gebaeude['prod'][2] *= pow($level, 2)*$prod;
-		$gebaeude['prod'][3] *= pow($level, 2)*$prod;
-		$gebaeude['prod'][4] *= pow($level, 2)*$prod;
-		$gebaeude['prod'][5] *= pow($level, 2)*$prod;
-
-		# Roboter miteinbrechnen, Faktoren siehe scripts/include.php
-		if($gebaeude['prod'][0] > 0)
-			$gebaeude['prod'][0] *= $carbon_f;
-		if($gebaeude['prod'][1] > 0)
-			$gebaeude['prod'][1] *= $aluminium_f;
-		if($gebaeude['prod'][2] > 0)
-			$gebaeude['prod'][2] *= $wolfram_f;
-		if($gebaeude['prod'][3] > 0)
-			$gebaeude['prod'][3] *= $radium_f;
-		if($gebaeude['prod'][4] > 0)
-			$gebaeude['prod'][4] *= $tritium_f;
-
-		# Energietechnik, Faktor siehe scripts/include.php
-		if($gebaeude['prod'][5] > 0)
-			$gebaeude['prod'][5] *= $energie_f;
-
-		# Energiemangel, siehe scripts/include.php
-		if($gebaeude['prod'][5] < 0)
-		{
-			$gebaeude['prod'][0] *= $energie_mangel;
-			$gebaeude['prod'][1] *= $energie_mangel;
-			$gebaeude['prod'][2] *= $energie_mangel;
-			$gebaeude['prod'][3] *= $energie_mangel;
-			$gebaeude['prod'][4] *= $energie_mangel;
-		}
-
-		$gebaeude['prod'][0] = round($gebaeude['prod'][0]);
-		$gebaeude['prod'][1] = round($gebaeude['prod'][1]);
-		$gebaeude['prod'][2] = round($gebaeude['prod'][2]);
-		$gebaeude['prod'][3] = round($gebaeude['prod'][3]);
-		$gebaeude['prod'][4] = round($gebaeude['prod'][4]);
-		$gebaeude['prod'][5] = round($gebaeude['prod'][5]);
-
-		$ges_prod[0] += $gebaeude['prod'][0];
-		$ges_prod[1] += $gebaeude['prod'][1];
-		$ges_prod[2] += $gebaeude['prod'][2];
-		$ges_prod[3] += $gebaeude['prod'][3];
-		$ges_prod[4] += $gebaeude['prod'][4];
-		$ges_prod[5] += $gebaeude['prod'][5];
+		$item_info = $me->getItemInfo($id, 'gebaeude');
+		
+		if($item_info['level'] <= 0 || ($item_info['prod'][0] == 0 && $item_info['prod'][1] == 0 && $item_info['prod'][2] == 0 && $item_info['prod'][3] == 0 && $item_info['prod'][4] == 0 && $item_info['prod'][5] == 0))
+			continue; # Es wird nichts produziert, also nicht anzeigen
+		$prod = $me->checkProductionFactor($id);
 ?>
 			<tr>
-				<td class="c-gebaeude"><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($gebaeude['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($level)?>)</span></td>
-				<td class="c-carbon <?=get_prod_class($gebaeude['prod'][0])?>"><?=ths($gebaeude['prod'][0])?></td>
-				<td class="c-aluminium <?=get_prod_class($gebaeude['prod'][1])?>"><?=ths($gebaeude['prod'][1])?></td>
-				<td class="c-wolfram <?=get_prod_class($gebaeude['prod'][2])?>"><?=ths($gebaeude['prod'][2])?></td>
-				<td class="c-radium <?=get_prod_class($gebaeude['prod'][3])?>"><?=ths($gebaeude['prod'][3])?></td>
-				<td class="c-tritium <?=get_prod_class($gebaeude['prod'][4])?>"><?=ths($gebaeude['prod'][4])?></td>
-				<td class="c-energie <?=get_prod_class($gebaeude['prod'][5])?>"><?=ths($gebaeude['prod'][5])?></td>
+				<td class="c-gebaeude"><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($item_info['level'])?>)</span></td>
+				<td class="c-carbon <?=get_prod_class($item_info['prod'][0])?>"><?=ths($item_info['prod'][0]*$ges_prod[6])?></td>
+				<td class="c-aluminium <?=get_prod_class($item_info['prod'][1])?>"><?=ths($item_info['prod'][1]*$ges_prod[6])?></td>
+				<td class="c-wolfram <?=get_prod_class($item_info['prod'][2])?>"><?=ths($item_info['prod'][2]*$ges_prod[6])?></td>
+				<td class="c-radium <?=get_prod_class($item_info['prod'][3])?>"><?=ths($item_info['prod'][3]*$ges_prod[6])?></td>
+				<td class="c-tritium <?=get_prod_class($item_info['prod'][4])?>"><?=ths($item_info['prod'][4]*$ges_prod[6])?></td>
+				<td class="c-energie <?=get_prod_class($item_info['prod'][5])?>"><?=ths($item_info['prod'][5]*$ges_prod[6])?></td>
 				<td class="c-produktion">
 					<select name="prod[<?=utf8_htmlentities($id)?>]" onchange="this.form.submit();" tabindex="<?=$tabindex?>"<?=($tabindex == 1) ? ' accesskey="u"' : ''?>>
 <?php
@@ -176,9 +102,7 @@
 <?php
 	$day_prod = array($ges_prod[0]*24, $ges_prod[1]*24, $ges_prod[2]*24, $ges_prod[3]*24, $ges_prod[4]*24);
 	$show_day_prod = $day_prod;
-	$show_days = 1;
-	if(isset($user_array['prod_show_days']))
-		$show_days = $user_array['prod_show_days'];
+	$show_days = $me->checkSetting('prod_show_days');
 	$show_day_prod[0] *= $show_days;
 	$show_day_prod[1] *= $show_days;
 	$show_day_prod[2] *= $show_days;

@@ -1,162 +1,108 @@
 <?php
 	require('scripts/include.php');
 
-	if(!$user_array['umode'] && (!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B9') && isset($_POST['roboter']) && is_array($_POST['roboter']))
+	if($me->permissionToAct() && isset($_POST['roboter']) && is_array($_POST['roboter']))
 	{
 		# Roboter in Auftrag geben
-
-		$last_time = time();
-		if(isset($this_planet['building']['roboter']))
-		{
-			foreach($this_planet['building']['roboter'] as $roboter)
-			{
-				if(trim($roboter[0]) == '')
-					continue;
-				$last_time = $roboter[1];
-			}
-		}
-
-		$event_times = array();
-
-		$logfile = array();
-
+		$built = 0;
 		foreach($_POST['roboter'] as $id=>$count)
 		{
-			if(!isset($items['roboter'][$id]) || !$items['roboter'][$id]['buildable'])
-				continue;
-
-			$ress = $items['roboter'][$id]['ress'];
-
-			$next_logfile = &$logfile[];
-			$next_logfile = 0;
-
-			for($i = 1; $i <= $count; $i++)
-			{
-				# Rohstoffvorhandensein ueberpruefen
-				if($this_planet['ress'][0] >= $ress[0] && $this_planet['ress'][1] >= $ress[1] && $this_planet['ress'][2] >= $ress[2] && $this_planet['ress'][3] >= $ress[3])
-				{
-					$time = calc_btime_roboter($items['roboter'][$id]['time']);
-
-					if(!isset($this_planet['building']['roboter']))
-						$this_planet['building']['roboter'] = array();
-					$last_time += $time;
-					$this_planet['building']['roboter'][] = array($id, $last_time);
-
-					$this_planet['ress'][0] -= $ress[0];
-					$this_planet['ress'][1] -= $ress[1];
-					$this_planet['ress'][2] -= $ress[2];
-					$this_planet['ress'][3] -= $ress[3];
-
-					$event_times[] = $last_time;
-
-					$next_logfile++;
-				}
-			}
-
-			if($next_logfile > 0)
-				$next_logfile = $id.' '.$next_logfile;
-			else
-				array_pop($logfile);
-			unset($next_logfile);
+			if($me->buildRoboter($id, $count)) $built++;
 		}
-
-		write_user_array();
-
-		eventhandler::add_event($event_times);
-
-		$logfile = implode(' ', $logfile);
-		if($logfile != '')
-			logfile::action('11', $logfile);
-
-		delete_request();
+		if($built > 0)
+			delete_request();
 	}
 
 	login_gui::html_head();
 ?>
 <h2>Roboter</h2>
-<form action="roboter.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post">
+<form action="roboter.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post">
 <?php
 	$tabindex = 1;
-	foreach($items['roboter'] as $id=>$geb)
+	$roboter = $me->getItemsList('roboter');
+	$building_possible = (!($building_gebaeude = $me->checkBuildingThing('gebaeude')) || $building_gebaeude[0] != 'B9');
+	foreach($roboter as $id)
 	{
-		$count = 0;
-		if(isset($this_planet['roboter'][$id]))
-			$count = $this_planet['roboter'][$id];
+		$item_info = $me->getItemInfo($id);
 
-		if(!$geb['buildable'] && $count <= 0)
+		if(!$item_info['buildable'] && $item_info['level'] <= 0)
 			continue;
-
-		$ress = $geb['ress'];
 ?>
 	<div class="item roboter" id="item-<?=htmlentities($id)?>">
-		<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="anzahl">(<?=utf8_htmlentities($count)?>)</span></h3>
+		<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a> <span class="anzahl">(<?=utf8_htmlentities($item_info['level'])?>)</span></h3>
 <?php
-		if(!$user_array['umode'] && (!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B9') && $geb['buildable'])
+		if($me->permissionToAct() && $building_possible && $item_info['buildable'])
 		{
 ?>
 		<ul>
-			<li class="item-bau"><input type="text" name="roboter[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$tabindex?>" /></li>
+			<li class="item-bau"><input type="text" name="roboter[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$tabindex++?>" /></li>
 		</ul>
 <?php
-			$tabindex++;
 		}
 ?>
 		<dl>
 			<dt class="item-kosten">Kosten</dt>
 			<dd class="item-kosten">
-				<?=format_ress($ress, 4)?>
+				<?=format_ress($item_info['ress'], 4)?>
 			</dd>
 
 			<dt class="item-bauzeit">Bauzeit</dt>
-			<dd class="item-bauzeit"><?=format_btime(calc_btime_roboter($geb['time']))?></dd>
+			<dd class="item-bauzeit"><?=format_btime($item_info['time'])?></dd>
 		</dl>
 	</div>
 <?php
 	}
 
-	if($tabindex > 1 && (!isset($this_planet['building']['gebaeude']) || $this_planet['building']['gebaeude'][0] != 'B9'))
+	if($tabindex > 1)
 	{
 ?>
-	<div><button type="submit" tabindex="<?=$tabindex?>" accesskey="u">In A<kbd>u</kbd>ftrag geben</button></div>
+	<div><button type="submit" tabindex="<?=$tabindex++?>" accesskey="u">In A<kbd>u</kbd>ftrag geben</button></div>
 <?php
 	}
 ?>
 </form>
 <?php
-	if(isset($this_planet['building']['roboter']) && count($this_planet['building']['roboter']) > 0)
+	$building_roboter = $me->checkBuildingThing('roboter');
+	if(count($building_roboter) > 0)
 	{
 ?>
 <h3 id="aktive-auftraege">Aktive Aufträge</h3>
 <ol class="queue roboter">
 <?php
-		$keys = array_keys($this_planet['building']['roboter']);
-		$first = array_shift($keys);
-		if(count($keys) == 0)
-			$last = $first;
-		else
-			$last = array_pop($keys);
-		unset($keys);
-
-		foreach($this_planet['building']['roboter'] as $i=>$bau)
-		{
-			$class = '';
-			if($i == $first)
-				$class .= ' active';
-			if($i == $last)
-				$class .= ' last';
+		$i = 0;
+		
+		$keys = array_keys($building_roboter);
+		$first_building = &$building_roboter[array_shift($keys)];
+		$first = array($first_building[0], $first_building[1]+$first_building[3]);
+		$first_building[1] += $first_building[3];
+		$first_building[2]--;
+		if($first_building[2] <= 0) array_shift($building_roboter);
+		$first_info = $me->getItemInfo($first[0]);
 ?>
-	<li class="<?=$bau[0].$class?>" title="Fertigstellung: <?=date('H:i:s, Y-m-d', $bau[1])?> (Serverzeit)"><?=utf8_htmlentities($items['roboter'][$bau[0]]['name'])?><?php if($i == $first || $i == $last){?> <span class="restbauzeit" id="restbauzeit-<?=utf8_htmlentities($i)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $bau[1])?> (Serverzeit)</span><?php }?></li>
+	<li class="<?=utf8_htmlentities($first[0])?> active<?=(count($building_roboter) <= 0) ? ' last' : ''?>" title="Fertigstellung: <?=date('H:i:s, Y-m-d', $first[1])?> (Serverzeit)"><strong><?=utf8_htmlentities($first_info['name'])?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $first[0])?> (Serverzeit)</span></strong></li>
 <?php
+		if(count($building_roboter) > 0)
+		{
+			$keys = array_keys($building_roboter);
+			$last = array_pop($keys);
+			foreach($building_roboter as $key=>$bau)
+			{
+				$finishing_time = $bau[1]+$bau[2]*$bau[3];
+				$item_info = $me->getItemInfo($bau[0]);
+?>
+	<li class="<?=utf8_htmlentities($bau[0])?><?=($key == $last) ? ' last' : ''?>" title="Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)"><?=utf8_htmlentities($item_info['name'])?> (<?=$bau[2]?>)<?php if($key == $last){?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span><?php }?></li>
+<?php
+			}
 		}
 ?>
 </ol>
 <script type="text/javascript">
-	init_countdown('<?=$first?>', <?=$this_planet['building']['roboter'][$first][1]?>, false);
+	init_countdown('0', <?=$first[1]?>, false);
 <?php
-		if($first != $last)
+		if(count($building_roboter) > 0)
 		{
 ?>
-	init_countdown('<?=$last?>', <?=$this_planet['building']['roboter'][$last][1]?>, false);
+	init_countdown('<?=$i-1?>', <?=$finishing_time?>, false);
 <?php
 		}
 ?>
