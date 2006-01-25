@@ -466,7 +466,7 @@
 	<dd class="c-kampferfahrung"><?=ths($me->getScores(6))?></dd>
 
 	<dt class="c-gesamt">Gesamt</dt>
-	<dd class="c-gesamt"><?=ths($me->getScores())?> <span class="gesamt-spieler">(Platz <?=ths($me->getRank())?> von <?=ths(highscores::get_players_count())?>)</span><?=isset($_SESSION['admin_username']) ? ' <a href="?recalc_highscores=1&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">[Neu berechnen]</a>' : ''?></span></dd>
+	<dd class="c-gesamt"><?=ths($me->getScores())?> <span class="gesamt-spieler">(Platz <?=ths($me->getRank())?> von <?=ths(getPlayersCount())?>)</span><?=isset($_SESSION['admin_username']) ? ' <a href="?recalc_highscores=1&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">[Neu berechnen]</a>' : ''?></span></dd>
 </dl>
 <?php
 	login_gui::html_foot();
