@@ -12,7 +12,7 @@
 #change-planet select { background-color:#568; border-color:#678; }
 
 select,option,textarea,input,button,#js-title { background-color:#568; border-color:#679; }
-select:hover,select:focus,select:active,input:hover,input:focus,input:active,textarea:hover,textarea:focus,textarea:active,button:hover,button:focus,button:active,.imperium-tabelle tr.active td,.imperium-tabelle tr.active th,.imperium-tabelle tr:hover th,.imperium-tabelle tr:hover td,.highscores-modi .active a,.imperium-tabelle td.active,.imperium-tabelle th.active { background-color:#679; }
+select:hover,select:focus,select:active,input:hover,input:focus,input:active,textarea:hover,textarea:focus,textarea:active,button:hover,button:focus,button:active,.imperium-tabelle tr.active td,.imperium-tabelle tr.active th,.imperium-tabelle tr:hover th,.imperium-tabelle tr:hover td,.highscores-modi .active a,.imperium-modi .active a,.imperium-tabelle td.active,.imperium-tabelle th.active { background-color:#679; }
 
 #content-13 * h3 { background-color:transparent; }
 .nachricht-informationen dd.c-nachricht { border-top-color:transparent; border-right-color:transparent; border-bottom-color:transparent; }

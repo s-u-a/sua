@@ -43,7 +43,6 @@
 			define('DB_HANDEL', DB_DIR.'/handel');
 			define('DB_HANDELSKURS', DB_DIR.'/handelskurs');
 			define('DB_ADMINS', DB_DIR.'/admins');
-			define('DB_LOCK_FILE', '/dev/shm/suadb_lock_'.md5(DB_DIR));
 		}
 		
 		if(!defined('other_globals'))

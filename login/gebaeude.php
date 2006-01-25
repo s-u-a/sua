@@ -112,6 +112,7 @@
 <?php
 	}
 
+	$builing = false;
 	$tabindex = 3;
 	$gebaeude = $me->getItemsList('gebaeude');
 	foreach($gebaeude as $id)
