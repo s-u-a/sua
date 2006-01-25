@@ -92,6 +92,8 @@
 		$filename = s_root.'/engine/classes/'.strtolower($class).'.php';
 		if(is_file($filename) && is_readable($filename)) require_once($filename);
 	}
+	
+	__autoload('Classes');
 
 	if(!isset($USE_OB) || $USE_OB)
 	{
