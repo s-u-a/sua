@@ -112,12 +112,12 @@
 <?php
 	}
 
-	$builing = false;
 	$tabindex = 3;
 	$gebaeude = $me->getItemsList('gebaeude');
 	foreach($gebaeude as $id)
 	{
 		$geb = $me->getItemInfo($id, 'gebaeude');
+		$building = false;
 		
 		if(!$geb['deps-okay']) # Abhaengigkeiten nicht erfuellt
 			continue;
