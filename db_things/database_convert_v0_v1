@@ -1,0 +1,61 @@
+#!/usr/bin/php
+<?php
+	require('../engine/include.php');
+	
+	if(!isset($_SERVER['argv'][1]))
+	{
+		echo "Usage: ".$_SERVER['argv'][0]." [Database dir]\n";
+		exit(1);
+	}
+	else
+		define_globals($_SERVER['argv'][1]);
+	
+	$fnames = array();
+	
+	$dh = opendir(DB_PLAYERS);
+	while(($fname = readdir($dh)) !== false)
+	{
+		if($fname == '.' || $fname == '..') continue;
+		$fnames[] = DB_PLAYERS.'/'.$fname;
+	}
+	closedir($dh);
+	
+	$dh = opendir(DB_ALLIANCES);
+	while(($fname = readdir($dh)) !== false)
+	{
+		if($fname == '.' || $fname == '..') continue;
+		$fnames[] = DB_ALLIANCES.'/'.$fname;
+	}
+	closedir($dh);
+	
+	$dh = opendir(DB_MESSAGES);
+	while(($fname = readdir($dh)) !== false)
+	{
+		if($fname == '.' || $fname == '..') continue;
+		$fnames[] = DB_MESSAGES.'/'.$fname;
+	}
+	closedir($dh);
+	
+	$dh = opendir(DB_MESSAGES_PUBLIC);
+	while(($fname = readdir($dh)) !== false)
+	{
+		if($fname == '.' || $fname == '..') continue;
+		$fnames[] = DB_MESSAGES_PUBLIC.'/'.$fname;
+	}
+	closedir($dh);
+	
+	foreach($fnames as $fname)
+	{
+		$file = gzuncompress(file_get_contents($fname));
+		
+		$fh = fopen($fname, 'w');
+		flock($fh, LOCK_EX);
+		
+		fwrite($fh, bzcompress($file, 6));
+		
+		flock($fh, LOCK_UN);
+		fclose($fh);
+	}
+	echo "Script finished.\n";
+	exit(0);
+?>

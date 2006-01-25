@@ -12,6 +12,10 @@
 		{
 		}
 		
+		function create()
+		{
+		}
+		
 		protected function getDataFromRaw(){}
 		protected function getRawFromData(){}
 	}

@@ -1,9 +1,6 @@
 <?php
 	require('scripts/include.php');
 
-	if(isset($_GET['recalc_highscores']) && $_GET['recalc_highscores'] && isset($_SESSION['admin_username']))
-		highscores::recalc();
-
 	if(isset($_GET['cancel']))
 	{
 		# Flotte zurueckrufen

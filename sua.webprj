@@ -36,7 +36,6 @@
     <item url="db_things/verteidigung" uploadstatus="1" />
     <item url="db_things/create_database" uploadstatus="1" />
     <item url="db_things/show_player_info" uploadstatus="1" />
-    <item url="db_things/calc_ges_ress" uploadstatus="1" />
     <item url="db_things/forschung" uploadstatus="1" />
     <item url="db_things/version" uploadstatus="1" />
     <item url="engine/" uploadstatus="1" />
@@ -121,7 +120,9 @@
     <item url="engine/classes/publicmessage.php" uploadstatus="1" />
     <item url="engine/classes/item.php" uploadstatus="1" />
     <item url="engine/classes/classes.php" uploadstatus="1" />
-    <item url="engine/classes/fleet.php" />
-    <item url="engine/classes/galaxy.php" />
+    <item url="engine/classes/fleet.php" uploadstatus="1" />
+    <item url="engine/classes/galaxy.php" uploadstatus="1" />
+    <item url="db_things/walkthrough_users" />
+    <item url="db_things/database_convert_v0_v1" />
   </project>
 </webproject>

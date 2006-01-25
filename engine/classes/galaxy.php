@@ -307,7 +307,7 @@
 	
 	function getGalaxiesCount()
 	{
-		for($i=0; is_file(DB_UNIVERSE.'/'.$i) && is_readable(DB_UNIVERSE.'/'.$i); $i++);
+		for($i=0; is_file(DB_UNIVERSE.'/'.($i+1)) && is_readable(DB_UNIVERSE.'/'.($i+1)); $i++);
 		return $i;
 	}
 ?>

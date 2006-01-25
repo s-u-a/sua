@@ -35,6 +35,8 @@ form { text-align:left; }
 
 * html #navigation { position:absolute; }
 
+#css-3 { display:none; }
+
 #werbung { z-index:10000; }
 * html #werbung { position:absolute; }
 

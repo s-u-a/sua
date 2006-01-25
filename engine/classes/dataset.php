@@ -10,6 +10,7 @@
 		protected $raw = false;
 		protected $file_pointer = false;
 		protected $cache = array();
+		protected $location = false;
 		
 		abstract function create();
 		
@@ -26,14 +27,20 @@
 			{
 				$this->name = $name;
 				$this->filename = $this->save_dir.'/'.urlencode($this->name);
+				$this->location = $this->filename;
 				if(!is_file($this->filename) || !is_readable($this->filename))
 					$this->status = 0;
 				else
 				{
 					$this->status = 1;
 					if(!is_writeable($this->filename))
+					{
+						$this->file_pointer = fopen($this->location, 'rb');
 						$this->status = 2;
-					elseif(!($this->file_pointer = fopen($this->filename, 'r+')))
+					}
+					else $this->file_pointer = fopen($this->location, 'r+b');
+					
+					if(!$this->file_pointer)
 						$this->status = 0;
 					if($this->status)
 					{
@@ -62,28 +69,33 @@
 			if(!$this->status) return false;
 			if($this->changed && !$force) $this->write();
 			
-			$this->raw = unserialize(gzuncompress(file_get_contents($this->filename)));
+			clearstatcache();
+			$filesize = filesize($this->filename);
+			fseek($this->file_pointer, 0, SEEK_SET);
+			$this->raw = unserialize(bzdecompress(fread($this->file_pointer, $filesize)));
 			$this->getDataFromRaw();
 			return true;
 		}
 		
-		function write($force=false)
+		function write($force=false, $getraw=true)
 		{
 			if(!$this->status && (!$force || file_exists($this->filename))) return false;
 			if(!$this->changed && !$force) return 2;
 			
-			$this->getRawFromData();
+			if($getraw)
+				$this->getRawFromData();
 			
+			clearstatcache();
 			if($force && !file_exists($this->filename))
 			{
-				if(!($this->file_pointer = fopen($this->filename, 'a+')))
+				if(!($this->file_pointer = fopen($this->location, 'a+')))
 					return false;
 				flock($this->file_pointer, LOCK_EX);
 			}
 			
 			fseek($this->file_pointer, 0, SEEK_SET);
 			ftruncate($this->file_pointer, 0);
-			fwrite($this->file_pointer, gzcompress(serialize($this->raw)));
+			fwrite($this->file_pointer, bzcompress(serialize($this->raw)));
 			
 			return true;
 		}

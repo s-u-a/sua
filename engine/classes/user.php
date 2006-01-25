@@ -10,10 +10,27 @@
 		{
 			if(file_exists($this->filename)) return false;
 			$this->raw = array(
-				'username' => $user,
-				'planets' => array()
-				);
-			$this->write(true);
+				'username' => $this->name,
+				'planets' => array(),
+				'forschung' => array(),
+				'password' => 'x',
+				'punkte' => array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+				'registration' => time(),
+				'messages' => array(),
+				'description' => '',
+				'description_parsed' => '',
+				'flotten' => array(),
+				'alliance' => false
+			);
+			
+			$fh = fopen(DB_HIGHSCORES, 'a');
+			flock($fh, LOCK_EX);
+			fwrite($fh, encodeUserHighscoresString($this->name, 0, ''));
+			flock($fh, LOCK_UN);
+			fclose($fh);
+			$this->raw['punkte'][12] = getUsersCount();
+			
+			$this->write(true, false);
 			$this->__construct($this->name);
 			return true;
 		}
@@ -230,11 +247,57 @@
 			$this->setActivePlanet($new_active_planet);
 			
 			# Highscores neu berechnen
-			highscores::recalc2(); # DEPRECATED
+			$this->recalcHighscores(true, true, true, true, true);
 			
 			if(isset($this->cache['getPlanetsList'])) unset($this->cache['getPlanetsList']);
 			
 			return true;
+		}
+		
+		function registerPlanet($pos_string)
+		{
+			if(!$this->status) return false;
+			
+			$pos = explode(':', $pos_string);
+			if(count($pos) != 3) return false;
+			
+			if(!$this->checkPlanetCount()) return false;
+			
+			$galaxy = Classes::Galaxy($pos[0]);
+			if($galaxy->getStatus() != 1) return false;
+			
+			$owner = $galaxy->getPlanetOwner($pos[1], $pos[2]);
+			if($owner === false || $owner) return false;
+			
+			$planet_name = 'Kolonie';
+			if(!$galaxy->setPlanetOwner($pos[1], $pos[2], $this->getName())) return false;
+			$galaxy->setPlanetName($pos[1], $pos[2], $planet_name);
+			if($this->allianceTag())
+				$galaxy->setPlanetOwnerAlliance($pos[1], $pos[2], $this->allianceTag());
+			
+			if(count($this->raw['planets']) <= 0) $size = 375;
+			else $size = $galaxy->getPlanetSize($pos[1], $pos[2]);
+			$size *= $this->getItemLevel('F9', 'forschung')+1;
+			
+			$planets = $this->getPlanetsList();
+			if(count($planets) == 0) $planet_index = 0;
+			else $planet_index = max($planets)+1;
+			while(isset($this->raw['planets'][$planet_index])) $planet_index++;
+			
+			$this->raw['planets'][$planet_index] = array (
+				'pos' => $pos_string,
+				'ress' => array(0, 0, 0, 0, 0),
+				'gebaeude' => array(),
+				'roboter' => array(),
+				'schiffe' => array(),
+				'verteidigung' => array(),
+				'size' => array(0, $size),
+				'last_refresh' => time(),
+				'time' => $planet_name,
+				'prod' => array()
+			);
+			
+			return $planet_index;
 		}
 		
 		function movePlanetUp($planet=false)
@@ -344,7 +407,9 @@
 			if($name !== false && trim($name) != '')
 			{
 				$name = substr($name, 0, 24);
-				$old_name = $this->planet_info['name'];
+				if(isset($this->planet_info['name']))
+					$old_name = $this->planet_info['name'];
+				else $old_name = '';
 				$this->planet_info['name'] = $name;
 				
 				$pos = $this->getPos();
@@ -1742,8 +1807,8 @@
 				if($message->create())
 				{
 					$message->from($this->getName());
-					$message->subject("B\xc3\xbcndnis gek\xc3\xbcndigt");
-					$message->text("Der Spieler ".$this->getName()." hat sein B\xc3\xbcndnis mit Ihnen gek\xc3\xbcndigt.");
+					$message->subject("B\xc3\xbcndnisanfrage zur\xc3\xbcckgezogen");
+					$message->text("Der Spieler ".$this->getName()." hat seine B\xc3\xbcndnisanfrage an Sie zur\xc3\xbcckgezogen.");
 					$message->addUser($user, 7);
 				}
 				$this->changed = true;
@@ -2083,46 +2148,15 @@
 			}
 	
 			# Buendnispartner entfernen
-			# FEHLT NOCH!
-			/*foreach($that_user_array['verbuendete'] as $verbuendeter)
-			{
-				$verb_user_array = get_user_array($verbuendeter);
-				$verb_key = array_search($username, $verb_user_array['verbuendete']);
-				if($verb_key !== false)
-				{
-					unset($verb_user_array['verbuendete'][$verb_key]);
-					write_user_array($verbuendeter, $verb_user_array);
-				}
-				unset($verb_user_array);
-			}
-			if(isset($that_user_array['verbuendete_bewerbungen']))
-			{
-				foreach($that_user_array['verbuendete_bewerbungen'] as $verbuendeter)
-				{
-					$verb_user_array = get_user_array($verbuendeter);
-					$verb_key = array_search($username, $verb_user_array['verbuendete_anfragen']);
-					if($verb_key !== false)
-					{
-						unset($verb_user_array['verbuendete_anfragen'][$verb_key]);
-						write_user_array($verbuendeter, $verb_user_array);
-					}
-					unset($verb_user_array);
-				}
-			}
-			if(isset($that_user_array['verbuendete_anfragen']))
-			{
-				foreach($that_user_array['verbuendete_anfragen'] as $verbuendeter)
-				{
-					$verb_user_array = get_user_array($verbuendeter);
-					$verb_key = array_search($username, $verb_user_array['verbuendete_bewerbungen']);
-					if($verb_key !== false)
-					{
-						unset($verb_user_array['verbuendete_bewerbungen'][$verb_key]);
-						write_user_array($verbuendeter, $verb_user_array);
-					}
-					unset($verb_user_array);
-				}
-			}*/
+			$verb_list = $this->getVerbuendetList();
+			foreach($verb_list as $verb)
+				$this->quitVerbuendet($verb);
+			$verb_list = $this->getVerbuendetApplicationList();
+			foreach($verb_list as $verb)
+				$this->cancelVerbuendetApplication($verb);
+			$verb_list = $this->getVerbuendetRequestList();
+			foreach($verb_list as $verb)
+				$this->rejectVerbuendetRequest($verb);
 
 			# Aus den Highscores entfernen
 			$pos = ($this->getRank()-1)*38;
@@ -2286,7 +2320,7 @@
 				if(isset($this->cache['getScores'])) unset($this->cache['getScores']);
 			}
 
-			$new_points = $this->getScores();
+			$new_points = floor($this->getScores());
 			$my_string = encodeUserHighscoresString($this->getName(), $new_points, $this->allianceTag());
 
 			$filesize = filesize(DB_HIGHSCORES);
@@ -2395,6 +2429,8 @@
 				$alliance = Classes::Alliance($my_alliance);
 				$alliance->setUserScores($this->getName(), $new_points);
 			}
+			
+			$this->changed = true;
 
 			return true;
 		}
@@ -2402,6 +2438,8 @@
 	
 	function encodeUserHighscoresString($username, $points, $alliance)
 	{
+		$points = floor($points);
+		
 		$string = substr($username, 0, 24);
 		if(strlen($string) < 24)
 			$string .= str_repeat(' ', 24-strlen($string));
@@ -2431,6 +2469,7 @@
 	
 	function getUsersCount()
 	{
+		clearstatcache();
 		$filesize = filesize(DB_HIGHSCORES);
 		if($filesize === false)
 			return false;
