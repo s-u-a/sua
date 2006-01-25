@@ -16,17 +16,17 @@
 		$alliances += filesize($database[0].'/highscores_alliances')/26;
 	}
 	
-	$items = get_items();
+	$items = Classes::Items();
 	
 	gui::html_head();
 ?>
 <h2 xml:lang="en">Features</h2>
 <ul>
-	<li><?=count($items['gebaeude'])?> Gebäude</li>
-	<li><?=count($items['forschung'])?> Forschungsmöglichkeiten</li>
-	<li><?=count($items['roboter'])?> verschiedene Roboter</li>
-	<li><?=count($items['schiffe'])?> Raumschiffklassen</li>
-	<li><?=count($items['verteidigung'])?> Verteidigungsanlagen</li>
+	<li><?=count($items->getItemsList('gebaeude'))?> Gebäude</li>
+	<li><?=count($items->getItemsList('forschung'))?> Forschungsmöglichkeiten</li>
+	<li><?=count($items->getItemsList('roboter'))?> verschiedene Roboter</li>
+	<li><?=count($items->getItemsList('schiffe'))?> Raumschiffklassen</li>
+	<li><?=count($items->getItemsList('verteidigung'))?> Verteidigungsanlagen</li>
 	<li>Das Spiel läuft in Echtzeit, es gibt keine lästigen <span xml:lang="en">Eventhandler</span>-Wartezeiten</li>
 	<li>Forschung lässt sich global oder lokal durchführen</li>
 	<li>Ausgeklügeltes Allianzsystem</li>
