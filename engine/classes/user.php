@@ -483,11 +483,11 @@
 			
 			if(!is_array($ress)) return false;
 			
-			if(isset($ress[0])){ $this->ress[0] -= $ress[0]; $this->raw['punkte'][7] += $ress[0]/1000; }
-			if(isset($ress[1])){ $this->ress[1] -= $ress[1]; $this->raw['punkte'][8] += $ress[1]/1000; }
-			if(isset($ress[2])){ $this->ress[2] -= $ress[2]; $this->raw['punkte'][9] += $ress[2]/1000; }
-			if(isset($ress[3])){ $this->ress[3] -= $ress[3]; $this->raw['punkte'][10] += $ress[3]/1000; }
-			if(isset($ress[4])){ $this->ress[4] -= $ress[4]; $this->raw['punkte'][11] += $ress[4]/1000; }
+			if(isset($ress[0])){ $this->ress[0] -= $ress[0]; $this->raw['punkte'][7] += $ress[0]; }
+			if(isset($ress[1])){ $this->ress[1] -= $ress[1]; $this->raw['punkte'][8] += $ress[1]; }
+			if(isset($ress[2])){ $this->ress[2] -= $ress[2]; $this->raw['punkte'][9] += $ress[2]; }
+			if(isset($ress[3])){ $this->ress[3] -= $ress[3]; $this->raw['punkte'][10] += $ress[3]; }
+			if(isset($ress[4])){ $this->ress[4] -= $ress[4]; $this->raw['punkte'][11] += $ress[4]; }
 			
 			if(isset($this->cache['getSpentRess'])) unset($this->cache['getSpentRess']);
 			
