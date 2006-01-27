@@ -1094,7 +1094,7 @@
 							$one = true;
 						}
 					}
-					if($one) usort($action, 'sortEventhandlerActions');
+					if($one) usort($actions, 'sortEventhandlerActions');
 					
 					break;
 				
