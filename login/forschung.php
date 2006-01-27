@@ -46,7 +46,7 @@
 	{
 		$item_info = $me->getItemInfo($id, 'forschung');
 		
-		if(!$item_info['deps-okay'] && $item_info['level'] <= 0 && $building && $building[0] == $id)
+		if(!$item_info['deps-okay'] && $item_info['level'] <= 0 && (!$building || $building[0] != $id))
 			continue;
 
 		$buildable_global = $item_info['buildable'];
