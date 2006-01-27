@@ -826,7 +826,7 @@
 			$this_planet = $this->getActivePlanet();
 			if(!isset($this->cache['getItemInfo'])) $this->cache['getItemInfo'] = array();
 			if(!isset($this->cache['getItemInfo'][$this_planet])) $this->cache['getItemInfo'][$this_planet] = array();
-			if(!isset($this->cache['getItemInfo'][$this_planet][$id]))
+			if(!isset($this->cache['getItemInfo'][$this_planet][$id]) || ($calc_scores && !isset($this->cache['getItemInfo'][$this_planet][$id]['scores'])))
 			{
 				$item = Classes::Item($id);
 				if($type === false) $type = $item->getType();
