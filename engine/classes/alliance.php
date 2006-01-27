@@ -457,9 +457,13 @@
 			return $this->raw['members'][$user]['time'];
 		}
 		
-		function getUsersList($sortAllianceMembersBy=false, $sortAllianceMembersInvert=false)
+		function getUsersList($sortby=false, $invert=false)
 		{
 			if(!$this->status) return false;
+			
+			global $sortAllianceMembersBy,$sortAllianceMembersInvert;
+			$sortAllianceMembersBy = $sortby;
+			$sortAllianceMembersInvert = $invert;
 			
 			$members = array_keys($this->raw['members']);
 			
