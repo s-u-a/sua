@@ -3,7 +3,7 @@
 
 	login_gui::html_head();
 
-	if(!isset($_GET['player']) || !is_file(DB_PLAYERS.'/'.urlencode($_GET['player'])) || !is_readable(DB_PLAYERS.'/'.urlencode($_GET['player'])))
+	if(!isset($_GET['player']) || !User::userExists($_GET['player']))
 	{
 ?>
 <p class="error">
@@ -13,7 +13,6 @@
 	}
 	else
 	{
-		logfile::action('16', $_GET['player']);
 ?>
 <h2>Spielerinfo <em class="playername"><?=utf8_htmlentities($_GET['player'])?></em></h2>
 <?php

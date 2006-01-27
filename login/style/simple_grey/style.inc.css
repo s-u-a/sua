@@ -284,6 +284,8 @@ p.neue-nachrichten { font-weight:bold; margin:0; padding:.5em; }
 .nachricht-antworten-formular button,#content-1 .nachricht-loeschen-formular input { width:10em; }
 
 #nachricht-veroeffentlichen { font-weight:bold; text-align:center; list-style-type:none; margin:0; padding:.5em; }
+.nachrichten-verbuendeten-links { margin:0; padding:0; text-align:center; }
+.nachrichten-verbuendeten-links li { display:inline; }
 
 .flotte-anzahl { font-weight:bold; margin:.5em; padding:.5em; border:.1em solid #aaa; }
 .flotte-anzahl.voll { color:#f00; }

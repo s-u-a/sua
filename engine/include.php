@@ -7,7 +7,7 @@
 	$this_filename = '/engine/include.php';
 	if(substr(__FILE__, -strlen($this_filename)) !== $this_filename)
 	{
-		logfile::panic('Der absolute Pfad der Datenbank konnte nicht ermittelt werden. Bitte gib ihn in der Datei /engine/include.php an.');
+		echo 'Der absolute Pfad der Datenbank konnte nicht ermittelt werden. Bitte gib ihn in der Datei /engine/include.php an.';
 		exit(1);
 	}
 	define('s_root', substr(__FILE__, 0, -strlen($this_filename)));
@@ -169,121 +169,6 @@
 	########################################
 	### Hier beginnen die Klassen
 	########################################
-
-
-	class logfile # Enthaelt Funktionen fuer das Schreiben der Logfiles
-	{
-		function error()
-		{
-		}
-
-		function action($type)
-		{
-			global $this_planet;
-			global $_SESSION;
-
-			$cols = func_get_args();
-			if(isset($this_planet)) array_unshift($cols, $this_planet['pos']);
-			else array_unshift($cols, '');
-			array_unshift($cols, session_id());
-			array_unshift($cols, $_SERVER['REMOTE_ADDR']);
-			if(isset($_SESSION['username'])) array_unshift($cols, $_SESSION['username']);
-			else array_unshift($cols, '');
-			array_unshift($cols, time());
-
-			$line = implode("\t", $cols);
-
-			$fh = gzopen(LOG_FILE, 'a');
-			if(!$fh)
-				return false;
-			#flock($fh, LOCK_EX);
-
-			gzwrite($fh, $line."\n");
-
-			#flock($fh, LOCK_UN);
-			gzclose($fh);
-
-			return true;
-		}
-
-		function panic($message) # Gibt eine fatale Fehlermeldung aus, aufgrund deren das Script
-		{ # nicht weiter ausgefuehrt werden kann und bricht es ab.
-			if(isset($_SERVER['HTTP_HOST'])) # Wurde per HTTP aufgerufen
-				die($message);
-			else # Wurde per Programm aufgerufen, zum Beispiel Eventhandler
-				echo $message."\n";
-		}
-
-		function to_human($array)
-		{
-			global $items;
-			if(!isset($items))
-				$items = get_items(false);
-			global $type_names;
-
-			$type = array_shift($array);
-
-			switch($type)
-			{
-				case '0': return sprintf('Schnellklicksperre (Klickabstand %f)', $array[0]);
-				case '1': return sprintf('Registrierung (E-Mail-Adresse: %s)', utf8_htmlentities($array[0]));
-				case '2': return sprintf('Anmeldung');
-				case '2.1': return sprintf('Anmeldung mit falschem Passwort');
-				case '3': return sprintf('Abgemeldet');
-				case '3.1': return sprintf('Zwangsabgemeldet (Richtige IP wäre %s)', $array[0]);
-				case '4': return sprintf('Passwort zugeschickt');
-				case '4.1': return sprintf('Passwort nicht zugeschickt (falsch: %s, richtig: %s)', utf8_htmlentities($array[0]), utf8_htmlentities($array[1]));
-				case '5': return sprintf('Passwort geändert');
-				case '6': return sprintf('Rohstoffproduktion gespeichert');
-				case '7':
-					if($array[1]) return sprintf('Gebäuderückbau (%s)', utf8_htmlentities($items['gebaeude'][$array[0]]['name']));
-					else return sprintf('Gebäudeausbau (%s)', utf8_htmlentities($items['gebaeude'][$array[0]]['name']));
-				case '8': return sprintf('Gebäude-Abbruch (%s)', utf8_htmlentities($items['gebaeude'][$array[0]]['name']));
-				case '9': return sprintf('Forschung (%s, %s)', utf8_htmlentities($items['forschung'][$array[0]]['name']), ($array[1] ? 'global' : 'lokal'));
-				case '10': return sprintf('Forschungs-Abbruch (%s)', utf8_htmlentities($items['forschung'][$array[0]]['name']));
-				case '11': return sprintf('<span title="%s">Roboterbau</span>', logfile::crowd_to_human($array[0]));
-				case '12': return sprintf('<span title="%s; %s; %s">Flotte</span> nach %s (%s, %u%%, ID: %s)', logfile::crowd_to_human($array[1]), logfile::ress_to_human($array[4]), logfile::crowd_to_human($array[5]), $array[0], $type_names[$array[2]], $array[3]*100, utf8_htmlentities($array[6]));
-				case '13': return sprintf('Flottenrückruf (%s)', utf8_htmlentities($array[0]));
-				case '14': return sprintf('<span title="%s">Schiffsbau</span>', logfile::crowd_to_human($array[0]));
-				case '15': return sprintf('<span title="%s">Verteidigungsbau</span>', logfile::crowd_to_human($array[0]));
-				case '16': return sprintf('Benutzerinfo angeschaut (%s)', utf8_htmlentities($array[0]));
-				case '17': return sprintf('Bündnisanfrage gesandt (%s)', utf8_htmlentities($array[0]));
-				case '17.5': return sprintf('Bündnisanfrage zurückgezogen (%s)', utf8_htmlentities($array[0]));
-				case '18': return sprintf('Bündnisanfrage angenommen (%s)', utf8_htmlentities($array[0]));
-				case '19': return sprintf('Bündnisanfrage abgelehnt (%s)', utf8_htmlentities($array[0]));
-				case '20': return sprintf('Bündnis gekündigt (%s)', utf8_htmlentities($array[0]));
-				case '21': return sprintf('<span title="%s">Nachricht</span> an %s (%s)', utf8_htmlentities($array[2]), utf8_htmlentities($array[1]), $array[0]);
-				case '22': return sprintf('Nachricht gelesen (%s)', utf8_htmlentities($array[0]));
-				case '23': return sprintf('Nachricht gelöscht (%s)', utf8_htmlentities($array[0]));
-				case '24': return sprintf('Urlaubsmodus %s', ($array[0] ? 'betreten' : 'verlassen'));
-				default: return sprintf('Unbekannte Aktion (%s)', $type);
-			}
-		}
-
-		function crowd_to_human($crowd2)
-		{
-			global $items;
-
-			if(trim($crowd2) == '')
-				return '';
-
-			$return = array();
-			$crowd = explode(' ', trim($crowd2));
-
-			for($i=0; $i<count($crowd); $i+=2)
-				$return[] = utf8_htmlentities($items['ids'][$crowd[$i]]['name']).': '.ths($crowd[$i+1]);
-
-			$return = implode(', ', $return);
-			return $return;
-		}
-
-		function ress_to_human($ress2)
-		{
-			$ress = explode('.', $ress2);
-			$return = 'Carbon: '.ths($ress[0]).', Aluminium: '.ths($ress[1]).', Wolfram: '.ths($ress[2]).', Radium: '.ths($ress[3]).', Tritium: '.ths($ress[4]);
-			return $return;
-		}
-	}
 	
 	class gui
 	{
@@ -639,10 +524,6 @@
 			return true;
 		}
 	}
-
-	########################################
-
-
 
 	########################################
 	### Hier beginnen die Funktionen
@@ -1023,21 +904,6 @@
 				else
 					return 0;
 			}
-		}
-	}
-
-	function lock_database()
-	{
-		$GLOBALS['database_lock_file_pointer'] = fopen(DB_LOCK_FILE, 'w');
-		flock($GLOBALS['database_lock_file_pointer'], LOCK_EX);
-	}
-
-	function unlock_database()
-	{
-		if(isset($GLOBALS['database_lock_file_pointer']) && $GLOBALS['database_lock_file_pointer'])
-		{
-			flock($GLOBALS['database_lock_file_pointer'], LOCK_UN);
-			fclose($GLOBALS['database_lock_file_pointer']);
 		}
 	}
 
