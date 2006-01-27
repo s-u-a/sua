@@ -3,8 +3,6 @@
 
 	session_start();
 
-	logfile::action('3');
-
 	$_SESSION = array();
 	if(isset($_COOKIE[SESSION_COOKIE]))
 		setcookie(SESSION_COOKIE, '');

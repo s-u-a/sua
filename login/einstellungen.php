@@ -69,10 +69,7 @@
 	}
 
 	if(!$me->userLocked() && isset($_POST['umode']) && ($me->permissionToUmode() || isset($_SESSION['admin_username'])))
-	{
 		$me->umode(!$me->umode());
-		logfile::action('25', $me->umode());
-	}
 
 	if(isset($_POST['email']))
 		$me->setSetting('email', $_POST['email']);

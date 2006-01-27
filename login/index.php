@@ -7,10 +7,7 @@
 
 		$flotte = Classes::Fleet($_GET['cancel']);
 		if($flotte->callBack($_SESSION['username']))
-		{
-			logfile::action('13', $_GET['cancel']);
 			delete_request();
-		}
 	}
 	
 	function makeFleetString($user, $fleet)

@@ -30,14 +30,12 @@
 				else
 				{
 					$_SESSION['username'] = $_POST['benutzername'];
-					logfile::action('4');
 					unset($_SESSION['username']);
 				}
 			}
 			else
 			{
 				$_SESSION['username'] = $_POST['benutzername'];
-				logfile::action('4.1', $_POST['email'], trim($that_user_array['email']));
 				unset($_SESSION['username']);
 			}
 		}
@@ -96,7 +94,6 @@
 <p class="successful">Das Passwort wurde erfolgreich geändert. Sie können sich nun mit Ihrem neuen Passwort anmelden.</p>
 <?php
 						$_SESSION['username'] = $_GET['name'];
-						logfile::action('5');
 						unset($_SESSION['username']);
 
 						$continue = false;
