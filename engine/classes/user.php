@@ -1187,7 +1187,7 @@
 			$planet = $this->getActivePlanet();
 			if(!isset($this->cache['getProduction'][$planet]))
 			{
-				$prod = array(0,0,0,0,0,0,1);
+				$prod = array(0,0,0,0,0,0,0);
 				if($this->permissionToAct())
 				{
 					$gebaeude = $this->getItemsList('gebaeude');

@@ -42,8 +42,6 @@
 		{
 			if(isset($_POST['username']))
 				$_SESSION['username'] = $_POST['username'];
-			if(defined('LOG_FILE'))
-				logfile::action('2.1');
 			if(isset($_SESSION['username']))
 				unset($_SESSION['username']);
 
@@ -69,8 +67,6 @@
 			$_SESSION['use_protocol'] = USE_PROTOCOL;
 			$resume = true;
 			$del_email_passwd = true;
-
-			logfile::action('2');
 		}
 	}
 	
@@ -78,7 +74,6 @@
 
 	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] && $me->checkSetting('ipcheck'))
 	{
-		logfile::action('3.1', $_SESSION['ip']);
 		if(isset($_COOKIE[SESSION_COOKIE]))
 			setcookie(SESSION_COOKIE, '');
 		die('Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte <a href="http://'.htmlentities(get_default_hostname().h_root).'/index.php">neu anmelden</a>.');
@@ -136,8 +131,6 @@
 		$last_click_diff = $now_time-$_SESSION['last_click']-pow($_SESSION['last_click_sleep'], 1.5);
 		if($last_click_diff < MIN_CLICK_DIFF)
 		{
-			logfile::action('0', $last_click_diff);
-
 			$_SESSION['last_click_sleep']++;
 			$sleep_time = round(pow($_SESSION['last_click_sleep'], 1.5));
 			sleep($sleep_time);
