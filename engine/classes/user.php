@@ -407,6 +407,8 @@
 			if(!$this->status) return false;
 			
 			$this->raw['punkte'][12] = (int) $rank;
+			$this->changed = true;
+			return true;
 		}
 		
 		function planetName($name=false)

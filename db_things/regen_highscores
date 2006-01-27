@@ -42,18 +42,12 @@
 		if(!is_file(DB_PLAYERS.'/'.$fname) || !is_readable(DB_PLAYERS.'/'.$fname))
 			continue;
 
-		$this_user_array = get_user_array(urldecode($fname));
-
-		if($this_user_array === false)
-			continue;
-
-		$new_points = floor($this_user_array['punkte'][0]+$this_user_array['punkte'][1]+$this_user_array['punkte'][2]+$this_user_array['punkte'][3]+$this_user_array['punkte'][4]+$this_user_array['punkte'][5]+$this_user_array['punkte'][6]);
-
-		if(!isset($this_user_array['alliance']))
-			$this_user_array['alliance'] = '';
-		$highscores[urldecode($fname)] = array($new_points, $this_user_array['alliance']);
+		# Not using instances for memory reasons
+		$this_user = new User(urldecode($fname));
+		if(!$this_user->getStatus()) continue;
 		
-		unset($this_user_array);
+		$highscores[$this_user->getName()] = array($this_user->getScores(), $this_user->allianceTag());
+		unset($this_user);
 	}
 	closedir($dh);
 
@@ -63,12 +57,11 @@
 	$fh = fopen(DB_HIGHSCORES, 'w');
 	foreach($highscores as $player=>$punkte)
 	{
-		fwrite($fh, highscores::make_info($player, $punkte[0], $punkte[1]));
+		fwrite($fh, encodeUserHighscoresString($player, $punkte[0], $punkte[1]));
 
-		$this_user_array = get_user_array($player);
-		$this_user_array['punkte'][12] = $platz;
-		write_user_array($player, $this_user_array);
-		unset($this_user_array);
+		$this_user = new User($player);
+		$this_user->setRank($platz);
+		unset($this_user);
 
 		$platz++;
 	}
@@ -82,19 +75,16 @@
 		if(!is_file(DB_ALLIANCES.'/'.$fname) || !is_readable(DB_ALLIANCES.'/'.$fname))
 			continue;
 
-		$this_alliance_array = get_alliance_array(urldecode($fname));
-
-		if($this_alliance_array === false)
+		$this_alliance = new Alliance(urldecode($fname));
+		if(!$this_alliance->getStatus())
 			continue;
 
-		$overall = 0;
-		foreach($this_alliance_array['members'] as $member)
-			$overall += $member['punkte'];
-		$average = floor($overall/count($this_alliance_array['members']));
+		$overall = $this_alliance->getTotalScores();
+		$members = $this_alliance->getMembersCount();
+		$average = floor($overall/$members);
 		
-		$alliance_highscores[urldecode($fname)] = array(count($this_alliance_array['members']), $average, $overall);
-		
-		unset($this_alliance_array);
+		$alliance_highscores[$this_alliance->getName()] = array($members, $average, $overall);
+		unset($this_alliance);
 	}
 	closedir($dh);
 	
@@ -106,13 +96,11 @@
 	$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'w');
 	foreach($alliance_highscores as $alliance=>$info)
 	{
-		fwrite($fh, highscores_alliances::make_info($alliance, $info[0], $info[1], $info[2]));
+		fwrite($fh, encodeAllianceHighscoresString($alliance, $info[0], $info[1], $info[2]));
 
-		$this_alliance_array = get_alliance_array($alliance);
-		$this_alliance_array['platz'] = $platz;
-		if(!write_alliance_array($alliance, $this_alliance_array))
-			echo 'false';
-		unset($this_alliance_array);
+		$this_alliance = new Alliance($alliance);
+		$this_alliance->setRankAverage($platz);
+		unset($this_alliance);
 
 		$platz++;
 	}
@@ -122,17 +110,13 @@
 	$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'w');
 	foreach($alliance_highscores2 as $alliance=>$info)
 	{
-		fwrite($fh, highscores_alliances::make_info($alliance, $info[0], $info[1], $info[2]));
+		fwrite($fh, encodeAllianceHighscoresString($alliance, $info[0], $info[1], $info[2]));
 
-		$this_alliance_array = get_alliance_array($alliance);
-		$this_alliance_array['platz2'] = $platz;
-		if(!write_alliance_array($alliance, $this_alliance_array))
-			echo 'false';
+		$this_alliance = new Alliance($alliance);
+		$this_alliance->setRankTotal($platz);
 		unset($this_alliance_array);
 
 		$platz++;
 	}
 	fclose($fh);
-
-	unlock_database();
 ?>
