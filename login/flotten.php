@@ -2,6 +2,12 @@
 	require('scripts/include.php');
 
 	login_gui::html_head();
+?>
+<h2>Flotten</h2>
+<p class="error">Noch nicht implementiert.</p>
+<?php
+	login_gui::html_foot();
+	exit();
 
 	$show_versenden = true;
 

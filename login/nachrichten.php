@@ -200,8 +200,8 @@
 					{
 ?>
 <ul class="nachrichten-verbuendeten-links">
-	<li><a href="verbuendete.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Zur Verbündetenseite</a></li>
-	<li><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Zur Allianzseite</a></li>
+	<li class="c-verbuendete"><a href="verbuendete.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Zur Verbündetenseite</a></li>
+	<li class="c-allianz"><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Zur Allianzseite</a></li>
 </ul>
 <?php
 					}
