@@ -39,7 +39,6 @@
     <item url="db_things/forschung" uploadstatus="1" />
     <item url="db_things/version" uploadstatus="1" />
     <item url="engine/" uploadstatus="1" />
-    <item url="engine/eventhandler" uploadstatus="1" />
     <item url="engine/include.php" uploadstatus="1" />
     <item url="login/" uploadstatus="1" />
     <item url="login/help/" uploadstatus="1" />
@@ -71,7 +70,6 @@
     <item url="login/style/simple_blue/" uploadstatus="1" />
     <item url="login/style/simple_grey/" uploadstatus="1" />
     <item url="login/style/grey_graphics/" uploadstatus="1" />
-    <item url="login/scripts/eventhandler.php" uploadstatus="1" />
     <item url="login/scripts/include.php" uploadstatus="1" />
     <item url="login/scripts/rename.php" uploadstatus="1" />
     <item url="login/scripts/logout.php" uploadstatus="1" />
@@ -84,7 +82,6 @@
     <toolbars>toolbars/</toolbars>
     <item url="login/imperium.php" uploadstatus="1" />
     <annotations/>
-    <item url="db_things/stop_eventhandler" uploadstatus="1" />
     <author>Candid Dauth</author>
     <email>webmaster@s-u-a.net</email>
     <debuggerclient persistentWatches="0" persistentBreakpoints="0" >Kein Debugger</debuggerclient>
@@ -122,7 +119,7 @@
     <item url="engine/classes/classes.php" uploadstatus="1" />
     <item url="engine/classes/fleet.php" uploadstatus="1" />
     <item url="engine/classes/galaxy.php" uploadstatus="1" />
-    <item url="db_things/walkthrough_users" />
-    <item url="db_things/database_convert_v0_v1" />
+    <item url="db_things/walkthrough_users" uploadstatus="1" />
+    <item url="db_things/database_convert_v0_v1" uploadstatus="1" />
   </project>
 </webproject>

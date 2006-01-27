@@ -107,6 +107,7 @@
 	else
 	{
 		$start = 1;
+		__autoload('Alliance');
 		$count = getAlliancesCount();
 		if(isset($_GET['start']) && $_GET['start'] <= $count && $_GET['start'] >= 1)
 			$start = (int) $_GET['start'];

@@ -521,7 +521,7 @@
 			}
 			else # Andere Galaxie
 			{
-				$galaxy_count = universe::get_galaxies_count()*2;
+				$galaxy_count = getGalaxiesCount();
 
 				$galaxy_diff_1 = diff($this_pos[0], $that_pos[0]);
 				$galaxy_diff_2 = diff($this_pos[0]+$galaxy_count, $that_pos[0]);

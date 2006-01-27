@@ -1823,18 +1823,149 @@
 			
 			if($tag === '')
 			{
-				if(!isset($this->raw['alliance']) || trim($this->raw['alliance']) == '')
+				__autoload('Alliance');
+				if(!isset($this->raw['alliance']) || trim($this->raw['alliance']) == '' || !Alliance::allianceExists($this->raw['alliance']))
 					return false;
 				else return trim($this->raw['alliance']);
 			}
-			elseif($tag === false)
+			else
 			{
-				# Aus der Allianz austreten
+				if($tag)
+				{
+					$that_alliance = Classes::Alliance($tag);
+					if(!$that_alliance->getStatus()) return false;
+				}
+				if((isset($this->raw['alliance']) && trim($this->raw['alliance']) != '') && (!$tag || $tag != $this->raw['alliance']))
+				{
+					# Aus der aktuellen Allianz austreten
+					$my_alliance = Classes::Alliance(trim($this->raw['alliance']));
+					if(!$my_alliance->getStatus()) return false;
+					if(!$my_alliance->removeUser($this->getName())) return false;
+					$this->raw['alliance'] = '';
+					$this->changed = true;
+				}
+				
+				if($tag)
+					$that_alliance->addUser($this->getName(), $this->getScores());
+				else $tag = '';
+				$this->raw['alliance'] = $tag;
+				
+				$this->cancelAllianceApplication(false);
+				$this->changed = true;
+				
+				$this->recalcHighscores();
+				$active_planet = $this->getActivePlanet();
+				$planets = $this->getPlanetsList();
+				foreach($planets as $planet)
+				{
+					$this->setActivePlanet($planet);
+					$pos = $this->getPos();
+					$galaxy = Classes::Galaxy($pos[0]);
+					$galaxy->setPlanetOwnerAlliance($pos[1], $pos[2], $tag);
+				}
+				$this->setActivePlanet($active_planet);
+				
+				return true;
+			}
+		}
+		
+		function cancelAllianceApplication($message=true)
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['alliance_bewerbung']) || !$this->raw['alliance_bewerbung'])
+				return false;
+			
+			$alliance_obj = Classes::Alliance($this->raw['alliance_bewerbung']);
+			if(!$alliance_obj->deleteApplication($this->getName()))
+				return false;
+			if($message)
+			{
+				$message_obj = Classes::Message();
+				if($message_obj->create())
+				{
+					$message_obj->from($this->getName());
+					$message_obj->subject("Allianzbewerbung zur\xc3\xbcckgezogen");
+					$message_obj->text('Der Benutzer '.$this->getName()." hat seine Bewerbung bei Ihrer Allianz zur\xc3\xbcckgezogen.");
+					$users = $alliance_obj->getUsersWithPermission(4);
+					foreach($users as $user)
+						$message_obj->addUser($user, 7);
+				}
+			}
+			unset($alliance_obj);
+			$this->raw['alliance_bewerbung'] = false;
+			$this->changed = true;
+			return true;
+		}
+		
+		function allianceApplication($alliance=false, $text=false)
+		{
+			if(!$this->status) return false;
+			if($this->allianceTag()) return false;
+			
+			if(!$alliance)
+			{
+				if(!isset($this->raw['alliance_bewerbung'])) return false;
+				return $this->raw['alliance_bewerbung'];
 			}
 			else
 			{
-				# Allianz betreten
+				if($this->status != 1) return false;
+				if(isset($this->raw['alliance_bewerbung']) && $this->raw['alliance_bewerbung'])
+					return false;
+				
+				$alliance_obj = Classes::Alliance($alliance);
+				if(!$alliance_obj->getStatus()) return false;
+				if(!$alliance_obj->newApplication($this->getName())) return false;
+				
+				$message = Classes::Message();
+				if($message->create())
+				{
+					$message_text = "Der Benutzer ".$this->getName()." hat sich bei Ihrer Allianz beworben. Gehen Sie auf Ihre Allianzseite, um die Bewerbung anzunehmen oder abzulehnen.";
+					if(!trim($text))
+						$message_text .= "\n\nDer Bewerber hat keinen Bewerbungstext hinterlassen.";
+					else $message_text .= "\n\nDer Bewerber hat folgenden Bewerbungstext hinterlassen:\n\n".$text;
+					$message->text($message_text);
+					$message->from($this->getName());
+					$message->subject('Neue Allianzbewerbung');
+					
+					$users = $alliance_obj->getUsersWithPermission(4);
+					foreach($users as $user)
+						$message->addUser($user, 7);
+				}
+				
+				$this->raw['alliance_bewerbung'] = $alliance;
+				$this->changed = true;
+				return true;
 			}
+		}
+		
+		function quitAlliance()
+		{
+			if($this->status != 1) return false;
+			if(!$this->allianceTag()) return false;
+			
+			$alliance = Classes::Alliance($this->allianceTag());
+			if(!$alliance->removeUser($this->getName())) return false;
+			
+			$members = $alliance->getUsersList();
+			if($members)
+			{
+				$message = Classes::Message();
+				if($message->create())
+				{
+					$message->from($this->getName());
+					$message->subject('Benutzer aus Allianz ausgetreten');
+					$message->text('Der Benutzer '.$this->getName().' hat Ihre Allianz verlassen.');
+					foreach($members as $member)
+						$message->addUser($member, 7);
+				}
+			
+			}
+			
+			$this->allianceTag(false);
+			
+			return true;
 		}
 		
 		function checkPlanetCount()

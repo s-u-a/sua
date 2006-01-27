@@ -122,7 +122,7 @@
 			if(!$this->seekSystem($system)) return false;
 			
 			fseek($this->file_pointer, 35+($planet-1)*24, SEEK_CUR);
-			if(!fwrite($this->file_pointer, $owner)) return false;
+			if(strlen($owner) > 0 && !fwrite($this->file_pointer, $owner)) return false;
 			if(strlen($owner) < 24) fwrite($this->file_pointer, str_repeat(' ', 24-strlen($owner)));
 			
 			if(!isset($this->cache['getPlanetOwner'])) $this->cache['getPlanetOwner'] = array();
@@ -168,7 +168,7 @@
 			if(!$this->seekSystem($system)) return false;
 			
 			fseek($this->file_pointer, 755+($planet-1)*24, SEEK_CUR);
-			if(!fwrite($this->file_pointer, $name)) return false;
+			if(strlen($name) > 0 && !fwrite($this->file_pointer, $name)) return false;
 			if(strlen($name) < 24) fwrite($this->file_pointer, str_repeat(' ', 24-strlen($name)));
 			
 			if(!isset($this->cache['getPlanetName'])) $this->cache['getPlanetName'] = array();
@@ -214,12 +214,12 @@
 			if(!$this->seekSystem($system)) return false;
 			
 			fseek($this->file_pointer, 1475+($planet-1)*6, SEEK_CUR);
-			if(!fwrite($this->file_pointer, $name)) return false;
-			if(strlen($name) < 6) fwrite($this->file_pointer, str_repeat(' ', 6-strlen($name)));
+			if(strlen($alliance) > 0 && !fwrite($this->file_pointer, $alliance)) return false;
+			if(strlen($alliance) < 6) fwrite($this->file_pointer, str_repeat(' ', 6-strlen($alliance)));
 			
 			if(!isset($this->cache['getPlanetOwnerAlliance'])) $this->cache['getPlanetOwnerAlliance'] = array();
 			if(!isset($this->cache['getPlanetOwnerAlliance'][$system])) $this->cache['getPlanetOwnerAlliance'][$system] = array();
-			$this->cache['getPlanetOwnerAlliance'][$system][$planet] = $name;
+			$this->cache['getPlanetOwnerAlliance'][$system][$planet] = $alliance;
 			return true;
 		}
 		
@@ -252,7 +252,7 @@
 		}
 		
 		function setPlanetSize($system, $planet, $size)
-		{
+		{ # UNTESTED!!!
 			if($this->status != 1) return false;
 			
 			$system = (int) $system;

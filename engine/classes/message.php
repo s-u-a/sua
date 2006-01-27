@@ -121,7 +121,7 @@
 				$user->removeMessage($this->name, $type, false);
 			}
 			
-			if(count($this->raw['users'][$user]) == 0)
+			if(count($this->raw['users']) == 0)
 			{
 				if(!unlink($this->filename)) return false;
 				else $this->status = false;
