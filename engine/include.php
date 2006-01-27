@@ -824,8 +824,6 @@
 
 		#$string .= '<!-- '.(array_sum($now_mtime)-array_sum($start_mtime)).' -->'."\n";
 
-		unlock_database();
-
 		return utf8_encode($string);
 	}
 

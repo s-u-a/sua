@@ -784,6 +784,22 @@
 			$this->raw['last_active'] = time();
 		}
 		
+		function getLastActivity()
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['last_active'])) return false;
+			return $this->raw['last_active'];
+		}
+		
+		function getRegistrationTime()
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['registration'])) return false;
+			return $this->raw['registration'];
+		}
+		
 		function getItemsList($type=false)
 		{
 			if(!$this->status) return false;
@@ -2564,6 +2580,22 @@
 			$this->changed = true;
 
 			return true;
+		}
+		
+		function maySeeKoords($user)
+		{
+			if(!$this->status) return false;
+			
+			if($this->isVerbuendet($user)) return true;
+			
+			if($this->allianceTag())
+			{
+				$alliance = Classes::Alliance($this->allianceTag());
+				if(!$alliance->getStatus()) return false;
+				if(!$alliance->checkUserPermissions($this->getName(), 1)) return false;
+				if(!in_array($user, $alliance->getUsersList())) return false;
+				return true;
+			}
 		}
 	}
 	

@@ -46,8 +46,6 @@
 </p>
 <?php
 					$show_form = false;
-
-					logfile::action('21', $message->getName(), $_POST['empfaenger'], $_POST['betreff']);
 					unset($message);
 				}
 			}
@@ -127,11 +125,7 @@
 					
 					# Als gelesen markieren
 					if($current_status == 1)
-					{
 						$me->setMessageStatus($_GET['message'], $_GET['type'], 0);
-
-						logfile::action('22', $_GET['message']);
-					}
 
 					# Vorige und naechste ungelesene Nachricht
 					$unread_prev = false;
@@ -207,7 +201,7 @@
 ?>
 <ul class="nachrichten-verbuendeten-links">
 	<li><a href="verbuendete.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Zur Verbündetenseite</a></li>
-	<li><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>">Zur Allianzseite</a></li>
+	<li><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Zur Allianzseite</a></li>
 </ul>
 <?php
 					}
@@ -288,8 +282,6 @@
 ?>
 <p class="successful">Die Nachricht wurde erfolgreich weitergeleitet.</p>
 <?php
-								logfile::action('21', $weiterleitung_message->getName(), $_POST['weiterleitung-to'], 'Fwd: '.$message['subject']);
-	
 								unset($_POST['weiterleitung-to']);
 								unset($weiterleitung_message);
 							}
@@ -353,28 +345,19 @@
 				{
 					# Als gelesen markieren
 					foreach($_POST['message'] as $message_id=>$v)
-					{
 						$me->setMessageStatus($message_id, $_GET['type'], 0);
-						logfile::action('22', $message_id);
-					}
 				}
 				elseif(isset($_POST['delete']) && isset($_POST['message']) && is_array($_POST['message']))
 				{
 					# Loeschen
 					foreach($_POST['message'] as $message_id=>$v)
-					{
 						$me->removeMessage($message_id, $_GET['type']);
-						logfile::action('23', $message_id);
-					}
 				}
 				elseif(isset($_POST['archive']) && isset($_POST['message']) && is_array($_POST['message']))
 				{
 					# Archivieren
 					foreach($_POST['message'] as $message_id=>$v)
-					{
 						$me->setMessageStatus($message_id, $_GET['type'], 2);
-						logfile::action('22.5', $message_id);
-					}
 				}
 ?>
 <script type="text/javascript">
