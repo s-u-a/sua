@@ -2586,6 +2586,7 @@
 		{
 			if(!$this->status) return false;
 			
+			if($user == $this->getName()) return true;
 			if($this->isVerbuendet($user)) return true;
 			
 			if($this->allianceTag())
