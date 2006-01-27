@@ -34,8 +34,6 @@
 			return 0;
 	}
 
-	lock_database();
-
 	$highscores = array();
 
 	$dh = opendir(DB_PLAYERS);

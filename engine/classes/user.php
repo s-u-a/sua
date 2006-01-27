@@ -141,6 +141,15 @@
 			return $this->planet_info['size'][0];
 		}
 		
+		function changeUsedFields($value)
+		{
+			if(!$this->status || !isset($this->planet_info)) return false;
+			
+			$this->planet_info['size'][0] += $value;
+			$this->changed = true;
+			return true;
+		}
+		
 		function getRemainingFields()
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
@@ -1010,6 +1019,8 @@
 		{
 			if(!$this->status) return false;
 			
+			if($value == 0) return true;
+			
 			if($time === false) $time = time();
 			
 			if($actions === false) $actions = array();
@@ -1026,15 +1037,23 @@
 			}
 			else
 			{
+				$item = Classes::Item($id);
+				$type = $item->getType();
 				if(isset($this->items['ids'][$id])) $this->items['ids'][$id] += $value;
 				else
 				{
-					$item = Classes::Item($id);
-					$type = $item->getType();
 					if(!isset($this->items[$type])) $this->items[$type] = array();
 					$this->items[$type][$id] = $value;
 					$this->items['ids'][$id] = &$this->items[$type][$id];
 				}
+			}
+			
+			# Felder belegen
+			if($type == 'gebaeude')
+			{
+				$item_info = $this->getItemInfo($id, 'gebaeude');
+				if($item_info['fields'] > 0)
+					$this->changeUsedFields($item_info['fields']*$value);
 			}
 			
 			switch($id)
