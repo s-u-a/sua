@@ -1,7 +1,5 @@
 #!/usr/bin/php
 <?php
-	# For full functionality, run once a day
-	
 	require_once('../engine/include.php');
 	
 	if(!isset($_SERVER['argv'][1]))
@@ -21,76 +19,87 @@
 	{
 		if(!is_file(DB_PLAYERS.'/'.$filename))
 			continue;
-		$username = urldecode($filename);
-		$user_array = get_user_array($username);
 		
-		if(isset($user_array['last_active']))
-			$days = ceil((time()-$user_array['last_active'])/86400);
+		# Not using instances for memory reasons
+		$user = new User(urldecode($filename));
+		if(!$user->getStatus()) return false;
+		
+		$last_activity = $user->getLastActivity();
+		if($last_activity !== false)
+			$days = ceil((time()-$last_activity)/86400);
 		else
-			$days = ceil((time()-$user_array['registration'])/86400);
+			$days = ceil((time()-$user->getRegistrationTime())/86400);
+		
+		$today = date('Y-m-d');
 		
 		# Wenn der Spieler inaktiv ist, loeschen
-		if(isset($user_array['last_active']))
+		if($last_activity !== false)
 		{
-			if(isset($user_array['umode']) && $user_array['umode'])
+			if($user->umode())
 			{
-				if($days == 175) # 25 Wochen: Nachricht
+				if($days == 175 && $user->lastMailSent() != $today) # 25 Wochen: Nachricht
 				{
-					if(isset($user_array['email']) && trim($user_array['email']) != '')
-						mail($user_array['email'], "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben zwei Wochen Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$username, "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".EMAIL_FROM."\r\nReply-To: ".EMAIL_FROM);
+					if($user->checkSetting('email'))
+					{
+						mail($user->checkSetting('email'), "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben zwei Wochen Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$username, "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".EMAIL_FROM."\r\nReply-To: ".EMAIL_FROM);
+						$user->lastMailSent($today);
+					}
 				}
 				elseif($days >= 189) # 27 Wochen: Loeschung
 				{
-					if(delete_user($username))
-						echo "Deleted user `".$username."' because of inactivity.\n";
+					if($user->destroy())
+						echo "Deleted user `".$user->getName()."' because of inactivity.\n";
 					else
-						echo "Error: Couldn't delete user `".$username."'.\n";
+						echo "Error: Couldn't delete user `".$user->getName()."'.\n";
 					continue;
 				}
 			}
 			else
 			{
-				if($days == 21 || $days == 34)
+				if(($days == 21 || $days == 34) && $user->lastMailSent() != $today)
 				{
-					if(isset($user_array['email']) && trim($user_array['email']) != '')
-						mail($user_array['email'], "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben ".(($days == 34) ? 'einen Tag' : 'zwei Wochen')." Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$username, "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".EMAIL_FROM."\r\nReply-To: ".EMAIL_FROM);
+					if($user->checkSetting('email'))
+					{
+						mail($user->checkSetting('email'), "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben ".(($days == 34) ? 'einen Tag' : 'zwei Wochen')." Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$username, "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".EMAIL_FROM."\r\nReply-To: ".EMAIL_FROM);
+						$user->lastMailSent($today);
+					}
 				}
 				elseif($days >= 35)
 				{
-					if(delete_user($username))
-						echo "Deleted user `".$username."' because of inactivity.\n";
+					if($user->destroy())
+						echo "Deleted user `".$user->getName()."' because of inactivity.\n";
 					else
-						echo "Error: Couldn't delete user `".$username."'.\n";
+						echo "Error: Couldn't delete user `".$user->getName()."'.\n";
 					continue;
 				}
 			}
 		}
-		elseif($days == 7)
+		elseif($days == 7 && $user->lastMailSent() != $today)
 		{
-			if(isset($user_array['email']) && trim($user_array['email']) != '')
-				mail($user_array['email'], "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben eine Woche Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$username, "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".EMAIL_FROM."\r\nReply-To: ".EMAIL_FROM);
+			if($user->checkSetting('email'))
+				mail($user->checkSetting('email'), "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben eine Woche Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$username, "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".EMAIL_FROM."\r\nReply-To: ".EMAIL_FROM);
 		}
 		elseif($days >= 14)
 		{
-			if(delete_user($username))
-				echo "Deleted user `".$username."' because of inactivity.\n";
+			if($user->destroy())
+				echo "Deleted user `".$user->getName()."' because of inactivity.\n";
 			else
-				echo "Error: Couldn't delete user `".$username."'.\n";
+				echo "Error: Couldn't delete user `".$user->getName()."'.\n";
 			continue;
 		}
 
-		$planets = array_keys($user_array['planets']);
+		$planets = $user->getPlanetsList();
 		foreach($planets as $planet)
 		{
-			$ges_ress[0] += $user_array['planets'][$planet]['ress'][0]/$days;
-			$ges_ress[1] += $user_array['planets'][$planet]['ress'][1]/$days;
-			$ges_ress[2] += $user_array['planets'][$planet]['ress'][2]/$days;
-			$ges_ress[3] += $user_array['planets'][$planet]['ress'][3]/$days;
-			$ges_ress[4] += $user_array['planets'][$planet]['ress'][4]/$days;
+			$user->setActivePlanet($planet);
+			$ress = $user->getRess();
+			$ges_ress[0] += $ress[0];
+			$ges_ress[1] += $ress[1];
+			$ges_ress[2] += $ress[2];
+			$ges_ress[3] += $ress[3];
+			$ges_ress[4] += $ress[4];
 		}
-
-		unset($username);
-		unset($user_array);
+		unset($user);
 	}
 	closedir($dh);
 

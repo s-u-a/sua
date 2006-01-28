@@ -559,6 +559,7 @@
 
 										if($fast_action)
 										{
+											# Fehlt noch: nicht in last_request speichern
 											header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 											ob_end_clean();
 											ob_end_clean();
@@ -595,6 +596,7 @@
 					{
 						if($fast_action)
 						{
+							# Fehlt noch: nicht in last_request speichern
 							header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 							ob_end_clean();
 							ob_end_clean();
@@ -973,6 +975,7 @@
 	{
 		if($fast_action)
 		{
+			# Fehlt noch: nicht in last_request speichern
 			header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 			ob_end_clean();
 			ob_end_clean();

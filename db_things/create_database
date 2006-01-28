@@ -41,7 +41,6 @@ touch $1/logfile
 mkdir $1/messages
 mkdir $1/messages_public
 mkdir $1/players
-ln -s $CWD/show_player_info $1/show_player_info
 mkdir $1/truemmerfelder
 mkdir $1/universe
 ln -s $CWD/create_galaxy $1/universe/create_galaxy
@@ -54,6 +53,7 @@ ADMIN_PASSWD=`php -r 'echo md5($_ENV["ADMIN_PASSWD"]);'`
 echo -n $ADMIN_USERNAME >> $1/admins
 echo -ne "\t" >> $1/admins
 echo -n $ADMIN_PASSWD >> $1/admins
+echo -ne "\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1"
 
 unset ADMIN_PASSWD
 

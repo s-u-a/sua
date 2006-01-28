@@ -877,7 +877,8 @@
 							if($rob > $this->getItemLevel('B4', 'gebaeude', $run_eventhandler)*2) $rob = $this->getItemLevel('B4', 'gebaeude', $run_eventhandler)*2;
 							$info['prod'][4] *= pow($minen_rob, $rob);
 						}
-						$info['prod'][5] *= pow(1.05, $this->getItemLevel('F3', 'forschung', $run_eventhandler));
+						if($info['prod'][5] > 0)
+							$info['prod'][5] *= pow(1.05, $this->getItemLevel('F3', 'forschung', $run_eventhandler));
 						
 						$info['time'] *= pow($info['level']+1, 1.5);
 						$baurob = 1-0.00125*$this->getItemLevel('F2', 'forschung', $run_eventhandler);
@@ -2675,6 +2676,21 @@
 			# Highscores-Eintrag neu schreiben
 			
 			return true;
+		}
+		
+		function lastMailSent($time=false)
+		{
+			if(!$this->status) return false;
+			
+			if($time !== false)
+			{
+				$this->raw['last_mail'] = $time;
+				$this->changed = true;
+				return true;
+			}
+			
+			if(!isset($this->raw['last_mail'])) return false;
+			return $this->raw['last_mail'];
 		}
 	}
 	
