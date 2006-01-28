@@ -1084,7 +1084,7 @@
 					$building = $this->checkBuildingThing('gebaeude');
 					if($building && $building[1] > $time)
 					{
-						$remaining = ($building[1]-$time)*pow(1-0.0025*$this->getItemLevel('F2', 'forschung', false), $value);
+						$remaining = ($building[1]-$time)*pow(1-0.00125*$this->getItemLevel('F2', 'forschung', false), $value);
 						$this->raw['building']['gebaeude'][1] = $time+$remaining;
 					}
 					
@@ -1095,7 +1095,7 @@
 						$this_item = Classes::Item($action2[1]);
 						if($this_item->getType() == 'gebaeude')
 						{
-							$remaining = ($action2[0]-$time)*pow(1-0.0025*$this->getItemLevel('F2', 'forschung', false), $value);
+							$remaining = ($action2[0]-$time)*pow(1-0.00125*$this->getItemLevel('F2', 'forschung', false), $value);
 							$actions[$i][0] = $time+$remaining;
 							$one = true;
 						}
@@ -1116,8 +1116,8 @@
 						$robs = $this->getItemLevel('R01', 'roboter', false);
 						if($robs > 0 && $building && $building[1] > $time)
 						{
-							$f_1 = pow(1-0.0025*($this->getItemLevel('F2', false, false)-$value), $robs);
-							$f_2 = pow(1-0.0025*$this->getItemLevel('F2', false, false), $robs);
+							$f_1 = pow(1-0.00125*($this->getItemLevel('F2', false, false)-$value), $robs);
+							$f_2 = pow(1-0.00125*$this->getItemLevel('F2', false, false), $robs);
 							$remaining = ($building[1]-$time)*$f_2/$f_1;
 							$this->raw['building']['gebaeude'][1] = $time+$remaining;
 						}
@@ -1131,10 +1131,10 @@
 								$this_item = Classes::Item($action2[1]);
 								if($this_item->getType() == 'gebaeude')
 								{
-									$f_1 = pow(1-0.0025*($this->getItemLevel('F2', false, false)-$value), $robs);
-									$f_2 = pow(1-0.0025*$this->getItemLevel('F2', false, false), $robs);
+									$f_1 = pow(1-0.00125*($this->getItemLevel('F2', false, false)-$value), $robs);
+									$f_2 = pow(1-0.00125*$this->getItemLevel('F2', false, false), $robs);
 									$remaining = ($action2[0]-$time)*$f_2/$f_1;
-									$actions[$i][0] = $action[0]+$remaining;
+									$actions[$i][0] = $action2[0]+$remaining;
 									$one = true;
 								}
 							}
@@ -2146,7 +2146,7 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
-			$anzahl = (int) $anzahl;
+			$anzahl = floor($anzahl);
 			if($anzahl < 0) return false;
 			
 			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B9') return false;
@@ -2165,10 +2165,10 @@
 				$planet_ress = $this->getRess();
 				$ress = $item_info['ress'];
 				$anzahlen = array();
-				if($ress[0] > 0) $anzahlen[] = (int) $planet_ress[0]/$ress[0];
-				if($ress[1] > 0) $anzahlen[] = (int) $planet_ress[1]/$ress[1];
-				if($ress[2] > 0) $anzahlen[] = (int) $planet_ress[2]/$ress[2];
-				if($ress[3] > 0) $anzahlen[] = (int) $planet_ress[3]/$ress[3];
+				if($ress[0] > 0) $anzahlen[] = floor($planet_ress[0]/$ress[0]);
+				if($ress[1] > 0) $anzahlen[] = floor($planet_ress[1]/$ress[1]);
+				if($ress[2] > 0) $anzahlen[] = floor($planet_ress[2]/$ress[2]);
+				if($ress[3] > 0) $anzahlen[] = floor($planet_ress[3]/$ress[3]);
 				$anzahl = min($anzahlen);
 				$ress[0] *= $anzahl;
 				$ress[1] *= $anzahl;
@@ -2213,7 +2213,7 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
-			$anzahl = (int) $anzahl;
+			$anzahl = floor($anzahl);
 			if($anzahl < 0) return false;
 			
 			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B10') return false;
@@ -2232,10 +2232,10 @@
 				$planet_ress = $this->getRess();
 				$ress = $item_info['ress'];
 				$anzahlen = array();
-				if($ress[0] > 0) $anzahlen[] = (int) $planet_ress[0]/$ress[0];
-				if($ress[1] > 0) $anzahlen[] = (int) $planet_ress[1]/$ress[1];
-				if($ress[2] > 0) $anzahlen[] = (int) $planet_ress[2]/$ress[2];
-				if($ress[3] > 0) $anzahlen[] = (int) $planet_ress[3]/$ress[3];
+				if($ress[0] > 0) $anzahlen[] = floor($planet_ress[0]/$ress[0]);
+				if($ress[1] > 0) $anzahlen[] = floor($planet_ress[1]/$ress[1]);
+				if($ress[2] > 0) $anzahlen[] = floor($planet_ress[2]/$ress[2]);
+				if($ress[3] > 0) $anzahlen[] = floor($planet_ress[3]/$ress[3]);
 				$anzahl = min($anzahlen);
 				$ress[0] *= $anzahl;
 				$ress[1] *= $anzahl;
@@ -2280,7 +2280,7 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
-			$anzahl = (int) $anzahl;
+			$anzahl = floor($anzahl);
 			if($anzahl < 0) return false;
 			
 			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B10') return false;
@@ -2299,10 +2299,10 @@
 				$planet_ress = $this->getRess();
 				$ress = $item_info['ress'];
 				$anzahlen = array();
-				if($ress[0] > 0) $anzahlen[] = (int) $planet_ress[0]/$ress[0];
-				if($ress[1] > 0) $anzahlen[] = (int) $planet_ress[1]/$ress[1];
-				if($ress[2] > 0) $anzahlen[] = (int) $planet_ress[2]/$ress[2];
-				if($ress[3] > 0) $anzahlen[] = (int) $planet_ress[3]/$ress[3];
+				if($ress[0] > 0) $anzahlen[] = floor($planet_ress[0]/$ress[0]);
+				if($ress[1] > 0) $anzahlen[] = floor($planet_ress[1]/$ress[1]);
+				if($ress[2] > 0) $anzahlen[] = floor($planet_ress[2]/$ress[2]);
+				if($ress[3] > 0) $anzahlen[] = floor($planet_ress[3]/$ress[3]);
 				$anzahl = min($anzahlen);
 				$ress[0] *= $anzahl;
 				$ress[1] *= $anzahl;

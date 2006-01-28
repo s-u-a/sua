@@ -340,10 +340,10 @@
 <h3 id="roboter-auswirkungsgrade">Roboter-Auswirkungsgrade</h3>
 <dl class="imperium-roboter-auswirkungsgrade">
 	<dt class="c-bauroboter">Bauroboter</dt>
-	<dd class="c-bauroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.25)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dd class="c-bauroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.125)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 	
 	<dt class="c-minenroboter">Minenroboter</dt>
-	<dd class="c-minenroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.0625)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dd class="c-minenroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.03125)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 </dl>
 <?php
 			break;
