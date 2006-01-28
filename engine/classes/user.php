@@ -1116,8 +1116,8 @@
 						$robs = $this->getItemLevel('R01', 'roboter', false);
 						if($robs > 0 && $building && $building[1] > $time)
 						{
-							$f_1 = pow(1-0.0025*($this->getItemLevel('F2', false, false)-$value), $rob);
-							$f_2 = pow(1-0.0025*$this->getItemLevel('F2', false, false), $rob);
+							$f_1 = pow(1-0.0025*($this->getItemLevel('F2', false, false)-$value), $robs);
+							$f_2 = pow(1-0.0025*$this->getItemLevel('F2', false, false), $robs);
 							$remaining = ($building[1]-$time)*$f_2/$f_1;
 							$this->raw['building']['gebaeude'][1] = $time+$remaining;
 						}
