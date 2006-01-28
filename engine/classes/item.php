@@ -129,7 +129,7 @@
 						'deps' => explode(' ', $item[4]),
 						'prod' => explode('.', $item[5]),
 						'fields' => $item[6],
-						'caption' => $item[7]
+						'caption' => parseItemDescription($item[7])
 					);
 					if(trim($item[4]) == '')
 						$items['gebaeude'][$item[0]]['deps'] = array();
@@ -151,7 +151,7 @@
 						'ress' => explode('.', $item[2]),
 						'time' => $item[3],
 						'deps' => explode(' ', trim($item[4])),
-						'caption' => $item[5]
+						'caption' => parseItemDescription($item[5])
 					);
 					if(trim($item[4]) == '')
 						$items['forschung'][$item[0]]['deps'] = array();
@@ -173,7 +173,7 @@
 						'ress' => explode('.', $item[2]),
 						'time' => $item[3],
 						'deps' => explode(' ', trim($item[4])),
-						'caption' => $item[5]
+						'caption' => parseItemDescription($item[5])
 					);
 					if(trim($item[4]) == '')
 						$items['roboter'][$item[0]]['deps'] = array();
@@ -200,7 +200,7 @@
 						'def' => $item[7],
 						'speed' => $item[8],
 						'types' => explode(' ', $item[9]),
-						'caption' => $item[10]
+						'caption' => parseItemDescription($item[10])
 					);
 					if(trim($item[4]) == '')
 						$items['schiffe'][$item[0]]['deps'] = array();
@@ -222,7 +222,7 @@
 						'deps' => explode(' ', $item[4]),
 						'att' => $item[5],
 						'def' => $item[6],
-						'caption' => $item[7]
+						'caption' => parseItemDescription($item[7])
 					);
 					if(trim($item[4]) == '')
 						$items['verteidigung'][$item[0]]['deps'] = array();
@@ -242,5 +242,11 @@
 			flock($fh, LOCK_UN);
 			fclose($fh);
 		}
+	}
+	
+	function parseItemDescription($description)
+	{
+		$description = preg_replace("/\\\\[\\\\\n]/e", '"$0"', $description);
+		return $description;
 	}
 ?>

@@ -498,7 +498,7 @@
 	function delete_request()
 	{
 		$_SESSION['last_click_ignore'] = true;
-		$url = PROTOCOL.'://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.SESSION_COOKIE.'='.urlencode(session_id());
+		$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.urlencode(SESSION_COOKIE).'='.urlencode(session_id());
 		header('Location: '.$url, true, 303);
 		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 	}

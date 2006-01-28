@@ -90,7 +90,7 @@
 <?php
 		}
 ?>
-<form action="rename.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post">
+<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/scripts/rename.php?'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post">
 	<fieldset>
 		<legend>Planeten aufgeben<input type="hidden" name="act_planet" value="<?=htmlentities($_SESSION['act_planet'])?>" /></legend>
 		<dl>

@@ -1,6 +1,12 @@
 <?php
 	require('scripts/include.php');
 
+	if(isset($_POST['cancel-all-roboter']))
+	{
+		if($me->checkPassword($_POST['cancel-all-roboter']) && $me->removeBuildingThing('roboter'))
+			delete_request();
+	}
+	
 	if($me->permissionToAct() && isset($_POST['roboter']) && is_array($_POST['roboter']))
 	{
 		# Roboter in Auftrag geben
@@ -107,6 +113,10 @@
 		}
 ?>
 </script>
+<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/roboter.php?'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="alle-abbrechen">
+	<p>Geben Sie hier Ihr Passwort ein, um alle im Bau befindlichen Roboter <strong>ohne Kostenrückerstattung</strong> abzubrechen.</p>
+	<div><input type="password" name="cancel-all-roboter" /><input type="submit" value="Alle abbrechen" /></div>
+</form>
 <?php
 	}
 

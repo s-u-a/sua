@@ -484,3 +484,8 @@ br.clear { clear:both; }
 .imperium-modi .active a,.highscores-modi .active a { background-color:#999; }
 
 .allianz-bewerben-form dt,.allianz-gruenden-form dt,.allianz-intern-form dt,.allianz-extern-form dt { position:relative; }
+
+.alle-abbrechen { padding:.5em; border:.1em solid #aaa; font-size:.8em; width:50%; margin:.5em .5em .5em auto; }
+.alle-abbrechen p { margin:0; padding:0; }
+* html .alle-abbrechen { margin-left:50%; }
+.alle-abbrechen strong { font-weight:bold; text-decoration:underline; }

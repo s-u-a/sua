@@ -1,6 +1,12 @@
 <?php
 	require('scripts/include.php');
 
+	if(isset($_POST['cancel-all-schiffe']))
+	{
+		if($me->checkPassword($_POST['cancel-all-schiffe']) && $me->removeBuildingThing('schiffe'))
+			delete_request();
+	}
+	
 	if($me->permissionToAct() && isset($_POST['schiffe']) && is_array($_POST['schiffe']))
 	{
 		# Schiffe in Auftrag geben
@@ -107,6 +113,10 @@
 		}
 ?>
 </script>
+<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/schiffswerft.php?'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="alle-abbrechen">
+	<p>Geben Sie hier Ihr Passwort ein, um alle im Bau befindlichen Schiffe <strong>ohne Kostenrückerstattung</strong> abzubrechen.</p>
+	<div><input type="password" name="cancel-all-schiffe" /><input type="submit" value="Alle abbrechen" /></div>
+</form>
 <?php
 	}
 
