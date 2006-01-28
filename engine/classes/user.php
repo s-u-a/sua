@@ -1489,6 +1489,9 @@
 			  )*/
 			
 			$run = false;
+			$beginning_building = array();
+			if(isset($this->planet_info['building'])) $beginning_building = $this->planet_info['building'];
+			$beginning_changed = $this->changed;
 			
 			$recalc_gebaeude = false;
 			$recalc_forschung = false;
@@ -1522,7 +1525,6 @@
 			{
 				$info = $this->getItemInfo($items[0], 'roboter', false);
 				if(!$info) continue;
-				$punkte = array_sum($info['ress'])/1000;
 				$time = $items[1];
 				for($i=0; $i<$items[2]; $i++)
 				{
@@ -1540,7 +1542,7 @@
 							unset($this->planet_info['building']['roboter'][$j]);
 							break;
 						}
-						else $this->planet_info['building']['roboter'][$j][1] += $this->planet_info['building']['roboter'][$j][3];
+						else $this->planet_info['building']['roboter'][$j][1] = $time;
 					}
 					else
 						break 2;
@@ -1552,7 +1554,6 @@
 			{
 				$info = $this->getItemInfo($items[0], 'schiffe', false);
 				if(!$info) continue;
-				$punkte = array_sum($info['ress'])/1000;
 				$time = $items[1];
 				for($i=0; $i<$items[2]; $i++)
 				{
@@ -1570,7 +1571,7 @@
 							unset($this->planet_info['building']['schiffe'][$j]);
 							break;
 						}
-						else $this->planet_info['building']['schiffe'][$j][1] += $this->planet_info['building']['schiffe'][$j][3];
+						else $this->planet_info['building']['schiffe'][$j][1] = $time;
 					}
 					else
 						break 2;
@@ -1583,7 +1584,6 @@
 			{
 				$info = $this->getItemInfo($items[0], 'verteidigung', false);
 				if(!$info) continue;
-				$punkte = array_sum($info['ress'])/1000;
 				$time = $items[1];
 				for($i=0; $i<$items[2]; $i++)
 				{
@@ -1601,7 +1601,7 @@
 							unset($this->planet_info['building']['verteidigung'][$j]);
 							break;
 						}
-						else $this->planet_info['building']['verteidigung'][$j][1] += $this->planet_info['building']['verteidigung'][$j][3];
+						else $this->planet_info['building']['verteidigung'][$j][1] = $time;
 					}
 					else
 						break 2;
@@ -1629,6 +1629,11 @@
 				
 				$this->changed = true;
 				$this->recalcHighscores($recalc_gebaeude, $recalc_forschung, $recalc_roboter, $recalc_schiffe, $recalc_verteidigung);
+			}
+			elseif(!$run)
+			{
+				$this->planet_info['building'] = $beginning_building;
+				$this->changed = $beginning_changed;
 			}
 		}
 		
