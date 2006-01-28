@@ -94,8 +94,26 @@
 			}
 			
 			fseek($this->file_pointer, 0, SEEK_SET);
-			ftruncate($this->file_pointer, 0);
-			fwrite($this->file_pointer, bzcompress(serialize($this->raw)));
+			$new_data = bzcompress(serialize($this->raw));
+			
+			$act_filesize = filesize($this->filename);
+			$new_filesize = strlen($new_data);
+			
+			if($new_filesize > $act_filesize)
+			{
+				$diff = $new_filesize-$act_filesize;
+				$fname = $this->filename;
+				while(is_link($fname)) $fname = readlink($fname);
+				$df = disk_free_space(dirname($fname));
+				if($df < $diff)
+				{
+					echo "Error writing user array: No space left on disk.\n";
+					exit(1);
+				}
+			}
+			else ftruncate($this->file_pointer, $new_filesize);
+			
+			fwrite($this->file_pointer, $new_data);
 			
 			return true;
 		}

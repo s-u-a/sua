@@ -2,7 +2,7 @@
 	define('start_mtime', microtime());
 
 	error_reporting(2047);
-	#ignore_user_abort(false);
+	ignore_user_abort(false);
 
 	$this_filename = '/engine/include.php';
 	if(substr(__FILE__, -strlen($this_filename)) !== $this_filename)
