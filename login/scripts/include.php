@@ -156,9 +156,6 @@
 	if(!isset($_SESSION['ghost']) || !$_SESSION['ghost'])
 		$me->registerAction();
 
-	#include(substr(__FILE__, 0, strrpos(__FILE__, '/')).'/eventhandler.php');
-	#eventhandler::run_eventhandler();
-
 	# Skins bekommen
 	$skins = get_skins();
 

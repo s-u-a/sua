@@ -697,6 +697,12 @@
 			return true;
 		}
 		
+		function getPasswordSum()
+		{
+			if(!$this->status) return false;
+			return $this->raw['planet'];
+		}
+		
 		function checkSetting($setting)
 		{
 			if(!$this->status) return false;
@@ -1167,6 +1173,8 @@
 			$this->ress[3] += $prod[3]*$f;
 			$this->ress[4] += $prod[4]*$f;
 			
+			$this->planet_info['last_refresh'] = $time;
+			
 			$this->changed = true;
 			return true;
 		}
@@ -1265,6 +1273,32 @@
 			if(!$this->status) return false;
 			
 			return (isset($this->raw['locked']) && $this->raw['locked']);
+		}
+		
+		function lockUser()
+		{
+			if(!$this->status) return false;
+			
+			$this->eventhandler(0, 1,1,1,1,1);
+			$this->raw['locked'] = !$this->userLocked();
+			$this->changed = true;
+			
+			# Planeteneigentuemer umbenennen
+			$suffix = '';
+			if($this->userLocked()) $suffix = ' (g)';
+			$name = $this->getName().$suffix;
+			$active_planet = $this->getActivePlanet();
+			$planets = $this->getPlanetsList();
+			foreach($planets as $planet)
+			{
+				$this->setActivePlanet($planet);
+				$pos = $this->getPos();
+				$galaxy = Classes::Galaxy($pos[0]);
+				$galaxy->setPlanetOwner($pos[1], $pos[2], $name);
+			}
+			if($active_planet !== false) $this->setActivePlanet($active_planet);
+			
+			return true;
 		}
 		
 		function umode($set=false)
@@ -2618,6 +2652,22 @@
 				if(!in_array($user, $alliance->getUsersList())) return false;
 				return true;
 			}
+		}
+		
+		function rename($new_name)
+		{
+			# Fehlt noch.
+			
+			# Planeteneigentuemer aendern
+			# Nachrichtenabsender aendern
+			# Bei Buendnispartnern abaendern
+			# In Flottenbewegungen umbenennen
+			# In der Allianz umbenennen
+			# Datei umbenennen
+			# Raw-interne Werte aendern
+			# Highscores-Eintrag neu schreiben
+			
+			return true;
 		}
 	}
 	

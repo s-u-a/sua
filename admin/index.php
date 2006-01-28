@@ -1,230 +1,94 @@
 <?php
 	require('include.php');
-
-	if($admin_array['permissions'][1] && isset($_POST['ghost_username']) && is_file(DB_PLAYERS.'/'.urlencode(trim($_POST['ghost_username']))) && is_readable(DB_PLAYERS.'/'.urlencode(trim($_POST['ghost_username']))))
+	
+	__autoload('User');
+	
+	if($admin_array['permissions'][1] && isset($_POST['ghost_username']) && User::userExists(trim($_POST['ghost_username'])))
 	{
 		# Als Geist als ein Benutzer anmelden
 		$_SESSION['username'] = trim($_POST['ghost_username']);
 		$_SESSION['ghost'] = true;
 		$_SESSION['resume'] = true;
 
-		$url = 'https://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php?'.SESSION_COOKIE.'='.urlencode(session_id());
+		$url = 'https://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php?'.urlencode(SESSION_COOKIE).'='.urlencode(session_id());
 		header('Location: '.$url, true, 303);
 		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 	}
 
-	if($admin_array['permissions'][2] && isset($_POST['passwd_username']) && isset($_POST['passwd_password']) && is_file(DB_PLAYERS.'/'.urlencode(trim($_POST['passwd_username']))) && is_readable(DB_PLAYERS.'/'.urlencode(trim($_POST['passwd_username']))))
+	if($admin_array['permissions'][2] && isset($_POST['passwd_username']) && isset($_POST['passwd_password']) && User::userExists(trim($_POST['passwd_username'])))
 	{
 		# Passwort aendern
 
 		$_POST['passwd_username'] = trim($_POST['passwd_username']);
 
-		$that_user_array = get_user_array($_POST['passwd_username']);
-		$that_user_array['password'] = md5($_POST['passwd_password']);
-		write_user_array($_POST['passwd_username'], $that_user_array);
+		$that_user = Classes::User($_POST['passwd_username']);
+		$that_user->setPassword($_POST['passwd_password']);
+		unset($that_user);
 	}
 
-	if($admin_array['permissions'][4] && isset($_POST['delete_username']) && is_file(DB_PLAYERS.'/'.urlencode(trim($_POST['delete_username']))) && is_readable(DB_PLAYERS.'/'.urlencode(trim($_POST['delete_username']))))
+	if($admin_array['permissions'][4] && isset($_POST['delete_username']) && User::userExists(trim($_POST['delete_username'])))
 	{
 		# Benutzer loeschen
 
 		$_POST['delete_username'] = trim($_POST['delete_username']);
 
-		delete_user($_POST['delete_username']);
+		$that_user = Classes::User($_POST['delete_username']);
+		$that_user->destroy();
 	}
 
-	if($admin_array['permissions'][5] && isset($_POST['lock_username']) && is_file(DB_PLAYERS.'/'.urlencode(trim($_POST['lock_username']))) && is_readable(DB_PLAYERS.'/'.urlencode(trim($_POST['lock_username']))))
+	if($admin_array['permissions'][5] && isset($_POST['lock_username']) && User::userExists(trim($_POST['lock_username'])))
 	{
 		# Benutzer sperren / entsperren
 
 		$_POST['lock_username'] = trim($_POST['lock_username']);
 
-		$that_user_array = get_user_array($_POST['lock_username']);
-		$unlock = (isset($that_user_array['locked']) && $that_user_array['locked']);
-
-		if($unlock)
-		{
-			$that_user_array['umode'] = $that_user_array['umode.sav'];
-			unset($that_user_array['umode.sav']);
-			$that_user_array['locked'] = false;
-		}
-		else
-		{
-			$that_user_array['umode.sav'] = $that_user_array['umode'];
-			$that_user_array['umode'] = true;
-			$that_user_array['locked'] = true;
-		}
-
-		# Planeten umbenennen
-		$planets = array_keys($that_user_array['planets']);
-		foreach($planets as $planet)
-		{
-			$pos = explode(':', $that_user_array['planets'][$planet]['pos']);
-			$old_info = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
-			if($unlock)
-			{
-				if($that_user_array['umode'])
-					universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], substr($_POST['lock_username'], 0, 20).' (U)', $old_info[2], $old_info[3]);
-				else
-					universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['lock_username'], $old_info[2], $old_info[3]);
-			}
-			else
-				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], substr($_POST['lock_username'], 0, 20).' (g)', $old_info[2], $old_info[3]);
-		}
-
-		write_user_array($_POST['lock_username'], $that_user_array);
+		$that_user = Classes::User($_POST['lock_username']);
+		$that_user->lockUser();
+		unset($that_user);
 	}
 
-	if($admin_array['permissions'][6] && isset($_POST['rename_old']) && isset($_POST['rename_new']) && is_file(DB_PLAYERS.'/'.urlencode(trim($_POST['rename_old']))) && is_readable(DB_PLAYERS.'/'.urlencode(trim($_POST['rename_old']))) && !file_exists(DB_PLAYERS.'/'.urlencode(substr(trim($_POST['rename_new']), 0, 20))))
+	if($admin_array['permissions'][6] && isset($_POST['rename_old']) && isset($_POST['rename_new']) && User::userExists(trim($_POST['rename_old'])))
 	{
 		# Benutzer umbenennen
 
 		$_POST['rename_old'] = trim($_POST['rename_old']);
 		$_POST['rename_new'] = substr(trim($_POST['rename_new']), 0, 20);
 
-		$that_user_array = get_user_array($_POST['rename_old']);
-
-		$that_user_array['username'] = $_POST['rename_new'];
-
-		# Planeten neu benenennen
-		$planets = array_keys($that_user_array['planets']);
-		foreach($planets as $planet)
-		{
-			$pos = explode(':', $that_user_array['planets'][$planet]['pos']);
-			$old_info = universe::get_planet_info($pos[0], $pos[1], $pos[2]);
-			if(isset($that_user_array['locked']) && $that_user_array['locked'])
-				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['rename_new'].' (g)', $old_info[2], $old_info[3]);
-			elseif($that_user_array['umode'])
-				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['rename_new'].' (U)', $old_info[2], $old_info[3]);
-			else
-				universe::set_planet_info($pos[0], $pos[1], $pos[2], $old_info[0], $_POST['rename_new'], $old_info[2], $old_info[3]);
-		}
-
-		# Nachrichten durchforsten
-		$dh = opendir(DB_MESSAGES);
-		while(($message = readdir($dh)) !== false)
-		{
-			if(!is_file(DB_MESSAGES.'/'.$message) || !is_readable(DB_MESSAGES.'/'.$message) || !is_writeable(DB_MESSAGES.'/'.$message))
-				continue;
-			$changed = false;
-			$msg = unserialize(gzuncompress(file_get_contents(DB_MESSAGES.'/'.$message)));
-			if($msg['from'] == $_POST['rename_old'])
-			{
-				$msg['from'] = $_POST['rename_new'];
-				$changed = true;
-			}
-
-			if(isset($msg['users'][$_POST['rename_old']]))
-			{
-				$msg['users'][$_POST['rename_new']] = $msg['users'][$_POST['rename_old']];
-				unset($msg['users'][$_POST['rename_old']]);
-				$changed = true;
-			}
-
-			if($changed)
-			{
-				$fh = fopen(DB_MESSAGES.'/'.$message, 'w');
-				flock($fh, LOCK_EX);
-				fwrite($fh, gzcompress(serialize($msg)));
-				flock($fh, LOCK_UN);
-				fclose($fh);
-			}
-		}
-		closedir($dh);
-
-		# Buendnisparter auswechseln
-		foreach($that_user_array['verbuendete'] as $verbuendeter)
-		{
-			$verb_user_array = get_user_array($verbuendeter);
-			$verb_key = array_search($_POST['rename_old'], $verb_user_array['verbuendete']);
-			if($verb_key !== false)
-			{
-				$verb_user_array['verbuendete'][$verb_key] = $_POST['rename_new'];
-				write_user_array($verbuendeter, $verb_user_array);
-			}
-			unset($verb_user_array);
-		}
-		if(isset($that_user_array['verbuendete_bewerbungen']))
-		{
-			foreach($that_user_array['verbuendete_bewerbungen'] as $verbuendeter)
-			{
-				$verb_user_array = get_user_array($verbuendeter);
-				$verb_key = array_search($_POST['rename_old'], $verb_user_array['verbuendete_anfragen']);
-				if($verb_key !== false)
-				{
-					$verb_user_array['verbuendete_anfragen'][$verb_key] = $_POST['rename_new'];
-					write_user_array($verbuendeter, $verb_user_array);
-				}
-				unset($verb_user_array);
-			}
-		}
-		if(isset($that_user_array['verbuendete_anfragen']))
-		{
-			foreach($that_user_array['verbuendete_anfragen'] as $verbuendeter)
-			{
-				$verb_user_array = get_user_array($verbuendeter);
-				$verb_key = array_search($_POST['rename_old'], $verb_user_array['verbuendete_bewerbungen']);
-				if($verb_key !== false)
-				{
-					$verb_user_array['verbuendete_bewerbungen'][$verb_key] = $_POST['rename_new'];
-					write_user_array($verbuendeter, $verb_user_array);
-				}
-				unset($verb_user_array);
-			}
-		}
-		
-		# Allianz
-		if($that_user_array['alliance'])
-		{
-			$alliance_array = get_alliance_array($that_user_array['alliance']);
-			$alliance_array['members'][$_POST['rename_new']] = $alliance_array['members'][$_POST['rename_old']];
-			unset($alliance_array['members'][$_POST['rename_old']]);
-			write_alliance_array($that_user_array['alliance'], $alliance_array);
-		}
-
-		# Datei umbenennen und schreiben
-		rename(DB_PLAYERS.'/'.urlencode($_POST['rename_old']), DB_PLAYERS.'/'.urlencode($_POST['rename_new']));
-		write_user_array($_POST['rename_new'], $that_user_array);
-		
-		highscores::recalc($_POST['rename_new']);
+		$that_user = Classes::User($_POST['rename_old']);
+		$that_user->rename($_POST['rename_new']);
 	}
 
 	if($admin_array['permissions'][9] && isset($_POST['message_text']) && trim($_POST['message_text']) != '')
 	{
-		$from = $to = $subject = '';
-		$html = false;
-		if(isset($_POST['message_from']))
-			$from = $_POST['message_from'];
-		if(isset($_POST['message_to']))
-			$to = $_POST['message_to'];
-		if(isset($_POST['message_subject']))
-			$subject = $_POST['message_subject'];
-		if(isset($_POST['message_html']) && $_POST['message_html'])
-			$html = true;
-
-		if(trim($to) == '')
+		$message = new Message();
+		if($message->create())
 		{
-			# An alle Benutzer versenden
-
-			$to = array();
-			$dh = opendir(DB_PLAYERS);
-			while(($uname = readdir($dh)) !== false)
+			if(isset($_POST['message_from']))
+				$message->from($_POST['message_from']);
+			if(isset($_POST['message_subject']))
+				$message->subject($_POST['message_subject']);
+			$message->text($_POST['message_text']);
+			if(isset($_POST['message_html']) && $_POST['message_html'])
+				$message->html(true);
+			$to = '';
+			if(isset($_POST['message_to'])) $to = trim($_POST['message_to']);
+			if(!$to)
 			{
-				if(!is_file(DB_PLAYERS.'/'.$uname) || !is_readable(DB_PLAYERS.'/'.$uname))
-					continue;
-				$to[urldecode($uname)] = 6;
+				# An alle Benutzer versenden
+	
+				$dh = opendir(DB_PLAYERS);
+				while(($uname = readdir($dh)) !== false)
+					$message->addUser(urldecode($uname), 6);
+				closedir($dh);
 			}
-			closedir($dh);
+			else
+			{
+				$to = explode("\r\n", $to);
+				foreach($to as $t)
+					$message->addUser(urldecode($uname), 6);
+			}
+			unset($message);
 		}
-		else
-		{
-			$to2 = explode("\r\n", $to);
-			$to = array();
-			foreach($to2 as $to_v)
-				$to[$to_v] = 6;
-		}
-
-		messages::new_message($to, $from, $subject, $_POST['message_text'], $html);
 	}
 
 	if($admin_array['permissions'][12] && isset($_POST['wartungsarbeiten']))
@@ -259,8 +123,6 @@
 
 	if($admin_array['permissions'][13] && isset($_POST['lock']))
 	{
-		include_once('../login/scripts/eventhandler.php');
-
 		if($_POST['lock'] && !file_exists(LOCK_FILE))
 		{
 			# Bei allen Benutzern den Eventhandler ausfuehren
@@ -270,7 +132,9 @@
 			{
 				if(!is_file(DB_PLAYERS.'/'.$player) || !is_readable(DB_PLAYERS.'/'.$player))
 					continue;
-				eventhandler::run_eventhandler(urldecode($player));
+				$this_user = Classes::User(urldecode($player));
+				$this_user->eventhandler(0, 1,1,1,1,1);
+				unset($this_user);
 			}
 			closedir($dh);
 
@@ -285,7 +149,9 @@
 			{
 				if(!is_file(DB_PLAYERS.'/'.$player) || !is_readable(DB_PLAYERS.'/'.$player))
 					continue;
-				eventhandler::run_eventhandler(urldecode($player));
+				$this_user = Classes::User(urldecode($player));
+				$this_user->eventhandler(0, 1,1,1,1,1);
+				unset($this_user);
 			}
 			closedir($dh);
 
@@ -412,9 +278,11 @@
 <?php
 		if(isset($_POST['compare_1']) && isset($_POST['compare_2']) && is_file(DB_PLAYERS.'/'.urlencode($_POST['compare_1'])) && is_readable(DB_PLAYERS.'/'.urlencode($_POST['compare_1'])) && is_file(DB_PLAYERS.'/'.urlencode($_POST['compare_2'])) && is_readable(DB_PLAYERS.'/'.urlencode($_POST['compare_2'])))
 		{
-			$user_array_1 = get_user_array($_POST['compare_1']);
-			$user_array_2 = get_user_array($_POST['compare_2']);
-			if($user_array_1['password'] == $user_array_2['password'])
+			$user_1 = Classes::User($_POST['compare_1']);
+			$user_2 = Classes::User($_POST['compare_2']);
+			$pwd_1 = $user_1->getPasswordSum();
+			$pwd_2 = $user_2->getPasswordSum();
+			if($pwd_1 && $pwd_2 && $pwd_1 == $pwd_2)
 			{
 ?>
 <p><strong>Die Passwörter der Benutzer &bdquo;<?=utf8_htmlentities($_POST['compare_1'])?>&ldquo; und &bdquo;<?=utf8_htmlentities($_POST['compare_2'])?>&ldquo; stimmen überein.</strong></p>

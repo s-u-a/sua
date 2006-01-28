@@ -390,7 +390,7 @@
 			}
 		}
 		
-		if($show_building['verteidigung'] && $me->getItemLevel('B9', 'gebaeude') > 0)
+		if($show_building['verteidigung'] && $me->getItemLevel('B10', 'gebaeude') > 0)
 		{
 ?>
 
