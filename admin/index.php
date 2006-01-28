@@ -176,8 +176,8 @@
 <?php }if($admin_array['permissions'][7]){?>	<li><a href="#action-7"><span xml:lang="en">Todo</span>-Liste bearbeiten</a></li>
 <?php }if($admin_array['permissions'][8]){?>	<li><a href="#action-8"><span xml:lang="en">Changelog</span> bearbeiten</a></li>
 <?php }if($admin_array['permissions'][9]){?>	<li><a href="#action-9">Nachricht versenden</a></li>
-<?php }if($admin_array['permissions'][10]){?>	<li><a href="#action-10"><span xml:lang="en">Log</span>dateien einsehen</a></li>
-<?php }if($admin_array['permissions'][11]){?>	<li><a href="#action-11">Benutzerverwaltung</a></li>
+<?php }/*if($admin_array['permissions'][10]){?>	<li><a href="#action-10"><span xml:lang="en">Log</span>dateien einsehen</a></li>
+<?php }*/if($admin_array['permissions'][11]){?>	<li><a href="#action-11">Benutzerverwaltung</a></li>
 <?php }if($admin_array['permissions'][12]){?>	<li><a href="#action-12">Wartungsarbeiten</a></li>
 <?php }if($admin_array['permissions'][13]){?>	<li><a href="#action-13">Spiel sperren</a></li>
 <?php }if($admin_array['permissions'][14]){?>	<li><a href="#action-14"><span xml:lang="en">News</span> bearbeiten</a></li>
@@ -398,7 +398,7 @@
 <?php
 	}
 
-	if($admin_array['permissions'][10])
+	/*if($admin_array['permissions'][10])
 	{
 ?>
 <hr />
@@ -411,7 +411,7 @@
 	<li><a href="logfiles.php?action=whole">Gesamte Logdatei einsehen</a></li>
 </ul>
 <?php
-	}
+	}*/
 
 	if($admin_array['permissions'][11])
 	{

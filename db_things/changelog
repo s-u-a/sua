@@ -1,3 +1,5 @@
+1138410318	Neue Versionsnummer: 1.0.0 pre-beta 1
+1138410302	Komplette Neuprogrammierung der Spielengine, von außen betrachtet sind aber wenige Features hinzugekommen.
 1136851793	Bei Nachrichten ist der Absender jetzt anklickbar, man gelangt zu dessen Benutzerbeschreibung.
 1136851773	Bug behoben: Wurde globale Forschung wieder abgebrochen, nachdem die Reihenfolge der Planeten verändert wurde, bekam man die Rohstoffe unter Umständen auf dem falschen Planeten zurück.
 1136220585	Bug in Bezug auf den Roboterhandel mit der Handelsfunktion behoben.
