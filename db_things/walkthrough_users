@@ -93,6 +93,7 @@
 		{
 			$user->setActivePlanet($planet);
 			$ress = $user->getRess();
+			unset($ress[5]); # Energie soll nicht miteinberechnet werden
 			$min = max($ress);
 			if($min != 0)
 			{
