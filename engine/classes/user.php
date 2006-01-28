@@ -2429,7 +2429,7 @@
 			$old_position = $this->getRank();
 			$old_position_f = ($old_position-1)*38;
 
-			if($recalc_gebaeude || $recalc_forschung || $recalc_schiffe || $recalc_verteidigung)
+			if($recalc_gebaeude || $recalc_forschung || $recalc_roboter || $recalc_schiffe || $recalc_verteidigung)
 			{
 				if($recalc_gebaeude) $this->raw['punkte'][0] = 0;
 				if($recalc_forschung) $this->raw['punkte'][1] = 0;
