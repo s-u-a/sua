@@ -1204,6 +1204,8 @@
 			
 			if(isset($this->cache['getProduction']) && isset($this->cache['getProduction'][$this->getActivePlanet()]))
 				unset($this->cache['getProduction'][$this->getActivePlanet()]);
+			if(isset($this->cache['getItemInfo']) && isset($this->cache['getItemInfo'][$this->getActivePlanet()]) && isset($this->cache['getItemInfo'][$this->getActivePlanet()][$gebaeude]))
+				unset($this->cache['getItemInfo'][$this->getActivePlanet()][$gebaeude]);
 			
 			return true;
 		}
