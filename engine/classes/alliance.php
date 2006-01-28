@@ -391,6 +391,7 @@
 			if($this->status != 1) return false;
 			
 			$this->raw['platz'] = $rank;
+			$this->changed = true;
 			return true;
 		}
 		
@@ -406,6 +407,7 @@
 			if($this->status != 1) return false;
 			
 			$this->raw['platz2'] = $rank;
+			$this->changed = true;
 			return true;
 		}
 		
