@@ -566,7 +566,7 @@
 			if($key === false) return true;
 			
 			unset($this->raw['bewerbungen'][$key]);
-			#$this->raw['bewerbungen'] = array_values($this->raw['bewerbungen']);
+			$this->raw['bewerbungen'] = array_values($this->raw['bewerbungen']);
 			
 			$this->changed = true;
 			return true;
