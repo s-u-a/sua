@@ -100,12 +100,13 @@
 				{
 					if($val < $min && $val != 0) $min = $val;
 				}
+				
+				$ress[0] /= $min;
+				$ress[1] /= $min;
+				$ress[2] /= $min;
+				$ress[3] /= $min;
+				$ress[4] /= $min;
 			}
-			$ress[0] /= $min;
-			$ress[1] /= $min;
-			$ress[2] /= $min;
-			$ress[3] /= $min;
-			$ress[4] /= $min;
 			
 			$ress[0] = pow($ress[0], 1/($days+1));
 			$ress[1] = pow($ress[1], 1/($days+1));
@@ -135,7 +136,7 @@
 	}
 
 	if($min == 0)
-		$kurs = array(1, 1, 1, 1, 1);
+		$kurs = array(10, 5, 3.75, 2.5, 1);
 	else
 	{
 		$kurs = array();
