@@ -246,7 +246,14 @@
 	
 	function parseItemDescription($description)
 	{
-		$description = preg_replace("/\\\\[\\\\\n]/e", '"$0"', $description);
+		$description = preg_replace("/\\\\[\\\\n]/e", "parseItemDescriptionChar('$0')", $description);
 		return $description;
+	}
+	
+	function parseItemDescriptionChar($char)
+	{
+		if($char == '\\n') return "\n";
+		if($char == '\\\\') return '\\';
+		return $char;
 	}
 ?>

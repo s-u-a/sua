@@ -81,7 +81,7 @@
 					$line = fread($fh, 26);
 					$info = decodeAllianceHighscoresString($line);
 					$that_alliance = Classes::Alliance($info[0]);
-					$that_alliance->setRankAverage($that_alliance->getAllianceRank()-1);
+					$that_alliance->setRankAverage($that_alliance->getRankAverage()-1);
 					unset($that_alliance);
 					
 					fseek($fh, -52, SEEK_CUR);
