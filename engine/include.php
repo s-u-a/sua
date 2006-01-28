@@ -685,23 +685,26 @@
 
 	function format_btime($time2)
 	{
-		$time = $time2;
+		$time = round($time2);
 		$days = $hours = $minutes = $seconds = 0;
 
 		if($time >= 86400)
 		{
-			$days = floor($time/86400);
-			$time -= $days*86400;
+			$mod = $time%86400;
+			$days = ($time-$mod)/86400;
+			$time = $mod;
 		}
 		if($time >= 3600)
 		{
-			$hours = floor($time/3600);
-			$time -= $hours*3600;
+			$mod = $time%3600;
+			$hours = ($time-$mod)/3600;
+			$time = $mod;
 		}
 		if($time >= 60)
 		{
-			$minutes = floor($time/60);
-			$time -= $minutes*60;
+			$mod = $time%60;
+			$minutes = ($time-$mod)/60;
+			$time = $mod;
 		}
 		$seconds = $time;
 
