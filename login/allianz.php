@@ -572,7 +572,10 @@
 							
 							$members = $alliance->getUsersList();
 							foreach($members as $member)
+							{
+								if($member == $_SESSION['username']) continue;
 								$message->addUser($member);
+							}
 ?>
 <p class="successful">Das Allianzrundschreiben wurde erfolgreich versandt.</p>
 <?php

@@ -560,10 +560,10 @@
 		function deleteApplication($user)
 		{
 			if($this->status != 1) return false;
-			if(!isset($this->raw['bewerbungen'])) return false;
+			if(!isset($this->raw['bewerbungen'])) return true;
 			
 			$key = array_search($user, $this->raw['bewerbungen']);
-			if($key === false) return false;
+			if($key === false) return true;
 			
 			unset($this->raw['bewerbungen'][$key]);
 			$this->raw['bewerbungen'] = array_values($this->raw['bewerbungen']);
