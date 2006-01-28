@@ -59,6 +59,7 @@
 		if((!($building_geb = $me->checkBuildingThing('gebaeude')) || $building_geb[0] != 'B8') && $item_info['buildable'] && $me->permissionToAct() && !($building = $me->checkBuildingThing('forschung')) && !in_array($id, $laufende_forschungen) && $item_info['deps-okay'])
 		{
 			$enough_ress = $me->checkRess($item_info['ress']);
+			$buildable_global = ($buildable_global && $enough_ress);
 ?>
 	<ul>
 		<li class="item-ausbau forschung-lokal<?=$enough_ress ? '' : ' no-ress'?>"><?=$enough_ress ? '<a href="forschung.php?lokal='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Lokal weiterentwickeln<?=$enough_ress ? '</a>' : ''?></li>
