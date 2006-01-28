@@ -709,7 +709,7 @@
 		$seconds = $time;
 
 		$return = array();
-		if($time2 > 86400)
+		if($time2 >= 86400)
 		{
 			if($days == 1)
 				$days .= '&nbsp;Tag';
@@ -717,7 +717,7 @@
 				$days .= '&nbsp;Tage';
 			$return[] = $days;
 		}
-		if($time2 > 3600)
+		if($time2 >= 3600)
 		{
 			if($hours == 1)
 				$hours .= '&nbsp;Stunde';
@@ -725,7 +725,7 @@
 				$hours .= '&nbsp;Stunden';
 			$return[] = $hours;
 		}
-		if($time2 > 60)
+		if($time2 >= 60)
 		{
 			if($minutes == 1)
 				$minutes .= '&nbsp;Minute';
