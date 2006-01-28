@@ -49,7 +49,7 @@
 	{
 		$item_info = $me->getItemInfo($id, 'gebaeude');
 		
-		if($item_info['level'] <= 0 || ($item_info['prod'][0] == 0 && $item_info['prod'][1] == 0 && $item_info['prod'][2] == 0 && $item_info['prod'][3] == 0 && $item_info['prod'][4] == 0 && $item_info['prod'][5] == 0))
+		if($item_info['level'] <= 0 || !$item_info['has_prod'])
 			continue; # Es wird nichts produziert, also nicht anzeigen
 		$prod = $me->checkProductionFactor($id);
 ?>

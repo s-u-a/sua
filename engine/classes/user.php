@@ -845,6 +845,7 @@
 				switch($type)
 				{
 					case 'gebaeude':
+						$info['has_prod'] = ($info['prod'][0] > 0 || $info['prod'][1] > 0 || $info['prod'][2] > 0 || $info['prod'][3] > 0 || $info['prod'][4] > 0 || $info['prod'][5] > 0);
 						$level_f = pow($info['level'], 2);
 						$percent_f = $this->checkProductionFactor($id);
 						$info['prod'][0] *= $level_f*$percent_f;
