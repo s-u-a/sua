@@ -1131,14 +1131,14 @@
 								$this_item = Classes::Item($action2[1]);
 								if($this_item->getType() == 'gebaeude')
 								{
-									$f_1 = pow(1-0.0025*($this->getItemLevel('F2', false, false)-$value), $rob);
-									$f_2 = pow(1-0.0025*$this->getItemLevel('F2', false, false), $rob);
+									$f_1 = pow(1-0.0025*($this->getItemLevel('F2', false, false)-$value), $robs);
+									$f_2 = pow(1-0.0025*$this->getItemLevel('F2', false, false), $robs);
 									$remaining = ($action2[0]-$time)*$f_2/$f_1;
 									$actions[$i][0] = $action[0]+$remaining;
 									$one = true;
 								}
 							}
-							if($one) usort($action, 'sortEventhandlerActions');
+							if($one) usort($actions, 'sortEventhandlerActions');
 						}
 					}
 					$this->setActivePlanet($active_planet);
