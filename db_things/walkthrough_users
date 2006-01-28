@@ -93,6 +93,26 @@
 		{
 			$user->setActivePlanet($planet);
 			$ress = $user->getRess();
+			$min = max($ress);
+			if($min != 0)
+			{
+				foreach($ress as $val)
+				{
+					if($val < $min && $val != 0) $min = $val;
+				}
+			}
+			$ress[0] /= $min;
+			$ress[1] /= $min;
+			$ress[2] /= $min;
+			$ress[3] /= $min;
+			$ress[4] /= $min;
+			
+			$ress[0] = pow($ress[0], 1/($days+1));
+			$ress[1] = pow($ress[1], 1/($days+1));
+			$ress[2] = pow($ress[2], 1/($days+1));
+			$ress[3] = pow($ress[3], 1/($days+1));
+			$ress[4] = pow($ress[4], 1/($days+1));
+			
 			$ges_ress[0] += $ress[0];
 			$ges_ress[1] += $ress[1];
 			$ges_ress[2] += $ress[2];
