@@ -193,8 +193,8 @@
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
 			$pos = $this->getPos();
-			$galaxy = Classes::galaxy($pos[0]);
-			return $galaxy->getPlanetClass($pos[1], $pos[2]);
+			__autoload('Galaxy');
+			return getPlanetClass($pos[0], $pos[1], $pos[2]);
 		}
 		
 		function removePlanet()

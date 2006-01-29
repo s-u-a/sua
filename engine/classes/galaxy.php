@@ -287,15 +287,6 @@
 			$this->cache['getPlanetSize'][$system][$planet] = $this->cache['getPlanetSize'][$system][$planet] = array();
 		}
 		
-		function getPlanetClass($system, $planet)
-		{
-			if(!$this->status) return false;
-			
-			$galaxy = $this->galaxy;
-			$type = (((floor($system/100)+1)*(floor(($system%100)/10)+1)*(($system%10)+1))%$planet)*$planet+($system%(($galaxy+1)*$planet));
-			return $type%20+1;
-		}
-		
 		function resetPlanet($system, $planet)
 		{
 			if(!$this->status) return false;
@@ -303,11 +294,24 @@
 			return ($this->setPlanetName($system, $planet, '') && $this->setPlanetOwner($system, $planet, '')
 			&& $this->setPlanetOwnerAlliance($system, $planet, '') && $this->setPlanetSize(rand(100, 500)));
 		}
+		
+		function getPlanetClass($system, $planet)
+		{
+			if(!$this->status) return false;
+			
+			return getPlanetClass($this->galaxy, $system, $planet);
+		}
 	}
 	
 	function getGalaxiesCount()
 	{
 		for($i=0; is_file(DB_UNIVERSE.'/'.($i+1)) && is_readable(DB_UNIVERSE.'/'.($i+1)); $i++);
 		return $i;
+	}
+	
+	function getPlanetClass($galaxy, $system, $planet)
+	{
+		$type = (((floor($system/100)+1)*(floor(($system%100)/10)+1)*(($system%10)+1))%$planet)*$planet+($system%(($galaxy+1)*$planet));
+		return $type%20+1;
 	}
 ?>
