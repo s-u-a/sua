@@ -1473,9 +1473,11 @@
 						$this->setActivePlanet($active_planet);
 					}
 					elseif($cancel)
-					{
 						$this->addRess($this->planet_info['building'][$type][3]);
-						$this->raw['punkte'][7] -= $this->planet_info['building'][$type][3][0];
+					
+					if($cancel)
+					{
+						$this->raw['punkte'][7] -= $this->planet_info['uilding'][$type][3][0];
 						$this->raw['punkte'][8] -= $this->planet_info['building'][$type][3][1];
 						$this->raw['punkte'][9] -= $this->planet_info['building'][$type][3][2];
 						$this->raw['punkte'][10] -= $this->planet_info['building'][$type][3][3];
