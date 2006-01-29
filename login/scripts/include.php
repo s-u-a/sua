@@ -70,6 +70,29 @@
 		}
 	}
 	
+	# Schnellklicksperre
+	$now_time = array_sum(explode(' ', microtime()));
+
+	if(!isset($_SESSION['last_click_sleep']))
+		$_SESSION['last_click_sleep'] = 0;
+	if(isset($_SESSION['last_click']) && (!isset($_SESSION['last_click_ignore']) || !$_SESSION['last_click_ignore']))
+	{
+		$last_click_diff = $now_time-$_SESSION['last_click']-pow($_SESSION['last_click_sleep'], 1.5);
+		if($last_click_diff < MIN_CLICK_DIFF)
+		{
+			$_SESSION['last_click_sleep']++;
+			$sleep_time = round(pow($_SESSION['last_click_sleep'], 1.5));
+			sleep($sleep_time);
+		}
+		else
+			$_SESSION['last_click_sleep'] = 0;
+	}
+
+	if(isset($_SESSION['last_click_ignore']))
+		unset($_SESSION['last_click_ignore']);
+	$_SESSION['last_click'] = $now_time;
+	
+	
 	$me = Classes::User($_SESSION['username']);
 
 	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] && $me->checkSetting('ipcheck'))
@@ -120,28 +143,6 @@
 		header('Location: '.$url, true, 303);
 		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 	}
-
-	# Schnellklicksperre
-	$now_time = array_sum(explode(' ', microtime()));
-
-	if(!isset($_SESSION['last_click_sleep']))
-		$_SESSION['last_click_sleep'] = 0;
-	if(isset($_SESSION['last_click']) && (!isset($_SESSION['last_click_ignore']) || !$_SESSION['last_click_ignore']))
-	{
-		$last_click_diff = $now_time-$_SESSION['last_click']-pow($_SESSION['last_click_sleep'], 1.5);
-		if($last_click_diff < MIN_CLICK_DIFF)
-		{
-			$_SESSION['last_click_sleep']++;
-			$sleep_time = round(pow($_SESSION['last_click_sleep'], 1.5));
-			sleep($sleep_time);
-		}
-		else
-			$_SESSION['last_click_sleep'] = 0;
-	}
-
-	if(isset($_SESSION['last_click_ignore']))
-		unset($_SESSION['last_click_ignore']);
-	$_SESSION['last_click'] = $now_time;
 
 	if(isset($_GET['planet']) && $me->planetExists($_GET['planet'])) # Planeten wechseln
 		$_SESSION['act_planet'] = $_GET['planet'];

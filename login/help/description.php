@@ -6,7 +6,7 @@
 	if(!isset($_GET['id'])) $item = false;
 	else $item = Classes::Item($_GET['id']);
 	
-	if($item && !$item->getInfo())
+	if(!$item || !$item->getInfo())
 	{
 ?>
 <p class="error">Dieser Gegenstand existiert nicht.</p>
