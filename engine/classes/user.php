@@ -1810,7 +1810,7 @@
 			{
 				$message->from($this->getName());
 				$message->subject("B\xc3\xbcndnisanfrage angenommen");
-				$message->text("Der Spieler ".$_SESSION['username']." hat Ihre B\xc3\xbcndnisanfrage angenommen.");
+				$message->text("Der Spieler ".$this->getName()." hat Ihre B\xc3\xbcndnisanfrage angenommen.");
 				$message->addUser($user, 7);
 			}
 			
@@ -2141,7 +2141,7 @@
 				$build_array = array($id, time()+$item_info['time_'.($global ? 'global' : 'local')], $global, $item_info['ress']);
 				if($global)
 				{
-					$build_array[] = $_SESSION['act_planet'];
+					$build_array[] = $this->getActivePlanet();
 					
 					$planets = $this->getPlanetsList();
 					foreach($planets as $planet)
