@@ -382,6 +382,18 @@
 				return $this->raw['punkte'][$i];
 		}
 		
+		function addScores($i, $scores)
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['punkte'][$i]))
+				$this->raw['punkte'][$i] = $scores;
+			else $this->raw['punkte'][$i] += $scores;
+			
+			if(isset($this->cache['getScores'])) $this->cache['getScores'] += $scores;
+			return true;
+		}
+		
 		function getSpentRess($i=false)
 		{
 			if(!$this->status) return false;
@@ -1084,8 +1096,8 @@
 					foreach($planets as $planet)
 					{
 						$this->setActivePlanet($planet);
-						$size = $this->getTotalFields()/($this->getItemLevel('F9', false, false)-$value);
-						$this->setFields($size*$this->getItemLevel('F9', false, false));
+						$size = $this->getTotalFields()/($this->getItemLevel('F9', false, false)-$value+1);
+						$this->setFields($size*($this->getItemLevel('F9', false, false)+1));
 					}
 					$this->setActivePlanet($active_planet);
 					break;
@@ -1481,6 +1493,7 @@
 						$this->raw['punkte'][9] -= $this->planet_info['building'][$type][3][2];
 						$this->raw['punkte'][10] -= $this->planet_info['building'][$type][3][3];
 						$this->raw['punkte'][11] -= $this->planet_info['building'][$type][3][4];
+						if(isset($this->cache['getSpentRess'])) unset($this->cache['getSpentRess']);
 					}
 					
 					unset($this->planet_info['building'][$type]);
