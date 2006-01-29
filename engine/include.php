@@ -52,7 +52,7 @@
 			define('EVENTHANDLER_INTERVAL', 30);
 			define('THS_HTML', '&nbsp;');
 			define('THS_UTF8', "\xc2\xa0");
-			define('MIN_CLICK_DIFF', 0.5); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
+			define('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
 			define('EMAIL_FROM', 'webmaster@s-u-a.net');
 			define('MAX_PLANETS', 15);
 			define('SESSION_COOKIE', session_name());
