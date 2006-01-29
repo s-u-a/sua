@@ -909,6 +909,9 @@
 		}
 		
 		$truemmerfeld = array(0, 0, 0, 0);
+		$verteidiger_ress = array(0, 0, 0, 0);
+		$angreifer_punkte = 0;
+		$verteidiger_punkte = 0;
 
 		if(count($angreifer_anfang) > 1)
 			$nachrichten_text .= "<h3>Flotten der Angreifer</h3>";
@@ -941,13 +944,26 @@
 				$nachrichten_text .= "\t\t</tr>\n";
 				
 				$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
+				$angreifer_punkte[$name] = 0;
+				if(!isset($angreifer[$name])) $angreifer[$name] = array();
 				foreach($flotten as $id=>$old_anzahl)
 				{
-					$item_info = $users_angreifer[$name]->getItemInfo($id);
+					$item_info = $users_angreifer[$name]->getItemInfo($id, false, true, true);
 					
 					if(isset($angreifer[$name]) && isset($angreifer[$name][$id]))
 						$anzahl = $angreifer[$name][$id];
-					else $anzahl = 0;
+					else
+					{
+						$anzahl = 0;
+						$angreifer[$name][$id] = 0;
+					}
+					
+					$diff = $anzahl_old-$anzahl;
+					$truemmerfeld[0] += $item_info['ress'][0]*$diff*.4;
+					$truemmerfeld[1] += $item_info['ress'][1]*$diff*.4;
+					$truemmerfeld[2] += $item_info['ress'][2]*$diff*.4;
+					$truemmerfeld[3] += $item_info['ress'][3]*$diff*.4;
+					$angreifer_punkte[$name] += $item_info['simple_scores']*$diff;
 					
 					$staerke = $item_info['att']*$anzahl;
 					$schild = $item_info['def']*$anzahl;
@@ -1024,13 +1040,24 @@
 				$nachrichten_text .= "\t\t</tr>\n";
 				
 				$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
-				foreach($flotten as $id=>$anzahl)
+				$verteidiger_punkte[$name] = 0;
+				foreach($flotten as $id=>$anzahl_old)
 				{
-					$item_info = $users_verteidiger[$name]->getItemInfo($id);
+					$item_info = $users_verteidiger[$name]->getItemInfo($id, false, true, true);
 					
 					if(isset($verteidiger[$name]) && isset($verteidiger[$name][$id]))
 						$anzahl = $angreifer[$name][$id];
 					else $anzahl = 0;
+					
+					$diff = $anzahl_old-$anzahl;
+					if($item_info['type'] == 'schiffe')
+					{
+						$truemmerfeld[0] += $item_info['ress'][0]*$diff*.4;
+						$truemmerfeld[1] += $item_info['ress'][1]*$diff*.4;
+						$truemmerfeld[2] += $item_info['ress'][2]*$diff*.4;
+						$truemmerfeld[3] += $item_info['ress'][3]*$diff*.4;
+					}
+					$verteidiger_punkte[$name] += $diff*$item_info['simple_scores'];
 					
 					$staerke = $item_info['att']*$anzahl;
 					$schild = $item_info['def']*$anzahl;
@@ -1076,25 +1103,8 @@
 		}
 
 		# Angreifer
-		# Verlorene Punkte
-		$angreifer_punkte = 0;
-		foreach($flotte[0] as $id=>$anzahl)
-		{
-			if(!isset($items['schiffe'][$id]))
-				continue;
-			$a = $anzahl;
-			if(isset($angreifer_flotte[$id]))
-				$a -= $angreifer_flotte[$id][0];
-			$angreifer_punkte += array_sum($items['schiffe'][$id]['ress'])*$a;
-		}
-		$angreifer_punkte /= 1000;
-		$start_user_array['punkte'][3] -= $angreifer_punkte;
-		$target_user_array['punkte'][6] += $angreifer_punkte/1000;
-
-		$flotte[0] = array();
-		foreach($angreifer_flotte as $id=>$anzahl)
-			$flotte[0][$id] = $anzahl[0];
-
+		
+		
 		# Verteidiger
 		# Verlorene Punkte
 		$verteidiger_punkte_schiffe = 0;

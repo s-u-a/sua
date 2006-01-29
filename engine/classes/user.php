@@ -967,7 +967,10 @@
 						$info['time'] *= pow(0.95, $this->getItemLevel('B9', 'gebaeude', $run_eventhandler));
 						
 						if($calc_scores)
-							$info['scores'] = array_sum($info['ress'])*$info['level']/1000;
+						{
+							$info['simple_scores'] = array_sum($info['ress'])/1000;
+							$info['scores'] = $info['simple_scores']*$info['level'];
+						}
 						
 						stdround(&$info['time']);
 						break;
@@ -983,7 +986,10 @@
 						$info['speed'] *= pow(1.5, $this->getItemLevel('F8', 'forschung', $run_eventhandler));
 						
 						if($calc_scores)
-							$info['scores'] = array_sum($info['ress'])*$info['level']/1000;
+						{
+							$info['simple_scores'] = array_sum($info['ress'])/1000;
+							$info['scores'] = $info['simple_scores']*$info['level'];
+						}
 						
 						# Runden
 						stdround(&$info['att']);
@@ -999,7 +1005,10 @@
 						$info['time'] *= pow(0.95, $this->getItemLevel('B10', 'gebaeude', $run_eventhandler));
 						
 						if($calc_scores)
-							$info['scores'] = array_sum($info['ress'])*$info['level']/1000;
+						{
+							$info['simple_scores'] = array_sum($info['ress'])/1000;
+							$info['scores'] = $info['simple_scores']*$info['level'];
+						}
 						
 						stdround(&$info['att']);
 						stdround(&$info['def']);
