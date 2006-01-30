@@ -740,6 +740,7 @@
 		{
 			$angreifer_nominativ = 'die Angreifer';
 			$angreifer_praedikat = 'sind';
+			$angreifer_praedikat2 = 'haben';
 			$angreifer_genitiv = 'der Angreifer';
 			$angreifer_dativ = 'ihnen';
 		}
@@ -747,6 +748,7 @@
 		{
 			$angreifer_nominativ = 'der Angreifer';
 			$angreifer_praedikat = 'ist';
+			$angreifer_praedikat2 = 'hat';
 			$angreifer_genitiv = 'des Angreifers';
 			$angreifer_dativ = 'ihm';
 		}
@@ -754,6 +756,7 @@
 		{
 			$verteidiger_nominativ = 'die Verteidiger';
 			$verteidiger_praedikat = 'sind';
+			$verteidiger_praedikat2 = 'haben';
 			$verteidiger_nominativ_letzt = 'letztere';
 			$verteidiger_genitiv = 'der Verteidiger';
 		}
@@ -761,6 +764,7 @@
 		{
 			$verteidiger_nominativ = 'der Verteidiger';
 			$verteidiger_praedikat = 'ist';
+			$veteidiger_praedikat2 = 'hat';
 			$verteidiger_nominativ_letzt = 'letzterer';
 			$verteidiger_genitiv = 'des Verteidigers';
 		}
@@ -1120,6 +1124,15 @@
 			}
 			$nachrichten_text .= "</table>\n";
 		}
+		
+		$nachrichten_text .= "<ul class=\"angreifer-punkte\">\n";
+		foreach($angreifer_punkte as $a=>$p)
+			$nachrichten_text .= "\t<li>Der Angreifer <span class=\"koords\">".utf8_htmlentities($a)."</span> hat ".ths($p)."&nbsp;Punkte verloren.</li>\n";
+		$nachrichten_text .= "</ul>\n";
+		$nachrichten_text .= "<ul class=\"verteidiger-punkte\">\n";
+		foreach($verteidiger_punkte as $v=>$p)
+			$nachrichten_text .= "\t<li>Der Verteidiger <span class=\"koords\">".utf8_htmlentities($v)."</span> hat ".ths($p)."&nbsp;Punkte verloren.</li>\n";
+		$nachrichten_text .= "</ul>\n";
 
 		if(array_sum($truemmerfeld) > 0)
 		{
@@ -1140,10 +1153,17 @@
 		# Kampferfahrung
 		$angreifer_new_erfahrung = array_sum($verteidiger_punkte)/1000;
 		$verteidiger_new_erfahrung = array_sum($angreifer_punkte)/1000;
+		$nachrichten_text .= "<ul class=\"kampferfahrung\">\n";
 		foreach($users_angreifer as $user)
+		{
 			$user->addScores(6, $angreifer_new_erfahrung);
+			$nachrichten_text .= "\t<li class=\"c-angreifer\">".$angreifer_nominativ." ".$angreifer_praedikat2." ".ths($angreifer_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
+		}
 		foreach($users_verteidiger as $user)
+		{
 			$user->addScores(6, $verteidiger_new_erfahrung);
+			$nachrichten_text .= "\t<li class=\"c-angreifer\">".$verteidiger_nominativ." ".$verteidiger_praedikat2." ".ths($verteidiger_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
+		}
 
 		return array($winner, $angreifer, $verteidiger, $nachrichten_text, $verteidiger_ress);
 	}

@@ -1,0 +1,23 @@
+#!/usr/bin/php
+<?php
+	require('../engine/include.php');
+	
+	function usort_fleet_actions($a, $b)
+	{
+		if($a[0] < $b[0]) return -1;
+		elseif($a[0] > $b[0]) return 1;
+		else return 0;
+	}
+	
+	$fh = fopen(DB_EVENTS, 'w');
+	while(true)
+	{
+		flock($fh, LOCK_EX);
+		
+		clearstatcache();
+		while(($line = fgets($fh, 1024)) !== false)
+		{
+			$strlen = strlen($line);
+			$line = trim($line);
+			if(!$line) continue;
+?>

@@ -231,7 +231,7 @@
 					if(isset($_POST['weiterleitung-to']))
 					{
 						$weiterleitung_text = '';
-						if($message['html'])
+						if($message->html())
 							$weiterleitung_text .= "<p class=\"weitergeleitete-nachricht\">\n\t";
 						$weiterleitung_text .= "--- Weitergeleitete Nachricht";
 						if(trim($message->from()) != '')

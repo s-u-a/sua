@@ -1254,7 +1254,7 @@
 		
 		for($i=0; $i<100; $i++)
 		{
-			if(flock($file, $lock_flag)) return true;
+			if(flock($file, $flag)) return true;
 			usleep(50000);
 		}
 		return false;

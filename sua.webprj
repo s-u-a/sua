@@ -17,7 +17,6 @@
     <item url="wartungsarbeiten.html" uploadstatus="1" />
     <item url="admin/" uploadstatus="1" />
     <item url="admin/edit_changelog.php" uploadstatus="1" />
-    <item url="admin/logfiles.php" uploadstatus="1" />
     <item url="admin/userlist.php" uploadstatus="1" />
     <item url="admin/.htaccess" uploadstatus="1" />
     <item url="admin/usermanagement.php" uploadstatus="1" />
@@ -35,7 +34,6 @@
     <item url="db_things/changelog" uploadstatus="1" />
     <item url="db_things/verteidigung" uploadstatus="1" />
     <item url="db_things/create_database" uploadstatus="1" />
-    <item url="db_things/show_player_info" uploadstatus="1" />
     <item url="db_things/forschung" uploadstatus="1" />
     <item url="db_things/version" uploadstatus="1" />
     <item url="engine/" uploadstatus="1" />
@@ -121,5 +119,6 @@
     <item url="engine/classes/galaxy.php" uploadstatus="1" />
     <item url="db_things/walkthrough_users" uploadstatus="1" />
     <item url="db_things/database_convert_v0_v1" uploadstatus="1" />
+    <item url="db_things/eventhandler" />
   </project>
 </webproject>
