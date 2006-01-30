@@ -57,7 +57,7 @@
 		$platz = $start;
 	
 		$fh = fopen(DB_HIGHSCORES, 'r');
-		flock($fh, LOCK_SH);
+		fancy_flock($fh, LOCK_SH);
 		
 		fseek($fh, ($start-1)*38, SEEK_SET);
 		
@@ -156,7 +156,7 @@
 			$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'r');
 		else
 			$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r');
-		flock($fh, LOCK_SH);
+		fancy_flock($fh, LOCK_SH);
 		while($platz < $start+100 && $bracket = fread($fh, 26))
 		{
 			$info = decodeAllianceHighscoresString($bracket);

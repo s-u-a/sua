@@ -20,13 +20,13 @@
 			$h_string = encodeAllianceHighscoresString($this->name, 0, 0, 0);
 			
 			$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'a');
-			flock($fh, LOCK_EX);
+			if(!fancy_flock($fh, LOCK_EX)) return false;
 			fwrite($fh, $h_string);
 			flock($fh, LOCK_UN);
 			fclose($fh);
 			
 			$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'a');
-			flock($fh, LOCK_EX);
+			if(!fancy_flock($fh, LOCK_EX)) return false;
 			fwrite($fh, $h_string);
 			flock($fh, LOCK_UN);
 			fclose($fh);
@@ -70,7 +70,7 @@
 			{
 				# Aus den Allianz-Highscores entfernen
 				$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r+');
-				flock($fh, LOCK_EX);
+				if(!fancy_flock($fh, LOCK_EX)) return false;
 				fseek($fh, $this->getRankAverage()*26, SEEK_SET);
 				$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
 				
@@ -94,7 +94,7 @@
 				fclose($fh);
 				
 				$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'r+');
-				flock($fh, LOCK_EX);
+				if(!fancy_flock($fh, LOCK_EX)) return false;
 				fseek($fh, $this->getRankTotal()*26, SEEK_SET);
 				$filesize = filesize(DB_HIGHSCORES_ALLIANCES2);
 				
@@ -176,7 +176,7 @@
 			$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r+');
 			if(!$fh)
 				return false;
-			flock($fh, LOCK_EX);
+			if(!fancy_flock($fh, LOCK_EX)) return false;
 
 			fseek($fh, $old_position_f, SEEK_SET);
 
@@ -280,7 +280,7 @@
 			$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'r+');
 			if(!$fh)
 				return false;
-			flock($fh, LOCK_EX);
+			if(!fancy_flock($fh, LOCK_EX)) return false;
 
 			fseek($fh, $old_position_f, SEEK_SET);
 

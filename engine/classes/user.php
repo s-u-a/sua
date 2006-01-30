@@ -24,7 +24,7 @@
 			);
 			
 			$fh = fopen(DB_HIGHSCORES, 'a');
-			flock($fh, LOCK_EX);
+			if(!fancy_flock($fh, LOCK_EX)) return false;
 			fwrite($fh, encodeUserHighscoresString($this->name, 0, ''));
 			flock($fh, LOCK_UN);
 			fclose($fh);
@@ -2403,7 +2403,7 @@
 			$pos = ($this->getRank()-1)*38;
 
 			$fh = fopen(DB_HIGHSCORES, 'r+');
-			flock($fh, LOCK_EX);
+			if(!fancy_flock($fh, LOCK_EX)) return false;
 	
 			$filesize = filesize(DB_HIGHSCORES)-38;
 			fseek($fh, $pos, SEEK_SET);
@@ -2569,7 +2569,7 @@
 			$fh = fopen(DB_HIGHSCORES, 'r+');
 			if(!$fh)
 				return false;
-			flock($fh, LOCK_EX);
+			if(!fancy_flock($fh, LOCK_EX)) return false;
 
 			fseek($fh, $old_position_f, SEEK_SET);
 
