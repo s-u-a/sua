@@ -463,7 +463,8 @@
 		{
 			if(!$this->status) return false;
 			
-			global $sortAllianceMembersBy,$sortAllianceMembersInvert;
+			global $sortAllianceMembersBy;
+			global $sortAllianceMembersInvert;
 			$sortAllianceMembersBy = $sortby;
 			$sortAllianceMembersInvert = $invert;
 			
