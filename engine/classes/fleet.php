@@ -537,6 +537,25 @@
 			return $distance;
 		}
 		
+		function arriveAtNextTarget()
+		{
+			if($this->status != 1) return false;
+			
+			$keys = array_keys($this->raw[0]);
+			$next_target = array_shift($keys);
+			
+			$type = $this->raw[0][$next_target][0];
+			
+			if($type != 6)
+			{
+				# Nicht stationieren: Flotte fliegt weiter
+				
+			}
+			else
+			{
+			}
+		}
+		
 		protected function getDataFromRaw(){}
 		protected function getRawFromData(){}
 	}

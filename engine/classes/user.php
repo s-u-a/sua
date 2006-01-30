@@ -1027,6 +1027,10 @@
 						stdround(&$info['time']);
 						break;
 				}
+				
+				# Mindestbauzeit eine Sekunde aufgrund von Serverbelastung
+				if($info['time'] < 1) $info['time'] = 1;
+				
 				$this->cache['getItemInfo'][$this_planet][$id] = $info;
 			}
 			
