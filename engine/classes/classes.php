@@ -15,15 +15,18 @@
 				else $instances = &$objectInstances;
 				if(!isset($classname)) return true;
 				
-				foreach($instances as $key=>$instances2)
+				if(isset($instances) && count($instances) > 0)
 				{
-					foreach($instances2 as $key2=>$instance)
+					foreach($instances as $key=>$instances2)
 					{
-						if(method_exists($instance, '__destruct'))
-							$instance->__destruct();
-						unset($instances[$key][$key2]);
+						foreach($instances2 as $key2=>$instance)
+						{
+							if(method_exists($instance, '__destruct'))
+								$instance->__destruct();
+							unset($instances[$key][$key2]);
+						}
+						unset($instances[$key]);
 					}
-					unset($instances[$key]);
 				}
 				return true;
 			}
