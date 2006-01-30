@@ -18,14 +18,16 @@
 				if(is_writeable($this->filename))
 				{
 					$this->file_pointer = fopen($this->filename, 'r+');
-					flock($this->file_pointer, LOCK_EX);
-					$this->status = 1;
+					if(!fancy_flock($this->file_pointer, LOCK_EX))
+						$this->status = false;
+					else $this->status = 1;
 				}
 				else
 				{
 					$this->file_pointer = fopen($this->filename, 'r');
-					flock($this->file_pointer, LOCK_SH);
-					$this->status = 2;
+					if(!fancy_flock($this->file_pointer, LOCK_SH))
+						$this->status = false;
+					else $this->status = 2;
 				}
 			}
 		}

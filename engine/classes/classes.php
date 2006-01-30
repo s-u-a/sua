@@ -5,7 +5,29 @@
 		function Dataset($classname, $p1=false, $reset=false)
 		{
 			global $objectInstances;
-			if($reset){if(isset($intances)) $objectInstances = array(); return true; }
+			if($reset)
+			{
+				if($classname)
+				{
+					if(!isset($objectInstances[$classname])) return true;
+					$instances = array($classname => &$objectInstances[$classname]);
+				}
+				else $instances = &$objectInstances;
+				if(!isset($classname)) return true;
+				
+				foreach($instances as $key=>$instances2)
+				{
+					foreach($instances2 as $key2=>$instance)
+					{
+						if(method_exists($instance, '__destruct'))
+							$instance->__destruct();
+						unset($instances[$key][$key2]);
+					}
+					unset($instances[$key]);
+				}
+				return true;
+			}
+			
 			if(!isset($objectInstances)) $objectInstances = array();
 			if(!isset($objectInstances[$classname])) $objectInstances[$classname] = array();
 			if(!isset($objectInstances[$classname][$p1]))
@@ -38,4 +60,6 @@
 		
 		function Galaxy($p1){ return self::Dataset('Galaxy', $p1); }
 	}
+	
+	register_shutdown_function(array('Classes', 'Dataset'), false, false, true);
 ?>

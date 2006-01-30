@@ -40,13 +40,10 @@
 					}
 					else $this->file_pointer = fopen($this->location, 'r+b');
 					
-					if(!$this->file_pointer)
+					if(!$this->file_pointer || !fancy_flock($this->file_pointer, LOCK_EX))
 						$this->status = 0;
 					if($this->status)
-					{
-						flock($this->file_pointer, LOCK_EX);
 						$this->read();
-					}
 				}
 			}
 		}
@@ -90,7 +87,8 @@
 			{
 				if(!($this->file_pointer = fopen($this->location, 'a+')))
 					return false;
-				flock($this->file_pointer, LOCK_EX);
+				if(!fancy_flock($this->file_pointer, LOCK_EX))
+					return false;
 			}
 			
 			fseek($this->file_pointer, 0, SEEK_SET);

@@ -889,10 +889,20 @@
 		$nachrichten_text .= "<p>\n";
 		$nachrichten_text .= "\tDer Kampf ist vor\xc3\xbcber. ";
 		if(count($angreifer) == 0)
+		{
 			$nachrichten_text .= "Gewinner ".$verteidiger_praedikat." ".$verteidiger_nominativ.".";
+			$winner = -1;
+		}
 		elseif(count($verteidiger_flotte) == 0)
+		{
 			$nachrichten_text .= "Gewinner ".$angreifer_praedikat." ".$angreifer_nominativ.".";
-		else $nachrichten_text .= "Er endet unentschieden.";
+			$winner = 1;
+		}
+		else
+		{
+			$nachrichten_text .= "Er endet unentschieden.";
+			$winner = 0;
+		}
 		$nachrichten_text .= "\n";
 		$nachrichten_text .= "</p>\n";
 
@@ -909,9 +919,9 @@
 		}
 		
 		$truemmerfeld = array(0, 0, 0, 0);
-		$verteidiger_ress = array(0, 0, 0, 0);
-		$angreifer_punkte = 0;
-		$verteidiger_punkte = 0;
+		$verteidiger_ress = array();
+		$angreifer_punkte = array();
+		$verteidiger_punkte = array();
 
 		if(count($angreifer_anfang) > 1)
 			$nachrichten_text .= "<h3>Flotten der Angreifer</h3>";
@@ -1041,11 +1051,12 @@
 				
 				$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
 				$verteidiger_punkte[$name] = 0;
+				$verteidiger_ress[$name] = array(0, 0, 0, 0);
 				foreach($flotten as $id=>$anzahl_old)
 				{
 					$item_info = $users_verteidiger[$name]->getItemInfo($id, false, true, true);
 					
-					if(isset($verteidiger[$name]) && isset($verteidiger[$name][$id]))
+					if(isset($verteidiger[$name]) && isset($verteidiger[$id]))
 						$anzahl = $angreifer[$name][$id];
 					else $anzahl = 0;
 					
@@ -1057,6 +1068,14 @@
 						$truemmerfeld[2] += $item_info['ress'][2]*$diff*.4;
 						$truemmerfeld[3] += $item_info['ress'][3]*$diff*.4;
 					}
+					elseif($item_info['type'] == 'verteidigung')
+					{
+						$verteidiger_ress[$name][0] += $item_info['ress'][0]*.2;
+						$verteidiger_ress[$name][1] += $item_info['ress'][1]*.2;
+						$verteidiger_ress[$name][2] += $item_info['ress'][2]*.2;
+						$verteidiger_ress[$name][3] += $item_info['ress'][3]*.2;
+					}
+					
 					$verteidiger_punkte[$name] += $diff*$item_info['simple_scores'];
 					
 					$staerke = $item_info['att']*$anzahl;
@@ -1102,138 +1121,6 @@
 			$nachrichten_text .= "</table>\n";
 		}
 
-		# Angreifer
-		
-		
-		# Verteidiger
-		# Verlorene Punkte
-		$verteidiger_punkte_schiffe = 0;
-		$verteidiger_punkte_vert = 0;
-		$verteidiger_ress = array(0,0,0,0);
-		foreach($that_planet['schiffe'] as $id=>$anzahl)
-		{
-			if(!isset($items['schiffe'][$id]))
-				continue;
-			$a = $anzahl;
-			if(isset($verteidiger_flotte[$id]))
-				$a -= $verteidiger_flotte[$id][0];
-			$verteidiger_punkte_schiffe += array_sum($items['schiffe'][$id]['ress'])*$a;
-		}
-		foreach($that_planet['verteidigung'] as $id=>$anzahl)
-		{
-			if(!isset($items['verteidigung'][$id]))
-				continue;
-			$a = $anzahl;
-			if(isset($verteidiger_flotte[$id]))
-				$a -= $verteidiger_flotte[$id][0];
-			$verteidiger_punkte_vert += array_sum($items['verteidigung'][$id]['ress'])*$a;
-			$verteidiger_ress[0] += $items['verteidigung'][$id]['ress'][0]*0.8;
-			$verteidiger_ress[1] += $items['verteidigung'][$id]['ress'][1]*0.8;
-			$verteidiger_ress[2] += $items['verteidigung'][$id]['ress'][2]*0.8;
-			$verteidiger_ress[3] += $items['verteidigung'][$id]['ress'][3]*0.8;
-		}
-		$verteidiger_punkte_schiffe /= 1000;
-		$verteidiger_punkte_vert /= 1000;
-		$verteidiger_punkte = $verteidiger_punkte_schiffe+$verteidiger_punkte_vert;
-
-		$target_user_array['punkte'][3] -= $verteidiger_punkte_schiffe;
-		$target_user_array['punkte'][4] -= $verteidiger_punkte_vert;
-		$start_user_array['punkte'][6] += $verteidiger_punkte/1000;
-
-		$that_planet['schiffe'] = array();
-		$that_planet['verteidigung'] = array();
-
-		foreach($verteidiger_flotte as $id=>$anzahl)
-		{
-			if(isset($items['verteidigung'][$id]))
-				$that_planet['verteidigung'][$id] = $anzahl[0];
-			elseif(isset($items['schiffe'][$id]))
-				$that_planet['schiffe'][$id] = $anzahl[0];
-		}
-
-		# Koordinaten vertauschen
-		list($flotte[3][0], $flotte[3][1]) = array($flotte[3][1], $flotte[3][0]);
-
-		if(count($verteidiger_flotte) <= 0)
-		{
-			# Transportkapazitaet berechnen
-			$transport = 0;
-			foreach($flotte[0] as $id=>$anzahl)
-				$transport += $items['schiffe'][$id]['trans'][0]*$anzahl;
-
-			# Laderaumerweiterung
-			$l_level = 0;
-			if(isset($user_array['forschung']['F11']))
-				$l_level = $user_array['forschung']['F11'];
-			$transport = floor($transport*pow(1.2, $l_level));
-			$transport -= array_sum($flotte[5][0]);
-
-			# Rohstoffe erbeuten
-
-			# Maximal erbeutbar
-			$erbeut = array();
-			$erbeut[0] = floor($that_planet['ress'][0]/2);
-			$erbeut[1] = floor($that_planet['ress'][1]/2);
-			$erbeut[2] = floor($that_planet['ress'][2]/2);
-			$erbeut[3] = floor($that_planet['ress'][3]/2);
-			$erbeut[4] = floor($that_planet['ress'][4]/2);
-
-			# Im Verhaeltnis mit Ladekapazitaet abgleichen
-			$erbeut_sum = array_sum($erbeut);
-			if($erbeut_sum > 0)
-			{
-				$k = $transport/$erbeut_sum;
-				if($k < 1)
-				{
-					$erbeut[0] = floor($erbeut[0]*$k);
-					$erbeut[1] = floor($erbeut[1]*$k);
-					$erbeut[2] = floor($erbeut[2]*$k);
-					$erbeut[3] = floor($erbeut[3]*$k);
-					$erbeut[4] = floor($erbeut[4]*$k);
-
-					# Rundungsfehler ausmerzen
-					$uebrig = $transport-array_sum($erbeut);
-					$jedes = floor($uebrig/5);
-					$erbeut[0] += $jedes;
-					$erbeut[1] += $jedes;
-					$erbeut[2] += $jedes;
-					$erbeut[3] += $jedes;
-					$erbeut[4] += $jedes;
-					$uebrig = $uebrig%5;
-					switch($uebrig)
-					{
-						case 4: $erbeut[3]++;
-						case 3: $erbeut[2]++;
-						case 2: $erbeut[1]++;
-						case 1: $erbeut[0]++;
-					}
-				}
-			}
-
-			# Rohstoffe vom Planeten abziehen und beladen
-			$that_planet['ress'][0] -= $erbeut[0];
-			$that_planet['ress'][1] -= $erbeut[1];
-			$that_planet['ress'][2] -= $erbeut[2];
-			$that_planet['ress'][3] -= $erbeut[3];
-			$that_planet['ress'][4] -= $erbeut[4];
-
-			$flotte[5][0][0] += $erbeut[0];
-			$flotte[5][0][1] += $erbeut[1];
-			$flotte[5][0][2] += $erbeut[2];
-			$flotte[5][0][3] += $erbeut[3];
-			$flotte[5][0][4] += $erbeut[4];
-		}
-
-		# Dem Verteidiger Verteidigungsrohstoffe zurueckerstatten
-		$verteidiger_ress[0] *= 0.25;
-		$verteidiger_ress[1] *= 0.25;
-		$verteidiger_ress[2] *= 0.25;
-		$verteidiger_ress[3] *= 0.25;
-		$that_planet['ress'][0] += $verteidiger_ress[0];
-		$that_planet['ress'][1] += $verteidiger_ress[1];
-		$that_planet['ress'][2] += $verteidiger_ress[2];
-		$that_planet['ress'][3] += $verteidiger_ress[3];
-		
 		if(array_sum($truemmerfeld) > 0)
 		{
 			# Truemmerfeld
@@ -1250,21 +1137,15 @@
 			$nachrichten_text .= "</p>\n";
 		}
 
-		$vert_nachrichten_text = $nachrichten_text;
+		# Kampferfahrung
+		$angreifer_new_erfahrung = array_sum($verteidiger_punkte)/1000;
+		$verteidiger_new_erfahrung = array_sum($angreifer_punkte)/1000;
+		foreach($users_angreifer as $user)
+			$user->addScores(6, $angreifer_new_erfahrung);
+		foreach($users_verteidiger as $user)
+			$user->addScores(6, $verteidiger_new_erfahrung);
 
-		$nachrichten_text .= "<p>\n";
-		$nachrichten_text .= "\tDieser Kampf hat Ihnen ".ths(round(($verteidiger_punkte_schiffe+$verteidiger_punkte_vert)/1000))."&nbsp;Kampferfahrungspunkte eingebracht.\n";
-		$nachrichten_text .= "</p>";
-
-		$vert_nachrichten_text .= "<p>\n";
-		$vert_nachrichten_text .= "\tDieser Kampf hat Ihnen ".ths(round($angreifer_punkte/1000))."&nbsp;Kampferfahrungspunkte eingebracht.\n";
-		$vert_nachrichten_text .= "</p>\n";
-
-		$vert_nachrichten_text .= "<p>\n";
-		$vert_nachrichten_text .= "\t".ths($verteidiger_ress[0])."&nbsp;Carbon, ".ths($verteidiger_ress[1])."&nbsp;Aluminium, ".ths($verteidiger_ress[2])."&nbsp;Wolfram und ".ths($verteidiger_ress[3])."&nbsp;Radium konnten aus den Trümmern der zerstörten Verteidigungsanlagen wiederhergestellt werden.\n";
-		$vert_nachrichten_text .= "</p>";
-
-		# return $angreifer, $verteidiger, $kampfberichte, $sieger
+		return array($winner, $angreifer, $verteidiger, $nachrichten_text, $verteidiger_ress);
 	}
 	
 	function array_sum_r($array)

@@ -1247,4 +1247,16 @@
 		$a = $i/$f;
 		return $a;
 	}
+	
+	function fancy_flock($file, $lock_flag)
+	{
+		$flag = $lock_flag+LOCK_NB;
+		
+		for($i=0; $i<100; $i++)
+		{
+			if(flock($file, $lock_flag)) return true;
+			usleep(50000);
+		}
+		return false;
+	}
 ?>

@@ -117,7 +117,7 @@
 			if(is_file(DB_ITEMS.'/gebaeude') && is_readable(DB_ITEMS.'/gebaeude'))
 			{
 				$fh = fopen(DB_ITEMS.'/gebaeude', 'r');
-				flock($fh, LOCK_SH);
+				fancy_flock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 1024)))
 				{
 					$item = explode("\t", $item);
@@ -141,7 +141,7 @@
 			if(is_file(DB_ITEMS.'/forschung') && is_readable(DB_ITEMS.'/forschung'))
 			{
 				$fh = fopen(DB_ITEMS.'/forschung', 'r');
-				flock($fh, LOCK_SH);
+				fancy_flock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 1024)))
 				{
 					$item = explode("\t", $item);
@@ -163,7 +163,7 @@
 			if(is_file(DB_ITEMS.'/roboter') && is_readable(DB_ITEMS.'/roboter'))
 			{
 				$fh = fopen(DB_ITEMS.'/roboter', 'r');
-				flock($fh, LOCK_SH);
+				fancy_flock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 1024)))
 				{
 					$item = explode("\t", $item);
@@ -185,7 +185,7 @@
 			if(is_file(DB_ITEMS.'/schiffe') && is_readable(DB_ITEMS.'/schiffe'))
 			{
 				$fh = fopen(DB_ITEMS.'/schiffe', 'r');
-				flock($fh, LOCK_SH);
+				fancy_flock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 1024)))
 				{
 					$item = explode("\t", $item);
@@ -210,7 +210,7 @@
 			if(is_file(DB_ITEMS.'/verteidigung') && is_readable(DB_ITEMS.'/verteidigung'))
 			{
 				$fh = fopen(DB_ITEMS.'/verteidigung', 'r');
-				flock($fh, LOCK_SH);
+				fancy_flock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 1024)))
 				{
 					$item = explode("\t", $item);
@@ -233,7 +233,7 @@
 			
 			$fh = fopen(DB_ITEM_DB, 'a+');
 			if(!$fh) return false;
-			flock($fh, LOCK_EX);
+			if(!fancy_flock($fh, LOCK_EX)) return false;
 			
 			fseek($fh, 0, SEEK_SET);
 			ftruncate($fh, 0);
