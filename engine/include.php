@@ -3,6 +3,7 @@
 
 	error_reporting(2047);
 	ignore_user_abort(false);
+	set_time_limit(1800);
 
 	$this_filename = '/engine/include.php';
 	if(substr(__FILE__, -strlen($this_filename)) !== $this_filename)
