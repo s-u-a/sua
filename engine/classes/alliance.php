@@ -463,13 +463,13 @@
 		{
 			if(!$this->status) return false;
 			
-			global $sortAllianceMembersBy;
-			global $sortAllianceMembersInvert;
-			$sortAllianceMembersBy = $sortby;
-			$sortAllianceMembersInvert = $invert;
-			
-			if($sortAllianceMembersBy && in_array($sortAllianceMembersBy, array('punkte', 'rang', 'time')))
+			if($sortby && in_array($sortby, array('punkte', 'rang', 'time')))
 			{
+				global $sortAllianceMembersBy;
+				global $sortAllianceMembersInvert;
+				$sortAllianceMembersBy = $sortby;
+				$sortAllianceMembersInvert = $invert;
+				
 				$members_raw = $this->raw['members'];
 				uasort($members_raw, 'sortAllianceMembersList');
 				$members = array_keys($members_raw);
@@ -477,8 +477,7 @@
 			else
 			{
 				$members = array_keys($this->raw['members']);
-				if($sortAllianceMembersBy)
-					natcasesort($members);
+				if($sortby) natcasesort($members);
 			}
 			
 			return $members;
