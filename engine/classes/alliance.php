@@ -463,6 +463,8 @@
 		{
 			if(!$this->status) return false;
 			
+			if($sortby) $sortby = ''.$sortby;
+			
 			if($sortby && ('punkte'==$sortby || 'rang'==$sortby || 'time'==$sortby))
 			{
 				global $sortAllianceMembersBy;
