@@ -468,12 +468,14 @@
 			$sortAllianceMembersBy = $sortby;
 			$sortAllianceMembersInvert = $invert;
 			
-			$members = array_keys($this->raw['members']);
-			
 			if($sortAllianceMembersBy)
-				usort($members, 'sortAllianceMembersList');
+			{
+				$members = $this->raw['members'];
+				uasort($members, 'sortAllianceMembersList');
+			}
+			else $members = &$this->raw['members'];
 			
-			return $members;
+			return array_keys($members);
 		}
 		
 		function getUsersWithPermission($permission)
@@ -826,6 +828,7 @@
 	{
 		global $sortAllianceMembersInvert;
 		global $sortAllianceMembersBy;
+		
 		if(isset($sortAllianceMembersInvert) && $sortAllianceMembersInvert) $invert = -1;
 		else $invert = 1;
 		if(isset($sortAllianceMembersBy) && ($sortAllianceMembersBy == 'punkte' || $sortAllianceMembersBy == 'time'))

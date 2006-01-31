@@ -94,6 +94,16 @@
 	
 	
 	$me = Classes::User($_SESSION['username']);
+	
+	if(!$me->getStatus())
+	{
+		login_gui::html_head();
+?>
+<p class="error">Datenbankfehler.</p>
+<?php
+		login_gui::html_foot();
+		exit(1);
+	}
 
 	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] && $me->checkSetting('ipcheck'))
 	{

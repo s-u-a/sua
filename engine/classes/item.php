@@ -118,7 +118,7 @@
 			{
 				$fh = fopen(DB_ITEMS.'/gebaeude', 'r');
 				fancy_flock($fh, LOCK_SH);
-				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 1024)))
+				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
 					if(count($item) < 8) continue;
@@ -142,7 +142,7 @@
 			{
 				$fh = fopen(DB_ITEMS.'/forschung', 'r');
 				fancy_flock($fh, LOCK_SH);
-				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 1024)))
+				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
 					if(count($item) < 6) continue;
@@ -164,7 +164,7 @@
 			{
 				$fh = fopen(DB_ITEMS.'/roboter', 'r');
 				fancy_flock($fh, LOCK_SH);
-				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 1024)))
+				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
 					if(count($item) < 6) continue;
@@ -186,7 +186,7 @@
 			{
 				$fh = fopen(DB_ITEMS.'/schiffe', 'r');
 				fancy_flock($fh, LOCK_SH);
-				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 1024)))
+				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
 					if(count($item) < 11) continue;
@@ -211,7 +211,7 @@
 			{
 				$fh = fopen(DB_ITEMS.'/verteidigung', 'r');
 				fancy_flock($fh, LOCK_SH);
-				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 1024)))
+				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
 					if(count($item) < 8) continue;
