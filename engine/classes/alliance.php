@@ -479,7 +479,11 @@
 			else
 			{
 				$members = array_keys($this->raw['members']);
-				if($sortby) natcasesort($members);
+				if($sortby)
+				{
+					natcasesort($members);
+					if($invert) $members = array_reverse($members);
+				}
 			}
 			
 			return $members;
