@@ -468,7 +468,7 @@
 			$sortAllianceMembersBy = $sortby;
 			$sortAllianceMembersInvert = $invert;
 			
-			if($sortAllianceMembersBy && in_array($_GET['sortby'], array('punkte', 'rang', 'time')))
+			if($sortAllianceMembersBy && in_array($sortAllianceMembersBy, array('punkte', 'rang', 'time')))
 			{
 				$members_raw = $this->raw['members'];
 				uasort($members_raw, 'sortAllianceMembersList');
@@ -476,7 +476,7 @@
 			}
 			else
 			{
-				$members = array_keys($members_raw);
+				$members = array_keys($this->raw['members']);
 				if($sortAllianceMembersBy)
 					natcasesort($members);
 			}
