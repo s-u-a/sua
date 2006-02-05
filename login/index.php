@@ -253,7 +253,7 @@
 			}
 ?>
 	</dt>
-	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($flotte)?>">Ankunft: <?=date('H:i:s, Y-m-d', $fl->getNextArrival())?> (Serverzeit)<?php if(!isFlyingBack() && ($me_in_users !== false)){?>, <a href="index.php?cancel=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
+	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($flotte)?>">Ankunft: <?=date('H:i:s, Y-m-d', $fl->getNextArrival())?> (Serverzeit)<?php if(!$fl->isFlyingBack() && ($me_in_users !== false)){?>, <a href="index.php?cancel=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
 <?php
 			$countdowns[] = array($flotte, $fl->getNextArrival(), ($fl->isFlyingBack() || ($me_in_users === false)));
 		}
@@ -268,7 +268,7 @@
 			foreach($countdowns as $countdown)
 			{
 ?>
-	init_countdown('<?=$countdown[0]?>', <?=$countdown[1]?>, <?=$countdown[2] ? 'false' : 'true'?>);
+	init_countdown('<?=$countdown[0]?>', <?=$countdown[1]?>, <?=$countdown[2] ? 'false' : 'true'?>, <?=EVENTHANDLER_INTERVAL?>);
 <?php
 			}
 ?>

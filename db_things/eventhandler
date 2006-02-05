@@ -1,23 +1,69 @@
 #!/usr/bin/php
 <?php
+	$USE_OB = false;
 	require('../engine/include.php');
 	
-	function usort_fleet_actions($a, $b)
+	if(!isset($_SERVER['argv'][1]))
 	{
-		if($a[0] < $b[0]) return -1;
-		elseif($a[0] > $b[0]) return 1;
-		else return 0;
+		echo "Usage: ".$_SERVER['argv'][0]." [Database dir]\n";
+		exit(1);
 	}
+	else
+		define_globals($_SERVER['argv'][1]);
 	
-	$fh = fopen(DB_EVENTS, 'w');
+	__autoload('Classes');
+	__autoload('Fleet');
+	__autoload('Galaxy');
+	
+	$fh = fopen(EVENT_FILE, 'a+');
 	while(true)
 	{
 		flock($fh, LOCK_EX);
-		
 		clearstatcache();
 		while(($line = fgets($fh, 1024)) !== false)
 		{
 			$strlen = strlen($line);
 			$line = trim($line);
 			if(!$line) continue;
+			
+			$line = explode("\t", $line, 2);
+			if(count($line) != 2) continue;
+			
+			if($line[0] > time())
+			{
+				fseek($fh, -$strlen, SEEK_CUR);
+				break;
+			}
+			
+			$fleet = Classes::Fleet($line[1]);
+			$users = $fleet->getUsersList();
+			if($fleet->getStatus() != 1) continue;
+			while($fleet->getStatus() == 1 && $fleet->getNextArrival() < time())
+			{
+				$fleet->arriveAtNextTarget();
+				echo "Fleet ".$line[1]." arrived.\n";
+			}
+			$fleet->__destruct();
+			unset($fleet);
+			
+			foreach($users as $user)
+			{
+				echo "Editing user ".$user."... ";
+				$user_obj = Classes::User($user);
+				$user_obj->unsetFleet($line[1]);
+				unset($user_obj);
+				echo "Done.\n";
+			}
+			
+			fseek($fh, -$strlen, SEEK_CUR);
+			fwrite($fh, str_repeat(' ', $strlen-1)."\n");
+			
+			# Instanzen zuruecksetzen
+			Classes::Dataset(false, false, true);
+		}
+		
+		flock($fh, LOCK_UN);
+		sleep(EVENTHANDLER_INTERVAL);
+	}
+	fclose($fh);
 ?>

@@ -76,7 +76,8 @@
 		
 		function write($force=false, $getraw=true)
 		{
-			if(!$this->status && (!$force || file_exists($this->filename))) return false;
+			if(!$this->status && (!$force || file_exists($this->filename)))
+				return false;
 			if(!$this->changed && !$force) return 2;
 			
 			if($getraw)

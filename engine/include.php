@@ -50,7 +50,7 @@
 		{
 			define('DB_NEWS', s_root.'/db_things/news');
 			define('DB_EVENTHANDLER_STOP_FILE', '/dev/shm/stop_eventhandler');
-			define('EVENTHANDLER_INTERVAL', 30);
+			define('EVENTHANDLER_INTERVAL', 10);
 			define('THS_HTML', '&nbsp;');
 			define('THS_UTF8', "\xc2\xa0");
 			define('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung

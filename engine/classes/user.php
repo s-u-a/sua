@@ -489,19 +489,19 @@
 			return true;
 		}
 		
-		function subtractRess($ress)
+		function subtractRess($ress, $make_scores=true)
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
 			if(!is_array($ress)) return false;
 			
-			if(isset($ress[0])){ $this->ress[0] -= $ress[0]; $this->raw['punkte'][7] += $ress[0]; }
-			if(isset($ress[1])){ $this->ress[1] -= $ress[1]; $this->raw['punkte'][8] += $ress[1]; }
-			if(isset($ress[2])){ $this->ress[2] -= $ress[2]; $this->raw['punkte'][9] += $ress[2]; }
-			if(isset($ress[3])){ $this->ress[3] -= $ress[3]; $this->raw['punkte'][10] += $ress[3]; }
-			if(isset($ress[4])){ $this->ress[4] -= $ress[4]; $this->raw['punkte'][11] += $ress[4]; }
+			if(isset($ress[0])){ $this->ress[0] -= $ress[0]; if($make_scores) $this->raw['punkte'][7] += $ress[0]; }
+			if(isset($ress[1])){ $this->ress[1] -= $ress[1]; if($make_scores) $this->raw['punkte'][8] += $ress[1]; }
+			if(isset($ress[2])){ $this->ress[2] -= $ress[2]; if($make_scores) $this->raw['punkte'][9] += $ress[2]; }
+			if(isset($ress[3])){ $this->ress[3] -= $ress[3]; if($make_scores) $this->raw['punkte'][10] += $ress[3]; }
+			if(isset($ress[4])){ $this->ress[4] -= $ress[4]; if($make_scores) $this->raw['punkte'][11] += $ress[4]; }
 			
-			if(isset($this->cache['getSpentRess'])) unset($this->cache['getSpentRess']);
+			if($make_scores && isset($this->cache['getSpentRess'])) unset($this->cache['getSpentRess']);
 			
 			$this->changed = true;
 			
@@ -563,6 +563,30 @@
 			else return array();
 		}
 		
+		function addFleet($fleet)
+		{
+			if($this->status != 1) return false;
+			
+			if(!isset($this->raw['flotten'])) $this->raw['flotten'] = array();
+			elseif(in_array($fleet, $this->raw['flotten'])) return 2;
+			$this->raw['flotten'][] = $fleet;
+			natcasesort($this->raw['flotten']);
+			$this->changed = true;
+			return true;
+		}
+		
+		function unsetFleet($fleet)
+		{
+			if($this->status != 1) return false;
+			
+			if(!isset($this->raw['flotten'])) return true;
+			$key = array_search($fleet, $this->raw['flotten']);
+			if($key === false) return true;
+			unset($this->raw['flotten'][$key]);
+			$this->changed = true;
+			return true;
+		}
+		
 		function checkOwnFleetWithPlanet()
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
@@ -588,6 +612,49 @@
 					$fleets[] = $flotte;
 			}
 			return $fleets;
+		}
+		
+		function getMaxParallelFleets()
+		{
+			if(!$this->status) return false;
+			
+			$werft = 0;
+			$planets = $this->getPlanetsList();
+			$active_planet = $this->getActivePlanet();
+			foreach($planets as $planet)
+			{
+				$this->setActivePlanet($planet);
+				if($this->getItemLevel('B10', 'gebaeude') > 0)
+					$werft++;
+			}
+			$this->setActivePlanet($active_planet);
+			
+			return floor(pow($werft*$this->getItemLevel('F0', 'forschung'), .7));
+		}
+		
+		function getCurrentParallelFleets()
+		{
+			if(!$this->status) return false;
+			
+			$fleets = 0;
+			foreach($this->getFleetsList() as $flotte)
+			{
+				$fl = Classes::Fleet($flotte);
+				$key = array_search($this->getName(), $fl->getUsersList());
+				if($key !== false)
+				{
+					if($key) $fleets++;
+					else $fleets += count($fl->getTargetsList())+count($fl->getOldTargetsList())-1;
+				}
+			}
+			return $fleets;
+		}
+		
+		function getRemainingParallelFleets()
+		{
+			if(!$this->status) return false;
+			
+			return $this->getMaxParallelFleets()-$this->getCurrentParallelFleets();
 		}
 		
 		function checkMessage($message_id, $type)
@@ -1029,7 +1096,7 @@
 				}
 				
 				# Mindestbauzeit eine Sekunde aufgrund von Serverbelastung
-				if(isset($info['time']) && $info['time'] < 1) $info['time'] = 1;
+				if(isset($info['time']) && $info['time'] < 12) $info['time'] = 12;
 				
 				$this->cache['getItemInfo'][$this_planet][$id] = $info;
 			}
@@ -2726,6 +2793,10 @@
 			
 			if(!isset($this->raw['last_mail'])) return false;
 			return $this->raw['last_mail'];
+		}
+		
+		function addForeignFleet($user, $fleet)
+		{
 		}
 	}
 	

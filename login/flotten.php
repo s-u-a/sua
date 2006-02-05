@@ -1,37 +1,25 @@
 <?php
+	if(isset($_GET['action']))
+	{
+		$requ_uri = $_SERVER['REQUEST_URI'];
+		$_SERVER['REQUEST_URI'] = '';
+		if(isset($_SERVER['HTTP_REFERER'])) $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_REFERER'];
+	}
+	
 	require('scripts/include.php');
+	
+	if(isset($_GET['action']))
+		$_SERVER['REQUEST_URI'] = $requ_uri;
 
 	login_gui::html_head();
-?>
-<h2>Flotten</h2>
-<p class="error">Noch nicht implementiert.</p>
-<?php
-	login_gui::html_foot();
-	exit();
 
 	$show_versenden = true;
 
-	$kontrollwesen = 0;
-	if(isset($user_array['forschung']['F0']))
-		$kontrollwesen = $user_array['forschung']['F0'];
-
-	$werften = 0;
-	$planets = array_keys($user_array['planets']);
-	$koords = array();
-	foreach($planets as $planet)
-	{
-		if(isset($user_array['planets'][$planet]['gebaeude']['B10']) && $user_array['planets'][$planet]['gebaeude']['B10'] > 0)
-			$werften++;
-		$koords[] = $user_array['planets'][$planet]['pos'];
-	}
-	$max_flotten = floor(pow($kontrollwesen*$werften, .7));
-
-	$my_flotten = 0;
-	foreach($user_array['flotten'] as $flotte)
-	{
-		if((!$flotte[7] && in_array($flotte[3][0], $koords)) || ($flotte[7] && in_array($flotte[3][1], $koords)))
-			$my_flotten++;
-	}
+	$max_flotten = $me->getMaxParallelFleets();
+	$my_flotten = $me->getCurrentParallelFleets();
+	
+	__autoload('Fleet');
+	__autoload('Galaxy');
 ?>
 <h2>Flotten</h2>
 <?php
@@ -40,7 +28,8 @@
 	{
 		$fast_action = true;
 
-		$target_info = universe::get_planet_info($_GET['action_galaxy'], $_GET['action_system'], $_GET['action_planet']);
+		$galaxy = Classes::Galaxy($_GET['action_galaxy']);
+		$planet_owner = $galaxy->getPlanetOwner($_GET['action_system'], $_GET['action_planet']);
 		if($my_flotten >= $max_flotten)
 		{
 ?>
@@ -49,7 +38,7 @@
 </p>
 <?php
 			login_gui::html_foot();
-			die();
+			exit();
 		}
 		else
 		{
@@ -63,9 +52,9 @@
 			{
 				$_POST['auftrag'] = 5;
 				$_POST['flotte'] = array('S5' => 1);
-				if($target_info[1] && !in_array($target_info[1], $user_array['verbuendete']))
-					$_POST['flotte']['S5'] = $user_array['sonden'];
-				if(!isset($this_planet['schiffe']['S5']) || $this_planet['schiffe']['S5'] < 1)
+				if($planet_owner && !$me->isVerbuendet($planet_owner))
+					$_POST['flotte']['S5'] = $me->checkSetting('sonden');
+				if($me->getItemLevel('S5', 'schiffe') < 1)
 				{
 ?>
 <p class="error">
@@ -73,14 +62,14 @@
 </p>
 <?php
 					login_gui::html_foot();
-					die();
+					exit();
 				}
 			}
 			elseif($_GET['action'] == 'besiedeln')
 			{
 				$_POST['auftrag'] = 1;
 				$_POST['flotte'] = array('S6' => 1);
-				if(!isset($this_planet['schiffe']['S6']) || $this_planet['schiffe']['S6'] < 1)
+				if($me->getItemLevel('S6', 'schiffe') < 1)
 				{
 ?>
 <p class="error">
@@ -88,7 +77,7 @@
 </p>
 <?php
 					login_gui::html_foot();
-					die();
+					exit();
 				}
 			}
 			elseif($_GET['action'] == 'sammeln')
@@ -101,13 +90,8 @@
 				if($truemmerfeld !== false)
 				{
 					# Transportkapazitaet eines Sammlers
-					$transport = $items['schiffe']['S3']['trans'][0];
-
-					# Laderaumerweiterung
-					$l_level = 0;
-					if(isset($user_array['forschung']['F11']))
-						$l_level = $user_array['forschung']['F11'];
-					$transport = floor($transport*pow(1.2, $l_level));
+					$sammler_info = $me->getItemInfo('S3', 'schiffe');
+					$transport = $sammler_info['trans'][0];
 
 					$anzahl = ceil(array_sum($truemmerfeld)/$transport);
 				}
@@ -116,7 +100,7 @@
 
 				$_POST['flotte'] = array('S3' => $anzahl);
 
-				if(!isset($this_planet['schiffe']['S3']) || $this_planet['schiffe']['S3'] < 1)
+				if($me->getItemLevel('S3', 'schiffe') < 1)
 				{
 ?>
 <p class="error">
@@ -128,88 +112,82 @@
 		}
 	}
 
-	if(!$user_array['umode'] && $my_flotten < $max_flotten && isset($_POST['flotte']) && is_array($_POST['flotte']) && isset($_POST['galaxie']) && isset($_POST['system']) && isset($_POST['planet']))
+	if($me->permissionToAct() && $my_flotten < $max_flotten && isset($_POST['flotte']) && is_array($_POST['flotte']) && isset($_POST['galaxie']) && isset($_POST['system']) && isset($_POST['planet']))
 	{
+		$types = array();
 		foreach($_POST['flotte'] as $id=>$anzahl)
 		{
 			$_POST['flotte'][$id] = $anzahl = (int) $anzahl;
-			if(!isset($items['schiffe']) || !isset($this_planet['schiffe'][$id]))
+			$item_info = $me->getItemInfo($id, 'schiffe');
+			if(!$item_info)
 			{
 				unset($_POST['flotte'][$id]);
 				continue;
 			}
-			if($anzahl > $this_planet['schiffe'][$id])
-				$_POST['flotte'][$id] = $anzahl = $this_planet['schiffe'][$id];
+			if($anzahl > $item_info['level'])
+				$_POST['flotte'][$id] = $anzahl = $item_info['level'];
 			if($anzahl < 1)
 			{
 				unset($_POST['flotte'][$id]);
 				continue;
 			}
 			$show_versenden = false;
+			
+			foreach($item_info['types'] as $type)
+			{
+				if(!in_array($type, $types)) $types[] = $type;
+			}
 		}
 
 		if(!$show_versenden)
 		{
-			$info = universe::get_planet_info($_POST['galaxie'], $_POST['system'], $_POST['planet']);
-			$status_info = universe::get_planet_info($_POST['galaxie'], $_POST['system'], $_POST['planet'], true);
-			if($info === false)
-				$show_versenden = true;
+			$galaxy_obj = Classes::Galaxy($_POST['galaxie']);
+			$planet_owner = $galaxy_obj->getPlanetOwner($_POST['system'], $_POST['planet']);
+			if($planet_owner === false) $show_versenden = true;
 
 			if(!$show_versenden)
 			{
-				# Auftragsarten ermitteln
-				$types = array();
-				foreach($_POST['flotte'] as $id=>$anzahl)
-				{
-					foreach($items['schiffe'][$id]['types'] as $type)
-					{
-						if(array_search($type, $types) === false)
-							$types[] = $type;
-					}
-				}
 				sort($types, SORT_NUMERIC);
 
 				$types = array_flip($types);
-				if($info[1] && isset($types[1])) # Besiedeln, Planet besetzt
+				if($planet_owner && isset($types[1])) # Planet besetzt, Besiedeln nicht moeglich
 					unset($types[1]);
-				if($info[1] && isset($types[1]) && in_array($info[1], $user_array['verbuendete'])) # Verbuendete angreifen
-					unset($types[3]);
-				if(!$info[1]) # Planet nicht besetzt
+				if(!$planet_owner) # Planet nicht besetzt
 				{
-					if(isset($types[3])) # Angriff
+					if(isset($types[3])) # Angriff nicht moeglich
 						unset($types[3]);
-					if(isset($types[4])) # Transport
+					if(isset($types[4])) # Transport nicht moeglich
 						unset($types[4]);
-					if(isset($types[6])) # Stationieren
+					if(isset($types[6])) # Stationieren nicht moeglich
 						unset($types[6]);
 
-					if(count($user_array['planets']) >= MAX_PLANETS) # Planetenlimit erreicht
+					if(!$me->checkPlanetCount()) # Planetenlimit erreicht, Besiedeln nicht moeglich
 						unset($types[1]);
 				}
 
 				$truemmerfeld = truemmerfeld::get($_POST['galaxie'], $_POST['system'], $_POST['planet']);
-				if(($truemmerfeld === false || array_sum($truemmerfeld) <= 0) && isset($types[2])) # Sammeln, kein Truemmerfeld
-					unset($types[2]);
+				if(($truemmerfeld === false || array_sum($truemmerfeld) <= 0) && isset($types[2]))
+					unset($types[2]); # Kein Truemmerfeld, Sammeln nicht moeglich
 
-				if($this_planet['pos'] == $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'] || substr($status_info[1], -4) == ' (U)')
+				if($me->getPosString() == $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'] || substr($planet_owner, -4) == ' (U)')
 				{ # Selber Planet / Urlaubsmodus, nur Sammeln
 					if($truemmerfeld && isset($types[2]))
 						$types = array(2 => 0);
 					else
 						$types = array();
 				}
-				elseif($info[1] == $_SESSION['username'])
+				elseif($planet_owner == $_SESSION['username'])
 				{ # Eigener Planet
-					if(isset($types[3])) # Angriff
+					if(isset($types[3])) # Angriff nicht moeglich
 						unset($types[3]);
-					if(isset($types[5])) # Spionieren
+					if(isset($types[5])) # Spionage nicht moeglich
 						unset($types[5]);
 				}
 				else
 				{ # Fremder Planet
-					if(isset($types[6])) # Stationieren
+					if(isset($types[6])) # Stationieren noch nicht moeglich
 						unset($types[6]);
-					if(in_array($info[1], $user_array['verbuendete']) && isset($types[3])) # Verbuendet, Angriff
+					if($me->isVerbuendet($planet_owner) && isset($types[3])) # Verbuendet, Angriff nicht moeglich
 						unset($types[3]);
 				}
 
@@ -225,55 +203,22 @@
 				{
 					$types = array_flip($types);
 
-					$distance = fleet::get_distance($this_planet['pos'], $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet']);
-
-					# Gesamtleermasse, Transportkapazitaet und Antriebsstaerke berechnen, Auftragstypen
-					$mass = 0;
+					# Transportkapazitaet und Antriebsstaerke berechnen
 					$speed = 0;
 					$transport = array(0, 0);
+					$ges_count = 0;
 					foreach($_POST['flotte'] as $id=>$anzahl)
 					{
-						$mass += $items['schiffe'][$id]['mass']*$anzahl;
-						$speed += $items['schiffe'][$id]['speed']*$anzahl;
+						$item_info = $me->getItemInfo($id);
+						if($speed == 0 || ($item_info['speed'] != 0 && $item_info['speed'] < $speed))
+							$speed = $item_info['speed'];
 
-						$transport[0] += $items['schiffe'][$id]['trans'][0]*$anzahl;
-						$transport[1] += $items['schiffe'][$id]['trans'][1]*$anzahl;
+						$transport[0] += $item_info['trans'][0]*$anzahl;
+						$transport[1] += $item_info['trans'][1]*$anzahl;
+						$ges_count += $anzahl;
 					}
-					$mass = round($mass*0.8);
-					$leermasse = $mass;
-					sort($types, SORT_NUMERIC);
-
-					# Laderaumerweiterung
-					$l_level = 0;
-					if(isset($user_array['forschung']['F11']))
-						$l_level = $user_array['forschung']['F11'];
-					$transport[0] = floor($transport[0]*pow(1.2, $l_level));
-					$transport[1] = floor($transport[1]*pow(1.2, $l_level));
-
-					# Triebwerke
-					# Rueckstossantrieb
-					$rueckstoss_level = 0;
-					if(isset($user_array['forschung']['F6']))
-						$rueckstoss_level = $user_array['forschung']['F6'];
-					if($rueckstoss_level > 0)
-						$speed *= pow(1.025, $rueckstoss_level);
-
-					# Ionenantrieb
-					$ionen_level = 0;
-					if(isset($user_array['forschung']['F7']))
-						$ionen_level = $user_array['forschung']['F7'];
-					if($ionen_level > 0)
-						$speed *= pow(1.05, $ionen_level);
-
-					# Kernantrieb
-					$kern_level = 0;
-					if(isset($user_array['forschung']['F8']))
-						$kern_level = $user_array['forschung']['F8'];
-					if($kern_level > 0)
-						$speed *= pow(1.5, $kern_level);
-					$speed = round($speed);
-
 					$show_form2 = true;
+					
 					if(isset($_POST['auftrag']))
 					{
 						$show_form2 = false;
@@ -282,14 +227,14 @@
 							$show_form2 = true;
 						else
 						{
-							$that_user_array = get_user_array($info[1]);
+							$that_user = Classes::User($planet_owner);
 
 							$noob = false;
-							if($info[1] && ($_POST['auftrag'] == '3' || $_POST['auftrag'] == '5') && (!isset($that_user_array['locked']) || !$that_user_array['locked']))
+							if($planet_owner && ($_POST['auftrag'] == '3' || $_POST['auftrag'] == '5') && $that_user->userLocked())
 							{
 								# Anfaengerschutz ueberpruefen
-								$that_punkte = $that_user_array['punkte'][0]+$that_user_array['punkte'][1]+$that_user_array['punkte'][2]+$that_user_array['punkte'][3]+$that_user_array['punkte'][4]+$that_user_array['punkte'][5]+$that_user_array['punkte'][6];
-								$this_punkte = $user_array['punkte'][0]+$user_array['punkte'][1]+$user_array['punkte'][2]+$user_array['punkte'][3]+$user_array['punkte'][4]+$user_array['punkte'][5]+$user_array['punkte'][6];
+								$that_punkte = $that_user->getScores();
+								$this_punkte = $me->getScores();
 
 								if($that_punkte > $this_punkte && $that_punkte*0.05 > $this_punkte)
 								{
@@ -313,253 +258,83 @@
 
 							if(!$noob)
 							{
-								$auftrag_array = array();
-								$auftrag_array[0] = $_POST['flotte']; # Schiffe
-								$auftrag_array[1] = array(time(), 0); # Start-, Ankunftszeit
-								$auftrag_array[2] = $_POST['auftrag']; # Auftragsart
-								$auftrag_array[3] = array($this_planet['pos'], $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet']); # Koordinaten
-
-								# Geschwindigkeitsfaktor
-								if(isset($_POST['speed']) && $_POST['speed'] >= 0.05 && $_POST['speed'] <= 1)
-									$auftrag_array[6] = $_POST['speed'];
-								else
-									$auftrag_array[6] = 1;
-
-								$auftrag_array[4] = array(fleet::get_tritium($leermasse, $distance)*$auftrag_array[6]*2, 0); # Tritium (Verbrauch, Ueberschuessig)
-								$mass += $auftrag_array[4][0];
-
-								$auftrag_array[5] = array(array(0,0,0,0,0), array()); # Mitnahme: Rohstoffe, Roboter
-								if(($auftrag_array[2] == 1 || $auftrag_array[2] == 4 || $auftrag_array[2] == 6))
+								$fleet_obj = Classes::Fleet();
+								if($fleet_obj->create())
 								{
-									if($transport[0] > 0)
+									# Geschwindigkeitsfaktor
+									if(!isset($_POST['speed']) || $_POST['speed'] < 0.05 || $_POST['speed'] > 1)
+										$_POST['speed'] = 1;
+									
+									$fleet_obj->addTarget($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'], $_POST['auftrag'], false);
+									if($_POST['auftrag'] != 6)
+										$fleet_obj->addTarget($me->getPosString(), $_POST['auftrag'], true);
+									
+									$fleet_obj->addUser($_SESSION['username'], $me->getPosString(), $_POST['speed']);
+									
+									foreach($_POST['flotte'] as $id=>$anzahl)
+										$fleet_obj->addFleet($id, $anzahl, $_SESSION['username']);
+									
+									$ress = $me->getRess();
+									if(($_POST['auftrag'] == 1 || $_POST['auftrag'] == 4 || $_POST['auftrag'] == 6))
 									{
-										# Rohstoffmitnahme
-										if(isset($_POST['transport-carbon']) && $_POST['transport-carbon'] >= 0)
-											$auftrag_array[5][0][0] = (int) $_POST['transport-carbon'];
-										if(isset($_POST['transport-aluminium']) && $_POST['transport-aluminium'] >= 0)
-											$auftrag_array[5][0][1] = (int) $_POST['transport-aluminium'];
-										if(isset($_POST['transport-wolfram']) && $_POST['transport-wolfram'] >= 0)
-											$auftrag_array[5][0][2] = (int) $_POST['transport-wolfram'];
-										if(isset($_POST['transport-radium']) && $_POST['transport-radium'] >= 0)
-											$auftrag_array[5][0][3] = (int) $_POST['transport-radium'];
-										if(isset($_POST['transport-tritium']) && $_POST['transport-tritium'] >= 0)
-											$auftrag_array[5][0][4] = (int) $_POST['transport-tritium'];
-
-										# Mehr mitgenommen als vorhanden?
-										if($auftrag_array[5][0][0] > $this_planet['ress'][0])
-											$auftrag_array[5][0][0] = $this_planet['ress'][0];
-										if($auftrag_array[5][0][1] > $this_planet['ress'][1])
-											$auftrag_array[5][0][1] = $this_planet['ress'][1];
-										if($auftrag_array[5][0][2] > $this_planet['ress'][2])
-											$auftrag_array[5][0][2] = $this_planet['ress'][2];
-										if($auftrag_array[5][0][3] > $this_planet['ress'][3])
-											$auftrag_array[5][0][3] = $this_planet['ress'][3];
-										if($auftrag_array[5][0][4] > $this_planet['ress'][4]-$auftrag_array[4][0])
-											$auftrag_array[5][0][4] = $this_planet['ress'][4]-$auftrag_array[4][0];
+										if(!isset($_POST['transport'])) $_POST['transport'] = array(0,0,0,0,0);
+										if(!isset($_POST['rtransport'])) $_POST['rtransport'] = array();
+										if($_POST['transport'][0] > $ress[0]) $_POST['transport'][0] = $ress[0];
+										if($_POST['transport'][1] > $ress[1]) $_POST['transport'][1] = $ress[1];
+										if($_POST['transport'][2] > $ress[2]) $_POST['transport'][2] = $ress[2];
+										if($_POST['transport'][3] > $ress[3]) $_POST['transport'][3] = $ress[3];
+										if($_POST['transport'][4] > $ress[4]) $_POST['transport'][4] = $ress[4];
+	
+										foreach($_POST['rtransport'] as $id=>$anzahl)
+										{
+											if($anzahl > $me->getItemLevel($id, 'roboter'))
+												$_POST['rtransport'][$id] = $me->getItemLevel($id, 'roboter');
+										}
+										$fleet_obj->addTransport($_SESSION['username'], $_POST['transport'], $_POST['rtransport']);
+										list($_POST['transport'], $_POST['rtransport']) = $fleet_obj->getTransport($_SESSION['username']);
 									}
-
-									if($transport[1] > 0)
+									else
 									{
-										# Robotermitnahme
-										if(isset($_POST['rtransport-bau']) && $_POST['rtransport-bau'] >= 0 && isset($this_planet['roboter']['R01']))
-										{
-											$auftrag_array[5][1]['R01'] = (int) $_POST['rtransport-bau'];
-											if($auftrag_array[5][1]['R01'] > $this_planet['roboter']['R01'])
-												$auftrag_array[5][1]['R01'] = $this_planet['roboter']['R01'];
-										}
-										if(isset($_POST['rtransport-carbon']) && $_POST['rtransport-carbon'] >= 0 && isset($this_planet['roboter']['R02']))
-										{
-											$auftrag_array[5][1]['R02'] = (int) $_POST['rtransport-carbon'];
-											if($auftrag_array[5][1]['R02'] > $this_planet['roboter']['R02'])
-												$auftrag_array[5][1]['R02'] = $this_planet['roboter']['R02'];
-										}
-										if(isset($_POST['rtransport-aluminium']) && $_POST['rtransport-aluminium'] >= 0 && isset($this_planet['roboter']['R03']))
-										{
-											$auftrag_array[5][1]['R03'] = (int) $_POST['rtransport-aluminium'];
-											if($auftrag_array[5][1]['R03'] > $this_planet['roboter']['R03'])
-												$auftrag_array[5][1]['R03'] = $this_planet['roboter']['R03'];
-										}
-										if(isset($_POST['rtransport-wolfram']) && $_POST['rtransport-wolfram'] >= 0 && isset($this_planet['roboter']['R04']))
-										{
-											$auftrag_array[5][1]['R04'] = (int) $_POST['rtransport-wolfram'];
-											if($auftrag_array[5][1]['R04'] > $this_planet['roboter']['R04'])
-												$auftrag_array[5][1]['R04'] = $this_planet['roboter']['R04'];
-										}
-										if(isset($_POST['rtransport-radium']) && $_POST['rtransport-radium'] >= 0 && isset($this_planet['roboter']['R05']))
-										{
-											$auftrag_array[5][1]['R05'] = (int) $_POST['rtransport-radium'];
-											if($auftrag_array[5][1]['R05'] > $this_planet['roboter']['R05'])
-												$auftrag_array[5][1]['R05'] = $this_planet['roboter']['R05'];
-										}
-										if(isset($_POST['rtransport-tritium']) && $_POST['rtransport-tritium'] >= 0 && isset($this_planet['roboter']['R06']))
-										{
-											$auftrag_array[5][1]['R06'] = (int) $_POST['rtransport-tritium'];
-											if($auftrag_array[5][1]['R06'] > $this_planet['roboter']['R06'])
-												$auftrag_array[5][1]['R06'] = $this_planet['roboter']['R06'];
-										}
+										$_POST['transport'] = array(0,0,0,0,0);
+										$_POST['rtransport'] = array();
 									}
-
-									# Wenn zu viel mitgenommen wurde, kuerzen
-
-									# Rohstoffe
-									$rohstoff_sum = array_sum($auftrag_array[5][0]);
-									if($rohstoff_sum > $transport[0])
+									
+									$tritium = $fleet_obj->calcNeededTritium($_SESSION['username']);
+								
+									if($ress[4]-$_POST['transport'][4] < $tritium)
 									{
-										$f = $transport[0]/$rohstoff_sum;
-										$auftrag_array[5][0][0] = floor($auftrag_array[5][0][0]*$f);
-										$auftrag_array[5][0][1] = floor($auftrag_array[5][0][1]*$f);
-										$auftrag_array[5][0][2] = floor($auftrag_array[5][0][2]*$f);
-										$auftrag_array[5][0][3] = floor($auftrag_array[5][0][3]*$f);
-										$auftrag_array[5][0][4] = floor($auftrag_array[5][0][4]*$f);
-
-										# Rundungsdifferenzen ausgleichen
-										$rohstoff_sum = array_sum($auftrag_array[5][0]);
-										$d = $transport[0]-$rohstoff_sum;
-										$ed = floor($d/5);
-										$auftrag_array[5][0][0] += $ed;
-										$auftrag_array[5][0][1] += $ed;
-										$auftrag_array[5][0][2] += $ed;
-										$auftrag_array[5][0][3] += $ed;
-										$auftrag_array[5][0][4] += $ed;
-
-										$d = $d%5;
-										switch($d)
-										{
-											case 4: $auftrag_array[5][0][3]++;
-											case 3: $auftrag_array[5][0][2]++;
-											case 2: $auftrag_array[5][0][1]++;
-											case 1: $auftrag_array[5][0][0]++;
-										}
-										$rohstoff_sum = array_sum($auftrag_array[5][0]);
-									}
-
-									# Roboter
-									$roboter_sum = array_sum($auftrag_array[5][1]);
-									if($roboter_sum > $transport[1])
-									{
-										$f = $transport[1]/$roboter_sum;
-										$auftrag_array[5][1]['R01'] = floor($auftrag_array[5][1]['R01']*$f);
-										$auftrag_array[5][1]['R02'] = floor($auftrag_array[5][1]['R02']*$f);
-										$auftrag_array[5][1]['R03'] = floor($auftrag_array[5][1]['R03']*$f);
-										$auftrag_array[5][1]['R04'] = floor($auftrag_array[5][1]['R04']*$f);
-										$auftrag_array[5][1]['R05'] = floor($auftrag_array[5][1]['R05']*$f);
-										$auftrag_array[5][1]['R06'] = floor($auftrag_array[5][1]['R06']*$f);
-
-										# Rundungsdifferenzen ausgleichen
-										$roboter_sum = array_sum($auftrag_array[5][1]);
-										$d = $transport[1]-$roboter_sum;
-										$ed = floor($d/6);
-										$auftrag_array[5][1]['R01'] += $ed;
-										$auftrag_array[5][1]['R02'] += $ed;
-										$auftrag_array[5][1]['R03'] += $ed;
-										$auftrag_array[5][1]['R04'] += $ed;
-										$auftrag_array[5][1]['R05'] += $ed;
-										$auftrag_array[5][1]['R06'] += $ed;
-
-										$d = $d%6;
-										switch($d)
-										{
-											case 5: $auftrag_array[5][1]['R05']++;
-											case 4: $auftrag_array[5][1]['R04']++;
-											case 3: $auftrag_array[5][1]['R03']++;
-											case 2: $auftrag_array[5][1]['R02']++;
-											case 1: $auftrag_array[5][1]['R01']++;
-										}
-									}
-
-									$mass += $rohstoff_sum;
-									foreach($auftrag_array[5][1] as $id=>$anzahl)
-										$mass += $items['roboter'][$id]['mass']*$anzahl;
-								}
-
-								# Geschwindigkeit nun berechnen
-								$auftrag_array[1][1] = time()+round(fleet::get_time($mass, $distance, $speed)/$auftrag_array[6]); # Ankunftszeit
-
-								$auftrag_array[7] = false; # Rueckflug?
-
-								if($this_planet['ress'][4] < $auftrag_array[4][0])
-								{
 ?>
 <p class="error">
 	Nicht genug Tritium vorhanden.
 </p>
 <?php
-								}
-								else
-								{
-									if(!isset($user_array['flotten']))
-										$user_array['flotten'] = array();
-
-									do $key = str_replace('.', '-', array_sum(explode(' ', microtime()))); while(isset($user_array['flotten'][$key]) && false);
-
-									$cont = true;
-									if($auftrag_array[2] != 1 && $auftrag_array[2] != 2 && $info[1] != $_SESSION['username'] && $info[1])
-									{
-										# Beim Zielbenutzer die Flottenbewegung eintragen
-										if(!isset($that_user_array['flotten']))
-											$that_user_array['flotten'] = array();
-										while(isset($user_array['flotten'][$key]) || isset($that_user_array['flotten'][$key]))
-											$key = str_replace('.', '-', array_sum(explode(' ', microtime())));
-										$that_user_array['flotten'][$key] = $auftrag_array;
-
-										uasort($that_user_array['flotten'], 'usort_fleet');
-
-										if(!write_user_array($info[1], $that_user_array))
-										{
-?>
-<p class="error">
-	Datenbankfehler.
-</p>
-<?php
-											$cont = false;
-										}
 									}
-
-									if($cont)
+									else
 									{
-										$user_array['flotten'][$key] = $auftrag_array;
-										$this_planet['ress'][4] -= $auftrag_array[4][0];
-										$user_array['punkte'][11] += $auftrag_array[4][0]; # Verbrauchtes Tritium
+										$me->addFleet($fleet_obj->getName());
+										if($_POST['auftrag'] != 1 && $_POST['auftrag'] != 2 && $planet_owner != $_SESSION['username'] && $planet_owner)
+										{
+											# Beim Zielbenutzer die Flottenbewegung eintragen
+											$that_user->addFleet($fleet_obj->getName());
+										}
+
+										$me->subtractRess(array(0, 0, 0, 0, $tritium));
 
 										# Flotten abziehen
-										$logfile_schiffe = array();
 										foreach($_POST['flotte'] as $id=>$anzahl)
-										{
-											$this_planet['schiffe'][$id] -= $anzahl;
-											if($anzahl > 0)
-												$logfile_schiffe[] = $id.' '.$anzahl;
-										}
-										$logfile_schiffe = implode(' ', $logfile_schiffe);
-
-										# Rohstoffe abziehen
-										$this_planet['ress'][0] -= $auftrag_array[5][0][0];
-										$this_planet['ress'][1] -= $auftrag_array[5][0][1];
-										$this_planet['ress'][2] -= $auftrag_array[5][0][2];
-										$this_planet['ress'][3] -= $auftrag_array[5][0][3];
-										$this_planet['ress'][4] -= $auftrag_array[5][0][4];
-
-										# Roboter abziehen
-										$logfile_roboter = array();
-										foreach($auftrag_array[5][1] as $id=>$anzahl)
-										{
-											if($anzahl == 0)
-												continue;
-											$this_planet['roboter'][$id] -= $anzahl;
-											$logfile_roboter[] = $id.' '.$anzahl;
-										}
-										$logfile_roboter = implode(' ', $logfile_roboter);
+											$me->changeItemLevel($id, -$anzahl, 'schiffe');
 										
-										# FEHLT NOCH:
-										# Bei wegschickenden Robotern Bauzeiten verlaengern
-
-										uasort($user_array['flotten'], 'usort_fleet');
-										write_user_array();
-
-										eventhandler::add_event($auftrag_array[1][1]);
-
+										# Rohstoffe abziehen
+										$me->subtractRess($_POST['transport'], false);
+										
+										# Roboter abziehen
+										foreach($_POST['rtransport'] as $id=>$anzahl)
+											$me->changeItemLevel($id, -$anzahl, 'roboter');
+										
+										$fleet_obj->start();
+										
 										if($fast_action)
 										{
-											# Fehlt noch: nicht in last_request speichern
 											header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 											ob_end_clean();
 											ob_end_clean();
@@ -574,17 +349,16 @@
 	</p>
 	<dl>
 		<dt class="c-ziel">Ziel</dt>
-		<dd class="c-ziel"><?=utf8_htmlentities($auftrag_array[3][1])?> &ndash; <?=$info[1] ? utf8_htmlentities($info[2]).' <span class="playername">('.utf8_htmlentities($info[1]).')</span>' : 'Unbesiedelt'?></dd>
+		<dd class="c-ziel"><?=utf8_htmlentities($fleet_obj->getCurrentTarget())?> &ndash; <?=$planet_owner ? utf8_htmlentities($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])).' <span class="playername">('.utf8_htmlentities($planet_owner).')</span>' : 'Unbesiedelt'?></dd>
 
 		<dt class="c-auftragsart">Auftragsart</dt>
-		<dd class="c-auftragsart"><?=isset($type_names[$auftrag_array[2]]) ? htmlentities($type_names[$auftrag_array[2]]) : $auftrag_array[2]?></dt>
+		<dd class="c-auftragsart"><?=isset($type_names[$_POST['auftrag']]) ? htmlentities($type_names[$_POST['auftrag']]) : utf8_htmlentities($_POST['auftrag'])?></dt>
 
 		<dt class="c-ankunft">Ankunft</dt>
-		<dd class="c-ankunft"><?=date('H:i:s, Y-m-d', $auftrag_array[1][1])?> (Serverzeit)</dd>
+		<dd class="c-ankunft"><?=date('H:i:s, Y-m-d', $fleet_obj->getNextArrival())?> (Serverzeit)</dd>
 	</dl>
 </div>
 <?php
-											logfile::action('12', $auftrag_array[3][1], $logfile_schiffe, $auftrag_array[2], $auftrag_array[6], implode('.', $auftrag_array[5][0]), $logfile_roboter, $key);
 										}
 									}
 								}
@@ -596,58 +370,59 @@
 					{
 						if($fast_action)
 						{
-							# Fehlt noch: nicht in last_request speichern
 							header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 							ob_end_clean();
 							ob_end_clean();
 							die();
 						}
-
-						$time = fleet::get_time($mass, $distance, $speed);
-						$tritium = fleet::get_tritium($mass, $distance);
-						$tritium *= 2;
-						$mass += $tritium;
-						$time_string = '';
-						if($time >= 86400)
+						
+						$distance = Fleet::getDistance($me->getPosString(), $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet']);
+						$fleet_obj = Classes::Fleet();
+						if($fleet_obj->create())
 						{
-							$time_string .= floor($time/86400).'&thinsp;<abbr title="Tage">d</abbr>';
-							$time2 = $time%86400;
-						}
-						else
-							$time2 = $time;
-						$time_string .= add_nulls(floor($time2/3600), 2).':'.add_nulls(floor(($time2%3600)/60), 2).':'.add_nulls(($time2%60), 2);
+							$fleet_obj->addUser($_SESSION['username'], $me->getPosString());
+							$fleet_obj->addTarget($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'], 0, false);
+							foreach($_POST['flotte'] as $id=>$anzahl)
+								$fleet_obj->addFleet($id, $anzahl, $_SESSION['username']);
+							$time = $fleet_obj->getNextArrival()-time();
+							$tritium = $fleet_obj->calcNeededTritium($_SESSION['username']);
+							$time_string = '';
+							if($time >= 86400)
+							{
+								$time_string .= floor($time/86400).'&thinsp;<abbr title="Tage">d</abbr>';
+								$time2 = $time%86400;
+							}
+							else
+								$time2 = $time;
+							$time_string .= add_nulls(floor($time2/3600), 2).':'.add_nulls(floor(($time2%3600)/60), 2).':'.add_nulls(($time2%60), 2);
+							
+							$this_ress = $me->getRess();
+							$transport = $fleet_obj->getTransportCapacity($_SESSION['username']);
 ?>
-<form action="flotten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
+<form action="flotten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
 	<dl>
 		<dt class="c-ziel">Ziel</dt>
-		<dd class="c-ziel"><?=utf8_htmlentities($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'])?> &ndash; <?=$info[1] ? utf8_htmlentities($info[2]).' <span class="playername">('.utf8_htmlentities($info[1]).')</span>' : 'Unbesiedelt'?></dd>
+		<dd class="c-ziel"><?=utf8_htmlentities($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'])?> &ndash; <?=$planet_owner ? utf8_htmlentities($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])).' <span class="playername">('.utf8_htmlentities($planet_owner).')</span>' : 'Unbesiedelt'?></dd>
 
 		<dt class="c-entfernung">Entfernung</dt>
 		<dd class="c-entfernung"><?=ths($distance)?>&thinsp;<abbr title="Orbits">Or</abbr></dd>
 
-		<dt class="c-masse">Masse</dt>
-		<dd class="c-masse" id="masse"><?=ths($mass)?>&thinsp;<abbr title="Tonnen">t</abbr></dd>
-
 		<dt class="c-antrieb">Antrieb</dt>
-		<dd class="c-antrieb"><?=ths($speed)?>&thinsp;<abbr title="Megawatt">MW</abbr></dd>
+		<dd class="c-antrieb"><?=ths($speed)?>&thinsp;<abbr title="Milliorbits pro Quadratsekunde">mOr&frasl;s²</abbr></dd>
 
-		<script type="text/javascript">
-			// <![CDATA[
-			document.write('<dt class="c-tritiumverbrauch">Tritiumverbrauch</dt>');
-			document.write('<dd class="c-tritiumverbrauch <?=($this_planet['ress'][4] >= $tritium) ? 'ja' : 'nein'?>" id="tritium-verbrauch"><?=ths($tritium)?>&thinsp;<abbr title="Tonnen">t</abbr></dd>');
-			// ]]>
-		</script>
-
+		<dt class="c-tritiumverbrauch">Tritiumverbrauch</dt>
+		<dd class="c-tritiumverbrauch <?=($this_ress[4] >= $tritium) ? 'ja' : 'nein'?>" id="tritium-verbrauch"><?=ths($tritium)?>&thinsp;<abbr title="Tonnen">t</abbr></dd>
+		
 		<dt class="c-geschwindigkeit"><label for="speed">Gesch<kbd>w</kbd>indigkeit</label></dt>
 		<dd class="c-geschwindigkeit">
 			<select name="speed" id="speed" accesskey="w" tabindex="1" onchange="recalc_values();" onkeyup="recalc_values();">
 <?php
-						for($i=1,$pr=100; $i>0; $i-=.05,$pr-=5)
-						{
+							for($i=1,$pr=100; $i>0; $i-=.05,$pr-=5)
+							{
 ?>
 				<option value="<?=htmlentities($i)?>"><?=htmlentities($pr)?>&thinsp;%</option>
 <?php
-						}
+							}
 ?>
 			</select>
 		</dd>
@@ -669,26 +444,26 @@
 		<dd class="c-auftrag">
 			<select name="auftrag" id="auftrag" accesskey="u" tabindex="2" onchange="recalc_values();" onkeyup="recalc_values();">
 <?php
-						foreach($types as $type)
-						{
+							foreach($types as $type)
+							{
 ?>
 				<option value="<?=utf8_htmlentities($type)?>"><?=isset($type_names[$type]) ? htmlentities($type_names[$type]) : $type?></option>
 <?php
-						}
+							}
 ?>
 			</select>
 		</dd>
 <?php
-						if($transport[0] > 0 || $transport[1] > 0)
-						{
+							if($transport[0] > 0 || $transport[1] > 0)
+							{
 ?>
 
 		<dt class="c-transport" id="transport-dt">Tra<kbd>n</kbd>sport</dt>
 		<dd class="c-transport" id="transport-dd">
 			<dl>
 <?php
-							if($transport[0] > 0)
-							{
+								if($transport[0] > 0)
+								{
 ?>
 				<dt><label for="transport-carbon">Carbo<kbd>n</kbd></label></dt>
 				<dd><input type="text" name="transport-carbon" id="transport-carbon" value="0" onchange="recalc_values();" accesskey="n" tabindex="3" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
@@ -705,42 +480,37 @@
 				<dt><label for="transport-tritium">Tritium</label></dt>
 				<dd><input type="text" name="transport-tritium" id="transport-tritium" value="0" onchange="recalc_values();" tabindex="7" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 <?php
-							}
-							if($transport[1] > 0)
-							{
-								if($transport[0] > 0)
-									echo "\n";
+								}
+								if($transport[1] > 0)
+								{
+									if($transport[0] > 0)
+										echo "\n";
+									
+									$tabindex = 8;
+									foreach($me->getItemsList('roboter') as $rob)
+									{
+										$item_info = $me->getItemInfo($rob, 'roboter');
 ?>
-				<dt><label for="rtransport-bau">Bauroboter</label></dt>
-				<dd><input type="text" name="rtransport-bau" id="rtransport-bau" value="0" onchange="recalc_values();" tabindex="8" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
-
-				<dt><label for="rtransport-carbon">Carbonroboter</label></dt>
-				<dd><input type="text" name="rtransport-carbon" id="rtransport-carbon" value="0" onchange="recalc_values();" tabindex="9" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
-
-				<dt><label for="rtransport-aluminium">Aluminiumroboter</label></dt>
-				<dd><input type="text" name="rtransport-aluminium" id="rtransport-aluminium" value="0" onchange="recalc_values();" tabindex="10" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
-
-				<dt><label for="rtransport-wolfram">Wolframroboter</label></dt>
-				<dd><input type="text" name="rtransport-wolfram" id="rtransport-wolfram" value="0" onchange="recalc_values();" tabindex="11" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
-
-				<dt><label for="rtransport-radium">Radiumroboter</label></dt>
-				<dd><input type="text" name="rtransport-radium" id="rtransport-radium" value="0" onchange="recalc_values();" tabindex="12" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
-
-				<dt><label for="rtransport-tritium">Tritiumroboter</label></dt>
-				<dd><input type="text" name="rtransport-tritium" id="rtransport-tritium" value="0" onchange="recalc_values();" tabindex="13" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dt><label for="rtransport-<?=utf8_htmlentities($rob)?>"><?=utf8_htmlentities($item_info['name'])?></label></dt>
+				<dd><input type="text" name="rtransport[<?=utf8_htmlentities($rob)?>]" id="rtransport-<?=utf8_htmlentities($rob)?>" value="0" onchange="recalc_values();" tabindex="<?=$tabindex++?>" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 <?php
-							}
+									}
+								}
 ?>
 			</dl>
 		</dd>
 <?php
-						}
+							}
 ?>
 	</dl>
 	<script type="text/javascript">
 		// <![CDATA[
 			function recalc_values()
 			{
+<?php
+							if($transport[0] > 0 || $transport[1] > 0)
+							{
+?>
 				// Transport
 				var auftraege = new Array();
 				auftraege[1] = true;
@@ -751,92 +521,14 @@
 				auftraege[6] = true;
 
 				var auftrag = document.getElementById('auftrag');
-
-
-				// Masse
-				var masse = <?=$mass-$tritium?>;
-<?php
-						if($transport[0] > 0 || $transport[1] > 0)
-						{
-?>
 				var use_transport = auftraege[auftrag.options[auftrag.selectedIndex].value];
 				document.getElementById('transport-dt').style.display = (use_transport ? 'block' : 'none');
 				document.getElementById('transport-dd').style.display = (use_transport ? 'block' : 'none');
 				document.getElementById('transport-verbleibend-dt').style.display = (use_transport ? 'block' : 'none');
 				document.getElementById('transport-verbleibend-dd').style.display = (use_transport ? 'block' : 'none');
-
-				if(use_transport)
-				{
-<?php
-							if($transport[0] > 0)
-							{
-?>
-					var masse_ress = 0;
-					masse_ress += myParseInt(document.getElementById('transport-carbon').value);
-					masse_ress += myParseInt(document.getElementById('transport-aluminium').value);
-					masse_ress += myParseInt(document.getElementById('transport-wolfram').value);
-					masse_ress += myParseInt(document.getElementById('transport-radium').value);
-					masse_ress += myParseInt(document.getElementById('transport-tritium').value);
-					if(masse_ress > <?=$transport[0]?>)
-						masse_ress = <?=$transport[0]?>;
-					masse += masse_ress;
-<?php
-							}
-							if($transport[1] > 0)
-							{
-?>
-					var masse_rob = new Array(6);
-					var masse_rob_ges = 0;
-
-					masse_rob[0] = myParseInt(document.getElementById('rtransport-bau').value);
-					if(masse_rob_ges+masse_rob[0] > <?=$transport[1]?>)
-						masse += (<?=$transport[1]?>-masse_rob_ges)*<?=$items['roboter']['R01']['mass']?>;
-					else
-						masse += masse_rob[0]*<?=$items['roboter']['R01']['mass']?>;
-					masse_rob_ges += masse_rob[0];
-
-					masse_rob[1] = myParseInt(document.getElementById('rtransport-carbon').value);
-					if(masse_rob_ges+masse_rob[1] > <?=$transport[1]?>)
-						masse += (<?=$transport[1]?>-masse_rob_ges)*<?=$items['roboter']['R02']['mass']?>;
-					else
-						masse += masse_rob[1]*<?=$items['roboter']['R02']['mass']?>;
-					masse_rob_ges += masse_rob[1];
-
-					masse_rob[2] = myParseInt(document.getElementById('rtransport-aluminium').value);
-					if(masse_rob_ges+masse_rob[2] > <?=$transport[1]?>)
-						masse += (<?=$transport[1]?>-masse_rob_ges)*<?=$items['roboter']['R03']['mass']?>;
-					else
-						masse += masse_rob[2]*<?=$items['roboter']['R03']['mass']?>;
-					masse_rob_ges += masse_rob[2];
-
-					masse_rob[3] = myParseInt(document.getElementById('rtransport-wolfram').value);
-					if(masse_rob_ges+masse_rob[3] > <?=$transport[1]?>)
-						masse += (<?=$transport[1]?>-masse_rob_ges)*<?=$items['roboter']['R04']['mass']?>;
-					else
-						masse += masse_rob[3]*<?=$items['roboter']['R04']['mass']?>;
-					masse_rob_ges += masse_rob[3];
-
-					masse_rob[4] = myParseInt(document.getElementById('rtransport-radium').value);
-					if(masse_rob_ges+masse_rob[4] > <?=$transport[1]?>)
-						masse += (<?=$transport[1]?>-masse_rob_ges)*<?=$items['roboter']['R05']['mass']?>;
-					else
-						masse += masse_rob[4]*<?=$items['roboter']['R05']['mass']?>;
-					masse_rob_ges += masse_rob[4];
-
-					masse_rob[5] = myParseInt(document.getElementById('rtransport-tritium').value);
-					if(masse_rob_ges+masse_rob[5] > <?=$transport[1]?>)
-						masse += (<?=$transport[1]?>-masse_rob_ges)*<?=$items['roboter']['R06']['mass']?>;
-					else
-						masse += masse_rob[5]*<?=$items['roboter']['R06']['mass']?>;
-					masse_rob_ges += masse_rob[5];
 <?php
 							}
 ?>
-				}
-<?php
-						}
-?>
-				document.getElementById('masse').innerHTML = ths(masse)+'&thinsp;<abbr title="Tonnen">t</abbr>';
 
 				// Tritiumverbrauch
 				var speed_obj = document.getElementById('speed');
@@ -844,32 +536,15 @@
 				var tritium = <?=$tritium?>;
 				if(!isNaN(speed))
 					tritium = Math.floor(tritium*speed);
-				masse += tritium;
 				document.getElementById('tritium-verbrauch').innerHTML = ths(tritium)+'&thinsp;<abbr title="Tonnen">t</abbr>';
-				document.getElementById('tritium-verbrauch').className = 'c-tritiumverbrauch '+((<?=$this_planet['ress'][4]?> >= tritium) ? 'ja' : 'nein');
+				document.getElementById('tritium-verbrauch').className = 'c-tritiumverbrauch '+((<?=$this_ress[4]?> >= tritium) ? 'ja' : 'nein');
 
 				// Flugzeit
-<?php
-						if($speed <= 0)
-						{
-?>
-				var time = 0;
-<?php
-						}
-						else
-						{
-?>
-				//var time = Math.pow(1.125*masse*Math.pow(<?=$distance?>, 2)/<?=$speed?>, 0.33333)*10;
-				//var time = Math.pow((masse*<?=$distance?>)/<?=$speed?>, 0.3)*300;
-				//var time = (Math.pow(masse, 0.9)/<?=$speed?>)*<?=pow($distance, 0.3)*100?>;
-				var time = 2*<?=sqrt($distance*50)?>*masse/<?=$speed?>;
+				var time = <?=$time?>;
 				if(!isNaN(speed))
 					time /= speed;
 				time = Math.round(time);
-
-<?php
-						}
-?>
+				
 				var time_string = '';
 				if(time >= 86400)
 				{
@@ -892,38 +567,41 @@
 					attrName = 'title';
 				document.getElementById('flugzeit').setAttribute(attrName, 'Ankunft: '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+' (Lokalzeit); '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+' (Serverzeit)');
 <?php
-						if($transport[0] > 0 || $transport[1] > 0)
-						{
+							if($transport[0] > 0 || $transport[1] > 0)
+							{
 ?>
 
 				// Verbleibendes Ladevermoegen
 				if(use_transport)
 				{
 <?php
-							if($transport[0] > 0)
-							{
+								if($transport[0] > 0)
+								{
 ?>
 					var ges_ress = myParseInt(document.getElementById('transport-carbon').value)+myParseInt(document.getElementById('transport-aluminium').value)+myParseInt(document.getElementById('transport-wolfram').value)+myParseInt(document.getElementById('transport-radium').value)+myParseInt(document.getElementById('transport-tritium').value);
 <?php
-							}
-							else
-							{
+								}
+								else
+								{
 ?>
 					var ges_ress = 0;
 <?php
-							}
-							if($transport[1] > 0)
-							{
+								}
+								if($transport[1] > 0)
+								{
+									$robs_arr = array();
+									foreach($me->getItemsList('roboter') as $rob)
+										$robs_arr[] = "myParseInt(document.getElementById('rtransport-".$rob."').value)";
 ?>
-					var ges_rob = myParseInt(document.getElementById('rtransport-bau').value)+myParseInt(document.getElementById('rtransport-carbon').value)+myParseInt(document.getElementById('rtransport-aluminium').value)+myParseInt(document.getElementById('rtransport-wolfram').value)+myParseInt(document.getElementById('rtransport-radium').value)+myParseInt(document.getElementById('rtransport-tritium').value);
+					var ges_rob = <?=implode('+', $robs_arr)?>;
 <?php
-							}
-							else
-							{
+								}
+								else
+								{
 ?>
 					var ges_rob = 0;
 <?php
-							}
+								}
 ?>
 					var remain_ress = <?=$transport[0]?>;
 					if(!isNaN(ges_ress))
@@ -942,7 +620,7 @@
 					document.getElementById('transport-verbleibend-dd').innerHTML = remain_ress+'&thinsp;<abbr title="Tonnen">t</abbr>, '+remain_rob+'&nbsp;Roboter';
 				}
 <?php
-						}
+							}
 ?>
 			}
 
@@ -951,12 +629,12 @@
 	</script>
 	<div>
 <?php
-						foreach($_POST['flotte'] as $id=>$anzahl)
-						{
+							foreach($_POST['flotte'] as $id=>$anzahl)
+							{
 ?>
 		<input type="hidden" name="flotte[<?=utf8_htmlentities($id)?>]" value="<?=utf8_htmlentities($anzahl)?>" />
 <?php
-						}
+							}
 ?>
 		<input type="hidden" name="galaxie" value="<?=utf8_htmlentities($_POST['galaxie'])?>" />
 		<input type="hidden" name="system" value="<?=utf8_htmlentities($_POST['system'])?>" />
@@ -965,6 +643,7 @@
 	</div>
 </form>
 <?php
+						}
 					}
 				}
 			}
@@ -975,7 +654,6 @@
 	{
 		if($fast_action)
 		{
-			# Fehlt noch: nicht in last_request speichern
 			header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 			ob_end_clean();
 			ob_end_clean();
@@ -987,25 +665,21 @@
 	Sie haben derzeit <?=ths($my_flotten)?> von <?=ths($max_flotten)?> <?=($max_flotten == 1) ? 'möglichen Flotte' : 'möglichen Flotten'?> unterwegs.
 </p>
 <?php
-		if(isset($this_planet['schiffe']) && array_sum($this_planet['schiffe']) > 0)
+		$this_pos = $me->getPos();
+		if(isset($_GET['action_galaxy'])) $this_pos[0] = $_GET['action_galaxy'];
+		if(isset($_GET['action_system'])) $this_pos[1] = $_GET['action_system'];
+		if(isset($_GET['action_planet'])) $this_pos[2] = $_GET['action_planet'];
+?>
+<form action="flotten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden">
+<?php
+		if($my_flotten < $max_flotten && $me->permissionToAct())
 		{
-?>
-<?php
-			$this_pos = explode(':', $this_planet['pos']);
-			if(isset($_GET['action_galaxy'])) $this_pos[0] = $_GET['action_galaxy'];
-			if(isset($_GET['action_system'])) $this_pos[1] = $_GET['action_system'];
-			if(isset($_GET['action_planet'])) $this_pos[2] = $_GET['action_planet'];
-?>
-<form action="flotten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="flotte-versenden">
-<?php
-			if($my_flotten < $max_flotten && !$user_array['umode'])
-			{
 ?>
 	<fieldset class="flotte-koords">
 		<legend>Ziel</legend>
 		<dl>
 			<dt class="c-ziel"><label for="ziel-galaxie"><kbd>Z</kbd>iel</label></dt>
-			<dd class="c-ziel"><input type="text" id="ziel-galaxie" name="galaxie" value="<?=utf8_htmlentities($this_pos[0])?>" title="Ziel: Galaxie" accesskey="z" tabindex="1" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="<?=strlen(universe::get_galaxies_count())?>" />:<input type="text" id="ziel-system" name="system" value="<?=utf8_htmlentities($this_pos[1])?>" title="Ziel: System" tabindex="2" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="3" />:<input type="text" id="ziel-planet" name="planet" value="<?=utf8_htmlentities($this_pos[2])?>" title="Ziel: Planet" tabindex="3" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="2" /></dd>
+			<dd class="c-ziel"><input type="text" id="ziel-galaxie" name="galaxie" value="<?=utf8_htmlentities($this_pos[0])?>" title="Ziel: Galaxie" accesskey="z" tabindex="1" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="<?=strlen(getGalaxiesCount())?>" />:<input type="text" id="ziel-system" name="system" value="<?=utf8_htmlentities($this_pos[1])?>" title="Ziel: System" tabindex="2" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="3" />:<input type="text" id="ziel-planet" name="planet" value="<?=utf8_htmlentities($this_pos[2])?>" title="Ziel: Planet" tabindex="3" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="2" /></dd>
 			<script type="text/javascript">
 				// <![CDATA[
 					document.write('<dt class="c-planet"><label for="ziel-planet-wahl">Pla<kbd>n</kbd>et</label></dt>');
@@ -1013,13 +687,16 @@
 					document.write('<select id="ziel-planet-wahl" accesskey="n" tabindex="4" onchange="syncronise(false);" onkeyup="syncronise(false);">');
 					document.write('<option value="">Benutzerdefiniert</option>');
 <?php
-				$planets = array_keys($user_array['planets']);
+				$planets = $me->getPlanetsList();
+				$active_planet = $me->getActivePlanet();
 				foreach($planets as $planet)
 				{
+					$me->setActivePlanet($planet);
 ?>
-					document.write('<option value="<?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?>"<?=($planet == $_SESSION['act_planet']) ? ' selected="selected"' : ''?>><?=preg_replace('/[\'\\\\]/', '\\\\\\0', utf8_htmlentities($user_array['planets'][$planet]['name']))?> (<?=utf8_htmlentities($user_array['planets'][$planet]['pos'])?>)</option>');
+					document.write('<option value="<?=utf8_htmlentities($me->getPosString())?>"<?=($planet == $active_planet) ? ' selected="selected"' : ''?>><?=preg_replace('/[\'\\\\]/', '\\\\\\0', utf8_htmlentities($me->planetName()))?> (<?=utf8_htmlentities($me->getPosString())?>)</option>');
 <?php
 				}
+				$me->setActivePlanet($active_planet);
 ?>
 					document.write('</select>');
 					document.write('</dd>');
@@ -1068,33 +745,32 @@
 		</dl>
 	</fieldset>
 <?php
-			}
+		}
 ?>
 	<fieldset class="flotte-schiffe">
 		<legend>Schiffe</legend>
 		<dl>
 <?php
-			$i = 5;
-			foreach($this_planet['schiffe'] as $id=>$anzahl)
-			{
-				if(!isset($items['schiffe'][$id]) || $anzahl < 1)
-					continue;
+		$i = 5;
+		foreach($me->getItemsList('schiffe') as $id)
+		{
+			if($me->getItemLevel($id, 'schiffe') < 1) continue;
+			$item_info = $me->getItemInfo($id, 'schiffe');
 ?>
-			<dt><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($items['schiffe'][$id]['name'])?></a> <span class="vorhanden">(<?=ths($anzahl)?>&nbsp;vorhanden)</span></dt>
-			<dd><input type="text" name="flotte[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$i?>"<?=($my_flotten >= $max_flotten || $user_array['umode']) ? ' readonly="readonly"' : ''?> /></dd>
+			<dt><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a> <span class="vorhanden">(<?=ths($item_info['level'])?>&nbsp;vorhanden)</span></dt>
+			<dd><input type="text" name="flotte[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$i?>"<?=($my_flotten >= $max_flotten || !$me->permissionToAct()) ? ' readonly="readonly"' : ''?> /></dd>
 <?php
-				$i++;
-			}
+			$i++;
+		}
 ?>
 		</dl>
 	</fieldset>
 <?php
-			if($my_flotten < $max_flotten && !$user_array['umode'])
-			{
+		if($i>5 && $my_flotten < $max_flotten && $me->permissionToAct())
+		{
 ?>
 	<div><button type="submit" accesskey="w" tabindex="<?=$i?>"><kbd>W</kbd>eiter</button></div>
 <?php
-			}
 		}
 ?>
 </form>

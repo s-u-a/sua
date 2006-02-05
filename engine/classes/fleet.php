@@ -13,10 +13,50 @@
 			return true;
 		}
 		
+		function write($force=false)
+		{
+			if($this->started() || $force) return Dataset::write($force);
+			else return $this->destroy();
+		}
+		
+		function destroy()
+		{
+			if(!$this->status) return false;
+			
+			foreach($this->raw[1] as $user=>$info)
+			{
+				$user_obj = Classes::User($user);
+				$user_obj->unsetFleet($this->getName());
+			}
+			
+			$status = (unlink($this->filename) || chmod($this->filename, 0));
+			if($status)
+			{
+				$this->status = 0;
+				$this->changed = false;
+				return true;
+			}
+			else return false;
+		}
+		
 		function fleetExists($fleet)
 		{
 			$filename = DB_FLEETS.'/'.urlencode($fleet);
 			return (is_file($filename) && is_readable($filename));
+		}
+		
+		function getTargetsList()
+		{
+			if(!$this->status) return false;
+			
+			return array_keys($this->raw[0]);
+		}
+		
+		function getOldTargetsList()
+		{
+			if(!$this->status) return false;
+			
+			return array_keys($this->raw[3]);
 		}
 		
 		function addTarget($pos, $type, $back)
@@ -78,11 +118,13 @@
 		
 		function getNextArrival()
 		{
-			if(!$this->status || !$this->started()) return false;
+			if(!$this->status) return false;
 			
+			if($this->started()) $start_time = $this->raw[2];
+			else $start_time = time();
 			$users = array_keys($this->raw[1]);
 			$duration = $this->calcTime(array_shift($users), $this->getLastTarget(), $this->getCurrentTarget());
-			return $this->raw[2]+$duration;
+			return $start_time+$duration;
 		}
 		
 		function isFlyingBack()
@@ -153,7 +195,7 @@
 			{
 				$item_info = $user_object->getItemInfo($id, 'schiffe');
 				$trans[0] += $item_info['trans'][0]*$count;
-				$trans[1] += $Item_info['trans'][1]*$count;
+				$trans[1] += $item_info['trans'][1]*$count;
 			}
 			return $trans;
 		}
@@ -302,6 +344,32 @@
 			return $this->raw[1][$user][4];
 		}
 		
+		function calcNeededTritium($user)
+		{
+			if(!$this->status || $this->started()) return false;
+			
+			$users = array_keys($this->raw[1]);
+			$user_key = array_search($user, $users);
+			
+			if($user_key === false) return false;
+			
+			if($user_key)
+				return $this->getTritium($user, $this->raw[1][$user][1], $this->getCurrentTarget())*$this->raw[1][$user][2]*2;
+			else
+			{
+				$tritium = 0;
+				$old_target = $this->raw[1][$user][1];
+				foreach($this->raw[0] as $target=>$info)
+				{
+					$tritium += $this->getTritium($user, $old_target, $target);
+					$old_target = $target;
+				}
+				if($old_target != $this->raw[1][$user][1])
+					$tritium += $this->getTritium($user, $old_target, $this->raw[1][$user][1]);
+				return $tritium*$this->raw[1][$user][2];
+			}
+		}
+		
 		function getTritium($user, $from, $to)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
@@ -313,7 +381,8 @@
 				$item_info = $user_obj->getItemInfo($id, 'schiffe');
 				$mass += $item_info['mass']*$count;
 			}
-			return $this->getDistance($from, $to)*$mass;
+			
+			return $this->getDistance($from, $to)*$mass/1000000;
 		}
 		
 		function getScores($user, $from, $to)
@@ -347,7 +416,7 @@
 				$item_info = $user_obj->getItemInfo($id, 'schiffe');
 				$speeds[] = $item_info['speed'];
 			}
-			$speed = min($speed)*array_sum($this->raw[1][$user][0]);
+			$speed = min($speeds)/1000;
 			
 			$time = sqrt($this->getDistance($from, $to)/$speed)*2;
 			$time /= $this->raw[1][$user][2];
@@ -386,12 +455,18 @@
 				unlink($this->filename) or chmod($this->filename, 0);
 				$this->status = false;
 				$this->changed = false;
-				
-				$new = Classes::Fleet();
-				$new->create();
-				$new->setRaw($new_raw);
-				return true;
 			}
+			
+			$new = Classes::Fleet();
+			$new->create();
+			$new->setRaw($new_raw);
+			
+			if(count($this->raw[1]) <= 0)
+				return true;
+			
+			$user_obj = Classes::User($user);
+			$user_obj->unsetFleet($this->getName());
+			$user_obj->addFleet($new->getName());
 			
 			$this->changed = true;
 			return true;
@@ -453,14 +528,14 @@
 			
 			$keys = array_keys($this->raw[1]);
 			$user = array_shift($keys);
-			if(array_sum($this->raw[1][array_shift($keys)][0]) <= 0) return false;
+			if(array_sum($this->raw[1][$user][0]) <= 0) return false;
 			
 			# Geschwindigkeitsfaktoren der anderen Teilnehmer abstimmen
+			$koords = array_keys($this->raw[0]);
+			$koords = array_shift($koords);
+			$time = $this->calcTime($user, $this->raw[1][$user][1], $koords);
 			if(count($keys) > 1)
 			{
-				$koords = array_keys($this->raw[0]);
-				$koords = array_shift($koords);
-				$time = $this->calcTime($user, $this->raw[1][$user][1], $koords);
 				foreach($keys as $key)
 				{
 					$this_time = calcTime($key, $this->raw[1][$key][1], $koords);
@@ -470,7 +545,15 @@
 			
 			$this->raw[2] = time();
 			
+			# In Eventdatei eintragen
+			$fh = fopen(EVENT_FILE, 'a');
+			flock($fh, LOCK_EX);
+			fwrite($fh, round(time()+$time)."\t".$this->getName()."\n");
+			flock($fh, LOCK_UN);
+			fclose($fh);
+			
 			$this->changed = true;
+			return true;
 		}
 		
 		function started()
@@ -545,14 +628,116 @@
 			$next_target = array_shift($keys);
 			
 			$type = $this->raw[0][$next_target][0];
+			$back = $this->raw[0][$next_target][1];
 			
-			if($type != 6)
+			if($type != 6 && !$back)
 			{
 				# Nicht stationieren: Flotte fliegt weiter
 				
 			}
 			else
 			{
+				# Stationieren
+				
+				$target = explode(':', $next_target);
+				$target_galaxy = Classes::Galaxy($target[0]);
+				$owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
+				if(!$owner)
+				{
+					$this->destroy();
+					return false;
+				}
+				
+				$owner_obj = Classes::User($owner);
+				if(!$owner_obj->getStatus()) return false;
+				
+				$planet_index = $owner_obj->getPlanetByPos($next_target);
+				if($planet_index === false)
+				{
+					$this->destroy();
+					return false;
+				}
+				
+				$owner_obj->setActivePlanet($planet_index);
+				
+				$ress = array(0, 0, 0, 0, 0);
+				$robs = array();
+				$schiffe_own = array();
+				$schiffe_other = array();
+				
+				foreach($this->raw[1] as $username=>$move_info)
+				{
+					$ress[0] += $move_info[3][0][0];
+					$ress[1] += $move_info[3][0][1];
+					$ress[2] += $move_info[3][0][2];
+					$ress[3] += $move_info[3][0][3];
+					$ress[4] += $move_info[3][0][4];
+					
+					foreach($move_info[3][1] as $id=>$count)
+					{
+						if(isset($robs[$id])) $robs[$id] += $count;
+						else $robs[$id] = $count;
+					}
+					
+					if($username == $owner)
+					{
+						# Stationieren
+						foreach($move_info[0] as $id=>$count)
+						{
+							if(isset($schiffe_own[$id])) $schiffe_own[$id] += $count;
+							else $schiffe_own[$id] = $count;
+						}
+					}
+					else
+					{
+						# Fremdstationieren
+						if(!isset($schiffe_other[$username]))
+							$schiffe_other[$username] = array();
+						foreach($move_info[0] as $id=>$count)
+						{
+							if(isset($schiffe_other[$username][$id])) $schiffe_other[$username][$id] += $count;
+							else $schiffe_other[$username][$id] = $count;
+						}
+					}
+				}
+				
+				$message_text = "Eine Flotte erreicht den Planeten \xe2\x80\x9e".$owner_obj->planetName()."\xe2\x80\x9c (".$owner_obj->getPosString().", Eigent\xc3\xbcmer: ".$owner_obj->getName().").\n";
+				if(array_sum($schiffe_own) > 0)
+				{
+					$message_text .= "Die Flotte besteht aus folgenden Schiffen: ".makeItemsString($schiffe_own, false)."\n";
+					foreach($schiffe_own as $id=>$anzahl)
+						$owner_obj->changeItemLevel($id, $anzahl);
+				}
+				if(array_sum_r($schiffe_other) > 0)
+				{
+					$message_text .= "Folgende Schiffe anderer Spieler werden fremdstationiert:\n";
+					foreach($schiffe_other as $user=>$schiffe)
+					{
+						$message_text .= $user.": ".makeItemsString($schiffe, false)."\n";
+						$owner_obj->addForeignFleet($user, $schiffe);
+					}
+				}
+				
+				$owner_obj->addRess($ress);
+				$message_text .= "\nFolgende Güter werden abgeliefert:\n";
+				$message_text .= ths($ress[0]).' Carbon, '.ths($ress[1]).' Aluminium, '.ths($ress[2]).' Wolfram, '.ths($ress[3]).' Radium, '.ths($ress[4])." Tritium.\n";
+				if(array_sum($robs) > 0)
+					$message_text .= makeItemsString($robs, false)."\n";
+				foreach($robs as $id=>$anzahl)
+					$owner_obj->changeItemLevel($id, $anzahl, 'roboter');
+				
+				$message_obj = Classes::Message();
+				if($message_obj->create())
+				{
+					$message_obj->text($message_text);
+					$message_obj->subject("Stationierung auf ".$owner_obj->getPosString());
+					$message_obj->from($owner_obj->getName());
+					global $types_message_types;
+					foreach($this->raw[1] as $username=>$move_info)
+						$message_obj->addUser($username, $types_message_types[$this->raw[0][$next_target][0]]);
+				}
+				
+				$this->destroy();
 			}
 		}
 		
@@ -860,7 +1045,7 @@
 			{
 				$av_users = array_keys($d);
 				$att_user = $av_users[array_rand($av_users)];
-				$av_ids = array_keys($d[$att_user])
+				$av_ids = array_keys($d[$att_user]);
 				$att_id = $av_ids[array_rand($av_ids)];
 				
 				$item_info = ${'users_'.$runde_anderer}[$att_user]->getItemInfo($att_id);
@@ -881,7 +1066,7 @@
 						$nachrichten_text .= "Eine Einheit des Typs ".utf8_htmlentities($item_info['name'])." (".utf8_htmlentities($att_user).") wird angeschossen.</li>\n";
 					else
 					{
-						.ths($floor_diff)."&nbsp;Einheit";
+						$nachrichten_text .= ths($floor_diff)."&nbsp;Einheit";
 						if($floor_diff != 1) $nachrichten_text .= "en";
 						$nachrichten_text .= " des Typs ".utf8_htmlentities($item_info['name'])." (".utf8_htmlentities($att_user).") werden zerst\xc3\xb6rt. ".$d[$att_user][$att_id]." verbleiben.</li>\n";
 					}

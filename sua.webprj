@@ -119,6 +119,6 @@
     <item url="engine/classes/galaxy.php" uploadstatus="1" />
     <item url="db_things/walkthrough_users" uploadstatus="1" />
     <item url="db_things/database_convert_v0_v1" uploadstatus="1" />
-    <item url="db_things/eventhandler" />
+    <item url="db_things/eventhandler" uploadstatus="1" />
   </project>
 </webproject>

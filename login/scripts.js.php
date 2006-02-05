@@ -36,7 +36,7 @@ function time_up()
 			continue;
 		var this_remain = Math.round((codo[1]+time_diff)-local_time_up.getTime()/1000);
 
-		if(this_remain < 0)
+		if(this_remain < -codo[2])
 		{
 			while(document.getElementById('restbauzeit-'+codo[0]).firstChild)
 				document.getElementById('restbauzeit-'+codo[0]).removeChild(document.getElementById('restbauzeit-'+codo[0]).firstChild);
@@ -49,6 +49,8 @@ function time_up()
 			delete countdowns[codo_key];
 			continue;
 		}
+		
+		if(this_remain < 0) this_remain = 0;
 
 		var this_timestring = '';
 		if(this_remain >= 86400)
@@ -68,6 +70,9 @@ function init_countdown(obj_id, f_time)
 	var show_cancel = true;
 	if(init_countdown.arguments.length >= 3 && !init_countdown.arguments[2])
 		show_cancel = false;
+	var sleep_seconds = 0;
+	if(init_countdown.arguments.length >= 4)
+		sleep_seconds = init_countdown.arguments[3];
 
 	var title_string = 'Fertigstellung: ';
 	var local_date = new Date((f_time+time_diff)*1000);
@@ -92,7 +97,7 @@ function init_countdown(obj_id, f_time)
 		document.getElementById('restbauzeit-'+obj_id).appendChild(cancel_link);
 	}
 
-	window.countdowns.push(new Array(obj_id, f_time));
+	window.countdowns.push(new Array(obj_id, f_time, sleep_seconds));
 
 	time_up();
 }

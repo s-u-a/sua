@@ -251,7 +251,7 @@
 
 						$_POST['weiterleitung-to'] = trim($_POST['weiterleitung-to']);
 
-						if(!Users::userExists($_POST['weiterleitung-to']))
+						if(!User::userExists($_POST['weiterleitung-to']))
 						{
 ?>
 <p class="error">Der Empfänger, den Sie eingegeben haben, existiert nicht.</p>

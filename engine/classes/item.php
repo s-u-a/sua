@@ -202,6 +202,7 @@
 						'types' => explode(' ', $item[9]),
 						'caption' => parseItemDescription($item[10])
 					);
+					$items['schiffe'][$item[0]]['mass'] = round(array_sum($items['schiffe'][$item[0]]['ress'])*.8);
 					if(trim($item[4]) == '')
 						$items['schiffe'][$item[0]]['deps'] = array();
 				}
@@ -255,5 +256,18 @@
 		if($char == '\\n') return "\n";
 		if($char == '\\\\') return '\\';
 		return $char;
+	}
+	
+	function makeItemsString($items, $html=true)
+	{
+		$array = array();
+		foreach($items as $id=>$count)
+		{
+			if($count <= 0) continue;
+			$item_obj = Classes::Item($id);
+			if($html) $array[] = utf8_htmlentities($item_obj->getInfo('name')).': '.ths($count);
+			else $array[] = $item_obj->getInfo('name').': '.ths($count, true);
+		}
+		return implode(', ', $array);
 	}
 ?>
