@@ -45,7 +45,11 @@
 			{
 				if($fleet->arriveAtNextTarget())
 					echo "Fleet ".$line[1]." arrived.\n";
-				else echo "ERROR (Fleet ".$line[1].")\n";
+				else
+				{
+					echo "ERROR (Fleet ".$line[1].")\n";
+					break;
+				}
 			}
 			$fleet->__destruct();
 			unset($fleet);
