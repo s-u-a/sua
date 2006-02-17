@@ -303,7 +303,8 @@
 				'size' => array(0, $size),
 				'last_refresh' => time(),
 				'time' => $planet_name,
-				'prod' => array()
+				'prod' => array(),
+				'name' => $planet_name
 			);
 			
 			return $planet_index;
@@ -1095,8 +1096,13 @@
 						break;
 				}
 				
-				# Mindestbauzeit eine Sekunde aufgrund von Serverbelastung
-				if(isset($info['time']) && $info['time'] < 12) $info['time'] = 12;
+				# Mindestbauzeit zwoelf Sekunden aufgrund von Serverbelastung
+				if($type == 'forschung')
+				{
+					if($info['time_local'] < 12) $info['time_local'] = 12;
+					if($info['time_global'] < 12) $info['time_global'] = 12;
+				}
+				elseif($info['time'] < 12) $info['time'] = 12;
 				
 				$this->cache['getItemInfo'][$this_planet][$id] = $info;
 			}
@@ -2797,6 +2803,13 @@
 		
 		function addForeignFleet($user, $fleet)
 		{
+		}
+		
+		function _printRaw()
+		{
+			echo "<pre>";
+			print_r($this->raw);
+			echo "</pre>";
 		}
 	}
 	

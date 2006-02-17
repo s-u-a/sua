@@ -94,6 +94,7 @@
 	
 	
 	$me = Classes::User($_SESSION['username']);
+	#$me->_printRaw();
 	
 	if(!$me->getStatus())
 	{

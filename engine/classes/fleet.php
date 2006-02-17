@@ -626,13 +626,43 @@
 			
 			$keys = array_keys($this->raw[0]);
 			$next_target = array_shift($keys);
+			$keys2 = array_keys($this->raw[1]);
+			$first_user = array_shift($keys2);
 			
 			$type = $this->raw[0][$next_target][0];
 			$back = $this->raw[0][$next_target][1];
 			
-			if($type != 6 && !$back)
+			$besiedeln = false;
+			if($type == 1 && !$back)
+			{
+				# Besiedeln
+				$target = explode(':', $next_target);
+				$target_galaxy = Classes::Galaxy($target[0]);
+				$target_owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
+				
+				if($target_owner)
+				{
+					# Planet ist bereits besiedelt
+					$message = Classes::Message();
+					if($message->create())
+					{
+						$message->text('Ihre Flotte erreicht den Planeten '.$next_target.' und will mit der Besiedelung anfangen. Jedoch ist der Planet bereits vom Spieler '.$target_owner." besetzt, und Ihre Flotte macht sich auf den R\xc3\xbcckweg.");
+						$message->subject('Besiedelung von '.$next_target.' fehlgeschlagen');
+						$message->addUser($first_user, 5);
+					}
+				}
+				else
+					$besiedeln = true;
+			}
+			
+			if($type != 6 && !$back && !$besiedeln)
 			{
 				# Nicht stationieren: Flotte fliegt weiter
+				
+				$target = explode(':', $next_target);
+				$target_galaxy = Classes::Galaxy($target[0]);
+				$target_owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
+				
 				
 			}
 			else
@@ -641,6 +671,28 @@
 				
 				$target = explode(':', $next_target);
 				$target_galaxy = Classes::Galaxy($target[0]);
+				
+				if($besiedeln)
+				{
+					$user_obj = Classes::User($first_user);
+					if(!$user_obj->registerPlanet($next_target))
+						return false;
+					if(isset($this->raw[1][$first_user][0]['S6']))
+					{
+						$this->raw[1][$first_user][0]['S6']--;
+						$active_planet = $user_obj->getActivePlanet();
+						$user_obj->setActivePlanet($user_obj->getPlanetByPos($next_target));
+						$item_info = $user_obj->getItemInfo('S6', 'schiffe');
+						$besiedelung_ress = $item_info['ress'];
+						$besiedelung_ress[0] *= .4;
+						$besiedelung_ress[1] *= .4;
+						$besiedelung_ress[2] *= .4;
+						$besiedelung_ress[3] *= .4;
+						$besiedelung_ress[4] *= .4;
+						$user_obj->addRess($besiedelung_ress);
+					}
+				}
+				
 				$owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
 				if(!$owner)
 				{
@@ -701,7 +753,15 @@
 					}
 				}
 				
-				$message_text = "Eine Flotte erreicht den Planeten \xe2\x80\x9e".$owner_obj->planetName()."\xe2\x80\x9c (".$owner_obj->getPosString().", Eigent\xc3\xbcmer: ".$owner_obj->getName().").\n";
+				if($besiedeln)
+				{
+					$message_text = "Ihre Flotte erreicht den Planeten ".$next_target." und beginnt mit seiner Besiedelung.";
+					if(isset($besiedelung_ress))
+						$message_text .= " Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe wiederhergestellt werden: ".ths($besiedelung_ress[0], true)." Carbon, ".ths($besiedelung_ress[1], true)." Aluminium, ".ths($besiedelung_ress[2], true)." Wolfram, ".ths($besiedelung_ress[3], true)." Radium.";
+					$message_text .= "\n";
+				}
+				else
+					$message_text = "Eine Flotte erreicht den Planeten \xe2\x80\x9e".$owner_obj->planetName()."\xe2\x80\x9c (".$owner_obj->getPosString().", Eigent\xc3\xbcmer: ".$owner_obj->getName().").\n";
 				if(array_sum($schiffe_own) > 0)
 				{
 					$message_text .= "Die Flotte besteht aus folgenden Schiffen: ".makeItemsString($schiffe_own, false)."\n";
@@ -720,21 +780,37 @@
 				
 				$owner_obj->addRess($ress);
 				$message_text .= "\nFolgende Güter werden abgeliefert:\n";
-				$message_text .= ths($ress[0]).' Carbon, '.ths($ress[1]).' Aluminium, '.ths($ress[2]).' Wolfram, '.ths($ress[3]).' Radium, '.ths($ress[4])." Tritium.\n";
+				$message_text .= ths($ress[0], true).' Carbon, '.ths($ress[1], true).' Aluminium, '.ths($ress[2], true).' Wolfram, '.ths($ress[3], true).' Radium, '.ths($ress[4], true)." Tritium.\n";
 				if(array_sum($robs) > 0)
 					$message_text .= makeItemsString($robs, false)."\n";
 				foreach($robs as $id=>$anzahl)
 					$owner_obj->changeItemLevel($id, $anzahl, 'roboter');
 				
-				$message_obj = Classes::Message();
-				if($message_obj->create())
+				global $types_message_types;
+				
+				$message_users = array();
+				foreach($this->raw[1] as $username=>$move_info)
 				{
-					$message_obj->text($message_text);
-					$message_obj->subject("Stationierung auf ".$owner_obj->getPosString());
-					$message_obj->from($owner_obj->getName());
-					global $types_message_types;
-					foreach($this->raw[1] as $username=>$move_info)
-						$message_obj->addUser($username, $types_message_types[$this->raw[0][$next_target][0]]);
+					$message_user_obj = Classes::User($username);
+					$receive = $message_user_obj->checkSetting('receive');
+					if(!isset($receive[$types_message_types[$this->raw[0][$next_target][0]]][$this->raw[0][$next_target][1]]) || $receive[$types_message_types[$this->raw[0][$next_target][0]]][$this->raw[0][$next_target][1]])
+						$message_users[] = $username;
+				}
+				
+				if(count($message_users) > 0)
+				{
+					$message_obj = Classes::Message();
+					if($message_obj->create())
+					{
+						$message_obj->text($message_text);
+						if($besiedeln)
+							$message_obj->subject("Besiedelung von ".$next_target);
+						else
+							$message_obj->subject("Stationierung auf ".$owner_obj->getPosString());
+						$message_obj->from($owner_obj->getName());
+						foreach($message_users as $username)
+							$message_obj->addUser($username, $types_message_types[$this->raw[0][$next_target][0]]);
+					}
 				}
 				
 				$this->destroy();

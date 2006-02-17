@@ -6,3 +6,4 @@ Unbenutzte veröffentlichte Nachrichten vom Eventhandler löschen lassen.
 Allianztag umbenennen können
 Allianzbewerbungen verbieten können
 Allianzsystem benutzbar machen
+Punkteberechnung aus eventhandler() löschen, in changeItemLevel() muss die Neuberechnung für __destruct() aktiviert werden.

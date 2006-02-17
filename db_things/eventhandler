@@ -35,13 +35,17 @@
 				break;
 			}
 			
+			echo "Processing fleet ".$line[1]."...\n";
+			
 			$fleet = Classes::Fleet($line[1]);
 			$users = $fleet->getUsersList();
+			var_dump($fleet->getStatus());
 			if($fleet->getStatus() != 1) continue;
 			while($fleet->getStatus() == 1 && $fleet->getNextArrival() < time())
 			{
-				$fleet->arriveAtNextTarget();
-				echo "Fleet ".$line[1]." arrived.\n";
+				if($fleet->arriveAtNextTarget())
+					echo "Fleet ".$line[1]." arrived.\n";
+				else echo "ERROR (Fleet ".$line[1].")\n";
 			}
 			$fleet->__destruct();
 			unset($fleet);

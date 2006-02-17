@@ -94,6 +94,7 @@ legend { font-weight:bold; }
 #planeten-umbenennen a:after { content:")"; }
 
 .item { border-color:#aaa; border-style:none; border-width:.1em; padding:.5em; text-align:left; clear:right; position:relative; }
+* html .item { height:1%; }
 .item + .item { border-top-style:solid; }
 * html .item { border-top-style:solid; }
 .item h3 { font-weight:bold; margin:0 0 .5em 0; padding:0; line-height:2em; }
