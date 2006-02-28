@@ -6,12 +6,13 @@
 	set_time_limit(1800);
 
 	$this_filename = '/engine/include.php';
-	if(substr(__FILE__, -strlen($this_filename)) !== $this_filename)
+	$__FILE__ = str_replace('\\', '/', __FILE__);
+	if(substr($__FILE__, -strlen($this_filename)) !== $this_filename)
 	{
 		echo 'Der absolute Pfad der Datenbank konnte nicht ermittelt werden. Bitte gib ihn in der Datei /engine/include.php an.';
 		exit(1);
 	}
-	define('s_root', substr(__FILE__, 0, -strlen($this_filename)));
+	define('s_root', substr($__FILE__, 0, -strlen($this_filename)));
 	$document_root = $_SERVER['DOCUMENT_ROOT'];
 	if(substr($document_root, -1) == '/')
 		$document_root = substr($document_root, 0, -1);
