@@ -1,5 +1,5 @@
 <?php
-	define('start_mtime', microtime());
+	define('start_mtime', microtime(true));
 
 	error_reporting(2047);
 	ignore_user_abort(false);
@@ -423,7 +423,7 @@
 				$index = 0;
 				for($i = 0; $i < strlen($string); $i++)
 				{
-					$bin = add_nulls(decbin(ord($string{$i})), 8);
+					$bin = add_nulls(decbin(ord($string[$i])), 8);
 					$rohstoffe[$index] .= substr($bin, 0, -1);
 					if(!substr($bin, -1)) # Naechste Zahl
 						$index++;
@@ -824,10 +824,10 @@
 
 	function ob_utf8($string)
 	{
-		$now_mtime = explode(' ', microtime());
-		$start_mtime = explode(' ', start_mtime);
+		$now_mtime = microtime(true);
+		$start_mtime = start_mtime;
 
-		#$string .= '<!-- '.(array_sum($now_mtime)-array_sum($start_mtime)).' -->'."\n";
+		#$string .= '<!-- '.($now_mtime-$start_mtime).' -->'."\n";
 
 		return utf8_encode($string);
 	}
@@ -857,7 +857,7 @@
 
 		$len = strlen($string);
 		for($i = 0; $i < $len; $i++)
-			$return .= add_nulls(decbin(ord($string{$i})), 8);
+			$return .= add_nulls(decbin(ord($string[$i])), 8);
 
 		return $return;
 	}
@@ -1186,7 +1186,7 @@
 
 	function parse_html_trim($string)
 	{
-		while(strlen($string) > 0 && $string{0} == ' ')
+		while(strlen($string) > 0 && $string[0] == ' ')
 			$string = substr($string, 1);
 		while(strlen($string) > 0 && substr($string, -1) == ' ')
 			$string = substr($string, 0, -1);

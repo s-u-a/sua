@@ -13,7 +13,6 @@
     <item url="robots.txt" uploadstatus="1" />
     <item url="rules.php" uploadstatus="1" />
     <item url="style.css" uploadstatus="1" />
-    <item url="todo.php" uploadstatus="1" />
     <item url="wartungsarbeiten.html" uploadstatus="1" />
     <item url="admin/" uploadstatus="1" />
     <item url="admin/edit_changelog.php" uploadstatus="1" />
@@ -21,11 +20,9 @@
     <item url="admin/.htaccess" uploadstatus="1" />
     <item url="admin/usermanagement.php" uploadstatus="1" />
     <item url="admin/index.php" uploadstatus="1" />
-    <item url="admin/edit_todo.php" uploadstatus="1" />
     <item url="admin/news.php" uploadstatus="1" />
     <item url="admin/include.php" uploadstatus="1" />
     <item url="db_things/" uploadstatus="1" />
-    <item url="db_things/todo" uploadstatus="1" />
     <item url="db_things/regen_highscores" uploadstatus="1" />
     <item url="db_things/create_galaxy" uploadstatus="1" />
     <item url="db_things/schiffe" uploadstatus="1" />

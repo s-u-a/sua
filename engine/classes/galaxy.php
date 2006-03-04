@@ -294,7 +294,7 @@
 			if(!$this->status) return false;
 			
 			return ($this->setPlanetName($system, $planet, '') && $this->setPlanetOwner($system, $planet, '')
-			&& $this->setPlanetOwnerAlliance($system, $planet, '') && $this->setPlanetSize(rand(100, 500)));
+			&& $this->setPlanetOwnerAlliance($system, $planet, '') && $this->setPlanetSize($system, $planet, rand(100, 500)));
 		}
 		
 		function getPlanetClass($system, $planet)

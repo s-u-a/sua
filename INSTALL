@@ -1,0 +1,41 @@
+---------------------
+-- 1. Requirements --
+---------------------
+
+- Subversion client (http://subversion.tigris.org/)
+- Webserver with PHP5 and HTTPS support
+- A Unix-like operating system
+
+---------------------
+-- 2. Installation --
+---------------------
+
+1. Get the newest version from the Subversion repository:
+svn co svn://s-u-a.net/home/srv/svn/sua
+
+2. Create a database, in for example:
+sua/db_things/create_database sua/database1
+Instead of sua/database1, you can choose any directory, which will be created. Make sure the database directory isn't accessable by the users, else anyone could try to crack passwords or get information about other users' accounts.
+You will be asked for the desired admin username and password during the installation, see 3. Managing for more information.
+
+3. To create more galaxies, run ./create_galaxy from you universe/ database directory.
+
+4. Edit the file db_things/databases in your S-U-A installation directory (create it if it doesn't exist). Put the hostname where the game will be reachable into the first line. (It doesn't matter in which directory from the server root the game is installed.)
+The following lines will contain information about the installed databases. The game can manage multiple databases («universes»), which the user can select one of at the login form. Each following line represents a database:
+(Database ID, must be unique) [Tab] (Database directory, you can specify this relatively from you S-U-A installation directory) [Tab] (Database name, will be shown in the select box at the login form) [Tab] (Hostname to where the game will redirect users that select this database. By this you can run an own host / virtual host for each database.)
+I propose you already noticed that you can access an example for this file under http://s-u-a.net/db_things/databases.
+
+
+-----------------
+-- 3. Managing --
+-----------------
+
+You were asked for the desired admin username and password during the installation, the admin area is accessable in the directory admin/ of your S-U-A installation. Access it via HTTPS, just enter your admin username and password there.
+
+
+-------------------------
+-- 4. Problems or bugs --
+-------------------------
+
+S-U-A's bugtracker is reachable under https://bugs.s-u-a.net/. The bugtracker is in German, you can also post in English there.
+Go to irc://irc.gamesurge.net/sua-dev if you have questions or installation problems.

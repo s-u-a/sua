@@ -922,6 +922,21 @@
 				$info['buildable'] = $info['deps-okay'] = $item->checkDependencies($this, $run_eventhandler);
 				$info['level'] = $this->getItemLevel($id, $type, $run_eventhandler);
 				
+				# Bauzeit als Anteil der Punkte des ersten Platzes
+				if(isset($info['time']))
+				{
+					$highscores_fh = fopen(DB_HIGHSCORES, 'r');
+					if(fancy_flock($highscores_fh, LOCK_SH))
+					{
+						$my_scores = $this->getScores();
+						list(,$best_scores) = decodeUserHighscoresString(fread($highscores_fh, 38));
+						$f = $my_scores/$best_scores;
+						if($f < .5) $f = .5;
+						$info['time'] *= $f;
+					}
+					if($highscores_fh) fclose($highscores_fh);
+				}
+				
 				switch($type)
 				{
 					case 'gebaeude':
@@ -1403,15 +1418,30 @@
 			return true;
 		}
 		
-		function umode($set=false)
+		function umode($set=-1)
 		{
 			if(!$this->status) return false;
 			
-			if($set !== false)
+			if($set !== -1)
 			{
-				$this->raw['umode'] = (bool)$set;
+				$set = (bool)$set;
+				if($set == $this->umode()) return true;
+				$this->raw['umode'] = $set;
 				$this->raw['umode_time'] = time();
 				$this->changed = true;
+				
+				$planet_owner = $this->getName();
+				if($this->raw['umode']) $planet_owner = substr($planet_owner, 0, 20).' (U)';
+				$active_planet = $this->getActivePlanet();
+				$planets = $this->getPlanetsList();
+				foreach($planets as $planet)
+				{
+					$this->setActivePlanet($planet);
+					$pos = $this->getPos();
+					$galaxy_obj = Classes::Galaxy($pos[0]);
+					$galaxy_obj->setPlanetOwner($pos[1], $pos[2], $planet_owner);
+				}
+				$this->setActivePlanet($planet);
 				
 				if(isset($this->cache['getProduction'])) # Produktion wird auf 0 gefahren
 					unset($this->cache['getProduction']);
@@ -2837,7 +2867,7 @@
 
 		$points_bin = '';
 		for($i = 0; $i < strlen($points_str); $i++)
-			$points_bin .= add_nulls(decbin(ord($points_str{$i})), 8);
+			$points_bin .= add_nulls(decbin(ord($points_str[$i])), 8);
 
 		$points = base_convert($points_bin, 2, 10);
 

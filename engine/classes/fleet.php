@@ -624,6 +624,8 @@
 		{
 			if($this->status != 1) return false;
 			
+			global $types_message_types;
+			
 			$keys = array_keys($this->raw[0]);
 			$next_target = array_shift($keys);
 			$keys2 = array_keys($this->raw[1]);
@@ -662,8 +664,140 @@
 				$target = explode(':', $next_target);
 				$target_galaxy = Classes::Galaxy($target[0]);
 				$target_owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
+				if($target_owner)
+				{
+					$target_user = Classes::User($target_owner);
+					if(!$target_user->getStatus()) $target_user = false;
+					else $target_user->setActivePlanet($target_user->getPlanetByPos($next_target));
+				}
+				else $target_user = false;
 				
-				
+				if(($type == 3 || $type == 4) && !$target_user)
+				{
+					# Angriff und Transport nur bei besiedelten Planeten
+					# moeglich.
+					
+					$message_obj = Classes::Messages();
+					if($message_obj->create())
+					{
+						$message_obj->subject($next_target.' unbesiedelt');
+						$message_obj->text("Ihre Flotte erreicht den Planeten ".$next_target." und will ihren Auftrag ausf\xc3\xbchren. Jedoch wurde der Planet zwischenzeitlich verlassen und Ihre Flotte macht sich auf den weiteren Weg.");
+						foreach(array_keys($this->raw[1]) as $username)
+							$message_obj->addUser($username, $types_message_types[$type]);
+					}
+				}
+				else
+				{
+					switch($type)
+					{
+						case 2: # Sammeln
+							break;
+						case 3: # Angriff
+							break;
+						case 4: # Transport
+							$message_text = array(
+								$target_owner => "Ein Transport erreicht Ihren Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target."). Folgende Spieler liefern Güter ab:\n"
+							);
+							
+							# Rohstoffe abliefern, Handel
+							$handel = array();
+							$make_handel_message = false;
+							foreach($this->raw[1] as $username=>$data)
+							{
+								$message_text[$username] = "Ihre Flotte erreicht den Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target.", Eigent\xc3\xbcmer: ".$target_owner.") und liefert folgende Güter ab:\n";
+								$message_text[$target_owner] .= $username.": ";
+								$message_text[$username] .= "Carbon: ".ths($data[3][0][0], true).", Aluminium: ".ths($data[3][0][1], true).", Wolfram: ".ths($data[3][0][2], true).", Radium: ".ths($data[3][0][3], true).", Tritium: ".ths($data[3][0][4], true);
+								$message_text[$target_owner] .= "Carbon: ".ths($data[3][0][0], true).", Aluminium: ".ths($data[3][0][1], true).", Wolfram: ".ths($data[3][0][2], true).", Radium: ".ths($data[3][0][3], true).", Tritium: ".ths($data[3][0][4], true);
+								$target_user->addRess($data[3][0]);
+								if(array_sum($data[3][1]) > 0)
+								{
+									$items_string = makeItemsString($data[3][1]);
+									$message_text[$username] .= "\n".$items_string;
+									$message_text[$target_owner] .= "; ".$items_string;
+									foreach($data[3][1] as $id=>$anzahl)
+										$target_user->changeItemLevel($id, $anzahl, 'roboter');
+								}
+								$message_text[$username] .= "\n";
+								$message_text[$target_owner] .= "\n";
+								$this->raw[1][$username][3] = array(array(0,0,0,0,0), array());
+								if(array_sum_r($data[4]) > 0)
+								{
+									$handel[$username] = $data[4];
+									$this->raw[1][$username][3] = $data[4];
+									$make_handel_message = true;
+								}
+							}
+							if($make_handel_message)
+							{
+								$message_text[$target_owner] .= "\nFolgender Handel wird durchgef\xc3\xbchrt:\n";
+								foreach($handel as $username=>$h)
+								{
+									$message_text[$username] .= "\nFolgender Handel wird durchgef\xc3\xbchrt:\n";
+									$message_text[$username] .= "Carbon: ".ths($h[0][0], true).", Aluminium: ".ths($h[0][1], true).", Wolfram: ".ths($h[0][2], true).", Radium: ".ths($h[0][3], true).", Tritium: ".ths($h[0][4], true);
+									$message_text[$target_owner] .= $username.": Carbon: ".ths($h[0][0], true).", Aluminium: ".ths($h[0][1], true).", Wolfram: ".ths($h[0][2], true).", Radium: ".ths($h[0][3], true).", Tritium: ".ths($h[0][4], true);
+									if(array_sum($h[1]) > 0)
+									{
+										$message_text[$username] .= "\n";
+										$message_text[$target_owner] .= "; ";
+										$items_string = makeItemsString($h[1]);
+										$message_text[$username] .= $items_string;
+										$message_text[$target_owner] .= $items_string;
+									}
+									$message_text[$username] .= "\n";
+									$message_text[$target_owner] .= "\n";
+								}
+							}
+							foreach($message_text as $username=>$text)
+							{
+								$message_obj = Classes::Message();
+								if($message_obj->create())
+								{
+									if($username == $target_owner)
+									{
+										$message_obj->subject('Ankunft eines fremden Transportes auf '.$next_target);
+										$users = array_keys($this->raw[1]);
+										$message_obj->from(array_shift($users));
+									}
+									else
+									{
+										$message_obj->subject('Ankunft Ihres Transportes auf '.$next_target);
+										$message_obj->from($target_owner);
+									}
+									$message_obj->text($text);
+									$message_obj->addUser($username, $types_message_types[$type]);
+								}
+							}
+							
+							break;
+					}
+					
+					# Weiterfliegen
+					
+					$users = array_keys($this->raw[1]);
+					$first_user = array_shift($users);
+					
+					$this->raw[3][$next_target] = array_shift($this->raw[0]);
+					$this->raw[2] = time();
+					# Vom Empfaenger entfernen
+					if($target_owner != $first_user)
+						$target_user->unsetFleet($this->getName());
+					
+					foreach($users as $user)
+					{
+						$new_fleet = Classes::Fleet();
+						if($new_fleet->create())
+						{
+							$new_fleet->setRaw(array(
+								array($this->raw[1][$user][1] => array($type, true)),
+								array($user => $this->raw[1][$user]),
+								time(),
+								array($next_target => array($type, false))
+							));
+							$new_fleet->start();
+						}
+						unset($this->raw[1][$user]);
+					}
+				}
 			}
 			else
 			{
@@ -688,7 +822,6 @@
 						$besiedelung_ress[1] *= .4;
 						$besiedelung_ress[2] *= .4;
 						$besiedelung_ress[3] *= .4;
-						$besiedelung_ress[4] *= .4;
 						$user_obj->addRess($besiedelung_ress);
 					}
 				}
@@ -779,14 +912,12 @@
 				}
 				
 				$owner_obj->addRess($ress);
-				$message_text .= "\nFolgende Güter werden abgeliefert:\n";
+				$message_text .= "\nFolgende G\xc3\xbcter werden abgeliefert:\n";
 				$message_text .= ths($ress[0], true).' Carbon, '.ths($ress[1], true).' Aluminium, '.ths($ress[2], true).' Wolfram, '.ths($ress[3], true).' Radium, '.ths($ress[4], true)." Tritium.\n";
 				if(array_sum($robs) > 0)
 					$message_text .= makeItemsString($robs, false)."\n";
 				foreach($robs as $id=>$anzahl)
 					$owner_obj->changeItemLevel($id, $anzahl, 'roboter');
-				
-				global $types_message_types;
 				
 				$message_users = array();
 				foreach($this->raw[1] as $username=>$move_info)

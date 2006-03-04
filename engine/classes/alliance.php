@@ -790,19 +790,19 @@
 		$members_str = substr($info, 6, 4);
 		$members_bin = '';
 		for($i=0; $i < strlen($members_str); $i++)
-			$members_bin .= add_nulls(decbin(ord($members_str{$i})), 8);
+			$members_bin .= add_nulls(decbin(ord($members_str[$i])), 8);
 		$members = base_convert($members_bin, 2, 10);
 		
 		$average_str = substr($info, 10, 8);
 		$average_bin = '';
 		for($i=0; $i < strlen($average_str); $i++)
-			$average_bin .= add_nulls(decbin(ord($average_str{$i})), 8);
+			$average_bin .= add_nulls(decbin(ord($average_str[$i])), 8);
 		$average = base_convert($average_bin, 2, 10);
 		
 		$overall_str = substr($info, 18, 8);
 		$overall_bin = '';
 		for($i=0; $i < strlen($overall_str); $i++)
-			$overall_bin .= add_nulls(decbin(ord($overall_str{$i})), 8);
+			$overall_bin .= add_nulls(decbin(ord($overall_str[$i])), 8);
 		$overall = base_convert($overall_bin, 2, 10);
 		
 		return array($alliancename, $members, $average, $overall);

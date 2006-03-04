@@ -173,7 +173,6 @@
 <?php }if($admin_array['permissions'][4]){?>	<li><a href="#action-4">Einen Benutzer löschen</a></li>
 <?php }if($admin_array['permissions'][5]){?>	<li><a href="#action-5">Einen Benutzer sperren / entsperren</a></li>
 <?php }if($admin_array['permissions'][6]){?>	<li><a href="#action-6">Einen Benutzer umbenennen</a></li>
-<?php }if($admin_array['permissions'][7]){?>	<li><a href="#action-7"><span xml:lang="en">Todo</span>-Liste bearbeiten</a></li>
 <?php }if($admin_array['permissions'][8]){?>	<li><a href="#action-8"><span xml:lang="en">Changelog</span> bearbeiten</a></li>
 <?php }if($admin_array['permissions'][9]){?>	<li><a href="#action-9">Nachricht versenden</a></li>
 <?php }/*if($admin_array['permissions'][10]){?>	<li><a href="#action-10"><span xml:lang="en">Log</span>dateien einsehen</a></li>
@@ -352,14 +351,6 @@
 	</dl>
 	<div><button type="submit">Umbenennen</button></div>
 </form>
-<?php
-	}
-
-	if($admin_array['permissions'][7])
-	{
-?>
-<hr />
-<h2 id="action-7"><a href="edit_todo.php"><span xml:lang="en">Todo</span>-Liste bearbeiten</a></h2>
 <?php
 	}
 

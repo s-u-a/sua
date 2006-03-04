@@ -249,7 +249,7 @@
 <?php
 		if(!$me->umode())
 		{
-			if($me->permissionToUmode())
+			if($me->permissionToUmode() || isset($_SESSION['admin_username']))
 			{
 ?>
 		<div><input type="submit" name="umode" value="Urlaubsmodus" tabindex="<?=$tabindex++?>" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich betreten?');" /></div>
