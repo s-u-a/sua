@@ -11,7 +11,7 @@
 ---------------------
 
 1. Get the newest version from the Subversion repository:
-svn co svn://s-u-a.net/home/srv/svn/sua
+svn co svn://s-u-a.net/home/srv/svn/sua/trunk
 
 2. Create a database, in for example:
 sua/db_things/create_database sua/database1
