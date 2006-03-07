@@ -769,6 +769,203 @@
 							}
 							
 							break;
+						case 5: # Spionage
+						        # Spionieren
+							
+							if(!$target_owner)
+							{
+								# Zielplanet ist nicht besiedelt
+								$message_text = "<h3>Spionagebericht des Planeten ".utf8_htmlentities($next_target)."</h3>\n";
+								$message_text .= "<div id=\"spionage-planet\">\n";
+								$message_text .= "\t<h4>Planet</h4>\n";
+								$message_text .= "\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
+								$message_text .= "\t\t<dt class=\"c-felder\">Felder</dt>\n";
+								$message_text .= "\t\t<dd class=\"c-felder\">".ths($target_galaxy->getPlanetSize($target[1], $target[2])."</dd>\n";
+								$message_text .= "\t</dl>\n";
+								$message_text .= "</div>";
+
+								if(count($start_user_array['planets']) < MAX_PLANETS)
+								{
+									$message_text .= "\n<p class=\"besiedeln\">";
+									$message_text .= "\n\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlentities(urlencode($target[0]))."&amp;action_system=".htmlentities(urlencode($target[1]))."&amp;action_planet=".htmlentities(urlencode($target[2]))."\" title=\"Schicken Sie ein Besiedelungsschiff zu diesem Planeten\">Besiedeln</a>";
+									$message_text .= "\n</p>";
+								}
+								
+								$message = Classes::Message();
+								if($message->create())
+								{
+									$message->text($message_text);
+									$message->subject('Spionage des Planeten '.$next_target);
+									foreach(array_keys($this->raw[1]) as $username)
+										$message_obj->addUser($username, $types_message_types[$type]);
+									$message->html(true);
+								}
+							}
+							else
+							{
+								# Zielplanet ist besiedelt
+
+								$users = array_keys($this->raw[1]);
+								$verbuendet = true;
+								foreach($users as $username)
+								{
+									if(!$target_user->isVerbuendet($username))
+									{
+										$verbuendet = false;
+										break;
+									}
+								}
+								if(!$verbuendet)
+								{
+									# Spionagetechnikdifferenz ausrechnen
+									$owner_level = $target_user->getItemLevel('F1', 'forschung');
+									$others_level = 0;
+									foreach($users as $username)
+									{
+										if(isset($this->raw[1][$username][0]['S5']))
+											$others_level += $this->raw[1][$username][0]['S5'];
+									}
+									$others_level -= count($users);
+									if($others_level < 0) $others_level = 0;
+									
+									$max_f1 = 0;
+									foreach($users as $username)
+									{
+										$user = Classes::User($username);
+										$this_f1 = $user->getItemLevel('F1', 'forschung');
+										if($this_f1 > $max_f1) $max_f1 = $this_f1;
+									}
+									$others_level += $max_f1;
+									
+									if($owner_level == 0) $diff = 5;
+									else $diff = floor(pow($others_level/$owner_level, 2));
+								}
+								else # Spionierter Planet liefert alle Daten aus, wenn alle Spionierenden verbuendet sind
+									$diff = 5;
+
+								if($diff > 5)
+									$diff = 5;
+
+								$message_text = "<h3>Spionagebericht des Planeten \xe2\x80\x9e".utf8_htmlentities($target_galaxy->getPlanetName($target[1], $target[2]))."\xe2\x80\x9c (".utf8_htmlentities($next_target).", Eigent\xc3\xbcmer: ".utf8_htmlentities($target_owner).")</h3>\n";
+								$message_text .= "<div id=\"spionage-planet\">\n";
+								$message_text .= "\t<h4>Planet</h4>\n";
+								$message_text .= "\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
+								$message_text .= "\t\t<dt class=\"c-felder\">Felder</dt>\n";
+								$message_text .= "\t\t<dd class=\"c-felder\">".$target_user->getTotalFields()."</dd>\n";
+								$message_text .= "\t</dl>\n";
+								$message_text .= "</div>";
+
+								$message_text2 = array();
+								switch($diff)
+								{
+									case 5: # Roboter zeigen
+										$next = &$message_text2[];
+										$next = "\n<div id=\"spionage-roboter\">";
+										$next .= "\n\t<h4>Roboter</h4>";
+										$next .= "\n\t<ul>";
+										foreach($target_user->getItemsList('roboter') as $id)
+										{
+											if($target_user->getItemLevel($id, 'roboter') <= 0) continue;
+											$item_info = $target_user->getItemInfo($id, 'roboter');
+											$next .= "\n\t\t<li>".$item_info['name']." <span class=\"anzahl\">(".ths($item_info['level']).")</span></li>";
+										}
+										$next .= "\n\t</ul>";
+										$next .= "\n</div>";
+										unset($next);
+									case 4: # Forschung zeigen
+										$next = &$message_text2[];
+										$next = "\n<div id=\"spionage-forschung\">";
+										$next .= "\n\t<h4>Forschung</h4>";
+										$next .= "\n\t<ul>";
+										foreach($target_user->getItemsList('forschung') as $id)
+										{
+											if($target_user->getItemLevel($id, 'forschung') <= 0) continue;
+											$item_info = $target_user->getItemInfo($id, 'forschung');
+											$next .= "\n\t\t<li>".$item_info['name']." <span class=\"stufe\">(Level&nbsp;".ths($item_info['level']).")</span>";
+										}
+										$next .= "\n\t</ul>";
+										$next .= "\n</div>";
+										unset($next);
+									case 3: # Schiffe und Verteidigungsanlagen anzeigen
+										$next = &$message_text2[];
+										$next = "\n<div id=\"spionage-schiffe\">";
+										$next .= "\n\t<h4>Schiffe</h4>";
+										$next .= "\n\t<ul>";
+										foreach($target_user->getItemsList('schiffe') as $id)
+										{
+											if($target_user->getItemLevel($id, 'schiffe') <= 0) continue;
+											$item_info = $target_user->getItemInfo($id, 'schiffe');
+											$next .= "\n\t\t<li>".$item_info['name']." <span class=\"anzahl\">(".ths($item_info['level']).")</span></li>";
+										}
+										$next .= "\n\t</ul>";
+										$next .= "\n</div>";
+										$next .= "\n<div id=\"spionage-verteidigung\">";
+										$next .= "\n\t<h4>Verteidigung</h4>";
+										$next .= "\n\t<ul>";
+										foreach($target_user->getItemsList('verteidigung') as $id)
+										{
+											if($target_user->getItemLevel($id, 'verteidigung') <= 0) continue;
+											$item_info = $target_user->getItemInfo($id, 'verteidigung');
+											$next .= "\n\t\t<li>".$item_info['name']." <span class=\"anzahl\">(".ths($item_info['level']).")</span></li>";
+										}
+										$next .= "\n\t</ul>";
+										$next .= "\n</div>";
+										unset($next);
+									case 2: # Gebaeude anzeigen
+										$next = &$message_text2[];
+										$next = "\n<div id=\"spionage-gebaeude\">";
+										$next .= "\n\t<h4>Geb\xc3\xa4ude</h4>";
+										$next .= "\n\t<ul>";
+										foreach($target_user->getItemsList('gebaeude') as $id)
+										{
+											if($target_user->getItemLvel($id, 'gebaeude') <= 0) continue;
+											$item_info = $target_user->getItemInfo($id, 'gebaeude');
+											$next .= "\n\t\t<li>".$item_info['name']." <span class=\"stufe\">(Stufe&nbsp;".ths($item_info['level']).")</span></li>";
+										}
+										$next .= "\n\t</ul>";
+										$next .= "\n</div>";
+										unset($next);
+									case 1: # Rohstoffe anzeigen
+										$next = &$message_text2[];
+										$next = "\n<div id=\"spionage-rohstoffe\">";
+										$next .= "\n\t<h4>Rohstoffe</h4>";
+										$next .= "\n\t".format_ress($target_user->getRess(), 1, true);
+										$next .= "</div>";
+										unset($next);
+								}
+								$message_text .= implode('', array_reverse($message_text2));
+								
+								$message = Classes::Message();
+								if($message->create())
+								{
+									$message->subject('Spionage des Planeten '.$next_target);
+									$message->text($message_text);
+									$message->from($target_owner);
+									foreach($users as $username)
+										$message->addUser($username, $types_message_types[$type]);
+								}
+								
+								$message = Classes::Message();
+								if($message->create())
+								{
+									$message->subject('Fremde Flotte auf dem Planeten '.$next_target);
+									$first_user = array_shift($users);
+									$from_pos_str = $this->raw[1][$first_user][1];
+									$from_pos = explode(':', $from_pos_str);
+									$from_galaxy = Classes::Galaxy($from_pos[0]);
+									$message->text("Eine fremde Flotte vom Planeten \xe2\x80\x9e".$from_galaxy->getPlanetName($from_pos[1], $from_pos[2])."\xe2\x80\x9c (".$from_pos_str.", Eigent\xc3\xbcmer: ".$first_user.") wurde von Ihrem Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target.") aus bei der Spionage gesichtet.");
+									$message->from($first_user);
+									$message->addUser($target_user, $type_message_types[$type]);
+								}
+							}
+						}
+						else
+							report_error(10);
+						unset($start_user_array);
+						if($target_info[1])
+							unset($target_user_array);
+						if(isset($that_planet))
+							unset($that_planet);
 					}
 					
 					# Weiterfliegen

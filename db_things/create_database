@@ -47,14 +47,13 @@ ln -s $CWD/create_galaxy $1/universe/create_galaxy
 touch $1/admins
 read -p "Enter Admin user name: " ADMIN_USERNAME
 read -s -p "Enter Admin password: " ADMIN_PASSWD
-echo
 export ADMIN_PASSWD
 ADMIN_PASSWD=`php -r 'echo md5($_ENV["ADMIN_PASSWD"]);'`
 
 echo -n $ADMIN_USERNAME >> $1/admins
 echo -ne "\t" >> $1/admins
 echo -n $ADMIN_PASSWD >> $1/admins
-echo -ne "\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1" >> $1/admins
+echo -ne "\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1"
 
 unset ADMIN_PASSWD
 

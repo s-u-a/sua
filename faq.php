@@ -26,6 +26,7 @@
 	<li><a href="#name">Kann ich meinen Namen ändern?</a></li>
 	<li><a href="#universe">Wie viele Universen gibt es?</a></li>
 	<li><a href="#expand">Bei einem Gebäude/Forschung fehlt der Ausbauknopf oder bei meinen Robotern/Schiffen/Verteidigungsanlagen fehlt das Ausbaufeld.</a></li>
+	<li><a href="#mass">Meine Flotte hat für den Hin- und Rückflug unterschiedlich lange gebraucht!</a></li>
 	<li><a href="#distance">Wie berechnet sich die Entfernung zwischen zwei Planeten?</a></li>
 	<li><a href="#download">Wie kann ich mir das Spiel herunterladen?</a></li>
 </ol>
@@ -63,7 +64,8 @@
 
 <div class="faq">
 	<h3 id="scores">Wie bekomme ich Punkte?</h3>
-	<p>Gebäude-, Forschungs-, Roboter-, Flotten- und Verteidigungspunkte berechnen sich aus den Rohstoffen, die die Gebäude/Forschungen/Robotern/Flotten/Verteidigungsanlagen an Rohstoffen gekostet haben, die Sie besitzen. Pro Tausend Rohstoffe bekommen Sie dabei einen Punkt in der entsprechenden Kategorie.</p>
+	<p>Gebäude-, Forschungs-, Flotten- und Verteidigungspunkte berechnen sich aus den Rohstoffen, die die Gebäude/Forschungen/Flotten/Verteidigungsanlagen an Rohstoffen gekostet haben, die Sie besitzen. Pro Tausend Rohstoffe bekommen Sie dabei einen Punkt in der entsprechenden Kategorie.</p>
+	<p>Roboterpunkte werden aus den Rohstoffkosten der Roboter berechnet, die Sie gebaut haben. Pro Tausend verbaute Rohstoffe bekommen Sie einen Roboterpunkt.</p>
 	<p>Je mehr Tritium Sie im Flug verbrauchen, desto mehr Flugerfahrungspunkte erhalten Sie. Pro Tausend Tonnen Tritium, das Sie in einem erfolgreich am Ziel angelangten Flug verbraucht haben, bekommen Sie einen Flugerfahrungspunkt. Erfahrung im Flug lässt Ihre Schiffe schneller fliegen.</p>
 	<p>Pro Tausend Punkte, das Sie im Kampf Ihren Gegner verlieren ließen, bekommen Sie einen Kampferfahrungspunkt. Mehr Kampferfahrung schafft Ihnen Vorteile im Kampf.</p>
 </div>
@@ -104,7 +106,7 @@
 <div class="faq">
 	<h3 id="robots">Wie funktionieren die Roboter?</h3>
 	<p>Die Roboter helfen, Gebäudebauzeiten zu verkürzen und die Rohstoffproduktion zu erhöhen. Der Auswirkungsgrad der Roboter hängt von der aktuellen Stufe der Roboterbautechnik ab. Jede Stufe der Roboterbautechnik erhöht dabei den Auswirkungsgrad Ihrer Bauroboter um ein Viertelprozent, den Ihrer Minenroboter um ein Sechzehntelprozent.</p>
-	<p>Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur Verfügung steht. Für Bauroboter liegt die Grenze bei der Hälfte der ursprünglichen Felderzahl des Planeten (Ingenieurswissenschaft zeigt also keine Wirkung), für Minenroboter liegt sie bei der aktuellen Ausbaustufe der zugehörigen Mine (Ausnahme: Tritiumroboter, hier liegt die Grenze beim 2-Fachen der Ausbaustufe des Tritiumgenerators). Übersteigt die Roboterzahl die Grenze, zeigen überschüssige Roboter keinerlei Wirkung mehr.</p>
+	<p>Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur Verfügung steht. Für Bauroboter liegt die Grenze bei der Hälfte der ursprünglichen Felderzahl des Planeten (Ingeneurswissenschaft zeigt also keine Wirkung), für Minenroboter liegt sie bei einem Zehnfachen der aktuellen Ausbaustufe der zugehörigen Mine (Ausnahme: Tritiumroboter, hier liegt die Grenze beim 15-Fachen der Ausbaustufe des Tritiumgenerators). Übersteigt die Roboterzahl die Grenze, zeigen überschüssige Roboter keinerlei Wirkung mehr.</p>
 </div>
 
 <div class="faq">
@@ -165,11 +167,19 @@
 </div>
 
 <div class="faq">
+	<h3 id="mass">Meine Flotte hat für den Hin- und Rückflug unterschiedlich lange gebraucht!</h3>
+	<p>Das liegt wahrscheinlich daran, dass auf dem Hin- und Rückflug unterschiedlich viele Rohstoffe und Roboter transportiert wurden.</p>
+	<p>In <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> hat jeder transportierbare Gegenstand (Schiffe, Roboter, Rohstoffe) eine bestimmte Masse. Rohstoffmengen werden in Tonnen angegeben, und aus den Rohstoffkosten der Schiffe und Roboter berechnet sich deren Masse. (Deren Masse entspricht ihren Rohstoffkosten, abzüglich 20&thinsp;<abbr title="Prozent">%</abbr>, die beim Bau verbraucht werden.)</p>
+	<p>Bevor eine Flotte losgeschickt wird, berechnet das Spiel, welche Masse die gesamte Flotte hat, es zählt also die Masse der Schiffe zusammen und addiert die Masse der mitgenommenen Rohstoffe und Roboter. Aus der Gesamtmasse und der Antriebskraft der Schiffe wird dann die Flugdauer berechnet.</p>
+	<p>Während es in anderen <span xml:lang="en">Online</span>-Spielen so ist, dass beim Flug die Geschwindigkeit des langsamsten mitfliegenden Schiffes als Geschwindigkeit für den Flug genommen wird, bilden Flotten in <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> eine Traube und schalten ihre Antriebe zusammen, sodass alle Antriebe voll ausgenutzt werden.</p>
+</div>
+
+<div class="faq">
 	<h3 id="distance">Wie berechnet sich die Entfernung zwischen zwei Planeten?</h3>
 	<p>Entfernungen in <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> werden in <em><abbr title="Orbits">Or</abbr></em> angegeben. Ein Orbit bezeichnet dabei die Entfernung zum eigenen Trümmerfeld.</p>
 	<p>Planeten innerhalb des Sonnensystems sind in einer Reihe angeordnet. Die Distanz zum nächsten Planeten beträgt hierbei 10&thinsp;<abbr title="Orbits">Or</abbr>, die zum übernächsten 20&thinsp;<abbr title="Orbits">Or</abbr>, und so weiter.</p>
 	<p>Die Entfernung zu einem Planeten in derselben Galaxie, aber in einem anderen Sonnensystem gestaltet sich etwas schwieriger. Sie müssen sich eine Galaxie in <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> als riesigen Quader vorstellen, der eine Seitenlänge von 9&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr> hat. Stellen Sie sich ein dreidimensionales Koordinatensystem vor, in welchem die Längeneinheiten der x-, der y- und der z-Achse jeweils 1&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr> sind. Die Koordinaten eines Sonnensystems sind nun einfach herausfinden, das Sonnensystem 123 hat zum Beispiel die Koordinaten (1|2|3), also (1&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr>|2&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr>|3&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr>). Sollten Sie sich gut in der Mathematik und der Geometrie auskennen, werden Sie nun wissen, wie sich der Abstand zwischen zwei Sonnensystemen berechnet.</p>
-	<p>Wenn Sie mit einem Raumschiff in eine andere Galaxie fliegen wollen, müssen Sie größere Distanzen zurücklegen. Stellen Sie sich einen riesigen Kreis vor, auf dem die Galaxien gleichmäßig verteilt sind. Das Raumschiff nimmt in diesem Kreis den kürzesten Weg (&bdquo;Luftlinie&ldquo;) zur Zielgalaxie. Für die Mathematiker unter uns: Die Größe des Kreises wird so ausgelegt, dass der Abstand von einer Galaxie zur nächsten <strong>auf der Kreislinie entlang</strong> genau 30&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr> entspricht.</p>
+	<p>Wenn Sie mit einem Raumschiff in eine andere Galaxie fliegen wollen, müssen Sie größere Distanzen zurücklegen. Stellen Sie sich einen riesigen Kreis vor, auf dem die Galaxien gleichmäßig verteilt sind. Das Raumschiff nimmt in diesem Kreis den kürzesten Weg (&bdquo;Luftlinie&ldquo;) zur Zielgalaxie. Für die Mathematiker unter uns: Die Größe des Kreises wird so ausgelegt, dass der Abstand von einer Galaxie zur nächsten <strong>auf der Kreislinie entlang</strong> genau 20&thinsp;000&thinsp;<abbr title="Orbits">Or</abbr> entspricht.</p>
 </div>
 
 <div class="faq">

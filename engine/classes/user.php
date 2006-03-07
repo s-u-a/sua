@@ -2835,6 +2835,14 @@
 		{
 		}
 		
+		function getForeignUsersList()
+		{
+		}
+		
+		function getForeignFleetsList($user)
+		{
+		}
+		
 		function _printRaw()
 		{
 			echo "<pre>";

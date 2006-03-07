@@ -14,21 +14,21 @@
 	
 	if(!isset($_SESSION['username']) || !isset($_SESSION['database']) || (isset($_SESSION['database']) && (!isset($databases[$_SESSION['database']]) || !User::userExists($_SESSION['username']))))
 	{
-		if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['database']))
+		if(isset($_REQUEST['username']) && isset($_REQUEST['password']) && isset($_REQUEST['database']))
 		{
 			# Anmelden
 			
-			if(!isset($databases[$_POST['database']]))
+			if(!isset($databases[$_REQUEST['database']]))
 				$loggedin = false;
 			else
 			{
-				define_globals($databases[$_POST['database']][0]);
-				if(!User::userExists($_POST['username']))
+				define_globals($databases[$_REQUEST['database']][0]);
+				if(!User::userExists($_REQUEST['username']))
 					$loggedin = false;
 				else
 				{
-					$me = Classes::User($_POST['username']);
-					if(!$me->checkPassword($_POST['password']))
+					$me = Classes::User($_REQUEST['username']);
+					if(!$me->checkPassword($_REQUEST['password']))
 						$loggedin = false;
 					else
 						$loggedin = true;
@@ -40,16 +40,11 @@
 
 		if(!$loggedin)
 		{
-			if(isset($_POST['username']))
-				$_SESSION['username'] = $_POST['username'];
-			if(isset($_SESSION['username']))
-				unset($_SESSION['username']);
-
 			# Auf die Startseite zurueckleiten
 			$url = explode('/', $_SERVER['PHP_SELF']);
 			array_pop($url); array_pop($url);
 			$url = 'http://'.get_default_hostname().implode('/', $url).'/index.php';
-			if(!isset($_POST['username']) || !isset($_POST['password']))
+			if(!isset($_REQUEST['username']) || !isset($_REQUEST['password']))
 			{
 				header('Location: '.$url, true, 303);
 				die('Not logged in. Please <a href="'.htmlentities($url).'">relogin</a>.');
@@ -60,10 +55,10 @@
 		else
 		{
 			# Session aktualisieren
-			$_SESSION['username'] = $_POST['username'];
+			$_SESSION['username'] = $_REQUEST['username'];
 			$_SESSION['act_planet'] = 0;
 			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
-			$_SESSION['database'] = $_POST['database'];
+			$_SESSION['database'] = $_REQUEST['database'];
 			$_SESSION['use_protocol'] = USE_PROTOCOL;
 			$resume = true;
 			$del_email_passwd = true;
@@ -313,6 +308,7 @@
 			<ul id="external-navigation">
 				<li id="navigation-board" xml:lang="en"><a href="http://board.s-u-a.net/">Board</a></li>
 				<li id="navigation-faq" xml:lang="en"><a href="http://<?=htmlentities(get_default_hostname().h_root)?>/faq.php"><abbr title="Frequently Asked Questions">FAQ</abbr></a></li>
+				<li id="navigation-bugtracker" xml:lang="en"><a href="http://bugs.s-u-a.net/">Bugtracker</a></li>
 			</ul>
 <?php
 			}
