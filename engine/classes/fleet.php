@@ -780,7 +780,7 @@
 								$message_text .= "\t<h4>Planet</h4>\n";
 								$message_text .= "\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
 								$message_text .= "\t\t<dt class=\"c-felder\">Felder</dt>\n";
-								$message_text .= "\t\t<dd class=\"c-felder\">".ths($target_galaxy->getPlanetSize($target[1], $target[2])."</dd>\n";
+								$message_text .= "\t\t<dd class=\"c-felder\">".ths($target_galaxy->getPlanetSize($target[1], $target[2]))."</dd>\n";
 								$message_text .= "\t</dl>\n";
 								$message_text .= "</div>";
 
@@ -958,14 +958,6 @@
 									$message->addUser($target_user, $type_message_types[$type]);
 								}
 							}
-						}
-						else
-							report_error(10);
-						unset($start_user_array);
-						if($target_info[1])
-							unset($target_user_array);
-						if(isset($that_planet))
-							unset($that_planet);
 					}
 					
 					# Weiterfliegen
