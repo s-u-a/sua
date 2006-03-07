@@ -195,7 +195,7 @@
 				{
 ?>
 <p class="error">
-	Sie haben nicht die richtigen Schiffe ausgew‰hlt, um diesen Planeten anzufliegen.
+	Sie haben nicht die richtigen Schiffe ausgew√§hlt, um diesen Planeten anzufliegen.
 </p>
 <?php
 				}
@@ -240,7 +240,7 @@
 								{
 ?>
 <p class="error">
-	Das Imperium dieses Spielers ist so groﬂ, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anf‰ngerschutz.)
+	Das Imperium dieses Spielers ist so gro√ü, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anf√§ngerschutz.)
 </p>
 <?php
 									$noob = true;
@@ -249,7 +249,7 @@
 								{
 ?>
 <p class="error">
-	Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen kˆnnen. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anf‰ngerschutz.)
+	Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen k√∂nnen. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anf√§ngerschutz.)
 </p>
 <?php
 									$noob = true;
@@ -399,7 +399,7 @@
 							$this_ress = $me->getRess();
 							$transport = $fleet_obj->getTransportCapacity($_SESSION['username']);
 ?>
-<form action="flotten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nˆtigen Schiffe verf¸gbar sind). Sind Sie sicher, dass Sie diese Aktion durchf¸hren wollen?\');');">
+<form action="flotten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die n√∂tigen Schiffe verf√ºgbar sind). Sind Sie sicher, dass Sie diese Aktion durchf√ºhren wollen?\');');">
 	<dl>
 		<dt class="c-ziel">Ziel</dt>
 		<dd class="c-ziel"><?=utf8_htmlentities($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'])?> &ndash; <?=$planet_owner ? utf8_htmlentities($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])).' <span class="playername">('.utf8_htmlentities($planet_owner).')</span>' : 'Unbesiedelt'?></dd>
@@ -408,7 +408,7 @@
 		<dd class="c-entfernung"><?=ths($distance)?>&thinsp;<abbr title="Orbits">Or</abbr></dd>
 
 		<dt class="c-antrieb">Antrieb</dt>
-		<dd class="c-antrieb"><?=ths($speed)?>&thinsp;<abbr title="Milliorbits pro Quadratsekunde">mOr&frasl;s≤</abbr></dd>
+		<dd class="c-antrieb"><?=ths($speed)?>&thinsp;<abbr title="Milliorbits pro Quadratsekunde">mOr&frasl;s¬≤</abbr></dd>
 
 		<dt class="c-tritiumverbrauch">Tritiumverbrauch</dt>
 		<dd class="c-tritiumverbrauch <?=($this_ress[4] >= $tritium) ? 'ja' : 'nein'?>" id="tritium-verbrauch"><?=ths($tritium)?>&thinsp;<abbr title="Tonnen">t</abbr></dd>
@@ -430,7 +430,7 @@
 		<dt class="c-flugzeit">Flugzeit</dt>
 		<dd class="c-flugzeit" id="flugzeit" title="Ankunft: <?=date('H:i:s, Y-m-d', time()+$time)?> (Serverzeit)"><?=$time_string?></dd>
 
-		<dt class="c-transportkapazitaet">Transportkapazit‰t</dt>
+		<dt class="c-transportkapazitaet">Transportkapazit√§t</dt>
 		<dd class="c-transportkapazitaet"><?=ths($transport[0])?>&thinsp;<abbr title="Tonnen">t</abbr>, <?=ths($transport[1])?>&nbsp;Roboter</dd>
 
 		<script type="text/javascript">
@@ -662,7 +662,7 @@
 ?>
 <h3>Flotte versenden</h3>
 <p class="flotte-anzahl<?=($my_flotten >= $max_flotten) ? ' voll' : ''?>">
-	Sie haben derzeit <?=ths($my_flotten)?> von <?=ths($max_flotten)?> <?=($max_flotten == 1) ? 'mˆglichen Flotte' : 'mˆglichen Flotten'?> unterwegs.
+	Sie haben derzeit <?=ths($my_flotten)?> von <?=ths($max_flotten)?> <?=($max_flotten == 1) ? 'm√∂glichen Flotte' : 'm√∂glichen Flotten'?> unterwegs.
 </p>
 <?php
 		$this_pos = $me->getPos();

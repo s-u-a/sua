@@ -56,7 +56,7 @@
 		</thead>
 		<tbody>
 			<tr>
-				<th>Benötigte Felderzahl</th>
+				<th>BenÃ¶tigte Felderzahl</th>
 				<td><?=utf8_htmlentities($item->getInfo('fields'))?></td>
 			</tr>
 		</tbody>
@@ -188,11 +188,11 @@
 		</thead>
 		<tbody>
 			<tr>
-				<th>Transportkapazität</th>
+				<th>TransportkapazitÃ¤t</th>
 				<td><?=ths($trans[0])?>&nbsp;Tonnen, <?=ths($trans[1])?>&nbsp;Roboter</td>
 			</tr>
 			<tr>
-				<th>Angriffsstärke</th>
+				<th>AngriffsstÃ¤rke</th>
 				<td><?=ths($item->getInfo('att'))?></td>
 			</tr>
 			<tr>
@@ -200,11 +200,11 @@
 				<td><?=ths($item->getInfo('def'))?></td>
 			</tr>
 			<tr>
-				<th>Antriebsstärke</th>
-				<td><?=ths($item->getInfo('speed'))?>&thinsp;<abbr title="Milliorbits pro Quadratsekunde">mOr&frasl;s²</abbr></td>
+				<th>AntriebsstÃ¤rke</th>
+				<td><?=ths($item->getInfo('speed'))?>&thinsp;<abbr title="Milliorbits pro Quadratsekunde">mOr&frasl;sÂ²</abbr></td>
 			</tr>
 			<tr>
-				<th>Unterstützte Auftragsarten</th>
+				<th>UnterstÃ¼tzte Auftragsarten</th>
 				<td>
 					<ul>
 <?php
@@ -240,7 +240,7 @@
 		</thead>
 		<tbody>
 			<tr>
-				<th>Angriffsstärke</th>
+				<th>AngriffsstÃ¤rke</th>
 				<td><?=ths($item->getInfo('att'))?></td>
 			</tr>
 			<tr>

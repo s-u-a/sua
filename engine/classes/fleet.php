@@ -696,7 +696,7 @@
 							break;
 						case 4: # Transport
 							$message_text = array(
-								$target_owner => "Ein Transport erreicht Ihren Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target."). Folgende Spieler liefern Güter ab:\n"
+								$target_owner => "Ein Transport erreicht Ihren Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target."). Folgende Spieler liefern GÃ¼ter ab:\n"
 							);
 							
 							# Rohstoffe abliefern, Handel
@@ -704,7 +704,7 @@
 							$make_handel_message = false;
 							foreach($this->raw[1] as $username=>$data)
 							{
-								$message_text[$username] = "Ihre Flotte erreicht den Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target.", Eigent\xc3\xbcmer: ".$target_owner.") und liefert folgende Güter ab:\n";
+								$message_text[$username] = "Ihre Flotte erreicht den Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target.", Eigent\xc3\xbcmer: ".$target_owner.") und liefert folgende GÃ¼ter ab:\n";
 								$message_text[$target_owner] .= $username.": ";
 								$message_text[$username] .= "Carbon: ".ths($data[3][0][0], true).", Aluminium: ".ths($data[3][0][1], true).", Wolfram: ".ths($data[3][0][2], true).", Radium: ".ths($data[3][0][3], true).", Tritium: ".ths($data[3][0][4], true);
 								$message_text[$target_owner] .= "Carbon: ".ths($data[3][0][0], true).", Aluminium: ".ths($data[3][0][1], true).", Wolfram: ".ths($data[3][0][2], true).", Radium: ".ths($data[3][0][3], true).", Tritium: ".ths($data[3][0][4], true);
@@ -784,12 +784,9 @@
 								$message_text .= "\t</dl>\n";
 								$message_text .= "</div>";
 
-								if(count($start_user_array['planets']) < MAX_PLANETS)
-								{
-									$message_text .= "\n<p class=\"besiedeln\">";
-									$message_text .= "\n\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlentities(urlencode($target[0]))."&amp;action_system=".htmlentities(urlencode($target[1]))."&amp;action_planet=".htmlentities(urlencode($target[2]))."\" title=\"Schicken Sie ein Besiedelungsschiff zu diesem Planeten\">Besiedeln</a>";
-									$message_text .= "\n</p>";
-								}
+								$message_text .= "\n<p class=\"besiedeln\">";
+								$message_text .= "\n\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlentities(urlencode($target[0]))."&amp;action_system=".htmlentities(urlencode($target[1]))."&amp;action_planet=".htmlentities(urlencode($target[2]))."\" title=\"Schicken Sie ein Besiedelungsschiff zu diesem Planeten\">Besiedeln</a>";
+								$message_text .= "\n</p>";
 								
 								$message = Classes::Message();
 								if($message->create())
@@ -797,7 +794,7 @@
 									$message->text($message_text);
 									$message->subject('Spionage des Planeten '.$next_target);
 									foreach(array_keys($this->raw[1]) as $username)
-										$message_obj->addUser($username, $types_message_types[$type]);
+										$message->addUser($username, $types_message_types[$type]);
 									$message->html(true);
 								}
 							}
@@ -968,7 +965,7 @@
 					$this->raw[3][$next_target] = array_shift($this->raw[0]);
 					$this->raw[2] = time();
 					# Vom Empfaenger entfernen
-					if($target_owner != $first_user)
+					if($target_user && $target_owner != $first_user)
 						$target_user->unsetFleet($this->getName());
 					
 					foreach($users as $user)
@@ -1135,6 +1132,8 @@
 				
 				$this->destroy();
 			}
+			
+			return true;
 		}
 		
 		protected function getDataFromRaw(){}

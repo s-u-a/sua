@@ -244,10 +244,11 @@
 				
 				$bit_position = 5+($planet-1)*9;
 				$byte_position = $bit_position%8;
-				fseek($this->file_pointer, $bit_position-$byte_position, SEEK_CUR);
-				$bytes = (ord(fread($this->file_pointer, 1)) << 8) & ord(fread($this->file_pointer, 1));
-				$bytes = $bytes & ((1 << (17-$byte_position))-1);
+				fseek($this->file_pointer, ($bit_position-$byte_position)/8, SEEK_CUR);
+				$bytes = (ord(fread($this->file_pointer, 1)) << 8) | ord(fread($this->file_pointer, 1));
+				$bytes = $bytes & ((1 << (16-$byte_position))-1);
 				$bytes = $bytes >> (7-$byte_position);
+				$bytes += 100;
 				$this->cache['getPlanetSize'][$system][$planet] = $bytes;
 			}
 			return $this->cache['getPlanetSize'][$system][$planet];

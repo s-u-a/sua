@@ -105,7 +105,7 @@
 </form>
 <form action="edit_changelog.php" method="post">
 	<ul>
-		<li><input type="text" name="add" value="" /> <button type="submit">Hinzufügen</button></li>
+		<li><input type="text" name="add" value="" /> <button type="submit">HinzufÃ¼gen</button></li>
 <?php
 	$changelog = '';
 	if(is_file('../db_things/changelog') && is_readable('../db_things/changelog'))
@@ -123,7 +123,7 @@
 			echo utf8_htmlentities($log[0]);
 		else
 			echo date('Y-m-d, H:i:s', $log[0]).': '.utf8_htmlentities($log[1]);
-		echo " [<a href=\"edit_changelog.php?delete=".htmlentities(urlencode(count($changelog)-$i))."\">Löschen</a>]</li>\n";
+		echo " [<a href=\"edit_changelog.php?delete=".htmlentities(urlencode(count($changelog)-$i))."\">LÃ¶schen</a>]</li>\n";
 	}
 ?>
 	</ul>

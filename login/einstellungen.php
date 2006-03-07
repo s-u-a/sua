@@ -80,7 +80,7 @@
 		if(!$me->checkPassword($_POST['old-password']))
 			$error = 'Das alte Passwort stimmt nicht.';
 		elseif($_POST['new-password'] != $_POST['new-password2'])
-			$error = 'Die beiden neuen Passwörter stimmen nicht überein.';
+			$error = 'Die beiden neuen PasswÃ¶rter stimmen nicht Ã¼berein.';
 		else
 			$me->setPassword($_POST['new-password']);
 	}
@@ -139,16 +139,16 @@
 			<dd class="c-spionagesonden"><input type="text" name="spionagesonden" id="spionagesonden" value="<?=utf8_htmlentities($me->checkSetting('sonden'))?>" title="Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der Karte geschickt werden sollen [J]" accesskey="j" tabindex="<?=$tabindex++?>" /></dd>
 
 			<dt class="c-auto-schnellbau"><label for="fastbuild">Auto-Schnellbau</label></dt>
-			<dd class="c-auto-schnellbau"><input type="checkbox" name="fastbuild" id="fastbuild"<?=$me->checkSetting('fastbuild') ? ' checked="checked"' : ''?> title="Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten unbeschäftigten Planeten gewechselt [Q]" accesskey="q" tabindex="<?=$tabindex++?>" /></dd>
+			<dd class="c-auto-schnellbau"><input type="checkbox" name="fastbuild" id="fastbuild"<?=$me->checkSetting('fastbuild') ? ' checked="checked"' : ''?> title="Wird ein GebÃ¤ude in Auftrag gegeben, wird automatisch zum nÃ¤chsten unbeschÃ¤ftigten Planeten gewechselt [Q]" accesskey="q" tabindex="<?=$tabindex++?>" /></dd>
 
 			<dt class="c-schnell-shortcuts"><label for="shortcuts">Schnell-Shortcuts</label></dt>
-			<dd class="c-schnell-shortcuts"><input type="checkbox" name="shortcuts" id="shortcuts"<?=$me->checkSetting('shortcuts') ? ' checked="checked"' : ''?> title="Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere Taste zu drücken [X]" accesskey="x" tabindex="<?=$tabindex++?>" /></dd>
+			<dd class="c-schnell-shortcuts"><input type="checkbox" name="shortcuts" id="shortcuts"<?=$me->checkSetting('shortcuts') ? ' checked="checked"' : ''?> title="Mit dieser Funktion brauchen Sie zum AusfÃ¼hren der Shortcuts keine weitere Taste zu drÃ¼cken [X]" accesskey="x" tabindex="<?=$tabindex++?>" /></dd>
 
 			<dt class="c-javascript-tooltips"><label for="tooltips">Javascript-Tooltips</label></dt>
-			<dd class="c-javascript-tooltips"><input type="checkbox" name="tooltips" id="tooltips"<?=$me->checkSetting('tooltips') ? ' checked="checked"' : ''?> title="Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden die normalen Tooltips durch hübsche JavaScript-Tooltips ersetzt. [Y]" accesskey="y" tabindex="<?=$tabindex++?>" /></dd>
+			<dd class="c-javascript-tooltips"><input type="checkbox" name="tooltips" id="tooltips"<?=$me->checkSetting('tooltips') ? ' checked="checked"' : ''?> title="Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden die normalen Tooltips durch hÃ¼bsche JavaScript-Tooltips ersetzt. [Y]" accesskey="y" tabindex="<?=$tabindex++?>" /></dd>
 
 			<dt class="c-auto-refresh"><label for="autorefresh">Auto-Refresh</label></dt>
-			<dd class="c-auto-refresh"><input type="text" name="autorefresh" id="autorefresh" value="<?=utf8_htmlentities($me->checkSetting('ress_refresh'))?>" title="Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion erzeugt keinen zusätzlichen Traffic)" tabindex="<?=$tabindex++?>" /></dd>
+			<dd class="c-auto-refresh"><input type="text" name="autorefresh" id="autorefresh" value="<?=utf8_htmlentities($me->checkSetting('ress_refresh'))?>" title="Wird hier eine Zahl grÃ¶ÃŸer als 0 eingetragen, wird in deren Sekundenabstand die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion erzeugt keinen zusÃ¤tzlichen Traffic)" tabindex="<?=$tabindex++?>" /></dd>
 
 			<dt class="c-ip-schutz"><label for="ipcheck">IP-Schutz</label></dt>
 			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=$me->checkSetting('ipcheck') ? ' checked="checked"' : ''?> title="Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)" tabindex="<?=$tabindex++?>" /></dd>
@@ -160,7 +160,7 @@
 			<dd class="c-externe-navigationslinks"><input type="checkbox" name="show_extern" id="show-extern"<?=$me->checkSetting('show_extern') ? ' checked="checked"' : ''?> title="Wenn diese Option aktiviert ist, werden in der Navigation Links auf spielexterne Seiten wie das Board angezeigt." tabindex="<?=$tabindex++?>" /></dd>
 			
 			<dt class="c-nachrichteninformierung"><label for="notify">Nachrichteninformierung</label></dt>
-			<dd class="c-nachrichteninformierung"><input type="checkbox" name="notify" id="notify"<?=$me->checkSetting('notify') ? ' checked="checked"' : ''?> title="Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angezeigt, dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten." tabindex="<?=$tabindex++?>" /></dd>
+			<dd class="c-nachrichteninformierung"><input type="checkbox" name="notify" id="notify"<?=$me->checkSetting('notify') ? ' checked="checked"' : ''?> title="Wenn diese Option aktiviert ist, wird nicht nur in der Ãœbersicht angezeigt, dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten." tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
 		<script type="text/javascript">
 			function recalc_skin()
@@ -186,12 +186,12 @@
 				<tr>
 					<th class="c-nachrichtentyp">Nachrichtentyp</th>
 					<th class="c-ankunft">Ankunft</th>
-					<th class="c-rueckkehr">Rückkehr</th>
+					<th class="c-rueckkehr">RÃ¼ckkehr</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<th class="c-nachrichtentyp">Kämpfe</th>
+					<th class="c-nachrichtentyp">KÃ¤mpfe</th>
 					<td class="c-ankunft leer"></td>
 					<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[1][1]" tabindex="<?=$tabindex++?>"<?=$receive_settings[1][1] ? ' checked="checked"' : ''?> /></td>
 				</tr>
@@ -219,9 +219,9 @@
 		</table>
 	</fieldset>
 	<fieldset class="bauende-gegenstaende">
-		<legend>Bauende Gegenstände in der Übersicht</legend>
+		<legend>Bauende GegenstÃ¤nde in der Ãœbersicht</legend>
 		<dl>
-			<dt class="c-gebaeude"><label for="building-gebaeude">Gebäude</label></dt>
+			<dt class="c-gebaeude"><label for="building-gebaeude">GebÃ¤ude</label></dt>
 			<dd class="c-gebaeude"><input type="checkbox" name="building[gebaeude]" id="building-gebaeude"<?=$show_building['gebaeude'] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></dd>
 			
 			<dt class="c-forschung"><label for="building-forschung">Forschung</label></dt>
@@ -253,13 +253,13 @@
 			{
 ?>
 		<div><input type="submit" name="umode" value="Urlaubsmodus" tabindex="<?=$tabindex++?>" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich betreten?');" /></div>
-		<p>Sie werden frühestens nach drei Tagen (<?=date('Y-m-d, H:i', $me->getUmodeReturnTime())?>, Serverzeit) aus dem Urlaubsmodus zurückkehren können.</p>
+		<p>Sie werden frÃ¼hestens nach drei Tagen (<?=date('Y-m-d, H:i', $me->getUmodeReturnTime())?>, Serverzeit) aus dem Urlaubsmodus zurÃ¼ckkehren kÃ¶nnen.</p>
 <?php
 			}
 			else
 			{
 ?>
-		<p>Sie können erst wieder ab dem <?=date('Y-m-d, H:i', $me->getUmodeReturnTime())?> (Serverzeit) in den Urlaubsmodus wechseln.</p>
+		<p>Sie kÃ¶nnen erst wieder ab dem <?=date('Y-m-d, H:i', $me->getUmodeReturnTime())?> (Serverzeit) in den Urlaubsmodus wechseln.</p>
 <?php
 			}
 		}
@@ -272,7 +272,7 @@
 		else
 		{
 ?>
-		<p>Sie können den Urlaubsmodus spätestens am <?=date('Y-m-d, H:i', $me->getUmodeReturnTime())?> (Serverzeit) verlassen.</p>
+		<p>Sie kÃ¶nnen den Urlaubsmodus spÃ¤testens am <?=date('Y-m-d, H:i', $me->getUmodeReturnTime())?> (Serverzeit) verlassen.</p>
 <?php
 		}
 ?>
@@ -284,11 +284,11 @@
 		<legend>E-Mail-Adresse</legend>
 		<dl>
 			<dt class="c-email-adresse"><label for="email">E-Mail-Adresse</label></dt>
-			<dd class="c-email-adresse"><input type="text" name="email" id="email" value="<?=utf8_htmlentities($me->checkSetting('email'))?>" title="Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben. [Z]" tabindex="<?=$tabindex++?>" accesskey="z" /></dd>
+			<dd class="c-email-adresse"><input type="text" name="email" id="email" value="<?=utf8_htmlentities($me->checkSetting('email'))?>" title="Ihre E-Mail-Adresse wird benÃ¶tigt, wenn Sie Ihr Passwort vergessen haben. [Z]" tabindex="<?=$tabindex++?>" accesskey="z" /></dd>
 		</dl>
 	</fieldset>
 	<fieldset class="passwort-aendern">
-		<legend>Passwort ändern</legend>
+		<legend>Passwort Ã¤ndern</legend>
 		<dl>
 			<dt class="c-altes-passwort"><label for="old-password">Altes Passw<kbd>o</kbd>rt</label></dt>
 			<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password" tabindex="<?=$tabindex++?>" accesskey="o" /></dd>

@@ -32,7 +32,7 @@
 			{
 				login_gui::html_head();
 ?>
-<p class="error">Ungültiger Transport ausgewählt.</p>
+<p class="error">UngÃ¼ltiger Transport ausgewÃ¤hlt.</p>
 <?php
 				login_gui::html_foot();
 				exit();
@@ -198,7 +198,7 @@
 			login_gui::html_head();
 ?>
 <h2 id="handel">Handel</h2>
-<p>Die Handelsfunktion ermöglicht es Ihnen, herannahenden Transporten Rohstoffe oder Roboter mit auf den Weg zu geben, ohne dass Sie dazu einen zusätzlichen Transport starten müssen.</p>
+<p>Die Handelsfunktion ermÃ¶glicht es Ihnen, herannahenden Transporten Rohstoffe oder Roboter mit auf den Weg zu geben, ohne dass Sie dazu einen zusÃ¤tzlichen Transport starten mÃ¼ssen.</p>
 <h3 id="bisher-zum-handel-eingelagert">Bisher zum Handel eingelagert</h3>
 <dl class="handel-ress">
 	<dt class="c-carbon">Carbon</dt>
@@ -236,12 +236,12 @@
 <?php
 			}
 ?>
-<p>Es verbleibt Platz für <?=ths($transport[0])?>&thinsp;<abbr title="Tonnen">t</abbr> Rohstoffe und <?=ths($transport[1])?>&nbsp;Roboter.</p>
+<p>Es verbleibt Platz fÃ¼r <?=ths($transport[0])?>&thinsp;<abbr title="Tonnen">t</abbr> Rohstoffe und <?=ths($transport[1])?>&nbsp;Roboter.</p>
 <?php
 			if($transport[0] > 0 || $transport[1] > 0)
 			{
 ?>
-<h3 id="zusaetzliche-rohstoffe-einlagern">Zusätzliche Rohstoffe einlagern</h3>
+<h3 id="zusaetzliche-rohstoffe-einlagern">ZusÃ¤tzliche Rohstoffe einlagern</h3>
 <form action="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($_GET['id']))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="handel-einlagern-form">
 <?php
 				if($transport[0] > 0)
@@ -297,7 +297,7 @@
 		default:
 			login_gui::html_head();
 ?>
-<p class="error">Ungültige Aktion.</p>
+<p class="error">UngÃ¼ltige Aktion.</p>
 <?php
 			login_gui::html_foot();
 			break;

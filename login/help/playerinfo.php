@@ -30,7 +30,7 @@
 <h2>Spielerinfo <?php if($at){?><span class="playerinfo-allianz">[<a href="allianceinfo.php?alliance=<?=htmlentities(urlencode($at).'&'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($at)?></a>]</span> <?php }?><em class="playername"><?=utf8_htmlentities($user->getName())?></em><span class="suffix"><?=$suf?></span></h2>
 <h3 id="punkte">Punkte</h3>
 <dl class="punkte">
-	<dt class="c-gebaeude">Gebäude</dt>
+	<dt class="c-gebaeude">GebÃ¤ude</dt>
 	<dd class="c-gebaeude"><?=ths($user->getScores(0))?></dd>
 
 	<dt class="c-forschung">Forschung</dt>
@@ -88,14 +88,14 @@
 			print($user->getUserDescription());
 ?>
 </div>
-<h3 id="buendnisse">Bündnisse</h3>
+<h3 id="buendnisse">BÃ¼ndnisse</h3>
 <?php
 			$verbuendet = $user->getVerbuendetList();
 			if(count($verbuendet) <= 0)
 			{
 ?>
 <p class="buendnisse-keine">
-	Dieser Benutzer ist derzeit in keinem Bündnis.
+	Dieser Benutzer ist derzeit in keinem BÃ¼ndnis.
 </p>
 <?php
 			}
@@ -117,7 +117,7 @@
 ?>
 <h3 id="daten">Daten</h3>
 <dl class="daten">
-	<dt class="c-letzte-aktivitaet">Letzte Aktivität</dt>
+	<dt class="c-letzte-aktivitaet">Letzte AktivitÃ¤t</dt>
 <?php
 			$last_activity = $user->getLastActivity();
 			if($last_activity !== false)
@@ -179,7 +179,7 @@
 			{
 ?>
 <h3 id="nachricht">Nachricht</h3>
-<form action="../nachrichten.php?to=&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="playerinfo-nachricht" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
+<form action="../nachrichten.php?to=&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="playerinfo-nachricht" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchfÃ¼hren wollen?\');');">
 	<dl>
 		<dt class="c-betreff"><label for="betreff-input">Betreff</label></dt>
 		<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" maxlength="30" tabindex="1" /></dd>

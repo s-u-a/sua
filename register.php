@@ -14,22 +14,22 @@
 		$error = '';
 
 		if(!isset($_POST['nutzungsbedingungen']) || !$_POST['nutzungsbedingungen'])
-			$error = 'Sie müssen die Nutzungsbedingungen lesen und akzeptieren, um am Spiel teilnehmen zu können.';
+			$error = 'Sie mÃ¼ssen die Nutzungsbedingungen lesen und akzeptieren, um am Spiel teilnehmen zu kÃ¶nnen.';
 		elseif(strlen(trim($_POST['username'])) > 24)
-			$error = 'Der Benutzername darf maximal 24 Bytes groß sein.';
+			$error = 'Der Benutzername darf maximal 24 Bytes groÃŸ sein.';
 		elseif(strlen(trim($_POST['hauptplanet'])) > 24)
-			$error = 'Der Name des Hauptplanets darf maximal 24 Bytes groß sein.';
+			$error = 'Der Name des Hauptplanets darf maximal 24 Bytes groÃŸ sein.';
 		elseif(preg_match('/[\xf8-\xff\x00-\x1f\x7f]/', $_POST['username'])) # Steuerzeichen
-			$error = 'Der Benutzername enthält ungültige Zeichen.';
+			$error = 'Der Benutzername enthÃ¤lt ungÃ¼ltige Zeichen.';
 		elseif($_POST['password'] != $_POST['password2'])
-			$error = 'Die beiden Passworte stimmen nicht überein.';
+			$error = 'Die beiden Passworte stimmen nicht Ã¼berein.';
 		else
 		{
 			$_POST['username'] = str_replace("\x0a", ' ', trim($_POST['username'])); # nbsp
 			
 			__autoload('User');
 			if(User::UserExists($_POST['username']))
-				$error = 'Dieser Spieler existiert bereits. Bitte wählen Sie einen anderen Namen.';
+				$error = 'Dieser Spieler existiert bereits. Bitte wÃ¤hlen Sie einen anderen Namen.';
 			elseif(substr($_POST['username'], -4) == ' (U)')
 				$error = 'Der Benutzername darf nicht auf (U) enden.';
 			elseif(substr($_POST['username'], -4) == ' (g)')
@@ -104,10 +104,10 @@
 					else $user_obj->planetName($_POST['hauptplanet']);
 ?>
 <p class="successful">
-	Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten <?=htmlentities($koords)?>.
+	Die Registrierung war erfolgreich. Sie kÃ¶nnen sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten <?=htmlentities($koords)?>.
 </p>
 <ul>
-	<li><a href="./">Zurück zur Startseite</a></li>
+	<li><a href="./">ZurÃ¼ck zur Startseite</a></li>
 </ul>
 <?php
 					gui::html_foot();
@@ -154,7 +154,7 @@
 			<dt><label for="email"><span xml:lang="en">E-Mail</span>-Adresse</label></dt>
 			<dd><input type="text" name="email" id="email"<?=isset($_POST['email']) ? ' value="'.utf8_htmlentities($_POST['email']).'"' : ''?> /></dd>
 
-			<dt><label for="hauptplanet">Gewünschter Name des Hauptplaneten</label></dt>
+			<dt><label for="hauptplanet">GewÃ¼nschter Name des Hauptplaneten</label></dt>
 			<dd><input type="text" id="hauptplanet" name="hauptplanet"<?=isset($_POST['hauptplanet']) ? ' value="'.utf8_htmlentities($_POST['hauptplanet']).'"' : ''?> maxlength="24" /></dd>
 		</dl>
 		<div><input type="checkbox" name="nutzungsbedingungen" id="nutzungsbedingungen" /> <label for="nutzungsbedingungen">Ich habe die <a href="rules.php">Nutzungsbedingungen</a> gelesen und akzeptiere sie.</label></div>

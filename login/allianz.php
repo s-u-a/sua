@@ -17,8 +17,8 @@
 			if($action == 'cancel' && $me->cancelAllianceApplication())
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
-<p class="successful">Ihre Bewerbung wurde zurückgezogen.</p>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur AllianzÃ¼bersicht">Allianz</a></h2>
+<p class="successful">Ihre Bewerbung wurde zurÃ¼ckgezogen.</p>
 <?php
 			}
 			else
@@ -27,7 +27,7 @@
 <h2>Allianz</h2>
 <p class="allianz-laufende-bewerbung">Sie haben derzeit eine laufende Bewerbung bei der Allianz <a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($application))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>"><?=utf8_htmlentities($application)?></a>.</p>
 <ul class="allianz-laufende-bewerbung-aktionen">
-	<li><a href="allianz.php?action=cancel&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Bewerbung zurückziehen</a></li>
+	<li><a href="allianz.php?action=cancel&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Bewerbung zurÃ¼ckziehen</a></li>
 </ul>
 <?php
 			}
@@ -35,7 +35,7 @@
 		elseif($action == 'gruenden')
 		{
 ?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur AllianzÃ¼bersicht">Allianz</a></h2>
 <?php
 			if(isset($_POST['tag']) && isset($_POST['name']))
 			{
@@ -49,7 +49,7 @@
 				elseif(strlen($_POST['tag']) > 6)
 				{
 ?>
-<p class="error">Das Allianz<span xml:lang="en">tag</span> darf höchstens sechs <span xml:lang="en">Bytes</span> lang sein.</p>
+<p class="error">Das Allianz<span xml:lang="en">tag</span> darf hÃ¶chstens sechs <span xml:lang="en">Bytes</span> lang sein.</p>
 <?php
 				}
 				elseif(Alliance::allianceExists($_POST['tag']))
@@ -81,7 +81,7 @@
 					$alliance_obj->setUserPermissions($_SESSION['username'], 8, true);
 					$me->allianceTag($_POST['tag']);
 ?>
-<p class="successful">Die Allianz <?=utf8_htmlentities($_POST['tag'])?> wurde erfolgreich gegründet.</p>
+<p class="successful">Die Allianz <?=utf8_htmlentities($_POST['tag'])?> wurde erfolgreich gegrÃ¼ndet.</p>
 <?php
 					login_gui::html_foot();
 					exit();
@@ -96,7 +96,7 @@
 		<dt><label for="allianzname-input">Allianzname</label></dt>
 		<dd><input type="text" name="name" id="allianzname-input" value="<?=isset($_POST['name']) ? utf8_htmlentities($_POST['name']) : ''?>" /></dd>
 	</dl>
-	<div><button type="submit">Allianz gründen</button></div>
+	<div><button type="submit">Allianz grÃ¼nden</button></div>
 </form>
 <?php
 		}
@@ -107,14 +107,14 @@
 			if(!Alliance::allianceExists($_GET['for']))
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur AllianzÃ¼bersicht">Allianz</a></h2>
 <p class="error">Diese Allianz gibt es nicht.</p>
 <?php
 			}
 			elseif(!isset($_POST['text']))
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur AllianzÃ¼bersicht">Allianz</a></h2>
 <form action="allianz.php?action=apply&amp;for=<?=htmlentities(urlencode($_GET['for']))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="allianz-bewerben-form">
 	<dl>
 		<dt><label for="bewerbungstext-textarea">Bewerbungstext</label></dt>
@@ -127,7 +127,7 @@
 			else
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur AllianzÃ¼bersicht">Allianz</a></h2>
 <?php
 				if($me->allianceApplication($_GET['for'], $_POST['text']))
 				{
@@ -147,10 +147,10 @@
 		{
 ?>
 <h2>Allianz</h2>
-<p class="allianz-keine">Sie gehören derzeit keiner Allianz an. Es bieten sich Ihnen zwei Möglichkeiten.</p>
+<p class="allianz-keine">Sie gehÃ¶ren derzeit keiner Allianz an. Es bieten sich Ihnen zwei MÃ¶glichkeiten.</p>
 <form action="allianz.php" method="get" class="allianz-moeglichkeiten">
 	<ul>
-		<li><a href="allianz.php?action=gruenden&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Eigene Allianz gründen</a></li>
+		<li><a href="allianz.php?action=gruenden&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Eigene Allianz grÃ¼nden</a></li>
 		<li><input type="text" name="search" value="<?=(isset($_GET['search'])) ? utf8_htmlentities($_GET['search']) : ''?>" /> <button type="submit">Allianz suchen</button><input type="hidden" name="<?=htmlentities(SESSION_COOKIE)?>" value="<?=htmlentities(session_id())?>" /></li>
 	</ul>
 </form>
@@ -199,7 +199,7 @@
 			else
 				$invert = '';
 ?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur AllianzÃ¼bersicht">Allianz</a></h2>
 <?php
 			if($alliance->checkUserPermissions($_SESSION['username'], 6))
 			{
@@ -271,7 +271,7 @@
 				if($alliance->checkUserPermissions($_SESSION['username'], 5))
 				{
 ?>
-			<td class="c-kick"><input type="checkbox" name="kick[<?=utf8_htmlentities($i)?>]" onchange="if(!kick_warned){ kick_warned=true; alert('Die ausgewählten Benutzer werden beim Speichern der Änderungen aus der Allianz geworfen.'); }"<?=($member_name == $_SESSION['username']) ? ' disabled="disabled"' : ''?> /></td>
+			<td class="c-kick"><input type="checkbox" name="kick[<?=utf8_htmlentities($i)?>]" onchange="if(!kick_warned){ kick_warned=true; alert('Die ausgewÃ¤hlten Benutzer werden beim Speichern der Ã„nderungen aus der Allianz geworfen.'); }"<?=($member_name == $_SESSION['username']) ? ' disabled="disabled"' : ''?> /></td>
 <?php
 				}
 ?>
@@ -285,7 +285,7 @@
 			if($alliance->checkUserPermissions($_SESSION['username'], 5) || $alliance->checkUserPermissions($_SESSION['username'], 6))
 			{
 ?>
-	<div><button type="submit">Änderungen speichern</button></div>
+	<div><button type="submit">Ã„nderungen speichern</button></div>
 </form>
 <?php
 			}
@@ -311,12 +311,12 @@
 			if($alliance->checkUserPermissions($_SESSION['username'], 8) && $action == 'aufloesen')
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur AllianzÃ¼bersicht">Allianz</a></h2>
 <?php
 				if($alliance->destroy($_SESSION['username']))
 				{
 ?>
-<p class="successful">Die Allianz wurde aufgelöst.</p>
+<p class="successful">Die Allianz wurde aufgelÃ¶st.</p>
 <?php
 				}
 				else
@@ -329,7 +329,7 @@
 			elseif($austreten && $action == 'austreten')
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur AllianzÃ¼bersicht">Allianz</a></h2>
 <?php
 				if($me->quitAlliance())
 				{
@@ -349,7 +349,7 @@
 				if(isset($_POST['intern-text']))
 					$alliance->setInternalDescription($_POST['intern-text']);
 ?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur AllianzÃ¼bersicht">Allianz</a></h2>
 <form action="allianz.php?action=intern&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="allianz-intern-form">
 	<dl>
 		<dt><label for="allianz-intern-textarea">Interner Allianztext</label></dt>
@@ -366,7 +366,7 @@
 				if(isset($_POST['extern-name']) && strlen(trim($_POST['extern-name'])) > 0)
 					$alliance->name($_POST['extern-name']);
 ?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur AllianzÃ¼bersicht">Allianz</a></h2>
 <form action="allianz.php?action=extern&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="allianz-extern-form">
 	<dl>
 		<dt class="c-name"><label for="allianz-name-input">Allianzname</label></dt>
@@ -382,7 +382,7 @@
 			elseif($alliance->checkUserPermissions($_SESSION['username'], 7) && $action == 'permissions')
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht">Allianz</a></h2>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur AllianzÃ¼bersicht">Allianz</a></h2>
 <form action="allianz.php?action=permissions&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="allianz-rechte-form">
 	<table>
 		<thead>
@@ -394,9 +394,9 @@
 				<th title="Externen Bereich bearbeiten">Extern</th>
 				<th title="Bewerbungen annehmen oder ablehnen">Bewerbungen</th>
 				<th title="Mitglieder aus der Allianz werfen"><span xml:lang="en">Kick</span></th>
-				<th title="Ränge verteilen">Ränge</th>
+				<th title="RÃ¤nge verteilen">RÃ¤nge</th>
 				<th title="Benutzerrechte verteilen">Rechte</th>
-				<th title="Bündnis auflösen">Auflösen</th>
+				<th title="BÃ¼ndnis auflÃ¶sen">AuflÃ¶sen</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -511,7 +511,7 @@
 					if($alliance->checkUserPermissions($_SESSION['username'], 8))
 					{
 ?>
-	<li class="c-aufloesen"><a href="allianz.php?action=aufloesen&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" onclick="if(confirm('Sind Sie sicher, dass Sie diese Allianz komplett auflösen und allen Mitgliedern die Mitgliedschaft kündigen wollen?')) return !confirm('Haben Sie es sich doch noch anders überlegt?'); else return false;">Allianz auflösen</a></li>
+	<li class="c-aufloesen"><a href="allianz.php?action=aufloesen&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" onclick="if(confirm('Sind Sie sicher, dass Sie diese Allianz komplett auflÃ¶sen und allen Mitgliedern die Mitgliedschaft kÃ¼ndigen wollen?')) return !confirm('Haben Sie es sich doch noch anders Ã¼berlegt?'); else return false;">Allianz auflÃ¶sen</a></li>
 <?php
 					}
 					if($alliance->checkUserPermissions($_SESSION['username'], 2))

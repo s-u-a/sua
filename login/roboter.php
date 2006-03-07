@@ -72,7 +72,7 @@
 	if(count($building_roboter) > 0)
 	{
 ?>
-<h3 id="aktive-auftraege">Aktive Aufträge</h3>
+<h3 id="aktive-auftraege">Aktive AuftrÃ¤ge</h3>
 <ol class="queue roboter">
 <?php
 		$i = 0;
@@ -114,7 +114,7 @@
 ?>
 </script>
 <form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/roboter.php?'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="alle-abbrechen">
-	<p>Geben Sie hier Ihr Passwort ein, um alle im Bau befindlichen Roboter <strong>ohne Kostenrückerstattung</strong> abzubrechen.</p>
+	<p>Geben Sie hier Ihr Passwort ein, um alle im Bau befindlichen Roboter <strong>ohne KostenrÃ¼ckerstattung</strong> abzubrechen.</p>
 	<div><input type="password" name="cancel-all-roboter" /><input type="submit" value="Alle abbrechen" /></div>
 </form>
 <?php

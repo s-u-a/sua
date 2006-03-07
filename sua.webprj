@@ -1,6 +1,6 @@
 <!DOCTYPE webproject>
 <webproject>
-  <project type="Local" name="Stars Under Attack" encoding="iso 8859-1" enableEvents="true" >
+  <project type="Local" name="Stars Under Attack" encoding="utf8" enableEvents="true" >
     <upload/>
     <defaultDTD>-//w3c//dtd xhtml 1.0 strict//en</defaultDTD>
     <item url="" uploadstatus="1" />
@@ -77,10 +77,25 @@
     <toolbars>toolbars/</toolbars>
     <item url="login/imperium.php" uploadstatus="1" />
     <annotations/>
+    <item url="login/flotten_actions.php" uploadstatus="1" />
+    <item url="features.php" uploadstatus="1" />
+    <item url="engine/classes/" uploadstatus="1" />
+    <item url="engine/classes/dataset.php" uploadstatus="1" />
+    <item url="engine/classes/user.php" uploadstatus="1" />
+    <item url="engine/classes/alliance.php" uploadstatus="1" />
+    <item url="engine/classes/message.php" uploadstatus="1" />
+    <item url="engine/classes/publicmessage.php" uploadstatus="1" />
+    <item url="engine/classes/item.php" uploadstatus="1" />
+    <item url="engine/classes/classes.php" uploadstatus="1" />
+    <item url="engine/classes/fleet.php" uploadstatus="1" />
+    <item url="engine/classes/galaxy.php" uploadstatus="1" />
+    <item url="db_things/walkthrough_users" uploadstatus="1" />
+    <item url="db_things/database_convert_v0_v1" uploadstatus="1" />
+    <item url="db_things/eventhandler" uploadstatus="1" />
     <author>Candid Dauth</author>
     <email>webmaster@s-u-a.net</email>
     <debuggerclient persistentWatches="0" persistentBreakpoints="0" >Kein Debugger</debuggerclient>
-    <exclude cvsignore="false" />
+    <exclude cvsignore="false" ></exclude>
     <teamdata>
       <taskleaders/>
       <subprojectleaders/>
@@ -102,20 +117,5 @@
       <mailinglist address="" />
     </teamdata>
     <events/>
-    <item url="login/flotten_actions.php" uploadstatus="1" />
-    <item url="features.php" uploadstatus="1" />
-    <item url="engine/classes/" uploadstatus="1" />
-    <item url="engine/classes/dataset.php" uploadstatus="1" />
-    <item url="engine/classes/user.php" uploadstatus="1" />
-    <item url="engine/classes/alliance.php" uploadstatus="1" />
-    <item url="engine/classes/message.php" uploadstatus="1" />
-    <item url="engine/classes/publicmessage.php" uploadstatus="1" />
-    <item url="engine/classes/item.php" uploadstatus="1" />
-    <item url="engine/classes/classes.php" uploadstatus="1" />
-    <item url="engine/classes/fleet.php" uploadstatus="1" />
-    <item url="engine/classes/galaxy.php" uploadstatus="1" />
-    <item url="db_things/walkthrough_users" uploadstatus="1" />
-    <item url="db_things/database_convert_v0_v1" uploadstatus="1" />
-    <item url="db_things/eventhandler" uploadstatus="1" />
   </project>
 </webproject>

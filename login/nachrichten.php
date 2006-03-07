@@ -7,7 +7,7 @@
 	{
 		# Neue Nachricht verfassen
 ?>
-<h2><a href="nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" accesskey="w" tabindex="5">Nachrichten</a></h2>
+<h2><a href="nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur NachrichtenkategorienÃ¼bersicht [W]" accesskey="w" tabindex="5">Nachrichten</a></h2>
 <?php
 		$error = '';
 		$show_form = true;
@@ -19,13 +19,13 @@
 			$_POST['empfaenger'] = trim($_POST['empfaenger']);
 
 			if(!User::userExists($_POST['empfaenger']))
-				$error = 'Der Empfänger, den Sie eingegeben haben, existiert nicht.';
+				$error = 'Der EmpfÃ¤nger, den Sie eingegeben haben, existiert nicht.';
 			elseif($_POST['empfaenger'] == $_SESSION['username'])
-				$error = 'Sie können sich nicht selbst eine Nachricht schicken.';
+				$error = 'Sie kÃ¶nnen sich nicht selbst eine Nachricht schicken.';
 			elseif(strlen($_POST['betreff']) > 30)
 				$error = 'Der Betreff darf maximal 30 Bytes lang sein.';
 			elseif(strlen($_POST['inhalt']) <= 0)
-				$error = 'Sie müssen eine Nachricht eingeben.';
+				$error = 'Sie mÃ¼ssen eine Nachricht eingeben.';
 			else
 			{
 				# Nachricht versenden
@@ -63,11 +63,11 @@
 		if($show_form)
 		{
 ?>
-<form action="nachrichten.php?to=&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="nachrichten-neu" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
+<form action="nachrichten.php?to=&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="nachrichten-neu" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchfÃ¼hren wollen?\');');">
 	<fieldset>
 		<legend>Nachricht verfassen</legend>
 		<dl>
-			<dt class="c-empfaenger"><label for="empfaenger-input">Empfänger</label></dt>
+			<dt class="c-empfaenger"><label for="empfaenger-input">EmpfÃ¤nger</label></dt>
 <?php
 		$empfaenger = $_GET['to'];
 		if(isset($_POST['empfaenger']))
@@ -98,7 +98,7 @@
 		{
 			# Nachricht anzeigen
 ?>
-<h2><a href="nachrichten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" tabindex="6" accesskey="w">Nachrichten</a>: <a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenübersicht: <?=htmlentities($message_type_names[$_GET['type']])?> [O]" tabindex="5" accesskey="o"><?=htmlentities($message_type_names[$_GET['type']])?></a></h2>
+<h2><a href="nachrichten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur NachrichtenkategorienÃ¼bersicht [W]" tabindex="6" accesskey="w">Nachrichten</a>: <a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur NachrichtenÃ¼bersicht: <?=htmlentities($message_type_names[$_GET['type']])?> [O]" tabindex="5" accesskey="o"><?=htmlentities($message_type_names[$_GET['type']])?></a></h2>
 <?php
 			if(!$me->checkMessage($_GET['message'], $_GET['type']))
 			{
@@ -163,7 +163,7 @@
 						if($unread_next !== false)
 						{
 ?>
-	<li class="c-naechste"><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($unread_next))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Nächste ungelesene Nachricht [Q]" accesskey="q" tabindex="3">&rarr;</a></li>
+	<li class="c-naechste"><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($unread_next))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="NÃ¤chste ungelesene Nachricht [Q]" accesskey="q" tabindex="3">&rarr;</a></li>
 <?php
 						}
 ?>
@@ -200,7 +200,7 @@
 					{
 ?>
 <ul class="nachrichten-verbuendeten-links">
-	<li class="c-verbuendete"><a href="verbuendete.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Zur Verbündetenseite</a></li>
+	<li class="c-verbuendete"><a href="verbuendete.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Zur VerbÃ¼ndetenseite</a></li>
 	<li class="c-allianz"><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Zur Allianzseite</a></li>
 </ul>
 <?php
@@ -225,7 +225,7 @@
 					}
 ?>
 <form action="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="nachricht-loeschen-formular">
-	<div><input type="hidden" name="message[<?=htmlentities($_GET['message'])?>]" value="on" /><input type="submit" name="delete" accesskey="n" tabindex="2" value="Löschen" title="[N]" /> <input type="submit" name="archive" tabindex="3" value="Archivieren" /></div>
+	<div><input type="hidden" name="message[<?=htmlentities($_GET['message'])?>]" value="on" /><input type="submit" name="delete" accesskey="n" tabindex="2" value="LÃ¶schen" title="[N]" /> <input type="submit" name="archive" tabindex="3" value="Archivieren" /></div>
 </form>
 <?php
 					if(isset($_POST['weiterleitung-to']))
@@ -254,13 +254,13 @@
 						if(!User::userExists($_POST['weiterleitung-to']))
 						{
 ?>
-<p class="error">Der Empfänger, den Sie eingegeben haben, existiert nicht.</p>
+<p class="error">Der EmpfÃ¤nger, den Sie eingegeben haben, existiert nicht.</p>
 <?php
 						}
 						elseif($_POST['weiterleitung-to'] == $_SESSION['username'])
 						{
 ?>
-<p class="error">Sie können sich nicht selbst eine Nachricht schicken.</p>
+<p class="error">Sie kÃ¶nnen sich nicht selbst eine Nachricht schicken.</p>
 <?php
 						}
 						else
@@ -305,7 +305,7 @@
 						$host = get_default_hostname();
 ?>
 <p id="nachricht-veroeffentlichen">
-	Sie können diese Nachricht öffentlich verlinken: <a href="http://<?=htmlentities($host.h_root)?>/public_message.php?id=<?=htmlentities(urlencode($_GET['message']))?>&amp;database=<?=htmlentities(urlencode($_SESSION['database']))?>">http://<?=htmlentities($host.h_root)?>/public_message.php?id=<?=htmlentities(urlencode($_GET['message']))?>&amp;database=<?=htmlentities(urlencode($_SESSION['database']))?></a>
+	Sie kÃ¶nnen diese Nachricht Ã¶ffentlich verlinken: <a href="http://<?=htmlentities($host.h_root)?>/public_message.php?id=<?=htmlentities(urlencode($_GET['message']))?>&amp;database=<?=htmlentities(urlencode($_SESSION['database']))?>">http://<?=htmlentities($host.h_root)?>/public_message.php?id=<?=htmlentities(urlencode($_GET['message']))?>&amp;database=<?=htmlentities(urlencode($_SESSION['database']))?></a>
 </p>
 <?php
 					}
@@ -313,7 +313,7 @@
 					{
 ?>
 <ul id="nachricht-veroeffentlichen">
-	<li><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($_GET['message']))?>&amp;publish=1&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>#nachricht-veroeffentlichen">Nachricht veröffentlichen</a></li>
+	<li><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($_GET['message']))?>&amp;publish=1&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>#nachricht-veroeffentlichen">Nachricht verÃ¶ffentlichen</a></li>
 </ul>
 <?php
 					}
@@ -322,7 +322,7 @@
 	<fieldset>
 		<legend>Nachricht weiterleiten</legend>
 		<dl>
-			<dt><label for="empfaenger-input">Empfänger</label></dt>
+			<dt><label for="empfaenger-input">EmpfÃ¤nger</label></dt>
 			<dd><input type="text" name="weiterleitung-to" value="<?=isset($_POST['weiterleitung-to']) ? utf8_htmlentities($_POST['weiterleitung-to']) : ''?>" title="[X]" accesskey="x" tabindex="5" /></dd>
 		</dl>
 		<div><button type="submit" tabindex="6">Weiterleiten</button></div>
@@ -336,7 +336,7 @@
 		{
 			# Nachrichtenuebersicht einer Kategorie anzeigen
 ?>
-<h2><a href="nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" accesskey="w" tabindex="4">Nachrichten</a>: <?=htmlentities($message_type_names[$_GET['type']])?></h2>
+<h2><a href="nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="ZurÃ¼ck zur NachrichtenkategorienÃ¼bersicht [W]" accesskey="w" tabindex="4">Nachrichten</a>: <?=htmlentities($message_type_names[$_GET['type']])?></h2>
 <?php
 			$messages_list = $me->getMessagesList($_GET['type']);
 			if(count($messages_list) > 0)
@@ -419,7 +419,7 @@
 						// ]]>
 					</script>
 				</td>
-				<td colspan="3"><input type="submit" name="delete" class="loeschen-button" accesskey="n" tabindex="2" value="Löschen" title="[N]" /> <input type="submit" name="read" class="als-gelesen-markieren-button" tabindex="3" accesskey="u" title="[U]" value="Als gelesen markieren" /> <input type="submit" name="archive" class="archivieren-button" tabindex="4" value="Archivieren" /></td>
+				<td colspan="3"><input type="submit" name="delete" class="loeschen-button" accesskey="n" tabindex="2" value="LÃ¶schen" title="[N]" /> <input type="submit" name="read" class="als-gelesen-markieren-button" tabindex="3" accesskey="u" title="[U]" value="Als gelesen markieren" /> <input type="submit" name="archive" class="archivieren-button" tabindex="4" value="Archivieren" /></td>
 			</tr>
 		</tfoot>
 	</table>
@@ -483,7 +483,7 @@
 	<li><a href="nachrichten.php?to=&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="n" tabindex="1"><kbd>N</kbd>eue Nachricht</a></li>
 </ul>
 <dl class="nachrichten-kategorien">
-	<dt class="c-kaempfe <?=$ncount[1][2]?>"><a href="nachrichten.php?type=1&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="ä" tabindex="2">K<kbd>ä</kbd>mpfe</a></dt>
+	<dt class="c-kaempfe <?=$ncount[1][2]?>"><a href="nachrichten.php?type=1&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="Ã¤" tabindex="2">K<kbd>Ã¤</kbd>mpfe</a></dt>
 	<dd class="c-kaempfe <?=$ncount[1][2]?>"><?=utf8_htmlentities($ncount[1][0])?> <span class="gesamt">(<?=utf8_htmlentities($ncount[1][1])?>)</span></dd>
 
 	<dt class="c-spionage <?=$ncount[2][2]?>"><a href="nachrichten.php?type=2&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="o" tabindex="3">Spi<kbd>o</kbd>nage</a></dt>
@@ -501,7 +501,7 @@
 	<dt class="c-benutzernachrichten <?=$ncount[6][2]?>"><a href="nachrichten.php?type=6&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="z" tabindex="7">Benut<kbd>z</kbd>ernachrichten</a></dt>
 	<dd class="c-benutzernachrichten <?=$ncount[6][2]?>"><?=utf8_htmlentities($ncount[6][0])?> <span class="gesamt">(<?=utf8_htmlentities($ncount[6][1])?>)</span></dd>
 
-	<dt class="c-verbeundete <?=$ncount[7][2]?>"><a href="nachrichten.php?type=7&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="ü" tabindex="8">Verb<kbd>ü</kbd>ndete</a></dt>
+	<dt class="c-verbeundete <?=$ncount[7][2]?>"><a href="nachrichten.php?type=7&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="Ã¼" tabindex="8">Verb<kbd>Ã¼</kbd>ndete</a></dt>
 	<dd class="c-verbuendete <?=$ncount[7][2]?>"><?=utf8_htmlentities($ncount[7][0])?> <span class="gesamt">(<?=utf8_htmlentities($ncount[7][1])?>)</span></dd>
 
 	<dt class="c-postausgang <?=$ncount[8][2]?>"><a href="nachrichten.php?type=8&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" accesskey="w" title="[W]" tabindex="9">Postausgang</a></dt>

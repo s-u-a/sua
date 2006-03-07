@@ -40,7 +40,7 @@
 		<ul>
 			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($prev_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="6" accesskey="u" title="[U]">Vorige</a></li>
 			<li><input type="text" name="galaxy" value="<?=utf8_htmlentities($galaxy_n)?>" tabindex="1" /></li>
-			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($next_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="5" accesskey="x" title="[X]">Nächste</a></li>
+			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($next_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="5" accesskey="x" title="[X]">NÃ¤chste</a></li>
 		</ul>
 	</fieldset>
 	<fieldset class="karte-systemwahl">
@@ -48,7 +48,7 @@
 		<ul>
 			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;system=<?=htmlentities(urlencode($prev_system))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="4" rel="prev" accesskey="o">V<kbd>o</kbd>rige</a></li>
 			<li><input type="text" name="system" value="<?=utf8_htmlentities($system_n)?>" tabindex="2" /></li>
-			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;system=<?=htmlentities(urlencode($next_system))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="3" rel="next" accesskey="n"><kbd>N</kbd>ächste</a></li>
+			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;system=<?=htmlentities(urlencode($next_system))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="3" rel="next" accesskey="n"><kbd>N</kbd>Ã¤chste</a></li>
 		</ul>
 	</fieldset>
 	<div class="karte-wahl-absenden">
@@ -59,7 +59,7 @@
 	<thead>
 		<tr>
 			<th class="c-planet">Planet</th>
-			<th class="c-name">Name (Eigentümer)</th>
+			<th class="c-name">Name (EigentÃ¼mer)</th>
 			<th class="c-aktionen">Aktionen</th>
 		</tr>
 	</thead>
@@ -99,7 +99,7 @@
 <?php
 		$truemmerfeld = truemmerfeld::get($galaxy_n, $system_n, $i);
 		if($truemmerfeld !== false && array_sum($truemmerfeld) > 0)
-			$tf_string = ' <abbr title="Trümmerfeld: '.ths($truemmerfeld[0]).'&nbsp;Carbon, '.ths($truemmerfeld[1]).'&nbsp;Aluminium, '.ths($truemmerfeld[2]).'&nbsp;Wolfram, '.ths($truemmerfeld[3]).'&nbsp;Radium">T</abbr>';
+			$tf_string = ' <abbr title="TrÃ¼mmerfeld: '.ths($truemmerfeld[0]).'&nbsp;Carbon, '.ths($truemmerfeld[1]).'&nbsp;Aluminium, '.ths($truemmerfeld[2]).'&nbsp;Wolfram, '.ths($truemmerfeld[3]).'&nbsp;Radium">T</abbr>';
 		else
 			$tf_string = '';
 ?>
@@ -122,7 +122,7 @@
 ?>
 			<td class="c-aktionen">
 				<ul>
-					<li class="c-koordinaten-verwenden"><a href="flotten.php?action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten ins Flottenmenü einsetzen">Koordinaten verwenden</a></li>
+					<li class="c-koordinaten-verwenden"><a href="flotten.php?action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten ins FlottenmenÃ¼ einsetzen">Koordinaten verwenden</a></li>
 <?php
 		if($that_uname != $_SESSION['username'])
 		{
@@ -151,7 +151,7 @@
 		if($show_sammeln)
 		{
 ?>
-					<li class="c-truemmerfeld"><a href="flotten.php?action=sammeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Schicken Sie ausreichend Sammler zu diesem Trümmerfeld">Trümmerfeld</a></li>
+					<li class="c-truemmerfeld"><a href="flotten.php?action=sammeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Schicken Sie ausreichend Sammler zu diesem TrÃ¼mmerfeld">TrÃ¼mmerfeld</a></li>
 <?php
 		}
 ?>

@@ -13,8 +13,8 @@
 			$error = 'Sie haben einen falschen Benutzernamen eingegeben.';
 		elseif(!($that_user_array = get_user_array($_POST['benutzername'])))
 			$error = 'Datenbankfehler.';
-		elseif(!preg_match('/^[-._=a-z0-9]+@([-_=a-z0-9ßáàâäéèêíìîóòôöúùûü]+\.)*[-_=a-z0-9ßáàâäéèêíìîóòôöúùûü]+$/i', trim($that_user_array['email'])))
-			$error = 'In diesem Account wurde keine gültige E-Mail-Adresse gespeichert.';
+		elseif(!preg_match('/^[-._=a-z0-9]+@([-_=a-z0-9ÃŸÃ¡Ã Ã¢Ã¤Ã©Ã¨ÃªÃ­Ã¬Ã®Ã³Ã²Ã´Ã¶ÃºÃ¹Ã»Ã¼]+\.)*[-_=a-z0-9ÃŸÃ¡Ã Ã¢Ã¤Ã©Ã¨ÃªÃ­Ã¬Ã®Ã³Ã²Ã´Ã¶ÃºÃ¹Ã»Ã¼]+$/i', trim($that_user_array['email'])))
+			$error = 'In diesem Account wurde keine gÃ¼ltige E-Mail-Adresse gespeichert.';
 		else
 		{
 			if($_POST['email'] == trim($that_user_array['email']))
@@ -25,7 +25,7 @@
 				$that_user_array['email_passwd'] = $send_id;
 				if(!write_user_array($_POST['benutzername'], $that_user_array))
 					$error = 'Datenbankfehler 2.';
-				elseif(!mail($that_user_array['email'], 'Passwortänderung in S-U-A', "Jemand (vermutlich Sie) hat in S-U-A die \xe2\x80\x9ePasswort vergessen\xe2\x80\x9c-Funktion mit Ihrem Account benutzt. Diese Nachricht ist deshalb an jene E-Mail-Adresse adressiert, die Sie in Ihren Einstellungen in S-U-A eingetragen haben.\nSollten Sie eine Ã„nderung Ihres Passworts nicht erwÃ¼nschen, ignorieren â€“ oder besser lÃ¶schen â€“ Sie diese Nachricht einfach.\n\nUm Ihr Passwort zu Ã¤ndern, rufen Sie bitte die folgende Adresse in Ihrem Browser auf und folgen Sie den Anweisungen:\nhttps://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."&database=".urlencode($_POST['database'])."\n(Ohne SSL: http://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."&database=".urlencode($_POST['database'])." )", "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".EMAIL_FROM."\r\nReply-To: ".EMAIL_FROM))
+				elseif(!mail($that_user_array['email'], 'PasswortÃ¤nderung in S-U-A', "Jemand (vermutlich Sie) hat in S-U-A die \xe2\x80\x9ePasswort vergessen\xe2\x80\x9c-Funktion mit Ihrem Account benutzt. Diese Nachricht ist deshalb an jene E-Mail-Adresse adressiert, die Sie in Ihren Einstellungen in S-U-A eingetragen haben.\nSollten Sie eine ÃƒÂ„nderung Ihres Passworts nicht erwÃƒÂ¼nschen, ignorieren Ã¢Â€Â“ oder besser lÃƒÂ¶schen Ã¢Â€Â“ Sie diese Nachricht einfach.\n\nUm Ihr Passwort zu ÃƒÂ¤ndern, rufen Sie bitte die folgende Adresse in Ihrem Browser auf und folgen Sie den Anweisungen:\nhttps://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."&database=".urlencode($_POST['database'])."\n(Ohne SSL: http://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."&database=".urlencode($_POST['database'])." )", "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".EMAIL_FROM."\r\nReply-To: ".EMAIL_FROM))
 					$error = 'Fehler beim Versand der E-Mail-Nachricht.';
 				else
 				{
@@ -75,7 +75,7 @@
 				if($_POST['new_password'] != $_POST['new_password2'])
 				{
 ?>
-<p class="error">Die beiden Passwörter stimmen nicht überein.</p>
+<p class="error">Die beiden PasswÃ¶rter stimmen nicht Ã¼berein.</p>
 <?php
 				}
 				else
@@ -91,7 +91,7 @@
 					else
 					{
 ?>
-<p class="successful">Das Passwort wurde erfolgreich geändert. Sie können sich nun mit Ihrem neuen Passwort anmelden.</p>
+<p class="successful">Das Passwort wurde erfolgreich geÃ¤ndert. Sie kÃ¶nnen sich nun mit Ihrem neuen Passwort anmelden.</p>
 <?php
 						$_SESSION['username'] = $_GET['name'];
 						unset($_SESSION['username']);
@@ -112,7 +112,7 @@
 		<dt><label for="neues-passwort-wiederholen-input">Neues Passwort wiederholen</label></dt>
 		<dd><input type="password" name="new_password2" id="neues-passwort-wiederholen-input" /></dd>
 	</dl>
-	<div><button type="submit">Passwort ändern</button></div>
+	<div><button type="submit">Passwort Ã¤ndern</button></div>
 </form>
 <?php
 			}
@@ -131,16 +131,16 @@
 			else
 			{
 ?>
-<p class="successful">Falls Sie die richtige <span xml:lang="en">E-Mail</span>-Adresse eingegeben haben, wurde die <span xml:lang="en">E-Mail</span>-Nachricht erfolgreich versandt. Überprüfen Sie nun bitte Ihr Postfach.</p>
+<p class="successful">Falls Sie die richtige <span xml:lang="en">E-Mail</span>-Adresse eingegeben haben, wurde die <span xml:lang="en">E-Mail</span>-Nachricht erfolgreich versandt. ÃœberprÃ¼fen Sie nun bitte Ihr Postfach.</p>
 <?php
 			}
 		}
 ?>
-<p>Hier haben Sie die Möglichkeit, Ihr Passwort zu ändern, falls Sie es vergessen haben.</p>
-<p>Ihnen wird eine Bestätigungs-<span xml:lang="en">E-Mail</span>-Nachricht zu der <span xml:lang="en">E-Mail</span>-Adresse geschickt werden, die Sie im Spiel in den Einstellungen angegeben haben.</p>
-<p>Sollten Sie im Spiel keine gültige <span xml:lang="en">E-Mail</span>-Adresse angegeben haben, <a href="faq.php#administrators" title="FAQ: Wie kann ich die Administratoren erreichen?">wenden Sie sich bitte an einen der Administratoren</a>.</p>
+<p>Hier haben Sie die MÃ¶glichkeit, Ihr Passwort zu Ã¤ndern, falls Sie es vergessen haben.</p>
+<p>Ihnen wird eine BestÃ¤tigungs-<span xml:lang="en">E-Mail</span>-Nachricht zu der <span xml:lang="en">E-Mail</span>-Adresse geschickt werden, die Sie im Spiel in den Einstellungen angegeben haben.</p>
+<p>Sollten Sie im Spiel keine gÃ¼ltige <span xml:lang="en">E-Mail</span>-Adresse angegeben haben, <a href="faq.php#administrators" title="FAQ: Wie kann ich die Administratoren erreichen?">wenden Sie sich bitte an einen der Administratoren</a>.</p>
 <hr />
-<p>Um Ihr Passwort ändern zu können, füllen Sie bitte in das folgende Formular Ihren Benutzernamen und diejenige <span xml:lang="en">E-Mail</span>-Adresse an, die Sie im Spiel in Ihren Einstellungen gespeichert haben.</p>
+<p>Um Ihr Passwort Ã¤ndern zu kÃ¶nnen, fÃ¼llen Sie bitte in das folgende Formular Ihren Benutzernamen und diejenige <span xml:lang="en">E-Mail</span>-Adresse an, die Sie im Spiel in Ihren Einstellungen gespeichert haben.</p>
 <form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/passwd.php')?>" method="post">
 	<dl>
 		<dt><label for="runde-select">Runde</label></dt>

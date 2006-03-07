@@ -84,7 +84,7 @@
 
 	login_gui::html_head();
 ?>
-<h2>Geb‰ude</h2>
+<h2>Geb√§ude</h2>
 <?php
 	if(($fastbuild_prev !== false || $fastbuild_next !== false) && $me->permissionToAct())
 	{
@@ -96,14 +96,14 @@
 		{
 			$me->setActivePlanet($fastbuild_prev);
 ?>
-	<li class="c-voriger"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_prev))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Voriger unbesch‰ftigter Planet: &bdquo;<?=utf8_htmlentities($me->planetName())?>&ldquo; (<?=utf8_htmlentities($me->getPosString())?>) [U]" tabindex="1" accesskey="u" rel="prev">&larr;</a></li>
+	<li class="c-voriger"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_prev))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Voriger unbesch√§ftigter Planet: &bdquo;<?=utf8_htmlentities($me->planetName())?>&ldquo; (<?=utf8_htmlentities($me->getPosString())?>) [U]" tabindex="1" accesskey="u" rel="prev">&larr;</a></li>
 <?php
 		}
 		if($fastbuild_next !== false)
 		{
 			$me->setActivePlanet($fastbuild_next);
 ?>
-	<li class="c-naechster"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_next))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="N‰chster unbesch‰ftigter Planet: &bdquo;<?=utf8_htmlentities($me->planetName())?>&ldquo; (<?=utf8_htmlentities($me->getPosString())?>) [Q]" tabindex="2" accesskey="q" rel="next">&rarr;</a></li>
+	<li class="c-naechster"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_next))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="N√§chster unbesch√§ftigter Planet: &bdquo;<?=utf8_htmlentities($me->planetName())?>&ldquo; (<?=utf8_htmlentities($me->getPosString())?>) [Q]" tabindex="2" accesskey="q" rel="next">&rarr;</a></li>
 <?php
 		}
 		$me->setActivePlanet($active_planet);
@@ -146,7 +146,7 @@
 				$ress[3] /= 2;
 				$enough_ress = $me->checkRess($ress);
 ?>
-		<li class="item-rueckbau<?=$enough_ress ? '' : ' no-ress'?>"><?=$enough_ress ? '<a href="gebaeude.php?abbau='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">' : ''?>R¸ckbau auf Stufe&nbsp;<?=ths($geb['level']-1)?><?=$enough_ress ? '</a>' : ''?></li>
+		<li class="item-rueckbau<?=$enough_ress ? '' : ' no-ress'?>"><?=$enough_ress ? '<a href="gebaeude.php?abbau='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">' : ''?>R√ºckbau auf Stufe&nbsp;<?=ths($geb['level']-1)?><?=$enough_ress ? '</a>' : ''?></li>
 <?php
 			}
 ?>

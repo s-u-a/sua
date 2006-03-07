@@ -96,14 +96,9 @@
 	
 	__autoload('Classes');
 
+	header('Content-type: text/html; charset=UTF-8');
 	if(!isset($USE_OB) || $USE_OB)
-	{
-		header('Content-type: text/html; charset=UTF-8');
 		ob_start('ob_gzhandler');
-		ob_start('ob_utf8');
-	}
-	else
-		header('Content-type: text/html; charset=ISO-8859-1');
 	
 	if(!isset($LOGIN) || !$LOGIN)
 	{
@@ -115,13 +110,13 @@
 		$GLOBALS['_SESSION'] = array();
 
 	$message_type_names = array (
-		1 => 'Kämpfe',
+		1 => 'KÃ¤mpfe',
 		2 => 'Spionage',
 		3 => 'Transport',
 		4 => 'Sammeln',
 		5 => 'Besiedelung',
 		6 => 'Benutzernachrichten',
-		7 => 'Verbündete',
+		7 => 'VerbÃ¼ndete',
 		8 => 'Postausgang'
 	);
 
@@ -189,13 +184,13 @@
 			if(isset($SHOW_META_DESCRIPTION) && $SHOW_META_DESCRIPTION)
 			{
 ?>
-		<meta name="description" content="S-U-A &ndash; Stars Under Attack ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit Hunderten anderer Spielern." />
+		<meta name="description" content="S-U-A &ndash; Stars Under Attack ist ein Online-Spiel, fÃ¼r das man nur einen Browser benÃ¶tigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kÃ¤mpfen und handeln Sie mit Hunderten anderer Spielern." />
 <?php
 			}
 ?>
 	</head>
 	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4">
-		<h1 id="logo"><a href="./" title="Zurück zur Startseite" xml:lang="en">Stars Under Attack</a></h1>
+		<h1 id="logo"><a href="./" title="ZurÃ¼ck zur Startseite" xml:lang="en">Stars Under Attack</a></h1>
 		<div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
 		<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
 			<fieldset>

@@ -62,9 +62,9 @@
 			<tr>
 				<th title="Die Benutzerliste einsehen">Liste</th>
 				<th title="Als Geist als ein Benutzer anmelden">Geist</th>
-				<th title="Das Passwort eines Benutzers ändern">Passwort</th>
-				<th title="Die Passwörter zweier Benutzer vergleichen"><abbr title="Passwort">Pwd.</abbr>-<abbr title="Vergleich">Vergl.</abbr></th>
-				<th title="Einen Benutzer löschen">Löschen</th>
+				<th title="Das Passwort eines Benutzers Ã¤ndern">Passwort</th>
+				<th title="Die PasswÃ¶rter zweier Benutzer vergleichen"><abbr title="Passwort">Pwd.</abbr>-<abbr title="Vergleich">Vergl.</abbr></th>
+				<th title="Einen Benutzer lÃ¶schen">LÃ¶schen</th>
 				<th title="Einen Benutzer sperren/entsperren">Sperren</th>
 				<th title="Einen Benutzer umbenennen">Umbenennen</th>
 			</tr>
@@ -85,7 +85,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="16"><button type="submit">Hinzufügen</button></td>
+				<td colspan="16"><button type="submit">HinzufÃ¼gen</button></td>
 			</tr>
 		</tfoot>
 	</table>
@@ -154,14 +154,14 @@
 				<th rowspan="2" title="Wartungsarbeiten ein-/ausschalten">Wartung</th>
 				<th rowspan="2" title="Spiel sperren/entsperren">Spiel sperren</th>
 				<th rowspan="2" title="News bearbeiten"><span xml:lang="en">News</span></th>
-				<th rowspan="2">Löschen</th>
+				<th rowspan="2">LÃ¶schen</th>
 			</tr>
 			<tr>
 				<th title="Die Benutzerliste einsehen">Liste</th>
 				<th title="Als Geist als ein Benutzer anmelden">Geist</th>
-				<th title="Das Passwort eines Benutzers ändern">Passwort</th>
-				<th title="Die Passwörter zweier Benutzer vergleichen"><abbr title="Passwort">Pwd.</abbr>-<abbr title="Vergleich">Vergl.</abbr></th>
-				<th title="Einen Benutzer löschen">Löschen</th>
+				<th title="Das Passwort eines Benutzers Ã¤ndern">Passwort</th>
+				<th title="Die PasswÃ¶rter zweier Benutzer vergleichen"><abbr title="Passwort">Pwd.</abbr>-<abbr title="Vergleich">Vergl.</abbr></th>
+				<th title="Einen Benutzer lÃ¶schen">LÃ¶schen</th>
 				<th title="Einen Benutzer sperren/entsperren">Sperren</th>
 				<th title="Einen Benutzer umbenennen">Umbenennen</th>
 			</tr>
@@ -185,13 +185,13 @@
 				if($name == $_SESSION['admin_username'])
 				{
 ?>
-				<td>[Löschen]</td>
+				<td>[LÃ¶schen]</td>
 <?php
 				}
 				else
 				{
 ?>
-				<td><a href="?action=delete&amp;delete=<?=htmlentities(urlencode($i))?>">[Löschen]</a></td>
+				<td><a href="?action=delete&amp;delete=<?=htmlentities(urlencode($i))?>">[LÃ¶schen]</a></td>
 <?php
 				}
 ?>

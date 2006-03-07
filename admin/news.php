@@ -45,9 +45,9 @@
 ?>
 <form action="news.php" method="post">
 	<fieldset>
-		<legend>Neuigkeit hinzufügen</legend>
+		<legend>Neuigkeit hinzufÃ¼gen</legend>
 		<dl>
-			<dt><label for="heading-<?=count($news_array)?>-input">Überschrift</label></dt>
+			<dt><label for="heading-<?=count($news_array)?>-input">Ãœberschrift</label></dt>
 			<dd><input type="text" name="news[<?=count($news_array)?>][0]" id="heading-<?=count($news_array)?>-input" /></dd>
 
 			<dt><label for="text-<?=count($news_array)?>-textarea">Text</label></dt>
@@ -86,7 +86,7 @@
 		}
 ?>
 		<dl>
-			<dt><label for="heading-<?=$i?>-input">Überschrift</label></dt>
+			<dt><label for="heading-<?=$i?>-input">Ãœberschrift</label></dt>
 			<dd><input type="text" name="news[<?=$i?>][0]" id="heading-<?=$i?>-input"<?=isset($news['title']) ? ' value="'.utf8_htmlentities($news['title']).'"' : ''?> /></dd>
 
 			<dt><label for="text-<?=$i?>-textarea">Text</label></dt>
@@ -95,7 +95,7 @@
 	</fieldset>
 	<ul>
 		<li><button type="submit">Speichern</button></li>
-		<li><button type="submit" name="delete" value="1">Löschen</button></li>
+		<li><button type="submit" name="delete" value="1">LÃ¶schen</button></li>
 	</ul>
 </form>
 <?php

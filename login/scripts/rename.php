@@ -19,7 +19,7 @@
 		if(!$me->checkPassword($_POST['password']))
 			$aufgeben_error = 'Sie haben ein falsches Passwort eingegeben.';
 		elseif($_POST['act_planet'] != $_SESSION['act_planet'])
-			$aufgeben_error = 'Sicherheit: Da inzwischen der Planet gewechselt wurde, hätten Sie es wohl bereut, wenn Sie den aktuellen aufgegeben hätten.';
+			$aufgeben_error = 'Sicherheit: Da inzwischen der Planet gewechselt wurde, hÃ¤tten Sie es wohl bereut, wenn Sie den aktuellen aufgegeben hÃ¤tten.';
 		else
 		{
 			$me->removePlanet($_SESSION['act_planet']);
@@ -75,7 +75,7 @@
 	{
 ?>
 <p class="planeten-nicht-aufgeben">
-	Sie können diesen Planeten derzeit nicht aufgeben, da Flottenbewegungen Ihrerseits von/zu diesem Planeten unterwegs sind oder dies Ihr einziger Planet ist.
+	Sie kÃ¶nnen diesen Planeten derzeit nicht aufgeben, da Flottenbewegungen Ihrerseits von/zu diesem Planeten unterwegs sind oder dies Ihr einziger Planet ist.
 </p>
 <?php
 	}

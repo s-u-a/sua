@@ -4,7 +4,7 @@
 	login_gui::html_head();
 	
 	$check_deps = array(
-		'gebaeude' => 'Geb‰ude',
+		'gebaeude' => 'Geb√§ude',
 		'forschung' => 'Forschung',
 		'roboter' => 'Roboter',
 		'schiffe' => 'Schiff',
@@ -18,7 +18,7 @@
 	<thead>
 		<tr>
 			<th class="c-item"><?=htmlentities($heading)?></th>
-			<th class="c-deps">Abh‰ngigkeiten</th>
+			<th class="c-deps">Abh√§ngigkeiten</th>
 		</tr>
 	</thead>
 	<tbody>

@@ -22,25 +22,25 @@
 ?>
 <h2 xml:lang="en">Features</h2>
 <ul>
-	<li><?=count($items->getItemsList('gebaeude'))?> Gebäude</li>
-	<li><?=count($items->getItemsList('forschung'))?> Forschungsmöglichkeiten</li>
+	<li><?=count($items->getItemsList('gebaeude'))?> GebÃ¤ude</li>
+	<li><?=count($items->getItemsList('forschung'))?> ForschungsmÃ¶glichkeiten</li>
 	<li><?=count($items->getItemsList('roboter'))?> verschiedene Roboter</li>
 	<li><?=count($items->getItemsList('schiffe'))?> Raumschiffklassen</li>
 	<li><?=count($items->getItemsList('verteidigung'))?> Verteidigungsanlagen</li>
-	<li>Das Spiel läuft in Echtzeit, es gibt keine lästigen <span xml:lang="en">Eventhandler</span>-Wartezeiten</li>
-	<li>Forschung lässt sich global oder lokal durchführen</li>
-	<li>Ausgeklügeltes Allianzsystem</li>
-	<li>Schließen Sie Bündnisse mit einzelnen Spielern</li>
-	<li>Variabler Handelskurs, der sich den Zuständen im Universum anpasst</li>
-	<li>Handelssystem: Geben Sie sich nähernden Transporten Rohstoffe mit auf den Rückweg</li>
+	<li>Das Spiel lÃ¤uft in Echtzeit, es gibt keine lÃ¤stigen <span xml:lang="en">Eventhandler</span>-Wartezeiten</li>
+	<li>Forschung lÃ¤sst sich global oder lokal durchfÃ¼hren</li>
+	<li>AusgeklÃ¼geltes Allianzsystem</li>
+	<li>SchlieÃŸen Sie BÃ¼ndnisse mit einzelnen Spielern</li>
+	<li>Variabler Handelskurs, der sich den ZustÃ¤nden im Universum anpasst</li>
+	<li>Handelssystem: Geben Sie sich nÃ¤hernden Transporten Rohstoffe mit auf den RÃ¼ckweg</li>
 	<li>Handeln Sie auch Roboter</li>
-	<li>Komfortable Einstellungsmöglichkeiten, die das Spielen erleichtern</li>
-	<li>Völlige Ummodellierbarkeit des <span xml:lang="en">Design</span>s durch <span xml:lang="en">Skins</span></li>
+	<li>Komfortable EinstellungsmÃ¶glichkeiten, die das Spielen erleichtern</li>
+	<li>VÃ¶llige Ummodellierbarkeit des <span xml:lang="en">Design</span>s durch <span xml:lang="en">Skins</span></li>
 	<li>Flug- und Kampferfahrungspunkte verschaffen Vorteil</li>
-	<li><abbr title="Secure Hypertext Transfer Protocol" xml:lang="en"><span xml:lang="de">HTTPS</span></abbr> schützt vertrauliche Daten</li>
-	<li>Geplant: Lassen Sie Flotten von einem Planeten zum nächsten und von dort zu einem weiteren fliegen</li>
-	<li>Geplant: Stationieren Sie Flotten bei Ihren Verbündeten, um diesen zu unterstützen</li>
-	<li>Geplant: Fliegen Sie gemeinsame Angriffe mit Ihren Verbündeten</li>
+	<li><abbr title="Secure Hypertext Transfer Protocol" xml:lang="en"><span xml:lang="de">HTTPS</span></abbr> schÃ¼tzt vertrauliche Daten</li>
+	<li>Geplant: Lassen Sie Flotten von einem Planeten zum nÃ¤chsten und von dort zu einem weiteren fliegen</li>
+	<li>Geplant: Stationieren Sie Flotten bei Ihren VerbÃ¼ndeten, um diesen zu unterstÃ¼tzen</li>
+	<li>Geplant: Fliegen Sie gemeinsame Angriffe mit Ihren VerbÃ¼ndeten</li>
 	<li>derzeit <?=$players?> Spieler</li>
 	<li>derzeit <?=$alliances?> Allianzen</li>
 <?php

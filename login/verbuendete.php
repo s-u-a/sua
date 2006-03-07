@@ -21,7 +21,7 @@
 		if(!User::userExists($_POST['empfaenger']))
 			$buendnis_error = 'Dieser Spieler existiert nicht.';
 		elseif($me->existsVerbuendet($_POST['empfaenger']))
-			$buendnis_error = 'Mit diesem Spieler läuft bereits eine Bewerbung oder ein Bündnis.';
+			$buendnis_error = 'Mit diesem Spieler lÃ¤uft bereits eine Bewerbung oder ein BÃ¼ndnis.';
 		else
 		{
 			$text = '';
@@ -76,7 +76,7 @@
 ?>
 	<dt><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($bewerbung))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($bewerbung)?></a></dt>
 	<dd><ul>
-		<li><a href="verbuendete.php?bewerbung=<?=htmlentities(urlencode($bewerbung))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Zurückziehen</a></li>
+		<li><a href="verbuendete.php?bewerbung=<?=htmlentities(urlencode($bewerbung))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">ZurÃ¼ckziehen</a></li>
 	</ul></dd>
 <?php
 		}
@@ -85,14 +85,14 @@
 <?php
 	}
 ?>
-<h2>Bündnisse</h2>
+<h2>BÃ¼ndnisse</h2>
 <?php
 	$verbuendete = $me->getVerbuendetList();
 	if(count($verbuendete) <= 0)
 	{
 ?>
 <p class="buendnisse-keine">
-	Sie sind derzeit mit keinen Spielern verbündet.
+	Sie sind derzeit mit keinen Spielern verbÃ¼ndet.
 </p>
 <?php
 	}
@@ -106,15 +106,15 @@
 ?>
 	<dt><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($name))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($name)?></a></dt>
 	<dd><ul>
-		<li><a href="verbuendete.php?kuendigen=<?=htmlentities(urlencode($name))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" onclick="return confirm('Wollen Sie das Bündnis mit dem Spieler <?=utf8_jsentities($name)?> wirklich kündigen?');">Kündigen</a></li>
+		<li><a href="verbuendete.php?kuendigen=<?=htmlentities(urlencode($name))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" onclick="return confirm('Wollen Sie das BÃ¼ndnis mit dem Spieler <?=utf8_jsentities($name)?> wirklich kÃ¼ndigen?');">KÃ¼ndigen</a></li>
 	</ul></dd>
 <?php
 		}
 ?>
 </dl>
-<form action="verbuendete.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="buendnisse-rundschreiben" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
+<form action="verbuendete.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="buendnisse-rundschreiben" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchfÃ¼hren wollen?\');');">
 	<fieldset>
-		<legend>Bündnisrundschreiben</legend>
+		<legend>BÃ¼ndnisrundschreiben</legend>
 		<dl>
 			<dt class="c-betreff"><label for="betreff-input">Betreff</label></dt>
 			<dd class="c-betreff"><input type="text" name="betreff" id="betreff-input" tabindex="1" accesskey="j" title="[J]" /></dd>
@@ -128,7 +128,7 @@
 <?php
 	}
 ?>
-<h3>Neues Bündnis eingehen</h3>
+<h3>Neues BÃ¼ndnis eingehen</h3>
 <?php
 	if(isset($buendnis_error) && strlen(trim($buendnis_error)) > 0)
 	{

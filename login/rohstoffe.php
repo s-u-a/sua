@@ -18,7 +18,7 @@
 	<table class="ress-prod">
 		<thead>
 			<tr>
-				<th class="c-gebaeude">Geb‰ude</th>
+				<th class="c-gebaeude">Geb√§ude</th>
 				<th class="c-carbon">Carbon</th>
 				<th class="c-aluminium">Aluminium</th>
 				<th class="c-wolfram">Wolfram</th>

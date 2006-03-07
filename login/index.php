@@ -119,7 +119,7 @@
 				$from_array = explode(':', $from_pos);
 				$from_galaxy = Classes::Galaxy($from_array[0]);
 				$planet_name = $from_galaxy->getPlanetName($from_array[1], $from_array[2]);
-				$string = 'Eine <span class="beschreibung schiffe" title="'.makeFleetString($first_user, $fl->getFleetList($first_user)).'">Flotte</span> vom Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$from_pos.', Eigentümer: '.utf8_htmlentities($from_user).') erreicht';
+				$string = 'Eine <span class="beschreibung schiffe" title="'.makeFleetString($first_user, $fl->getFleetList($first_user)).'">Flotte</span> vom Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$from_pos.', EigentÃ¼mer: '.utf8_htmlentities($from_user).') erreicht';
 			}
 			
 			if(count($users) > 0)
@@ -131,7 +131,7 @@
 					$from_array = explode(':', $from_pos);
 					$from_galaxy = Classes::Galaxy($from_array[0]);
 					$planet_name = $from_galaxy->getPlanetName($from_array[1], $from_array[2]);
-					$other_strings[] = 'einer <span class="beschreibung schiffe" title="'.makeFleetString($user, $fl->getFleetList($user)).'">Flotte</span> vom Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$from_pos.', Eigentümer: '.utf8_htmlentities($user).')';
+					$other_strings[] = 'einer <span class="beschreibung schiffe" title="'.makeFleetString($user, $fl->getFleetList($user)).'">Flotte</span> vom Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$from_pos.', EigentÃ¼mer: '.utf8_htmlentities($user).')';
 				}
 				if(count($other_strings) == 1)
 					$string .= $other_strings[0];
@@ -156,7 +156,7 @@
 				$to_galaxy = Classes::Galaxy($to_array[0]);
 				$planet_name = $to_galaxy->getPlanetName($to_array[1], $to_array[2]);
 				$planet_owner = $to_galaxy->getPlanetOwner($to_array[1], $to_array[2]);
-				$string .= ' den Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$to_pos.', Eigentümer: '.utf8_htmlentities($planet_owner).').';
+				$string .= ' den Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$to_pos.', EigentÃ¼mer: '.utf8_htmlentities($planet_owner).').';
 			}
 			
 			if($fl->isFlyingBack())
@@ -239,7 +239,7 @@
 					}
 					$string .= implode(', ', $rob);
 				}
-				$string .= '">Handel</span> durchgeführt werden.';
+				$string .= '">Handel</span> durchgefÃ¼hrt werden.';
 			}
 ?>
 	<dt class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug">
@@ -248,7 +248,7 @@
 			if($fl->getCurrentType() == 4 && !$fl->isFlyingBack() && $me->isOwnPlanet($fl->getCurrentTarget()))
 			{
 ?>
-		<div class="handel"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Geben Sie dieser Flotte Ladung mit auf den Rückweg">Handel</a></div>
+		<div class="handel"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Geben Sie dieser Flotte Ladung mit auf den RÃ¼ckweg">Handel</a></div>
 <?php
 			}
 ?>
@@ -298,7 +298,7 @@
 		if($show_building['gebaeude'])
 		{
 ?>
-			<dt class="c-gebaeudebau">Gebäudebau</dt>
+			<dt class="c-gebaeudebau">GebÃ¤udebau</dt>
 <?php
 			$building_gebaeude = $me->checkBuildingThing('gebaeude');
 			if($building_gebaeude)
@@ -441,7 +441,7 @@
 ?>
 <h2 id="punkte">Punkte</h2>
 <dl class="punkte">
-	<dt class="c-gebaeude">Gebäude</dt>
+	<dt class="c-gebaeude">GebÃ¤ude</dt>
 	<dd class="c-gebaeude"><?=ths($me->getScores(0))?></dd>
 
 	<dt class="c-forschung">Forschung</dt>

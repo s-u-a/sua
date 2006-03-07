@@ -32,7 +32,7 @@
 		</dl>
 		<script type="text/javascript">
 			// <![CDATA[
-			document.write('<button onclick="reset_handelskurs(); return false;" title="Setzt den Handelskurs auf seinen ursprünglichen Wert zurück." accesskey="z" tabindex="23"><kbd>Z</kbd>urücksetzen</button>');
+			document.write('<button onclick="reset_handelskurs(); return false;" title="Setzt den Handelskurs auf seinen ursprÃ¼nglichen Wert zurÃ¼ck." accesskey="z" tabindex="23"><kbd>Z</kbd>urÃ¼cksetzen</button>');
 			// ]]>
 		</script>
 		<br class="clear" />
@@ -101,7 +101,7 @@
 			{
 ?>
 	<p id="error-message" class="error">
-		Bitte geben Sie gültige Werte ein.
+		Bitte geben Sie gÃ¼ltige Werte ein.
 	</p>
 <?php
 			}
@@ -167,7 +167,7 @@
 	</fieldset>
 	<fieldset id="zurueck" class="handelsrechner-erhalten">
 		<legend>Sie erhalten</legend>
-		<div><input type="radio" id="eingabe-zurueck" name="eingabe" value="zurueck" onchange="refresh_eingabe();" onclick="refresh_eingabe();" onkeyup="refresh_eingabe();"<?=(isset($_POST['eingabe']) && $_POST['eingabe'] == 'zurueck') ? ' checked="checked"' : ''?> tabindex="2" accesskey="n" /> <label for="eingabe-zurueck">Erhält<kbd>n</kbd>is eingeben</label></div>
+		<div><input type="radio" id="eingabe-zurueck" name="eingabe" value="zurueck" onchange="refresh_eingabe();" onclick="refresh_eingabe();" onkeyup="refresh_eingabe();"<?=(isset($_POST['eingabe']) && $_POST['eingabe'] == 'zurueck') ? ' checked="checked"' : ''?> tabindex="2" accesskey="n" /> <label for="eingabe-zurueck">ErhÃ¤lt<kbd>n</kbd>is eingeben</label></div>
 		<dl>
 			<dt><label for="zurueck-carbon">Carbo<kbd>n</kbd></label></dt>
 			<dd><input type="text" name="zurueck-anteil-carbon" id="zurueck-anteil-carbon" size="3" title="Anteil (fortgeschrittener Modus)" class="handelsrechner-anteil" onkeyup="calc();" onmouseup="calc();" onchange="calc();" value="<?=isset($_POST['zurueck-anteil-carbon']) ? htmlentities($_POST['zurueck-anteil-carbon']) : '0'?>" tabindex="13" /> <input type="text" name="zurueck-carbon" id="zurueck-carbon" value="<?=htmlentities($zurueck_carbon)?>" onkeyup="calc();" onmouseup="calc();" onchange="calc();" tabindex="14" /></dd>
@@ -205,11 +205,11 @@
 	<hr id="hilfe-trenn" />
 	<div id="hilfe" class="handelsrechner-hilfe">
 		<ul id="hilfe-schliessen-klein">
-			<li><a href="<?=htmlentities($_SERVER['PHP_SELF'])?>?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" onclick="hide_hilfe(); return false;"><abbr title="Hilfe schließen">X</abbr></a></li>
+			<li><a href="<?=htmlentities($_SERVER['PHP_SELF'])?>?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" onclick="hide_hilfe(); return false;"><abbr title="Hilfe schlieÃŸen">X</abbr></a></li>
 		</ul>
 		<h3>Hilfe zum fortgeschrittenen Modus</h3>
-		<p>Der fortgeschrittene Modus bietet die Möglichkeit, Angebot oder Erhältnis zu verschiedenen Anteilen in die Rohstoffe aufzuteilen.</p>
-		<p>Wenn Sie in den fortgeschrittenen Modus wechseln, erscheint vor jedem Rohstofffeld auf der Seite, auf der Sie gerade nichts eintippen wollen, ein zusätzliches kleines Textfeld. Dort können Sie die Verhältnisse eintragen, wie die Rohstoffe aufgeteilt werden sollen. Alternativ können Sie auch einfach Prozentzahlen eintippen. Achten Sie aber darauf, dass diese wirklich zusammen 100 ergeben.</p>
+		<p>Der fortgeschrittene Modus bietet die MÃ¶glichkeit, Angebot oder ErhÃ¤ltnis zu verschiedenen Anteilen in die Rohstoffe aufzuteilen.</p>
+		<p>Wenn Sie in den fortgeschrittenen Modus wechseln, erscheint vor jedem Rohstofffeld auf der Seite, auf der Sie gerade nichts eintippen wollen, ein zusÃ¤tzliches kleines Textfeld. Dort kÃ¶nnen Sie die VerhÃ¤ltnisse eintragen, wie die Rohstoffe aufgeteilt werden sollen. Alternativ kÃ¶nnen Sie auch einfach Prozentzahlen eintippen. Achten Sie aber darauf, dass diese wirklich zusammen 100 ergeben.</p>
 
 		<ul id="beispiele-ausklappen">
 			<li><a href="handelsrechner.php?hilfe=<?=(isset($_GET['hilfe']) && $_GET['hilfe'] == '1') ? '0' : '1'?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" onclick="show_beispiel_1(); return false;">Beispiel 1</a></li>
@@ -229,8 +229,8 @@
 ?>
 		<div id="beispiel-1" class="handelsrechner-beispiel">
 			<h4>Beispiel 1</h4>
-			<p>Sie möchten <?=ths(10000)?>&nbsp;Tritium verscherbeln. Dafür hätten Sie gerne Carbon und Radium. Sie wollen dieses Carbon und dieses Radium im Verhältnis 1:1 ausgezahlt bekommen, das heißt, dass Sie für die eine Hälfte Ihres Tritiums Carbon haben wollen, für die andere aber Radium.</p>
-			<p>Sie tippen dazu einfach ins Carbon-Verhältnisfeld (das kleinere Feld links vom Carbonfeld auf der rechten Seite) eine 1 ein, ebenso ins Radium-Verhältnisfeld. (Verhältnis: 1:1)</p>
+			<p>Sie mÃ¶chten <?=ths(10000)?>&nbsp;Tritium verscherbeln. DafÃ¼r hÃ¤tten Sie gerne Carbon und Radium. Sie wollen dieses Carbon und dieses Radium im VerhÃ¤ltnis 1:1 ausgezahlt bekommen, das heiÃŸt, dass Sie fÃ¼r die eine HÃ¤lfte Ihres Tritiums Carbon haben wollen, fÃ¼r die andere aber Radium.</p>
+			<p>Sie tippen dazu einfach ins Carbon-VerhÃ¤ltnisfeld (das kleinere Feld links vom Carbonfeld auf der rechten Seite) eine 1 ein, ebenso ins Radium-VerhÃ¤ltnisfeld. (VerhÃ¤ltnis: 1:1)</p>
 			<hr />
 		</div>
 <?php
@@ -256,7 +256,7 @@
 ?>
 		<div id="beispiel-2" class="handelsrechner-beispiel">
 			<h4>Beispiel 2</h4>
-			<p>Sie möchten einen Handel betreiben, für den Sie <?=ths(10000)?>&nbsp;Carbon und <?=ths(7000)?>&nbsp;Aluminium erhalten. Sie möchten dafür in Wolfram und Radium bezahlen. Die Bezahlung soll im Verhältnis 2:1 geschehen, das heißt, Sie möchten zwei Drittel des Preises in Wolfram und ein Drittel in Radium bezahlen. Dazu tippen Sie nun einfach in das kleine Feld vor dem Wolframfeld auf der linken Seite eine 2, in das vor dem Radiumfeld eine 1 ein.</p>
+			<p>Sie mÃ¶chten einen Handel betreiben, fÃ¼r den Sie <?=ths(10000)?>&nbsp;Carbon und <?=ths(7000)?>&nbsp;Aluminium erhalten. Sie mÃ¶chten dafÃ¼r in Wolfram und Radium bezahlen. Die Bezahlung soll im VerhÃ¤ltnis 2:1 geschehen, das heiÃŸt, Sie mÃ¶chten zwei Drittel des Preises in Wolfram und ein Drittel in Radium bezahlen. Dazu tippen Sie nun einfach in das kleine Feld vor dem Wolframfeld auf der linken Seite eine 2, in das vor dem Radiumfeld eine 1 ein.</p>
 			<hr />
 		</div>
 <?php
@@ -272,7 +272,7 @@
 	}
 ?>
 		<ul id="hilfe-schliessen">
-			<li><a href="<?=htmlentities($_SERVER['PHP_SELF'])?>?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" onclick="hide_hilfe(); return false;">Hilfe schließen</a></li>
+			<li><a href="<?=htmlentities($_SERVER['PHP_SELF'])?>?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" onclick="hide_hilfe(); return false;">Hilfe schlieÃŸen</a></li>
 		</ul>
 	</div>
 <?php
@@ -336,7 +336,7 @@
 		{
 			if(zurueck)
 			{
-				/* Erhältnis eingeben */
+				/* ErhÃ¤ltnis eingeben */
 				document.getElementById('angebot-carbon').setAttribute('readonly', 'readonly');
 				document.getElementById('angebot-aluminium').setAttribute('readonly', 'readonly');
 				document.getElementById('angebot-wolfram').setAttribute('readonly', 'readonly');
@@ -478,7 +478,7 @@
 		error_message.setAttribute('class', 'error');
 		error_message.setAttribute('id', 'error-message');
 		error_message.style.display = 'none';
-		error_message.appendChild(document.createTextNode('Bitte geben Sie gültige Werte ein.'));
+		error_message.appendChild(document.createTextNode('Bitte geben Sie gÃ¼ltige Werte ein.'));
 		document.getElementById('angebot').parentNode.insertBefore(error_message, document.getElementById('angebot'));
 
 		window.eingabe = 3;

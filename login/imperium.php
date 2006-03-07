@@ -39,7 +39,7 @@
 	{
 		case 'ress':
 ?>
-<h3 id="rohstoffvorraete">Rohstoffvorräte</h3>
+<h3 id="rohstoffvorraete">RohstoffvorrÃ¤te</h3>
 <table class="imperium-tabelle imperium-rohstoffvorraete">
 	<thead>
 		<tr>
@@ -428,7 +428,7 @@
 	<dt class="c-schildreparatur-pro-runde">Schildreparatur pro Runde</dt>
 	<dd class="c-schildreparatur-pro-runde"><?=str_replace('.', ',', round((pow(1.025, $me->getItemLevel('F10', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 	
-	<dt class="c-laderaumvergroesserung">Laderaumvergrößerung</dt>
+	<dt class="c-laderaumvergroesserung">LaderaumvergrÃ¶ÃŸerung</dt>
 	<dd class="c-laderaumvergroesserung"><?=str_replace('.', ',', round((pow(1.2, $me->getItemLevel('F11', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 </dl>
 <?php

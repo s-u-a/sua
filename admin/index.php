@@ -161,16 +161,16 @@
 
 	admin_gui::html_head();
 ?>
-<p>Willkommen im Adminbereich. Wählen Sie aus der Liste eine der Funktionen, die Ihnen zur Verfügung stehen.</p>
-<p>Denken Sie immer daran: <strong>Benutzen Sie niemals Dinge aus dem Adminbereich zu Ihrem eigenen Vorteil im Spiel und geben Sie keine Informationen an Personen weiter, die sich diese Informationen nicht selbst beschaffen könnten.</strong></p>
+<p>Willkommen im Adminbereich. WÃ¤hlen Sie aus der Liste eine der Funktionen, die Ihnen zur VerfÃ¼gung stehen.</p>
+<p>Denken Sie immer daran: <strong>Benutzen Sie niemals Dinge aus dem Adminbereich zu Ihrem eigenen Vorteil im Spiel und geben Sie keine Informationen an Personen weiter, die sich diese Informationen nicht selbst beschaffen kÃ¶nnten.</strong></p>
 <hr />
 <ol>
-	<li><a href="#passwort-aendern">Adminpasswort ändern</a></li>
+	<li><a href="#passwort-aendern">Adminpasswort Ã¤ndern</a></li>
 <?php if($admin_array['permissions'][0]){?>	<li><a href="#action-0">Benutzerliste einsehen</a></li>
 <?php }if($admin_array['permissions'][1]){?>	<li><a href="#action-1">Als Geist als ein Benutzer anmelden</a></li>
-<?php }if($admin_array['permissions'][2]){?>	<li><a href="#action-2">Das Passwort eines Benutzers ändern</a></li>
-<?php }if($admin_array['permissions'][3]){?>	<li><a href="#action-3">Die Passwörter zweier Benutzer vergleichen</a></li>
-<?php }if($admin_array['permissions'][4]){?>	<li><a href="#action-4">Einen Benutzer löschen</a></li>
+<?php }if($admin_array['permissions'][2]){?>	<li><a href="#action-2">Das Passwort eines Benutzers Ã¤ndern</a></li>
+<?php }if($admin_array['permissions'][3]){?>	<li><a href="#action-3">Die PasswÃ¶rter zweier Benutzer vergleichen</a></li>
+<?php }if($admin_array['permissions'][4]){?>	<li><a href="#action-4">Einen Benutzer lÃ¶schen</a></li>
 <?php }if($admin_array['permissions'][5]){?>	<li><a href="#action-5">Einen Benutzer sperren / entsperren</a></li>
 <?php }if($admin_array['permissions'][6]){?>	<li><a href="#action-6">Einen Benutzer umbenennen</a></li>
 <?php }if($admin_array['permissions'][8]){?>	<li><a href="#action-8"><span xml:lang="en">Changelog</span> bearbeiten</a></li>
@@ -182,7 +182,7 @@
 <?php }if($admin_array['permissions'][14]){?>	<li><a href="#action-14"><span xml:lang="en">News</span> bearbeiten</a></li>
 <?php }?></ol>
 <hr />
-<h2 id="passwort-aendern">Adminpasswort ändern</h2>
+<h2 id="passwort-aendern">Adminpasswort Ã¤ndern</h2>
 <?php
 	if(isset($_POST['old_password']) && isset($_POST['new_password']) && isset($_POST['new_password2']))
 	{
@@ -195,7 +195,7 @@
 		elseif($_POST['new_password'] != $_POST['new_password2'])
 		{
 ?>
-<p class="error"><strong>Die beiden neuen Passwörter stimmen nicht überein.</strong></p>
+<p class="error"><strong>Die beiden neuen PasswÃ¶rter stimmen nicht Ã¼berein.</strong></p>
 <?php
 		}
 		else
@@ -203,7 +203,7 @@
 			$admin_array['password'] = md5($_POST['new_password']);
 			write_admin_list($admins);
 ?>
-<p class="successful"><strong>Das Passwort wurde erfolgreich geändert.</strong></p>
+<p class="successful"><strong>Das Passwort wurde erfolgreich geÃ¤ndert.</strong></p>
 <?php
 		}
 	}
@@ -219,7 +219,7 @@
 		<dt><label for="new-password2-input">Neues Passwort wiederholen</label></dt>
 		<dd><input type="password" name="new_password2" id="new-password2-input" /></dd>
 	</dl>
-	<div><button type="submit">Passwort ändern</button></div>
+	<div><button type="submit">Passwort Ã¤ndern</button></div>
 </form>
 <?php
 	if($admin_array['permissions'][0])
@@ -255,7 +255,7 @@
 	{
 ?>
 <hr />
-<h2 id="action-2">Das Passwort eines Benutzers ändern</h2>
+<h2 id="action-2">Das Passwort eines Benutzers Ã¤ndern</h2>
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="passwd-name-input">Benutzername</label></dt>
@@ -264,7 +264,7 @@
 		<dt><label for="passwd-passwd-input">Passwort</label></dt>
 		<dd><input type="text" name="passwd_password" id="passwd-passwd-input" /></dd>
 	</dl>
-	<div><button type="submit">Passwort ändern</button></div>
+	<div><button type="submit">Passwort Ã¤ndern</button></div>
 </form>
 <?php
 	}
@@ -273,7 +273,7 @@
 	{
 ?>
 <hr />
-<h2 id="action-3">Die Passwörter zweier Benutzer vergleichen</h2>
+<h2 id="action-3">Die PasswÃ¶rter zweier Benutzer vergleichen</h2>
 <?php
 		if(isset($_POST['compare_1']) && isset($_POST['compare_2']) && is_file(DB_PLAYERS.'/'.urlencode($_POST['compare_1'])) && is_readable(DB_PLAYERS.'/'.urlencode($_POST['compare_1'])) && is_file(DB_PLAYERS.'/'.urlencode($_POST['compare_2'])) && is_readable(DB_PLAYERS.'/'.urlencode($_POST['compare_2'])))
 		{
@@ -284,13 +284,13 @@
 			if($pwd_1 && $pwd_2 && $pwd_1 == $pwd_2)
 			{
 ?>
-<p><strong>Die Passwörter der Benutzer &bdquo;<?=utf8_htmlentities($_POST['compare_1'])?>&ldquo; und &bdquo;<?=utf8_htmlentities($_POST['compare_2'])?>&ldquo; stimmen überein.</strong></p>
+<p><strong>Die PasswÃ¶rter der Benutzer &bdquo;<?=utf8_htmlentities($_POST['compare_1'])?>&ldquo; und &bdquo;<?=utf8_htmlentities($_POST['compare_2'])?>&ldquo; stimmen Ã¼berein.</strong></p>
 <?php
 			}
 			else
 			{
 ?>
-<p><strong>Die Passwörter der Benutzer &bdquo;<?=utf8_htmlentities($_POST['compare_1'])?>&ldquo; und &bdquo;<?=utf8_htmlentities($_POST['compare_2'])?>&ldquo; unterscheiden sich.</strong></p>
+<p><strong>Die PasswÃ¶rter der Benutzer &bdquo;<?=utf8_htmlentities($_POST['compare_1'])?>&ldquo; und &bdquo;<?=utf8_htmlentities($_POST['compare_2'])?>&ldquo; unterscheiden sich.</strong></p>
 <?php
 			}
 		}
@@ -309,14 +309,14 @@
 	{
 ?>
 <hr />
-<h2 id="action-4">Einen Benutzer löschen</h2>
-<p><strong>Bitte nicht wegen Regelverstoßes durchführen (dann Benutzer sperren), nur bei fehlerhaften Registrierungen oder Ähnlichem.</strong></p>
+<h2 id="action-4">Einen Benutzer lÃ¶schen</h2>
+<p><strong>Bitte nicht wegen RegelverstoÃŸes durchfÃ¼hren (dann Benutzer sperren), nur bei fehlerhaften Registrierungen oder Ã„hnlichem.</strong></p>
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="delete-input">Benutzername</label></dt>
 		<dd><input type="text" name="delete_username" id="delete-input" /></dd>
 	</dl>
-	<div><button type="submit">Löschen</button></div>
+	<div><button type="submit">LÃ¶schen</button></div>
 </form>
 <?php
 	}
@@ -372,7 +372,7 @@
 		<dt><label for="message-absender-input">Absender</label></dt>
 		<dd><input type="text" name="message_from" id="message-absender-input" /></dd>
 
-		<dt><label for="message-empfaenger-textarea">Empfänger</label></dt>
+		<dt><label for="message-empfaenger-textarea">EmpfÃ¤nger</label></dt>
 		<dd><textarea cols="20" rows="4" name="message_to" id="message-empfaenger-textarea"></textarea> Bleibt dieses Feld leer, wird an alle Benutzer verschickt.</dd>
 
 		<dt><label for="message-betreff-input">Betreff</label></dt>
