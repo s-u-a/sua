@@ -13,7 +13,6 @@
     <item url="robots.txt" uploadstatus="1" />
     <item url="rules.php" uploadstatus="1" />
     <item url="style.css" uploadstatus="1" />
-    <item url="wartungsarbeiten.html" uploadstatus="1" />
     <item url="admin/" uploadstatus="1" />
     <item url="admin/edit_changelog.php" uploadstatus="1" />
     <item url="admin/userlist.php" uploadstatus="1" />
@@ -34,7 +33,7 @@
     <item url="db_things/forschung" uploadstatus="1" />
     <item url="db_things/version" uploadstatus="1" />
     <item url="engine/" uploadstatus="1" />
-    <item url="engine/include.php" uploadstatus="1" />
+    <item url="engine/include.php" bookmarks="" uploadstatus="1" />
     <item url="login/" uploadstatus="1" />
     <item url="login/help/" uploadstatus="1" />
     <item url="login/allianz.php" uploadstatus="1" />
@@ -65,7 +64,7 @@
     <item url="login/style/simple_blue/" uploadstatus="1" />
     <item url="login/style/simple_grey/" uploadstatus="1" />
     <item url="login/style/grey_graphics/" uploadstatus="1" />
-    <item url="login/scripts/include.php" uploadstatus="1" />
+    <item url="login/scripts/include.php" bookmarks="" uploadstatus="1" />
     <item url="login/scripts/rename.php" uploadstatus="1" />
     <item url="login/scripts/logout.php" uploadstatus="1" />
     <item url="login/style/simple_grey/style.inc.css" uploadstatus="1" />

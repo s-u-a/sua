@@ -39,3 +39,6 @@ You were asked for the desired admin username and password during the installati
 
 S-U-A's bugtracker is reachable under https://bugs.s-u-a.net/. The bugtracker is in German, you can also post in English there.
 Go to irc://irc.gamesurge.net/sua-dev if you have questions or installation problems.
+
+If you get an 500 Internal Server Error with your game installation, check if S-U-A's directory has at least permission to
+AllowOverride Limit FileInfo Options
