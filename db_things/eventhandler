@@ -15,23 +15,29 @@
 	__autoload('Fleet');
 	__autoload('Galaxy');
 	
-	$fh = fopen(EVENT_FILE, 'a+');
-	fseek($fh, 0, SEEK_SET);
+	$fposition = 0;
+	
 	while(true)
 	{
-		flock($fh, LOCK_EX);
 		clearstatcache();
+		$fh = fopen(EVENT_FILE, 'r+');
+		#flock($fh, LOCK_EX);
+		fseek($fh, $fposition, SEEK_SET);
+		echo "--- Running.\n";
 		while(($line = fgets($fh, 1024)) !== false)
 		{
 			$strlen = strlen($line);
+			echo "--- Getting line. Length ".$strlen.".\n";
 			$line = trim($line);
 			if(!$line) continue;
 			
 			$line = explode("\t", $line, 2);
 			if(count($line) != 2) continue;
 			
+			echo "--- Event time ".$line[0].", local time ".time().".\n";
 			if($line[0] > time())
 			{
+				echo "--- Seeking back.\n";
 				fseek($fh, -$strlen, SEEK_CUR);
 				break;
 			}
@@ -40,21 +46,21 @@
 			
 			$fleet = Classes::Fleet($line[1]);
 			$users = $fleet->getUsersList();
-			#var_dump($fleet->getStatus());
+			echo "--- Fleet status is ".$fleet->getStatus().".\n";
 			if($fleet->getStatus() != 1) continue;
 			while($fleet->getStatus() == 1 && $fleet->getNextArrival() < time())
 			{
 				if($fleet->arriveAtNextTarget())
 				{
 					echo "Fleet ".$line[1]." arrived.\n";
-					echo ftell($fh)."\n";
+					#echo ftell($fh)."\n";
 					fseek($fh, -$strlen, SEEK_CUR);
-					echo ftell($fh)."\n";
-					echo filesize(EVENT_FILE)."\n";
+					#echo ftell($fh)."\n";
+					#echo filesize(EVENT_FILE)."\n";
 					fwrite($fh, str_repeat(' ', $strlen-1)."\n");
-					clearstatcache();
-					echo filesize(EVENT_FILE)."\n";
-					echo ftell($fh)."\n";
+					#clearstatcache();
+					#echo filesize(EVENT_FILE)."\n";
+					#echo ftell($fh)."\n";
 				}
 				else
 				{
@@ -62,31 +68,24 @@
 					break;
 				}
 			}
-			$fleet->__destruct();
 			unset($fleet);
 			
-			foreach($users as $user)
-			{
-				echo "Editing user ".$user."... ";
-				$user_obj = Classes::User($user);
-				$user_obj->unsetFleet($line[1]);
-				unset($user_obj);
-				echo "Done.\n";
-			}
-			
 			# Instanzen zuruecksetzen
-			Classes::Dataset('User', false, true);
-			Classes::Dataset('Alliance', false, true);
-			Classes::Dataset('Message', false, true);
-			Classes::Dataset('Fleet', false, true);
+			Classes::resetInstances('User');
+			Classes::resetInstances('Alliance');
+			Classes::resetInstances('Message');
+			Classes::resetInstances('Fleet');
 		}
 		
-		flock($fh, LOCK_UN);
+		echo "Reached end of file.\n";
+		
+		$fposition = ftell($fh);
+		#flock($fh, LOCK_UN);
+		fclose($fh);
 		
 		# Instanzen zuruecksetzen
-		Classes::Dataset(false, false, true);
+		Classes::resetInstances();
 		
 		sleep(EVENTHANDLER_INTERVAL);
 	}
-	fclose($fh);
 ?>

@@ -65,7 +65,7 @@
 			
 			if(isset($this->raw[0][$pos])) return false;
 			
-			$this->raw[0][$pos] = array($type, false, $back);
+			$this->raw[0][$pos] = array($type, $back);
 			
 			$this->changed = true;
 			return true;
@@ -98,18 +98,16 @@
 		{
 			if(!$this->status) return false;
 			
-			if(count($this->raw[3]) > 0)
+			$keys = array_keys($this->raw[1]);
+			$first_user = array_shift($keys);
+			if($user === false) $user = $first_user;
+			if($user == $first_user && count($this->raw[3]) > 0)
 			{
 				$keys = array_keys($this->raw[3]);
 				return array_pop($keys);
 			}
 			else
 			{
-				if($user === false)
-				{
-					$keys = array_keys($this->raw[1]);
-					$user = array_shift($keys);
-				}
 				if(!isset($this->raw[1][$user])) return false;
 				
 				return $this->raw[1][$user][1];
@@ -177,7 +175,7 @@
 				array(), # Flotten
 				$from, # Startkoordinaten
 				$factor, # Geschwindigkeitsfaktor
-				array(array(0, 0, 0, 0, 0), array()), # Mitgenommene Rohstoffe
+				array(array(0, 0, 0, 0, 0), array(), 0), # Mitgenommene Rohstoffe
 				array(array(0, 0, 0, 0, 0), array()) # Handel
 			);
 			
@@ -437,18 +435,26 @@
 			}
 			else $from = $start;
 			
-			$time1 = $this->calcTime($user, $from, $start);
+			if($to == $start) return false;
+			if($from == $start) $time1 = 0;
+			else $time1 = $this->calcTime($user, $from, $start);
 			$time2 = $this->calcTime($user, $to, $start);
 			
 			$progress = (time()-$this->raw[2])/$this->calcTime($user, $from, $to);
-			$back_time = $time1+($time2-$time1)*$progress;
+			$missing_part = 1-$progress;
+			$back_time = $time1+abs($time2-$time1)*$progress;
+			
+			$total_tritium = $this->getTritium($user, $from, $to);
+			$back_tritium = $total_tritium*$missing_part;
 			
 			$new_raw = array(
-				array($start => array($this->raw[0][$from][0], 1)),
+				array($start => array($this->raw[0][$to][0], 1)),
 				array($user => $this->raw[1][$user]),
-				time(),
+				time()-($time1-$back_time),
 				array_merge($this->raw[3], $this->raw[0])
 			);
+			$new_raw[1][$user][3][2] += $back_tritium;
+			
 			unset($this->raw[1][$user]);
 			if(count($this->raw[1]) <= 0)
 			{
@@ -460,13 +466,14 @@
 			$new = Classes::Fleet();
 			$new->create();
 			$new->setRaw($new_raw);
-			
-			if(count($this->raw[1]) <= 0)
-				return true;
+			$new->createNextEvent();
 			
 			$user_obj = Classes::User($user);
 			$user_obj->unsetFleet($this->getName());
 			$user_obj->addFleet($new->getName());
+			
+			if(count($this->raw[1]) <= 0)
+				return true;
 			
 			$this->changed = true;
 			return true;
@@ -546,11 +553,7 @@
 			$this->raw[2] = time();
 			
 			# In Eventdatei eintragen
-			$fh = fopen(EVENT_FILE, 'a');
-			flock($fh, LOCK_EX);
-			fwrite($fh, round(time()+$time)."\t".$this->getName()."\n");
-			flock($fh, LOCK_UN);
-			fclose($fh);
+			$this->createNextEvent();
 			
 			$this->changed = true;
 			return true;
@@ -789,6 +792,7 @@
 								$message_text .= "\n</p>";
 								
 								$message = Classes::Message();
+								
 								if($message->create())
 								{
 									$message->text($message_text);
@@ -915,7 +919,7 @@
 										$next .= "\n\t<ul>";
 										foreach($target_user->getItemsList('gebaeude') as $id)
 										{
-											if($target_user->getItemLvel($id, 'gebaeude') <= 0) continue;
+											if($target_user->getItemLevel($id, 'gebaeude') <= 0) continue;
 											$item_info = $target_user->getItemInfo($id, 'gebaeude');
 											$next .= "\n\t\t<li>".$item_info['name']." <span class=\"stufe\">(Stufe&nbsp;".ths($item_info['level']).")</span></li>";
 										}
@@ -952,25 +956,37 @@
 									$from_galaxy = Classes::Galaxy($from_pos[0]);
 									$message->text("Eine fremde Flotte vom Planeten \xe2\x80\x9e".$from_galaxy->getPlanetName($from_pos[1], $from_pos[2])."\xe2\x80\x9c (".$from_pos_str.", Eigent\xc3\xbcmer: ".$first_user.") wurde von Ihrem Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target.") aus bei der Spionage gesichtet.");
 									$message->from($first_user);
-									$message->addUser($target_user, $type_message_types[$type]);
+									$message->addUser($target_owner, $types_message_types[$type]);
 								}
 							}
 					}
 					
 					# Weiterfliegen
 					
+					#print_r($this->raw);
+					
 					$users = array_keys($this->raw[1]);
 					$first_user = array_shift($users);
 					
 					$this->raw[3][$next_target] = array_shift($this->raw[0]);
 					$this->raw[2] = time();
+					$this->createNextEvent();
+					
 					# Vom Empfaenger entfernen
 					if($target_user && $target_owner != $first_user)
 						$target_user->unsetFleet($this->getName());
+					$this->changed = false;
+					#echo "---------------------------------";
+					#print_r($this->raw);
+					#return true;
+					$this->changed = true;
 					
 					foreach($users as $user)
 					{
+						#$user_obj = Classes::User($user);
+						#$user_obj->unsetFleet($this->getName());
 						$new_fleet = Classes::Fleet();
+						
 						if($new_fleet->create())
 						{
 							$new_fleet->setRaw(array(
@@ -992,6 +1008,14 @@
 				$target = explode(':', $next_target);
 				$target_galaxy = Classes::Galaxy($target[0]);
 				
+				$owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
+				
+				if($besiedeln || $owner == $first_user)
+				{
+					# Ueberschuessiges Tritium
+					$this->raw[1][$first_user][3][2] += $this->getTritium($first_user, $this->raw[1][$first_user][1], $next_target);
+				}
+				
 				if($besiedeln)
 				{
 					$user_obj = Classes::User($first_user);
@@ -1010,9 +1034,10 @@
 						$besiedelung_ress[3] *= .4;
 						$user_obj->addRess($besiedelung_ress);
 					}
+					$owner = $first_user;
 				}
 				
-				$owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
+				
 				if(!$owner)
 				{
 					$this->destroy();
@@ -1058,6 +1083,9 @@
 							if(isset($schiffe_own[$id])) $schiffe_own[$id] += $count;
 							else $schiffe_own[$id] = $count;
 						}
+						
+						if($username != $first_user)
+							$this->raw[1][$username][3][2] += $this->getTritium($username, $this->raw[1][$username][1], $next_target);
 					}
 					else
 					{
@@ -1097,13 +1125,19 @@
 					}
 				}
 				
-				$owner_obj->addRess($ress);
 				$message_text .= "\nFolgende G\xc3\xbcter werden abgeliefert:\n";
-				$message_text .= ths($ress[0], true).' Carbon, '.ths($ress[1], true).' Aluminium, '.ths($ress[2], true).' Wolfram, '.ths($ress[3], true).' Radium, '.ths($ress[4], true)." Tritium.\n";
+				$message_text .= ths($ress[0], true).' Carbon, '.ths($ress[1], true).' Aluminium, '.ths($ress[2], true).' Wolfram, '.ths($ress[3], true).' Radium, '.ths($ress[4], true)." Tritium.";
 				if(array_sum($robs) > 0)
-					$message_text .= makeItemsString($robs, false)."\n";
+					$message_text .= "\n".makeItemsString($robs, false)."\n";
 				foreach($robs as $id=>$anzahl)
 					$owner_obj->changeItemLevel($id, $anzahl, 'roboter');
+				
+				if($this->raw[1][$first_user][3][2] > 0)
+				{
+					$message_text .= "\n\nFolgender \xc3\xbcbersch\xc3\xbcssiger Treibstoff wird abgeliefert: ".ths($this->raw[1][$first_user][3][2], true)." Tritium.";
+					$ress[4] += $this->raw[1][$first_user][3][2];
+				}
+				$owner_obj->addRess($ress);
 				
 				$message_users = array();
 				foreach($this->raw[1] as $username=>$move_info)
@@ -1111,7 +1145,10 @@
 					$message_user_obj = Classes::User($username);
 					$receive = $message_user_obj->checkSetting('receive');
 					if(!isset($receive[$types_message_types[$this->raw[0][$next_target][0]]][$this->raw[0][$next_target][1]]) || $receive[$types_message_types[$this->raw[0][$next_target][0]]][$this->raw[0][$next_target][1]])
+					{
+						# Will Nachricht erhalten
 						$message_users[] = $username;
+					}
 				}
 				
 				if(count($message_users) > 0)
@@ -1132,6 +1169,19 @@
 				
 				$this->destroy();
 			}
+			
+			return true;
+		}
+		
+		function createNextEvent()
+		{
+			if(!$this->status) return false;
+			
+			$fh = fopen(EVENT_FILE, 'a');
+			flock($fh, LOCK_EX);
+			fwrite($fh, round($this->getNextArrival())."\t".$this->getName()."\n");
+			flock($fh, LOCK_UN);
+			fclose($fh);
 			
 			return true;
 		}

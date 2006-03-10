@@ -25,6 +25,8 @@ The following lines will contain information about the installed databases. The 
 (Database ID, must be unique) [Tab] (Database directory, you can specify this relatively from you S-U-A installation directory) [Tab] (Database name, will be shown in the select box at the login form) [Tab] (Hostname to where the game will redirect users that select this database. By this you can run an own host / virtual host for each database.)
 I propose you already noticed that you can access an example for this file under http://s-u-a.net/db_things/databases.
 
+5. Start the event handler for fleet actions. Just execute db_things/eventhandler with the database directory for which it should run as first parameter. You can use a relative path as database directory, always seen from the game directory. The event handler doesn't manage SIGs yet (https://bugs.s-u-a.net/task/14), so you may want to start it using nohup.
+
 
 -----------------
 -- 3. Managing --
@@ -42,3 +44,4 @@ Go to irc://irc.gamesurge.net/sua-dev if you have questions or installation prob
 
 If you get an 500 Internal Server Error with your game installation, check if S-U-A's directory has at least permission to
 AllowOverride Limit FileInfo Options
+Else modify the .htaccess files, but this may affect the functionality of the game.

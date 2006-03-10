@@ -84,6 +84,7 @@
 		}
 	}
 
+	$active_planet = $me->getActivePlanet();
 	$flotten = $me->getFleetsList();
 	if(count($flotten) > 0)
 	{
@@ -106,21 +107,11 @@
 			}
 			else $first_user = array_shift($users);
 			
-			if($me_in_users !== false)
-			{
-				$active_planet = $me->getActivePlanet();
-				$me->setActivePlanet($me->getPlanetByPos($fl->from($first_user)));
-				$string = 'Ihre <span class="beschreibung schiffe" title="'.makeFleetString($first_user, $fl->getFleetList($first_user)).'">Flotte</span> vom Planeten &bdquo;'.utf8_htmlentities($me->planetName()).'&ldquo; ('.$me->getPosString().') erreicht';
-				$me->setActivePlanet($active_planet);
-			}
-			else
-			{
-				$from_pos = $fl->from($first_user);
-				$from_array = explode(':', $from_pos);
-				$from_galaxy = Classes::Galaxy($from_array[0]);
-				$planet_name = $from_galaxy->getPlanetName($from_array[1], $from_array[2]);
-				$string = 'Eine <span class="beschreibung schiffe" title="'.makeFleetString($first_user, $fl->getFleetList($first_user)).'">Flotte</span> vom Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$from_pos.', Eigentümer: '.utf8_htmlentities($from_user).') erreicht';
-			}
+			if($me_in_users !== false) $string = 'Ihre';
+			else $string = 'Eine';
+			
+			$string .= ' <span class="beschreibung schiffe" title="'.makeFleetString($first_user, $fl->getFleetList($first_user)).'">Flotte</span> kommt ';
+			
 			
 			if(count($users) > 0)
 			{
@@ -142,21 +133,50 @@
 				}
 			}
 			
+			$string .= ' ';
+			
+			$from_pos = $fl->getLastTarget($first_user);
+			if($me->isOwnPlanet($from_pos))
+			{
+				$active_planet2 = $me->getActivePlanet();
+				$me->setActivePlanet($me->getPlanetByPos($from_pos));
+				$string .= 'von Ihrem Planeten &bdquo;'.utf8_htmlentities($me->planetName()).'&ldquo; ('.$from_pos.')';
+				$me->setActivePlanet($active_planet2);
+			}
+			else
+			{
+				$from_array = explode(':', $from_pos);
+				$from_galaxy = Classes::Galaxy($from_array[0]);
+				$planet_owner = $from_galaxy->getPlanetOwner($from_array[1], $from_array[2]);
+				if($planet_owner)
+				{
+					$planet_name = $to_galaxy->getPlanetName($from_array[1], $from_array[2]);
+					$string .= 'vom Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$from_pos.', Eigentümer: '.utf8_htmlentities($planet_owner).')';
+				}
+				else $string .= 'vom Planeten '.$from_pos.' (unbesiedelt)';
+			}
+			
+			$string .= ' und erreicht ';
+			
 			$to_pos = $fl->getCurrentTarget();
 			if($me->isOwnPlanet($to_pos))
 			{
-				$active_planet = $me->getActivePlanet();
+				$active_planet2 = $me->getActivePlanet();
 				$me->setActivePlanet($me->getPlanetByPos($to_pos));
 				$string .= ' Ihren Planeten &bdquo;'.utf8_htmlentities($me->planetName()).'&ldquo; ('.$to_pos.').';
-				$me->setActivePlanet($active_planet);
+				$me->setActivePlanet($active_planet2);
 			}
 			else
 			{
 				$to_array = explode(':', $to_pos);
 				$to_galaxy = Classes::Galaxy($to_array[0]);
-				$planet_name = $to_galaxy->getPlanetName($to_array[1], $to_array[2]);
 				$planet_owner = $to_galaxy->getPlanetOwner($to_array[1], $to_array[2]);
-				$string .= ' den Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$to_pos.', Eigentümer: '.utf8_htmlentities($planet_owner).').';
+				if($planet_owner)
+				{
+					$planet_name = $to_galaxy->getPlanetName($to_array[1], $to_array[2]);
+					$string .= ' den Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$to_pos.', Eigentümer: '.utf8_htmlentities($planet_owner).').';
+				}
+				else $string .= ' den Planeten '.$to_pos.' (unbesiedelt).';
 			}
 			
 			if($fl->isFlyingBack())
@@ -280,11 +300,11 @@
 <h2 id="planeten">Planeten</h2>
 <ol id="planets">
 <?php
+	$me->setActivePlanet($active_planet);
 	$show_building = $me->checkSetting('show_building');
 	$countdowns = array();
 	$tabindex = 3;
 	$planets = $me->getPlanetsList();
-	$active_planet = $me->getActivePlanet();
 	foreach($planets as $planet)
 	{
 		$me->setActivePlanet($planet);
@@ -419,6 +439,7 @@
 	</li>
 <?php
 	}
+	
 	$me->setActivePlanet($active_planet);
 ?>
 </ol>

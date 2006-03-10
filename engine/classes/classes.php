@@ -1,34 +1,18 @@
 <?php
+	global $objectInstances;
 	$objectInstances = array();
+	
 	class Classes
 	{
 		function Dataset($classname, $p1=false, $reset=false)
 		{
 			global $objectInstances;
+			
 			if($reset)
 			{
-				if($classname)
-				{
-					if(!isset($objectInstances[$classname])) return true;
-					$instances = array($classname => &$objectInstances[$classname]);
-				}
-				else $instances = &$objectInstances;
-				if(!isset($classname)) return true;
-				
-				if(isset($instances) && count($instances) > 0)
-				{
-					foreach($instances as $key=>$instances2)
-					{
-						foreach($instances2 as $key2=>$instance)
-						{
-							if(method_exists($instance, '__destruct'))
-								$instance->__destruct();
-							unset($instances[$key][$key2]);
-						}
-						unset($instances[$key]);
-					}
-				}
-				return true;
+				echo "Use deprecated reset method Classes::Dataset. Please use the <a href=\"https://bugs.s-u-a.net/\">Bugtracker</a>.\n";
+				ob_end_clean();
+				exit();
 			}
 			
 			if(!isset($objectInstances)) $objectInstances = array();
@@ -49,6 +33,34 @@
 			return $objectInstances[$classname][$p1];
 		}
 		
+		function resetInstances($classname=false)
+		{
+			global $objectInstances;
+			
+			if(!$classname)
+			{
+				$status = true;
+				foreach($objectInstances as $instanceName=>$instances)
+				{
+					if(!self::resetInstances($instanceName))
+						$status = false;
+				}
+				return $status;
+			}
+			
+			if(!isset($objectInstances[$classname])) return true;
+			
+			foreach($objectInstances[$classname] as $key=>$instance)
+			{
+				if(method_exists($instance, '__destruct'))
+					$instance->__destruct();
+				unset($objectInstances[$classname][$key]);
+			}
+			unset($objectInstances[$classname]);
+			
+			return true;
+		}
+		
 		function User($p1=false){ return self::Dataset('User', $p1); }
 		function Alliance($p1=false){ return self::Dataset('Alliance', $p1); }
 		function Message($p1=false){ return self::Dataset('Message', $p1); }
@@ -64,5 +76,5 @@
 		function Galaxy($p1){ return self::Dataset('Galaxy', $p1); }
 	}
 	
-	register_shutdown_function(array('Classes', 'Dataset'), false, false, true);
+	register_shutdown_function(array('Classes', 'resetInstances'));
 ?>
