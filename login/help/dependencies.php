@@ -17,7 +17,7 @@
 <table class="deps" id="deps-<?=htmlentities($type)?>">
 	<thead>
 		<tr>
-			<th class="c-item"><?=htmlentities($heading)?></th>
+			<th class="c-item"><?=utf8_htmlentities($heading)?></th>
 			<th class="c-deps">Abhängigkeiten</th>
 		</tr>
 	</thead>

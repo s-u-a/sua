@@ -337,7 +337,7 @@
 										{
 											header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 											ob_end_clean();
-											ob_end_clean();
+											#ob_end_clean();
 											die();
 										}
 										else
@@ -372,7 +372,7 @@
 						{
 							header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 							ob_end_clean();
-							ob_end_clean();
+							#ob_end_clean();
 							die();
 						}
 						
@@ -466,19 +466,19 @@
 								{
 ?>
 				<dt><label for="transport-carbon">Carbo<kbd>n</kbd></label></dt>
-				<dd><input type="text" name="transport-carbon" id="transport-carbon" value="0" onchange="recalc_values();" accesskey="n" tabindex="3" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dd><input type="text" name="transport[0]" id="transport-carbon" value="0" onchange="recalc_values();" accesskey="n" tabindex="3" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
 				<dt><label for="transport-aluminium">Aluminium</label></dt>
-				<dd><input type="text" name="transport-aluminium" id="transport-aluminium" value="0" onchange="recalc_values();" tabindex="4" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dd><input type="text" name="transport[1]" id="transport-aluminium" value="0" onchange="recalc_values();" tabindex="4" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
 				<dt><label for="transport-wolfram">Wolfram</label></dt>
-				<dd><input type="text" name="transport-wolfram" id="transport-wolfram" value="0" onchange="recalc_values();" tabindex="5" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dd><input type="text" name="transport[2]" id="transport-wolfram" value="0" onchange="recalc_values();" tabindex="5" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
 				<dt><label for="transport-radium">Radium</label></dt>
-				<dd><input type="text" name="transport-radium" id="transport-radium" value="0" onchange="recalc_values();" tabindex="6" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dd><input type="text" name="transport[3]" id="transport-radium" value="0" onchange="recalc_values();" tabindex="6" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
 				<dt><label for="transport-tritium">Tritium</label></dt>
-				<dd><input type="text" name="transport-tritium" id="transport-tritium" value="0" onchange="recalc_values();" tabindex="7" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dd><input type="text" name="transport[4]" id="transport-tritium" value="0" onchange="recalc_values();" tabindex="7" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 <?php
 								}
 								if($transport[1] > 0)
@@ -656,7 +656,7 @@
 		{
 			header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 			ob_end_clean();
-			ob_end_clean();
+			#ob_end_clean();
 			die();
 		}
 ?>
