@@ -171,6 +171,8 @@
 			}
 			elseif(count($this->raw[1]) > 0) $factor = 1;
 			
+			if($factor <= 0) $factor = 0.01;
+			
 			$this->raw[1][$user] = array(
 				array(), # Flotten
 				$from, # Startkoordinaten

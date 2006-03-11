@@ -150,7 +150,7 @@
 				$planet_owner = $from_galaxy->getPlanetOwner($from_array[1], $from_array[2]);
 				if($planet_owner)
 				{
-					$planet_name = $to_galaxy->getPlanetName($from_array[1], $from_array[2]);
+					$planet_name = $from_galaxy->getPlanetName($from_array[1], $from_array[2]);
 					$string .= 'vom Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$from_pos.', Eigentümer: '.utf8_htmlentities($planet_owner).')';
 				}
 				else $string .= 'vom Planeten '.$from_pos.' (unbesiedelt)';
