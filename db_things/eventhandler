@@ -72,10 +72,7 @@
 			unset($fleet);
 			
 			# Instanzen zuruecksetzen
-			Classes::resetInstances('User');
-			Classes::resetInstances('Alliance');
-			Classes::resetInstances('Message');
-			Classes::resetInstances('Fleet');
+			Classes::resetInstances();
 		}
 		
 		echo "Reached end of file.\n";
@@ -83,9 +80,6 @@
 		$fposition = ftell($fh);
 		#flock($fh, LOCK_UN);
 		fclose($fh);
-		
-		# Instanzen zuruecksetzen
-		Classes::resetInstances();
 		
 		sleep(EVENTHANDLER_INTERVAL);
 	}
