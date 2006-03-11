@@ -49,26 +49,25 @@
 			$fleet = Classes::Fleet($line[1]);
 			$users = $fleet->getUsersList();
 			echo "--- Fleet status is ".$fleet->getStatus().".\n";
-			if($fleet->getStatus() != 1) continue;
-			while($fleet->getStatus() == 1 && $fleet->getNextArrival() < time())
+			
+			if($fleet->getStatus() == 1)
 			{
-				if($fleet->arriveAtNextTarget())
+				while($fleet->getStatus() == 1 && $fleet->getNextArrival() < time())
 				{
-					echo "Fleet ".$line[1]." arrived.\n";
-					#echo ftell($fh)."\n";
-					fseek($fh, -$strlen, SEEK_CUR);
-					#echo ftell($fh)."\n";
-					#echo filesize(EVENT_FILE)."\n";
-					fwrite($fh, str_repeat(' ', $strlen-1)."\n");
-					#clearstatcache();
-					#echo filesize(EVENT_FILE)."\n";
-					#echo ftell($fh)."\n";
+					if($fleet->arriveAtNextTarget())
+						echo "Fleet ".$line[1]." arrived.\n";
+					else
+					{
+						echo "ERROR (Fleet ".$line[1].")\n";
+						break;
+					}
 				}
-				else
-				{
-					echo "ERROR (Fleet ".$line[1].")\n";
-					break;
-				}
+			}
+			
+			if($fleet->getStatus() == 1 || $fleet->getStatus() == 0)
+			{
+				fseek($fh, -$strlen, SEEK_CUR);
+				fwrite($fh, str_repeat(' ', $strlen-1)."\n");
 			}
 			unset($fleet);
 			
