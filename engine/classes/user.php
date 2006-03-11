@@ -2642,13 +2642,13 @@
 						foreach($schiffe as $id=>$count)
 						{
 							$item_info = $this->getItemInfo($id, 'schiffe', true, true);
-							$this->raw['punkte'][3] += $count*$item_info['scores']/$item_info['level'];
+							$this->raw['punkte'][3] += $count*$item_info['simple_scores'];
 						}
 						$transport = $fl->getTransport($this->getName());
 						foreach($transport[1] as $id=>$count)
 						{
 							$item_info = $this->getItemInfo($id, 'roboter', true, true);
-							$this->raw['punkte'][2] += $count*$item_info['scores']/$item_info['level'];
+							$this->raw['punkte'][2] += $count*$item_info['simple_scores'];
 						}
 					}
 					
@@ -2660,7 +2660,7 @@
 						foreach($handel[1] as $id=>$count)
 						{
 							$item_info = $this->getItemInfo($id, 'roboter', true, true);
-							$this->raw['punkte'][2] += $count*$item_info['scores']/$item_info['level'];
+							$this->raw['punkte'][2] += $count*$item_info['simple_scores'];
 						}
 					}
 				}
