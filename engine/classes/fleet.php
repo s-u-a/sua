@@ -680,7 +680,7 @@
 					# Angriff und Transport nur bei besiedelten Planeten
 					# moeglich.
 					
-					$message_obj = Classes::Messages();
+					$message_obj = Classes::Message();
 					if($message_obj->create())
 					{
 						$message_obj->subject($next_target.' unbesiedelt');
