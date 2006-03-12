@@ -1,17 +1,50 @@
 #!/usr/bin/php
 <?php
+	if(!isset($_SERVER['argv'][1]))
+	{
+		fputs(STDERR, "Usage: ".$_SERVER['argv'][0]." [Database dir]\n");
+		exit(1);
+	}
+	
+	declare(ticks=1);
+	
+	if(function_exists('pcntl_fork')) $pid = pcntl_fork();
+	else $pid = -1;
+	
+	if($pid == -1) fputs(STDERR, "Forking failed, continuing.\n");
+	elseif($pid)
+	{
+		fputs(STDOUT, "Eventhandler forked, PID ".$pid.".\n");
+		exit(0);
+	}
+	
+	function sig_handler($signo)
+	{
+		global $errlog;
+		switch($signo)
+		{
+			case SIGTERM:
+				fwrite($errlog, "SIGTERM (".SIGTERM.")\n");
+				define('terminate', true);
+				break;
+			case SIGHUP:
+				fwrite($errlog, "SIGHUP (".SIGHUP.")\n");
+				break;
+		}
+	}
+	
+	if(function_exists('pcntl_signal'))
+	{
+		pcntl_signal(SIGTERM, "sig_handler");
+		pcntl_signal(SIGHUP, "sig_handler");
+	}
+	
 	$USE_OB = false;
 	require('../engine/include.php');
 	
 	set_time_limit(0);
 	
-	if(!isset($_SERVER['argv'][1]))
-	{
-		echo "Usage: ".$_SERVER['argv'][0]." [Database dir]\n";
-		exit(1);
-	}
-	else
-		define_globals($_SERVER['argv'][1]);
+	define_globals($_SERVER['argv'][1]);
 	
 	__autoload('Classes');
 	__autoload('Fleet');
@@ -19,68 +52,48 @@
 	
 	$fposition = 0;
 	
+	$event_obj = Classes::EventFile();
+	
+	$errlog = fopen(DB_DIR.'/eventhandler.log', 'a');
+	
 	while(true)
 	{
-		clearstatcache();
-		$fh = fopen(EVENT_FILE, 'r+');
-		#flock($fh, LOCK_EX);
-		fseek($fh, $fposition, SEEK_SET);
-		echo "--- Running.\n";
-		while(($line = fgets($fh, 1024)) !== false)
+		while($process = $event_obj->removeNextFleet())
 		{
-			$strlen = strlen($line);
-			echo "--- Getting line. Length ".$strlen.".\n";
-			$line = trim($line);
-			if(!$line) continue;
-			
-			$line = explode("\t", $line, 2);
-			if(count($line) != 2) continue;
-			
-			echo "--- Event time ".$line[0].", local time ".time().".\n";
-			if($line[0] > time())
-			{
-				echo "--- Seeking back.\n";
-				fseek($fh, -$strlen, SEEK_CUR);
-				break;
-			}
-			
-			echo "Processing fleet ".$line[1]."...\n";
-			
-			$fleet = Classes::Fleet($line[1]);
+			$fleet = Classes::Fleet($process['fleet']);
 			$users = $fleet->getUsersList();
-			echo "--- Fleet status is ".$fleet->getStatus().".\n";
 			
-			if($fleet->getStatus() == 1)
+			if($fleet->getStatus() != 1)
+			{
+				if($fleet->getStatus() == 0)
+					fwrite($errlog, "Notice: Fleet ".$process['fleet']." had status 0.\n");
+				else
+					fwrite($errlog, "Warning: Fleet ".$process['fleet']." had status ".$fleet->getStatus().". The time was ".$process['time'].". Please re-put it into the database if you want it to be processed.\n");
+			}
+			else
 			{
 				while($fleet->getStatus() == 1 && $fleet->getNextArrival() < time())
 				{
-					if($fleet->arriveAtNextTarget())
-						echo "Fleet ".$line[1]." arrived.\n";
-					else
+					if(!$fleet->arriveAtNextTarget())
 					{
-						echo "ERROR (Fleet ".$line[1].")\n";
+						fwrite($errlog, "Warning: Couldn't complete fleet ".$process['fleet'].". The time was ".$process['time'].". Please re-put it into the database if you want it to be completed.\n");
 						break;
 					}
 				}
-			}
-			
-			if($fleet->getStatus() == 1 || $fleet->getStatus() == 0)
-			{
-				fseek($fh, -$strlen, SEEK_CUR);
-				fwrite($fh, str_repeat(' ', $strlen-1)."\n");
 			}
 			unset($fleet);
 			
 			# Instanzen zuruecksetzen
 			Classes::resetInstances();
 		}
-		
-		echo "Reached end of file.\n";
-		
-		$fposition = ftell($fh);
-		#flock($fh, LOCK_UN);
-		fclose($fh);
+		if(defined('terminate') && terminate)
+		{
+			fwrite($errlog, "Terminated.\n");
+			exit(0);
+		}
 		
 		sleep(EVENTHANDLER_INTERVAL);
 	}
+	
+	fclose($errlog);
 ?>

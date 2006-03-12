@@ -438,6 +438,11 @@
 			else $from = $start;
 			
 			if($to == $start) return false;
+			
+			# Aus der Eventdatei entfernen
+			$event_obj = Classes::EventFile();
+			$event_obj->removeCanceledFleet($this->getName());
+			
 			if($from == $start) $time1 = 0;
 			else $time1 = $this->calcTime($user, $from, $start);
 			$time2 = $this->calcTime($user, $to, $start);
@@ -1179,13 +1184,8 @@
 		{
 			if(!$this->status) return false;
 			
-			$fh = fopen(EVENT_FILE, 'a');
-			flock($fh, LOCK_EX);
-			fwrite($fh, round($this->getNextArrival())."\t".$this->getName()."\n");
-			flock($fh, LOCK_UN);
-			fclose($fh);
-			
-			return true;
+			$event_obj = Classes::EventFile();
+			return $event_obj->addNewFleet($this->getNextArrival(), $this->getName());
 		}
 		
 		protected function getDataFromRaw(){}

@@ -3,7 +3,7 @@
 ---------------------
 
 - Subversion client (http://subversion.tigris.org/)
-- Webserver with PHP5 and HTTPS support
+- Webserver with HTTPS and PHP5 (including bzip2 and sqlite) support
 - A Unix-like operating system
 
 ---------------------

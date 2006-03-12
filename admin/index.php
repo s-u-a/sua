@@ -104,8 +104,8 @@
 
 				fwrite($fh, "Order Deny,Allow\n");
 				fwrite($fh, "Deny from All\n");
-				fwrite($fh, "ErrorDocument 403 /wartungsarbeiten.html.gz\n");
-				fwrite($fh, "<Files \"wartungsarbeiten.html.gz\">\n");
+				fwrite($fh, "ErrorDocument 403 /wartungsarbeiten.html\n");
+				fwrite($fh, "<Files \"wartungsarbeiten.html\">\n");
 				fwrite($fh, "\tDeny from None\n");
 				fwrite($fh, "</Files>\n");
 

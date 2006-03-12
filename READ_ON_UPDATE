@@ -1,0 +1,1 @@
+- When updating to Revision 457 (Version 1.0.0 beta 2) or later, please run the eventhandler so that there are no fleets left in $DB_DIR/fleets/ before you update. Remove $DB_DIR/events immediately after the update, it will be automatically recreated in a new format later.

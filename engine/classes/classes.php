@@ -74,6 +74,8 @@
 		function Item($id){ return new Item($id); }
 		
 		function Galaxy($p1){ return self::Dataset('Galaxy', $p1); }
+		
+		function EventFile() { return self::Dataset('EventFile'); }
 	}
 	
 	register_shutdown_function(array('Classes', 'resetInstances'));

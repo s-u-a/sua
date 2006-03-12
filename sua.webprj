@@ -29,7 +29,7 @@
     <item url="db_things/gebaeude" uploadstatus="1" />
     <item url="db_things/changelog" uploadstatus="1" />
     <item url="db_things/verteidigung" uploadstatus="1" />
-    <item url="db_things/create_database" uploadstatus="1" />
+    <item url="db_things/create_database" bookmarks="" uploadstatus="1" />
     <item url="db_things/forschung" uploadstatus="1" />
     <item url="db_things/version" uploadstatus="1" />
     <item url="engine/" uploadstatus="1" />
@@ -38,7 +38,7 @@
     <item url="login/help/" uploadstatus="1" />
     <item url="login/allianz.php" uploadstatus="1" />
     <item url="login/style/" uploadstatus="1" />
-    <item url="login/karte.php" uploadstatus="1" />
+    <item url="login/karte.php" bookmarks="" uploadstatus="1" />
     <item url="login/scripts.js.php" uploadstatus="1" />
     <item url="login/scripts/" uploadstatus="1" />
     <item url="login/schiffswerft.php" uploadstatus="1" />
@@ -51,13 +51,13 @@
     <item url="login/flotten.php" bookmarks="" uploadstatus="1" />
     <item url="login/rohstoffe.php" uploadstatus="1" />
     <item url="login/handelsrechner.php" uploadstatus="1" />
-    <item url="login/einstellungen.php" uploadstatus="1" />
+    <item url="login/einstellungen.php" bookmarks="" uploadstatus="1" />
     <item url="login/nachrichten.php" uploadstatus="1" />
     <item url="login/gebaeude.php" uploadstatus="1" />
     <item url="login/verbuendete.php" uploadstatus="1" />
     <item url="login/help/allianceinfo.php" uploadstatus="1" />
     <item url="login/help/playerinfo.php" uploadstatus="1" />
-    <item url="login/help/dependencies.php" uploadstatus="1" />
+    <item url="login/help/dependencies.php" bookmarks="" uploadstatus="1" />
     <item url="login/help/description.php" uploadstatus="1" />
     <item url="login/style/skins" uploadstatus="1" />
     <item url="login/style/skin.php" uploadstatus="1" />
@@ -84,7 +84,7 @@
     <item url="engine/classes/alliance.php" uploadstatus="1" />
     <item url="engine/classes/message.php" uploadstatus="1" />
     <item url="engine/classes/publicmessage.php" uploadstatus="1" />
-    <item url="engine/classes/item.php" uploadstatus="1" />
+    <item url="engine/classes/item.php" bookmarks="" uploadstatus="1" />
     <item url="engine/classes/classes.php" uploadstatus="1" />
     <item url="engine/classes/fleet.php" bookmarks="" uploadstatus="1" />
     <item url="engine/classes/galaxy.php" uploadstatus="1" />
@@ -116,5 +116,9 @@
       <mailinglist address="" />
     </teamdata>
     <events/>
+    <item url="engine/classes/eventfile.php" />
+    <item url="INSTALL" />
+    <item url="LICENSE" />
+    <item url="READ_ON_UPDATE" />
   </project>
 </webproject>
