@@ -69,16 +69,10 @@
 				else
 					fwrite($errlog, "Warning: Fleet ".$process['fleet']." had status ".$fleet->getStatus().". The time was ".$process['time'].". Please re-put it into the database if you want it to be processed.\n");
 			}
-			else
+			elseif($fleet->getNextArrival() < time() && !$fleet->arriveAtNextTarget())
 			{
-				while($fleet->getStatus() == 1 && $fleet->getNextArrival() < time())
-				{
-					if(!$fleet->arriveAtNextTarget())
-					{
-						fwrite($errlog, "Warning: Couldn't complete fleet ".$process['fleet'].". The time was ".$process['time'].". Please re-put it into the database if you want it to be completed.\n");
-						break;
-					}
-				}
+				fwrite($errlog, "Warning: Couldn't complete fleet ".$process['fleet'].". The time was ".$process['time'].". Please re-put it into the database if you want it to be completed.\n");
+				break;
 			}
 			unset($fleet);
 			

@@ -698,6 +698,8 @@
 				}
 				else
 				{
+					$further = true;
+					
 					switch($type)
 					{
 						case 2: # Sammeln
@@ -714,7 +716,149 @@
 								if($level <= 0) continue;
 								$verteidiger[$target_owner][$item] = $level;
 							}
+							$foreign_users = $target_user->getForeignUsersList();
+							foreach($foreign_users as $username)
+								$verteidiger[$username] = $target_user->getForeignFleetsList($username);
 							
+							list($winner, $angreifer2, $verteidiger2, $nachrichten_text, $verteidiger_ress) = battle($angreifer, $verteidiger);
+							
+							# Nachrichten aufteilen
+							$angreifer_keys = array_keys($angreifer);
+							$verteidiger_keys = array_keys($verteidiger);
+							$users_keys = array_merge($angreifer_keys, $verteidiger_keys);
+							$messages = array();
+							foreach($users_keys as $username)
+								$messages[$username] = $nachrichten_text;
+							
+							
+							# Rohstoffe stehlen
+							if($winner == 1)
+							{
+								# Angreifer haben gewonnen
+								
+								# Maximal die Haelfte der vorhandenen Rohstoffe
+								$ress_max = $target_user->getRess();
+								$ress_max[0] = floor($ress_max[0]*.5);
+								$ress_max[1] = floor($ress_max[1]*.5);
+								$ress_max[2] = floor($ress_max[2]*.5);
+								$ress_max[3] = floor($ress_max[3]*.5);
+								$ress_max[4] = floor($ress_max[4]*.5);
+								$ress_max_total = array_sum($ress_max);
+								
+								# Transportkapazitaeten der Angreifer
+								$trans = array();
+								$trans_total = 0;
+								foreach($angreifer2 as $username=>$fleet)
+								{
+									$trans[$username] = -array_sum($this->raw[1][$username][3][0]);
+									$this_user = Classes::User($username);
+									foreach($fleet as $id=>$count)
+									{
+										$item_info = $this_user->getItemInfo($id, 'schiffe');
+										$this_trans = $item_info['trans'][0]*$count;
+										$trans[$username] += $this_trans;
+										$trans_total += $this_trans;
+									}
+								}
+								
+								if($trans_total < $ress_max_total)
+								{
+									$f = $trans_total/$ress_max_total;
+									$ress_max[0] = floor($ress_max[0]*$f);
+									$ress_max[1] = floor($ress_max[1]*$f);
+									$ress_max[2] = floor($ress_max[2]*$f);
+									$ress_max[3] = floor($ress_max[3]*$f);
+									$ress_max[4] = floor($ress_max[4]*$f);
+									$ress_max_total = array_sum($ress_max);
+									$diff = $trans_total-$ress_max_total;
+									$diff2 = $diff%5;
+									$each = $diff-$diff2;
+									$ress_max[0] += $each;
+									$ress_max[1] += $each;
+									$ress_max[2] += $each;
+									$ress_max[3] += $each;
+									$ress_max[4] += $each;
+									switch($diff)
+									{
+										case 4: $ress_max[3]++;
+										case 3: $ress_max[2]++;
+										case 2: $ress_max[1]++;
+										case 1: $ress_max[0]++;
+									}
+								}
+								
+								foreach($trans as $user=>$cap)
+								{
+									$rtrans = array();
+									$p = $cap/$trans_total;
+									$rtrans[0] = floor($ress_max[0]*$p);
+									$rtrans[1] = floor($ress_max[1]*$p);
+									$rtrans[2] = floor($ress_max[2]*$p);
+									$rtrans[3] = floor($ress_max[3]*$p);
+									$rtrans[4] = floor($ress_max[4]*$p);
+									
+									$this->raw[1][$user][3][0][0] += $rtrans[0];
+									$this->raw[1][$user][3][0][1] += $rtrans[1];
+									$this->raw[1][$user][3][0][2] += $rtrans[2];
+									$this->raw[1][$user][3][0][3] += $rtrans[3];
+									$this->raw[1][$user][3][0][4] += $rtrans[4];
+									
+									$messages[$username] .= "\n<p class=\"rohstoffe-erbeutet selbst\">Sie haben ".ths($rtrans[0])." Carbon, ".ths($rtrans[1])." Aluminium, ".ths($rtrans[2])." Wolfram, ".ths($rtrans[3])." Radium und ".ths($rtrans[4])." Tritium erbeutet.</p>\n";
+								}
+								
+								$target_user->subtractRess($ress_max, false);
+								
+								foreach($users_keys as $username)
+								{
+									if(isset($angreifer2[$username])) continue;
+									$messages[$username] .= "\n<p class=\"rohstoffe-erbeutet andere\">Die überlebenden Angreifer haben ".ths($ress_max[0])." Carbon, ".ths($ress_max[1])." Aluminium, ".ths($ress_max[2])." Wolfram, ".ths($ress_max[3])." Radium und ".ths($ress_max[4])." Tritium erbeutet.</p>\n";
+								}
+							}
+							
+							if(isset($verteidiger_ress[$target_owner]))
+								$messages[$target_owner] .= "\n<p class=\"verteidigung-wiederverwertung\">Durch Wiederverwertung konnten folgende Rohstoffe aus den Trümmern der zerstörten Verteidigungsanlagen wiederhergestellt werden: ".ths($verteidiger_ress[$target_owner][0])." Carbon, ".ths($verteidiger_ress[$target_owner][1])." Aluminium, ".ths($verteidiger_ress[$target_owner][2])." Wolfram und ".ths($verteidiger_ress[$target_owner][3])." Radium.</p>\n";
+							
+							# Nachrichten zustellen
+							foreach($messages as $username=>$text)
+							{
+								$message = Classes::Message();
+								if(!$message->create()) continue;
+								$message->text($text);
+								$message->subject("Kampf auf ".$next_target);
+								$message->html(true);
+								$message->addUser($username, 1);
+							}
+							
+							foreach($angreifer_keys as $username)
+							{
+								if(!isset($angreifer2[$username]))
+								{
+									# Flotten des Angreifers wurden zerstoert
+									if($username == $first_user) $further = false;
+									else unset($this->raw[1][$username]);
+								}
+								else $this->raw[1][$username][0] = $angreifer2[$username];
+								$user_obj = Classes::User($username);
+								$user_obj->recalcHighscores(false, false, false, true, false);
+							}
+							
+							foreach($verteidiger_keys as $username)
+							{
+								foreach($verteidiger[$username] as $id=>$count)
+								{
+									$count2 = 0;
+									if(isset($verteidiger2[$username]) && isset($verteidiger2[$username][$id]))
+										$count2 = $verteidiger2[$username][$id];
+									if($count2 != $count)
+									{
+										if($username == $target_owner)
+											$target_user->changeItemLevel($id, $count2-$count);
+										else $target_user->subForeignFleet($username, $id, $count-$count2);
+										$user_obj = Classes::User($username);
+										$user_obj->recalcHighscores(false, false, false, true, true);
+									}
+								}
+							}
 							
 							break;
 						case 4: # Transport
@@ -987,11 +1131,14 @@
 					#print_r($this->raw);
 					
 					$users = array_keys($this->raw[1]);
-					$first_user = array_shift($users);
 					
-					$this->raw[3][$next_target] = array_shift($this->raw[0]);
-					$this->raw[2] = time();
-					$this->createNextEvent();
+					if($further)
+					{
+						$first_user = array_shift($users);
+						$this->raw[3][$next_target] = array_shift($this->raw[0]);
+						$this->raw[2] = time();
+						$this->createNextEvent();
+					}
 					
 					# Vom Empfaenger entfernen
 					if($target_user && $target_owner != $first_user)
@@ -1020,6 +1167,8 @@
 						}
 						unset($this->raw[1][$user]);
 					}
+					
+					if(!$further) $this->destroy();
 				}
 			}
 			else
@@ -1238,7 +1387,7 @@
 		$verteidiger_spiotech = 0;
 		foreach($users_verteidiger as $user)
 			$verteidiger_spiotech += $user->getItemLevel('F1', 'forschung');
-		$verteidiger_spiotech /= count($user_verteidiger);
+		$verteidiger_spiotech /= count($users_verteidiger);
 		
 		
 		# Kampferfahrung
@@ -1429,7 +1578,7 @@
 		{
 			$verteidiger_nominativ = 'der Verteidiger';
 			$verteidiger_praedikat = 'ist';
-			$veteidiger_praedikat2 = 'hat';
+			$verteidiger_praedikat2 = 'hat';
 			$verteidiger_nominativ_letzt = 'letzterer';
 			$verteidiger_genitiv = 'des Verteidigers';
 		}
@@ -1455,7 +1604,16 @@
 			$nachrichten_text .= "</p>\n";
 		}
 
-		if(count($verteidiger_flotte) <= 0)
+		$verteidiger_no_fleet = true;
+		foreach($verteidiger as $name=>$ids)
+		{
+			if(array_sum($ids) > 0)
+			{
+				$verteidiger_no_fleet = false;
+				break;
+			}
+		}
+		if($verteidiger_no_fleet)
 		{
 			$runde_starter = 'angreifer';
 			$runde_anderer = 'verteidiger';
@@ -1562,7 +1720,7 @@
 			$nachrichten_text .= "Gewinner ".$verteidiger_praedikat." ".$verteidiger_nominativ.".";
 			$winner = -1;
 		}
-		elseif(count($verteidiger_flotte) == 0)
+		elseif(count($verteidiger) == 0)
 		{
 			$nachrichten_text .= "Gewinner ".$angreifer_praedikat." ".$angreifer_nominativ.".";
 			$winner = 1;
@@ -1637,7 +1795,7 @@
 						$angreifer[$name][$id] = 0;
 					}
 					
-					$diff = $anzahl_old-$anzahl;
+					$diff = $old_anzahl-$anzahl;
 					$truemmerfeld[0] += $item_info['ress'][0]*$diff*.4;
 					$truemmerfeld[1] += $item_info['ress'][1]*$diff*.4;
 					$truemmerfeld[2] += $item_info['ress'][2]*$diff*.4;
@@ -1829,6 +1987,20 @@
 			$user->addScores(6, $verteidiger_new_erfahrung);
 			$nachrichten_text .= "\t<li class=\"c-angreifer\">".$verteidiger_nominativ." ".$verteidiger_praedikat2." ".ths($verteidiger_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
 		}
+		$nachrichten_text .= "</ul>\n";
+		
+		
+		# $winner:  1: Angreifer gewinnt
+		#           0: Unentschieden
+		#          -1: Verteidiger gewinnt
+		# 
+		# $angreifer: Wie uebergeben, Flotten nach der Schlacht
+		# $verteidiger: Wie uebergeben, Flotten nach der Schlacht
+		# 
+		# $nachrichten_text: Kampfbericht, es muessen noch fuer jeden Benutzer die regenerierten
+		#                    Verteidigungsrohstoffe aus $verteidiger_ress angehaengt werden.
+		# 
+		# Rohstoffe muessen noch gestohlen werden
 
 		return array($winner, $angreifer, $verteidiger, $nachrichten_text, $verteidiger_ress);
 	}

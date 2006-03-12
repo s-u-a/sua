@@ -55,7 +55,7 @@
 		{
 ?>
 <p class="error">
-	<?=htmlentities($error)."\n"?>
+	<?=utf8_htmlentities($error)."\n"?>
 </p>
 <?php
 		}
@@ -98,7 +98,7 @@
 		{
 			# Nachricht anzeigen
 ?>
-<h2><a href="nachrichten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" tabindex="6" accesskey="w">Nachrichten</a>: <a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenübersicht: <?=htmlentities($message_type_names[$_GET['type']])?> [O]" tabindex="5" accesskey="o"><?=htmlentities($message_type_names[$_GET['type']])?></a></h2>
+<h2><a href="nachrichten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" tabindex="6" accesskey="w">Nachrichten</a>: <a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenübersicht: <?=utf8_htmlentities($message_type_names[$_GET['type']])?> [O]" tabindex="5" accesskey="o"><?=utf8_htmlentities($message_type_names[$_GET['type']])?></a></h2>
 <?php
 			if(!$me->checkMessage($_GET['message'], $_GET['type']))
 			{
@@ -336,7 +336,7 @@
 		{
 			# Nachrichtenuebersicht einer Kategorie anzeigen
 ?>
-<h2><a href="nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" accesskey="w" tabindex="4">Nachrichten</a>: <?=htmlentities($message_type_names[$_GET['type']])?></h2>
+<h2><a href="nachrichten.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" accesskey="w" tabindex="4">Nachrichten</a>: <?=utf8_htmlentities($message_type_names[$_GET['type']])?></h2>
 <?php
 			$messages_list = $me->getMessagesList($_GET['type']);
 			if(count($messages_list) > 0)

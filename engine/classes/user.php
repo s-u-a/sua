@@ -2635,34 +2635,55 @@
 				}
 				$this->setActivePlanet($active_planet);
 
-				foreach($this->getFleetsList() as $flotte)
+				if($recalc_schiffe || $recalc_roboter)
 				{
-					$fl = Classes::Fleet($flotte);
-					if($fl->userExists($this->getName()))
+					foreach($this->getFleetsList() as $flotte)
 					{
-						$schiffe = $fl->getFleetList($this->getName());
-						foreach($schiffe as $id=>$count)
+						$fl = Classes::Fleet($flotte);
+						if($fl->userExists($this->getName()))
 						{
-							$item_info = $this->getItemInfo($id, 'schiffe', true, true);
-							$this->raw['punkte'][3] += $count*$item_info['simple_scores'];
+							if($recalc_schiffe)
+							{
+								$schiffe = $fl->getFleetList($this->getName());
+								if($schiffe)
+								{
+									foreach($schiffe as $id=>$count)
+									{
+										$item_info = $this->getItemInfo($id, 'schiffe', true, true);
+										$this->raw['punkte'][3] += $count*$item_info['simple_scores'];
+									}
+								}
+							}
+							if($recalc_roboter)
+							{
+								$transport = $fl->getTransport($this->getName());
+								if($transport)
+								{
+									foreach($transport[1] as $id=>$count)
+									{
+										$item_info = $this->getItemInfo($id, 'roboter', true, true);
+										$this->raw['punkte'][2] += $count*$item_info['simple_scores'];
+									}
+								}
+							}
 						}
-						$transport = $fl->getTransport($this->getName());
-						foreach($transport[1] as $id=>$count)
+						
+						if($recalc_roboter)
 						{
-							$item_info = $this->getItemInfo($id, 'roboter', true, true);
-							$this->raw['punkte'][2] += $count*$item_info['simple_scores'];
-						}
-					}
-					
-					# Handel miteinbeziehen
-					$users = $fl->getUsersList();
-					foreach($users as $user)
-					{
-						$handel = $fl->getHandel($user);
-						foreach($handel[1] as $id=>$count)
-						{
-							$item_info = $this->getItemInfo($id, 'roboter', true, true);
-							$this->raw['punkte'][2] += $count*$item_info['simple_scores'];
+							# Handel miteinbeziehen
+							$users = $fl->getUsersList();
+							foreach($users as $user)
+							{
+								$handel = $fl->getHandel($user);
+								if($handel)
+								{
+									foreach($handel[1] as $id=>$count)
+									{
+										$item_info = $this->getItemInfo($id, 'roboter', true, true);
+										$this->raw['punkte'][2] += $count*$item_info['simple_scores'];
+									}
+								}
+							}
 						}
 					}
 				}
@@ -2834,6 +2855,11 @@
 		}
 		
 		function addForeignFleet($user, $fleet)
+		{
+			return true;
+		}
+		
+		function subForeignFleet($user, $id, $count)
 		{
 			return true;
 		}
