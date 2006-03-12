@@ -6,28 +6,27 @@
 		
 		function __construct()
 		{
-			if($this->status) return false;
-			
-			# Datenbankverbindung herstellen
-			$this->connection = sqlite_popen(EVENT_FILE, 0666);
-			if(!$this->connection)
-				return false;
-			
-			$table_check = sqlite_query($this->connection, "SELECT name FROM sqlite_master WHERE type='table' AND name='events'");
-			if(sqlite_num_rows($table_check)==0 && !sqlite_query($this->connection, "CREATE TABLE events ( time INT(11), fleet VARCHAR(16) );"))
-				return false;
-			
-			$this->status = true;
-			return true;
+			if(!$this->status)
+			{
+				# Datenbankverbindung herstellen
+				$this->connection = sqlite_popen(EVENT_FILE, 0666);
+				if($this->connection)
+				{
+					$table_check = sqlite_query($this->connection, "SELECT name FROM sqlite_master WHERE type='table' AND name='events'");
+					if(!sqlite_num_rows($table_check)==0 || sqlite_query($this->connection, "CREATE TABLE events ( time INT(11), fleet VARCHAR(16) );"))
+						$this->status = true;
+				}
+			}
 		}
 		
 		function __destruct()
 		{
-			if(!$this->status) return false;
-			
-			# Datenbankerbindung schliessen
-			sqlite_close($this->connection);
-			$this->status = false;
+			if($this->status)
+			{
+				# Datenbankerbindung schliessen
+				sqlite_close($this->connection);
+				$this->status = false;
+			}
 		}
 		
 		function getLastErrorMessage()
