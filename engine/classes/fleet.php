@@ -703,6 +703,19 @@
 						case 2: # Sammeln
 							break;
 						case 3: # Angriff
+							$angreifer = array();
+							$verteidiger = array();
+							foreach($this->raw[1] as $username=>$info)
+								$angreifer[$username] = $info[0];
+							$verteidiger[$target_owner] = array();
+							foreach($target_user->getItemsList('schiffe') as $item)
+							{
+								$level = $target_user->getItemLevel($item, 'schiffe');
+								if($level <= 0) continue;
+								$verteidiger[$target_owner][$item] = $level;
+							}
+							
+							
 							break;
 						case 4: # Transport
 							$message_text = array(
@@ -948,6 +961,7 @@
 								{
 									$message->subject('Spionage des Planeten '.$next_target);
 									$message->text($message_text);
+									$message->html(true);
 									$message->from($target_owner);
 									foreach($users as $username)
 										$message->addUser($username, $types_message_types[$type]);

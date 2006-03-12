@@ -2835,14 +2835,17 @@
 		
 		function addForeignFleet($user, $fleet)
 		{
+			return true;
 		}
 		
 		function getForeignUsersList()
 		{
+			return array();
 		}
 		
 		function getForeignFleetsList($user)
 		{
+			return array();
 		}
 		
 		function _printRaw()
