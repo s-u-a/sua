@@ -71,5 +71,10 @@
 		{ # For instances
 			return "eventfile";
 		}
+		
+		function getStatus()
+		{
+			return $this->status;
+		}
 	}
 ?>
