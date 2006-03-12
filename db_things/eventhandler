@@ -6,7 +6,7 @@
 		exit(1);
 	}
 	
-	declare(ticks=1);
+	/*declare(ticks=1);
 	
 	if(function_exists('pcntl_fork')) $pid = pcntl_fork();
 	else $pid = -1;
@@ -16,7 +16,7 @@
 	{
 		fputs(STDOUT, "Eventhandler forked, PID ".$pid.".\n");
 		exit(0);
-	}
+	}*/
 	
 	function sig_handler($signo)
 	{

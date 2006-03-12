@@ -9,7 +9,7 @@
 			if($this->status) return false;
 			
 			# Datenbankverbindung herstellen
-			$this->connection = sqlite_popen(EVENT_FILE);
+			$this->connection = sqlite_popen(EVENT_FILE, 0666);
 			if(!$this->connection)
 				return false;
 			
