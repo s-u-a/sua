@@ -76,7 +76,7 @@
 		
 		function Galaxy($p1){ return self::Dataset('Galaxy', $p1); }
 		
-		function EventFile() { return new Dataset(); }
+		function EventFile() { return new EventFile(); }
 	}
 	
 	register_shutdown_function(array('Classes', 'resetInstances'));
