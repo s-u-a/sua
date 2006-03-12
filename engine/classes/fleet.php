@@ -379,6 +379,8 @@
 			foreach($this->raw[1][$user][0] as $id=>$count)
 			{
 				$item_info = $user_obj->getItemInfo($id, 'schiffe');
+				if(!isset($item_info['mass']))
+					mail('webmaster@s-u-a.net', 'Programm: S-U-A', 'Index mass existiert nicht. Schiffs-ID ist '.$id.'.');
 				$mass += $item_info['mass']*$count;
 			}
 			
