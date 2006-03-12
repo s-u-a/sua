@@ -307,6 +307,8 @@
 				'name' => $planet_name
 			);
 			
+			if(isset($this->cache['getPlanetsList'])) unset($this->cache['getPlanetsList']);
+			
 			return $planet_index;
 		}
 		
