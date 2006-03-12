@@ -9,12 +9,9 @@
 			if($this->status) return false;
 			
 			# Datenbankverbindung herstellen
-			$this->connection = sqlite_open(EVENT_FILE, 0666, &$error);
+			$this->connection = sqlite_popen(EVENT_FILE);
 			if(!$this->connection)
-			{
-				$this->error = $error;
 				return false;
-			}
 			
 			$table_check = sqlite_query($this->connection, "SELECT name FROM sqlite_master WHERE type='table' AND name='events'");
 			if(sqlite_num_rows($table_check)==0 && !sqlite_query($this->connection, "CREATE TABLE events ( time INT(11), fleet VARCHAR(16) );"))

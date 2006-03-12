@@ -42,6 +42,7 @@
 				$status = true;
 				foreach($objectInstances as $instanceName=>$instances)
 				{
+					if($instanceName == 'EventFile') continue;
 					if(!self::resetInstances($instanceName))
 						$status = false;
 				}
