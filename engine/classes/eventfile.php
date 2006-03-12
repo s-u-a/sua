@@ -9,11 +9,11 @@
 			if(!$this->status)
 			{
 				# Datenbankverbindung herstellen
-				$this->connection = sqlite_popen(EVENT_FILE, 0666);
+				$this->connection = sqlite_open(EVENT_FILE, 0666);
 				if($this->connection)
 				{
 					$table_check = sqlite_query($this->connection, "SELECT name FROM sqlite_master WHERE type='table' AND name='events'");
-					if(!sqlite_num_rows($table_check)==0 || sqlite_query($this->connection, "CREATE TABLE events ( time INT(11), fleet VARCHAR(16) );"))
+					if(sqlite_num_rows($table_check)!=0 || sqlite_query($this->connection, "CREATE TABLE events ( time INT(11), fleet VARCHAR(16) );"))
 						$this->status = true;
 				}
 			}
@@ -41,7 +41,7 @@
 			if(!$this->status) return false;
 			
 			$time = round($time);
-			return sqlite_query($this->connection, "INSERT INTO events (time, fleet) VALUES (".sqlite_escape_string($time).", '".sqlite_escape_string($id)."');");
+			return sqlite_query($this->connection, "INSERT INTO events (time, fleet) VALUES ('".sqlite_escape_string($time)."', '".sqlite_escape_string($id)."');");
 		}
 		
 		function removeNextFleet()
