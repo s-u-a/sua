@@ -743,6 +743,7 @@
 								$ress_max[2] = floor($ress_max[2]*.5);
 								$ress_max[3] = floor($ress_max[3]*.5);
 								$ress_max[4] = floor($ress_max[4]*.5);
+								unset($ress_max[5]);
 								$ress_max_total = array_sum($ress_max);
 								
 								# Transportkapazitaeten der Angreifer
@@ -1364,19 +1365,10 @@
 		
 		$users_angreifer = array();
 		$users_verteidiger = array();
-		
-		foreach($angreifer as $name=>$flotte)
-		{
-			$users_angreifer[$name] = Classes::User($name);
-			if(!$users_angreifer[$name]->getStatus()) return false;
-		}
-		
-		foreach($verteidiger as $name=>$flotte)
-		{
-			$users_verteidiger[$name] = Classes::User($name);
-			if(!$users_verteidiger[$name]->getStatus()) return false;
-		}
-		
+		foreach($angreifer as $username=>$i)
+			$users_angreifer[$username] = Classes::User($username);
+		foreach($verteidiger as $username=>$i)
+			$users_verteidiger[$username] = Classes::User($username);
 		
 		# Spionagetechnik fuer Erstschlag
 		$angreifer_spiotech = 0;
@@ -1471,7 +1463,6 @@
 		}
 		$nachrichten_text .= "</table>\n";
 		
-		$nachrichten_text = '';
 		if(count($verteidiger) > 1)
 			$nachrichten_text .= "<h3>Flotten der Verteidigers</h3>";
 		else
@@ -1550,9 +1541,9 @@
 			$nachrichten_text .= "</table>\n";
 		}
 		
-		if(count($angreifer) > 1)
+		if(count($angreifer_anfang) > 1)
 		{
-			$angreifer_nominativ = 'die Angreifer';
+			$angreifer_nominativ = 'Die Angreifer';
 			$angreifer_praedikat = 'sind';
 			$angreifer_praedikat2 = 'haben';
 			$angreifer_genitiv = 'der Angreifer';
@@ -1560,13 +1551,13 @@
 		}
 		else
 		{
-			$angreifer_nominativ = 'der Angreifer';
+			$angreifer_nominativ = 'Der Angreifer';
 			$angreifer_praedikat = 'ist';
 			$angreifer_praedikat2 = 'hat';
 			$angreifer_genitiv = 'des Angreifers';
 			$angreifer_dativ = 'ihm';
 		}
-		if(count($verteidiger) > 1)
+		if(count($verteidiger_anfang) > 1)
 		{
 			$verteidiger_nominativ = 'die Verteidiger';
 			$verteidiger_praedikat = 'sind';
@@ -1628,17 +1619,27 @@
 			if(count($ids) <= 0) unset($angreifer[$name]);
 			else $angreifer[$name] = $ids;
 		}
+		
+		foreach($verteidiger as $name=>$ids)
+		{
+			foreach($ids as $id=>$anzahl)
+			{
+				if($anzahl <= 0) unset($ids[$id]);
+			}
+			if(count($ids) <= 0) unset($verteidiger[$name]);
+			else $verteidiger[$name] = $ids;
+		}
 
 		# Einzelne Runden
 		for($runde = 1; $runde <= 20; $runde++)
 		{
+			if(count($angreifer) <= 0 || count($verteidiger) <= 0) break;
+			
 			$a = & ${$runde_starter};
 			$d = & ${$runde_anderer};
 			$a_objs = & ${'users_'.$runde_starter};
 			$d_objs = & ${'users_'.$runde_anderer};
 
-			if(count($angreifer) <= 0 || count($verteidiger) <= 0) break;
-			
 			if($runde%2)
 			{
 				$nachrichten_text .= "<div class=\"runde\">\n";
@@ -1657,7 +1658,7 @@
 				}
 			}
 			
-			$nachrichten_text .= "\t<h4>".${$runde_starter.'_nominativ'}." ".${$runde_starter.'_praedikat'}." am Zug (Gesamtst\xc3\xa4rke ".round($staerke).")</h4>\n";
+			$nachrichten_text .= "\t<h4>".ucfirst(${$runde_starter.'_nominativ'})." ".${$runde_starter.'_praedikat'}." am Zug (Gesamtst\xc3\xa4rke ".round($staerke).")</h4>\n";
 			$nachrichten_text .= "\t<ol>\n";
 
 			while($staerke > 0)
@@ -1845,7 +1846,6 @@
 			$nachrichten_text .= "</table>\n";
 		}
 		
-		$nachrichten_text = '';
 		if(count($verteidiger_anfang) > 1)
 			$nachrichten_text .= "<h3>Flotten der Verteidigers</h3>";
 		else
@@ -1949,12 +1949,20 @@
 		}
 		
 		$nachrichten_text .= "<ul class=\"angreifer-punkte\">\n";
-		foreach($angreifer_punkte as $a=>$p)
+		foreach($angreifer_anfang as $a=>$i)
+		{
+			$p = 0;
+			if(isset($angreifer_punkte[$a])) $p = $angreifer_punkte[$a];
 			$nachrichten_text .= "\t<li>Der Angreifer <span class=\"koords\">".utf8_htmlentities($a)."</span> hat ".ths($p)."&nbsp;Punkte verloren.</li>\n";
+		}
 		$nachrichten_text .= "</ul>\n";
 		$nachrichten_text .= "<ul class=\"verteidiger-punkte\">\n";
-		foreach($verteidiger_punkte as $v=>$p)
+		foreach($verteidiger_anfang as $v=>$i)
+		{
+			$p = 0;
+			if(isset($verteidiger_punkte[$v])) $p = $verteidiger_punkte[$v];
 			$nachrichten_text .= "\t<li>Der Verteidiger <span class=\"koords\">".utf8_htmlentities($v)."</span> hat ".ths($p)."&nbsp;Punkte verloren.</li>\n";
+		}
 		$nachrichten_text .= "</ul>\n";
 
 		if(array_sum($truemmerfeld) > 0)
@@ -1977,17 +1985,13 @@
 		$angreifer_new_erfahrung = array_sum($verteidiger_punkte)/1000;
 		$verteidiger_new_erfahrung = array_sum($angreifer_punkte)/1000;
 		$nachrichten_text .= "<ul class=\"kampferfahrung\">\n";
-		foreach($users_angreifer as $user)
-		{
-			$user->addScores(6, $angreifer_new_erfahrung);
-			$nachrichten_text .= "\t<li class=\"c-angreifer\">".$angreifer_nominativ." ".$angreifer_praedikat2." ".ths($angreifer_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
-		}
-		foreach($users_verteidiger as $user)
-		{
-			$user->addScores(6, $verteidiger_new_erfahrung);
-			$nachrichten_text .= "\t<li class=\"c-angreifer\">".$verteidiger_nominativ." ".$verteidiger_praedikat2." ".ths($verteidiger_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
-		}
+		$nachrichten_text .= "\t<li class=\"c-angreifer\">".$angreifer_nominativ." ".$angreifer_praedikat2." ".ths($angreifer_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
+		$nachrichten_text .= "\t<li class=\"c-verteidiger\">".$verteidiger_nominativ." ".$verteidiger_praedikat2." ".ths($verteidiger_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
 		$nachrichten_text .= "</ul>\n";
+		foreach($users_angreifer as $user)
+			$user->addScores(6, $angreifer_new_erfahrung);
+		foreach($users_verteidiger as $user)
+			$user->addScores(6, $verteidiger_new_erfahrung);
 		
 		
 		# $winner:  1: Angreifer gewinnt
