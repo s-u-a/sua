@@ -366,15 +366,36 @@
 
 			<dt class="c-roboter">Roboter</dt>
 <?php
-			$building_roboter = $me->checkBuildingThing('roboter');
-			if($building_roboter)
+			$building = $me->checkBuildingThing('roboter');
+			if($building)
 			{
-				$building_roboter = array_shift($building_roboter);
-				$item_info = $me->getItemInfo($building_roboter[0], 'roboter');
-				$finishing_time = $building_roboter[1]+$building_roboter[3];
+				switch($show_building['roboter'])
+				{
+					case 3:
+						$last_building = array_pop($building);
+						$item_info = $me->getItemInfo($last_building[0], 'roboter');
+						$finishing_time = $last_building[1]+$last_building[2]*$last_building[3];
+?>
+			<dd class="c-roboter">(<?=utf8_htmlentities($item_info['name'])?>) <span id="restbauzeit-ro-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
+<?php
+						break;
+					case 2:
+						$first_building = array_shift($building);
+						$item_info = $me->getItemInfo($first_building[0], 'roboter');
+						$finishing_time = $first_building[1]+$first_building[2]*$first_building[3];
+?>
+			<dd class="c-roboter"><?=utf8_htmlentities($item_info['name'])?> <span class="anzahl">(<?=ths($first_building[2])?>)</span> <span id="restbauzeit-ro-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
+<?php
+						break;
+					case 1:
+						$first_building = array_shift($building);
+						$item_info = $me->getItemInfo($first_building[0], 'roboter');
+						$finishing_time = $first_building[1]+$first_building[3];
 ?>
 			<dd class="c-roboter"><?=utf8_htmlentities($item_info['name'])?> <span id="restbauzeit-ro-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
 <?php
+						break;
+				}
 				$countdowns[] = array('ro-'.$planet, $finishing_time);
 			}
 			else
@@ -391,15 +412,36 @@
 
 			<dt class="c-schiffe">Schiffe</dt>
 <?php
-			$building_schiffe = $me->checkBuildingThing('schiffe');
-			if($building_schiffe)
+			$building = $me->checkBuildingThing('schiffe');
+			if($building)
 			{
-				$building_schiffe = array_shift($building_schiffe);
-				$item_info = $me->getItemInfo($building_schiffe[0], 'schiffe');
-				$finishing_time = $building_schiffe[1]+$building_schiffe[3];
+				switch($show_building['schiffe'])
+				{
+					case 3:
+						$last_building = array_pop($building);
+						$item_info = $me->getItemInfo($last_building[0], 'schiffe');
+						$finishing_time = $last_building[1]+$last_building[2]*$last_building[3];
 ?>
-			<dd class="c-roboter"><?=utf8_htmlentities($item_info['name'])?> <span id="restbauzeit-sc-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
+			<dd class="c-roboter">(<?=utf8_htmlentities($item_info['name'])?>) <span id="restbauzeit-ro-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
 <?php
+						break;
+					case 2:
+						$first_building = array_shift($building);
+						$item_info = $me->getItemInfo($first_building[0], 'schiffe');
+						$finishing_time = $first_building[1]+$first_building[2]*$first_building[3];
+?>
+			<dd class="c-schiffe"><?=utf8_htmlentities($item_info['name'])?> <span class="anzahl">(<?=ths($first_building[2])?>)</span> <span id="restbauzeit-sc-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
+<?php
+						break;
+					case 1:
+						$first_building = array_shift($building);
+						$item_info = $me->getItemInfo($first_building[0], 'schiffe');
+						$finishing_time = $first_building[1]+$first_building[3];
+?>
+			<dd class="c-schiffe"><?=utf8_htmlentities($item_info['name'])?> <span id="restbauzeit-sc-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
+<?php
+						break;
+				}
 				$countdowns[] = array('sc-'.$planet, $finishing_time);
 			}
 			else
@@ -416,15 +458,36 @@
 
 			<dt class="c-verteidigung">Verteidigung</dt>
 <?php
-			$building_verteidigung = $me->checkBuildingThing('verteidigung');
-			if($building_verteidigung)
+			$building = $me->checkBuildingThing('verteidigung');
+			if($building)
 			{
-				$building_verteidigung = array_shift($building_verteidigung);
-				$item_info = $me->getItemInfo($building_verteidigung[0], 'verteidigung');
-				$finishing_time = $building_verteidigung[1]+$building_verteidigung[3];
+				switch($show_building['verteidigung'])
+				{
+					case 3:
+						$last_building = array_pop($building);
+						$item_info = $me->getItemInfo($last_building[0], 'verteidigung');
+						$finishing_time = $last_building[1]+$last_building[2]*$last_building[3];
+?>
+			<dd class="c-roboter">(<?=utf8_htmlentities($item_info['name'])?>) <span id="restbauzeit-ro-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
+<?php
+						break;
+					case 2:
+						$first_building = array_shift($building);
+						$item_info = $me->getItemInfo($first_building[0], 'verteidigung');
+						$finishing_time = $first_building[1]+$first_building[2]*$first_building[3];
+?>
+			<dd class="c-verteidigung"><?=utf8_htmlentities($item_info['name'])?> <span class="anzahl">(<?=ths($first_building[2])?>)</span> <span id="restbauzeit-ve-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
+<?php
+						break;
+					case 1:
+						$first_building = array_shift($building);
+						$item_info = $me->getItemInfo($first_building[0], 'verteidigung');
+						$finishing_time = $first_building[1]+$first_building[3];
 ?>
 			<dd class="c-verteidigung"><?=utf8_htmlentities($item_info['name'])?> <span id="restbauzeit-ve-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
 <?php
+						break;
+				}
 				$countdowns[] = array('ve-'.$planet, $finishing_time);
 			}
 			else

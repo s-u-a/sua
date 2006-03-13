@@ -59,12 +59,21 @@
 		$me->setSetting('noads', isset($_POST['noads']));
 		$me->setSetting('show_extern', isset($_POST['show_extern']));
 		$me->setSetting('notify', isset($_POST['notify']));
+	}
+	
+	if(isset($_POST['building']))
+	{
+		if(isset($_POST['building']['gebaeude']) && in_array($_POST['building']['gebaeude'], array(0,1)))
+			$show_building['gebaeude'] = $_POST['building']['gebaeude'];
+		if(isset($_POST['building']['forschung']) && in_array($_POST['building']['forschung'], array(0,1)))
+			$show_building['forschung'] = $_POST['building']['forschung'];
+		if(isset($_POST['building']['roboter']) && in_array($_POST['building']['roboter'], array(0,1,2,3)))
+			$show_building['roboter'] = $_POST['building']['roboter'];
+		if(isset($_POST['building']['schiffe']) && in_array($_POST['building']['schiffe'], array(0,1,2,3)))
+			$show_building['schiffe'] = $_POST['building']['schiffe'];
+		if(isset($_POST['building']['verteidigung']) && in_array($_POST['building']['verteidigung'], array(0,1,2,3)))
+			$show_building['verteidigung'] = $_POST['building']['verteidigung'];
 		
-		$show_building['gebaeude'] = isset($_POST['building']['gebaeude']);
-		$show_building['forschung'] = isset($_POST['building']['forschung']);
-		$show_building['roboter'] = isset($_POST['building']['roboter']);
-		$show_building['schiffe'] = isset($_POST['building']['schiffe']);
-		$show_building['verteidigung'] = isset($_POST['building']['verteidigung']);
 		$me->setSetting('show_building', $show_building);
 	}
 
@@ -220,22 +229,54 @@
 	</fieldset>
 	<fieldset class="bauende-gegenstaende">
 		<legend>Bauende Gegenstände in der Übersicht</legend>
-		<dl>
-			<dt class="c-gebaeude"><label for="building-gebaeude">Gebäude</label></dt>
-			<dd class="c-gebaeude"><input type="checkbox" name="building[gebaeude]" id="building-gebaeude"<?=$show_building['gebaeude'] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></dd>
-			
-			<dt class="c-forschung"><label for="building-forschung">Forschung</label></dt>
-			<dd class="c-forschung"><input type="checkbox" name="building[forschung]" id="building-forschung"<?=$show_building['forschung'] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></dd>
-			
-			<dt class="c-roboter"><label for="building-roboter">Roboter</label></dt>
-			<dd class="c-roboter"><input type="checkbox" name="building[roboter]" id="building-roboter"<?=$show_building['roboter'] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></dd>
-			
-			<dt class="c-schiffe"><label for="building-schiffe">Schiffe</label></dt>
-			<dd class="c-schiffe"><input type="checkbox" name="building[schiffe]" id="building-schiffe"<?=$show_building['schiffe'] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></dd>
-			
-			<dt class="c-verteidigung"><label for="building-verteidigung">Verteidigung</label></dt>
-			<dd class="c-verteidigung"><input type="checkbox" name="building[verteidigung]" id="building-verteidigung"<?=$show_building['verteidigung'] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></dd>
-		</dl>
+		<table>
+			<thead>
+				<tr>
+					<th>Gegenstandsart</th>
+					<th title="Zeigt keine verbleibende Bauzeit in der Übersicht">Ausgeschaltet</th>
+					<th title="Zeigt die verbleibende Bauzeit zu dem Gegenstand an, der gerade gebaut wird.">Erster Gegenstand</th>
+					<th title="Zeigt die verbleibende Bauzeit aller bauenden Gegenstände des aktuellen Gegenstandstyps an (zum Beispiel 5 Bauroboter).">Erster Gegenstandstyp</th>
+					<th title="Zeigt die verbleibende Bauzeit aller bauenden Gegenstände an.">Alle Gegenstände</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="c-gebauede">
+					<th>Gebäude</th>
+					<td><input type="radio" name="building[gebaeude]" value="0"<?=($show_building['gebaeude']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[gebaeude]" value="1"<?=($show_building['gebaeude']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="c-forschung">
+					<th>Forschung</th>
+					<td><input type="radio" name="building[forschung]" value="0"<?=($show_building['forschung']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[forschung]" value="1"<?=($show_building['forschung']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr class="c-roboter">
+					<th>Roboter</th>
+					<td><input type="radio" name="building[roboter]" value="0"<?=($show_building['roboter']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[roboter]" value="1"<?=($show_building['roboter']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[roboter]" value="2"<?=($show_building['roboter']===2) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[roboter]" value="3"<?=($show_building['roboter']===3) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+				</tr>
+				<tr class="c-schiffe">
+					<th>Schiffe</th>
+					<td><input type="radio" name="building[schiffe]" value="0"<?=($show_building['schiffe']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[schiffe]" value="1"<?=($show_building['schiffe']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[schiffe]" value="2"<?=($show_building['schiffe']===2) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[schiffe]" value="3"<?=($show_building['schiffe']===3) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+				</tr>
+				<tr class="c-verteidigung">
+					<th>Verteidigung</th>
+					<td><input type="radio" name="building[verteidigung]" value="0"<?=($show_building['verteidigung']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[verteidigung]" value="1"<?=($show_building['verteidigung']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[verteidigung]" value="2"<?=($show_building['verteidigung']===2) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[verteidigung]" value="3"<?=($show_building['verteidigung']===3) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+				</tr>
+			</tbody>
+		</table>
 	</fieldset>
 	<div class="einstellungen-speichern-1"><input type="submit" title="[W]" value="Speichern" /></div>
 <?php

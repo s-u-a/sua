@@ -1495,11 +1495,11 @@
 					5 => array(true, false)
 				),
 				'show_building' => array(
-					'gebaeude' => true,
-					'forschung' => true,
-					'roboter' => false,
-					'schiffe' => false,
-					'verteidigung' => false
+					'gebaeude' => 1,
+					'forschung' => 1,
+					'roboter' => 0,
+					'schiffe' => 0,
+					'verteidigung' => 0
 				),
 				'prod_show_days' => 1
 			);
