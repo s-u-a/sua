@@ -1663,10 +1663,8 @@
 
 			while($staerke > 0)
 			{
-				$av_users = array_keys($d);
-				$att_user = $av_users[array_rand($av_users)];
-				$av_ids = array_keys($d[$att_user]);
-				$att_id = $av_ids[array_rand($av_ids)];
+				$att_user = array_rand($d);
+				$att_id = array_rand($d[$att_user]);
 				
 				$item_info = ${'users_'.$runde_anderer}[$att_user]->getItemInfo($att_id);
 				$this_shield = $item_info['def']*$d[$att_user][$att_id];
@@ -1700,6 +1698,8 @@
 					if(count($d[$att_user]) <= 0) unset($d[$att_user]);
 					$staerke -= $aff_staerke/$schild_f;
 				}
+				
+				if(count($angreifer) <= 0 || count($verteidiger) <= 0) break;
 			}
 
 			$nachrichten_text .= "\t</ol>\n";
