@@ -128,6 +128,10 @@ EOF
 				fputs($errlog, "SIGTERM (".SIGTERM.")\n");
 				define('terminate', true);
 				break;
+			case SIGINT:
+				fputs($errlog, "SIGINT (".SIGINT.")\n");
+				define('terminate', true);
+				break;
 			case SIGHUP:
 				fputs($errlog, "SIGHUP (".SIGHUP.")\n");
 				break;
@@ -137,6 +141,7 @@ EOF
 	if(function_exists('pcntl_signal'))
 	{
 		pcntl_signal(SIGTERM, "sig_handler");
+		pcntl_signal(SIGINT, "sig_handler");
 		if($daemon)
 		{
 			pcntl_signal(SIGHUP, "sig_handler");
