@@ -720,7 +720,16 @@
 							foreach($foreign_users as $username)
 								$verteidiger[$username] = $target_user->getForeignFleetsList($username);
 							
-							list($winner, $angreifer2, $verteidiger2, $nachrichten_text, $verteidiger_ress) = battle($angreifer, $verteidiger);
+							list($winner, $angreifer2, $verteidiger2, $nachrichten_text, $verteidiger_ress, $truemmerfeld) = battle($angreifer, $verteidiger);
+							
+							if(array_sum($truemmerfeld) > 0)
+							{
+								truemmerfeld::add($target[0], $target[1], $target[2], $truemmerfeld[0], $truemmerfeld[1], $truemmerfeld[2], $truemmerfeld[3]);
+	
+								$nachrichten_text .= "<p>\n";
+								$nachrichten_text .= "\tFolgende Tr\xc3\xbcmmer zerst\xc3\xb6rter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: ".ths($truemmerfeld[0])."&nbsp;Carbon, ".ths($truemmerfeld[1])."&nbsp;Aluminium, ".ths($truemmerfeld[2])."&nbsp;Wolfram und ".ths($truemmerfeld[3])."&nbsp;Radium.\n";
+								$nachrichten_text .= "</p>\n";
+							}
 							
 							# Nachrichten aufteilen
 							$angreifer_keys = array_keys($angreifer);
@@ -1467,79 +1476,85 @@
 			$nachrichten_text .= "<h3>Flotten der Verteidigers</h3>";
 		else
 			$nachrichten_text .= "<h3>Flotten der Verteidiger</h3>";
-		if(array_sum_r($verteidiger) <= 0)
-		{
-			$nachrichten_text .= "<p class=\"keine\">\n";
-			$nachrichten_text .= "\tKeine.\n";
-			$nachrichten_text .= "</p>\n";
-		}
-		else
-		{
-			$nachrichten_text .= "<table>\n";
-			$nachrichten_text .= "\t<thead>\n";
-			$nachrichten_text .= "\t\t<tr>\n";
-			$nachrichten_text .= "\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
-			$nachrichten_text .= "\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
-			$nachrichten_text .= "\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
-			$nachrichten_text .= "\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
-			$nachrichten_text .= "\t\t</tr>\n";
-			$nachrichten_text .= "\t</thead>\n";
-			$nachrichten_text .= "\t<tbody>\n";
-	
-			$ges_anzahl = $ges_staerke = $ges_schild = 0;
-			foreach($verteidiger as $name=>$flotten)
-			{
-				$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
-				$nachrichten_text .= "\t\t\t<th colspan=\"4\">".utf8_htmlentities($name)."</th>\n";
-				$nachrichten_text .= "\t\t</tr>\n";
-				
-				$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
-				foreach($flotten as $id=>$anzahl)
-				{
-					$item_info = $users_verteidiger[$name]->getItemInfo($id);
-					
-					$staerke = $item_info['att']*$anzahl;
-					$schild = $item_info['def']*$anzahl;
 		
+		$nachrichten_text .= "<table>\n";
+		$nachrichten_text .= "\t<thead>\n";
+		$nachrichten_text .= "\t\t<tr>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
+		$nachrichten_text .= "\t\t</tr>\n";
+		$nachrichten_text .= "\t</thead>\n";
+		$nachrichten_text .= "\t<tbody>\n";
+
+		$ges_anzahl = $ges_staerke = $ges_schild = 0;
+		foreach($verteidiger as $name=>$flotten)
+		{
+			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
+			$nachrichten_text .= "\t\t\t<th colspan=\"4\">".utf8_htmlentities($name)."</th>\n";
+			$nachrichten_text .= "\t\t</tr>\n";
+			
+			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
+			$one = false;
+			foreach($flotten as $id=>$anzahl)
+			{
+				$item_info = $users_verteidiger[$name]->getItemInfo($id);
+				
+				$staerke = $item_info['att']*$anzahl;
+				$schild = $item_info['def']*$anzahl;
+
+				if($anzahl > 0)
+				{
 					$nachrichten_text .= "\t\t<tr>\n";
 					$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
 					$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 					$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 					$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
 					$nachrichten_text .= "\t\t</tr>\n";
-		
-					$this_ges_anzahl += $anzahl;
-					$this_ges_staerke += $staerke;
-					$this_ges_schild += $schild;
+					$one = true;
 				}
-				
+	
+				$this_ges_anzahl += $anzahl;
+				$this_ges_staerke += $staerke;
+				$this_ges_schild += $schild;
+			}
+			
+			if(!$one)
+			{
+				$nachrichten_text .= "\t\t<tr class=\"keine\">\n";
+				$nachrichten_text .= "\t\t\t<td colspan=\"4\">Keine.</td>\n";
+				$nachrichten_text .= "\t\t</tr>\n";
+			}
+			else
+			{
 				$nachrichten_text .= "\t\t<tr class=\"gesamt\">\n";
 				$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
 				$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
 				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
 				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
 				$nachrichten_text .= "\t\t</tr>\n";
-				
-				$ges_anzahl += $this_ges_anzahl;
-				$ges_staerke += $this_ges_staerke;
-				$ges_schild += $this_ges_schild;
 			}
 			
-			$nachrichten_text .= "\t</tbody>\n";
-			
-			if(count($verteidiger) > 1)
-			{
-				$nachrichten_text .= "\t<tfoot>\n";
-				$nachrichten_text .= "\t\t<tr>\n";
-				$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
-				$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
-				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
-				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
-				$nachrichten_text .= "\t\t</tr>\n";
-				$nachrichten_text .= "\t</tfoot>\n";
-			}
-			$nachrichten_text .= "</table>\n";
+			$ges_anzahl += $this_ges_anzahl;
+			$ges_staerke += $this_ges_staerke;
+			$ges_schild += $this_ges_schild;
 		}
+		
+		$nachrichten_text .= "\t</tbody>\n";
+		
+		if(count($verteidiger) > 1)
+		{
+			$nachrichten_text .= "\t<tfoot>\n";
+			$nachrichten_text .= "\t\t<tr>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
+			$nachrichten_text .= "\t\t</tr>\n";
+			$nachrichten_text .= "\t</tfoot>\n";
+		}
+		$nachrichten_text .= "</table>\n";
 		
 		if(count($angreifer_anfang) > 1)
 		{
@@ -1770,12 +1785,9 @@
 		$ges_anzahl = $ges_staerke = $ges_schild = 0;
 		foreach($angreifer_anfang as $name=>$flotten)
 		{
-			if($show_angreifer)
-			{
-				$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
-				$nachrichten_text .= "\t\t\t<th colspan=\"4\">".utf8_htmlentities($name)."</th>\n";
-				$nachrichten_text .= "\t\t</tr>\n";
-			}
+			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
+			$nachrichten_text .= "\t\t\t<th colspan=\"4\">".utf8_htmlentities($name)."</th>\n";
+			$nachrichten_text .= "\t\t</tr>\n";
 			
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
 			$angreifer_punkte[$name] = 0;
@@ -1875,6 +1887,7 @@
 			$nachrichten_text .= "\t\t</tr>\n";
 			
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
+			$verteidiger_punkte[$name] = 0;
 			$verteidiger_ress[$name] = array(0, 0, 0, 0);
 			$one = false;
 			foreach($flotten as $id=>$anzahl_old)
@@ -1983,12 +1996,6 @@
 			$truemmerfeld[1] = round($truemmerfeld[1]);
 			$truemmerfeld[2] = round($truemmerfeld[2]);
 			$truemmerfeld[3] = round($truemmerfeld[3]);
-
-			truemmerfeld::add($target_pos[0], $target_pos[1], $target_pos[2], $truemmerfeld[0], $truemmerfeld[1], $truemmerfeld[2], $truemmerfeld[3]);
-
-			$nachrichten_text .= "<p>\n";
-			$nachrichten_text .= "\tFolgende Tr\xc3\xbcmmer zerst\xc3\xb6rter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: ".ths($truemmerfeld[0])."&nbsp;Carbon, ".ths($truemmerfeld[1])."&nbsp;Aluminium, ".ths($truemmerfeld[2])."&nbsp;Wolfram und ".ths($truemmerfeld[3])."&nbsp;Radium.\n";
-			$nachrichten_text .= "</p>\n";
 		}
 
 		# Kampferfahrung
@@ -2014,9 +2021,11 @@
 		# $nachrichten_text: Kampfbericht, es muessen noch fuer jeden Benutzer die regenerierten
 		#                    Verteidigungsrohstoffe aus $verteidiger_ress angehaengt werden.
 		# 
+		# $truemmerfeld: Das Truemmerfeld, das entstehen wird
+		# 
 		# Rohstoffe muessen noch gestohlen werden
 
-		return array($winner, $angreifer, $verteidiger, $nachrichten_text, $verteidiger_ress);
+		return array($winner, $angreifer, $verteidiger, $nachrichten_text, $verteidiger_ress, $truemmerfeld);
 	}
 	
 	function array_sum_r($array)
