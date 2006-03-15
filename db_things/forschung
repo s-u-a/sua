@@ -7,6 +7,6 @@ F5	Verteidiungsstrategie	2300.1144.700.300	205	B8-2 B10-3 F0-2	Eine bessere Vert
 F10	Schildtechnik	10000.5000.2500.3000	8293	B8-10 B10-5 F5-3	
 F6	Rückstoßantrieb	2000.1000.500.222	121	B8-3 F3-2	Dieser einfache Antrieb erhöht die Geschwindigkeit aller Raumschiffe um 2,5 %.
 F7	Ionenantrieb	10000.3333.1000.600	365	B8-7 F3-5	Der Ionenantrieb erhöht die Geschwindigkeit aller Raumschiffe um fünf Prozent.
-F8	Kernantrieb	1508549.1547298.663875.503226	69133	B8-20 F3-12	Der Kernantrieb erhöht die Geschwindigkeit aller Raumschiffe drastisch, um 50 % pro Entwicklungsstufe.
-F9	Ingeneurswissenschaft	11893298.10989434.10698823.10189342	241920	B8-30 F2-20	Erforscht neue Wege des Tief- und Hochbaus. Jede Stufe vergrößert die Größe Ihrer Planeten um einen weiteren Faktor. (Stufe 1: doppelt so groß wie ursprünglich, Stufe 2: dreimal so groß wie ursprünglich, Stufe 3: viermal so groß …)
+F8	Kernantrieb	150854.154729.66387.50322	69133	B8-20 F3-12	Der Kernantrieb erhöht die Geschwindigkeit aller Raumschiffe drastisch, um 50 % pro Entwicklungsstufe.
+F9	Ingeneurswissenschaft	1189329.1098943.1069882.1018934	241920	B8-30 F2-20	Erforscht neue Wege des Tief- und Hochbaus. Jede Stufe vergrößert die Größe Ihrer Planeten um einen weiteren Faktor. (Stufe 1: doppelt so groß wie ursprünglich, Stufe 2: dreimal so groß wie ursprünglich, Stufe 3: viermal so groß …)
 F11	Laderaumerweiterung	200000.130000.100000.75000	9606	B8-20 B10-15 F0-5 F2-6	

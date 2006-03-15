@@ -53,7 +53,7 @@
 		$rueckbau = true;
 	}
 
-	if(isset($a_id) && !$user_array['umode'] && isset($items['gebaeude'][$a_id]) && $items['gebaeude'][$a_id]['buildable'] && ($a_id != 'B8' || !isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0]) == '') && ($a_id != 'B9' || !isset($this_planet['building']['roboter']) || count($this_planet['building']['roboter']) == 0) && ($a_id != 'B10' || !isset($this_planet['building']['schiffe']) || count($this_planet['building']['schiffe']) == 0) && ($a_id != 'B10' || !isset($this_planet['building']['verteidigung']) || count($this_planet['building']['verteidigung']) == 0) && ($this_planet['size'][0]+$items['gebaeude'][$a_id]['fields']*(1-2*$rueckbau)) <= floor($this_planet['size'][1]))
+	if(isset($a_id) && !$user_array['umode'] && isset($items['gebaeude'][$a_id]) && $items['gebaeude'][$a_id]['buildable'] && (!isset($this_planet['building']['gebaeude']) || trim($this_planet['building']['gebaeude'][0]) == '') && ($a_id != 'B8' || !isset($this_planet['building']['forschung']) || trim($this_planet['building']['forschung'][0]) == '') && ($a_id != 'B9' || !isset($this_planet['building']['roboter']) || count($this_planet['building']['roboter']) == 0) && ($a_id != 'B10' || !isset($this_planet['building']['schiffe']) || count($this_planet['building']['schiffe']) == 0) && ($a_id != 'B10' || !isset($this_planet['building']['verteidigung']) || count($this_planet['building']['verteidigung']) == 0) && ($this_planet['size'][0]+$items['gebaeude'][$a_id]['fields']*(1-2*$rueckbau)) <= floor($this_planet['size'][1]))
 	{
 		# Ausbau
 
