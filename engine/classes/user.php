@@ -918,9 +918,9 @@
 			{
 				$item = Classes::Item($id);
 				if($type === false) $type = $item->getType();
-				$info['type'] = $type;
 				$info = $item->getInfo();
 				if(!$info) return false;
+				$info['type'] = $type;
 				$info['buildable'] = $info['deps-okay'] = $item->checkDependencies($this, $run_eventhandler);
 				$info['level'] = $this->getItemLevel($id, $type, $run_eventhandler);
 				

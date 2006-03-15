@@ -137,7 +137,12 @@ EOF
 	if(function_exists('pcntl_signal'))
 	{
 		pcntl_signal(SIGTERM, "sig_handler");
-		if($daemon) pcntl_signal(SIGHUP, "sig_handler");
+		if($daemon)
+		{
+			pcntl_signal(SIGHUP, "sig_handler");
+			if(function_exists('posix_setsid'))
+				posix_setsid();
+		}
 	}
 	
 	$USE_OB = false;
