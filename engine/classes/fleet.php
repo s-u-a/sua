@@ -1686,7 +1686,7 @@
 					{
 						$nachrichten_text .= ths($floor_diff)."&nbsp;Einheit";
 						if($floor_diff != 1) $nachrichten_text .= "en";
-						$nachrichten_text .= " des Typs ".utf8_htmlentities($item_info['name'])." (".utf8_htmlentities($att_user).") werden zerst\xc3\xb6rt. ".$d[$att_user][$att_id]." verbleiben.</li>\n";
+						$nachrichten_text .= " des Typs ".utf8_htmlentities($item_info['name'])." (".utf8_htmlentities($att_user).") werden zerst\xc3\xb6rt. ".ths(ceil($d[$att_user][$att_id]))." verbleiben.</li>\n";
 					}
 					$staerke = 0;
 				}
@@ -1878,7 +1878,7 @@
 				{
 					$item_info = $users_verteidiger[$name]->getItemInfo($id, false, true, true);
 					
-					if(isset($verteidiger[$name]) && isset($verteidiger[$id]))
+					if(isset($verteidiger[$name]) && isset($verteidiger[$name][$id]))
 						$anzahl = $angreifer[$name][$id];
 					else $anzahl = 0;
 					
