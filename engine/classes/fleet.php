@@ -1922,7 +1922,7 @@
 				$this_ges_schild += $schild;
 			}
 			
-			if($one)
+			if(!$one)
 			{
 				$nachrichten_text .= "\t\t<tr class=\"keine\">\n";
 				$nachrichten_text .= "\t\t\t<td colspan=\"4\">Keine.</td>\n";
