@@ -29,13 +29,13 @@
 		{
 			switch($o[0])
 			{
-				case 'h': case 'help':
+				case 'h': case '--help':
 					$print_usage = true;
 					break;
-				case 'd': case 'daemon':
+				case 'd': case '--daemon':
 					$daemon = true;
 					break;
-				case 'v': case 'verbose':
+				case 'v': case '--verbose':
 					$verbose = true;
 					break;
 			}
