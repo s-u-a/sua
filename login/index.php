@@ -66,7 +66,7 @@
 			foreach($ncount as $type=>$count)
 			{
 				if($count > 0)
-					$title[] = htmlentities($message_type_names[$type]).':&nbsp;'.htmlentities($count);
+					$title[] = utf8_htmlentities($message_type_names[$type]).':&nbsp;'.htmlentities($count);
 				if($count == $ges_ncount)
 					$link .= '?type='.urlencode($type);
 			}

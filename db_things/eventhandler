@@ -1,21 +1,122 @@
 #!/usr/bin/php
 <?php
-	if(!isset($_SERVER['argv'][1]))
+	$print_usage = false;
+	$error = false;
+	$daemon = false;
+	$verbose = false;
+	
+	$getopt_exists = false;
+	foreach(explode(':', get_include_path()) as $path)
 	{
-		fputs(STDERR, "Usage: ".$_SERVER['argv'][0]." [Database dir]\n");
-		exit(1);
+		if(is_file($path.'/Console/Getopt.php') && is_readable($path.'/Console/Getopt.php'))
+		{
+			$getopt_exists = true;
+			break;
+		}
 	}
 	
-	declare(ticks=1);
-	
-	if(function_exists('pcntl_fork')) $pid = pcntl_fork();
-	else $pid = -1;
-	
-	if($pid == -1) fputs(STDERR, "Forking failed, continuing.\n");
-	elseif($pid)
+	if($getopt_exists)
 	{
-		fputs(STDOUT, "Eventhandler forked, PID ".$pid.".\n");
-		exit(0);
+		require_once('Console/Getopt.php'); # PEAR
+		$options = Console_Getopt::getopt($_SERVER['argv'], 'hdv', array('help', 'daemon', 'verbose'));
+		if($options instanceof PEAR_Error)
+		{
+			fputs(STDERR, $options->message."\n");
+			exit(1);
+		}
+		
+		foreach($options[0] as $o)
+		{
+			switch($o[0])
+			{
+				case 'h': case 'help':
+					$print_usage = true;
+					break;
+				case 'd': case 'daemon':
+					$daemon = true;
+					break;
+				case 'v': case 'verbose':
+					$verbose = true;
+					break;
+			}
+		}
+		
+		if(!isset($options[0][0]))
+		{
+			if(!$print_usage) $error = true;
+		}
+		else $db_dir = $options[0][0];
+	}
+	else
+	{
+		fputs(STDERR, "Warning: PEAR package Console_Getopt does not exist. Switching to default options.\n\n");
+		if(isset($_SERVER['argv'][1])) $db_dir = $_SERVER['argv'][1];
+		else $error = true;
+	}
+	
+	if($print_usage || $error)
+	{
+		if($error) $stream = STDERR;
+		else $stream = STDOUT;
+		
+		fputs($stream, <<<EOF
+Usage: {$_SERVER['argv'][0]} [Options] <Database directory>
+Options:
+  -h, --help:    Display this help and exit
+  -d, --daemon:  Run in background
+  -v, --verbose: Verbose output
+
+EOF
+		);
+		
+		if($error) exit(1);
+		else exit(0);
+	}
+	
+	if($daemon)
+	{
+		declare(ticks=1);
+		
+		if(function_exists('pcntl_fork')) $pid = pcntl_fork();
+		else $pid = -1;
+		
+		if($pid == -1) fputs(STDERR, "Forking failed, continuing.\n");
+		elseif($pid)
+		{
+			fputs(STDOUT, "Eventhandler forked, PID ".$pid.".\n");
+			exit(0);
+		}
+	}
+	
+	function error_handler($errno, $errstr, $errfile, $errline, $errcontext)
+	{
+		global $errlog;
+		switch($errno)
+		{
+			case E_WARNING:
+				fputs($errlog, "Warning: ");
+				break;
+			case E_NOTICE:
+				fputs($errlog, "Notice: ");
+				break;
+			default:
+				fputs($errlog, "Error ".$errno.": ");
+				break;
+		}
+		
+		fputs($errlog, $errstr);
+		fputs($errlog, " in ".$errfile." on line ".$errline.".\n");
+		
+		global $verbose;
+		if($verbose)
+		{
+			fputs($errlog, "Error context:\n");
+			ob_start();
+			var_dump($errcontext);
+			$context_string = ob_get_contents();
+			ob_end_clean();
+			fputs($errlog, $context_string."\n");
+		}
 	}
 	
 	function sig_handler($signo)
@@ -24,11 +125,11 @@
 		switch($signo)
 		{
 			case SIGTERM:
-				fwrite($errlog, "SIGTERM (".SIGTERM.")\n");
+				fputs($errlog, "SIGTERM (".SIGTERM.")\n");
 				define('terminate', true);
 				break;
 			case SIGHUP:
-				fwrite($errlog, "SIGHUP (".SIGHUP.")\n");
+				fputs($errlog, "SIGHUP (".SIGHUP.")\n");
 				break;
 		}
 	}
@@ -36,7 +137,7 @@
 	if(function_exists('pcntl_signal'))
 	{
 		pcntl_signal(SIGTERM, "sig_handler");
-		pcntl_signal(SIGHUP, "sig_handler");
+		if($daemon) pcntl_signal(SIGHUP, "sig_handler");
 	}
 	
 	$USE_OB = false;
@@ -44,15 +145,19 @@
 	
 	set_time_limit(0);
 	
-	define_globals($_SERVER['argv'][1]);
+	define_globals($db_dir);
+	
+	if($daemon) $errlog = fopen(DB_DIR.'/eventhandler.log', 'a');
+	else $errlog = STDERR;
+	
+	set_error_handler('error_handler', E_WARNING);
+	set_error_handler('error_handler', E_NOTICE);
 	
 	__autoload('Classes');
 	__autoload('Fleet');
 	__autoload('Galaxy');
 	
 	$fposition = 0;
-	
-	$errlog = fopen(DB_DIR.'/eventhandler.log', 'a');
 	
 	while(true)
 	{
@@ -65,13 +170,13 @@
 			if($fleet->getStatus() != 1)
 			{
 				if($fleet->getStatus() == 0)
-					fwrite($errlog, "Notice: Fleet ".$process['fleet']." had status 0.\n");
+					fputs($errlog, "Notice: Fleet ".$process['fleet']." had status 0.\n");
 				else
-					fwrite($errlog, "Warning: Fleet ".$process['fleet']." had status ".$fleet->getStatus().". The time was ".$process['time'].". Please re-put it into the database if you want it to be processed.\n");
+					fputs($errlog, "Warning: Fleet ".$process['fleet']." had status ".$fleet->getStatus().". The time was ".$process['time'].". Please re-put it into the database if you want it to be processed.\n");
 			}
 			elseif($fleet->getNextArrival() < time() && !$fleet->arriveAtNextTarget())
 			{
-				fwrite($errlog, "Warning: Couldn't complete fleet ".$process['fleet'].". The time was ".$process['time'].". Please re-put it into the database if you want it to be completed.\n");
+				fputs($errlog, "Warning: Couldn't complete fleet ".$process['fleet'].". The time was ".$process['time'].". Please re-put it into the database if you want it to be completed.\n");
 				break;
 			}
 			unset($fleet);
@@ -81,12 +186,10 @@
 		}
 		if(defined('terminate') && terminate)
 		{
-			fwrite($errlog, "Terminated.\n");
+			fputs($errlog, "Terminated.\n");
 			exit(0);
 		}
 		
 		sleep(EVENTHANDLER_INTERVAL);
 	}
-	
-	fclose($errlog);
 ?>

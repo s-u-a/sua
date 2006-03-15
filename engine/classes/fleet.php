@@ -1783,7 +1783,6 @@
 				
 				$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
 				$angreifer_punkte[$name] = 0;
-				if(!isset($angreifer[$name])) $angreifer[$name] = array();
 				foreach($flotten as $id=>$old_anzahl)
 				{
 					$item_info = $users_angreifer[$name]->getItemInfo($id, false, true, true);
@@ -1791,10 +1790,7 @@
 					if(isset($angreifer[$name]) && isset($angreifer[$name][$id]))
 						$anzahl = $angreifer[$name][$id];
 					else
-					{
 						$anzahl = 0;
-						$angreifer[$name][$id] = 0;
-					}
 					
 					$diff = $old_anzahl-$anzahl;
 					$truemmerfeld[0] += $item_info['ress'][0]*$diff*.4;
@@ -1877,7 +1873,6 @@
 				$nachrichten_text .= "\t\t</tr>\n";
 				
 				$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
-				$verteidiger_punkte[$name] = 0;
 				$verteidiger_ress[$name] = array(0, 0, 0, 0);
 				foreach($flotten as $id=>$anzahl_old)
 				{
