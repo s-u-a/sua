@@ -786,7 +786,7 @@
 								if(!$message->create()) continue;
 								$message->subject('Abbau auf '.$next_target);
 								$message->text(sprintf(<<<EOF
-<p>Ihre Flotte erreicht das Trümmerfeld auf {$next_target} und belädt die {$trans_total} Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s Carbon, %s Aluminium, %s Wolfram und %s Radium.</p>
+<p>Ihre Flotte erreicht das Trümmerfeld auf {$next_target} und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s Carbon, %s Aluminium, %s Wolfram und %s Radium.</p>
 <h3>Verbleibende Rohstoffe im Trümmerfeld</h3>
 <dl class="ress truemmerfeld-verbleibend">
 	<dt class="c-carbon">Carbon</dt>
@@ -802,7 +802,7 @@
 	<dd class="c-radium">%s</dd>
 </dl>
 EOF
-									, ths($rtrans[0]), ths($rtrans[1]), ths($rtrans[2]), ths($rtrans[3]), ths($tr_verbl[0]), ths($tr_verbl[1]), ths($tr_verbl[2]), ths($tr_verbl[3])));
+									, ths($trans_total), ths($rtrans[0]), ths($rtrans[1]), ths($rtrans[2]), ths($rtrans[3]), ths($tr_verbl[0]), ths($tr_verbl[1]), ths($tr_verbl[2]), ths($tr_verbl[3])));
 								$message->addUser($username, 4);
 								$message->html(true);
 							}
