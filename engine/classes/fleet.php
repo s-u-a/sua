@@ -775,7 +775,7 @@
 							}
 							
 							# Aus dem Truemmerfeld abziehen
-							truemmerfeld::sub($target[0], $target[1], $target[2], $max_ress[0], $max_ress[1], $max_ress[2], $max_ress[3]);
+							truemmerfeld::sub($target[0], $target[1], $target[2], $ress_max[0], $ress_max[1], $ress_max[2], $ress_max[3]);
 							
 							$tr_verbl = truemmerfeld::get($target[0], $target[1], $target[2]);
 							
