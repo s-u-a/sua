@@ -703,6 +703,108 @@
 					switch($type)
 					{
 						case 2: # Sammeln
+							$ress_max = truemmerfeld::get($target[0], $target[1], $target[2]);
+							$ress_max_total = array_sum($ress_max);
+							
+							# Transportkapazitaeten
+							$trans = array();
+							$trans_total = 0;
+							foreach($this->raw[1] as $username=>$info)
+							{
+								$this_trans_used = array_sum($info[3][0]);
+								$this_trans_tf = 0;
+								$this_trans_total = 0;
+								
+								$this_user = Classes::User($username);
+								foreach($info[0] as $id=>$count)
+								{
+									$item_info = $this_user->getItemInfo($id, 'schiffe');
+									$this_trans = $item_info['trans'][0]*$count;
+									$this_trans_total += $this_trans;
+									if(in_array(2, $item_info['types']))
+										$this_trans_tf += $this_trans;
+								}
+								
+								$this_trans_free = $this_trans_total-$this_trans_used;
+								if($this_trans_free < $this_trans_tf)
+									$this_trans_tf = $this_trans_free;
+								$trans[$username] = $this_trans_tf;
+							}
+							$trans_total = array_sum($trans);
+							
+							if($trans_total < $ress_max_total)
+							{
+								$f = $trans_total/$ress_max_total;
+								$ress_max[0] = floor($ress_max[0]*$f);
+								$ress_max[1] = floor($ress_max[1]*$f);
+								$ress_max[2] = floor($ress_max[2]*$f);
+								$ress_max[3] = floor($ress_max[3]*$f);
+								$ress_max_total = array_sum($ress_max);
+								$diff = $trans_total-$ress_max_total;
+								$diff2 = $diff%4;
+								$each = $diff-$diff2;
+								$ress_max[0] += $each;
+								$ress_max[1] += $each;
+								$ress_max[2] += $each;
+								$ress_max[3] += $each;
+								switch($diff)
+								{
+									case 3: $ress_max[2]++;
+									case 2: $ress_max[1]++;
+									case 1: $ress_max[0]++;
+								}
+							}
+							
+							$got_ress = array();
+							
+							foreach($trans as $user=>$cap)
+							{
+								$rtrans = array();
+								$p = $cap/$trans_total;
+								$rtrans[0] = floor($ress_max[0]*$p);
+								$rtrans[1] = floor($ress_max[1]*$p);
+								$rtrans[2] = floor($ress_max[2]*$p);
+								$rtrans[3] = floor($ress_max[3]*$p);
+								
+								$this->raw[1][$user][3][0][0] += $rtrans[0];
+								$this->raw[1][$user][3][0][1] += $rtrans[1];
+								$this->raw[1][$user][3][0][2] += $rtrans[2];
+								$this->raw[1][$user][3][0][3] += $rtrans[3];
+								
+								$got_ress[$username] = $rtrans;
+							}
+							
+							# Aus dem Truemmerfeld abziehen
+							truemmerfeld::sub($target[0], $target[1], $target[2], $max_ress[0], $max_ress[1], $max_ress[2], $max_ress[3]);
+							
+							$tr_verbl = truemmerfeld::get($target[0], $target[1], $target[2]);
+							
+							# Nachrichten versenden
+							foreach($got_ress as $username=>$rtrans)
+							{
+								$message = Classes::Message();
+								if(!$message->create()) continue;
+								$message->subject('Abbau auf '.$next_target);
+								$message->text(sprintf(<<<EOF
+<p>Ihre Flotte erreicht das Trümmerfeld auf {$next_target} und belädt die {$trans_total} Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s Carbon, %s Aluminium, %s Wolfram und %s Radium.</p>
+<h3>Verbleibende Rohstoffe im Trümmerfeld</h3>
+<dl class="ress truemmerfeld-verbleibend">
+	<dt class="c-carbon">Carbon</dt>
+	<dd class="c-carbon">%s</dd>
+	
+	<dt class="c-aluminium">Aluminium</dt>
+	<dd class="c-aluminium">%s</dd>
+	
+	<dt class="c-wolfram">Wolfram</dt>
+	<dd class="c-wolfram">%s</dd>
+	
+	<dt class="c-radium">Radium</dt>
+	<dd class="c-radium">%s</dd>
+</dl>
+EOF
+									, ths($rtrans[0]), ths($rtrans[1]), ths($rtrans[2]), ths($rtrans[3]), ths($tr_verbl[0]), ths($tr_verbl[1]), ths($tr_verbl[2]), ths($tr_verbl[3])));
+								$message->addUser($username, 4);
+							}
 							break;
 						case 3: # Angriff
 							$angreifer = array();

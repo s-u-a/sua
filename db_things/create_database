@@ -20,15 +20,16 @@ cd $1
 DBDIR_ABS=`pwd`
 cd $CWD
 
-echo 'Order Deny,Allow' >> $1/.htaccess
+echo '3' > $1/.version
+echo 'Order Deny,Allow' > $1/.htaccess
 echo 'Deny from All' >> $1/.htaccess
 echo 'Allow from None' >> $1/.htaccess
 mkdir $1/alliances
-echo 10 >> $1/handelskurs
-echo 5 >> $1/handelskurs
-echo 3.75 >> $1/handelskurs
-echo 2.5 >> $1/handelskurs
-echo 1 >> $1/handelskurs
+echo 10 > $1/handelskurs
+echo 5 > $1/handelskurs
+echo 3.75 > $1/handelskurs
+echo 2.5 > $1/handelskurs
+echo 1 > $1/handelskurs
 touch $1/highscores
 touch $1/highscores_alliances
 touch $1/highscores_alliances2
@@ -50,12 +51,10 @@ touch $1/admins
 read -p "Enter Admin user name: " ADMIN_USERNAME
 read -s -p "Enter Admin password: " ADMIN_PASSWD
 echo
-export ADMIN_PASSWD
-ADMIN_PASSWD=`php -r 'echo md5($_ENV["ADMIN_PASSWD"]);'`
 
-echo -n $ADMIN_USERNAME >> $1/admins
+echo -n "$ADMIN_USERNAME" > $1/admins
 echo -ne "\t" >> $1/admins
-echo -n $ADMIN_PASSWD >> $1/admins
+echo -n "$ADMIN_PASSWD" | md5sum | awk '{ ORS=""; print $1; }' >> $1/admins
 echo -ne "\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1" >> $1/admins
 
 unset ADMIN_PASSWD
