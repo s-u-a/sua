@@ -804,6 +804,7 @@
 EOF
 									, ths($rtrans[0]), ths($rtrans[1]), ths($rtrans[2]), ths($rtrans[3]), ths($tr_verbl[0]), ths($tr_verbl[1]), ths($tr_verbl[2]), ths($tr_verbl[3])));
 								$message->addUser($username, 4);
+								$message->html(true);
 							}
 							break;
 						case 3: # Angriff
