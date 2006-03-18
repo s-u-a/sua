@@ -80,13 +80,13 @@
     <item url="features.php" uploadstatus="1" />
     <item url="engine/classes/" uploadstatus="1" />
     <item url="engine/classes/dataset.php" uploadstatus="1" />
-    <item url="engine/classes/user.php" uploadstatus="1" />
+    <item url="engine/classes/user.php" bookmarks="" uploadstatus="1" />
     <item url="engine/classes/alliance.php" uploadstatus="1" />
     <item url="engine/classes/message.php" uploadstatus="1" />
     <item url="engine/classes/publicmessage.php" uploadstatus="1" />
     <item url="engine/classes/item.php" bookmarks="" uploadstatus="1" />
     <item url="engine/classes/classes.php" uploadstatus="1" />
-    <item url="engine/classes/fleet.php" bookmarks="" uploadstatus="1" />
+    <item url="engine/classes/fleet.php" bookmarks="776" uploadstatus="1" />
     <item url="engine/classes/galaxy.php" uploadstatus="1" />
     <item url="db_things/walkthrough_users" uploadstatus="1" />
     <item url="db_things/database_convert_v0_v1" uploadstatus="1" />
@@ -116,9 +116,10 @@
       <mailinglist address="" />
     </teamdata>
     <events/>
-    <item url="engine/classes/eventfile.php" />
-    <item url="INSTALL" />
-    <item url="LICENSE" />
-    <item url="READ_ON_UPDATE" />
+    <item url="engine/classes/eventfile.php" bookmarks="" uploadstatus="1" />
+    <item url="INSTALL" uploadstatus="1" />
+    <item url="LICENSE" uploadstatus="1" />
+    <item url="READ_ON_UPDATE" uploadstatus="1" />
+    <item url="engine/classes/highscores.php" />
   </project>
 </webproject>

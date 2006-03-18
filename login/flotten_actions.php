@@ -4,33 +4,26 @@
 	if(!isset($_GET['action']))
 		$_GET['action'] = false;
 	
+	login_gui::html_head();
+	
 	switch($_GET['action'])
 	{
 		case 'handel':
 			if(!isset($_GET['id'])) $flotten_id = false;
 			else $flotten_id = $_GET['id'];
 			
-			if(!isset($user_array['flotten'][$flotten_id]) || $user_array['flotten'][$flotten_id][2] != '4' || $user_array['flotten'][$flotten_id][7])
-				$flotten_id = false;
+			$fleet = Classes::Fleet($_GET['id']);
+			if(!$fleet->getStatus()) $flotten_id = false;
+			$flotten_id = $fleet->getName();
 			
-			if($flotten_id)
-			{
-				$from_pos = explode(':', $user_array['flotten'][$flotten_id][3][0]);
-				$from_info = universe::get_planet_info($from_pos[0], $from_pos[1], $from_pos[2]);
-				
-				if(!$from_info[1])
-					$flotten_id = false;
-				
-				$to_pos = explode(':', $user_array['flotten'][$flotten_id][3][1]);
-				$to_info = universe::get_planet_info($to_pos[0], $to_pos[1], $to_pos[2]);
-				
-				if($to_info[1] != $_SESSION['username'])
-					$flotten_id = false;
-			}
+			$planet_key = $me->getPlanetByPos($fleet->getCurrentTarget());
+			$type = $fleet->getCurrentType();
+			
+			if($planet_key === false || $type != '4' || $fleet->isFlyingBack())
+				$flotten_id = false;
 			
 			if(!$flotten_id)
 			{
-				login_gui::html_head();
 ?>
 <p class="error">Ungültiger Transport ausgewählt.</p>
 <?php
@@ -38,268 +31,298 @@
 				exit();
 			}
 			
-			$flotte = & $user_array['flotten'][$flotten_id];
-			
-			if($from_info[1] == $_SESSION['username'])
-				$that_user_array = & $user_array;
-			else
-				$that_user_array = get_user_array($from_info[1]);
-			
-			$planets = array_keys($user_array['planets']);
-			foreach($planets as $planet)
-			{
-				if($user_array['planets'][$planet]['pos'] == $flotte[3][1])
-				{
-					$that_planet = & $user_array['planets'][$planet];
-					break;
-				}
-			}
-			
-			$bisher_handel = array(array(0,0,0,0,0), array());
-			if(isset($flotte[8]))
-				$bisher_handel = $flotte[8];
-			
-			$laderaum = 0;
-			if(isset($that_user_array['forschung']['F11']))
-				$laderaum = $that_user_array['forschung']['F11'];
-			
-			$transport = array(0, 0);
-			foreach($flotte[0] as $id=>$anzahl)
-			{
-				if(!isset($items['schiffe'][$id]))
-					continue;
-				$transport[0] += $items['schiffe'][$id]['trans'][0]*$anzahl;
-				$transport[1] += $items['schiffe'][$id]['trans'][1]*$anzahl;
-			}
-			
-			$laderaum_f = pow(1.2, $laderaum);
-			$transport[0] *= $laderaum_f;
-			$transport[1] *= $laderaum_f;
-			
-			$transport[0] -= array_sum($bisher_handel[0]);
-			$transport[1] -= array_sum($bisher_handel[1]);
-			
-			$transport[0] = floor($transport[0]);
-			$transport[1] = floor($transport[1]);
-			
-			if(isset($_POST['beladen']))
-			{
-				$beladen = array(array(0,0,0,0,0), array());
-				if(isset($_POST['beladen'][0]) && $transport[0] > 0)
-				{
-					if(isset($_POST['beladen'][0][0]) && $_POST['beladen'][0][0] > 0) $beladen[0][0] = (int) $_POST['beladen'][0][0];
-					if(isset($_POST['beladen'][0][1]) && $_POST['beladen'][0][1] > 0) $beladen[0][1] = (int) $_POST['beladen'][0][1];
-					if(isset($_POST['beladen'][0][2]) && $_POST['beladen'][0][2] > 0) $beladen[0][2] = (int) $_POST['beladen'][0][2];
-					if(isset($_POST['beladen'][0][3]) && $_POST['beladen'][0][3] > 0) $beladen[0][3] = (int) $_POST['beladen'][0][3];
-					if(isset($_POST['beladen'][0][4]) && $_POST['beladen'][0][4] > 0) $beladen[0][4] = (int) $_POST['beladen'][0][4];
-					
-					if($beladen[0][0] > $that_planet['ress'][0]) $beladen[0][0] = $that_planet['ress'][0];
-					if($beladen[0][1] > $that_planet['ress'][1]) $beladen[0][1] = $that_planet['ress'][1];
-					if($beladen[0][2] > $that_planet['ress'][2]) $beladen[0][2] = $that_planet['ress'][2];
-					if($beladen[0][3] > $that_planet['ress'][3]) $beladen[0][3] = $that_planet['ress'][3];
-					if($beladen[0][4] > $that_planet['ress'][4]) $beladen[0][4] = $that_planet['ress'][4];
-				}
-				elseif(isset($_POST['beladen'][1]) && $transport[1] > 0)
-				{
-					foreach($items['roboter'] as $id=>$info)
-					{
-						if(isset($_POST['beladen'][1][$id]) && $_POST['beladen'][1][$id] > 0 && isset($that_planet['roboter'][$id]))
-						{
-							$beladen[1][$id] = (int) $_POST['beladen'][1][$id];
-							if($beladen[1][$id] > $that_planet['roboter'][$id])
-								$beladen[1][$id] = $that_planet['roboter'][$id];
-						}
-					}
-				}
-				
-				if(array_sum($beladen[0]) > 0)
-				{
-					$k = $transport[0]/array_sum($beladen[0]);
-					if($k < 1)
-					{
-						$beladen[0][0] = floor($beladen[0][0]*$k);
-						$beladen[0][1] = floor($beladen[0][1]*$k);
-						$beladen[0][2] = floor($beladen[0][2]*$k);
-						$beladen[0][3] = floor($beladen[0][3]*$k);
-						$beladen[0][4] = floor($beladen[0][4]*$k);
-						$uebrig = $transport[0]-array_sum($beladen[0]);
-						$uebrig2 = $uebrig%5;
-						$uebrig -= $uebrig2;
-						$uebrig /= 5;
-						$beladen[0][0] += $uebrig;
-						$beladen[0][1] += $uebrig;
-						$beladen[0][2] += $uebrig;
-						$beladen[0][3] += $uebrig;
-						$beladen[0][4] += $uebrig;
-						switch($uebrig2)
-						{
-							case 4: $beladen[0][3]++;
-							case 3: $beladen[0][2]++;
-							case 2: $beladen[0][1]++;
-							case 1: $beladen[0][0]++;
-						}
-					}
-				}
-				if(array_sum($beladen[1]) > 0)
-				{
-					$k = $transport[1]/array_sum($beladen[1]);
-					if($k < 1)
-					{
-						foreach($beladen[1] as $id=>$anzahl)
-							$beladen[1][$id] = floor($beladen[1][$id]*$k);
-						$uebrig = array_sum($transport[1])-array_sum($beladen[1]);
-						$roboter_anzahl = count($beladen[1]);
-						$uebrig2 = $uebrig%$roboter_anzahl;
-						$uebrig -= $uebrig2;
-						$uebrig /= $roboter_anzahl;
-						foreach($beladen[1] as $id=>$anzahl)
-							$beladen[1][$id] += $uebrig;
-						$roboter = array_keys($beladen[1]);
-						for($i=0; $i<$uebrig2; $i++)
-							$beladen[1][$roboter[$i]]++;
-					}
-				}
-				
-				$bisher_handel[0][0] += $beladen[0][0];
-				$bisher_handel[0][1] += $beladen[0][1];
-				$bisher_handel[0][2] += $beladen[0][2];
-				$bisher_handel[0][3] += $beladen[0][3];
-				$bisher_handel[0][4] += $beladen[0][4];
-				
-				$that_planet['ress'][0] -= $beladen[0][0];
-				$that_planet['ress'][1] -= $beladen[0][1];
-				$that_planet['ress'][2] -= $beladen[0][2];
-				$that_planet['ress'][3] -= $beladen[0][3];
-				$that_planet['ress'][4] -= $beladen[0][4];
-				
-				foreach($beladen[1] as $id=>$anzahl)
-				{
-					if(!isset($bisher_handel[1][$id]))
-						$bisher_handel[1][$id] = $anzahl;
-					else
-						$bisher_handel[1][$id] += $anzahl;
-					$that_planet['roboter'][$id] -= $anzahl;
-					
-					# FEHLT NOCH:
-					# Bauzeiten verlaengern, wenn hier Arbeitsroboter eingelagert wurden
-				}
-				
-				# Speichern
-				$user_array['flotten'][$flotten_id][8] = $bisher_handel;
-				$that_user_array['flotten'][$flotten_id][8] = $bisher_handel;
-				write_user_array();
-				if($from_info[1] != $_SESSION['username'])
-					write_user_array($from_info[1], $that_user_array);
-				
-				$transport[0] -= array_sum($beladen[0]);
-				$transport[1] -= array_sum($beladen[1]);
-			}
-			
-			login_gui::html_head();
+			$active_planet = $me->getActivePlanet();
+			$me->setActivePlanet($planet_key);
+			$available_ress = $me->getRess();
+			$available_robs = array();
+			foreach($me->getItemsList('roboter') as $id)
+				$available_robs[$id] = $me->getItemLevel($id);
 ?>
 <h2 id="handel">Handel</h2>
 <p>Die Handelsfunktion ermöglicht es Ihnen, herannahenden Transporten Rohstoffe oder Roboter mit auf den Weg zu geben, ohne dass Sie dazu einen zusätzlichen Transport starten müssen.</p>
-<h3 id="bisher-zum-handel-eingelagert">Bisher zum Handel eingelagert</h3>
-<dl class="handel-ress">
-	<dt class="c-carbon">Carbon</dt>
-	<dd class="c-carbon"><?=ths($bisher_handel[0][0])?></dd>
-	
-	<dt class="c-aluminium">Aluminium</dt>
-	<dd class="c-aluminium"><?=ths($bisher_handel[0][1])?></dd>
-	
-	<dt class="c-wolfram">Wolfram</dt>
-	<dd class="c-wolfram"><?=ths($bisher_handel[0][2])?></dd>
-	
-	<dt class="c-radium">Radium</dt>
-	<dd class="c-radium"><?=ths($bisher_handel[0][3])?></dd>
-	
-	<dt class="c-tritium">Tritium</dt>
-	<dd class="c-tritium"><?=ths($bisher_handel[0][4])?></dd>
-</dl>
 <?php
-			if(array_sum($bisher_handel[1]) > 0)
+			foreach($fleet->getUsersList() as $username)
 			{
+				$verb = $me->isVerbuendet($username);
+				
+				if($username == $_SESSION['username']) $class = 'eigen';
+				elseif($verb) $class = 'verbuendet';
+				else $class = 'fremd';
 ?>
-<dl class="handel-roboter">
+<form action="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($_GET['id']).'&'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="handel <?=$class?>">
+	<fieldset>
+		<legend><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($username).'&'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($username)?></a></legend>
 <?php
-				foreach($bisher_handel[1] as $id=>$anzahl)
+				$trans = $fleet->getTransportCapacity($username);
+				$handel = $fleet->getHandel($username);
+				$remaining_trans = array($trans[0]-array_sum($handel[0]), $trans[1]-array_sum($handel[1]));
+				
+				if(isset($_POST['handel_username']) && $_POST['handel_username'] == $username && isset($_POST['handel']) && is_array($_POST['handel']))
 				{
-					if(!isset($items['roboter'][$id]))
-						continue;
-?>
-	<dt class="c-<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($items['roboter'][$id]['name'])?></dt>
-	<dd class="c-<?=utf8_htmlentities($id)?>"><?=ths($anzahl)?></dd>
-<?php
-				}
-?>
-</dl>
-<?php
-			}
-?>
-<p>Es verbleibt Platz für <?=ths($transport[0])?>&thinsp;<abbr title="Tonnen">t</abbr> Rohstoffe und <?=ths($transport[1])?>&nbsp;Roboter.</p>
-<?php
-			if($transport[0] > 0 || $transport[1] > 0)
-			{
-?>
-<h3 id="zusaetzliche-rohstoffe-einlagern">Zusätzliche Rohstoffe einlagern</h3>
-<form action="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($_GET['id']))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="handel-einlagern-form">
-<?php
-				if($transport[0] > 0)
-				{
-?>
-	<dl class="handel-einlagern-ress">
-		<dt class="c-carbon"><label for="carbon-einlagern-input">Carbon</label></dt>
-		<dd class="c-carbon"><input type="text" name="beladen[0][0]" id="carbon-einlagern-input" value="0" /> <span class="vorhanden">(<?=ths($that_planet['ress'][0])?>)</span></dd>
-		
-		<dt class="c-aluminium"><label for="aluminium-einlagern-input">Aluminium</label></dt>
-		<dd class="c-aluminium"><input type="text" name="beladen[0][1]" id="aluminium-einlagern-input" value="0" /> <span class="vorhanden">(<?=ths($that_planet['ress'][1])?>)</span></dd>
-		
-		<dt class="c-wolfram"><label for="carbon-einlagern-input">Wolfram</label></dt>
-		<dd class="c-wolfram"><input type="text" name="beladen[0][2]" id="wolfram-einlagern-input" value="0" /> <span class="vorhanden">(<?=ths($that_planet['ress'][2])?>)</span></dd>
-		
-		<dt class="c-radium"><label for="carbon-einlagern-input">Radium</label></dt>
-		<dd class="c-radium"><input type="text" name="beladen[0][3]" id="radium-einlagern-input" value="0" /> <span class="vorhanden">(<?=ths($that_planet['ress'][3])?>)</span></dd>
-		
-		<dt class="c-tritium"><label for="carbon-einlagern-input">Tritium</label></dt>
-		<dd class="c-tritium"><input type="text" name="beladen[0][4]" id="tritium-einlagern-input" value="0" /> <span class="vorhanden">(<?=ths($that_planet['ress'][4])?>)</span></dd>
-	</dl>
-<?php
-				}
-				if($transport[1] > 0)
-				{
-?>
-	<dl class="handel-einlagern-roboter">
-<?php
-					foreach($items['roboter'] as $id=>$info)
+					if(!isset($_POST['handel_type']) || ($_POST['handel_type'] != 'set' && $_POST['handel_type'] != 'add'))
+						$type = ($verb ? 'set' : 'add');
+					else $type = $_POST['handel_type'];
+					
+					$new_handel = array(array(0,0,0,0,0),array());
+					if(isset($_POST['handel'][0]) && is_array($_POST['handel'][0]))
 					{
-						$vorhanden = 0;
-						if(isset($that_planet['roboter'][$id]))
-							$vorhanden = $that_planet['roboter'][$id];
+						if(isset($_POST['handel'][0][0])) $new_handel[0][0] = $_POST['handel'][0][0];
+						if(isset($_POST['handel'][0][1])) $new_handel[0][1] = $_POST['handel'][0][1];
+						if(isset($_POST['handel'][0][2])) $new_handel[0][2] = $_POST['handel'][0][2];
+						if(isset($_POST['handel'][0][3])) $new_handel[0][3] = $_POST['handel'][0][3];
+						if(isset($_POST['handel'][0][4])) $new_handel[0][4] = $_POST['handel'][0][4];
+					}
+					if(isset($_POST['handel'][1]) && is_array($_POST['handel'][1]))
+						$new_handel[1] = $_POST['handel'][1];
+					
+					foreach($new_handel[0] as $i=>$v)
+					{
+						$av = $available_ress[$i];
+						if($type == 'set')
+						{
+							$add = $handel[0][$i];
+							if(!$verb && $v < $add) $v = $add;
+							$av += $add;
+						}
+							
+						if($v > $av) $v = $av;
+						$new_handel[0][$i] = $v;
+					}
+					foreach($new_handel[1] as $i=>$v)
+					{
+						if(!isset($available_robs[$i]))
+							unset($available_robs[$i]);
+						$av = $available_robs[$i];
+						if($type == 'set')
+						{
+							$add = 0;
+							if(isset($handel[1][$i])) $add = $handel[1][$i];
+							if(!$verb && $v < $add) $v = $add;
+							$av += $add;
+						}
+						if($v > $av) $new_handel[1][$i] = $av;
+						$new_handel[1][$i] = $v;
+					}
+					
+					if($type == 'set') $max = $trans;
+					else $max = $remaining_trans;
+					
+					$new_handel = array(fit_to_max($new_handel[0], $max[0]), fit_to_max($new_handel[1], $max[1]));
+					
+					if($type == 'set') $status = $fleet->setHandel($_POST['handel_username'], $new_handel[0], $new_handel[1]);
+					else $status = $fleet->addHandel($_POST['handel_username'], $new_handel[0], $new_handel[1]);
+					if($status)
+					{
+						# Gueter vom Planeten abziehen
+						if($type == 'set')
+						{
+							$ress_sub = array($new_handel[0][0]-$handel[0][0],
+							                  $new_handel[0][1]-$handel[0][1],
+							                  $new_handel[0][2]-$handel[0][2],
+							                  $new_handel[0][3]-$handel[0][3],
+							                  $new_handel[0][4]-$handel[0][4]);
+							$rob_sub = array();
+							foreach($me->getItemsList('roboter') as $id)
+							{
+								$old = $new = 0;
+								if(isset($handel[1][$id])) $old = $handel[1][$id];
+								if(isset($new_handel[1][$id])) $new = $new_handel[1][$id];
+								if($new != $old)
+									$rob_sum[$id] = $new-$old;
+							}
+						}
+						else list($ress_sub, $rob_sub) = $new_handel;
+						
+						$me->subtractRess($ress_sub, false);
+						$available_ress = $me->getRess();
+						foreach($rob_sub as $id=>$sub)
+						{
+							$available_robs[$id] -= $sub;
+							$me->changeItemLevel($ress_sub, -$sub, 'roboter');
+						}
+						
+						if($type == 'set') $handel = $new_handel;
+						else
+						{
+							$handel[0][0] += $new_handel[0][0];
+							$handel[0][1] += $new_handel[0][1];
+							$handel[0][2] += $new_handel[0][2];
+							$handel[0][3] += $new_handel[0][3];
+							$handel[0][4] += $new_handel[0][4];
+							foreach($new_handel[1] as $k=>$v)
+								$handel[1][$k] += $v;
+						}
+						$remaining_trans = array($trans[0]-array_sum($handel[0]), $trans[1]-array_sum($handel[1]));
+					}
+				}
+				
+				if($verb)
+				{
+					$mess1 = 'Sie können das Handelsangebot zu diesem Spieler ändern, da Sie mit ihm verbündet sind.';
+					if($own) $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend) und %2$s Roboter (%4$s verbleibend).';
+					else $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend).';
+					$input_name = 'set';
+					$value = '%u';
+					if($remaining_ress[0]>0 || ($username == $_SESSION['username'] && $remaining_ress[1]>0))
+					{
+						$disabled = '';
+						$show_submit = true;
+					}
+					else
+					{
+						$disabled = ' disabled="disabled"';
+						$show_submit = false;
+					}
+				}
+				else
+				{
+					$mess1 = 'Sie können das bereits eingelagerte Handelsangebot für diesen Spieler nicht ändern, da Sie nicht mit ihm verbündet sind. Sie können nur weitere Rohstoffe einlagern.';
+					$mess2 = 'Es verbleibt Platz für %3$s Tonnen Rohstoffe.';
+					$input_name = 'add';
+					$value = '0';
+					if($remaining_trans[0] == 0)
+					{
+						$disabled = ' disabled="disabled"';
+						$show_submit = false;
+					}
+					else
+					{
+						$disabled = '';
+						$show_submit = true;
+					}
+				}
 ?>
-		<dt class="c-<?=utf8_htmlentities($id)?>"><label for="einlagern-<?=utf8_htmlentities($id)?>-input"><?=utf8_htmlentities($info['name'])?></label></dt>
-		<dd class="c-<?=utf8_htmlentities($id)?>"><input type="text" name="beladen[1][<?=utf8_htmlentities($id)?>]" id="einlagern-<?=utf8_htmlentities($id)?>-input" value="0" /> <span class="vorhanden">(<?=ths($vorhanden)?>)</span></dd>
+		<input type="hidden" name="handel_username" value="<?=utf8_htmlentities($username)?>" />
+		<input type="hidden" name="handel_type" value="<?=$input_name?>" />
+		<p><?=htmlspecialchars($mess1)?></p>
+		<p><?php printf($mess2, ths($trans[0]), ths($trans[1]), ths($remaining_trans[0]), ths($remaining_trans[1]))?></p>
+		<table>
+			<thead>
+				<tr>
+					<th class="c-gut">Gut</th>
+					<th class="c-einlagern">Einlagern</th>
+<?php
+				if(!$verb)
+				{
+?>
+					<th class="c-bereits-eingelagert">Bereits eingelagert</th>
+<?php
+				}
+?>
+					<th class="c-verfuegbar">Verfügbar</th>
+				</tr>
+			</thead>
+			<tbody>
+<?php
+				if($trans[0] > 0)
+				{
+?>
+				<tr class="c-carbon">
+					<th class="c-gut">Carbon</th>
+					<td class="c-einlagern"><input type="text" name="handel[0][0]" value="<?php printf($value, $handel[0][0])?>"<?=$disabled?> /></td>
+<?php
+					if(!$verb)
+					{
+?>
+					<td class="c-bereits-eingelagert"><?=ths($handel[0][0])?></td>
 <?php
 					}
 ?>
-	</dl>
+					<td class="c-verfuegbar"><?=ths($available_ress[0])?></td>
+				</tr>
+				<tr class="c-aluminium">
+					<th class="c-gut">Aluminium</th>
+					<td class="c-einlagern"><input type="text" name="handel[0][1]" value="<?php printf($value, $handel[0][1])?>"<?=$disabled?> /></td>
+<?php
+					if(!$verb)
+					{
+?>
+					<td class="c-bereits-eingelagert"><?=ths($handel[0][1])?></td>
+<?php
+					}
+?>
+					<td class="c-verfuegbar"><?=ths($available_ress[1])?></td>
+				</tr>
+				<tr class="c-wolfram">
+					<th class="c-gut">Wolfram</th>
+					<td class="c-einlagern"><input type="text" name="handel[0][2]" value="<?php printf($value, $handel[0][2])?>"<?=$disabled?> /></td>
+<?php
+					if(!$verb)
+					{
+?>
+					<td class="c-bereits-eingelagert"><?=ths($handel[0][2])?></td>
+<?php
+					}
+?>
+					<td class="c-verfuegbar"><?=ths($available_ress[2])?></td>
+				</tr>
+				<tr class="c-radium">
+					<th class="c-gut">Radium</th>
+					<td class="c-einlagern"><input type="text" name="handel[0][3]" value="<?php printf($value, $handel[0][3])?>"<?=$disabled?> /></td>
+<?php
+					if(!$verb)
+					{
+?>
+					<td class="c-bereits-eingelagert"><?=ths($handel[0][3])?></td>
+<?php
+					}
+?>
+					<td class="c-verfuegbar"><?=ths($available_ress[3])?></td>
+				</tr>
+				<tr class="c-tritium">
+					<th class="c-gut">Tritium</th>
+					<td class="c-einlagern"><input type="text" name="handel[0][4]" value="<?php printf($value, $handel[0][4])?>"<?=$disabled?> /></td>
+<?php
+					if(!$verb)
+					{
+?>
+					<td class="c-bereits-eingelagert"><?=ths($handel[0][4])?></td>
+<?php
+					}
+?>
+					<td class="c-verfuegbar"><?=ths($available_ress[4])?></td>
+				</tr>
 <?php
 				}
+				if($username == $_SESSION['username'] && $trans[1] > 0)
+				{
+					foreach($me->getItemsList('roboter') as $id)
+					{
+						$item_info = $me->getItemInfo($id, 'roboter');
+						$h = 0;
+						if(isset($handel[1][$id])) $h = $handel[1][$id];
 ?>
-	<div><button type="submit">Einlagern</button></div>
-</form>
+				<tr class="c-ro-<?=utf8_htmlentities($id)?>">
+					<th class="c-gut"><?=utf8_htmlentities($item_info['name'])?></th>
+					<td class="c-einlagern"><input type="text" name="handel[1][<?=$id?>]" value="<?=utf8_htmlentities($h)?>"<?php if($remaining_ress[1]<=0){?> disabled="disabled"<?php }?> /></td>
+					<td class="c-verfuegbar"><?=ths($available_robs[$id])?></td>
+				</tr>
 <?php
+					}
+				}
+?>
+			</tbody>
+<?php
+				if($show_submit)
+				{
+?>
+			<tfoot>
+				<tr>
+					<td colspan="<?=3-$verb?>"><button type="submit">Handel ändern</button></td>
+				</tr>
+			</tfoot>
+<?php
+				}
 			}
-			
-			login_gui::html_foot();
 			
 			break;
 		
 		default:
-			login_gui::html_head();
 ?>
 <p class="error">Ungültige Aktion.</p>
 <?php
-			login_gui::html_foot();
 			break;
 	}
+	
+	login_gui::html_foot();
 ?>

@@ -39,8 +39,6 @@
 			define('DB_MESSAGES', DB_DIR.'/messages');
 			define('DB_MESSAGES_PUBLIC', DB_DIR.'/messages_public');
 			define('DB_HIGHSCORES', DB_DIR.'/highscores');
-			define('DB_HIGHSCORES_ALLIANCES', DB_DIR.'/highscores_alliances');
-			define('DB_HIGHSCORES_ALLIANCES2', DB_DIR.'/highscores_alliances2');
 			define('DB_TRUEMMERFELDER', DB_DIR.'/truemmerfelder');
 			define('DB_HANDEL', DB_DIR.'/handel');
 			define('DB_HANDELSKURS', DB_DIR.'/handelskurs');
@@ -1256,5 +1254,40 @@
 			usleep(50000);
 		}
 		return false;
+	}
+	
+	function fit_to_max($array, $max)
+	{
+		if(!is_array($array) || $max < 0) return false;
+		
+		$sum = 0;
+		foreach($array as $k=>$v)
+		{
+			if($v<0) $array[$k] = 0;
+			else $sum += $v;
+		}
+		
+		if($sum > $max)
+		{
+			$f = $max/$sum;
+			$sum = 0;
+			foreach($array as $k=>$v)
+			{
+				$array[$k] = floor($v*$f);
+				$sum += $array[$k];
+			}
+			
+			$remaining = $max-$sum;
+			while($remaining > 0)
+			{
+				foreach($array as $k=>$v)
+				{
+					if($v <= 0) continue;
+					$array[$k]++;
+					if(--$remaining <= 0) break 2;
+				}
+			}
+		}
+		return $array;
 	}
 ?>

@@ -119,7 +119,7 @@
 		{
 ?>
 <p class="error">
-	<?=htmlentities($error)."\n"?>
+	<?=utf8_htmlentities($error)."\n"?>
 </p>
 <?php
 		}

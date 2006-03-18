@@ -62,6 +62,7 @@
 			return true;
 		}
 		
+		# Serialize mit Instanzen und Locking
 		function User($p1=false){ return self::Dataset('User', $p1); }
 		function Alliance($p1=false){ return self::Dataset('Alliance', $p1); }
 		function Message($p1=false){ return self::Dataset('Message', $p1); }
@@ -71,12 +72,16 @@
 			return self::Dataset('Fleet', $p1);
 		}
 		
+		# Serialize
 		function Items(){ return self::Dataset('Items'); }
 		function Item($id){ return new Item($id); }
 		
+		# Eigenes Binaerformat
 		function Galaxy($p1){ return self::Dataset('Galaxy', $p1); }
 		
+		# SQLite
 		function EventFile() { return new EventFile(); }
+		function Highscores() { return new Highscores(); }
 	}
 	
 	register_shutdown_function(array('Classes', 'resetInstances'));

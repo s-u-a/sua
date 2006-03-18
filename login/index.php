@@ -247,12 +247,12 @@
 			if(array_sum($handel[0]) > 0 || array_sum($handel[1]) > 0)
 			{
 				$string .= ' Es wird ein <span class="beschreibung handel" title="';
-				$string .= 'Carbon: '.ths($flotte[8][0][0]).', Aluminium: '.ths($flotte[8][0][1]).', Wolfram: '.ths($flotte[8][0][2]).', Radium: '.ths($flotte[8][0][3]).', Tritium: '.ths($flotte[8][0][4]);
-				if(array_sum($flotte[8][1]) > 0)
+				$string .= 'Carbon: '.ths($handel[0][0]).', Aluminium: '.ths($handel[0][1]).', Wolfram: '.ths($handel[0][2]).', Radium: '.ths($handel[0][3]).', Tritium: '.ths($handel[0][4]);
+				if(array_sum($handel[1]) > 0)
 				{
 					$string .= '; ';
 					$rob = array();
-					foreach($flotte[8][1] as $id=>$anzahl)
+					foreach($handel[1] as $id=>$anzahl)
 					{
 						if(!isset($items['roboter'][$id]) || $anzahl <= 0)
 							$rob[] = utf8_htmlentities($items['roboter'][$id]['name']).': '.ths($anzahl);

@@ -1,19 +1,5 @@
 #!/usr/bin/php
 <?php
-	function highscores_by_average($a, $b)
-	{
-		if($a[1] < $b[1]) return 1;
-		elseif($a[1] > $b[1]) return -1;
-		else return 0;
-	}
-	
-	function highscores_by_overall($a, $b)
-	{
-		if($a[2] < $b[2]) return 1;
-		elseif($a[2] > $b[2]) return -1;
-		else return 0;
-	}
-	
 	require('../engine/include.php');
 
 	if(!isset($_SERVER['argv'][1]))
@@ -24,17 +10,10 @@
 	else
 		define_globals($_SERVER['argv'][1]);
 
-	function sort_highscores($a, $b)
-	{
-		if($a[0] < $b[0])
-			return 1;
-		elseif($a[0] > $b[0])
-			return -1;
-		else
-			return 0;
-	}
 
-	$highscores = array();
+	unlink(DB_HIGHSCORES);
+	
+	$highscores_obj = Classes::Highscores();
 
 	$dh = opendir(DB_PLAYERS);
 	while(($fname = readdir($dh)) !== false)
@@ -46,28 +25,11 @@
 		$this_user = new User(urldecode($fname));
 		if(!$this_user->getStatus()) continue;
 		
-		$highscores[$this_user->getName()] = array($this_user->getScores(), $this_user->allianceTag());
+		$highscores_obj->updateUser($this_user->getName(), $this_user->allianceTag(), $this_user->getScores());
+		
 		unset($this_user);
 	}
 	closedir($dh);
-
-	uasort($highscores, 'sort_highscores');
-
-	$platz = 1;
-	$fh = fopen(DB_HIGHSCORES, 'w');
-	foreach($highscores as $player=>$punkte)
-	{
-		fwrite($fh, encodeUserHighscoresString($player, $punkte[0], $punkte[1]));
-
-		$this_user = new User($player);
-		$this_user->setRank($platz);
-		unset($this_user);
-
-		$platz++;
-	}
-	fclose($fh);
-	
-	$alliance_highscores = array();
 	
 	$dh = opendir(DB_ALLIANCES);
 	while(($fname = readdir($dh)) !== false)
@@ -83,40 +45,11 @@
 		$members = $this_alliance->getMembersCount();
 		$average = floor($overall/$members);
 		
-		$alliance_highscores[$this_alliance->getName()] = array($members, $average, $overall);
+		$highscores_obj->updateAlliance($this_alliance->getName(), $average, $overall, $members);
+		
 		unset($this_alliance);
 	}
 	closedir($dh);
 	
-	$alliance_highscores2 = $alliance_highscores;
-	uasort($alliance_highscores, 'highscores_by_average');
-	uasort($alliance_highscores2, 'highscores_by_overall');
-	
-	$platz = 1;
-	$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'w');
-	foreach($alliance_highscores as $alliance=>$info)
-	{
-		fwrite($fh, encodeAllianceHighscoresString($alliance, $info[0], $info[1], $info[2]));
-
-		$this_alliance = new Alliance($alliance);
-		$this_alliance->setRankAverage($platz);
-		unset($this_alliance);
-
-		$platz++;
-	}
-	fclose($fh);
-	
-	$platz = 1;
-	$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'w');
-	foreach($alliance_highscores2 as $alliance=>$info)
-	{
-		fwrite($fh, encodeAllianceHighscoresString($alliance, $info[0], $info[1], $info[2]));
-
-		$this_alliance = new Alliance($alliance);
-		$this_alliance->setRankTotal($platz);
-		unset($this_alliance_array);
-
-		$platz++;
-	}
-	fclose($fh);
+	exit(0);
 ?>

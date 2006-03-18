@@ -14,7 +14,7 @@
 				'planets' => array(),
 				'forschung' => array(),
 				'password' => 'x',
-				'punkte' => array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+				'punkte' => array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 				'registration' => time(),
 				'messages' => array(),
 				'description' => '',
@@ -23,12 +23,8 @@
 				'alliance' => false
 			);
 			
-			$fh = fopen(DB_HIGHSCORES, 'a');
-			if(!fancy_flock($fh, LOCK_EX)) return false;
-			fwrite($fh, encodeUserHighscoresString($this->name, 0, ''));
-			flock($fh, LOCK_UN);
-			fclose($fh);
-			$this->raw['punkte'][12] = getUsersCount();
+			$highscores = Classes::Highscores();
+			$highscores->updateUser($this->name, '', 0);
 			
 			$this->write(true, false);
 			$this->__construct($this->name);
@@ -414,16 +410,8 @@
 		{
 			if(!$this->status) return false;
 			
-			return $this->raw['punkte'][12];
-		}
-		
-		function setRank($rank)
-		{
-			if(!$this->status) return false;
-			
-			$this->raw['punkte'][12] = (int) $rank;
-			$this->changed = true;
-			return true;
+			$highscores = Classes::Highscores();
+			return $highscores->getPosition('users', $this->getName());
 		}
 		
 		function planetName($name=false)
@@ -927,16 +915,15 @@
 				# Bauzeit als Anteil der Punkte des ersten Platzes
 				if(isset($info['time']))
 				{
-					$highscores_fh = fopen(DB_HIGHSCORES, 'r');
-					if(fancy_flock($highscores_fh, LOCK_SH))
+					$highscores = Classes::Highscores();
+					if($highscores->getStatus() && ($first = $highscores->getList('users', 1, 1)))
 					{
-						$my_scores = $this->getScores();
-						list(,$best_scores) = decodeUserHighscoresString(fread($highscores_fh, 38));
-						$f = $my_scores/$best_scores;
+						list($best_rank) = $first;
+						if($best_rank['scores'] == 0) $f = 1;
+						else $f = $this->getScores()/$best_rank['scores'];
 						if($f < .5) $f = .5;
 						$info['time'] *= $f;
 					}
-					if($highscores_fh) fclose($highscores_fh);
 				}
 				
 				switch($type)
@@ -2072,7 +2059,9 @@
 				$this->cancelAllianceApplication(false);
 				$this->changed = true;
 				
-				$this->recalcHighscores();
+				$highscores = Classes::Highscores();
+				$highscores->updateUser($this->getName(), $tag);
+				
 				$active_planet = $this->getActivePlanet();
 				$planets = $this->getPlanetsList();
 				foreach($planets as $planet)
@@ -2509,31 +2498,8 @@
 				$this->rejectVerbuendetRequest($verb);
 
 			# Aus den Highscores entfernen
-			$pos = ($this->getRank()-1)*38;
-
-			$fh = fopen(DB_HIGHSCORES, 'r+');
-			if(!fancy_flock($fh, LOCK_EX)) return false;
-	
-			$filesize = filesize(DB_HIGHSCORES)-38;
-			fseek($fh, $pos, SEEK_SET);
-	
-			while(ftell($fh) <= $filesize-38)
-			{
-				fseek($fh, 38, SEEK_CUR);
-				$bracket = fread($fh, 38);
-				fseek($fh, -76, SEEK_CUR);
-				fwrite($fh, $bracket);
-	
-				list($high_username) = decodeUserHighscoresString($bracket);
-				$that_user = Classes::User($high_username);
-				$that_user->setRank($that_user->getRank()-1);
-				unset($that_user);
-			}
-	
-			ftruncate($fh, $filesize);
-	
-			flock($fh, LOCK_UN);
-			fclose($fh);
+			$highscores = Classes::Highscores();
+			$highscores->removeEntry($this->getName());
 	
 			# Nachrichten entfernen
 			$categories = $this->getMessageCategoriesList();
@@ -2555,13 +2521,6 @@
 				return true;
 			}
 			else return false;
-		}
-		
-		function makeHighscoresString()
-		{
-			if(!$this->status) return false;
-		
-			return encodeUserHighscoresString($this->getName(), $this->getScores(), $this->allianceTag());
 		}
 		
 		function recalcHighscores($recalc_gebaeude=false, $recalc_forschung=false, $recalc_roboter=false, $recalc_schiffe=false, $recalc_verteidigung=false)
@@ -2690,115 +2649,16 @@
 				
 				if(isset($this->cache['getScores'])) unset($this->cache['getScores']);
 			}
-
-			$new_points = floor($this->getScores());
-			$my_string = encodeUserHighscoresString($this->getName(), $new_points, $this->allianceTag());
-
-			$filesize = filesize(DB_HIGHSCORES);
-
-			$fh = fopen(DB_HIGHSCORES, 'r+');
-			if(!$fh)
-				return false;
-			if(!fancy_flock($fh, LOCK_EX)) return false;
-
-			fseek($fh, $old_position_f, SEEK_SET);
-
-			$up = true;
-
-			# Ueberpruefen, ob man in den Highscores abfaellt
-			if($filesize-$old_position_f >= 76)
-			{
-				fseek($fh, 38, SEEK_CUR);
-				list(,$this_points) = decodeUserHighscoresString(fread($fh, 38));
-				fseek($fh, -76, SEEK_CUR);
-
-				if($this_points > $new_points)
-					$up = false;
-			}
-
-			if($up)
-			{
-				# In den Highscores nach oben rutschen
-				while(true)
-				{
-					if(ftell($fh) == 0) # Schon auf Platz 1
-					{
-						fwrite($fh, $my_string);
-						break;
-					}
-					fseek($fh, -38, SEEK_CUR);
-					$cur = fread($fh, 38);
-					list($this_user,$this_points) = decodeUserHighscoresString($cur);
-
-					if($this_points < $new_points)
-					{
-						# Es muss weiter nach oben verschoben werden
-
-						# Aktuellen Eintrag nach unten verschieben
-						fwrite($fh, $cur);
-						fseek($fh, -76, SEEK_CUR);
-						# In dessen User-Array speichern
-						$this_user = Classes::User($this_user);
-						$this_user->setRank($this_user->getRank()+1);
-						unset($this_user);
-					}
-					else
-					{
-						fwrite($fh, $my_string);
-						break;
-					}
-				}
-			}
-			else
-			{
-				# In den Highscores nach unten rutschen
-
-				while(true)
-				{
-					if($filesize-ftell($fh) < 76) # Schon auf dem letzten Platz
-					{
-						fwrite($fh, $my_string);
-						break;
-					}
-
-					fseek($fh, 38, SEEK_CUR);
-					$cur = fread($fh, 38);
-					list($this_user, $this_points) = decodeUserHighscoresString($cur);
-					fseek($fh, -76, SEEK_CUR);
-
-					if($this_points > $new_points)
-					{
-						# Es muss weiter nach unten verschoben werden
-
-						# Aktuellen Eintrag nach oben verschieben
-						fwrite($fh, $cur);
-						# In dessen User-Array speichern
-						$this_user = Classes::User($this_user);
-						$this_user->setRank($this_user->getRank()-1);
-						unset($this_user);
-					}
-					else
-					{
-						fwrite($fh, $my_string);
-						break;
-					}
-				}
-			}
-
-			$act_position = ftell($fh);
-
-			flock($fh, LOCK_UN);
-			fclose($fh);
-
-			$act_platz = $act_position/38;
-			if($act_platz != $old_position)
-				$this->setRank($act_platz);
+			
+			$new_scores = $this->getScores();
+			$highscores = Classes::Highscores();
+			$highscores->updateUser($this->getName(), false, $new_scores);
 
 			$my_alliance = $this->allianceTag();
 			if($my_alliance)
 			{
 				$alliance = Classes::Alliance($my_alliance);
-				$alliance->setUserScores($this->getName(), $new_points);
+				$alliance->setUserScores($this->getName(), $new_scores);
 			}
 			
 			$this->changed = true;
@@ -2836,7 +2696,7 @@
 			# Raw-interne Werte aendern
 			# Highscores-Eintrag neu schreiben
 			
-			return true;
+			return false;
 		}
 		
 		function lastMailSent($time=false)
@@ -2882,45 +2742,10 @@
 		}
 	}
 	
-	function encodeUserHighscoresString($username, $points, $alliance)
-	{
-		$points = floor($points);
-		
-		$string = substr($username, 0, 24);
-		if(strlen($string) < 24)
-			$string .= str_repeat(' ', 24-strlen($string));
-		$string .= $alliance;
-		if(strlen($string) < 30)
-			$string .= str_repeat(' ', 30-strlen($string));
-		$points_bin = add_nulls(base_convert($points, 10, 2), 64);
-		for($i = 0; $i < strlen($points_bin); $i+=8)
-			$string .= chr(bindec(substr($points_bin, $i, 8)));
-		return $string;
-	}
-	
-	function decodeUserHighscoresString($string)
-	{
-		$username = trim(substr($string, 0, 24));
-		$alliance = trim(substr($string, 24, 6));
-		$points_str = substr($string, 30);
-
-		$points_bin = '';
-		for($i = 0; $i < strlen($points_str); $i++)
-			$points_bin .= add_nulls(decbin(ord($points_str[$i])), 8);
-
-		$points = base_convert($points_bin, 2, 10);
-
-		return array($username, $points, $alliance);
-	}
-	
 	function getUsersCount()
 	{
-		clearstatcache();
-		$filesize = filesize(DB_HIGHSCORES);
-		if($filesize === false)
-			return false;
-		$players = floor($filesize/38);
-		return $players;
+		$highscores = Classes::Highscores();
+		return $highscores->getCount('users');
 	}
 	
 	function sortEventhandlerActions($a, $b)

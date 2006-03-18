@@ -1,1 +1,2 @@
 - When updating to Revision 457 (Version 1.0.0 beta 2) or later, please run the eventhandler so that there are no fleets left in $DB_DIR/fleets/ before you update. Remove $DB_DIR/events immediately after the update, it will be automatically recreated in a new format later.
+- When updating to Revision 491 (Version 1.0.0 beta 3) or later, please remove the `highscores`, `highscores_alliances` and `highscores_alliances2` files in your database directory and run db_things/regen_highscores after the update. Change $DB_DIR/version to 4.

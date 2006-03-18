@@ -330,6 +330,26 @@
 			return true;
 		}
 		
+		function setHandel($user, $ress=false, $robs=false)
+		{
+			if(!$this->status || !isset($this->raw[1][$user])) return false;
+			
+			if($ress !== false && is_array($ress))
+			{
+				if(!isset($ress[0])) $ress[0] = 0;
+				if(!isset($ress[1])) $ress[1] = 0;
+				if(!isset($ress[2])) $ress[2] = 0;
+				if(!isset($ress[3])) $ress[3] = 0;
+				if(!isset($ress[4])) $ress[4] = 0;
+				
+				$this->raw[1][$user][4][0] = $ress;
+			}
+			if($robs !== false && is_array($robs))
+				$this->raw[1][$user][4][1] = $robs;
+			return true;
+		}
+		
+		
 		function getTransport($user)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
@@ -989,17 +1009,18 @@ EOF
 								$message_text[$username] .= "Carbon: ".ths($data[3][0][0], true).", Aluminium: ".ths($data[3][0][1], true).", Wolfram: ".ths($data[3][0][2], true).", Radium: ".ths($data[3][0][3], true).", Tritium: ".ths($data[3][0][4], true);
 								$message_text[$target_owner] .= "Carbon: ".ths($data[3][0][0], true).", Aluminium: ".ths($data[3][0][1], true).", Wolfram: ".ths($data[3][0][2], true).", Radium: ".ths($data[3][0][3], true).", Tritium: ".ths($data[3][0][4], true);
 								$target_user->addRess($data[3][0]);
-								if(array_sum($data[3][1]) > 0)
+								$this->raw[1][$username][3][0] = array(0,0,0,0,0);
+								if($target_owner == $username && array_sum($data[3][1]) > 0)
 								{
 									$items_string = makeItemsString($data[3][1]);
 									$message_text[$username] .= "\n".$items_string;
 									$message_text[$target_owner] .= "; ".$items_string;
 									foreach($data[3][1] as $id=>$anzahl)
 										$target_user->changeItemLevel($id, $anzahl, 'roboter');
+									$this->raw[1][$username][3][1] = array();
 								}
 								$message_text[$username] .= "\n";
 								$message_text[$target_owner] .= "\n";
-								$this->raw[1][$username][3] = array(array(0,0,0,0,0), array());
 								if(array_sum_r($data[4]) > 0)
 								{
 									$handel[$username] = $data[4];
@@ -1241,8 +1262,6 @@ EOF
 					
 					# Weiterfliegen
 					
-					#print_r($this->raw);
-					
 					$users = array_keys($this->raw[1]);
 					
 					if($further)
@@ -1257,15 +1276,13 @@ EOF
 					if($target_user && $target_owner != $first_user)
 						$target_user->unsetFleet($this->getName());
 					$this->changed = false;
-					#echo "---------------------------------";
-					#print_r($this->raw);
-					#return true;
+					
 					$this->changed = true;
 					
 					foreach($users as $user)
 					{
-						#$user_obj = Classes::User($user);
-						#$user_obj->unsetFleet($this->getName());
+						$user_obj = Classes::User($user);
+						$user_obj->unsetFleet($this->getName());
 						$new_fleet = Classes::Fleet();
 						
 						if($new_fleet->create())

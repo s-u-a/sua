@@ -250,6 +250,15 @@
 			<form action="<?=htmlentities($_SERVER['PHP_SELF'])?>" method="get" id="change-planet">
 				<fieldset>
 					<legend>Planet wechseln<input type="hidden" name="<?=htmlentities(SESSION_COOKIE)?>" value="<?=htmlentities(session_id())?>" /></legend>
+<?php
+			foreach($_GET as $key=>$val)
+			{
+				if($key == 'planet') continue;
+?>
+					<input type="hidden" name="<?=utf8_htmlentities($key)?>" value="<?=utf8_htmlentities($val)?>" />
+<?php
+			}
+?>
 					<select name="planet" onchange="if(this.value != <?=$_SESSION['act_planet']?>) this.form.submit();" onkeyup="if(this.value != <?=$_SESSION['act_planet']?>) this.form.submit();" accesskey="p" title="Ihre Planeten [P]">
 <?php
 			$planets = $me->getPlanetsList();

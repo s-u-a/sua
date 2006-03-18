@@ -17,21 +17,8 @@
 				'inner_description_parsed' => ''
 			);
 			
-			$h_string = encodeAllianceHighscoresString($this->name, 0, 0, 0);
-			
-			$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'a');
-			if(!fancy_flock($fh, LOCK_EX)) return false;
-			fwrite($fh, $h_string);
-			flock($fh, LOCK_UN);
-			fclose($fh);
-			
-			$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'a');
-			if(!fancy_flock($fh, LOCK_EX)) return false;
-			fwrite($fh, $h_string);
-			flock($fh, LOCK_UN);
-			fclose($fh);
-			
-			$this->raw['platz'] = $this->raw['platz2'] = getAlliancesCount();
+			$highscores = Classes::Highscores();
+			$highscores->updateAlliance($this->name, 0, 0, 0);
 			
 			$this->write(true, false);
 			$this->__construct($this->name);
@@ -66,66 +53,19 @@
 					$i--;
 				}
 			}
-			else
+			
+			# Aus den Allianz-Highscores entfernen
+			$highscores = Classes::Highscores();
+			$highscores->removeEntry('alliances', $this->getName());
+			
+			$status = (unlink($this->filename) || chmod($this->filename, 0));
+			if($status)
 			{
-				# Aus den Allianz-Highscores entfernen
-				$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r+');
-				if(!fancy_flock($fh, LOCK_EX)) return false;
-				fseek($fh, $this->getRankAverage()*26, SEEK_SET);
-				$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
-				
-				while(true)
-				{
-					if($filesize-ftell($fh) < 26)
-						break;
-					$line = fread($fh, 26);
-					$info = decodeAllianceHighscoresString($line);
-					$that_alliance = Classes::Alliance($info[0]);
-					$that_alliance->setRankAverage($that_alliance->getRankAverage()-1);
-					unset($that_alliance);
-					
-					fseek($fh, -52, SEEK_CUR);
-					fwrite($fh, $line);
-					fseek($fh, 26, SEEK_CUR);
-				}
-				ftruncate($fh, $filesize-26);
-				
-				flock($fh, LOCK_UN);
-				fclose($fh);
-				
-				$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'r+');
-				if(!fancy_flock($fh, LOCK_EX)) return false;
-				fseek($fh, $this->getRankTotal()*26, SEEK_SET);
-				$filesize = filesize(DB_HIGHSCORES_ALLIANCES2);
-				
-				while(true)
-				{
-					if($filesize-ftell($fh) < 26)
-						break;
-					$line = fread($fh, 26);
-					$info = decodeAllianceHighscoresString($line);
-					$that_alliance = Classes::Alliance($info[0]);
-					$that_alliance->setRankTotal($that_alliance->getRankTotal()-1);
-					unset($that_alliance);
-					
-					fseek($fh, -52, SEEK_CUR);
-					fwrite($fh, $line);
-					fseek($fh, 26, SEEK_CUR);
-				}
-				ftruncate($fh, $filesize-26);
-				
-				flock($fh, LOCK_UN);
-				fclose($fh);
-				
-				$status = (unlink($this->filename) || chmod($this->filename, 0));
-				if($status)
-				{
-					$this->status = 0;
-					$this->changed = false;
-					return true;
-				}
-				else return false;
+				$this->status = 0;
+				$this->changed = false;
+				return true;
 			}
+			else return false;
 		}
 		
 		function allianceExists($alliance)
@@ -165,217 +105,11 @@
 			$overall = 0;
 			foreach($this->raw['members'] as $member)
 				$overall += $member['punkte'];
-			$average = floor($overall/count($this->raw['members']));
-			$my_string = encodeAllianceHighscoresString($this->getName(), count($this->raw['members']), $average, $overall);
+			$members = count($this->raw['members']);
+			$average = floor($overall/$members);
+			$highscores = Classes::Highscores();
+			$highscores->updateAlliance($this->getName(), $average, $overall, $members);
 			
-			$old_position = $this->getRankAverage();
-			$old_position_f = ($old_position-1)*26;
-
-			$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
-
-			$fh = fopen(DB_HIGHSCORES_ALLIANCES, 'r+');
-			if(!$fh)
-				return false;
-			if(!fancy_flock($fh, LOCK_EX)) return false;
-
-			fseek($fh, $old_position_f, SEEK_SET);
-
-			$up = true;
-
-			# Ueberpruefen, ob man in den Highscores abfaellt
-			if($filesize-$old_position_f >= 52)
-			{
-				fseek($fh, 26, SEEK_CUR);
-				list(,,$this_points) = decodeAllianceHighscoresString(fread($fh, 26));
-				fseek($fh, -52, SEEK_CUR);
-
-				if($this_points > $average)
-					$up = false;
-			}
-
-			if($up)
-			{
-				# In den Highscores nach oben rutschen
-				while(true)
-				{
-					if(ftell($fh) == 0) # Schon auf Platz 1
-					{
-						fwrite($fh, $my_string);
-						break;
-					}
-					fseek($fh, -26, SEEK_CUR);
-					$cur = fread($fh, 26);
-					list($this_alliance,,$this_points) = decodeAllianceHighscoresString($cur);
-
-					if($this_points < $average)
-					{
-						# Es muss weiter nach oben verschoben werden
-
-						# Aktuellen Eintrag nach unten verschieben
-						fwrite($fh, $cur);
-						fseek($fh, -52, SEEK_CUR);
-						# In dessen User-Array speichern
-						$this_alliance_array = Classes::Alliance($this_alliance);
-						$this_alliance_array->setRankAverage($this_alliance_array->getRankAverage()+1);
-						unset($this_alliance_array);
-					}
-					else
-					{
-						fwrite($fh, $my_string);
-						break;
-					}
-				}
-			}
-			else
-			{
-				# In den Highscores nach unten rutschen
-
-				while(true)
-				{
-					if($filesize-ftell($fh) < 52) # Schon auf dem letzten Platz
-					{
-						fwrite($fh, $my_string);
-						break;
-					}
-
-					fseek($fh, 26, SEEK_CUR);
-					$cur = fread($fh, 26);
-					list($this_alliance,,$this_points) = decodeAllianceHighscoresString($cur);
-					fseek($fh, -52, SEEK_CUR);
-
-					if($this_points > $average)
-					{
-						# Es muss weiter nach unten verschoben werden
-
-						# Aktuellen Eintrag nach oben verschieben
-						fwrite($fh, $cur);
-						# In dessen User-Array speichern
-						$this_alliance_array = Classes::Alliance($this_alliance);
-						$this_alliance_array->setRankAverage($this_alliance_array->getRankAverage()-1);
-						unset($this_alliance_array);
-					}
-					else
-					{
-						fwrite($fh, $my_string);
-						break;
-					}
-				}
-			}
-
-			$act_position = ftell($fh);
-
-			flock($fh, LOCK_UN);
-			fclose($fh);
-
-			$act_platz = $act_position/26;
-			$this->setRankAverage($act_platz);
-			
-			############# Gesamtpunkte ##############
-			
-			$old_position = $this->getRankTotal();
-			$old_position_f = ($old_position-1)*26;
-
-			$filesize = filesize(DB_HIGHSCORES_ALLIANCES2);
-
-			$fh = fopen(DB_HIGHSCORES_ALLIANCES2, 'r+');
-			if(!$fh)
-				return false;
-			if(!fancy_flock($fh, LOCK_EX)) return false;
-
-			fseek($fh, $old_position_f, SEEK_SET);
-
-			$up = true;
-
-			# Ueberpruefen, ob man in den Highscores abfaellt
-			if($filesize-$old_position_f >= 52)
-			{
-				fseek($fh, 26, SEEK_CUR);
-				list(,,,$this_points) = decodeAllianceHighscoresString(fread($fh, 26));
-				fseek($fh, -52, SEEK_CUR);
-
-				if($this_points > $overall)
-					$up = false;
-			}
-
-			if($up)
-			{
-				# In den Highscores nach oben rutschen
-				while(true)
-				{
-					if(ftell($fh) == 0) # Schon auf Platz 1
-					{
-						fwrite($fh, $my_string);
-						break;
-					}
-					fseek($fh, -26, SEEK_CUR);
-					$cur = fread($fh, 26);
-					list($this_alliance,,,$this_points) = decodeAllianceHighscoresString($cur);
-
-					if($this_points < $overall)
-					{
-						# Es muss weiter nach oben verschoben werden
-
-						# Aktuellen Eintrag nach unten verschieben
-						fwrite($fh, $cur);
-						fseek($fh, -52, SEEK_CUR);
-						# In dessen User-Array speichern
-						$this_alliance_array = Classes::Alliance($this_alliance);
-						$this_alliance_array->setRankTotal($this_alliance_array->getRankTotal()+1);
-						unset($this_alliance_array);
-					}
-					else
-					{
-						fwrite($fh, $my_string);
-						break;
-					}
-				}
-			}
-			else
-			{
-				# In den Highscores nach unten rutschen
-
-				while(true)
-				{
-					if($filesize-ftell($fh) < 52) # Schon auf dem letzten Platz
-					{
-						fwrite($fh, $my_string);
-						break;
-					}
-
-					fseek($fh, 26, SEEK_CUR);
-					$cur = fread($fh, 26);
-					list($this_alliance,,,$this_points) = decodeAllianceHighscoresString($cur);
-					fseek($fh, -52, SEEK_CUR);
-
-					if($this_points > $overall)
-					{
-						# Es muss weiter nach unten verschoben werden
-
-						# Aktuellen Eintrag nach oben verschieben
-						fwrite($fh, $cur);
-						# In dessen User-Array speichern
-						$this_alliance_array = Classes::Alliance($this_alliance);
-						$this_alliance_array->setRankTotal($this_alliance_array->getRankTotal()-1);
-						unset($this_alliance_array);
-					}
-					else
-					{
-						fwrite($fh, $my_string);
-						break;
-					}
-				}
-			}
-
-			$act_position = ftell($fh);
-
-			flock($fh, LOCK_UN);
-			fclose($fh);
-			
-			$act_platz = $act_position/26;
-			$this->setRankTotal($act_platz);
-			
-			$this->changed = true;
-
 			return true;
 		}
 		
@@ -383,32 +117,16 @@
 		{
 			if(!$this->status) return false;
 			
-			return $this->raw['platz'];
-		}
-		
-		function setRankAverage($rank)
-		{
-			if($this->status != 1) return false;
-			
-			$this->raw['platz'] = $rank;
-			$this->changed = true;
-			return true;
+			$highscores = Classes::Highscores();
+			return $highscores->getPosition('alliances', $this->getName(), 'scores_average');
 		}
 		
 		function getRankTotal()
 		{
 			if(!$this->status) return false;
 			
-			return $this->raw['platz2'];
-		}
-		
-		function setRankTotal($rank)
-		{
-			if($this->status != 1) return false;
-			
-			$this->raw['platz2'] = $rank;
-			$this->changed = true;
-			return true;
+			$highscores = Classes::Highscores();
+			return $highscores->getPosition('alliances', $this->getName(), 'scores_total');
 		}
 		
 		function setUserPermissions($user, $key, $permission)
@@ -783,56 +501,11 @@
 		protected function getRawFromData(){}
 	}
 	
-	function decodeAllianceHighscoresString($info)
-	{
-		$alliancename = trim(substr($info, 0, 6));
-		
-		$members_str = substr($info, 6, 4);
-		$members_bin = '';
-		for($i=0; $i < strlen($members_str); $i++)
-			$members_bin .= add_nulls(decbin(ord($members_str[$i])), 8);
-		$members = base_convert($members_bin, 2, 10);
-		
-		$average_str = substr($info, 10, 8);
-		$average_bin = '';
-		for($i=0; $i < strlen($average_str); $i++)
-			$average_bin .= add_nulls(decbin(ord($average_str[$i])), 8);
-		$average = base_convert($average_bin, 2, 10);
-		
-		$overall_str = substr($info, 18, 8);
-		$overall_bin = '';
-		for($i=0; $i < strlen($overall_str); $i++)
-			$overall_bin .= add_nulls(decbin(ord($overall_str[$i])), 8);
-		$overall = base_convert($overall_bin, 2, 10);
-		
-		return array($alliancename, $members, $average, $overall);
-	}
-
-	function encodeAllianceHighscoresString($alliancename, $members, $average, $overall)
-	{
-		$string = substr($alliancename, 0, 6);
-		if(strlen($string) < 6)
-			$string .= str_repeat(' ', 6-strlen($string));
-		$members_bin = add_nulls(base_convert($members, 10, 2), 32);
-		for($i = 0; $i < strlen($members_bin); $i+=8)
-			$string .= chr(bindec(substr($members_bin, $i, 8)));
-		$average_bin = add_nulls(base_convert($average, 10, 2), 64);
-		for($i = 0; $i < strlen($average_bin); $i+=8)
-			$string .= chr(bindec(substr($average_bin, $i, 8)));
-		$overall_bin = add_nulls(base_convert($overall, 10, 2), 64);
-		for($i = 0; $i < strlen($overall_bin); $i+=8)
-			$string .= chr(bindec(substr($overall_bin, $i, 8)));
-		
-		return $string;
-	}
 	
 	function getAlliancesCount()
 	{
-		$filesize = filesize(DB_HIGHSCORES_ALLIANCES);
-		if($filesize === false)
-			return false;
-		$alliances = floor($filesize/26);
-		return $alliances;
+		$highscores = Classes::Highscores();
+		return $highscores->getCount('alliances');
 	}
 	
 	function sortAllianceMembersList($a, $b)

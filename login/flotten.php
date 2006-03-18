@@ -230,7 +230,7 @@
 							$that_user = Classes::User($planet_owner);
 
 							$noob = false;
-							if($planet_owner && ($_POST['auftrag'] == '3' || $_POST['auftrag'] == '5') && $that_user->userLocked())
+							if($planet_owner && ($_POST['auftrag'] == '3' || $_POST['auftrag'] == '5') && !$that_user->userLocked())
 							{
 								# Anfaengerschutz ueberpruefen
 								$that_punkte = $that_user->getScores();
@@ -290,7 +290,9 @@
 											if($anzahl > $me->getItemLevel($id, 'roboter'))
 												$_POST['rtransport'][$id] = $me->getItemLevel($id, 'roboter');
 										}
-										$fleet_obj->addTransport($_SESSION['username'], $_POST['transport'], $_POST['rtransport']);
+										if($planet_owner == $_SESSION['username'])
+											$fleet_obj->addTransport($_SESSION['username'], $_POST['transport'], $_POST['rtransport']);
+										else $fleet_obj->addTransport($_SESSION['username'], $_POST['transport']);
 										list($_POST['transport'], $_POST['rtransport']) = $fleet_obj->getTransport($_SESSION['username']);
 									}
 									else
@@ -398,6 +400,9 @@
 							
 							$this_ress = $me->getRess();
 							$transport = $fleet_obj->getTransportCapacity($_SESSION['username']);
+							
+							# Kein Robotertransport zu fremden Planeten
+							if($planet_owner != $_SESSION['username']) $transport[1] = 0;
 ?>
 <form action="flotten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
 	<dl>
