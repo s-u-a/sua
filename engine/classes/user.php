@@ -2525,6 +2525,15 @@
 			
 			# Aus der Allianz austreten
 			$this->allianceTag(false);
+			
+			# Flotten zurueckrufen
+			$fleets = $this->getFleetsList();
+			foreach($fleets as $fleet)
+			{
+				$fleet_obj = Classes::Fleets($fleet);
+				foreach(array_reverse($fleet_obj->getUsersList()) as $username)
+					$fleet_obj->callBack($username);
+			}
 	
 			$status = (unlink($this->filename) || chmod($this->filename, 0));
 			if($status)

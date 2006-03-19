@@ -177,6 +177,7 @@ EOF
 	function arrive($fleet)
 	{
 		global $errlog;
+		global $process;
 		
 		if($fleet->getNextArrival() > time())
 			return false;
