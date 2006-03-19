@@ -175,7 +175,7 @@
 	
 	class gui
 	{ # Kuemmert sich ums HTML-Grundgeruest der Hauptseite
-		function html_head()
+		function html_head($base=false)
 		{
 			global $SHOW_META_DESCRIPTION; # Sollte nur auf der Startseite der Fall sein
 ?>
@@ -193,10 +193,16 @@
 		<meta name="description" content="S-U-A &ndash; Stars Under Attack ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit Hunderten anderer Spielern." />
 <?php
 			}
+			if($base)
+			{
+?>
+		<base href="<?=htmlentities($base)?>" />
+<?php
+			}
 ?>
 	</head>
 	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4">
-		<h1 id="logo"><a href="./" title="Zurück zur Startseite" xml:lang="en">Stars Under Attack</a></h1>
+		<h1 id="logo"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root.'/')?>" title="Zurück zur Startseite" xml:lang="en">Stars Under Attack</a></h1>
 		<div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
 		<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
 			<fieldset>
@@ -248,6 +254,7 @@
 			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/register.php">Registrieren</a></li>
 			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/rules.php">Regeln</a></li>
 			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/faq.php"><abbr title="Frequently Asked Questions" xml:lang="en">FAQ</abbr></a></li>
+			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/chat.php" xml:lang="en">Chat</a></li>
 			<li><a href="http://board.s-u-a.net/index.php" xml:lang="en">Board</a></li>
 			<li><a href="http://bugs.s-u-a.net/" xml:lang="en">Bugtracker</a></li>
 			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/impressum.php">Impressum</a></li>

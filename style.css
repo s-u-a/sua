@@ -85,3 +85,5 @@ p { text-align:justify; }
 .screenshots { text-align:center; margin:0; padding:0; list-style-type:none; }
 .screenshots li { display:inline; }
 .screenshots img { border:.2em solid #679; }
+
+#chat-applet { width:100%; height:35em; }

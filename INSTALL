@@ -28,15 +28,24 @@ I propose you already noticed that you can access an example for this file under
 5. Start the event handler for fleet actions. Just execute db_things/eventhandler with the database directory for which it should run as first parameter. You can use a relative path as database directory, always seen from the game directory. The event handler will fork itself and run in background then.
 
 
+-------------------------
+-- 3. Special settings --
+-------------------------
+
+- If you want to disable the noob protection for a certain database, just create a file `nonoobs' to the database directory.
+- To create more galaxies, change to universe/ in the database directory and run ./create_galaxy as many times as you wish.
+- To change building times or to create your own items, remove the symlinks from items/ in your database directory and copy their targets there (the files `gebaeude', `forschung', `roboter', `schiffe', `verteidigung' from the db_things/ game directory). Then you can change them without affecting other databases.
+
+
 -----------------
--- 3. Managing --
+-- 4. Managing --
 -----------------
 
 You were asked for the desired admin username and password during the installation, the admin area is accessable in the directory admin/ of your S-U-A installation. Access it via HTTPS, just enter your admin username and password there.
 
 
 -------------------------
--- 4. Problems or bugs --
+-- 5. Problems or bugs --
 -------------------------
 
 S-U-A's bugtracker is reachable under https://bugs.s-u-a.net/. The bugtracker is in German, you can also post in English there.

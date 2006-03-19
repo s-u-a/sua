@@ -89,7 +89,6 @@
     <item url="engine/classes/fleet.php" bookmarks="776" uploadstatus="1" />
     <item url="engine/classes/galaxy.php" uploadstatus="1" />
     <item url="db_things/walkthrough_users" uploadstatus="1" />
-    <item url="db_things/database_convert_v0_v1" uploadstatus="1" />
     <item url="db_things/eventhandler" bookmarks="" uploadstatus="1" />
     <author>Candid Dauth</author>
     <email>webmaster@s-u-a.net</email>
@@ -119,9 +118,12 @@
     <item url="engine/classes/eventfile.php" bookmarks="" uploadstatus="1" />
     <item url="INSTALL" uploadstatus="1" />
     <item url="LICENSE" uploadstatus="1" />
-    <item url="READ_ON_UPDATE" bookmarks="" uploadstatus="1" />
     <item url="engine/classes/highscores.php" uploadstatus="1" />
-    <item url="UPDATING" />
-    <item url="db_things/update_database" />
+    <item url="UPDATING" uploadstatus="1" />
+    <item url="db_things/update_database" uploadstatus="1" />
+    <item url="chat/" />
+    <item url="chat" />
+    <item url="." />
+    <item url="chat.php" />
   </project>
 </webproject>
