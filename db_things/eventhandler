@@ -221,7 +221,8 @@ EOF
 	
 	$fposition = 0;
 	
-	$last_walked = false;
+	if(date('H')*3600+date('i')*60+60 < 16200) $last_walked = false;
+	else $last_walked = date('Y-m-d');
 	
 	while(true)
 	{
