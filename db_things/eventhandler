@@ -224,6 +224,8 @@ EOF
 	if(date('H')*3600+date('i')*60+60 < 16200) $last_walked = false;
 	else $last_walked = date('Y-m-d');
 	
+	fputs($errlog, time_prefix()."Eventhandler started.\n");
+	
 	while(true)
 	{
 		$event_obj = Classes::EventFile();
