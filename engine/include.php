@@ -97,6 +97,7 @@
 	header('Content-type: text/html; charset=UTF-8');
 	if(!isset($USE_OB) || $USE_OB)
 		ob_start('ob_gzhandler');
+	$tabindex = 1;
 	
 	if(!isset($LOGIN) || !$LOGIN)
 	{
