@@ -8,7 +8,7 @@
 	{
 		if(!isset($_SERVER['argv'][1]))
 		{
-			echo "Usage: ".$_SERVER['argv'][0]." [Database dir]\n";
+			fputs(STDERR, "Usage: ".$_SERVER['argv'][0]." [Database dir]\n");
 			exit(1);
 		}
 		else
@@ -60,9 +60,9 @@
 				elseif($days >= 189) # 27 Wochen: Loeschung
 				{
 					if($user->destroy())
-						echo "Deleted user `".$user->getName()."' because of inactivity.\n";
+						fputs($errlog, "Deleted user `".$user->getName()."' because of inactivity.\n");
 					else
-						echo "Error: Couldn't delete user `".$user->getName()."'.\n";
+						fputs($errlog, "Error: Couldn't delete user `".$user->getName()."'.\n");
 					continue;
 				}
 			}
@@ -79,9 +79,9 @@
 				elseif($days >= 35)
 				{
 					if($user->destroy())
-						echo "Deleted user `".$user->getName()."' because of inactivity.\n";
+						fputs($errlog, "Deleted user `".$user->getName()."' because of inactivity.\n");
 					else
-						echo "Error: Couldn't delete user `".$user->getName()."'.\n";
+						fputs($errlog, "Error: Couldn't delete user `".$user->getName()."'.\n");
 					continue;
 				}
 			}
@@ -94,9 +94,9 @@
 		elseif($days >= 14)
 		{
 			if($user->destroy())
-				echo "Deleted user `".$user->getName()."' because of inactivity.\n";
+				fputs($errlog, "Deleted user `".$user->getName()."' because of inactivity.\n");
 			else
-				echo "Error: Couldn't delete user `".$user->getName()."'.\n";
+				fputs($errlog, "Error: Couldn't delete user `".$user->getName()."'.\n");
 			continue;
 		}
 
