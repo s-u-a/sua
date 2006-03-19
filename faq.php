@@ -21,7 +21,6 @@
 	<li><a href="#fleet">Wieviele Flotten kann ich gleichzeitig verschicken?</a></li>
 	<li><a href="#alliance">Was bringt mir ein Bündnis?</a></li>
 	<li><a href="#resources">Die Rohstoffanzeige passt nicht in mein <span xml:lang="en">Browser</span>fenster und Quer<span xml:lang="en">scrollen</span> ist nicht möglich.</a></li>
-	<li><a href="#chat">Hat das Spiel einen <span xml:lang="en">Chat?</span></a></li>
 	<li><a href="#administrators">Wie kann ich die Administratoren erreichen?</a></li>
 	<li><a href="#name">Kann ich meinen Namen ändern?</a></li>
 	<li><a href="#universe">Wie viele Universen gibt es?</a></li>
@@ -128,11 +127,6 @@
 <div class="faq">
 	<h3 id="resources">Die Rohstoffanzeige passt nicht in mein <span xml:lang="en">Browser</span>fenster und Quer<span xml:lang="en">scrollen</span> ist nicht möglich.</h3>
 	<p>Dies ist eine kleine Einschränkung der derzeitigen Formatierungsmöglichkeiten, die einem <span xml:lang="en">Webdesigner</span> zur Verfügung stehen. Ein Quer<span xml:lang="en">scrollen</span> ist nur in der &bdquo;<span xml:lang="en">non-fixed ress</span>&ldquo;-Variante der <span xml:lang="en">Skins</span> verfügbar, wählen Sie in den Einstellungen einfach diese aus.</p>
-</div>
-
-<div class="faq">
-	<h3 id="chat">Hat das Spiel einen <span xml:lang="en">Chat</span>?</h3>
-	<p>Ja, derzeit erreichen Sie den Spieler-<span xml:lang="en">Chat</span> von <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> im <a href="irc://irc.gamesurge.net/#sua"><abbr title="Internet Relay Chat" xml:lang="en"><span xml:lang="de">IRC</span></abbr>-<span xml:lang="en">Channel</span> <em xml:lang="en">#sua</em> auf <em>irc.gamesurge.net</em></a>.</p>
 </div>
 
 <div class="faq">
