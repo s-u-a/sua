@@ -2508,7 +2508,7 @@
 				$this->cancelVerbuendetApplication($verb);
 			$verb_list = $this->getVerbuendetRequestList();
 			foreach($verb_list as $verb)
-				$this->rejectVerbuendetRequest($verb);
+				$this->rejectVerbuendetApplication($verb);
 
 			# Aus den Highscores entfernen
 			$highscores = Classes::Highscores();
