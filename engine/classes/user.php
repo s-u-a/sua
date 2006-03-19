@@ -173,8 +173,7 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
-			if(!isset($this->cache['getPos'])) $this->cache['getPos'] = explode(':', $this->planet_info['pos']);
-			return $this->cache['getPos'];
+			return explode(':', $this->planet_info['pos']);
 		}
 		
 		function getPosString()

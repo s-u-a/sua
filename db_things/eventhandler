@@ -221,7 +221,6 @@ EOF
 	$fposition = 0;
 	
 	$last_walked = false;
-	walkthrough_users();
 	
 	while(true)
 	{
