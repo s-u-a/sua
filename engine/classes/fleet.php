@@ -1024,7 +1024,9 @@ EOF
 								if(array_sum_r($data[4]) > 0)
 								{
 									$handel[$username] = $data[4];
-									$this->raw[1][$username][3] = $data[4];
+									$this->raw[1][$username][3][0] = $data[4][0];
+									$this->raw[1][$username][3][1] = $data[4][1];
+									$this->raw[1][$username][4] = array(array(0,0,0,0,0),array());
 									$make_handel_message = true;
 								}
 							}

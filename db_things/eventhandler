@@ -73,6 +73,11 @@ EOF
 		else exit(0);
 	}
 	
+	function time_prefix()
+	{
+		return date('Y-m-d, H:i:s')."\t";
+	}
+	
 	if($daemon)
 	{
 		declare(ticks=1);
@@ -80,10 +85,10 @@ EOF
 		if(function_exists('pcntl_fork')) $pid = pcntl_fork();
 		else $pid = -1;
 		
-		if($pid == -1) fputs(STDERR, "Forking failed, continuing.\n");
+		if($pid == -1) fputs(STDERR, time_prefix()."Forking failed, continuing.\n");
 		elseif($pid)
 		{
-			fputs(STDOUT, "Eventhandler forked, PID ".$pid.".\n");
+			fputs(STDOUT, time_prefix()."Eventhandler forked, PID ".$pid.".\n");
 			exit(0);
 		}
 	}
@@ -91,6 +96,7 @@ EOF
 	function error_handler($errno, $errstr, $errfile, $errline, $errcontext)
 	{
 		global $errlog;
+		fputs($errlog, time_prefix());
 		switch($errno)
 		{
 			case E_WARNING:
@@ -122,6 +128,7 @@ EOF
 	function sig_handler($signo)
 	{
 		global $errlog;
+		fputs($errlog, time_prefix());
 		switch($signo)
 		{
 			case SIGTERM:
@@ -163,6 +170,26 @@ EOF
 	set_error_handler('error_handler', E_WARNING);
 	set_error_handler('error_handler', E_NOTICE);
 	
+	function arrive($fleet)
+	{
+		global $errlog;
+		
+		if($fleet->getNextArrival() > time())
+			return false;
+		if(function_exists('pcntl_fork')) $pid = pcntl_fork();
+		else $pid = -1;
+		
+		if(!$pid || $pid == -1)
+		{
+			if(!$fleet->arriveAtNextTarget())
+				fputs($errlog, time_prefix()."Warning: Couldn't complete fleet ".$process['fleet'].". The time was ".$process['time'].". Please re-put it into the database if you want it to be completed.\n");
+			
+			if($pid == -1) Classes::resetInstances();
+			else exit(0);
+		}
+		else pcntl_waitpid($pid, &$status);
+	}
+	
 	__autoload('Classes');
 	__autoload('Fleet');
 	__autoload('Galaxy');
@@ -180,23 +207,16 @@ EOF
 			if($fleet->getStatus() != 1)
 			{
 				if($fleet->getStatus() == 0)
-					fputs($errlog, "Notice: Fleet ".$process['fleet']." had status 0.\n");
+					fputs($errlog, time_prefix()."Notice: Fleet ".$process['fleet']." had status 0.\n");
 				else
-					fputs($errlog, "Warning: Fleet ".$process['fleet']." had status ".$fleet->getStatus().". The time was ".$process['time'].". Please re-put it into the database if you want it to be processed.\n");
+					fputs($errlog, time_prefix()."Warning: Fleet ".$process['fleet']." had status ".$fleet->getStatus().". The time was ".$process['time'].". Please re-put it into the database if you want it to be processed.\n");
 			}
-			elseif($fleet->getNextArrival() < time() && !$fleet->arriveAtNextTarget())
-			{
-				fputs($errlog, "Warning: Couldn't complete fleet ".$process['fleet'].". The time was ".$process['time'].". Please re-put it into the database if you want it to be completed.\n");
-				break;
-			}
+			else arrive($fleet);
 			unset($fleet);
-			
-			# Instanzen zuruecksetzen
-			Classes::resetInstances();
 		}
 		if(defined('terminate') && terminate)
 		{
-			fputs($errlog, "Terminated.\n");
+			fputs($errlog, time_prefix()."Terminated.\n");
 			exit(0);
 		}
 		

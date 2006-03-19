@@ -1,0 +1,1 @@
+Please run db_things/update_database on every update to make sure that the database format matches to the current version.

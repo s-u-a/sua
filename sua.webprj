@@ -53,7 +53,7 @@
     <item url="login/handelsrechner.php" uploadstatus="1" />
     <item url="login/einstellungen.php" bookmarks="" uploadstatus="1" />
     <item url="login/nachrichten.php" uploadstatus="1" />
-    <item url="login/gebaeude.php" uploadstatus="1" />
+    <item url="login/gebaeude.php" bookmarks="" uploadstatus="1" />
     <item url="login/verbuendete.php" uploadstatus="1" />
     <item url="login/help/allianceinfo.php" uploadstatus="1" />
     <item url="login/help/playerinfo.php" uploadstatus="1" />
@@ -119,7 +119,9 @@
     <item url="engine/classes/eventfile.php" bookmarks="" uploadstatus="1" />
     <item url="INSTALL" uploadstatus="1" />
     <item url="LICENSE" uploadstatus="1" />
-    <item url="READ_ON_UPDATE" uploadstatus="1" />
-    <item url="engine/classes/highscores.php" />
+    <item url="READ_ON_UPDATE" bookmarks="" uploadstatus="1" />
+    <item url="engine/classes/highscores.php" uploadstatus="1" />
+    <item url="UPDATING" />
+    <item url="db_things/update_database" />
   </project>
 </webproject>
