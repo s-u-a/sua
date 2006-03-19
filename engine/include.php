@@ -255,8 +255,8 @@
 			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/rules.php">Regeln</a></li>
 			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/faq.php"><abbr title="Frequently Asked Questions" xml:lang="en">FAQ</abbr></a></li>
 			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/chat.php" xml:lang="en">Chat</a></li>
-			<li><a href="http://board.s-u-a.net/index.php" xml:lang="en">Board</a></li>
-			<li><a href="http://bugs.s-u-a.net/" xml:lang="en">Bugtracker</a></li>
+			<li><a href="<?=htmlentities(USE_PROTOCOL)?>://board.s-u-a.net/index.php" xml:lang="en">Board</a></li>
+			<li><a href="https://bugs.s-u-a.net/" xml:lang="en">Bugtracker</a></li>
 			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/impressum.php">Impressum</a></li>
 			<li class="image"><a href="http://www.browsergames24.de/modules.php?name=Web_Links&amp;l_op=ratelink&amp;lid=1236"><img src="http://www.browsergames24.de/votebg.gif" alt="Bewerten Sie S-U-A bei Browsergames24" /></a></li>
 		</ol>

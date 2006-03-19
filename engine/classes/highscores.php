@@ -47,6 +47,8 @@
 			$exists_query = sqlite_query($this->connection, "SELECT username FROM highscores_users WHERE username='".sqlite_escape_string($username)."' LIMIT 1;");
 			$exists = (sqlite_num_rows($exists_query) > 0);
 			
+			if($scores !== false) $scores = (float) $scores;
+			
 			if($exists)
 			{
 				if($alliance === false && $scores === false) return true;
@@ -62,7 +64,11 @@
 				$query .= implode(', ', $set);
 				$query .= " WHERE username = '".sqlite_escape_string($username)."';";
 			}
-			else $query = "INSERT INTO highscores_users ( username, alliance, scores, changed ) VALUES ( '".sqlite_escape_string($username)."', '".sqlite_escape_string($alliance)."', '".sqlite_escape_string($scores)."', '".sqlite_escape_string(microtime(true))."' );";
+			else
+			{
+				$scores = (float) $scores;
+				$query = "INSERT INTO highscores_users ( username, alliance, scores, changed ) VALUES ( '".sqlite_escape_string($username)."', '".sqlite_escape_string($alliance)."', '".sqlite_escape_string($scores)."', '".sqlite_escape_string(microtime(true))."' );";
+			}
 			
 			return sqlite_query($this->connection, $query);
 		}
