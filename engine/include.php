@@ -43,6 +43,7 @@
 			define('DB_HANDEL', DB_DIR.'/handel');
 			define('DB_HANDELSKURS', DB_DIR.'/handelskurs');
 			define('DB_ADMINS', DB_DIR.'/admins');
+			define('DB_NONOOBS', DB_DIR.'/nonoobs');
 		}
 		
 		if(!defined('other_globals'))

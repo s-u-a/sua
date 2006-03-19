@@ -230,7 +230,7 @@
 							$that_user = Classes::User($planet_owner);
 
 							$noob = false;
-							if($planet_owner && ($_POST['auftrag'] == '3' || $_POST['auftrag'] == '5') && !$that_user->userLocked())
+							if($planet_owner && ($_POST['auftrag'] == '3' || $_POST['auftrag'] == '5') && !$that_user->userLocked() && !file_exists(DB_NONOOBS))
 							{
 								# Anfaengerschutz ueberpruefen
 								$that_punkte = $that_user->getScores();

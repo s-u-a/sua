@@ -21,6 +21,7 @@ DBDIR_ABS=`pwd`
 cd $CWD
 
 echo '4' > $1/.version
+touch $1/locked
 echo 'Order Deny,Allow' > $1/.htaccess
 echo 'Deny from All' >> $1/.htaccess
 echo 'Allow from None' >> $1/.htaccess

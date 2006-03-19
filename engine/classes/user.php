@@ -225,6 +225,7 @@
 			
 			# Planeten aus der Karte loeschen
 			$this_pos = $this->getPos();
+			if(!$this_pos) return false;
 			$galaxy = Classes::galaxy($this_pos[0]);
 			$galaxy->resetPlanet($this_pos[1], $this_pos[2]);
 
@@ -236,8 +237,9 @@
 			$this->raw['planets'] = array_values($this->raw['planets']);
 			if(isset($planets[$active_key+1]))
 				$new_active_planet = array_search($planets[$active_key+1], $keys);
-			else
+			elseif(isset($planets[$active_key-1]))
 				$new_active_planet = array_search($planets[$active_key-1], $keys);
+			else $new_active_planet = false;
 			
 			$new_planets = $this->getPlanetsList();
 			foreach($new_planets as $planet)
@@ -249,7 +251,8 @@
 					$this->planet_info['building']['forschung'][4] = array_search($active_forschung[4], $keys);
 			}
 			
-			$this->setActivePlanet($new_active_planet);
+			if($new_active_planet !== false)
+				$this->setActivePlanet($new_active_planet);
 			
 			# Highscores neu berechnen
 			$this->recalcHighscores(true, true, true, true, true);

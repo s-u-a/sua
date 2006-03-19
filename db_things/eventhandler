@@ -137,11 +137,11 @@ EOF
 		{
 			case SIGTERM:
 				fputs($errlog, "SIGTERM (".SIGTERM.")\n");
-				define('terminate', true);
+				if(!defined('terminate')) define('terminate', true);
 				break;
 			case SIGINT:
 				fputs($errlog, "SIGINT (".SIGINT.")\n");
-				define('terminate', true);
+				if(!defined('terminate')) define('terminate', true);
 				break;
 			case SIGHUP:
 				fputs($errlog, "SIGHUP (".SIGHUP.")\n");
