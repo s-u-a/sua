@@ -665,6 +665,17 @@
 				return false;
 		}
 		
+		function findMessageType($message_id)
+		{
+			if(!$this->status) return false;
+			
+			foreach($this->raw['messages'] as $type=>$messages)
+			{
+				if(isset($messages[$message_id])) return $type;
+			}
+			return false;
+		}
+		
 		function setMessageStatus($message_id, $type, $status)
 		{
 			if(!$this->status) return false;
@@ -2499,7 +2510,7 @@
 
 			# Aus den Highscores entfernen
 			$highscores = Classes::Highscores();
-			$highscores->removeEntry($this->getName());
+			$highscores->removeEntry('users', $this->getName());
 	
 			# Nachrichten entfernen
 			$categories = $this->getMessageCategoriesList();

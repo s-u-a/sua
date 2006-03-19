@@ -118,6 +118,7 @@
 			if($edit_user)
 			{
 				$user = Classes::User($user);
+				$type = $user->findMessageType($this->name);
 				$user->removeMessage($this->name, $type, false);
 			}
 			
@@ -139,12 +140,31 @@
 			return $this->raw['time'];
 		}
 		
-		function delete()
+		function destroy()
 		{
 			if(!$this->status) return false;
 			
-			foreach($this->raw['users'] as $user=>$type)
-				$this->removeUser($user);
+			if(isset($this->raw['users']) && count($this->raw['users']) > 0)
+			{
+				foreach($this->raw['users'] as $user=>$type)
+					$this->removeUser($user);
+			}
+			if($this->status)
+			{
+				if(!unlink($this->filename)) return false;
+				else
+				{
+					$this->status = false;
+					return true;
+				}
+			}
+		}
+		
+		function getUsersList()
+		{
+			if(!$this->status) return false;
+			
+			return array_keys($this->raw['users']);
 		}
 		
 		protected function getDataFromRaw(){}

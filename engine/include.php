@@ -108,6 +108,7 @@
 	if(!isset($_SESSION))
 		$GLOBALS['_SESSION'] = array();
 
+	# Namen der Nachrichtensorten
 	$message_type_names = array (
 		1 => 'Kämpfe',
 		2 => 'Spionage',
@@ -119,6 +120,7 @@
 		8 => 'Postausgang'
 	);
 
+	# Namen der Flottenauftragsarten
 	$type_names = array (
 		1 => 'Besiedeln',
 		2 => 'Sammeln',
@@ -128,6 +130,7 @@
 		6 => 'Stationieren'
 	);
 
+	# Maximales Alter in Tagen der Nachrichtensorten
 	$message_type_times = array (
 		1 => 3,
 		2 => 3,
@@ -138,12 +141,15 @@
 		7 => 4,
 		8 => 2
 	);
+	# Fuer veroeffentlichte Nachrichten
+	$public_messages_time = 30;
 
+	# Zu jeder Flottenauftragsart die zugehoerige Nachrichtensorte
 	$types_message_types = array(1=>5, 2=>4, 3=>1, 4=>3, 5=>2, 6=>3);
 
 
 	function stripslashes_r($var)
-	{
+	{ # Macht rekursiv in einem Array addslashes() rueckgaengig
 		if(is_array($var))
 		{
 			foreach($var as $key=>$val)
@@ -167,10 +173,10 @@
 	########################################
 	
 	class gui
-	{
+	{ # Kuemmert sich ums HTML-Grundgeruest der Hauptseite
 		function html_head()
 		{
-			global $SHOW_META_DESCRIPTION;
+			global $SHOW_META_DESCRIPTION; # Sollte nur auf der Startseite der Fall sein
 ?>
 <?='<?xml version="1.0" encoding="UTF-8"?>'."\n"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -262,145 +268,8 @@
 
 	########################################
 
-	function calc_btime_gebaeude($time, $level=0)
-	{
-		global $this_planet;
-		global $user_array;
-
-		# Bauzeitberechnung mit der aktuellen Ausbaustufe
-
-		$time *= pow($level+1, 1.5);
-
-		# Roboter einberechnen
-		$robs = 0;
-		if(isset($this_planet['roboter']['R01']))
-			$robs = $this_planet['roboter']['R01'];
-
-		$max_robs = $this_planet['size'][1];
-		$ing_tech = 0;
-		if(isset($user_array['forschung']['F9']))
-			$ing_tech = $user_array['forschung']['F9'];
-		$max_robs /= $ing_tech+1;
-		$max_robs = floor($max_robs/2);
-
-		if($robs > $max_robs)
-			$robs = $max_robs;
-		if($robs != 0)
-		{
-			$f = 1;
-			if(isset($user_array['forschung']['F2']))
-				$f = 1-$user_array['forschung']['F2']*0.0025;
-			if($f != 1)
-				$time *= pow($f, $robs);
-		}
-
-		$time = round($time);
-
-		return $time;
-	}
-
-	function get_laufende_forschungen()
-	{
-		global $user_array;
-
-		$laufende_forschungen = array();
-		$planets = array_keys($user_array['planets']);
-		foreach($planets as $planet)
-		{
-			if(isset($user_array['planets'][$planet]['building']['forschung']) && trim($user_array['planets'][$planet]['building']['forschung'][0]) != '')
-				$laufende_forschungen[] = $user_array['planets'][$planet]['building']['forschung'][0];
-			elseif(isset($user_array['planets'][$planet]['building']['gebaeude']) && $user_array['planets'][$planet]['building']['gebaeude'][0] == 'B8')
-				$laufende_forschungen[] = false;
-		}
-		return $laufende_forschungen;
-	}
-
-	function calc_btime_forschung($time, $level=0, $loc_glob=1)
-	{
-		global $this_planet;
-		global $user_array;
-
-		# Bauzeitberechnung mit der aktuellen Ausbaustufe
-
-		$time *= pow($level+1, 2);
-
-		# Einberechnen der Stufe des aktuellen Forschungslabors
-		$folab_level = 0;
-		if(isset($this_planet['gebaeude']['B8']))
-			$folab_level = $this_planet['gebaeude']['B8'];
-		$time *= pow(0.975, $folab_level);
-
-		# Bei globaler Forschung Stufen der anderen Forschungslabore
-		if($loc_glob == 2)
-		{
-			$planets = array_keys($user_array['planets']);
-			foreach($planets as $planet)
-			{
-				if($planet == $_SESSION['act_planet']) # Aktueller Planet wurde schon einberechnet
-					continue;
-
-				if(isset($user_array['planets'][$planet]['gebaeude']['B8']))
-					$time *= pow(0.995, $user_array['planets'][$planet]['gebaeude']['B8']);
-			}
-		}
-
-		$time = round($time);
-
-		return $time;
-	}
-
-	function calc_btime_roboter($time)
-	{
-		global $this_planet;
-		global $user_array;
-
-		# Einberechnen der Stufe der Roboterfabrik
-		$robfa_level = 0;
-		if(isset($this_planet['gebaeude']['B9']))
-			$robfa_level = $this_planet['gebaeude']['B9'];
-		$time *= pow(0.95, $robfa_level);
-
-		$time = round($time);
-
-		return $time;
-	}
-
-	function calc_btime_schiffe($time)
-	{
-		global $this_planet;
-		global $user_array;
-
-		# Einberechnen der Stufe der Werft
-		$werft_level = 0;
-		if(isset($this_planet['gebaeude']['B10']))
-			$werft_level = $this_planet['gebaeude']['B10'];
-		$time *= pow(0.975, $werft_level);
-
-		$time = round($time);
-
-		return $time;
-	}
-
-	function calc_btime_verteidigung($time)
-	{
-		global $this_planet;
-		global $user_array;
-
-		# Einberechnen der Stufe der Werft
-		$werft_level = 0;
-		if(isset($this_planet['gebaeude']['B10']))
-			$werft_level = $this_planet['gebaeude']['B10'];
-		$time *= pow(0.975, $werft_level);
-
-		$time = round($time);
-
-		return $time;
-	}
-
-	########################################
-
 	class truemmerfeld
-	{
+	{ # Bearbeitet Truemmerfelder
 		function get($galaxy, $system, $planet)
 		{
 			# Bekommt die Groesse eines Truemmerfelds
@@ -528,7 +397,7 @@
 
 	function get_skins()
 	{
-		# Skins bekommen
+		# Vorgegebene Skins-Liste bekommen
 		$skins = array();
 		if(is_file(s_root.'/login/style/skins') && is_readable(s_root.'/login/style/skins'))
 		{
@@ -548,6 +417,7 @@
 
 	function get_version()
 	{
+		# Aktuell installierte Version herausfinden
 		$version = '';
 		if(is_file(s_root.'/db_things/version') && is_readable(s_root.'/db_things/version'))
 			$version = trim(file_get_contents(s_root.'/db_things/version'));
@@ -556,6 +426,7 @@
 
 	function get_databases()
 	{
+		# Liste der Runden/Universen herausfinden
 		if(!is_file(s_root.'/db_things/databases') || !is_readable(s_root.'/db_things/databases'))
 			return false;
 		
@@ -576,6 +447,11 @@
 	
 	function get_default_hostname()
 	{
+		# Den Hostnamen herausfinden, der fuer die Startseite verwendet werden soll
+		
+		# Die folgende Zeile auskommentieren, um diese Funktion zu deaktivieren
+		#return (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : false);
+		
 		if(!is_file(s_root.'/db_things/databases') || !is_readable(s_root.'/db_things/databases'))
 			return false;
 		
@@ -592,6 +468,7 @@
 	
 	function check_hostname()
 	{
+		# Leitet weiter, wenn der Hostname nicht dem Hostnamen entspricht, der verwendet werden soll
 		if(isset($_SERVER['HTTP_HOST']))
 		{
 			$hostname = $_SERVER['HTTP_HOST'];
@@ -631,6 +508,7 @@
 
 	function get_admin_list()
 	{
+		# Gibt eine Liste aller Administratoren zurueck
 		$admins = array();
 		if(!is_file(DB_ADMINS) || !is_readable(DB_ADMINS))
 			return false;
@@ -654,6 +532,7 @@
 
 	function write_admin_list($admins)
 	{
+		# Speichert eine mit get_admin_list() geholte Liste wieder ab
 		$admin_file = array();
 		foreach($admins as $name=>$settings)
 		{
@@ -682,6 +561,10 @@
 
 	function format_btime($time2)
 	{
+		# Formatiert eine in Punkten angegebene Bauzeitangabe,
+		# sodass diese auf den Seiten angezeigt werden kann
+		# (zum Beispiel 2 Stunden, 5 Minuten und 30 Sekunden)
+		
 		$time = round($time2);
 		$days = $hours = $minutes = $seconds = 0;
 
@@ -743,6 +626,10 @@
 
 	function format_ress($ress, $tabs_count=0, $tritium=false)
 	{
+		# Erstellt eine Definitionsliste aus der uebergebenen
+		# Rohstoffanzahl, beispielsweise fuer die Rohstoffkosten
+		# der Gebaeude verwendbar
+		
 		$tabs = '';
 		if($tabs_count >= 1)
 			$tabs = str_repeat("\t", $tabs_count);
@@ -767,6 +654,13 @@
 
 	function ths($count, $utf8=false, $round=0)
 	{
+		# Fuegt Tausendertrennzeichen ein
+		# (Oben als THS_UTF8 und THS_HTML definiert)
+		# Wenn $utf8 gesetzt ist, wird ein UTF-8-String
+		# zurueckgeliefert, ansonsten ein HTML-String
+		# $round gibt die Anzahl der Stellen an, auf die
+		# gerundet werden soll
+		
 		if(!isset($count))
 			$count = 0;
 		if($round == 0)
@@ -797,6 +691,11 @@
 
 	function utf8_htmlentities($string, $nospecialchars=false, $js=false)
 	{
+		# Das gleiche wie htmlentities(), nur fuer einen
+		# UTF-8-String.
+		# Ist $js gesetzt, wird ein JavaScript-String zurueckgeliefert
+		# (mit \uXXXX)
+		
 		if($js)
 			$rep = array("'\\\\u'.add_nulls(dechex(", "), 4)");
 		else

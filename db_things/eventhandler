@@ -1,5 +1,9 @@
 #!/usr/bin/php
 <?php
+	define('DONT_EXIT', true);
+	
+	chdir(dirname(__FILE__));
+	
 	$print_usage = false;
 	$error = false;
 	$daemon = false;
@@ -190,11 +194,34 @@ EOF
 		else pcntl_waitpid($pid, &$status);
 	}
 	
+	function walkthrough_users()
+	{
+		global $errlog;
+		global $last_walked;
+		$last_walked = date('Y-m-d');
+		
+		if(function_exists('pcntl_fork')) $pid = pcntl_fork();
+		else $pid = -1;
+		
+		if(!$pid || $pid == -1)
+		{
+			fputs($errlog, "\n".time_prefix()."Walking through users...\n");
+			ob_start();
+			include('walkthrough_users');
+			fputs($errlog, time_prefix()."Finished.\n\n");
+			exit(0);
+		}
+		else pcntl_waitpid($pid, &$status);
+	}
+	
 	__autoload('Classes');
 	__autoload('Fleet');
 	__autoload('Galaxy');
 	
 	$fposition = 0;
+	
+	$last_walked = false;
+	walkthrough_users();
 	
 	while(true)
 	{
@@ -219,6 +246,9 @@ EOF
 			fputs($errlog, time_prefix()."Terminated.\n");
 			exit(0);
 		}
+		
+		 if(date('H')*3600+date('i')*60+60 > 16200 && $last_walked != date('Y-m-d')) // 4:30 Uhr
+			walkthrough_users();
 		
 		sleep(EVENTHANDLER_INTERVAL);
 	}
