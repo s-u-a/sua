@@ -96,6 +96,7 @@
 		foreach($flotten as $flotte)
 		{
 			$fl = Classes::Fleet($flotte);
+			if(!$fl->getStatus()) continue;
 			$users = $fl->getUsersList();
 			if(count($users) <= 0) continue;
 			
