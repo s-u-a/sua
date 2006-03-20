@@ -186,11 +186,13 @@ EOF
 		
 		if(!$pid || $pid == -1)
 		{
+			Classes::resetInstances();
+			
 			if(!$fleet->arriveAtNextTarget())
 				fputs($errlog, time_prefix()."Warning: Couldn't complete fleet ".$process['fleet'].". The time was ".$process['time'].". Please re-put it into the database if you want it to be completed.\n");
 			
-			if($pid == -1) Classes::resetInstances();
-			else exit(0);
+			Classes::resetInstances();
+			if($pid != -1) exit(0);
 		}
 		else pcntl_waitpid($pid, &$status);
 	}
@@ -231,7 +233,7 @@ EOF
 		$event_obj = Classes::EventFile();
 		while($process = $event_obj->removeNextFleet())
 		{
-			$fleet = Classes::Fleet($process['fleet']);
+			$fleet = new Fleet($process['fleet']);
 			$users = $fleet->getUsersList();
 			
 			if($fleet->getStatus() != 1)
