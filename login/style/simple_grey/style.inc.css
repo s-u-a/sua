@@ -181,18 +181,18 @@ legend { font-weight:bold; }
 .buendnis-informationen,.playerinfo-planeten { text-align:center; font-weight:bold; list-style-type:none; border-bottom-style:none; }
 .buendnis-informationen li,.playerinfo-planeten li { border-bottom:.1em solid #aaa; }
 .benutzerbeschreibung,.allianz-internes,.allianz-externes { text-align:left; padding:.5em; }
-.benutzerbeschreibung table,.allianz-internes table,.allianz-externes table { width:100%; border-spacing:0; border-collapse:collapse; border:.2em solid #aaa; }
-.benutzerbeschreibung td,.benutzerbeschreibung th,.allianz-internes td,.allianz-internes th,.allianz-externes td,.allianz-externes th { border:.1em solid #aaa; padding:.1em .3em; vertical-align:top; }
-.benutzerbeschreibung th,.allianz-internes th,.allianz-externes th { font-weight:bold; text-align:center; }
-.benutzerbeschreibung thead,.allianz-internes thead,.allianz-externes thead { border-bottom:.2em solid #aaa; }
-.benutzerbeschreibung tfoot,.allianz-internes tfoot,.allianz-externes tfoot { border-top:.2em solid #aaa; }
-.benutzerbeschreibung dl,.allianz-internes dl.allianz-externes dl { width:100%; margin:0; padding:0; }
-.benutzerbeschreibung dt,.allianz-internes dt,.allianz-externes dt { width:30%; float:left; margin:0; padding:0; text-align:right; font-weight:bold; }
-.benutzerbeschreibung dt:after,.allianz-internes dt:after,.allianz-externes dt:after { content:":\a0"; }
-.benutzerbeschreibung dd,.allianz-internes dd,.allianz-externes dd { margin:0 0 0 30%; padding:0; text-align:left; }
-.benutzerbeschreibung hr,.allianz-internes hr,.allianz-externes hr { height:0; padding:0; border-style:solid none none none; border-width:.2em; border-color:#aaa; }
-.benutzerbeschreibung strong,.allianz-internes strong,.allianz-externes strong { font-weight:bold; font-style:normal; text-decoration:none; }
-.benutzerbeschreibung em,.allianz-internes em,.allianz-externes em { font-weight:normal; font-style:normal; text-decoration:underline; }
+.benutzerbeschreibung table,.allianz-internes table,.allianz-externes table,.type-6 .c-nachricht table { width:100%; border-spacing:0; border-collapse:collapse; border:.2em solid #aaa; }
+.benutzerbeschreibung td,.benutzerbeschreibung th,.allianz-internes td,.allianz-internes th,.allianz-externes td,.allianz-externes th,.type-6 .c-nachricht td,.type-6 .c-nachricht th { border:.1em solid #aaa; padding:.1em .3em; vertical-align:top; }
+.benutzerbeschreibung th,.allianz-internes th,.allianz-externes th,.type-6 .c-nachricht th { font-weight:bold; text-align:center; }
+.benutzerbeschreibung thead,.allianz-internes thead,.allianz-externes thead,.type-6 .c-nachricht thead { border-bottom:.2em solid #aaa; }
+.benutzerbeschreibung tfoot,.allianz-internes tfoot,.allianz-externes tfoot,.type-6 .c-nachricht tfoot { border-top:.2em solid #aaa; }
+.benutzerbeschreibung dl,.allianz-internes dl.allianz-externes dl,.type-6 .c-nachricht dl { width:100%; margin:0; padding:0; }
+.benutzerbeschreibung dt,.allianz-internes dt,.allianz-externes dt,.type-6 .c-nachricht dt { width:30%; float:left; margin:0; padding:0; text-align:right; font-weight:bold; }
+.benutzerbeschreibung dt:after,.allianz-internes dt:after,.allianz-externes dt:after,.type-6 .c-nachricht dt:after { content:":\a0"; }
+.benutzerbeschreibung dd,.allianz-internes dd,.allianz-externes dd,.type-6 .c-nachricht dd { margin:0 0 0 30%; padding:0; text-align:left; }
+.benutzerbeschreibung hr,.allianz-internes hr,.allianz-externes hr,.type-6 .c-nachricht hr { height:0; padding:0; border-style:solid none none none; border-width:.2em; border-color:#aaa; }
+.benutzerbeschreibung strong,.allianz-internes strong,.allianz-externes strong,.type-6 .c-nachricht strong { font-weight:bold; font-style:normal; text-decoration:none; }
+.benutzerbeschreibung em,.allianz-internes em,.allianz-externes em,.type-6 .c-nachricht em { font-weight:normal; font-style:normal; text-decoration:underline; }
 .playerinfo-nachricht dt { position:relative; }
 
 .fertig { color:#0f0; font-weight:bold; }

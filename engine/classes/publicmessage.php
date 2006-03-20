@@ -34,6 +34,7 @@
 			
 			$html = $message->html();
 			$this->html($html);
+			$text = $message->rawText();
 			if($html)
 			{
 				$text = preg_replace('/ ?<span class="koords">.*?<\\/span>/', '', $text);
@@ -58,13 +59,24 @@
 				if(!isset($this->raw['text'])) return '';
 				else
 				{
-					$html = $this->html();
-					if($html) return preg_replace('/<\\/?a[^>]*>/i', '', utf8_htmlentities($this->raw['text'], true))."\n";
-					else return "<p>\n\t".preg_replace('/[\n]+/e', 'message_repl_nl(\'$0\');', utf8_htmlentities($this->raw['text']))."\n</p>\n";
+					if(!isset($this->raw['parsed'])) $this->_createParsed();
+					return $this->raw['parsed'];
 				}
 			}
 			
 			$this->raw['text'] = $text;
+			$this->_createParsed();
+			$this->changed = true;
+			return true;
+		}
+		
+		function _createParsed()
+		{
+			if(!$this->status) return false;
+			
+			if(!isset($this->raw['text'])) $this->raw['parsed'] = '';
+			elseif($this->html()) $this->raw['parsed'] = $this->raw['text'];
+			else $this->raw['parsed'] = parse_html($this->raw['text']);
 			$this->changed = true;
 			return true;
 		}
@@ -110,6 +122,7 @@
 			}
 			
 			$this->raw['html'] = (bool) $html;
+			$this->_createParsed();
 			$this->changed = true;
 			return true;
 		}

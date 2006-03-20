@@ -230,25 +230,6 @@
 <?php
 					if(isset($_POST['weiterleitung-to']))
 					{
-						$weiterleitung_text = '';
-						if($message->html())
-							$weiterleitung_text .= "<p class=\"weitergeleitete-nachricht\">\n\t";
-						$weiterleitung_text .= "--- Weitergeleitete Nachricht";
-						if(trim($message->from()) != '')
-						{
-							$weiterleitung_text .= ", Absender: ";
-							if($message->html())
-								$weiterleitung_text .= htmlspecialchars($message->from());
-							else
-								$weiterleitung_text .= $message->from();
-						}
-						if($message->getTime())
-							$weiterleitung_text .= ", Sendezeit: ".date('H:i:s, Y-m-d', $message->getTime());
-						$weiterleitung_text .= " ---\n";
-						if($message->html())
-							$weiterleitung_text .= "</p>";
-						$weiterleitung_text .= "\n";
-
 						$_POST['weiterleitung-to'] = trim($_POST['weiterleitung-to']);
 
 						if(!User::userExists($_POST['weiterleitung-to']))
@@ -274,7 +255,25 @@
 							}
 							else
 							{
-								$weiterleitung_message->text($weiterleitung_text.$message->text());
+								$weiterleitung_text = '';
+								if($message->html())
+									$weiterleitung_text .= "<p class=\"weitergeleitete-nachricht\">\n\t";
+								$weiterleitung_text .= "--- Weitergeleitete Nachricht";
+								if(trim($message->from()) != '')
+								{
+									$weiterleitung_text .= ", Absender: ";
+									if($message->html())
+										$weiterleitung_text .= htmlspecialchars($message->from());
+									else
+										$weiterleitung_text .= $message->from();
+								}
+								if($message->getTime())
+									$weiterleitung_text .= ", Sendezeit: ".date('H:i:s, Y-m-d', $message->getTime());
+								$weiterleitung_text .= " ---\n";
+								if($message->html())
+									$weiterleitung_text .= "</p>";
+								$weiterleitung_text .= "\n ";
+								$weiterleitung_message->text($weiterleitung_text.$message->rawText());
 								$weiterleitung_message->subject('Fwd: '.$message->subject());
 								$weiterleitung_message->from($_SESSION['username']);
 								$weiterleitung_message->addUser($_POST['weiterleitung-to'], $_GET['type']);
