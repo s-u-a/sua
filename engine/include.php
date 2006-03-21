@@ -201,74 +201,76 @@
 			}
 ?>
 	</head>
-	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4">
+	<body><div id="main-container">
 		<h1 id="logo"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root.'/')?>" title="Zurück zur Startseite" xml:lang="en">Stars Under Attack</a></h1>
-		<div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
-		<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
-			<fieldset>
-				<legend>Anmelden</legend>
-				<dl>
-					<dt class="c-runde"><label for="login-runde">Runde</label></dt>
-					<dd class="c-runde"><select name="database" id="login-runde">
+		<div id="navigation"><div id="navigation2"><ol id="navigation-inner">
+			<li class="c-index"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/index.php">Neuigkeiten</a></li>
+			<li class="c-features"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/features.php" xml:lang="en">Features</a></li>
+			<li class="c-register"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/register.php">Registrieren</a></li>
+			<li class="c-rules"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/rules.php">Regeln</a></li>
+			<li class="c-faq"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/faq.php"><abbr title="Frequently Asked Questions" xml:lang="en">FAQ</abbr></a></li>
+			<li class="c-chat"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/chat.php" xml:lang="en">Chat</a></li>
+			<li class="c-board"><a href="<?=htmlentities(USE_PROTOCOL)?>://board.s-u-a.net/index.php" xml:lang="en">Board</a></li>
+			<li class="c-bugtracker"><a href="https://bugs.s-u-a.net/" xml:lang="en">Bugtracker</a></li>
+			<li class="c-impressum"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/impressum.php">Impressum</a></li>
+			<li class="c-browsergames24"><a href="http://www.browsergames24.de/modules.php?name=Web_Links&amp;l_op=ratelink&amp;lid=1236" xml:lang="en">Browsergames24</a></li>
+		</ol></div></div>
+		<div id="content"><div id="content2"><div id="content3">
+			<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
+				<fieldset>
+					<legend>Anmelden</legend>
+					<dl>
+						<dt class="c-runde"><label for="login-runde">Runde</label></dt>
+						<dd class="c-runde"><select name="database" id="login-runde">
 <?php
 			$databases = get_databases();
 			foreach($databases as $id=>$info)
 			{
 ?>
-						<option value="<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($info[1])?></option>
+							<option value="<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($info[1])?></option>
 <?php
 			}
 ?>
-					</select></dd>
-					
-					<dt class="c-name"><label for="login-username">Name</label></dt>
-					<dd class="c-name"><input type="text" id="login-username" name="username" /></dd>
-
-					<dt class="c-passwort"><label for="login-password">Passwort</label></dt>
-					<dd class="c-passwort"><input type="password" id="login-password" name="password" /></dd>
-				</dl>
-				<ul>
-					<li class="c-anmelden"><button type="submit">Anmelden</button></li>
-					<li class="c-registrieren"><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/register.php">Registrieren</a></li>
-					<li class="c-passwort-vergessen"><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/passwd.php">Passwort vergessen?</a></li>
+						</select></dd>
+						
+						<dt class="c-name"><label for="login-username">Name</label></dt>
+						<dd class="c-name"><input type="text" id="login-username" name="username" /></dd>
+	
+						<dt class="c-passwort"><label for="login-password">Passwort</label></dt>
+						<dd class="c-passwort"><input type="password" id="login-password" name="password" /></dd>
+					</dl>
+					<ul>
+						<li class="c-anmelden"><button type="submit">Anmelden</button></li>
+						<li class="c-registrieren"><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/register.php">Registrieren</a></li>
+						<li class="c-passwort-vergessen"><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/passwd.php">Passwort vergessen?</a></li>
 <?php
 			if(USE_PROTOCOL == 'https')
 			{
 ?>
-					<li class="c-ssl-abschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=1"><abbr title="Secure Sockets Layer" xml:lang="en"><span xml:lang="de">SSL</span></abbr> abschalten</a></li>
+						<li class="c-ssl-abschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=1"><abbr title="Secure Sockets Layer" xml:lang="en"><span xml:lang="de">SSL</span></abbr> abschalten</a></li>
 <?php
 			}
 			else
 			{
 ?>
-					<li class="c-ssl-einschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=0"><abbr title="Secure Sockets Layer" xml:lang="en"><span xml:lang="de">SSL</span></abbr> einschalten</a></li>
+						<li class="c-ssl-einschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=0"><abbr title="Secure Sockets Layer" xml:lang="en"><span xml:lang="de">SSL</span></abbr> einschalten</a></li>
 <?php
 			}
 ?>
-				</ul>
-			</fieldset>
-		</form>
-		<ol id="navigation">
-			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/index.php">Neuigkeiten</a></li>
-			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/features.php" xml:lang="en">Features</a></li>
-			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/register.php">Registrieren</a></li>
-			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/rules.php">Regeln</a></li>
-			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/faq.php"><abbr title="Frequently Asked Questions" xml:lang="en">FAQ</abbr></a></li>
-			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/chat.php" xml:lang="en">Chat</a></li>
-			<li><a href="<?=htmlentities(USE_PROTOCOL)?>://board.s-u-a.net/index.php" xml:lang="en">Board</a></li>
-			<li><a href="https://bugs.s-u-a.net/" xml:lang="en">Bugtracker</a></li>
-			<li><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/impressum.php">Impressum</a></li>
-			<li class="image"><a href="http://www.browsergames24.de/modules.php?name=Web_Links&amp;l_op=ratelink&amp;lid=1236"><img src="http://www.browsergames24.de/votebg.gif" alt="Bewerten Sie S-U-A bei Browsergames24" /></a></li>
-		</ol>
-		<div id="content-9"><div id="content-10"><div id="content-11"><div id="content-12">
+					</ul>
+				</fieldset>
+			</form>
+			<div id="innercontent"><div id="innercontent2"><div id="innercontent3">
 <?php
 		}
 
 		function html_foot()
 		{
 ?>
-		<br style="clear:both;" /></div></div></div></div>
-	</div></div></div></div></div></div></div></div></body>
+			</div></div></div>
+		</div></div></div>
+		<br style="clear:both;" />
+	</div></body>
 </html>
 <?php
 		}

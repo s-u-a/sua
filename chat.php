@@ -69,20 +69,20 @@
 	<param name="language" value="english" />
 	<param name="quitmessage" value="http://s-u-a.net/" />
 	<param name="pixx:color1" value="000000" />
-	<param name="pixx:color2" value="9199AA" />
-	<param name="pixx:color3" value="9199AA" />
-	<param name="pixx:color4" value="9199AA" />
-	<param name="pixx:color5" value="9199AA" />
-	<param name="pixx:color6" value="445577" />
-	<param name="pixx:color7" value="A2ABBC" />
+	<param name="pixx:color2" value="777777" />
+	<param name="pixx:color3" value="777777" />
+	<param name="pixx:color4" value="777777" />
+	<param name="pixx:color5" value="777777" />
+	<param name="pixx:color6" value="26252B" />
+	<param name="pixx:color7" value="999999" />
 	<param name="pixx:color8" value="FF0000" />
-	<param name="pixx:color9" value="9199AA" />
-	<param name="pixx:color10" value="9199AA" />
-	<param name="pixx:color11" value="9199AA" />
-	<param name="pixx:color12" value="9199AA" />
-	<param name="pixx:color13" value="9199AA" />
-	<param name="pixx:color14" value="9199AA" />
-	<param name="pixx:color15" value="9199AA" />
+	<param name="pixx:color9" value="777777" />
+	<param name="pixx:color10" value="777777" />
+	<param name="pixx:color11" value="777777" />
+	<param name="pixx:color12" value="777777" />
+	<param name="pixx:color13" value="777777" />
+	<param name="pixx:color14" value="777777" />
+	<param name="pixx:color15" value="777777" />
 	<param name="highlight" value="true" />
 	<param name="pixx:highlightnick" value="true" />
 	<param name="pixx:highlightcolor" value="8" />

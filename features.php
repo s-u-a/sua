@@ -12,8 +12,8 @@
 			define_globals($database[0]);
 			$first = false;
 		}
-		$players += filesize($database[0].'/highscores')/38;
-		$alliances += filesize($database[0].'/highscores_alliances')/26;
+		$players += Highscores::getCount('users', $database[0].'/highscores');
+		$alliances += Highscores::getCount('alliances', $database[0].'/highscores');
 	}
 	
 	$items = Classes::Items();

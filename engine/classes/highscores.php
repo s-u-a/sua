@@ -125,11 +125,27 @@
 			return sqlite_array_query($this->connection, "SELECT * FROM highscores_".$type." ORDER BY ".$sort_field." DESC,changed ASC LIMIT ".$from.", ".($to-$from).";", SQLITE_ASSOC);
 		}
 		
-		function getCount($type)
+		function getCount($type, $highscores_file=false)
 		{
-			if(!$this->status || ($type != 'users' && $type != 'alliances')) return false;
+			if($type != 'users' && $type != 'alliances') return false;
 			
-			return sqlite_single_query($this->connection, "SELECT count(*) FROM highscores_".$type.";", true);
+			$connection = false;
+			if($highscores_file !== false)
+			{
+				if(is_file($highscores_file))
+					$connection = sqlite_open($highscores_file);
+			}
+			elseif(isset($this) && $this->status)
+				$connection = &$this->connection;
+			
+			if(!$connection) return false;
+			
+			$result = sqlite_single_query($connection, "SELECT count(*) FROM highscores_".$type.";", true);
+			
+			if($highscores_file !== false)
+				sqlite_close($connection);
+			
+			return $result;
 		}
 		
 		function getPosition($type, $id, $sort_field=false)
