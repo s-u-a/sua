@@ -157,7 +157,7 @@
 			<dt><label for="hauptplanet">Gewünschter Name des Hauptplaneten</label></dt>
 			<dd><input type="text" id="hauptplanet" name="hauptplanet"<?=isset($_POST['hauptplanet']) ? ' value="'.utf8_htmlentities($_POST['hauptplanet']).'"' : ''?> maxlength="24" /></dd>
 		</dl>
-		<div><input type="checkbox" name="nutzungsbedingungen" id="nutzungsbedingungen" /> <label for="nutzungsbedingungen">Ich habe die <a href="rules.php">Nutzungsbedingungen</a> gelesen und akzeptiere sie.</label></div>
+		<div><input type="checkbox" class="checkbox" name="nutzungsbedingungen" id="nutzungsbedingungen" /> <label for="nutzungsbedingungen">Ich habe die <a href="rules.php">Nutzungsbedingungen</a> gelesen und akzeptiere sie.</label></div>
 		<ul>
 			<li><button type="submit">Registrieren</button></li>
 		</ul>

@@ -159,11 +159,11 @@
 				if($verb)
 				{
 					$mess1 = 'Sie können das Handelsangebot zu diesem Spieler ändern, da Sie mit ihm verbündet sind.';
-					if($own) $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend) und %2$s Roboter (%4$s verbleibend).';
+					if($username == $_SESSION['username']) $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend) und %2$s Roboter (%4$s verbleibend).';
 					else $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend).';
 					$input_name = 'set';
 					$value = '%u';
-					if($remaining_ress[0]>0 || ($username == $_SESSION['username'] && $remaining_ress[1]>0))
+					if($remaining_trans[0]>0 || ($username == $_SESSION['username'] && $remaining_trans[1]>0))
 					{
 						$disabled = '';
 						$show_submit = true;
@@ -294,7 +294,7 @@
 ?>
 				<tr class="c-ro-<?=utf8_htmlentities($id)?>">
 					<th class="c-gut"><?=utf8_htmlentities($item_info['name'])?></th>
-					<td class="c-einlagern"><input type="text" name="handel[1][<?=$id?>]" value="<?=utf8_htmlentities($h)?>"<?php if($remaining_ress[1]<=0){?> disabled="disabled"<?php }?> /></td>
+					<td class="c-einlagern"><input type="text" name="handel[1][<?=$id?>]" value="<?=utf8_htmlentities($h)?>"<?php if($remaining_trans[1]<=0){?> disabled="disabled"<?php }?> /></td>
 					<td class="c-verfuegbar"><?=ths($available_robs[$id])?></td>
 				</tr>
 <?php

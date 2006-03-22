@@ -215,7 +215,7 @@
 			<li class="c-impressum"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/impressum.php">Impressum</a></li>
 			<li class="c-browsergames24"><a href="http://www.browsergames24.de/modules.php?name=Web_Links&amp;l_op=ratelink&amp;lid=1236" xml:lang="en">Browsergames24</a></li>
 		</ol></div></div>
-		<div id="content"><div id="content2"><div id="content3">
+		<div id="content"><div id="content2"><div id="content3"><div id="content4">
 			<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
 				<fieldset>
 					<legend>Anmelden</legend>
@@ -239,8 +239,8 @@
 						<dt class="c-passwort"><label for="login-password">Passwort</label></dt>
 						<dd class="c-passwort"><input type="password" id="login-password" name="password" /></dd>
 					</dl>
+					<div class="c-anmelden"><button type="submit">Anmelden</button></div>
 					<ul>
-						<li class="c-anmelden"><button type="submit">Anmelden</button></li>
 						<li class="c-registrieren"><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/register.php">Registrieren</a></li>
 						<li class="c-passwort-vergessen"><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/passwd.php">Passwort vergessen?</a></li>
 <?php
@@ -268,7 +268,7 @@
 		{
 ?>
 			</div></div></div>
-		</div></div></div>
+		</div></div></div></div>
 		<br style="clear:both;" />
 	</div></body>
 </html>
