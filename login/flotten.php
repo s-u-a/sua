@@ -22,6 +22,11 @@
 	__autoload('Galaxy');
 ?>
 <h2>Flotten</h2>
+<p class="error">Noch nicht implementiert.</p>
+<?php
+	login_gui::html_foot();
+	exit(1);
+?>
 <?php
 	$fast_action = false;
 	if(isset($_GET['action_galaxy']) && isset($_GET['action_system']) && isset($_GET['action_planet']) && isset($_GET['action']) && ($_GET['action'] == 'spionage' || $_GET['action'] == 'besiedeln' || $_GET['action'] == 'sammeln'))

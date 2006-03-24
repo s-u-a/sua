@@ -44,7 +44,7 @@
 <?php
 		}
 
-	print($news['text_parsed']);
+	print("\t".str_replace("\n", "\n\t", $news['text_parsed']));
 ?>
 </div>
 <?php
