@@ -494,3 +494,5 @@ br.clear { clear:both; }
 .alle-abbrechen p { margin:0; padding:0; }
 * html .alle-abbrechen { margin-left:50%; }
 .alle-abbrechen strong { font-weight:bold; text-decoration:underline; }
+
+* html .c-werbung-ausblenden { display:none; }

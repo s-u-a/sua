@@ -33,7 +33,6 @@
 	<li>Schließen Sie Bündnisse mit einzelnen Spielern</li>
 	<li>Variabler Handelskurs, der sich den Zuständen im Universum anpasst</li>
 	<li>Handelssystem: Geben Sie sich nähernden Transporten Rohstoffe mit auf den Rückweg</li>
-	<li>Handeln Sie auch Roboter</li>
 	<li>Komfortable Einstellungsmöglichkeiten, die das Spielen erleichtern</li>
 	<li>Völlige Ummodellierbarkeit des <span xml:lang="en">Design</span>s durch <span xml:lang="en">Skins</span></li>
 	<li>Flug- und Kampferfahrungspunkte verschaffen Vorteil</li>
@@ -42,7 +41,7 @@
 	<li>Geplant: Stationieren Sie Flotten bei Ihren Verbündeten, um diesen zu unterstützen</li>
 	<li>Geplant: Fliegen Sie gemeinsame Angriffe mit Ihren Verbündeten</li>
 	<li>derzeit <?=$players?> Spieler</li>
-	<li>derzeit <?=$alliances?> Allianzen</li>
+	<li>derzeit <?=$alliances?> Allianz<?=($alliances != 1) ? 'en' : ''?></li>
 <?php
 	if(count($databases) > 1)
 	{

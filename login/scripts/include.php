@@ -437,15 +437,18 @@
 ?>
 			</div></div>
 <?php
-			if(false)/* Werbung deaktiviert */
-			#if(!$me->checkSetting('noads'))
+			/*if(!$me->checkSetting('noads'))
 			{
+?>
+<!--[if IE]>
+<?php
+			}
 ?>
 			<div id="werbung">
 <?php
-				global $DISABLE_ADS;
-				if((!isset($DISABLE_ADS) || !$DISABLE_ADS) && PROTOCOL == 'http')
-				{
+			global $DISABLE_ADS;
+			if((!isset($DISABLE_ADS) || !$DISABLE_ADS) && PROTOCOL == 'http')
+			{
 ?>
 				<script type="text/javascript">
 					google_ad_client = "pub-5173730573608246";
@@ -463,11 +466,16 @@
 				</script>
 				<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
 <?php
-				}
+			}
 ?>
 			</div>
 <?php
-			}
+			if(!$me->checkSetting('noads'))
+			{
+?>
+<![endif]-->
+<?php
+			}*/
 ?>
 			<div id="css-1"></div>
 		</div></div>

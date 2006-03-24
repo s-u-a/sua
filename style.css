@@ -17,7 +17,7 @@ body { min-height:100%; width:100%; }
 #navigation li.c-browsergames24 { margin-top:1em; }
 
 #content { padding:20px 0; }
-#content2 { margin:20px auto; }
+#content2 { margin:20px 0 20px 50px; }
 #content2 { width:592px; padding-top:111px; background-image:url(images/content_top.png); background-repeat:no-repeat; }
 #content3 { width:592px; padding-bottom:77px; background-image:url(images/content_bottom.png); background-repeat:no-repeat; background-position:center bottom; }
 #content4 { width:592px; background-image:url(images/content_body.png); background-color:#35363B; }
@@ -28,8 +28,6 @@ body { min-height:100%; width:100%; }
 
 * html,* html body { overflow:hidden; }
 * html #navigation { position:absolute; z-index:2000; }
-* html #content { text-align:center; }
-* html #content2 { text-align:left; }
 * html #content { position:absolute; top:0; left:0; width:100%; height:100%; overflow:auto; padding-left:205px; z-index:1000; }
 
 
