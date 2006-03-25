@@ -3,7 +3,7 @@
 
 	error_reporting(2047);
 	ignore_user_abort(false);
-	set_time_limit(1800);
+	set_time_limit(30);
 
 	$this_filename = '/engine/include.php';
 	$__FILE__ = str_replace('\\', '/', __FILE__);

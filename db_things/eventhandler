@@ -186,6 +186,7 @@ EOF
 		
 		if(!$pid || $pid == -1)
 		{
+			if($pid != -1) set_time_limit(30);
 			Classes::resetInstances();
 			
 			if(!$fleet->arriveAtNextTarget())
