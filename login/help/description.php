@@ -201,7 +201,7 @@
 			</tr>
 			<tr>
 				<th>Antriebsstärke</th>
-				<td><?=ths($item->getInfo('speed'))?>&thinsp;<abbr title="Milliorbits pro Quadratsekunde">mOr&frasl;s²</abbr></td>
+				<td><?=ths($item->getInfo('speed'))?>&thinsp;<abbr title="Mikroorbits pro Quadratsekunde">µOr&frasl;s²</abbr></td>
 			</tr>
 			<tr>
 				<th>Unterstützte Auftragsarten</th>

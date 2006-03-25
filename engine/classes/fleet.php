@@ -436,7 +436,7 @@
 				$item_info = $user_obj->getItemInfo($id, 'schiffe');
 				$speeds[] = $item_info['speed'];
 			}
-			$speed = min($speeds)/1000;
+			$speed = min($speeds)/1000000;
 			
 			$time = sqrt($this->getDistance($from, $to)/$speed)*2;
 			$time /= $this->raw[1][$user][2];

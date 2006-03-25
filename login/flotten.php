@@ -22,11 +22,6 @@
 	__autoload('Galaxy');
 ?>
 <h2>Flotten</h2>
-<p class="error">Noch nicht implementiert.</p>
-<?php
-	login_gui::html_foot();
-	exit(1);
-?>
 <?php
 	$fast_action = false;
 	if(isset($_GET['action_galaxy']) && isset($_GET['action_system']) && isset($_GET['action_planet']) && isset($_GET['action']) && ($_GET['action'] == 'spionage' || $_GET['action'] == 'besiedeln' || $_GET['action'] == 'sammeln'))
@@ -418,7 +413,7 @@
 		<dd class="c-entfernung"><?=ths($distance)?>&thinsp;<abbr title="Orbits">Or</abbr></dd>
 
 		<dt class="c-antrieb">Antrieb</dt>
-		<dd class="c-antrieb"><?=ths($speed)?>&thinsp;<abbr title="Milliorbits pro Quadratsekunde">mOr&frasl;s²</abbr></dd>
+		<dd class="c-antrieb"><?=ths($speed)?>&thinsp;<abbr title="Mikroorbits pro Quadratsekunde">µOr&frasl;s²</abbr></dd>
 
 		<dt class="c-tritiumverbrauch">Tritiumverbrauch</dt>
 		<dd class="c-tritiumverbrauch <?=($this_ress[4] >= $tritium) ? 'ja' : 'nein'?>" id="tritium-verbrauch"><?=ths($tritium)?>&thinsp;<abbr title="Tonnen">t</abbr></dd>
