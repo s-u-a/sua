@@ -163,16 +163,8 @@
 					else $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend).';
 					$input_name = 'set';
 					$value = '%u';
-					if($remaining_trans[0]>0 || ($username == $_SESSION['username'] && $remaining_trans[1]>0))
-					{
-						$disabled = '';
-						$show_submit = true;
-					}
-					else
-					{
-						$disabled = ' disabled="disabled"';
-						$show_submit = false;
-					}
+					$disabled = '';
+					$show_submit = true;
 				}
 				else
 				{

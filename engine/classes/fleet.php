@@ -346,6 +346,8 @@
 			}
 			if($robs !== false && is_array($robs))
 				$this->raw[1][$user][4][1] = $robs;
+			
+			$this->changed = true;
 			return true;
 		}
 		
