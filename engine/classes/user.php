@@ -926,7 +926,7 @@
 				$info['level'] = $this->getItemLevel($id, $type, $run_eventhandler);
 				
 				# Bauzeit als Anteil der Punkte des ersten Platzes
-				if(isset($info['time']))
+				/*if(isset($info['time']))
 				{
 					$highscores = Classes::Highscores();
 					if($highscores->getStatus() && ($first = $highscores->getList('users', 1, 1)))
@@ -937,7 +937,7 @@
 						if($f < .5) $f = .5;
 						$info['time'] *= $f;
 					}
-				}
+				}*/
 				
 				switch($type)
 				{
@@ -1618,7 +1618,7 @@
 			}
 		}
 		
-		protected function eventhandler($check_id=false, $check_gebaeude=true, $check_forschung=true, $check_roboter=true, $check_schiffe=true, $check_verteidigung=true)
+		function eventhandler($check_id=false, $check_gebaeude=true, $check_forschung=true, $check_roboter=true, $check_schiffe=true, $check_verteidigung=true)
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
