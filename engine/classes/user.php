@@ -1499,7 +1499,7 @@
 				'tooltips' => false, 'ipcheck' => true,
 				'noads' => false, 'show_extern' => false,
 				'notify' => false, 'email' => false,
-				'ajax' => false,
+				'ajax' => true,
 				'receive' => array(
 					1 => array(true, true),
 					2 => array(true, false),

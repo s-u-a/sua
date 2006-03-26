@@ -6,12 +6,14 @@
 		if(isset($_SERVER['HTTP_REFERER'])) $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_REFERER'];
 	}
 
+	if(!defined('ajax'))
 	require('scripts/include.php');
 
 	if(isset($_GET['action']))
 		$_SERVER['REQUEST_URI'] = $requ_uri;
 
-	login_gui::html_head();
+	if(!defined('ajax'))
+		login_gui::html_head();
 
 	$show_versenden = true;
 
@@ -20,9 +22,14 @@
 
 	__autoload('Fleet');
 	__autoload('Galaxy');
+
+	if(!defined('ajax'))
+	{
 ?>
 <h2>Flotten</h2>
 <?php
+	}
+
 	$fast_action = false;
 	if(isset($_GET['action_galaxy']) && isset($_GET['action_system']) && isset($_GET['action_planet']) && isset($_GET['action']) && ($_GET['action'] == 'spionage' || $_GET['action'] == 'besiedeln' || $_GET['action'] == 'sammeln'))
 	{
@@ -32,6 +39,8 @@
 		$planet_owner = $galaxy->getPlanetOwner($_GET['action_system'], $_GET['action_planet']);
 		if($my_flotten >= $max_flotten)
 		{
+			if(defined('ajax'))
+				return array('error', 'Maximale Flottenzahl erreicht.');
 ?>
 <p class="error">
 	Maximale Flottenzahl erreicht.
@@ -56,6 +65,7 @@
 					$_POST['flotte']['S5'] = $me->checkSetting('sonden');
 				if($me->getItemLevel('S5', 'schiffe') < 1)
 				{
+					if(defined('ajax')) return array('error', 'Keine Spionagesonden vorhanden.');
 ?>
 <p class="error">
 	Keine Spionagesonden vorhanden.
@@ -71,6 +81,7 @@
 				$_POST['flotte'] = array('S6' => 1);
 				if($me->getItemLevel('S6', 'schiffe') < 1)
 				{
+					if(defined('ajax')) return array('error', 'Kein Besiedelungsschiff vorhanden.');
 ?>
 <p class="error">
 	Kein Besiedelungsschiff vorhanden.
@@ -102,6 +113,7 @@
 
 				if($me->getItemLevel('S3', 'schiffe') < 1)
 				{
+					if(defined('ajax')) return array('error', 'Keine Sammler vorhanden.');
 ?>
 <p class="error">
 	Keine Sammler vorhanden.
@@ -195,6 +207,7 @@
 
 				if(count($types) <= 0)
 				{
+					if(defined('ajax')) return array('error', 'Diese Aktion ist auf diesen Planeten nicht möglich.');
 ?>
 <p class="error">
 	Sie haben nicht die richtigen Schiffe ausgewählt, um diesen Planeten anzufliegen.
@@ -240,6 +253,7 @@
 
 								if($that_punkte > $this_punkte && $that_punkte*0.05 > $this_punkte)
 								{
+									if(defined('ajax')) return array('error', 'Dieser Spieler ist zu stark für Sie.');
 ?>
 <p class="error">
 	Das Imperium dieses Spielers ist so groß, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anfängerschutz.)
@@ -249,6 +263,7 @@
 								}
 								elseif($that_punkte < $this_punkte && $that_punkte < $this_punkte*0.05)
 								{
+									if(defined('ajax')) return array('error', 'Dieser Spieler ist zu schwach für Sie.');
 ?>
 <p class="error">
 	Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen können. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anfängerschutz.)
@@ -307,6 +322,7 @@
 
 									if($ress[4]-$_POST['transport'][4] < $tritium)
 									{
+										if(defined('ajax')) return array('error', 'Nicht genug Tritium vorhanden.');
 ?>
 <p class="error">
 	Nicht genug Tritium vorhanden.
@@ -337,7 +353,8 @@
 
 										$fleet_obj->start();
 
-										if($fast_action)
+										if(defined('ajax')) return array('successful', 'Die Flotte wurde versandt.');
+										elseif($fast_action)
 										{
 											header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 											ob_end_clean();
@@ -372,7 +389,8 @@
 
 					if($show_form2)
 					{
-						if($fast_action)
+						if(defined('ajax')) return array('error', 'Ungültige Aktion.');
+						elseif($fast_action)
 						{
 							header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 							ob_end_clean();
@@ -659,7 +677,8 @@
 
 	if($show_versenden)
 	{
-		if($fast_action)
+		if(defined('ajax')) return array('error', 'Ungültige Aktion.');
+		elseif($fast_action)
 		{
 			header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 			ob_end_clean();

@@ -160,7 +160,7 @@
 
 	$me->setActivePlanet($_SESSION['act_planet']);
 
-	if(!isset($_SESSION['ghost']) || !$_SESSION['ghost'])
+	if((!isset($_SESSION['ghost']) || !$_SESSION['ghost']) && !defined('ignore_action'))
 		$me->registerAction();
 
 	# Skins bekommen

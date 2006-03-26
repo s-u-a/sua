@@ -172,8 +172,8 @@
 			<dt class="c-nachrichteninformierung"><label for="notify">Nachrichteninformierung</label></dt>
 			<dd class="c-nachrichteninformierung"><input type="checkbox" name="notify" id="notify"<?=$me->checkSetting('notify') ? ' checked="checked"' : ''?> title="Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angezeigt, dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten." tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-autocompletion" xml:lang="en"><label for="autocompletion">Autocompletion</label></dt>
-			<dd class="c-autocompletion" xml:lang="en"><input type="checkbox" name="ajax" id="autocompletion"<?=$me->checkSetting('ajax') ? ' checked="checked"' : ''?> title="Bei Eingabe eines Benutzernamens werden verfügbare Benutzernamen vorgeschlagen. (Empfehlenswert in neuen Browsern bei schneller Internetverbindung)" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-ajax"><label for="ajax"><acronym title="Asynchronous JavaScript and XML" xml:lang="en">AJAX</acronym> aktivieren</label></dt>
+			<dd class="c-ajax" xml:lang="en"><input type="checkbox" name="ajax" id="ajax"<?=$me->checkSetting('ajax') ? ' checked="checked"' : ''?> title="Nützliche Eingabevereinfachungen, empfehlenswert in neuen Browsern mit schneller Internetverbindung." tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
 		<script type="text/javascript">
 			function recalc_skin()

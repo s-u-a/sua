@@ -345,6 +345,100 @@ function increase_ress()
 }
 
 
+fadeout_elements = new Array();
+function popup_message(message, classn, calling_node)
+{
+	var timeout = 500;
+
+	popup_el = document.createElement('p');
+	if(classn) popup_el.className = 'popup '+classn;
+	else popup_el.className = 'popup';
+
+	popup_el.appendChild(document.createTextNode(message));
+
+	posx = calling_node.offsetLeft+10;
+	posy = calling_node.offsetTop+calling_node.offsetHeight+5;
+	parent_offset = calling_node;
+	while(parent_offset.offsetParent)
+	{
+		parent_offset = parent_offset.offsetParent;
+		if(parent_offset.nodeName.toLowerCase() == 'body') break;
+		posx += parent_offset.offsetLeft;
+		posy += parent_offset.offsetTop;
+	}
+
+	popup_el.style.position = 'absolute';
+	popup_el.style.top = posy+'px';
+	popup_el.style.left = posx+'px';
+
+	body_el = document.getElementsByTagName('body')[0];
+	body_el.appendChild(popup_el);
+
+	var right_point = popup_el.offsetLeft+popup_el.offsetWidth;
+	var parent_width = body_el.offsetWidth;
+
+	if(right_point > parent_width)
+		popup_el.style.left = (parent_width-popup_el.offsetWidth)+'px';
+
+	var array_key = fadeout_elements.length;
+	fadeout_elements[array_key] = popup_el;
+	setTimeout('popup_fadeout('+array_key+');', timeout);
+}
+
+function fast_action(node, action_type, galaxy, system, planet)
+{
+	var xmlhttp = new XMLHttpRequest();
+	var request_url = '<?=h_root?>/login/scripts/ajax.php?action='+encodeURIComponent(action_type)+'&action_galaxy='+encodeURIComponent(galaxy)+'&action_system='+encodeURIComponent(system)+'&action_planet='+encodeURIComponent(planet)+'&'+encodeURIComponent(session_cookie)+'='+encodeURIComponent(session_id);
+	xmlhttp.open('GET', request_url, true);
+
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200 && xmlhttp.responseXML)
+			popup_message(xmlhttp.responseXML.getElementsByTagName('result')[0].firstChild.data, xmlhttp.responseXML.getElementsByTagName('classname')[0].firstChild.data, node);
+	}
+
+	xmlhttp.send(null);
+
+	return false;
+}
+
+function setOpacity(el_key,opacity)
+{
+	el = fadeout_elements[el_key];
+	opacity = (opacity == 100)?99:opacity;
+	// IE
+	el.style.filter = "alpha(opacity:"+opacity+")";
+	// Safari < 1.2, Konqueror
+	el.style.KHTMLOpacity = opacity/100;
+	// Old Mozilla
+	el.style.MozOpacity = opacity/100;
+	// Safari >= 1.2, Firefox and Mozilla, CSS3
+	el.style.opacity = opacity/100
+}
+
+function popup_fadeout(el_key)
+{
+	el = fadeout_elements[el_key];
+
+	steps = 50;
+	timel = 4000;
+
+	setOpacity(el_key,100); // To prevent flicker in Firefox
+	                        // The first time the opacity is set
+	                        // the element flickers in Firefox
+	fadeStep = 100/steps;
+	timeStep = timel/steps;
+	opacity = 100;
+	timel = 100;
+
+	while (opacity >=0) {
+		window.setTimeout("setOpacity("+el_key+","+opacity+")",timel);
+		opacity -= fadeStep;
+		timel += timeStep;
+	}
+	window.setTimeout('fadeout_elements['+el_key+'].parentNode.removeChild(el);', timel);
+}
+
+
 users_list_timeout = false;
 users_list = false;
 users_list_selected = false;
@@ -485,7 +579,7 @@ function do_make_users_list(node)
 	l.style.left = node.offsetLeft+'px';
 	l.style.width = node.offsetWidth+'px';
 
-	var xmlhttp =  new XMLHttpRequest();
+	var xmlhttp = new XMLHttpRequest();
 	var request_url = '<?=h_root?>/login/scripts/ajax.php?action=userlist&query='+encodeURIComponent(node.value)+'&'+encodeURIComponent(session_cookie)+'='+encodeURIComponent(session_id);
 	xmlhttp.open('GET', request_url, true);
 

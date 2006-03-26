@@ -1,9 +1,10 @@
 <?php
+	define('ignore_action', true);
+	define('ajax', true);
 	require('../scripts/include.php');
 
-	header('Content-type: text/xml;charset=UTF-8');
-
-	$results = array();
+	$additionals = array('result' => array());
+	$results = &$additionals['result'];
 
 	if(!isset($_GET['action'])) $_GET['action'] = null;
 	if(!isset($_GET['query'])) $_GET['query'] = '';
@@ -28,15 +29,22 @@
 			natcasesort($results);
 
 			break;
+
+		case 'spionage': case 'besiedeln': case 'sammeln':
+			list($additionals['classname'], $results[]) = include('../flotten.php');
+			break;
 	}
-?>
-<xmlresponse>
-<?php
-	foreach($results as $result)
+
+
+	header('Content-type: text/xml;charset=UTF-8');
+	echo "<xmlresponse>\n";
+	foreach($additionals as $tagname=>$contents)
 	{
-?>
-	<result><?=htmlspecialchars($result)?></result>
-<?php
+		if(!is_array($contents)) $contents = array($contents);
+		if(count($contents) <= 0) continue;
+
+		foreach($contents as $content)
+			echo "\t<".$tagname.">".htmlspecialchars($content)."</".$tagname.">\n";
 	}
+	echo "</xmlresponse>\n";
 ?>
-</xmlresponse>
