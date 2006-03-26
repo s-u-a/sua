@@ -193,14 +193,22 @@
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname == '.' || $fname == '..') continue;
-				rename(DB_PLAYERS.'/'.$fname, DB_PLAYERS.'/'.strtolower($fname));
+				$old_fname = DB_PLAYERS.'/'.$fname;
+				$new_fname = DB_PLAYERS.'/'.strtolower($fname);
+				if($old_fname == $new_fname) continue;
+				if(file_exists($new_fname)) fputs(STDERR, "Skipped ".$old_fname.", ".$new_fname." already exists. Please fix this manually.\n");
+				else rename($old_fname, $new_fname);
 			}
 			closedir($dh);
 			$dh = opendir(DB_ALLIANCES);
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname == '.' || $fname == '..') continue;
-				rename(DB_ALLIANCES.'/'.$fname, DB_ALLIANCES.'/'.strtolower($fname));
+				$old_fname = DB_ALLIANCES.'/'.$fname;
+				$new_fname = DB_ALLIANCES.'/'.strtolower($fname);
+				if($old_fname == $new_fname) continue;
+				if(file_exists($new_fname)) fputs(STDERR, "Skipped ".$old_fname.", ".$new_fname." already exists. Please fix this manually.\n");
+				else rename($old_fname, $new_fname);
 			}
 			closedir($dh);
 	}

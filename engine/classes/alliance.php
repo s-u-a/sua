@@ -139,6 +139,18 @@
 			return true;
 		}
 
+		function allowApplications($allow=-1)
+		{
+			if(!$this->status) return false;
+
+			if($allow === -1)
+				return (!isset($this->raw['allow_applications']) || $this->raw['allow_applications']);
+
+			$this->raw['allow_applications'] = ($allow == true);
+			$this->changed = true;
+			return true;
+		}
+
 		function checkUserPermissions($user, $key)
 		{
 			if(!$this->status) return false;
@@ -279,6 +291,7 @@
 		function newApplication($user)
 		{
 			if($this->status != 1) return false;
+			if(!$this->allowApplications()) return false;
 
 			if(!isset($this->raw['bewerbungen'])) $this->raw['bewerbungen'] = array();
 			if(in_array($user, $this->raw['bewerbungen'])) return false;

@@ -14,7 +14,7 @@
 	else
 	{
 		$alliance = Classes::Alliance($_GET['alliance']);
-		
+
 		if(!$alliance->getStatus())
 		{
 ?>
@@ -40,7 +40,7 @@
 
 	<dt class="c-punkteschnitt">Punkteschnitt</dt>
 	<dd class="c-punkteschnitt"><?=ths($average)?> <span class="platz">(Platz <?=ths($alliance->getRankAverage())?> von <?=ths(getAlliancesCount())?>)</span></dd>
-	
+
 	<dt class="c-gesamtpunkte">Gesamtpunkte</dt>
 	<dd class="c-gesamtpunkte"><?=ths($overall)?> <span class="platz">(Platz <?=ths($alliance->getRankTotal())?> von <?=ths(getAlliancesCount())?>)</span></dd>
 </dl>
@@ -53,11 +53,20 @@
 <?php
 			if(!$me->allianceTag())
 			{
+				if($alliance->allowApplications())
+				{
 ?>
 <ul class="allianz-bewerben">
 	<li><a href="../allianz.php?action=apply&amp;for=<?=htmlentities(urlencode($alliance->getName()))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Bei dieser Allianz bewerben</a></li>
 </ul>
 <?php
+				}
+				else
+				{
+?>
+<p class="allianz-bewerben error">Diese Allianz akzeptiert keine neuen Bewerbungen.</p>
+<?php
+				}
 			}
 		}
 	}

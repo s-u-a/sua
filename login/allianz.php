@@ -6,7 +6,7 @@
 	$action = false;
 	if(isset($_GET['action']))
 		$action = $_GET['action'];
-	
+
 	__autoload('Alliance');
 
 	if(!$me->allianceTag() || !($alliance = Classes::Alliance($me->allianceTag())) || !$alliance->getStatus())
@@ -111,8 +111,18 @@
 <p class="error">Diese Allianz gibt es nicht.</p>
 <?php
 			}
-			elseif(!isset($_POST['text']))
+			else
 			{
+				$alliance = Classes::Alliance($_GET['for']);
+				if(!$alliance->allowApplications())
+				{
+?>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht" accesskey="z" tabindex="<?=$tabindex++?>">Allian<kbd>z</kbd></a></h2>
+<p class="error">Diese Allianz akzeptiert keine neuen Bewerbungen.</p>
+<?php
+				}
+				elseif(!isset($_POST['text']))
+				{
 ?>
 <h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht" accesskey="z" tabindex="<?=$tabindex++?>">Allian<kbd>z</kbd></a></h2>
 <form action="allianz.php?action=apply&amp;for=<?=htmlentities(urlencode($_GET['for']))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="allianz-bewerben-form">
@@ -123,23 +133,24 @@
 	<div><button type="submit" accesskey="n" tabindex="<?=$tabindex++?>">Bewerbu<kbd>n</kbd>g absenden</button></div>
 </form>
 <?php
-			}
-			else
-			{
-?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht" tabindex="<?=$tabindex++?>" accesskey="z">Allian<kbd>z</kbd></a></h2>
-<?php
-				if($me->allianceApplication($_GET['for'], $_POST['text']))
-				{
-?>
-<p class="successful">Ihre Bewerbung wurde erfolgreich abgesandt.</p>
-<?php
 				}
 				else
 				{
 ?>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht" tabindex="<?=$tabindex++?>" accesskey="z">Allian<kbd>z</kbd></a></h2>
+<?php
+					if($me->allianceApplication($_GET['for'], $_POST['text']))
+					{
+?>
+<p class="successful">Ihre Bewerbung wurde erfolgreich abgesandt.</p>
+<?php
+					}
+					else
+					{
+?>
 <p class="error">Datenbankfehler.</p>
 <?php
+					}
 				}
 			}
 		}
@@ -202,7 +213,7 @@
 ?>
 <h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht" accesskey="z" tabindex="<?=$tabindex++?>">Allian<kbd>z</kbd></a></h2>
 <?php
-			if($alliance->checkUserPermissions($_SESSION['username'], 6))
+			if($alliance->checkUserPermissions($_SESSION['username'], 6) || $alliance->checkUserPermissions($_SESSION['username'], 5) || $alliance->checkUserPermissions($_SESSION['username'], 4))
 			{
 ?>
 <form action="allianz.php?action=liste<?=isset($_GET['sortby']) ? '&amp;sortby='.htmlentities(urlencode($_GET['sortby'])) : ''?><?=isset($_GET['invert']) ? '&amp;invert='.htmlentities(urlencode($_GET['invert'])) : ''?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="allianz-liste-form">
@@ -286,7 +297,15 @@
 	</tbody>
 </table>
 <?php
-			if($alliance->checkUserPermissions($_SESSION['username'], 5) || $alliance->checkUserPermissions($_SESSION['username'], 6))
+			if($alliance->checkUserPermissions($_SESSION['username'], 4))
+			{
+				if(isset($_POST['toggle_allow_applications']) && $_POST['toggle_allow_applications'])
+					$alliance->allowApplications(isset($_POST['allow_applications']));
+?>
+	<div><input type="hidden" name="toggle_allow_applications" value="1" /><input type="checkbox" name="allow_applications" id="i-allow-applications"<?=$alliance->allowApplications() ? ' checked="checked"' : ''?> /> <label for="i-allow-applications">Neue Bewerbungen akzeptieren</label></div>
+<?php
+			}
+			if($alliance->checkUserPermissions($_SESSION['username'], 6) || $alliance->checkUserPermissions($_SESSION['username'], 5) || $alliance->checkUserPermissions($_SESSION['username'], 4))
 			{
 ?>
 	<div><button type="submit" tabindex="<?=$tabindex++?>" accesskey="n">Ä<kbd>n</kbd>derungen speichern</button></div>
@@ -500,7 +519,7 @@
 
 	<dt class="c-punkteschnitt">Punkteschnitt</dt>
 	<dd class="c-punkteschnitt"><?=ths($average)?> <span class="platz">(Platz <?=ths($alliance->getRankAverage())?> von <?=ths(getAlliancesCount())?>)</span></dd>
-	
+
 	<dt class="c-gesamtpunkte">Gesamtpunkte</dt>
 	<dd class="c-gesamtpunkte"><?=ths($overall)?> <span class="platz">(Platz <?=ths($alliance->getRankTotal())?> von <?=ths(getAlliancesCount())?>)</span></dd>
 </dl>
@@ -574,10 +593,10 @@
 							if(strlen(trim($betreff)) <= 0)
 								$betreff = 'Allianzrundschreiben';
 							$message->subject($betreff);
-							
+
 							$message->from($_SESSION['username']);
 							$message->text($_POST['rundschreiben-text']);
-							
+
 							$members = $alliance->getUsersList();
 							foreach($members as $member)
 							{

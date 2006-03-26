@@ -2072,9 +2072,13 @@
 				}
 
 				if($tag)
+				{
 					$that_alliance->addUser($this->getName(), $this->getScores());
+					$tag = $that_alliance->getName();
+				}
 				else $tag = '';
-				$this->raw['alliance'] = $that_alliance->getName();
+
+				$this->raw['alliance'] = $tag;
 
 				$this->cancelAllianceApplication(false);
 				$this->changed = true;
