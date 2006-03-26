@@ -17,16 +17,16 @@
 	if(substr($document_root, -1) == '/')
 		$document_root = substr($document_root, 0, -1);
 	define('h_root', substr(s_root, strlen($document_root)));
-	
+
 	function define_globals($DB_DIR=false)
 	{
 		if($DB_DIR)
 		{
 			if(substr($DB_DIR, 0, 1) != '/')
 				$DB_DIR = s_root.'/'.$DB_DIR;
-			
+
 			define('DB_DIR', $DB_DIR);
-		
+
 			define('EVENT_FILE', DB_DIR.'/events');
 			define('LOG_FILE', DB_DIR.'/logfile');
 			define('LOCK_FILE', DB_DIR.'/locked');
@@ -45,7 +45,7 @@
 			define('DB_ADMINS', DB_DIR.'/admins');
 			define('DB_NONOOBS', DB_DIR.'/nonoobs');
 		}
-		
+
 		if(!defined('other_globals'))
 		{
 			define('DB_NEWS', s_root.'/db_things/news');
@@ -57,12 +57,13 @@
 			define('EMAIL_FROM', 'webmaster@s-u-a.net');
 			define('MAX_PLANETS', 15);
 			define('SESSION_COOKIE', session_name());
-			
+			define('LIST_MIN_CHARS', 2); # Fuer Ajax-Auswahllisten
+
 			if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
 				define('PROTOCOL', 'https');
 			else
 				define('PROTOCOL', 'http');
-			
+
 			if(isset($_GET['nossl']))
 			{
 				if($_GET['nossl'] && (!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl']))
@@ -85,21 +86,21 @@
 			define('other_globals', true);
 		}
 	}
-	
+
 	function __autoload($class)
 	{
 		if(strtolower($class) == 'items') $class = 'Item';
 		$filename = s_root.'/engine/classes/'.strtolower($class).'.php';
 		if(is_file($filename) && is_readable($filename)) require_once($filename);
 	}
-	
+
 	__autoload('Classes');
 
 	header('Content-type: text/html; charset=UTF-8');
 	if(!isset($USE_OB) || $USE_OB)
 		ob_start('ob_gzhandler');
 	$tabindex = 1;
-	
+
 	if(!isset($LOGIN) || !$LOGIN)
 	{
 		define_globals();
@@ -172,7 +173,7 @@
 	########################################
 	### Hier beginnen die Klassen
 	########################################
-	
+
 	class gui
 	{ # Kuemmert sich ums HTML-Grundgeruest der Hauptseite
 		function html_head($base=false)
@@ -232,10 +233,10 @@
 			}
 ?>
 						</select></dd>
-						
+
 						<dt class="c-name"><label for="login-username">Name</label></dt>
 						<dd class="c-name"><input type="text" id="login-username" name="username" /></dd>
-	
+
 						<dt class="c-passwort"><label for="login-password">Passwort</label></dt>
 						<dd class="c-passwort"><input type="password" id="login-password" name="password" /></dd>
 					</dl>
@@ -439,10 +440,10 @@
 		# Liste der Runden/Universen herausfinden
 		if(!is_file(s_root.'/db_things/databases') || !is_readable(s_root.'/db_things/databases'))
 			return false;
-		
+
 		$databases = preg_split("/\r\n|\r|\n/", file_get_contents(s_root.'/db_things/databases'));
 		array_shift($databases);
-		
+
 		$return = array();
 		foreach($databases as $database)
 		{
@@ -451,31 +452,31 @@
 				continue;
 			$return[array_shift($database)] = $database;
 		}
-		
+
 		return $return;
 	}
-	
+
 	function get_default_hostname()
 	{
 		# Den Hostnamen herausfinden, der fuer die Startseite verwendet werden soll
-		
+
 		# Die folgende Zeile auskommentieren, um diese Funktion zu deaktivieren
 		#return (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : false);
-		
+
 		if(!is_file(s_root.'/db_things/databases') || !is_readable(s_root.'/db_things/databases'))
 			return false;
-		
+
 		$fh = fopen(s_root.'/db_things/databases', 'r');
 		flock($fh, LOCK_SH);
-		
+
 		$hostname = trim(fgets($fh, 1024));
-		
+
 		flock($fh, LOCK_UN);
 		fclose($fh);
-		
+
 		return $hostname;
 	}
-	
+
 	function check_hostname()
 	{
 		# Leitet weiter, wenn der Hostname nicht dem Hostnamen entspricht, der verwendet werden soll
@@ -493,10 +494,10 @@
 			$request_uri = $_SERVER['REQUEST_URI'];
 			if(strpos($request_uri, '?') !== false)
 				$request_uri = substr($request_uri, 0, strpos($request_uri, '?'));
-			
+
 			if(strtolower($hostname) == strtolower($real_hostname) && substr($request_uri, -1) != '/')
 				return true;
-	
+
 			$url = PROTOCOL.'://'.$real_hostname.$_SERVER['PHP_SELF'];
 			if($_SERVER['QUERY_STRING'] != '')
 				$url .= '?'.$_SERVER['QUERY_STRING'];
@@ -574,7 +575,7 @@
 		# Formatiert eine in Punkten angegebene Bauzeitangabe,
 		# sodass diese auf den Seiten angezeigt werden kann
 		# (zum Beispiel 2 Stunden, 5 Minuten und 30 Sekunden)
-		
+
 		$time = round($time2);
 		$days = $hours = $minutes = $seconds = 0;
 
@@ -639,7 +640,7 @@
 		# Erstellt eine Definitionsliste aus der uebergebenen
 		# Rohstoffanzahl, beispielsweise fuer die Rohstoffkosten
 		# der Gebaeude verwendbar
-		
+
 		$tabs = '';
 		if($tabs_count >= 1)
 			$tabs = str_repeat("\t", $tabs_count);
@@ -670,7 +671,7 @@
 		# zurueckgeliefert, ansonsten ein HTML-String
 		# $round gibt die Anzahl der Stellen an, auf die
 		# gerundet werden soll
-		
+
 		if(!isset($count))
 			$count = 0;
 		if($round == 0)
@@ -705,7 +706,7 @@
 		# UTF-8-String.
 		# Ist $js gesetzt, wird ein JavaScript-String zurueckgeliefert
 		# (mit \uXXXX)
-		
+
 		if($js)
 			$rep = array("'\\\\u'.add_nulls(dechex(", "), 4)");
 		else
@@ -1101,7 +1102,7 @@
 	{
 		return mail('webmaster@s-u-a.net', 'Fehlermeldung auf S-U-A', 'Fehlernummer: '.$error_number);
 	}
-	
+
 	function message_repl_nl($nls)
 	{
 		$len = strlen($nls);
@@ -1117,7 +1118,7 @@
 	{
 		if(!session_id())
 			return $a.$b.$c;
-		
+
 		$url2 = html_entity_decode($b);
 		if(substr($url2, 0, 7) != 'http://')
 		{
@@ -1144,7 +1145,7 @@
 
 		return $a.htmlentities($url2).$c;
 	}
-	
+
 	function stdround($a, $d=0)
 	{
 		$f = pow(10, $d);
@@ -1153,11 +1154,11 @@
 		$a = $i/$f;
 		return $a;
 	}
-	
+
 	function fancy_flock($file, $lock_flag)
 	{
 		$flag = $lock_flag+LOCK_NB;
-		
+
 		for($i=0; $i<100; $i++)
 		{
 			if(flock($file, $flag)) return true;
@@ -1165,18 +1166,18 @@
 		}
 		return false;
 	}
-	
+
 	function fit_to_max($array, $max)
 	{
 		if(!is_array($array) || $max < 0) return false;
-		
+
 		$sum = 0;
 		foreach($array as $k=>$v)
 		{
 			if($v<0) $array[$k] = 0;
 			else $sum += $v;
 		}
-		
+
 		if($sum > $max)
 		{
 			$f = $max/$sum;
@@ -1186,7 +1187,7 @@
 				$array[$k] = floor($v*$f);
 				$sum += $array[$k];
 			}
-			
+
 			$remaining = $max-$sum;
 			while($remaining > 0)
 			{

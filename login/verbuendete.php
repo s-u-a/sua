@@ -2,7 +2,7 @@
 	require('scripts/include.php');
 
 	login_gui::html_head();
-	
+
 	if(isset($_POST['rundschreiben']))
 	{
 		$betreff = "B\xc3\xbcndnisrundschreiben";
@@ -63,7 +63,7 @@
 </dl>
 <?php
 	}
-	
+
 	$bewerbungen = $me->getVerbuendetApplicationList();
 	if(count($bewerbungen) > 0)
 	{
@@ -149,6 +149,16 @@
 	</dl>
 	<div><button type="submit" tabindex="6" accesskey="n">A<kbd>n</kbd>frage absenden</button></div>
 </form>
+<?php
+	if($me->checkSetting('ajax'))
+	{
+?>
+<script type="text/javascript">
+	activate_users_list(document.getElementById('spieler-input'));
+</script>
+<?php
+	}
+?>
 <?php
 	login_gui::html_foot();
 ?>

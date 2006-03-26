@@ -7,17 +7,17 @@
 	$del_email_passwd = false;
 	session_start();
 	header('Cache-Control: no-cache', true);
-	
+
 	$databases = get_databases();
 	if(isset($_SESSION['database']) && isset($databases[$_SESSION['database']]))
 		define_globals($databases[$_SESSION['database']][0]);
-	
+
 	if(!isset($_SESSION['username']) || !isset($_SESSION['database']) || (isset($_SESSION['database']) && (!isset($databases[$_SESSION['database']]) || !User::userExists($_SESSION['username']))))
 	{
 		if(isset($_REQUEST['username']) && isset($_REQUEST['password']) && isset($_REQUEST['database']))
 		{
 			# Anmelden
-			
+
 			if(!isset($databases[$_REQUEST['database']]))
 				$loggedin = false;
 			else
@@ -64,7 +64,7 @@
 			$del_email_passwd = true;
 		}
 	}
-	
+
 	# Schnellklicksperre
 	$now_time = array_sum(explode(' ', microtime()));
 
@@ -86,11 +86,11 @@
 	if(isset($_SESSION['last_click_ignore']))
 		unset($_SESSION['last_click_ignore']);
 	$_SESSION['last_click'] = $now_time;
-	
-	
+
+
 	$me = Classes::User($_SESSION['username']);
 	#$me->_printRaw();
-	
+
 	if(!$me->getStatus())
 	{
 		login_gui::html_head();
@@ -186,6 +186,14 @@
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 		<title xml:lang="en">S-U-A &ndash; Stars Under Attack</title>
 		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts.js.php')?>"></script>
+<?php
+			if($me->checkSetting('ajax'))
+			{
+?>
+		<script type="text/javascript" src="<?=htmlentities(h_root.'/sarissa.js')?>"></script>
+<?php
+			}
+?>
 		<script type="text/javascript">
 			set_time_globals(<?=time()+1?>);
 			var session_cookie = '<?=str_replace('\'', '\\\'', SESSION_COOKIE)?>';
@@ -378,7 +386,7 @@
 			if($me->checkSetting('notify'))
 			{
 				global $message_type_names;
-				
+
 				$ncount = array(
 					1 => 0,
 					2 => 0,
@@ -389,7 +397,7 @@
 					7 => 0
 				);
 				$ges_ncount = 0;
-				
+
 				$cats = $me->getMessageCategoriesList();
 				foreach($cats as $cat)
 				{

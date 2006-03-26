@@ -409,7 +409,7 @@ h2#punkte { clear:right; }
 .handelsrechner fieldset div input { float:right; }
 .handelsrechner-angebot dl input,.handelsrechner-erhalten dl input { width:8em; }
 .handelsrechner-angebot input.handelsrechner-anteil,.handelsrechner-erhalten input.handelsrechner-anteil { width:5ex; }
-.handelsrechner noscript,.handelsrechner div { text-align:center; } }
+.handelsrechner noscript,.handelsrechner div { text-align:center; }
 .handelsrechner noscript button,.handelsrechner div button { margin:.5em auto; width:95%; }
 .handelsrechner-fortgeschrittener-modus { text-align:right; font-weight:normal; }
 .handelsrechner-fortgeschrittener-modus label { font-weight:bold; }
@@ -496,3 +496,9 @@ br.clear { clear:both; }
 .alle-abbrechen strong { font-weight:bold; text-decoration:underline; }
 
 * html .c-werbung-ausblenden { display:none; }
+
+input,textarea,button,select { position:relative; z-index:20000; }
+.autocomplete { margin:0 -1px; padding:0; overflow:auto; border:1px solid #000; background-color:Window; color:WindowText; list-style-type:none; z-index:50000; max-height:12em; }
+.autocomplete li { cursor:pointer; position:relative; padding:0 2px; }
+.autocomplete li.selected { background-color:Highlight; color:HighlightText; }
+* html form { position:relative; }

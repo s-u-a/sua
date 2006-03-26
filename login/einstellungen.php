@@ -2,10 +2,10 @@
 	require('scripts/include.php');
 
 	$changed = false;
-	
+
 	$receive_settings = $me->checkSetting('receive');
 	$show_building = $me->checkSetting('show_building');
-	
+
 	if(isset($_POST['skin-choice']))
 	{
 		if($_POST['skin-choice'] == '')
@@ -59,8 +59,9 @@
 		$me->setSetting('noads', isset($_POST['noads']));
 		$me->setSetting('show_extern', isset($_POST['show_extern']));
 		$me->setSetting('notify', isset($_POST['notify']));
+		$me->setSetting('ajax', isset($_POST['ajax']));
 	}
-	
+
 	if(isset($_POST['building']))
 	{
 		if(isset($_POST['building']['gebaeude']) && in_array($_POST['building']['gebaeude'], array(0,1)))
@@ -73,7 +74,7 @@
 			$show_building['schiffe'] = $_POST['building']['schiffe'];
 		if(isset($_POST['building']['verteidigung']) && in_array($_POST['building']['verteidigung'], array(0,1,2,3)))
 			$show_building['verteidigung'] = $_POST['building']['verteidigung'];
-		
+
 		$me->setSetting('show_building', $show_building);
 	}
 
@@ -95,7 +96,7 @@
 	}
 
 	login_gui::html_head();
-	
+
 	$tabindex = 1;
 ?>
 <h2>Einstellungen</h2>
@@ -161,15 +162,18 @@
 
 			<dt class="c-ip-schutz"><label for="ipcheck">IP-Schutz</label></dt>
 			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=$me->checkSetting('ipcheck') ? ' checked="checked"' : ''?> title="Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)" tabindex="<?=$tabindex++?>" /></dd>
-			
+
 			<dt class="c-werbung-ausblenden"><label for="noads">Werbung ausblenden</label></dt>
 			<dd class="c-werbung-ausblenden"><input type="checkbox" name="noads" id="noads"<?=$me->checkSetting('noads') ? ' checked="checked"' : ''?> title="Wenn Sie die Werbung eingeblendet lassen, helfen Sie, die Finanzen des Spiels zu decken." tabindex="<?=$tabindex++?>" /></dd>
-			
+
 			<dt class="c-externe-navigationslinks"><label for="show-extern">Externe Navigationslinks</label></dt>
 			<dd class="c-externe-navigationslinks"><input type="checkbox" name="show_extern" id="show-extern"<?=$me->checkSetting('show_extern') ? ' checked="checked"' : ''?> title="Wenn diese Option aktiviert ist, werden in der Navigation Links auf spielexterne Seiten wie das Board angezeigt." tabindex="<?=$tabindex++?>" /></dd>
-			
+
 			<dt class="c-nachrichteninformierung"><label for="notify">Nachrichteninformierung</label></dt>
 			<dd class="c-nachrichteninformierung"><input type="checkbox" name="notify" id="notify"<?=$me->checkSetting('notify') ? ' checked="checked"' : ''?> title="Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angezeigt, dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten." tabindex="<?=$tabindex++?>" /></dd>
+
+			<dt class="c-autocompletion" xml:lang="en"><label for="autocompletion">Autocompletion</label></dt>
+			<dd class="c-autocompletion" xml:lang="en"><input type="checkbox" name="ajax" id="autocompletion"<?=$me->checkSetting('ajax') ? ' checked="checked"' : ''?> title="Bei Eingabe eines Benutzernamens werden verfügbare Benutzernamen vorgeschlagen. (Empfehlenswert in neuen Browsern bei schneller Internetverbindung)" tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
 		<script type="text/javascript">
 			function recalc_skin()
@@ -281,7 +285,7 @@
 	<div class="einstellungen-speichern-1"><input type="submit" title="[W]" value="Speichern" /></div>
 <?php
 	$save_tabindex = $tabindex++;
-	
+
 	if(!$me->userLocked())
 	{
 ?>

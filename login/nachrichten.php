@@ -37,7 +37,7 @@
 					$message->text($_POST['inhalt']);
 					$message->subject($_POST['betreff']);
 					$message->from($_SESSION['username']);
-					
+
 					$message->addUser($_POST['empfaenger'], 6);
 					$message->addUser($_SESSION['username'], 8);
 ?>
@@ -90,6 +90,14 @@
 	<div><button type="submit" accesskey="n" tabindex="4">Abse<kbd>n</kbd>den</button></div>
 </form>
 <?php
+			if($me->checkSetting('ajax'))
+			{
+?>
+<script type="text/javascript">
+	activate_users_list(document.getElementById('empfaenger-input'));
+</script>
+<?php
+			}
 		}
 	}
 	elseif(isset($_GET['type']) && isset($message_type_names[$_GET['type']]))
@@ -122,7 +130,7 @@
 				else
 				{
 					$current_status = $me->checkMessageStatus($_GET['message'], $_GET['type']);
-					
+
 					# Als gelesen markieren
 					if($current_status == 1)
 						$me->setMessageStatus($_GET['message'], $_GET['type'], 0);
@@ -205,7 +213,7 @@
 </ul>
 <?php
 					}
-					
+
 					if($message->from() != '' && $message->from() != $_SESSION['username'])
 					{
 						# Bei Nachrichten im Postausgang ist die Antwort nicht moeglich
@@ -322,12 +330,20 @@
 		<legend>Nachricht weiterleiten</legend>
 		<dl>
 			<dt><label for="empfaenger-input">Empfänger</label></dt>
-			<dd><input type="text" name="weiterleitung-to" value="<?=isset($_POST['weiterleitung-to']) ? utf8_htmlentities($_POST['weiterleitung-to']) : ''?>" title="[X]" accesskey="x" tabindex="5" /></dd>
+			<dd><input type="text" id="empfaenger-input" name="weiterleitung-to" value="<?=isset($_POST['weiterleitung-to']) ? utf8_htmlentities($_POST['weiterleitung-to']) : ''?>" title="[X]" accesskey="x" tabindex="5" /></dd>
 		</dl>
 		<div><button type="submit" tabindex="6">Weiterleiten</button></div>
 	</fieldset>
 </form>
 <?php
+					if($me->checkSetting('ajax'))
+					{
+?>
+<script type="text/javascript">
+	activate_users_list(document.getElementById('empfaenger-input'));
+</script>
+<?php
+					}
 				}
 			}
 		}
@@ -450,7 +466,7 @@
 				$status = $me->checkMessageStatus($message, $cat);
 				$ncount[$cat][1]++;
 				$ges_ncount[1]++;
-				
+
 				if($status == 1 && $cat != 8)
 				{
 					$ncount[$cat][0]++;
@@ -458,7 +474,7 @@
 				}
 			}
 		}
-		
+
 		foreach($ncount as $type=>$cat)
 		{
 			if($cat[0] > 0 && $type != 8)

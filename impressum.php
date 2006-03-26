@@ -29,18 +29,21 @@
 <dl>
 	<dt><a href="mailto:webmaster@s-u-a.net">Candid Dauth</a></dt>
 	<dd>Idee, Programmierung, Projektleitung und -verwaltung</dd>
-	
+
 	<dt><a href="mailto:rmueller@s-u-a.net">rmueller</a></dt>
 	<dd>Finanzen, <span xml:lang="en">Design</span>, Hauptseite, <span xml:lang="en">Items</span></dd>
-	
-	<dt>Soltari</dt>
+
+	<dt><a href="mailto:soltari@s-u-a.net">Soltari</a></dt>
 	<dd>Moderation, <span xml:lang="en">Testing</span></dd>
-	
+
 	<dt>Remosch</dt>
 	<dd>Stiftung der <span xml:lang="en">Board</span>-<span xml:lang="en">Software</span></dd>
-	
+
 	<dt>Geki</dt>
 	<dd><span xml:lang="en">Design</span> der Hauptseite</dd>
+
+	<dt><a href="mailto:barade@s-u-a.net">Barade</a></dt>
+	<dd>Diverse Schiffsbeschreibungen</dd>
 </dl>
 <?php
 	gui::html_foot();
