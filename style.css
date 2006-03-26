@@ -54,7 +54,7 @@ option,input.radio,input.checkbox { cursor:crosshair; width:auto; }
 
 h2 { text-align:center; background-image:url(images/separator.png); background-repeat:no-repeat; background-position:center bottom; margin-bottom:1em; padding:.2em; }
 h3,h4,h5,h6 { padding-top:1em; margin-top:1em; margin-bottom:.5em; text-align:right; background-image:url(images/separator.png); background-repeat:no-repeat; background-position:center top; }
-p { padding:.5em 0; }
+p { padding:.5em 0; text-align:justify; }
 hr { background-image:url(images/separator.png); background-repeat:no-repeat; background-position:center center; height:1px; border-style:none; padding:0; }
 ul,ol { padding:1.5em 0 1.5em 3em; }
 abbr,acronym { border-style:none; font-variant:normal; text-decoration:none; }

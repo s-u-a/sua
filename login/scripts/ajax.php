@@ -12,6 +12,7 @@
 	switch($_GET['action'])
 	{
 		case 'userlist':
+			$_GET['query'] = strtolower(urlencode($_GET['query']));
 			$query_length = strlen($_GET['query']);
 			if($query_length < LIST_MIN_CHARS) break;
 
@@ -19,10 +20,10 @@
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname == '.' || $fname == '..') continue;
-				$fname = urldecode($fname);
+				$fname = $fname;
 
 				if(strlen($fname) >= $query_length && substr($fname, 0, $query_length) == $_GET['query'])
-					$results[] = $fname;
+					$results[] = urldecode($fname);
 			}
 			closedir($dh);
 

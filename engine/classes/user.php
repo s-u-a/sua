@@ -34,7 +34,7 @@
 
 		function userExists($user)
 		{
-			$filename = DB_PLAYERS.'/'.urlencode($user);
+			$filename = DB_PLAYERS.'/'.strtolower(urlencode($user));
 			return (is_file($filename) && is_readable($filename));
 		}
 
@@ -1529,6 +1529,8 @@
 			$this->items['ids'] = array();
 			foreach($this->items['forschung'] as $id=>$level)
 				$this->items['ids'][$id] = &$this->items['forschung'][$id];
+
+			$this->name = $this->raw['username'];
 		}
 
 		protected function getRawFromData()
@@ -1891,6 +1893,7 @@
 		function applyVerbuendet($user, $text='')
 		{
 			if(!$this->status) return false;
+
 			if($this->existsVerbuendet($user)) return false;
 
 			$that_user = Classes::User($user);
@@ -2071,7 +2074,7 @@
 				if($tag)
 					$that_alliance->addUser($this->getName(), $this->getScores());
 				else $tag = '';
-				$this->raw['alliance'] = $tag;
+				$this->raw['alliance'] = $that_alliance->getName();
 
 				$this->cancelAllianceApplication(false);
 				$this->changed = true;
@@ -2140,6 +2143,7 @@
 					return false;
 
 				$alliance_obj = Classes::Alliance($alliance);
+				$alliance = $alliance_obj->getName();
 				if(!$alliance_obj->getStatus()) return false;
 				if(!$alliance_obj->newApplication($this->getName())) return false;
 
@@ -2776,6 +2780,12 @@
 			echo "<pre>";
 			print_r($this->raw);
 			echo "</pre>";
+		}
+
+		function resolveName($name)
+		{
+			$instance = Classes::Alliance($name);
+			return $instance->getName();
 		}
 	}
 

@@ -38,7 +38,7 @@
 					$message->subject($_POST['betreff']);
 					$message->from($_SESSION['username']);
 
-					$message->addUser($_POST['empfaenger'], 6);
+					$message->addUser(User::resolveName($_POST['empfaenger']), 6);
 					$message->addUser($_SESSION['username'], 8);
 ?>
 <p class="successful">
@@ -284,7 +284,7 @@
 								$weiterleitung_message->text($weiterleitung_text.$message->rawText());
 								$weiterleitung_message->subject('Fwd: '.$message->subject());
 								$weiterleitung_message->from($_SESSION['username']);
-								$weiterleitung_message->addUser($_POST['weiterleitung-to'], $_GET['type']);
+								$weiterleitung_message->addUser(User::resolveName($_POST['weiterleitung-to']), $_GET['type']);
 								$weiterleitung_message->html($message->html());
 ?>
 <p class="successful">Die Nachricht wurde erfolgreich weitergeleitet.</p>

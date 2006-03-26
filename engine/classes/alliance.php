@@ -3,7 +3,7 @@
 	{
 		protected $save_dir = DB_ALLIANCES;
 		private $datatype = 'alliance';
-		
+
 		function create()
 		{
 			if(file_exists($this->filename)) return false;
@@ -16,19 +16,19 @@
 				'inner_description' => '',
 				'inner_description_parsed' => ''
 			);
-			
+
 			$highscores = Classes::Highscores();
 			$highscores->updateAlliance($this->name, 0, 0, 0);
-			
+
 			$this->write(true, false);
 			$this->__construct($this->name);
 			return true;
 		}
-		
+
 		function destroy($by_whom=false)
 		{
 			if($this->status != 1) return false;
-			
+
 			if($this->getMembersCount() > 0)
 			{
 				$members = $this->getUsersList();
@@ -53,11 +53,11 @@
 					$i--;
 				}
 			}
-			
+
 			# Aus den Allianz-Highscores entfernen
 			$highscores = Classes::Highscores();
 			$highscores->removeEntry('alliances', $this->getName());
-			
+
 			$status = (unlink($this->filename) || chmod($this->filename, 0));
 			if($status)
 			{
@@ -67,41 +67,41 @@
 			}
 			else return false;
 		}
-		
+
 		function allianceExists($alliance)
 		{
-			$filename = DB_ALLIANCES.'/'.urlencode($alliance);
+			$filename = DB_ALLIANCES.'/'.strtolower(urlencode($alliance));
 			return (is_file($filename) && is_readable($filename));
 		}
-		
+
 		function getAverageScores()
 		{
 			if(!$this->status) return false;
-			
+
 			return floor($this->getTotalScores()/$this->getMembersCount());
 		}
-		
+
 		function getMembersCount()
 		{
 			if(!$this->status) return false;
-			
+
 			return count($this->raw['members']);
 		}
-		
+
 		function getTotalScores()
 		{
 			if(!$this->status) return false;
-			
+
 			$overall = 0;
 			foreach($this->raw['members'] as $member)
 				$overall += $member['punkte'];
 			return $overall;
 		}
-		
+
 		function recalcHighscores()
 		{
 			if($this->status != 1) return false;
-			
+
 			$overall = 0;
 			foreach($this->raw['members'] as $member)
 				$overall += $member['punkte'];
@@ -109,87 +109,87 @@
 			$average = floor($overall/$members);
 			$highscores = Classes::Highscores();
 			$highscores->updateAlliance($this->getName(), $average, $overall, $members);
-			
+
 			return true;
 		}
-		
+
 		function getRankAverage()
 		{
 			if(!$this->status) return false;
-			
+
 			$highscores = Classes::Highscores();
 			return $highscores->getPosition('alliances', $this->getName(), 'scores_average');
 		}
-		
+
 		function getRankTotal()
 		{
 			if(!$this->status) return false;
-			
+
 			$highscores = Classes::Highscores();
 			return $highscores->getPosition('alliances', $this->getName(), 'scores_total');
 		}
-		
+
 		function setUserPermissions($user, $key, $permission)
 		{
 			if($this->status != 1) return false;
-			
+
 			if(!isset($this->raw['members'][$user])) return false;
 			$this->raw['members'][$user]['permissions'][$key] = (bool) $permission;
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function checkUserPermissions($user, $key)
 		{
 			if(!$this->status) return false;
-			
+
 			if(!isset($this->raw['members'][$user])) return false;
 			if(!isset($this->raw['members'][$user]['permissions'][$key])) return false;
 			return $this->raw['members'][$user]['permissions'][$key];
 		}
-		
+
 		function setUserScores($user, $scores)
 		{
 			if($this->status != 1) return false;
-			
+
 			if(!isset($this->raw['members'][$user])) return false;
 			$this->raw['members'][$user]['punkte'] = $scores;
 			$this->changed = true;
-			
+
 			$this->recalcHighscores();
-			
+
 			return true;
 		}
-		
+
 		function getUserScores($user)
 		{
 			if(!$this->status) return false;
 			if(!isset($this->raw['members'][$user])) return false;
-			
+
 			return $this->raw['members'][$user]['punkte'];
 		}
-		
+
 		function getUserJoiningTime($user)
 		{
 			if(!$this->status) return false;
 			if(!isset($this->raw['members'][$user])) return false;
-			
+
 			return $this->raw['members'][$user]['time'];
 		}
-		
+
 		function getUsersList($sortby=false, $invert=false)
 		{
 			if(!$this->status) return false;
-			
+
 			if($sortby) $sortby = ''.$sortby;
-			
+
 			if($sortby && ('punkte'==$sortby || 'rang'==$sortby || 'time'==$sortby))
 			{
 				global $sortAllianceMembersBy;
 				global $sortAllianceMembersInvert;
 				$sortAllianceMembersBy = $sortby;
 				$sortAllianceMembersInvert = $invert;
-				
+
 				$members_raw = $this->raw['members'];
 				uasort($members_raw, 'sortAllianceMembersList');
 				$members = array_keys($members_raw);
@@ -203,16 +203,16 @@
 					if($invert) $members = array_reverse($members);
 				}
 			}
-			
+
 			return $members;
 		}
-		
+
 		function getUsersWithPermission($permission)
 		{
 			if(!$this->status) return false;
-			
+
 			$users = array();
-			
+
 			foreach($this->raw['members'] as $name=>$member)
 			{
 				if(isset($member['permissions'][$permission]) && $member['permissions'][$permission])
@@ -220,31 +220,31 @@
 			}
 			return $users;
 		}
-		
+
 		function setUserStatus($user, $status)
 		{
 			if($this->status != 1) return false;
-			
+
 			if(!isset($this->raw['members'][$user])) return false;
 			$this->raw['members'][$user]['rang'] = $status;
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function getUserStatus($user)
 		{
 			if(!$this->status) return false;
-			
+
 			if(!isset($this->raw['members'][$user])) return false;
 			return $this->raw['members'][$user]['rang'];
 		}
-		
+
 		function addUser($user, $punkte=0)
 		{
 			if($this->status != 1) return false;
-			
+
 			if(isset($this->raw['members'][$user])) return false;
-			
+
 			$this->raw['members'][$user] = array (
 				'punkte' => $punkte,
 				'rang' => 'Neuling',
@@ -252,69 +252,69 @@
 				'permissions' => array(false, false, false, false, false, false, false, false, false)
 			);
 			$this->changed = true;
-			
+
 			$this->recalcHighscores();
 			return true;
 		}
-		
+
 		function removeUser($user)
 		{
 			if($this->status != 1) return false;
-			
+
 			if(!isset($this->raw['members'][$user])) return true;
-			
+
 			unset($this->raw['members'][$user]);
 			$this->changed = true;
-			
+
 			if(count($this->raw['members']) <= 0)
 			{
 				$this->destroy();
 				return true;
 			}
-			
+
 			$this->recalcHighscores();
 			return true;
 		}
-		
+
 		function newApplication($user)
 		{
 			if($this->status != 1) return false;
-			
+
 			if(!isset($this->raw['bewerbungen'])) $this->raw['bewerbungen'] = array();
 			if(in_array($user, $this->raw['bewerbungen'])) return false;
-			
+
 			$this->raw['bewerbungen'][] = $user;
 			$this->changed = true;
-			
+
 			return true;
 		}
-		
+
 		function deleteApplication($user)
 		{
 			if($this->status != 1) return false;
 			if(!isset($this->raw['bewerbungen'])) return true;
-			
+
 			$key = array_search($user, $this->raw['bewerbungen']);
 			if($key === false) return true;
-			
+
 			unset($this->raw['bewerbungen'][$key]);
-			
+
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function getApplicationsList()
 		{
 			if(!$this->status) return false;
-			
+
 			if(!isset($this->raw['bewerbungen'])) return array();
 			return $this->raw['bewerbungen'];
 		}
-		
+
 		function name($name=false)
 		{
 			if(!$this->status) return false;
-			
+
 			if(!trim($name))
 			{
 				if(!isset($this->raw['name'])) return '';
@@ -328,17 +328,17 @@
 				return true;
 			}
 		}
-		
+
 		function kickUser($user, $by_whom=false)
 		{
 			if($this->status != 1) return false;
 			if(!isset($this->raw['members'][$user])) return false;
-			
+
 			$user_obj = Classes::User($user);
 			if(!$user_obj->allianceTag(false)) return false;
-			
+
 			$this->removeUser($user);
-			
+
 			$message = Classes::Message();
 			if($message->create())
 			{
@@ -346,14 +346,14 @@
 				$message->text("Sie wurden aus der Allianz ".$this->getName()." geworfen.");
 				$message->addUser($user, 7);
 			}
-			
+
 			$message = Classes::Message();
 			if($message->create())
 			{
 				$message->subject("Spieler aus Allianz geworfen");
 				$message->text("Der Spieler ".$user." wurde aus Ihrer Allianz geworfen.");
 				if($by_whom) $message->from($by_whom);
-				
+
 				$members = $this->getUsersWithPermission(5);
 				foreach($members as $member)
 				{
@@ -363,11 +363,11 @@
 			}
 			return true;
 		}
-		
+
 		function getExternalDescription($parsed=true)
 		{
 			if(!$this->status) return false;
-			
+
 			if($parsed)
 			{
 				if(!isset($this->raw['description_parsed']))
@@ -383,31 +383,31 @@
 				return $this->raw['description'];
 			}
 		}
-		
+
 		function setExternalDescription($description)
 		{
 			if($this->status != 1) return false;
-			
+
 			$this->raw['description'] = $description;
 			$this->raw['description_parsed'] = parse_html($description);
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function setInternalDescription($description)
 		{
 			if($this->status != 1) return false;
-			
+
 			$this->raw['inner_description'] = $description;
 			$this->raw['inner_description_parsed'] = parse_html($description);
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function getInternalDescription($parsed=true)
 		{
 			if(!$this->status) return false;
-			
+
 			if($parsed)
 			{
 				if(!isset($this->raw['inner_description_parsed']))
@@ -423,21 +423,21 @@
 				return $this->raw['inner_description'];
 			}
 		}
-		
+
 		function acceptApplication($user, $by_whom=false)
 		{
 			if($this->status != 1) return false;
-			
+
 			$key = array_search($user, $this->raw['bewerbungen']);
 			if($key === false) return false;
-			
+
 			$members = $this->getUsersList();
-			
+
 			$user_obj = Classes::User($user);
 			if(!$user_obj->allianceTag($this->getName())) return false;
 			unset($this->raw['bewerbungen'][$key]);
 			$this->changed = true;
-			
+
 			$message = Classes::Message();
 			if($message->create())
 			{
@@ -450,7 +450,7 @@
 					$message->addUser($member, 7);
 				}
 			}
-			
+
 			$message = Classes::Message();
 			if($message->create())
 			{
@@ -459,19 +459,19 @@
 				if($by_whom) $message->from($by_whom);
 				$message->addUser($user, 7);
 			}
-			
+
 			return true;
 		}
-		
+
 		function rejectApplication($user, $by_whom=false)
 		{
 			if($this->status != 1) return false;
-			
+
 			if(!in_array($user, $this->raw['bewerbungen'])) return false;
-			
+
 			$user_obj = Classes::User($user);
 			if(!$user_obj->cancelAllianceApplication(false)) return false;
-			
+
 			$message = Classes::Message();
 			if($message->create())
 			{
@@ -485,7 +485,7 @@
 					$message->addUser($member, 7);
 				}
 			}
-			
+
 			$message = Classes::Message();
 			if($message->create())
 			{
@@ -493,26 +493,35 @@
 				$message->text('Ihre Bewerbung bei der Allianz '.$this->getName().' wurde abgelehnt.');
 				$message->addUser($user, 7);
 			}
-			
+
 			return true;
 		}
-		
-		protected function getDataFromRaw(){}
+
+		protected function getDataFromRaw()
+		{
+			$this->name = $this->raw['tag'];
+		}
 		protected function getRawFromData(){}
+
+		function resolveName($name)
+		{
+			$instance = Classes::Alliance($name);
+			return $instance->getName();
+		}
 	}
-	
-	
+
+
 	function getAlliancesCount()
 	{
 		$highscores = Classes::Highscores();
 		return $highscores->getCount('alliances');
 	}
-	
+
 	function sortAllianceMembersList($a, $b)
 	{
 		global $sortAllianceMembersInvert;
 		global $sortAllianceMembersBy;
-		
+
 		if(isset($sortAllianceMembersInvert) && $sortAllianceMembersInvert) $invert = -1;
 		else $invert = 1;
 		if(isset($sortAllianceMembersBy) && ($sortAllianceMembersBy == 'punkte' || $sortAllianceMembersBy == 'time'))
@@ -529,7 +538,7 @@
 			else return 0;
 		}
 	}
-	
+
 	function findAlliance($search_string)
 	{
 		$preg = '/^'.str_replace(array('\\*', '\\?'), array('.*', '.?'), preg_quote($search_string, '/')).'$/i';

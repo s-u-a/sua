@@ -1,9 +1,11 @@
 #!/usr/bin/php
 <?php
+	$newest_version = 5;
+
 	fputs(STDERR, "This script has not been tested! Please report any bugs to https://bugs.s-u-a.net/\n");
-	
+
 	require('../engine/include.php');
-	
+
 	if(!isset($_SERVER['argv'][1]))
 	{
 		echo "Usage: ".$_SERVER['argv'][0]." <Database directory>\n";
@@ -11,7 +13,7 @@
 	}
 	else
 		define_globals($_SERVER['argv'][1]);
-	
+
 	if(is_file(DB_DIR.'/.version'))
 	{
 		if(!is_readable(DB_DIR.'/.version'))
@@ -23,14 +25,14 @@
 	}
 	elseif(is_dir(DB_DIR.'/fleets')) $current_version = '2';
 	else $current_version = '1';
-	
+
 	fputs(STDERR, "Current database version seems to be ".$current_version.".\n");
-	if($current_version >= 4)
+	if($current_version >= $newest_version)
 	{
 		fputs(STDERR, "No update needed, exiting.\n");
 		exit(0);
 	}
-	
+
 	class version3
 	{
 		function decodeUserHighscoresString($string)
@@ -38,42 +40,42 @@
 			$username = trim(substr($string, 0, 24));
 			$alliance = trim(substr($string, 24, 6));
 			$points_str = substr($string, 30);
-		
+
 			$points_bin = '';
 			for($i = 0; $i < strlen($points_str); $i++)
 			$points_bin .= add_nulls(decbin(ord($points_str[$i])), 8);
-		
+
 			$points = base_convert($points_bin, 2, 10);
-		
+
 			return array($username, $points, $alliance);
 		}
-		
+
 		function decodeAllianceHighscoresString($info)
 		{
 			$alliancename = trim(substr($info, 0, 6));
-			
+
 			$members_str = substr($info, 6, 4);
 			$members_bin = '';
 			for($i=0; $i < strlen($members_str); $i++)
 			$members_bin .= add_nulls(decbin(ord($members_str[$i])), 8);
 			$members = base_convert($members_bin, 2, 10);
-			
+
 			$average_str = substr($info, 10, 8);
 			$average_bin = '';
 			for($i=0; $i < strlen($average_str); $i++)
 			$average_bin .= add_nulls(decbin(ord($average_str[$i])), 8);
 			$average = base_convert($average_bin, 2, 10);
-			
+
 			$overall_str = substr($info, 18, 8);
 			$overall_bin = '';
 			for($i=0; $i < strlen($overall_str); $i++)
 			$overall_bin .= add_nulls(decbin(ord($overall_str[$i])), 8);
 			$overall = base_convert($overall_bin, 2, 10);
-			
+
 			return array($alliancename, $members, $average, $overall);
 		}
 	}
-	
+
 	switch($current_version)
 	{
 		#######################
@@ -82,7 +84,7 @@
 		case 1:
 			# GZip-Dateien auf BZip2-Dateien umstellen
 			$fnames = array();
-			
+
 			$dh = opendir(DB_PLAYERS);
 			while(($fname = readdir($dh)) !== false)
 			{
@@ -90,7 +92,7 @@
 				$fnames[] = DB_PLAYERS.'/'.$fname;
 			}
 			closedir($dh);
-			
+
 			$dh = opendir(DB_ALLIANCES);
 			while(($fname = readdir($dh)) !== false)
 			{
@@ -98,7 +100,7 @@
 				$fnames[] = DB_ALLIANCES.'/'.$fname;
 			}
 			closedir($dh);
-			
+
 			$dh = opendir(DB_MESSAGES);
 			while(($fname = readdir($dh)) !== false)
 			{
@@ -106,7 +108,7 @@
 				$fnames[] = DB_MESSAGES.'/'.$fname;
 			}
 			closedir($dh);
-			
+
 			$dh = opendir(DB_MESSAGES_PUBLIC);
 			while(($fname = readdir($dh)) !== false)
 			{
@@ -114,28 +116,28 @@
 				$fnames[] = DB_MESSAGES_PUBLIC.'/'.$fname;
 			}
 			closedir($dh);
-			
+
 			foreach($fnames as $fname)
 			{
 				$file = gzuncompress(file_get_contents($fname));
-				
+
 				$fh = fopen($fname, 'w');
 				flock($fh, LOCK_EX);
-				
+
 				fwrite($fh, bzcompress($file, 6));
-				
+
 				flock($fh, LOCK_UN);
 				fclose($fh);
 			}
-			
+
 			# fleets-Verzeichnis anlegen
 			if(!file_exists(DB_FLEETS)) mkdir(DB_FLEETS, 0777);
 
-		
+
 		#######################
 		### Version 2 auf 3 ###
 		#######################
-		
+
 		case 2:
 			# events-Datei auf SQLite umstellen
 			$events_old = DB_EVENTS.'.bkp.'.time();
@@ -151,11 +153,11 @@
 				}
 				fclose($fh);
 			}
-		
+
 		#######################
 		### Version 3 auf 4 ###
 		#######################
-		
+
 		case 3:
 			# Highscores-Dateien auf SQLite umstellen
 			$hs_old1 = DB_DIR.'/highscores';
@@ -180,14 +182,35 @@
 				}
 				fclose($fh);
 			}
+
+		#######################
+		### Version 4 auf 5 ###
+		#######################
+
+		case 4:
+			# strtolower auf Users und Alliances
+			$dh = opendir(DB_PLAYERS);
+			while(($fname = readdir($dh)) !== false)
+			{
+				if($fname == '.' || $fname == '..') continue;
+				rename(DB_PLAYERS.'/'.$fname, DB_PLAYERS.'/'.strtolower($fname));
+			}
+			closedir($dh);
+			$dh = opendir(DB_ALLIANCES);
+			while(($fname = readdir($dh)) !== false)
+			{
+				if($fname == '.' || $fname == '..') continue;
+				rename(DB_ALLIANCES.'/'.$fname, DB_ALLIANCES.'/'.strtolower($fname));
+			}
+			closedir($dh);
 	}
-	
-	fputs(STDERR, "Database version is now 4.\n");
+
+	fputs(STDERR, "Database version is now ".$newest_version.".\n");
 	$fh = fopen(DB_DIR.'/.version', 'w');
-	if(!$fh) fputs(STDERR, "Please put 4 into ".DB_DIR."/.version manually.\n");
+	if(!$fh) fputs(STDERR, "Please put ".$newest_version." into ".DB_DIR."/.version manually.\n");
 	else
 	{
-		fwrite($fh, '4');
+		fwrite($fh, $newest_version);
 		fclose($fh);
 	}
 	exit(0);

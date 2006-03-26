@@ -89,7 +89,7 @@
 
 
 	$me = Classes::User($_SESSION['username']);
-	#$me->_printRaw();
+	$_SESSION['username'] = $me->getName();
 
 	if(!$me->getStatus())
 	{

@@ -18,6 +18,7 @@
 
 	if(isset($_POST['empfaenger']) && strlen(trim($_POST['empfaenger'])) > 0)
 	{
+		$_POST['empfaenger'] = User::resolveName($_POST['empfaenger']);
 		if(!User::userExists($_POST['empfaenger']))
 			$buendnis_error = 'Dieser Spieler existiert nicht.';
 		elseif($me->existsVerbuendet($_POST['empfaenger']))
@@ -32,15 +33,22 @@
 
 	if(isset($_GET['anfrage']) && isset($_GET['annehmen']))
 	{
+		$_GET['anfrage'] = User::resolveName($_GET['anfrage']);
 		if($_GET['annehmen']) $me->acceptVerbuendetApplication($_GET['anfrage']);
 		else $me->rejectVerbuendetApplication($_GET['anfrage']);
 	}
 
 	if(isset($_GET['bewerbung']))
+	{
+		$_GET['bewerbung'] = User::resolveName($_GET['bewerbung']);
 		$me->cancelVerbuendetApplication($_GET['bewerbung']);
+	}
 
 	if(isset($_GET['kuendigen']))
+	{
+		$_GET['kuendigen'] = User::resolveName($_GET['kuendigen']);
 		$me->quitVerbuendet($_GET['kuendigen']);
+	}
 
 	$anfragen = $me->getVerbuendetRequestList();
 	if(count($anfragen) > 0)
@@ -52,10 +60,10 @@
 		foreach($anfragen as $anfrage)
 		{
 ?>
-	<dt><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($anfrage))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($anfrage)?></a></dt>
+	<dt><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($anfrage))?>&amp;<?=htmlspecialchars(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($anfrage)?></a></dt>
 	<dd><ul>
-		<li><a href="verbuendete.php?anfrage=<?=htmlentities(urlencode($anfrage))?>&amp;annehmen=1&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Annehmen</a></li>
-		<li><a href="verbuendete.php?anfrage=<?=htmlentities(urlencode($anfrage))?>&amp;annehmen=0&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Ablehnen</a></li>
+		<li><a href="verbuendete.php?anfrage=<?=htmlspecialchars(urlencode($anfrage))?>&amp;annehmen=1&amp;<?=htmlspecialchars(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Annehmen</a></li>
+		<li><a href="verbuendete.php?anfrage=<?=htmlspecialchars(urlencode($anfrage))?>&amp;annehmen=0&amp;<?=htmlspecialchars(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Ablehnen</a></li>
 	</ul></dd>
 <?php
 		}
@@ -74,9 +82,9 @@
 		foreach($bewerbungen as $bewerbung)
 		{
 ?>
-	<dt><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($bewerbung))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($bewerbung)?></a></dt>
+	<dt><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($bewerbung)?></a></dt>
 	<dd><ul>
-		<li><a href="verbuendete.php?bewerbung=<?=htmlentities(urlencode($bewerbung))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Zurückziehen</a></li>
+		<li><a href="verbuendete.php?bewerbung=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Zurückziehen</a></li>
 	</ul></dd>
 <?php
 		}
@@ -104,15 +112,15 @@
 		foreach($verbuendete as $name)
 		{
 ?>
-	<dt><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($name))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($name)?></a></dt>
+	<dt><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($name))?>&amp;<?=htmlspecialchars(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($name)?></a></dt>
 	<dd><ul>
-		<li><a href="verbuendete.php?kuendigen=<?=htmlentities(urlencode($name))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" onclick="return confirm('Wollen Sie das Bündnis mit dem Spieler <?=utf8_jsentities($name)?> wirklich kündigen?');">Kündigen</a></li>
+		<li><a href="verbuendete.php?kuendigen=<?=htmlspecialchars(urlencode($name))?>&amp;<?=htmlspecialchars(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" onclick="return confirm('Wollen Sie das Bündnis mit dem Spieler <?=utf8_jsentities($name)?> wirklich kündigen?');">Kündigen</a></li>
 	</ul></dd>
 <?php
 		}
 ?>
 </dl>
-<form action="verbuendete.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="buendnisse-rundschreiben" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
+<form action="verbuendete.php?<?=htmlspecialchars(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="buendnisse-rundschreiben" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
 	<fieldset>
 		<legend>Bündnisrundschreiben</legend>
 		<dl>
@@ -134,12 +142,12 @@
 	{
 ?>
 <p class="error">
-	<?=htmlentities($buendnis_error)."\n"?>
+	<?=htmlspecialchars($buendnis_error)."\n"?>
 </p>
 <?php
 	}
 ?>
-<form action="verbuendete.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="buendnisse-eingehen">
+<form action="verbuendete.php?<?=htmlspecialchars(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="buendnisse-eingehen">
 	<dl>
 		<dt class="c-spieler"><label for="spieler-input">Spieler</label></dt>
 		<dd class="c-spieler"><input type="text" name="empfaenger" id="spieler-input" value="<?=(isset($_POST['empfaenger']) ? utf8_htmlentities($_POST['empfaenger']) : '')?>" tabindex="4" accesskey="z" title="[Z]" /></dd>

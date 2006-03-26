@@ -606,7 +606,7 @@ function do_make_users_list(node)
 				}
 				var do_insert = true;
 				if(results.length <= 0) do_insert = false;
-				else if(results.length == 1 && node.value == v) do_insert = false;
+				else if(results.length == 1 && node.value.toLowerCase() == v.toLowerCase()) do_insert = false;
 
 				if(do_insert)
 				{
