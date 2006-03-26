@@ -5,6 +5,7 @@
 		protected $active_planet = false;
 		protected $planet_info = false;
 		private $datatype = 'user';
+		protected $recalc_highscores = array(false,false,false,false,false);
 
 		function create()
 		{
@@ -173,7 +174,9 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 
-			return explode(':', $this->planet_info['pos']);
+			$pos = explode(':', $this->planet_info['pos'], 3);
+			if(count($pos) < 3) return false;
+			return $pos;
 		}
 
 		function getPosString()
@@ -225,6 +228,7 @@
 			# Planeten aus der Karte loeschen
 			$this_pos = $this->getPos();
 			if(!$this_pos) return false;
+
 			$galaxy = Classes::galaxy($this_pos[0]);
 			$galaxy->resetPlanet($this_pos[1], $this_pos[2]);
 
@@ -1150,6 +1154,14 @@
 
 			if($actions === false) $actions = array();
 
+			$recalc = array(
+				'gebaeude' => 0,
+				'forschung' => 1,
+				'roboter' => 2,
+				'schiffe' => 3,
+				'verteidigung' => 4
+			);
+
 			if($type !== false && $type != 'ids')
 			{
 				if(!isset($this->items[$type])) $this->items[$type] = array();
@@ -1172,6 +1184,8 @@
 					$this->items['ids'][$id] = &$this->items[$type][$id];
 				}
 			}
+
+			$this->recalc_highscores[$recalc[$type]] = true;
 
 			# Felder belegen
 			if($type == 'gebaeude')
@@ -1403,9 +1417,8 @@
 			$this->changed = true;
 
 			# Planeteneigentuemer umbenennen
-			$suffix = '';
-			if($this->userLocked()) $suffix = ' (g)';
-			$name = $this->getName().$suffix;
+			$flag = '';
+			if($this->userLocked()) $flag = 'g';
 			$active_planet = $this->getActivePlanet();
 			$planets = $this->getPlanetsList();
 			foreach($planets as $planet)
@@ -1413,7 +1426,7 @@
 				$this->setActivePlanet($planet);
 				$pos = $this->getPos();
 				$galaxy = Classes::Galaxy($pos[0]);
-				$galaxy->setPlanetOwner($pos[1], $pos[2], $name);
+				$galaxy->setPlanetOwnerFlag($pos[1], $pos[2], $flag);
 			}
 			if($active_planet !== false) $this->setActivePlanet($active_planet);
 
@@ -1432,8 +1445,7 @@
 				$this->raw['umode_time'] = time();
 				$this->changed = true;
 
-				$planet_owner = $this->getName();
-				if($this->raw['umode']) $planet_owner = substr($planet_owner, 0, 20).' (U)';
+				$flag = ($this->raw['umode'] ? 'U' : '');
 				$active_planet = $this->getActivePlanet();
 				$planets = $this->getPlanetsList();
 				foreach($planets as $planet)
@@ -1441,7 +1453,7 @@
 					$this->setActivePlanet($planet);
 					$pos = $this->getPos();
 					$galaxy_obj = Classes::Galaxy($pos[0]);
-					$galaxy_obj->setPlanetOwner($pos[1], $pos[2], $planet_owner);
+					$galaxy_obj->setPlanetOwnerFlag($pos[1], $pos[2], $flag);
 				}
 				$this->setActivePlanet($planet);
 
@@ -1534,6 +1546,9 @@
 				$this->planet_info['verteidigung'] = $this->items['verteidigung'];
 				$this->planet_info['ress'] = $this->ress;
 			}
+
+			if($this->recalc_highscores[0] || $this->recalc_highscores[1] || $this->recalc_highscores[2] || $this->recalc_highscores[3] || $this->recalc_highscores[4])
+				$this->doRecalcHighscores($this->recalc_highscores[0], $this->recalc_highscores[1], $this->recalc_highscores[2], $this->recalc_highscores[3], $this->recalc_highscores[4]);
 		}
 
 		function checkBuildingThing($type, $run_eventhandler=true)
@@ -1637,19 +1652,12 @@
 			if(isset($this->planet_info['building'])) $beginning_building = $this->planet_info['building'];
 			$beginning_changed = $this->changed;
 
-			$recalc_gebaeude = false;
-			$recalc_forschung = false;
-			$recalc_roboter = false;
-			$recalc_schiffe = false;
-			$recalc_verteidigung = false;
-
 			$building = $this->checkBuildingThing('gebaeude', false);
 			if($building !== false && $building[1] <= time() && $this->removeBuildingThing('gebaeude', false))
 			{
 				$stufen = 1;
 				if($building[2]) $stufen = -1;
 				$actions[] = array($building[1], $building[0], $stufen, true);
-				$recalc_gebaeude = true;
 
 				if($check_gebaeude || $building[0]==$check_id) $run = true;
 			}
@@ -1659,7 +1667,6 @@
 			if($building !== false && $building[1] <= time() && $this->removeBuildingThing('forschung', false))
 			{
 				$actions[] = array($building[1], $building[0], 1, true);
-				$recalc_forschung = true;
 				if($check_forschung || $building[0]==$check_id) $run = true;
 			}
 
@@ -1676,7 +1683,6 @@
 					if($time <= time())
 					{
 						$actions[] = array($time, $items[0], 1, true);
-						$recalc_roboter = true;
 						if($check_roboter || $items[0]==$check_id) $run = true;
 
 						# Roboter entfernen
@@ -1705,7 +1711,6 @@
 					if($time <= time())
 					{
 						$actions[] = array($time, $items[0], 1, true);
-						$recalc_schiffe = true;
 						if($check_schiffe || $items[0]==$check_id) $run = true;
 
 						# Schiff entfernen
@@ -1735,7 +1740,6 @@
 					if($time <= time())
 					{
 						$actions[] = array($time, $items[0], 1, true);
-						$recalc_verteidigung = true;
 						if($check_verteidigung || $items[0]==$check_id) $run = true;
 
 						# Schiff entfernen
@@ -1772,7 +1776,6 @@
 				}
 
 				$this->changed = true;
-				$this->recalcHighscores($recalc_gebaeude, $recalc_forschung, $recalc_roboter, $recalc_schiffe, $recalc_verteidigung);
 			}
 			elseif(!$run)
 			{
@@ -2548,9 +2551,20 @@
 
 		function recalcHighscores($recalc_gebaeude=false, $recalc_forschung=false, $recalc_roboter=false, $recalc_schiffe=false, $recalc_verteidigung=false)
 		{
-			$old_position = $this->getRank();
-			$old_position_f = ($old_position-1)*38;
+			if(!$this->status) return false;
 
+			$this->recalc_highscores[0] = $this->recalc_highscores[0] && $recalc_gebaeude;
+			$this->recalc_highscores[1] = $this->recalc_highscores[1] && $recalc_forschung;
+			$this->recalc_highscores[2] = $this->recalc_highscores[2] && $recalc_roboter;
+			$this->recalc_highscores[3] = $this->recalc_highscores[3] && $recalc_schiffe;
+			$this->recalc_highscores[4] = $this->recalc_highscores[4] && $recalc_verteidigung;
+
+			$this->changed = true;
+			return 2;
+		}
+
+		function doRecalcHighscores($recalc_gebaeude=false, $recalc_forschung=false, $recalc_roboter=false, $recalc_schiffe=false, $recalc_verteidigung=false)
+		{
 			if($recalc_gebaeude || $recalc_forschung || $recalc_roboter || $recalc_schiffe || $recalc_verteidigung)
 			{
 				if($recalc_gebaeude) $this->raw['punkte'][0] = 0;

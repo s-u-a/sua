@@ -707,6 +707,8 @@
 			{
 				# Nicht stationieren: Flotte fliegt weiter
 
+				$further = true;
+
 				$target = explode(':', $next_target);
 				$target_galaxy = Classes::Galaxy($target[0]);
 				$target_owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
@@ -734,8 +736,6 @@
 				}
 				else
 				{
-					$further = true;
-
 					switch($type)
 					{
 						case 2: # Sammeln
@@ -1277,47 +1277,47 @@ EOF
 								}
 							}
 					}
-
-					# Weiterfliegen
-
-					$users = array_keys($this->raw[1]);
-
-					if($further)
-					{
-						$first_user = array_shift($users);
-						$this->raw[3][$next_target] = array_shift($this->raw[0]);
-						$this->raw[2] = time();
-						$this->createNextEvent();
-					}
-
-					# Vom Empfaenger entfernen
-					if($target_user && $target_owner != $first_user)
-						$target_user->unsetFleet($this->getName());
-					$this->changed = false;
-
-					$this->changed = true;
-
-					foreach($users as $user)
-					{
-						$user_obj = Classes::User($user);
-						$user_obj->unsetFleet($this->getName());
-						$new_fleet = Classes::Fleet();
-
-						if($new_fleet->create())
-						{
-							$new_fleet->setRaw(array(
-								array($this->raw[1][$user][1] => array($type, true)),
-								array($user => $this->raw[1][$user]),
-								time(),
-								array($next_target => array($type, false))
-							));
-							$new_fleet->start();
-						}
-						unset($this->raw[1][$user]);
-					}
-
-					if(!$further) $this->destroy();
 				}
+
+				# Weiterfliegen
+
+				$users = array_keys($this->raw[1]);
+
+				if($further)
+				{
+					$first_user = array_shift($users);
+					$this->raw[3][$next_target] = array_shift($this->raw[0]);
+					$this->raw[2] = time();
+					$this->createNextEvent();
+				}
+
+				# Vom Empfaenger entfernen
+				if($target_user && $target_owner != $first_user)
+					$target_user->unsetFleet($this->getName());
+				$this->changed = false;
+
+				$this->changed = true;
+
+				foreach($users as $user)
+				{
+					$user_obj = Classes::User($user);
+					$user_obj->unsetFleet($this->getName());
+					$new_fleet = Classes::Fleet();
+
+					if($new_fleet->create())
+					{
+						$new_fleet->setRaw(array(
+							array($this->raw[1][$user][1] => array($type, true)),
+							array($user => $this->raw[1][$user]),
+							time(),
+							array($next_target => array($type, false))
+						));
+						$new_fleet->start();
+					}
+					unset($this->raw[1][$user]);
+				}
+
+				if(!$further) $this->destroy();
 			}
 			else
 			{

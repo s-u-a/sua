@@ -27,7 +27,7 @@
  *
  */
 /**
- * <p>Sarissa is a utility class. Provides "static" methods for DOMDocument and 
+ * <p>Sarissa is a utility class. Provides "static" methods for DOMDocument and
  * XMLHTTP objects, DOM Node serializatrion to XML strings and other goodies.</p>
  * @constructor
  */
@@ -92,8 +92,8 @@ if(_SARISSA_IS_IE){
                 // trap; try next progID
             };
         };
-        if (!bFound)
-            throw "Could not retreive a valid progID of Class: " + idList[idList.length-1]+". (original exception: "+e+")";
+        //if (!bFound)
+          //  throw "Could not retreive a valid progID of Class: " + idList[idList.length-1]+". (original exception: "+e+")";
         idList = null;
         return o2Store;
     };
@@ -125,14 +125,14 @@ if(_SARISSA_IS_IE){
         };
         return oDoc;
     };
-    // see non-IE version   
+    // see non-IE version
     Sarissa.getParseErrorText = function (oDoc) {
         var parseErrorText = Sarissa.PARSED_OK;
         if(oDoc.parseError != 0){
-            parseErrorText = "XML Parsing Error: " + oDoc.parseError.reason + 
-                "\nLocation: " + oDoc.parseError.url + 
-                "\nLine Number " + oDoc.parseError.line + ", Column " + 
-                oDoc.parseError.linepos + 
+            parseErrorText = "XML Parsing Error: " + oDoc.parseError.reason +
+                "\nLocation: " + oDoc.parseError.url +
+                "\nLine Number " + oDoc.parseError.line + ", Column " +
+                oDoc.parseError.linepos +
                 ":\n" + oDoc.parseError.srcText +
                 "\n";
             for(var i = 0;  i < oDoc.parseError.linepos;i++){
@@ -146,9 +146,9 @@ if(_SARISSA_IS_IE){
     Sarissa.setXpathNamespaces = function(oDoc, sNsSet) {
         oDoc.setProperty("SelectionLanguage", "XPath");
         oDoc.setProperty("SelectionNamespaces", sNsSet);
-    };   
+    };
     /**
-     * Basic implementation of Mozilla's XSLTProcessor for IE. 
+     * Basic implementation of Mozilla's XSLTProcessor for IE.
      * Reuses the same XSLT stylesheet for multiple transforms
      * @constructor
      */
@@ -162,7 +162,7 @@ if(_SARISSA_IS_IE){
      */
     XSLTProcessor.prototype.importStylesheet = function(xslDoc){
         // convert stylesheet to free threaded
-        var converted = new ActiveXObject(_SARISSA_THREADEDDOM_PROGID); 
+        var converted = new ActiveXObject(_SARISSA_THREADEDDOM_PROGID);
         converted.loadXML(xslDoc.xml);
         this.template.stylesheet = converted;
         this.processor = this.template.createProcessor();
@@ -177,7 +177,7 @@ if(_SARISSA_IS_IE){
     XSLTProcessor.prototype.transformToDocument = function(sourceDoc){
         this.processor.input = sourceDoc;
         var outDoc = new ActiveXObject(_SARISSA_DOM_PROGID);
-        this.processor.output = outDoc; 
+        this.processor.output = outDoc;
         this.processor.transform();
         return outDoc;
     };
@@ -319,8 +319,8 @@ else{ /* end IE initialization, try to deal with real browsers now ;-) */
                 };
                 return oDoc;
             };
-            
-            
+
+
         }//if(window.XMLDocument)
         else if(document.implementation && document.implementation.hasFeature && document.implementation.hasFeature('LS', '3.0')){
             Document.prototype.async = true;
@@ -330,13 +330,13 @@ else{ /* end IE initialization, try to deal with real browsers now ;-) */
                 var parser = document.implementation.createLSParser(this.async ? document.implementation.MODE_ASYNCHRONOUS : document.implementation.MODE_SYNCHRONOUS, null);
                 if(this.async){
                     var self = this;
-                    parser.addEventListener("load", 
-                        function(e) { 
+                    parser.addEventListener("load",
+                        function(e) {
                             self.readyState = 4;
                             Sarissa.copyChildNodes(e.newDocument, self.documentElement, false);
-                            self.onreadystatechange.call(); 
-                        }, 
-                        false); 
+                            self.onreadystatechange.call();
+                        },
+                        false);
                 };
                 try {
                     var oDoc = parser.parseURI(sURI);
@@ -356,7 +356,7 @@ else{ /* end IE initialization, try to deal with real browsers now ;-) */
             */
             Sarissa.getDomDocument = function(sUri, sName){
                 return document.implementation.createDocument(sUri?sUri:"", sName?sName:"", null);
-            };        
+            };
         };
     };//if(_SARISSA_HAS_DOM_CREATE_DOCUMENT)
 };
@@ -371,10 +371,10 @@ if(!window.DOMParser){
     DOMParser = function() {
     };
     if(_SARISSA_IS_SAFARI){
-        /** 
+        /**
         * Construct a new DOM Document from the given XMLstring
         * @param sXml the given XML string
-        * @param contentType the content type of the document the given string represents (one of text/xml, application/xml, application/xhtml+xml). 
+        * @param contentType the content type of the document the given string represents (one of text/xml, application/xml, application/xhtml+xml).
         * @return a new DOM Document from the given XML string
         */
         DOMParser.prototype.parseFromString = function(sXml, contentType){
@@ -529,7 +529,7 @@ Sarissa.clearChildNodes = function(oNode) {
 };
 /**
  * <p> Copies the childNodes of nodeFrom to nodeTo</p>
- * <p> <b>Note:</b> The second object's original content is deleted before 
+ * <p> <b>Note:</b> The second object's original content is deleted before
  * the copy operation, unless you supply a true third parameter</p>
  * @argument nodeFrom the Node to copy the childNodes from
  * @argument nodeTo the Node to copy the childNodes to
@@ -558,12 +558,12 @@ Sarissa.copyChildNodes = function(nodeFrom, nodeTo, bPreserveExisting) {
 
 /**
  * <p> Moves the childNodes of nodeFrom to nodeTo</p>
- * <p> <b>Note:</b> The second object's original content is deleted before 
+ * <p> <b>Note:</b> The second object's original content is deleted before
  * the move operation, unless you supply a true third parameter</p>
  * @argument nodeFrom the Node to copy the childNodes from
  * @argument nodeTo the Node to copy the childNodes to
  * @argument bPreserveExisting whether to preserve the original content of nodeTo, default is
- */ 
+ */
 Sarissa.moveChildNodes = function(nodeFrom, nodeTo, bPreserveExisting) {
     if((!nodeFrom) || (!nodeTo)){
         throw "Both source and destination nodes must be provided";
@@ -592,9 +592,9 @@ Sarissa.moveChildNodes = function(nodeFrom, nodeTo, bPreserveExisting) {
     };
 };
 
-/** 
+/**
  * <p>Serialize any object to an XML string. All properties are serialized using the property name
- * as the XML element name. Array elements are rendered as <code>array-item</code> elements, 
+ * as the XML element name. Array elements are rendered as <code>array-item</code> elements,
  * using their index/key as the value of the <code>key</code> attribute.</p>
  * @argument anyObject the object to serialize
  * @argument objectName a name for that object
@@ -604,7 +604,7 @@ Sarissa.xmlize = function(anyObject, objectName, indentSpace){
     indentSpace = indentSpace?indentSpace:'';
     var s = indentSpace  + '<' + objectName + '>';
     var isLeaf = false;
-    if(!(anyObject instanceof Object) || anyObject instanceof Number || anyObject instanceof String 
+    if(!(anyObject instanceof Object) || anyObject instanceof Number || anyObject instanceof String
         || anyObject instanceof Boolean || anyObject instanceof Date){
         s += Sarissa.escape(""+anyObject);
         isLeaf = true;
@@ -620,7 +620,7 @@ Sarissa.xmlize = function(anyObject, objectName, indentSpace){
     return s += (objectName.indexOf(' ')!=-1?"</array-item>\n":"</" + objectName + ">\n");
 };
 
-/** 
+/**
  * Escape the given string chacters that correspond to the five predefined XML entities
  * @param sXml the string to escape
  */
@@ -632,8 +632,8 @@ Sarissa.escape = function(sXml){
         .replace(/'/g, "&apos;");
 };
 
-/** 
- * Unescape the given string. This turns the occurences of the predefined XML 
+/**
+ * Unescape the given string. This turns the occurences of the predefined XML
  * entities to become the characters they represent correspond to the five predefined XML entities
  * @param sXml the string to unescape
  */

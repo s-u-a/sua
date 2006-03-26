@@ -5,9 +5,9 @@
 		$_SERVER['REQUEST_URI'] = '';
 		if(isset($_SERVER['HTTP_REFERER'])) $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_REFERER'];
 	}
-	
+
 	require('scripts/include.php');
-	
+
 	if(isset($_GET['action']))
 		$_SERVER['REQUEST_URI'] = $requ_uri;
 
@@ -17,7 +17,7 @@
 
 	$max_flotten = $me->getMaxParallelFleets();
 	$my_flotten = $me->getCurrentParallelFleets();
-	
+
 	__autoload('Fleet');
 	__autoload('Galaxy');
 ?>
@@ -132,7 +132,7 @@
 				continue;
 			}
 			$show_versenden = false;
-			
+
 			foreach($item_info['types'] as $type)
 			{
 				if(!in_array($type, $types)) $types[] = $type;
@@ -143,6 +143,8 @@
 		{
 			$galaxy_obj = Classes::Galaxy($_POST['galaxie']);
 			$planet_owner = $galaxy_obj->getPlanetOwner($_POST['system'], $_POST['planet']);
+			$planet_owner_flag = $galaxy_obj->getPlanetOwnerFlag($_POST['system'], $_POST['planet']);
+
 			if($planet_owner === false) $show_versenden = true;
 
 			if(!$show_versenden)
@@ -169,7 +171,7 @@
 				if(($truemmerfeld === false || array_sum($truemmerfeld) <= 0) && isset($types[2]))
 					unset($types[2]); # Kein Truemmerfeld, Sammeln nicht moeglich
 
-				if($me->getPosString() == $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'] || substr($planet_owner, -4) == ' (U)')
+				if($me->getPosString() == $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'] || $planet_owner_flag == 'U')
 				{ # Selber Planet / Urlaubsmodus, nur Sammeln
 					if($truemmerfeld && isset($types[2]))
 						$types = array(2 => 0);
@@ -218,7 +220,7 @@
 						$ges_count += $anzahl;
 					}
 					$show_form2 = true;
-					
+
 					if(isset($_POST['auftrag']))
 					{
 						$show_form2 = false;
@@ -264,16 +266,16 @@
 									# Geschwindigkeitsfaktor
 									if(!isset($_POST['speed']) || $_POST['speed'] < 0.05 || $_POST['speed'] > 1)
 										$_POST['speed'] = 1;
-									
+
 									$fleet_obj->addTarget($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'], $_POST['auftrag'], false);
 									if($_POST['auftrag'] != 6)
 										$fleet_obj->addTarget($me->getPosString(), $_POST['auftrag'], true);
-									
+
 									$fleet_obj->addUser($_SESSION['username'], $me->getPosString(), $_POST['speed']);
-									
+
 									foreach($_POST['flotte'] as $id=>$anzahl)
 										$fleet_obj->addFleet($id, $anzahl, $_SESSION['username']);
-									
+
 									$ress = $me->getRess();
 									if(($_POST['auftrag'] == 1 || $_POST['auftrag'] == 4 || $_POST['auftrag'] == 6))
 									{
@@ -284,7 +286,7 @@
 										if($_POST['transport'][2] > $ress[2]) $_POST['transport'][2] = $ress[2];
 										if($_POST['transport'][3] > $ress[3]) $_POST['transport'][3] = $ress[3];
 										if($_POST['transport'][4] > $ress[4]) $_POST['transport'][4] = $ress[4];
-	
+
 										foreach($_POST['rtransport'] as $id=>$anzahl)
 										{
 											if($anzahl > $me->getItemLevel($id, 'roboter'))
@@ -300,9 +302,9 @@
 										$_POST['transport'] = array(0,0,0,0,0);
 										$_POST['rtransport'] = array();
 									}
-									
+
 									$tritium = $fleet_obj->calcNeededTritium($_SESSION['username']);
-								
+
 									if($ress[4]-$_POST['transport'][4] < $tritium)
 									{
 ?>
@@ -325,16 +327,16 @@
 										# Flotten abziehen
 										foreach($_POST['flotte'] as $id=>$anzahl)
 											$me->changeItemLevel($id, -$anzahl, 'schiffe');
-										
+
 										# Rohstoffe abziehen
 										$me->subtractRess($_POST['transport'], false);
-										
+
 										# Roboter abziehen
 										foreach($_POST['rtransport'] as $id=>$anzahl)
 											$me->changeItemLevel($id, -$anzahl, 'roboter');
-										
+
 										$fleet_obj->start();
-										
+
 										if($fast_action)
 										{
 											header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
@@ -377,7 +379,7 @@
 							#ob_end_clean();
 							die();
 						}
-						
+
 						$distance = Fleet::getDistance($me->getPosString(), $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet']);
 						$fleet_obj = Classes::Fleet();
 						if($fleet_obj->create())
@@ -397,10 +399,10 @@
 							else
 								$time2 = $time;
 							$time_string .= add_nulls(floor($time2/3600), 2).':'.add_nulls(floor(($time2%3600)/60), 2).':'.add_nulls(($time2%60), 2);
-							
+
 							$this_ress = $me->getRess();
 							$transport = $fleet_obj->getTransportCapacity($_SESSION['username']);
-							
+
 							# Kein Robotertransport zu fremden Planeten
 							if($planet_owner != $_SESSION['username']) $transport[1] = 0;
 ?>
@@ -417,7 +419,7 @@
 
 		<dt class="c-tritiumverbrauch">Tritiumverbrauch</dt>
 		<dd class="c-tritiumverbrauch <?=($this_ress[4] >= $tritium) ? 'ja' : 'nein'?>" id="tritium-verbrauch"><?=ths($tritium)?>&thinsp;<abbr title="Tonnen">t</abbr></dd>
-		
+
 		<dt class="c-geschwindigkeit"><label for="speed">Gesch<kbd>w</kbd>indigkeit</label></dt>
 		<dd class="c-geschwindigkeit">
 			<select name="speed" id="speed" accesskey="w" tabindex="1" onchange="recalc_values();" onkeyup="recalc_values();">
@@ -490,7 +492,7 @@
 								{
 									if($transport[0] > 0)
 										echo "\n";
-									
+
 									$tabindex = 8;
 									foreach($me->getItemsList('roboter') as $rob)
 									{
@@ -549,7 +551,7 @@
 				if(!isNaN(speed))
 					time /= speed;
 				time = Math.round(time);
-				
+
 				var time_string = '';
 				if(time >= 86400)
 				{

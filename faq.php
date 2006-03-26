@@ -13,6 +13,7 @@
 	<li><a href="#noobs">Gibt es einen Anfängerschutz?</a></li>
 	<li><a href="#planets">Kann man mehrere Planeten haben?</a></li>
 	<li><a href="#times">Wie kann man die Bauzeiten verkürzen?</a></li>
+	<li><a href="#avatars">Wie füge ich ein Bild in meine Allianz- oder Benutzerbeschreibung ein?</a></li>
 	<li><a href="#time">Was bedeuten <span xml:lang="en">Server</span>- und Lokalzeit?</a></li>
 	<li><a href="#research">Wo ist der Unterschied zwischen lokaler und globaler Forschung?</a></li>
 	<li><a href="#robots">Wie funktionieren die Roboter?</a></li>
@@ -36,7 +37,7 @@
 		<li><span xml:lang="en">Konqueror</span> (in einer neueren Version, bestenfalls 3.2 oder neuer)</li>
 		<li>Safari (siehe <span xml:lang="en">Konqueror</span>)</li>
 		<li>Opera (ab Version 7)</li>
-		<li><span xml:lang="en">Internet Explorer</span> (ab Version 5.5)</li>
+		<li><span xml:lang="en">Internet Explorer</span> (Version 5.5 oder 6)</li>
 	</ul>
 	<p>Für einige praktische <span xml:lang="en">Features</span> können Sie außerdem <span xml:lang="en">JavaScript</span> aktivieren.</p>
 	<p>Wir möchten Sie wärmstens darum bitten, nicht den <span xml:lang="en">Internet Explorer</span> zu verwenden, sofern Sie die Möglichkeit dazu haben, da dieser keine Kompression unterstützt und Sie uns somit etwa das Zehnfache des Datenvolumens erzeugen, das andere <span xml:lang="en">Browser</span> verursachen.</p>
@@ -90,6 +91,20 @@
 <div class="faq" id="time">
 	<h3>Was bedeuten <span xml:lang="en">Server</span>- und Lokalzeit?</h3>
 	<p>Die <span xml:lang="en">Server</span>zeit bezeichnet die Zeit, die auf dem <span xml:lang="en">Server</span> eingestellt ist, auf dem <abbr title="Star Under Attack" xml:lang="en">S-U-A</abbr> läuft. Wenn Sie <span xml:lang="en">JavaScript</span> aktiviert haben, rechnet das Spiel automatisch die meisten Angaben, die in der Serverzeit angegeben sind, zusätzlich in die Lokalzeit um. Die Lokalzeit entspricht dann Ihrer Systemuhr, also der Zeit, die Sie normalerweise unten rechts auf Ihrem Bildschirm sehen.</p>
+</div>
+
+<div class="faq" id="avatars">
+	<h3>Wie füge ich ein Bild in meine Allianz- oder Benutzerbeschreibung ein?</h3>
+	<p>Sie haben die Möglichkeit, <abbr title="Extensible Hypertext Markup Language" xml:lang="en"><span xml:lang="de">XHTML</span></abbr>-<span xml:lang="en">Code</span> in Nachrichten, Allianzbeschreibungen und Spielerbeschreibungen einzugeben. Sofern der Code korrekt ist, wird er dann vom Browser interpretiert.</p>
+	<p>Ein Bild können Sie einfügen, indem Sie folgenden Code in Ihre Allianzbeschreibung einfügen: <code class="xhtml" xml:lang="en">&lt;img src=&quot;<var xml:lang="de">[Pfad zum Bild]</var>&quot; alt=&quot;<var xml:lang="de">[Alternativtext]</var>&quot; /&gt;</code> &ndash; als <em>Pfad</em> sollten Sie normalerweise eine Adresse angeben, die mit <code>http://</code> beginnt, das heißt, dass Sie das Bild auf einen öffentlich erreichbaren <span xml:lang="en">Webspace</span> hinaufladen müssen. Denken Sie daran, wenn Sie ein Bild von Ihrer Festplatte einbinden (also als Pfad etwas wie <code>C:\&hellip;</code> oder <code>/home/&hellip;</code> angeben), wird die Datei auf der Festplatte eines Anderen höchstwahrscheinlich nicht vorhanden sein und deswegen nicht angezeigt werden. Ein <em>Alternativtext</em> muss aus Rücksicht auf Browser, die keine Bilder darstellen können/sollen, angegeben werden. Stellen Sie sich einfach vor, jemand sieht nichts davon, dass Sie versucht haben ein Bild einzubinden, sondern sieht den Alternativtext, den Sie angegeben haben, im normalen Fließtext stehen. Überlegen Sie nun, was für ein Text für einen solchen Benutzer am sinnvollsten wäre, mit Texten wie <q>Logo</q>, <q>Bild</q> oder gar <q>Alternativtext</q> wird niemand wirklich etwas anfangen können. Und lassen Sie sich bloß nicht durch die Tatsache verwirren, dass der <span xml:lang="en">Internet Explorer</span> den Alternativtext teilweise auch anzeigt, obwohl das Bild geladen werden kann!</p>
+	<p>Es stehen zusätzlich übrigens folgende <abbr title="Extensible Hypertext Markup Language" xml:lang="en"><span xml:lang="de">XHTML</span></abbr>-1.1-Elemente mit allen semantisch ausschlaggebenden Attributen zur Verfügung:</p>
+	<ul xml:lang="en">
+		<li><code>table</code> (<code>thead</code>, <code>tbody</code>, <code>tfoot</code>, <code>tr</code>, <code>th</code>, <code>td</code>, <code>caption</code>)</li>
+		<li><code>dl</code> (<code>dt</code>, <code>dd</code>)</li>
+		<li><code>img</code>, <code>a</code></li>
+		<li><code>p</code>, <code>div</code>, <code>span</code>, <code>h4</code>, <code>h5</code>, <code>h6</code>, <code>hr</code></li>
+		<li><code>em</code>, <code>strong</code>, <code>var</code>, <code>code</code>, <code>abbr</code>, <code>acronym</code>, <code>address</code>, <code>blockquote</code>, <code>cite</code>, <code>q</code>, <code>dfn</code>, <code>bdo</code>, <code>ins</code>, <code>kbd</code>, <code>samp</code>, <code>var</code></li>
+	</ul>
 </div>
 
 <div class="faq" id="research">

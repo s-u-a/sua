@@ -68,16 +68,10 @@
 	$planets_count = $galaxy->getPlanetsCount($system_n);
 	for($i=1; $i <= $planets_count; $i++)
 	{
-		$planet = array(false, $galaxy->getPlanetOwner($system_n, $i), $galaxy->getPlanetName($system_n, $i), $galaxy->getPlanetOwnerAlliance($system_n, $i));
+		$planet = array(false, $galaxy->getPlanetOwner($system_n, $i), $galaxy->getPlanetName($system_n, $i), $galaxy->getPlanetOwnerAlliance($system_n, $i), $galaxy->getPlanetOwnerFlag($system_n, $i));
 		$class = $galaxy->getPlanetClass($system_n, $i);
 
 		$that_uname = $planet[1];
-		$suffix = '';
-		if(substr($that_uname, -4) == ' (U)' || substr($that_uname, -4) == ' (g)')
-		{
-			$suffix = substr($that_uname, -4);
-			$that_uname = substr($that_uname, 0, -4);
-		}
 
 		if($planet[1])
 		{
@@ -87,9 +81,9 @@
 				$class2 = 'verbuendet';
 			else
 				$class2 = 'fremd';
-			if($suffix == ' (U)')
+			if($planet[4] == 'U')
 				$class2 .= ' urlaub';
-			elseif($suffix == ' (g)')
+			elseif($planet[4] == 'g')
 				$class2 .= ' gesperrt';
 		}
 		else
@@ -108,7 +102,7 @@
 		if($planet[1])
 		{
 ?>
-			<td class="c-name"><?php if($planet[3]){?><span class="allianz<?=($planet[3] == $me->allianceTag()) ? ' verbuendet' : ''?>">[<a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($planet[3]))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($planet[3])?></a>]</span> <?php }?><?=utf8_htmlentities($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($that_uname)?></a><?=htmlentities($suffix)?>)</span></td>
+			<td class="c-name"><?php if($planet[3]){?><span class="allianz<?=($planet[3] == $me->allianceTag()) ? ' verbuendet' : ''?>">[<a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($planet[3]))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($planet[3])?></a>]</span> <?php }?><?=utf8_htmlentities($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($that_uname)?></a><?=$planet[4] ? ' ('.htmlspecialchars($planet[4]).')' : ''?>)</span></td>
 <?php
 		}
 		else
@@ -126,7 +120,7 @@
 <?php
 		if($that_uname != $_SESSION['username'])
 		{
-			if($suffix != ' (U)' && $me->permissionToAct() && $me->getItemLevel('S5', 'schiffe') > 0)
+			if($planet[4] != 'U' && $me->permissionToAct() && $me->getItemLevel('S5', 'schiffe') > 0)
 			{
 ?>
 					<li class="c-spionieren"><a href="flotten.php?action=spionage&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Spionieren Sie diesen Planeten aus">Spionieren</a></li>
