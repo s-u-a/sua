@@ -5,7 +5,7 @@
 
 	if(!isset($_GET['id'])) $item = false;
 	else $item = Classes::Item($_GET['id']);
-	
+
 	if(!$item || !$item->getInfo())
 	{
 ?>
@@ -42,6 +42,22 @@
 ?>
 </div>
 <?php
+		$item_info = $me->getItemInfo($_GET['id'], $type);
+		if($item_info)
+		{
+?>
+<dl class="item-info">
+	<dt class="item-kosten">Kosten</dt>
+	<dd class="item-kosten">
+		<?=format_ress($item_info['ress'], 3)?>
+	</dd>
+
+	<dt class="item-bauzeit">Bauzeit</dt>
+	<dd class="item-bauzeit"><?=format_btime($item_info['time'])?></dd>
+</dl>
+<?php
+		}
+
 		if($type == 'gebaeude')
 		{
 ?>

@@ -7,25 +7,25 @@
 		{
 			$this->items_instance = Classes::Items();
 			$this->item = $id;
-			
+
 			$this->item_info = $this->items_instance->getItemInfo($this->item);
 		}
-		
+
 		function getInfo($field=false)
 		{
 			if($this->item_info === false) return false;
-			
+
 			if($field === false)
 				return $this->item_info;
 			elseif(isset($this->item_info[$field]))
 				return $this->item_info[$field];
 			return false;
 		}
-		
+
 		function checkDependencies($user, $run_eventhandler=true)
 		{
 			if(!$user->getStatus()) return false;
-			
+
 			$deps = $this->getDependencies();
 			foreach($deps as $id=>$min_level)
 			{
@@ -34,7 +34,7 @@
 			}
 			return true;
 		}
-		
+
 		function getDependencies()
 		{
 			$deps = $this->getInfo('deps');
@@ -47,29 +47,37 @@
 			}
 			return $deps_assoc;
 		}
-		
+
 		function getType()
 		{
 			return $this->items_instance->getItemType($this->item);
 		}
 	}
-	
+
 	class Items
 	{
 		private $elements = array();
 		private $instance = false;
-		
+
 		function __construct()
 		{
-			if(!file_exists(DB_ITEM_DB) || max(
-				filemtime(DB_ITEMS.'/gebaeude'),
-				filemtime(DB_ITEMS.'/forschung'),
-				filemtime(DB_ITEMS.'/roboter'),
-				filemtime(DB_ITEMS.'/schiffe'),
-				filemtime(DB_ITEMS.'/verteidigung')
-				) > filemtime(DB_ITEM_DB))
-					$this->refreshItemDatabase();
-			
+			$refresh = false;
+			if(!file_exists(DB_ITEM_DB)) $refresh = true;
+			else
+			{
+				$mtimes = array();
+				if(is_file(DB_ITEMS.'/gebaeude')) $mtimes[] = filemtime(DB_ITEMS.'/gebaeude');
+				if(is_file(DB_ITEMS.'/forschung')) $mtimes[] = filemtime(DB_ITEMS.'/forschung');
+				if(is_file(DB_ITEMS.'/roboter')) $mtimes[] = filemtime(DB_ITEMS.'/roboter');
+				if(is_file(DB_ITEMS.'/schiffe')) $mtimes[] = filemtime(DB_ITEMS.'/schiffe');
+				if(is_file(DB_ITEMS.'/verteidigung')) $mtimes[] = filemtime(DB_ITEMS.'/verteidigung');
+				if(count($mtimes) > 0 && max($mtimes) > filemtime(DB_ITEM_DB))
+					$refresh = true;
+			}
+
+			if($refresh)
+				$this->refreshItemDatabase();
+
 			$this->elements = unserialize(file_get_contents(DB_ITEM_DB));
 			$this->elements['ids'] = array();
 			foreach($this->elements as $type=>$elements)
@@ -78,24 +86,24 @@
 					$this->elements['ids'][$id] = & $this->elements[$type][$id];
 			}
 		}
-		
+
 		function getItemsList($type=false)
 		{
 			if($type === false) $type = 'ids';
-			
+
 			if(!isset($this->elements[$type])) return false;
 			return array_keys($this->elements[$type]);
 		}
-		
+
 		function getItemInfo($id, $type=false)
 		{
 			if($type === false) $type = 'ids';
-			
+
 			if(!isset($this->elements[$type]) || !isset($this->elements[$type][$id]))
 				return false;
 			return $this->elements[$type][$id];
 		}
-		
+
 		function getItemType($id)
 		{
 			foreach($this->elements as $type=>$elements)
@@ -105,12 +113,12 @@
 			}
 			return false;
 		}
-		
+
 		function getName()
 		{ # Needed for instances
 			return 'items';
 		}
-		
+
 		function refreshItemDatabase()
 		{
 			$items = array('gebaeude' => array(), 'forschung' => array(), 'roboter' => array(), 'schiffe' => array(), 'verteidigung' => array(), 'ids' => array());
@@ -159,7 +167,7 @@
 				flock($fh, LOCK_UN);
 				fclose($fh);
 			}
-	
+
 			if(is_file(DB_ITEMS.'/roboter') && is_readable(DB_ITEMS.'/roboter'))
 			{
 				$fh = fopen(DB_ITEMS.'/roboter', 'r');
@@ -181,7 +189,7 @@
 				flock($fh, LOCK_UN);
 				fclose($fh);
 			}
-	
+
 			if(is_file(DB_ITEMS.'/schiffe') && is_readable(DB_ITEMS.'/schiffe'))
 			{
 				$fh = fopen(DB_ITEMS.'/schiffe', 'r');
@@ -207,7 +215,7 @@
 						$items['schiffe'][$item[0]]['deps'] = array();
 				}
 			}
-	
+
 			if(is_file(DB_ITEMS.'/verteidigung') && is_readable(DB_ITEMS.'/verteidigung'))
 			{
 				$fh = fopen(DB_ITEMS.'/verteidigung', 'r');
@@ -231,33 +239,33 @@
 				flock($fh, LOCK_UN);
 				fclose($fh);
 			}
-			
+
 			$fh = fopen(DB_ITEM_DB, 'a+');
 			if(!$fh) return false;
 			if(!fancy_flock($fh, LOCK_EX)) return false;
-			
+
 			fseek($fh, 0, SEEK_SET);
 			ftruncate($fh, 0);
 			fwrite($fh, serialize($items));
-			
+
 			flock($fh, LOCK_UN);
 			fclose($fh);
 		}
 	}
-	
+
 	function parseItemDescription($description)
 	{
 		$description = preg_replace("/\\\\[\\\\n]/e", "parseItemDescriptionChar('$0')", $description);
 		return $description;
 	}
-	
+
 	function parseItemDescriptionChar($char)
 	{
 		if($char == '\\n') return "\n";
 		if($char == '\\\\') return '\\';
 		return $char;
 	}
-	
+
 	function makeItemsString($items, $html=true)
 	{
 		$array = array();
