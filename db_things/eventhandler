@@ -1,14 +1,14 @@
 #!/usr/bin/php
 <?php
 	define('DONT_EXIT', true);
-	
+
 	chdir(dirname(__FILE__));
-	
+
 	$print_usage = false;
 	$error = false;
 	$daemon = false;
 	$verbose = false;
-	
+
 	$getopt_exists = false;
 	foreach(explode(':', get_include_path()) as $path)
 	{
@@ -18,7 +18,7 @@
 			break;
 		}
 	}
-	
+
 	if($getopt_exists)
 	{
 		require_once('Console/Getopt.php'); # PEAR
@@ -28,7 +28,7 @@
 			fputs(STDERR, $options->message."\n");
 			exit(1);
 		}
-		
+
 		foreach($options[0] as $o)
 		{
 			switch($o[0])
@@ -44,7 +44,7 @@
 					break;
 			}
 		}
-		
+
 		if(!isset($options[1][0]))
 		{
 			if(!$print_usage) $error = true;
@@ -57,12 +57,12 @@
 		if(isset($_SERVER['argv'][1])) $db_dir = $_SERVER['argv'][1];
 		else $error = true;
 	}
-	
+
 	if($print_usage || $error)
 	{
 		if($error) $stream = STDERR;
 		else $stream = STDOUT;
-		
+
 		fputs($stream, <<<EOF
 Usage: {$_SERVER['argv'][0]} [Options] <Database directory>
 Options:
@@ -72,23 +72,23 @@ Options:
 
 EOF
 		);
-		
+
 		if($error) exit(1);
 		else exit(0);
 	}
-	
+
 	function time_prefix()
 	{
 		return date('Y-m-d, H:i:s')."\t";
 	}
-	
+
 	if($daemon)
 	{
 		declare(ticks=1);
-		
+
 		if(function_exists('pcntl_fork')) $pid = pcntl_fork();
 		else $pid = -1;
-		
+
 		if($pid == -1) fputs(STDERR, time_prefix()."Forking failed, continuing.\n");
 		elseif($pid)
 		{
@@ -96,7 +96,7 @@ EOF
 			exit(0);
 		}
 	}
-	
+
 	function error_handler($errno, $errstr, $errfile, $errline, $errcontext)
 	{
 		global $errlog;
@@ -113,10 +113,10 @@ EOF
 				fputs($errlog, "Error ".$errno.": ");
 				break;
 		}
-		
+
 		fputs($errlog, $errstr);
 		fputs($errlog, " in ".$errfile." on line ".$errline.".\n");
-		
+
 		global $verbose;
 		if($verbose)
 		{
@@ -128,7 +128,7 @@ EOF
 			fputs($errlog, $context_string."\n");
 		}
 	}
-	
+
 	function sig_handler($signo)
 	{
 		global $errlog;
@@ -148,7 +148,7 @@ EOF
 				break;
 		}
 	}
-	
+
 	if(function_exists('pcntl_signal'))
 	{
 		pcntl_signal(SIGTERM, "sig_handler");
@@ -160,53 +160,57 @@ EOF
 				posix_setsid();
 		}
 	}
-	
+
 	$USE_OB = false;
 	require('../engine/include.php');
-	
+
 	set_time_limit(0);
-	
+
 	define_globals($db_dir);
-	
+
 	if($daemon) $errlog = fopen(DB_DIR.'/eventhandler.log', 'a');
 	else $errlog = STDERR;
-	
+
 	set_error_handler('error_handler', E_WARNING);
 	set_error_handler('error_handler', E_NOTICE);
-	
+
 	function arrive($fleet)
 	{
 		global $errlog;
 		global $process;
-		
+
 		if($fleet->getNextArrival() > time())
 			return false;
 		if(function_exists('pcntl_fork')) $pid = pcntl_fork();
 		else $pid = -1;
-		
+
 		if(!$pid || $pid == -1)
 		{
 			if($pid != -1) set_time_limit(30);
 			Classes::resetInstances();
-			
+
 			if(!$fleet->arriveAtNextTarget())
-				fputs($errlog, time_prefix()."Warning: Couldn't complete fleet ".$process['fleet'].". The time was ".$process['time'].". Please re-put it into the database if you want it to be completed.\n");
-			
+			{
+				fputs($errlog, time_prefix()."Warning: Couldn't complete fleet ".$process['fleet'].". The time was ".$process['time'].". Gonna process it later.\n");
+				$eventfile = Classes::EventFile();
+				$eventfile->addNewFleet(time()+EVENTHANDLER_INTERVAL, $process['fleet']);
+			}
+
 			Classes::resetInstances();
 			if($pid != -1) exit(0);
 		}
 		else pcntl_waitpid($pid, &$status);
 	}
-	
+
 	function walkthrough_users()
 	{
 		global $errlog;
 		global $last_walked;
 		$last_walked = date('Y-m-d');
-		
+
 		if(function_exists('pcntl_fork')) $pid = pcntl_fork();
 		else $pid = -1;
-		
+
 		if(!$pid || $pid == -1)
 		{
 			fputs($errlog, "\n".time_prefix()."Walking through users...\n");
@@ -217,18 +221,18 @@ EOF
 		}
 		else pcntl_waitpid($pid, &$status);
 	}
-	
+
 	__autoload('Classes');
 	__autoload('Fleet');
 	__autoload('Galaxy');
-	
+
 	$fposition = 0;
-	
+
 	if(date('H')*3600+date('i')*60+60 < 16200) $last_walked = false;
 	else $last_walked = date('Y-m-d');
-	
+
 	fputs($errlog, time_prefix()."Eventhandler started.\n");
-	
+
 	while(true)
 	{
 		$event_obj = Classes::EventFile();
@@ -236,7 +240,7 @@ EOF
 		{
 			$fleet = new Fleet($process['fleet']);
 			$users = $fleet->getUsersList();
-			
+
 			if($fleet->getStatus() != 1)
 			{
 				if($fleet->getStatus() == 0)
@@ -252,10 +256,10 @@ EOF
 			fputs($errlog, time_prefix()."Terminated.\n");
 			exit(0);
 		}
-		
+
 		 if(date('H')*3600+date('i')*60+60 > 16200 && $last_walked != date('Y-m-d')) // 4:30 Uhr
 			walkthrough_users();
-		
+
 		sleep(EVENTHANDLER_INTERVAL);
 	}
 ?>

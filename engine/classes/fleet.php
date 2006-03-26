@@ -3,7 +3,7 @@
 	{
 		protected $save_dir = DB_FLEETS;
 		private $datatype = 'fleet';
-		
+
 		function create()
 		{
 			if(file_exists($this->filename)) return false;
@@ -12,23 +12,23 @@
 			$this->__construct($this->name);
 			return true;
 		}
-		
+
 		function write($force=false)
 		{
 			if($this->started() || $force) return Dataset::write($force);
 			else return $this->destroy();
 		}
-		
+
 		function destroy()
 		{
 			if(!$this->status) return false;
-			
+
 			foreach($this->raw[1] as $user=>$info)
 			{
 				$user_obj = Classes::User($user);
 				$user_obj->unsetFleet($this->getName());
 			}
-			
+
 			$status = (unlink($this->filename) || chmod($this->filename, 0));
 			if($status)
 			{
@@ -38,66 +38,66 @@
 			}
 			else return false;
 		}
-		
+
 		function fleetExists($fleet)
 		{
 			$filename = DB_FLEETS.'/'.urlencode($fleet);
 			return (is_file($filename) && is_readable($filename));
 		}
-		
+
 		function getTargetsList()
 		{
 			if(!$this->status) return false;
-			
+
 			return array_keys($this->raw[0]);
 		}
-		
+
 		function getOldTargetsList()
 		{
 			if(!$this->status) return false;
-			
+
 			return array_keys($this->raw[3]);
 		}
-		
+
 		function addTarget($pos, $type, $back)
 		{
 			if(!$this->status) return false;
-			
+
 			if(isset($this->raw[0][$pos])) return false;
-			
+
 			$this->raw[0][$pos] = array($type, $back);
-			
+
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function userExists($user)
 		{
 			if(!$this->status) return false;
-			
+
 			return isset($this->raw[1][$user]);
 		}
-		
+
 		function getCurrentType()
 		{
 			if(!$this->status) return false;
-			
+
 			$keys = array_keys($this->raw[0]);
 			return $this->raw[0][array_shift($keys)][0];
 		}
-		
+
 		function getCurrentTarget()
 		{
 			if(!$this->status) return false;
-			
+
 			$keys = array_keys($this->raw[0]);
 			return array_shift($keys);
 		}
-		
+
 		function getLastTarget($user=false)
 		{
 			if(!$this->status) return false;
-			
+
 			$keys = array_keys($this->raw[1]);
 			$first_user = array_shift($keys);
 			if($user === false) $user = $first_user;
@@ -109,54 +109,54 @@
 			else
 			{
 				if(!isset($this->raw[1][$user])) return false;
-				
+
 				return $this->raw[1][$user][1];
 			}
 		}
-		
+
 		function getNextArrival()
 		{
 			if(!$this->status) return false;
-			
+
 			if($this->started()) $start_time = $this->raw[2];
 			else $start_time = time();
 			$users = array_keys($this->raw[1]);
 			$duration = $this->calcTime(array_shift($users), $this->getLastTarget(), $this->getCurrentTarget());
 			return $start_time+$duration;
 		}
-		
+
 		function isFlyingBack()
 		{
 			if(!$this->status) return false;
-			
+
 			$keys = array_keys($this->raw[0]);
 			return (bool) $this->raw[0][array_shift($keys)][1];
 		}
-		
+
 		function addFleet($id, $count, $user)
 		{
 			if(!$this->status) return false;
-			
+
 			$count = (int) $count;
 			if($count < 0) return false;
-			
+
 			if(!isset($this->raw[1][$user])) return false;
-			
+
 			$keys = array_keys($this->raw[1]);
 			$first = !array_search($user, $keys);
 			if(isset($this->raw[1][$user][0][$id])) $this->raw[1][$user][0][$id] += $count;
 			else $this->raw[1][$user][0][$id] = $count;
-			
+
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function addUser($user, $from, $factor=1)
 		{
 			if(!$this->status) return false;
-			
+
 			if(isset($this->raw[1][$user])) return false;
-			
+
 			if($this->started())
 			{
 				if(count($this->raw[1]) <= 0) return false;
@@ -170,9 +170,9 @@
 				$factor = $time2/$time;
 			}
 			elseif(count($this->raw[1]) > 0) $factor = 1;
-			
+
 			if($factor <= 0) $factor = 0.01;
-			
+
 			$this->raw[1][$user] = array(
 				array(), # Flotten
 				$from, # Startkoordinaten
@@ -180,15 +180,15 @@
 				array(array(0, 0, 0, 0, 0), array(), 0), # Mitgenommene Rohstoffe
 				array(array(0, 0, 0, 0, 0), array()) # Handel
 			);
-			
+
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function getTransportCapacity($user)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
-			
+
 			$trans = array(0, 0);
 			$user_object = Classes::User($user);
 			foreach($this->raw[1][$user][0] as $id=>$count)
@@ -199,11 +199,11 @@
 			}
 			return $trans;
 		}
-		
+
 		function addTransport($user, $ress=false, $robs=false)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
-			
+
 			list($max_ress, $max_robs) = $this->getTransportCapacity($user);
 			$max_ress -= array_sum($this->raw[1][$user][3][0]);
 			$max_robs -= array_sum($this->raw[1][$user][3][1]);
@@ -234,7 +234,7 @@
 				$this->raw[1][$user][3][0][3] += $ress[3];
 				$this->raw[1][$user][3][0][4] += $ress[4];
 			}
-			
+
 			if($robs)
 			{
 				$rob_sum = array_sum($robs);
@@ -260,15 +260,15 @@
 						$this->raw[1][$user][3][1][$i] += $rob;
 				}
 			}
-			
+
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function addHandel($user, $ress=false, $robs=false)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
-			
+
 			list($max_ress, $max_robs) = $this->getTransportCapacity($user);
 			$max_ress -= array_sum($this->raw[1][$user][4][0]);
 			$max_robs -= array_sum($this->raw[1][$user][4][1]);
@@ -299,7 +299,7 @@
 				$this->raw[1][$user][4][0][3] += $ress[3];
 				$this->raw[1][$user][4][0][4] += $ress[4];
 			}
-			
+
 			if($robs)
 			{
 				$rob_sum = array_sum($robs);
@@ -325,15 +325,15 @@
 						$this->raw[1][$user][4][1][$i] += $rob;
 				}
 			}
-			
+
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function setHandel($user, $ress=false, $robs=false)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
-			
+
 			if($ress !== false && is_array($ress))
 			{
 				if(!isset($ress[0])) $ress[0] = 0;
@@ -341,40 +341,40 @@
 				if(!isset($ress[2])) $ress[2] = 0;
 				if(!isset($ress[3])) $ress[3] = 0;
 				if(!isset($ress[4])) $ress[4] = 0;
-				
+
 				$this->raw[1][$user][4][0] = $ress;
 			}
 			if($robs !== false && is_array($robs))
 				$this->raw[1][$user][4][1] = $robs;
-			
+
 			$this->changed = true;
 			return true;
 		}
-		
-		
+
+
 		function getTransport($user)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
-			
+
 			return $this->raw[1][$user][3];
 		}
-		
+
 		function getHandel($user)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
-			
+
 			return $this->raw[1][$user][4];
 		}
-		
+
 		function calcNeededTritium($user)
 		{
 			if(!$this->status || $this->started()) return false;
-			
+
 			$users = array_keys($this->raw[1]);
 			$user_key = array_search($user, $users);
-			
+
 			if($user_key === false) return false;
-			
+
 			if($user_key)
 				return $this->getTritium($user, $this->raw[1][$user][1], $this->getCurrentTarget())*$this->raw[1][$user][2]*2;
 			else
@@ -391,11 +391,11 @@
 				return $tritium*$this->raw[1][$user][2];
 			}
 		}
-		
+
 		function getTritium($user, $from, $to)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
-			
+
 			$mass = 0;
 			$user_obj = Classes::User($user);
 			foreach($this->raw[1][$user][0] as $id=>$count)
@@ -403,34 +403,34 @@
 				$item_info = $user_obj->getItemInfo($id, 'schiffe');
 				$mass += $item_info['mass']*$count;
 			}
-			
+
 			return $this->getDistance($from, $to)*$mass/1000000;
 		}
-		
+
 		function getScores($user, $from, $to)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
-			
+
 			return $this->getTritium($user, $from, $to)/1000;
 		}
-		
+
 		function getTime($i)
 		{
 			if(!$this->status || !isset($this->raw[0][$i])) return false;
 			if(count($this->raw[1]) <= 0) return false;
-			
+
 			$keys = array_keys($this->raw[1]);
 			$user = array_shift($keys);
 			$from = $this->raw[1][$user][1];
 			$to = $i;
-			
+
 			return $this->calcTime($user, $from, $to);
 		}
-		
+
 		function calcTime($user, $from, $to)
 		{
 			if(!$this->status || !isset($this->raw[1][$user]) || count($this->raw[1][$user]) <= 0) return false;
-			
+
 			$speeds = array();
 			$user_obj = Classes::User($user);
 			foreach($this->raw[1][$user][0] as $id=>$count)
@@ -439,16 +439,16 @@
 				$speeds[] = $item_info['speed'];
 			}
 			$speed = min($speeds)/1000000;
-			
+
 			$time = sqrt($this->getDistance($from, $to)/$speed)*2;
 			$time /= $this->raw[1][$user][2];
 			return $time;
 		}
-		
+
 		function callBack($user)
 		{
 			if(!$this->status || !$this->started() || !isset($this->raw[1][$user]) || $this->isFlyingBack()) return false;
-			
+
 			$start = $this->raw[1][$user][1];
 			$keys = array_keys($this->raw[0]);
 			$to = array_shift($keys);
@@ -458,24 +458,24 @@
 				$from = array_pop($keys);
 			}
 			else $from = $start;
-			
+
 			if($to == $start) return false;
-			
+
 			# Aus der Eventdatei entfernen
 			$event_obj = Classes::EventFile();
 			$event_obj->removeCanceledFleet($this->getName());
-			
+
 			if($from == $start) $time1 = 0;
 			else $time1 = $this->calcTime($user, $from, $start);
 			$time2 = $this->calcTime($user, $to, $start);
-			
+
 			$progress = (time()-$this->raw[2])/$this->calcTime($user, $from, $to);
 			$missing_part = 1-$progress;
 			$back_time = $time1+abs($time2-$time1)*$progress;
-			
+
 			$total_tritium = $this->getTritium($user, $from, $to);
 			$back_tritium = $total_tritium*$missing_part;
-			
+
 			$new_raw = array(
 				array($start => array($this->raw[0][$to][0], 1)),
 				array($user => $this->raw[1][$user]),
@@ -483,7 +483,7 @@
 				array_merge($this->raw[3], $this->raw[0])
 			);
 			$new_raw[1][$user][3][2] += $back_tritium;
-			
+
 			unset($this->raw[1][$user]);
 			if(count($this->raw[1]) <= 0)
 			{
@@ -491,81 +491,81 @@
 				$this->status = false;
 				$this->changed = false;
 			}
-			
+
 			$new = Classes::Fleet();
 			$new->create();
 			$new->setRaw($new_raw);
 			$new->createNextEvent();
-			
+
 			$user_obj = Classes::User($user);
 			$user_obj->unsetFleet($this->getName());
 			$user_obj->addFleet($new->getName());
-			
+
 			if(count($this->raw[1]) <= 0)
 				return true;
-			
+
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function setRaw($raw)
 		{
 			if(!$this->status) return false;
-			
+
 			$this->raw = $raw;
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function factor($user, $factor=false)
 		{
 			if(!$this->status || $this->started() || !isset($this->raw[1][$user])) return false;
-			
+
 			if(!$factor) return $this->raw[1][$user][2];
-			
+
 			$this->raw[1][$user][2] = $factor;
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function getFleetList($user)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
-			
+
 			return $this->raw[1][$user][0];
 		}
-		
+
 		function getUsersList()
 		{
 			if(!$this->status) return false;
-			
+
 			return array_keys($this->raw[1]);
 		}
-		
+
 		function from($user)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
-			
+
 			return $this->raw[1][$user][1];
 		}
-		
+
 		function isATarget($target)
 		{
 			if(!$this->status) return false;
-			
+
 			return isset($this->raw[0][$target]);
 		}
-		
+
 		function start()
 		{
 			if(!$this->status || $this->started()) return false;
-			
+
 			if(count($this->raw[1]) <= 0 || count($this->raw[0]) <= 0) return false;
-			
+
 			$keys = array_keys($this->raw[1]);
 			$user = array_shift($keys);
 			if(array_sum($this->raw[1][$user][0]) <= 0) return false;
-			
+
 			# Geschwindigkeitsfaktoren der anderen Teilnehmer abstimmen
 			$koords = array_keys($this->raw[0]);
 			$koords = array_shift($koords);
@@ -578,22 +578,22 @@
 					$this->raw[1][$key][2] = $this_time/$time;
 				}
 			}
-			
+
 			$this->raw[2] = time();
-			
+
 			# In Eventdatei eintragen
 			$this->createNextEvent();
-			
+
 			$this->changed = true;
 			return true;
 		}
-		
+
 		function started()
 		{
 			if(!$this->status) return false;
 			return ($this->raw[2] !== false);
 		}
-		
+
 		function getDistance($start, $target)
 		{
 			$this_pos = explode(':', $start);
@@ -651,21 +651,21 @@
 
 			return $distance;
 		}
-		
+
 		function arriveAtNextTarget()
 		{
 			if($this->status != 1) return false;
-			
+
 			global $types_message_types;
-			
+
 			$keys = array_keys($this->raw[0]);
 			$next_target = array_shift($keys);
 			$keys2 = array_keys($this->raw[1]);
 			$first_user = array_shift($keys2);
-			
+
 			$type = $this->raw[0][$next_target][0];
 			$back = $this->raw[0][$next_target][1];
-			
+
 			$besiedeln = false;
 			if($type == 1 && !$back)
 			{
@@ -673,7 +673,7 @@
 				$target = explode(':', $next_target);
 				$target_galaxy = Classes::Galaxy($target[0]);
 				$target_owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
-				
+
 				if($target_owner)
 				{
 					# Planet ist bereits besiedelt
@@ -686,13 +686,27 @@
 					}
 				}
 				else
-					$besiedeln = true;
+				{
+					$start_user = Classes::User($first_user);
+					if(!$start_user->checkPlanetCount())
+					{
+						# Planetenlimit erreicht
+						$message = Classes::Message();
+						if($message->create())
+						{
+							$message->subject('Besiedelung von '.$next_target.' fehlgeschlagen');
+							$message->text("Ihre Flotte erreicht den Planeten ".$next_target." und will mit der Besiedelung anfangen. Als Sie jedoch Ihren Zentralcomputer um Bestätigung für die Besiedelung bittet, kommt dieser durcheinander, da Sie schon so viele Planeten haben und er nicht so viele gleichzeitig kontrollieren kann, und schickt in Panik Ihrer Flotte das Signal zum Rückflug.");
+							$message->addUser($first_user, 5);
+						}
+					}
+					else $besiedeln = true;
+				}
 			}
-			
+
 			if($type != 6 && !$back && !$besiedeln)
 			{
 				# Nicht stationieren: Flotte fliegt weiter
-				
+
 				$target = explode(':', $next_target);
 				$target_galaxy = Classes::Galaxy($target[0]);
 				$target_owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
@@ -703,12 +717,12 @@
 					else $target_user->setActivePlanet($target_user->getPlanetByPos($next_target));
 				}
 				else $target_user = false;
-				
+
 				if(($type == 3 || $type == 4) && !$target_user)
 				{
 					# Angriff und Transport nur bei besiedelten Planeten
 					# moeglich.
-					
+
 					$message_obj = Classes::Message();
 					if($message_obj->create())
 					{
@@ -721,13 +735,13 @@
 				else
 				{
 					$further = true;
-					
+
 					switch($type)
 					{
 						case 2: # Sammeln
 							$ress_max = truemmerfeld::get($target[0], $target[1], $target[2]);
 							$ress_max_total = array_sum($ress_max);
-							
+
 							# Transportkapazitaeten
 							$trans = array();
 							$trans_total = 0;
@@ -736,7 +750,7 @@
 								$this_trans_used = array_sum($info[3][0]);
 								$this_trans_tf = 0;
 								$this_trans_total = 0;
-								
+
 								$this_user = Classes::User($username);
 								foreach($info[0] as $id=>$count)
 								{
@@ -746,14 +760,14 @@
 									if(in_array(2, $item_info['types']))
 										$this_trans_tf += $this_trans;
 								}
-								
+
 								$this_trans_free = $this_trans_total-$this_trans_used;
 								if($this_trans_free < $this_trans_tf)
 									$this_trans_tf = $this_trans_free;
 								$trans[$username] = $this_trans_tf;
 							}
 							$trans_total = array_sum($trans);
-							
+
 							if($trans_total < $ress_max_total)
 							{
 								$f = $trans_total/$ress_max_total;
@@ -776,9 +790,9 @@
 									case 1: $ress_max[0]++;
 								}
 							}
-							
+
 							$got_ress = array();
-							
+
 							foreach($trans as $user=>$cap)
 							{
 								$rtrans = array();
@@ -787,20 +801,20 @@
 								$rtrans[1] = floor($ress_max[1]*$p);
 								$rtrans[2] = floor($ress_max[2]*$p);
 								$rtrans[3] = floor($ress_max[3]*$p);
-								
+
 								$this->raw[1][$user][3][0][0] += $rtrans[0];
 								$this->raw[1][$user][3][0][1] += $rtrans[1];
 								$this->raw[1][$user][3][0][2] += $rtrans[2];
 								$this->raw[1][$user][3][0][3] += $rtrans[3];
-								
+
 								$got_ress[$username] = $rtrans;
 							}
-							
+
 							# Aus dem Truemmerfeld abziehen
 							truemmerfeld::sub($target[0], $target[1], $target[2], $ress_max[0], $ress_max[1], $ress_max[2], $ress_max[3]);
-							
+
 							$tr_verbl = truemmerfeld::get($target[0], $target[1], $target[2]);
-							
+
 							# Nachrichten versenden
 							foreach($got_ress as $username=>$rtrans)
 							{
@@ -813,13 +827,13 @@
 <dl class="ress truemmerfeld-verbleibend">
 	<dt class="c-carbon">Carbon</dt>
 	<dd class="c-carbon">%s</dd>
-	
+
 	<dt class="c-aluminium">Aluminium</dt>
 	<dd class="c-aluminium">%s</dd>
-	
+
 	<dt class="c-wolfram">Wolfram</dt>
 	<dd class="c-wolfram">%s</dd>
-	
+
 	<dt class="c-radium">Radium</dt>
 	<dd class="c-radium">%s</dd>
 </dl>
@@ -844,18 +858,18 @@ EOF
 							$foreign_users = $target_user->getForeignUsersList();
 							foreach($foreign_users as $username)
 								$verteidiger[$username] = $target_user->getForeignFleetsList($username);
-							
+
 							list($winner, $angreifer2, $verteidiger2, $nachrichten_text, $verteidiger_ress, $truemmerfeld) = battle($angreifer, $verteidiger);
-							
+
 							if(array_sum($truemmerfeld) > 0)
 							{
 								truemmerfeld::add($target[0], $target[1], $target[2], $truemmerfeld[0], $truemmerfeld[1], $truemmerfeld[2], $truemmerfeld[3]);
-	
+
 								$nachrichten_text .= "<p>\n";
 								$nachrichten_text .= "\tFolgende Tr\xc3\xbcmmer zerst\xc3\xb6rter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: ".ths($truemmerfeld[0])."&nbsp;Carbon, ".ths($truemmerfeld[1])."&nbsp;Aluminium, ".ths($truemmerfeld[2])."&nbsp;Wolfram und ".ths($truemmerfeld[3])."&nbsp;Radium.\n";
 								$nachrichten_text .= "</p>\n";
 							}
-							
+
 							# Nachrichten aufteilen
 							$angreifer_keys = array_keys($angreifer);
 							$verteidiger_keys = array_keys($verteidiger);
@@ -863,13 +877,13 @@ EOF
 							$messages = array();
 							foreach($users_keys as $username)
 								$messages[$username] = $nachrichten_text;
-							
-							
+
+
 							# Rohstoffe stehlen
 							if($winner == 1)
 							{
 								# Angreifer haben gewonnen
-								
+
 								# Maximal die Haelfte der vorhandenen Rohstoffe
 								$ress_max = $target_user->getRess();
 								$ress_max[0] = floor($ress_max[0]*.5);
@@ -879,7 +893,7 @@ EOF
 								$ress_max[4] = floor($ress_max[4]*.5);
 								unset($ress_max[5]);
 								$ress_max_total = array_sum($ress_max);
-								
+
 								# Transportkapazitaeten der Angreifer
 								$trans = array();
 								$trans_total = 0;
@@ -895,7 +909,7 @@ EOF
 										$trans_total += $this_trans;
 									}
 								}
-								
+
 								if($trans_total < $ress_max_total)
 								{
 									$f = $trans_total/$ress_max_total;
@@ -921,7 +935,7 @@ EOF
 										case 1: $ress_max[0]++;
 									}
 								}
-								
+
 								foreach($trans as $user=>$cap)
 								{
 									$rtrans = array();
@@ -931,28 +945,28 @@ EOF
 									$rtrans[2] = floor($ress_max[2]*$p);
 									$rtrans[3] = floor($ress_max[3]*$p);
 									$rtrans[4] = floor($ress_max[4]*$p);
-									
+
 									$this->raw[1][$user][3][0][0] += $rtrans[0];
 									$this->raw[1][$user][3][0][1] += $rtrans[1];
 									$this->raw[1][$user][3][0][2] += $rtrans[2];
 									$this->raw[1][$user][3][0][3] += $rtrans[3];
 									$this->raw[1][$user][3][0][4] += $rtrans[4];
-									
+
 									$messages[$username] .= "\n<p class=\"rohstoffe-erbeutet selbst\">Sie haben ".ths($rtrans[0])." Carbon, ".ths($rtrans[1])." Aluminium, ".ths($rtrans[2])." Wolfram, ".ths($rtrans[3])." Radium und ".ths($rtrans[4])." Tritium erbeutet.</p>\n";
 								}
-								
+
 								$target_user->subtractRess($ress_max, false);
-								
+
 								foreach($users_keys as $username)
 								{
 									if(isset($angreifer2[$username])) continue;
 									$messages[$username] .= "\n<p class=\"rohstoffe-erbeutet andere\">Die überlebenden Angreifer haben ".ths($ress_max[0])." Carbon, ".ths($ress_max[1])." Aluminium, ".ths($ress_max[2])." Wolfram, ".ths($ress_max[3])." Radium und ".ths($ress_max[4])." Tritium erbeutet.</p>\n";
 								}
 							}
-							
+
 							if(isset($verteidiger_ress[$target_owner]))
 								$messages[$target_owner] .= "\n<p class=\"verteidigung-wiederverwertung\">Durch Wiederverwertung konnten folgende Rohstoffe aus den Trümmern der zerstörten Verteidigungsanlagen wiederhergestellt werden: ".ths($verteidiger_ress[$target_owner][0])." Carbon, ".ths($verteidiger_ress[$target_owner][1])." Aluminium, ".ths($verteidiger_ress[$target_owner][2])." Wolfram und ".ths($verteidiger_ress[$target_owner][3])." Radium.</p>\n";
-							
+
 							# Nachrichten zustellen
 							foreach($messages as $username=>$text)
 							{
@@ -963,7 +977,7 @@ EOF
 								$message->html(true);
 								$message->addUser($username, 1);
 							}
-							
+
 							foreach($angreifer_keys as $username)
 							{
 								if(!isset($angreifer2[$username]))
@@ -976,7 +990,7 @@ EOF
 								$user_obj = Classes::User($username);
 								$user_obj->recalcHighscores(false, false, false, true, false);
 							}
-							
+
 							foreach($verteidiger_keys as $username)
 							{
 								foreach($verteidiger[$username] as $id=>$count)
@@ -994,13 +1008,13 @@ EOF
 									}
 								}
 							}
-							
+
 							break;
 						case 4: # Transport
 							$message_text = array(
 								$target_owner => "Ein Transport erreicht Ihren Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target."). Folgende Spieler liefern Güter ab:\n"
 							);
-							
+
 							# Rohstoffe abliefern, Handel
 							$handel = array();
 							$make_handel_message = false;
@@ -1072,11 +1086,11 @@ EOF
 									$message_obj->addUser($username, $types_message_types[$type]);
 								}
 							}
-							
+
 							break;
 						case 5: # Spionage
 						        # Spionieren
-							
+
 							if(!$target_owner)
 							{
 								# Zielplanet ist nicht besiedelt
@@ -1092,9 +1106,9 @@ EOF
 								$message_text .= "\n<p class=\"besiedeln\">";
 								$message_text .= "\n\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlentities(urlencode($target[0]))."&amp;action_system=".htmlentities(urlencode($target[1]))."&amp;action_planet=".htmlentities(urlencode($target[2]))."\" title=\"Schicken Sie ein Besiedelungsschiff zu diesem Planeten\">Besiedeln</a>";
 								$message_text .= "\n</p>";
-								
+
 								$message = Classes::Message();
-								
+
 								if($message->create())
 								{
 									$message->text($message_text);
@@ -1130,7 +1144,7 @@ EOF
 									}
 									$others_level -= count($users);
 									if($others_level < 0) $others_level = 0;
-									
+
 									$max_f1 = 0;
 									foreach($users as $username)
 									{
@@ -1139,7 +1153,7 @@ EOF
 										if($this_f1 > $max_f1) $max_f1 = $this_f1;
 									}
 									$others_level += $max_f1;
-									
+
 									if($owner_level == 0) $diff = 5;
 									else $diff = floor(pow($others_level/$owner_level, 2));
 								}
@@ -1237,7 +1251,7 @@ EOF
 										unset($next);
 								}
 								$message_text .= implode('', array_reverse($message_text2));
-								
+
 								$message = Classes::Message();
 								if($message->create())
 								{
@@ -1248,7 +1262,7 @@ EOF
 									foreach($users as $username)
 										$message->addUser($username, $types_message_types[$type]);
 								}
-								
+
 								$message = Classes::Message();
 								if($message->create())
 								{
@@ -1263,11 +1277,11 @@ EOF
 								}
 							}
 					}
-					
+
 					# Weiterfliegen
-					
+
 					$users = array_keys($this->raw[1]);
-					
+
 					if($further)
 					{
 						$first_user = array_shift($users);
@@ -1275,20 +1289,20 @@ EOF
 						$this->raw[2] = time();
 						$this->createNextEvent();
 					}
-					
+
 					# Vom Empfaenger entfernen
 					if($target_user && $target_owner != $first_user)
 						$target_user->unsetFleet($this->getName());
 					$this->changed = false;
-					
+
 					$this->changed = true;
-					
+
 					foreach($users as $user)
 					{
 						$user_obj = Classes::User($user);
 						$user_obj->unsetFleet($this->getName());
 						$new_fleet = Classes::Fleet();
-						
+
 						if($new_fleet->create())
 						{
 							$new_fleet->setRaw(array(
@@ -1301,29 +1315,29 @@ EOF
 						}
 						unset($this->raw[1][$user]);
 					}
-					
+
 					if(!$further) $this->destroy();
 				}
 			}
 			else
 			{
 				# Stationieren
-				
+
 				$target = explode(':', $next_target);
 				$target_galaxy = Classes::Galaxy($target[0]);
-				
+
 				$owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
-				
+
 				if($besiedeln || $owner == $first_user)
 				{
 					# Ueberschuessiges Tritium
 					$this->raw[1][$first_user][3][2] += $this->getTritium($first_user, $this->raw[1][$first_user][1], $next_target);
 				}
-				
+
 				if($besiedeln)
 				{
 					$user_obj = Classes::User($first_user);
-					if(!$user_obj->registerPlanet($next_target))
+					if($user_obj->registerPlanet($next_target) === false)
 						return false;
 					if(isset($this->raw[1][$first_user][0]['S6']))
 					{
@@ -1340,31 +1354,31 @@ EOF
 					}
 					$owner = $first_user;
 				}
-				
-				
+
+
 				if(!$owner)
 				{
 					$this->destroy();
 					return false;
 				}
-				
+
 				$owner_obj = Classes::User($owner);
 				if(!$owner_obj->getStatus()) return false;
-				
+
 				$planet_index = $owner_obj->getPlanetByPos($next_target);
 				if($planet_index === false)
 				{
 					$this->destroy();
 					return false;
 				}
-				
+
 				$owner_obj->setActivePlanet($planet_index);
-				
+
 				$ress = array(0, 0, 0, 0, 0);
 				$robs = array();
 				$schiffe_own = array();
 				$schiffe_other = array();
-				
+
 				foreach($this->raw[1] as $username=>$move_info)
 				{
 					$ress[0] += $move_info[3][0][0];
@@ -1372,13 +1386,13 @@ EOF
 					$ress[2] += $move_info[3][0][2];
 					$ress[3] += $move_info[3][0][3];
 					$ress[4] += $move_info[3][0][4];
-					
+
 					foreach($move_info[3][1] as $id=>$count)
 					{
 						if(isset($robs[$id])) $robs[$id] += $count;
 						else $robs[$id] = $count;
 					}
-					
+
 					if($username == $owner)
 					{
 						# Stationieren
@@ -1387,7 +1401,7 @@ EOF
 							if(isset($schiffe_own[$id])) $schiffe_own[$id] += $count;
 							else $schiffe_own[$id] = $count;
 						}
-						
+
 						if($username != $first_user)
 							$this->raw[1][$username][3][2] += $this->getTritium($username, $this->raw[1][$username][1], $next_target);
 					}
@@ -1403,7 +1417,7 @@ EOF
 						}
 					}
 				}
-				
+
 				if($besiedeln)
 				{
 					$message_text = "Ihre Flotte erreicht den Planeten ".$next_target." und beginnt mit seiner Besiedelung.";
@@ -1428,21 +1442,21 @@ EOF
 						$owner_obj->addForeignFleet($user, $schiffe);
 					}
 				}
-				
+
 				$message_text .= "\nFolgende G\xc3\xbcter werden abgeliefert:\n";
 				$message_text .= ths($ress[0], true).' Carbon, '.ths($ress[1], true).' Aluminium, '.ths($ress[2], true).' Wolfram, '.ths($ress[3], true).' Radium, '.ths($ress[4], true)." Tritium.";
 				if(array_sum($robs) > 0)
 					$message_text .= "\n".makeItemsString($robs, false)."\n";
 				foreach($robs as $id=>$anzahl)
 					$owner_obj->changeItemLevel($id, $anzahl, 'roboter');
-				
+
 				if($this->raw[1][$first_user][3][2] > 0)
 				{
 					$message_text .= "\n\nFolgender \xc3\xbcbersch\xc3\xbcssiger Treibstoff wird abgeliefert: ".ths($this->raw[1][$first_user][3][2], true)." Tritium.";
 					$ress[4] += $this->raw[1][$first_user][3][2];
 				}
 				$owner_obj->addRess($ress);
-				
+
 				$message_users = array();
 				foreach($this->raw[1] as $username=>$move_info)
 				{
@@ -1454,7 +1468,7 @@ EOF
 						$message_users[] = $username;
 					}
 				}
-				
+
 				if(count($message_users) > 0)
 				{
 					$message_obj = Classes::Message();
@@ -1470,51 +1484,51 @@ EOF
 							$message_obj->addUser($username, $types_message_types[$this->raw[0][$next_target][0]]);
 					}
 				}
-				
+
 				$this->destroy();
 			}
-			
+
 			return true;
 		}
-		
+
 		function createNextEvent()
 		{
 			if(!$this->status) return false;
-			
+
 			$event_obj = Classes::EventFile();
 			return $event_obj->addNewFleet($this->getNextArrival(), $this->getName());
 		}
-		
+
 		protected function getDataFromRaw(){}
 		protected function getRawFromData(){}
 	}
-	
+
 	function battle($angreifer, $verteidiger)
 	{
 		if(count($angreifer) < 0 || count($verteidiger) < 0) return false;
-		
+
 		$angreifer_anfang = $angreifer;
 		$verteidiger_anfang = $verteidiger;
-		
+
 		$users_angreifer = array();
 		$users_verteidiger = array();
 		foreach($angreifer as $username=>$i)
 			$users_angreifer[$username] = Classes::User($username);
 		foreach($verteidiger as $username=>$i)
 			$users_verteidiger[$username] = Classes::User($username);
-		
+
 		# Spionagetechnik fuer Erstschlag
 		$angreifer_spiotech = 0;
 		foreach($users_angreifer as $user)
 			$angreifer_spiotech += $user->getItemLevel('F1', 'forschung');
 		$angreifer_spiotech /= count($users_angreifer);
-		
+
 		$verteidiger_spiotech = 0;
 		foreach($users_verteidiger as $user)
 			$verteidiger_spiotech += $user->getItemLevel('F1', 'forschung');
 		$verteidiger_spiotech /= count($users_verteidiger);
-		
-		
+
+
 		# Kampferfahrung
 		$angreifer_erfahrung = 0;
 		foreach($users_angreifer as $user)
@@ -1530,7 +1544,7 @@ EOF
 			$nachrichten_text .= "<h3>Flotten der Angreifer</h3>";
 		else
 			$nachrichten_text .= "<h3>Flotten des Angreifers</h3>";
-	
+
 		$nachrichten_text .= "<table>\n";
 		$nachrichten_text .= "\t<thead>\n";
 		$nachrichten_text .= "\t\t<tr>\n";
@@ -1548,41 +1562,41 @@ EOF
 			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
 			$nachrichten_text .= "\t\t\t<th colspan=\"4\">".utf8_htmlentities($name)."</th>\n";
 			$nachrichten_text .= "\t\t</tr>\n";
-			
+
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
 			foreach($flotten as $id=>$anzahl)
 			{
 				$item_info = $users_angreifer[$name]->getItemInfo($id);
-				
+
 				$staerke = $item_info['att']*$anzahl;
 				$schild = $item_info['def']*$anzahl;
-	
+
 				$nachrichten_text .= "\t\t<tr>\n";
 				$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
 				$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
 				$nachrichten_text .= "\t\t</tr>\n";
-	
+
 				$this_ges_anzahl += $anzahl;
 				$this_ges_staerke += $staerke;
 				$this_ges_schild += $schild;
 			}
-			
+
 			$nachrichten_text .= "\t\t<tr class=\"gesamt\">\n";
 			$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
 			$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
 			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
 			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
 			$nachrichten_text .= "\t\t</tr>\n";
-			
+
 			$ges_anzahl += $this_ges_anzahl;
 			$ges_staerke += $this_ges_staerke;
 			$ges_schild += $this_ges_schild;
 		}
-		
+
 		$nachrichten_text .= "\t</tbody>\n";
-		
+
 		if(count($angreifer) > 1)
 		{
 			$nachrichten_text .= "\t<tfoot>\n";
@@ -1595,12 +1609,12 @@ EOF
 			$nachrichten_text .= "\t</tfoot>\n";
 		}
 		$nachrichten_text .= "</table>\n";
-		
+
 		if(count($verteidiger) > 1)
 			$nachrichten_text .= "<h3>Flotten der Verteidigers</h3>";
 		else
 			$nachrichten_text .= "<h3>Flotten der Verteidiger</h3>";
-		
+
 		$nachrichten_text .= "<table>\n";
 		$nachrichten_text .= "\t<thead>\n";
 		$nachrichten_text .= "\t\t<tr>\n";
@@ -1618,13 +1632,13 @@ EOF
 			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
 			$nachrichten_text .= "\t\t\t<th colspan=\"4\">".utf8_htmlentities($name)."</th>\n";
 			$nachrichten_text .= "\t\t</tr>\n";
-			
+
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
 			$one = false;
 			foreach($flotten as $id=>$anzahl)
 			{
 				$item_info = $users_verteidiger[$name]->getItemInfo($id);
-				
+
 				$staerke = $item_info['att']*$anzahl;
 				$schild = $item_info['def']*$anzahl;
 
@@ -1638,12 +1652,12 @@ EOF
 					$nachrichten_text .= "\t\t</tr>\n";
 					$one = true;
 				}
-	
+
 				$this_ges_anzahl += $anzahl;
 				$this_ges_staerke += $staerke;
 				$this_ges_schild += $schild;
 			}
-			
+
 			if(!$one)
 			{
 				$nachrichten_text .= "\t\t<tr class=\"keine\">\n";
@@ -1659,14 +1673,14 @@ EOF
 				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
 				$nachrichten_text .= "\t\t</tr>\n";
 			}
-			
+
 			$ges_anzahl += $this_ges_anzahl;
 			$ges_staerke += $this_ges_staerke;
 			$ges_schild += $this_ges_schild;
 		}
-		
+
 		$nachrichten_text .= "\t</tbody>\n";
-		
+
 		if(count($verteidiger) > 1)
 		{
 			$nachrichten_text .= "\t<tfoot>\n";
@@ -1679,7 +1693,7 @@ EOF
 			$nachrichten_text .= "\t</tfoot>\n";
 		}
 		$nachrichten_text .= "</table>\n";
-		
+
 		if(count($angreifer_anfang) > 1)
 		{
 			$angreifer_nominativ = 'die Angreifer';
@@ -1712,7 +1726,7 @@ EOF
 			$verteidiger_nominativ_letzt = 'letzterer';
 			$verteidiger_genitiv = 'des Verteidigers';
 		}
-		
+
 
 		# Erstschlag
 		if($angreifer_spiotech > $verteidiger_spiotech)
@@ -1748,7 +1762,7 @@ EOF
 			$runde_starter = 'angreifer';
 			$runde_anderer = 'verteidiger';
 		}
-		
+
 		foreach($angreifer as $name=>$ids)
 		{
 			foreach($ids as $id=>$anzahl)
@@ -1758,7 +1772,7 @@ EOF
 			if(count($ids) <= 0) unset($angreifer[$name]);
 			else $angreifer[$name] = $ids;
 		}
-		
+
 		foreach($verteidiger as $name=>$ids)
 		{
 			foreach($ids as $id=>$anzahl)
@@ -1773,7 +1787,7 @@ EOF
 		for($runde = 1; $runde <= 20; $runde++)
 		{
 			if(count($angreifer) <= 0 || count($verteidiger) <= 0) break;
-			
+
 			$a = & ${$runde_starter};
 			$d = & ${$runde_anderer};
 			$a_objs = & ${'users_'.$runde_starter};
@@ -1796,7 +1810,7 @@ EOF
 					$staerke += $item_info['att']*$anzahl;
 				}
 			}
-			
+
 			$nachrichten_text .= "\t<h4>".ucfirst(${$runde_starter.'_nominativ'})." ".${$runde_starter.'_praedikat'}." am Zug (Gesamtst\xc3\xa4rke ".round($staerke).")</h4>\n";
 			$nachrichten_text .= "\t<ol>\n";
 
@@ -1804,13 +1818,13 @@ EOF
 			{
 				$att_user = array_rand($d);
 				$att_id = array_rand($d[$att_user]);
-				
+
 				$item_info = ${'users_'.$runde_anderer}[$att_user]->getItemInfo($att_id);
 				$this_shield = $item_info['def']*$d[$att_user][$att_id];
-				
+
 				$schild_f = pow(0.95, ${'users_'.$runde_anderer}[$att_user]->getItemLevel('F10', 'forschung'));
 				$aff_staerke = $staerke*$schild_f;
-				
+
 				if($this_shield > $aff_staerke)
 				{
 					$this_shield -= $aff_staerke;
@@ -1837,7 +1851,7 @@ EOF
 					if(count($d[$att_user]) <= 0) unset($d[$att_user]);
 					$staerke -= $aff_staerke/$schild_f;
 				}
-				
+
 				if(count($angreifer) <= 0 || count($verteidiger) <= 0) break;
 			}
 
@@ -1884,7 +1898,7 @@ EOF
 			foreach($ids as $id=>$anzahl)
 				$verteidiger[$name][$id] = ceil($anzahl);
 		}
-		
+
 		$truemmerfeld = array(0, 0, 0, 0);
 		$verteidiger_ress = array();
 		$angreifer_punkte = array();
@@ -1894,7 +1908,7 @@ EOF
 			$nachrichten_text .= "<h3>Flotten der Angreifer</h3>";
 		else
 			$nachrichten_text .= "<h3>Flotten des Angreifers</h3>";
-		
+
 		$nachrichten_text .= "<table>\n";
 		$nachrichten_text .= "\t<thead>\n";
 		$nachrichten_text .= "\t\t<tr>\n";
@@ -1905,36 +1919,36 @@ EOF
 		$nachrichten_text .= "\t\t</tr>\n";
 		$nachrichten_text .= "\t</thead>\n";
 		$nachrichten_text .= "\t<tbody>\n";
-		
+
 		$ges_anzahl = $ges_staerke = $ges_schild = 0;
 		foreach($angreifer_anfang as $name=>$flotten)
 		{
 			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
 			$nachrichten_text .= "\t\t\t<th colspan=\"4\">".utf8_htmlentities($name)."</th>\n";
 			$nachrichten_text .= "\t\t</tr>\n";
-			
+
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
 			$angreifer_punkte[$name] = 0;
 			$one = false;
 			foreach($flotten as $id=>$old_anzahl)
 			{
 				$item_info = $users_angreifer[$name]->getItemInfo($id, false, true, true);
-				
+
 				if(isset($angreifer[$name]) && isset($angreifer[$name][$id]))
 					$anzahl = $angreifer[$name][$id];
 				else
 					$anzahl = 0;
-				
+
 				$diff = $old_anzahl-$anzahl;
 				$truemmerfeld[0] += $item_info['ress'][0]*$diff*.4;
 				$truemmerfeld[1] += $item_info['ress'][1]*$diff*.4;
 				$truemmerfeld[2] += $item_info['ress'][2]*$diff*.4;
 				$truemmerfeld[3] += $item_info['ress'][3]*$diff*.4;
 				$angreifer_punkte[$name] += $item_info['simple_scores']*$diff;
-				
+
 				$staerke = $item_info['att']*$anzahl;
 				$schild = $item_info['def']*$anzahl;
-				
+
 				if($anzahl > 0)
 				{
 					$nachrichten_text .= "\t\t<tr>\n";
@@ -1945,7 +1959,7 @@ EOF
 					$nachrichten_text .= "\t\t</tr>\n";
 					$one = true;
 				}
-	
+
 				$this_ges_anzahl += $anzahl;
 				$this_ges_staerke += $staerke;
 				$this_ges_schild += $schild;
@@ -1965,14 +1979,14 @@ EOF
 				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
 				$nachrichten_text .= "\t\t</tr>\n";
 			}
-			
+
 			$ges_anzahl += $this_ges_anzahl;
 			$ges_staerke += $this_ges_staerke;
 			$ges_schild += $this_ges_schild;
 		}
-		
+
 		$nachrichten_text .= "\t</tbody>\n";
-		
+
 		if(count($angreifer_anfang) > 1)
 		{
 			$nachrichten_text .= "\t<tfoot>\n";
@@ -1985,13 +1999,13 @@ EOF
 			$nachrichten_text .= "\t</tfoot>\n";
 		}
 		$nachrichten_text .= "</table>\n";
-		
-		
+
+
 		if(count($verteidiger_anfang) > 1)
 			$nachrichten_text .= "<h3>Flotten der Verteidigers</h3>";
 		else
 			$nachrichten_text .= "<h3>Flotten der Verteidiger</h3>";
-		
+
 		$nachrichten_text .= "<table>\n";
 		$nachrichten_text .= "\t<thead>\n";
 		$nachrichten_text .= "\t\t<tr>\n";
@@ -2009,7 +2023,7 @@ EOF
 			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
 			$nachrichten_text .= "\t\t\t<th colspan=\"4\">".utf8_htmlentities($name)."</th>\n";
 			$nachrichten_text .= "\t\t</tr>\n";
-			
+
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
 			$verteidiger_punkte[$name] = 0;
 			$verteidiger_ress[$name] = array(0, 0, 0, 0);
@@ -2017,11 +2031,11 @@ EOF
 			foreach($flotten as $id=>$anzahl_old)
 			{
 				$item_info = $users_verteidiger[$name]->getItemInfo($id, false, true, true);
-				
+
 				if(isset($verteidiger[$name]) && isset($verteidiger[$name][$id]))
 					$anzahl = $angreifer[$name][$id];
 				else $anzahl = 0;
-				
+
 				$diff = $anzahl_old-$anzahl;
 				if($item_info['type'] == 'schiffe')
 				{
@@ -2037,12 +2051,12 @@ EOF
 					$verteidiger_ress[$name][2] += $item_info['ress'][2]*.2;
 					$verteidiger_ress[$name][3] += $item_info['ress'][3]*.2;
 				}
-				
+
 				$verteidiger_punkte[$name] += $diff*$item_info['simple_scores'];
-				
+
 				$staerke = $item_info['att']*$anzahl;
 				$schild = $item_info['def']*$anzahl;
-	
+
 				if($anzahl > 0)
 				{
 					$nachrichten_text .= "\t\t<tr>\n";
@@ -2053,12 +2067,12 @@ EOF
 					$nachrichten_text .= "\t\t</tr>\n";
 					$one = true;
 				}
-	
+
 				$this_ges_anzahl += $anzahl;
 				$this_ges_staerke += $staerke;
 				$this_ges_schild += $schild;
 			}
-			
+
 			if(!$one)
 			{
 				$nachrichten_text .= "\t\t<tr class=\"keine\">\n";
@@ -2074,14 +2088,14 @@ EOF
 				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
 				$nachrichten_text .= "\t\t</tr>\n";
 			}
-			
+
 			$ges_anzahl += $this_ges_anzahl;
 			$ges_staerke += $this_ges_staerke;
 			$ges_schild += $this_ges_schild;
 		}
-		
+
 		$nachrichten_text .= "\t</tbody>\n";
-		
+
 		if(count($verteidiger) > 1)
 		{
 			$nachrichten_text .= "\t<tfoot>\n";
@@ -2094,7 +2108,7 @@ EOF
 			$nachrichten_text .= "\t</tfoot>\n";
 		}
 		$nachrichten_text .= "</table>\n";
-		
+
 		$nachrichten_text .= "<ul class=\"angreifer-punkte\">\n";
 		foreach($angreifer_anfang as $a=>$i)
 		{
@@ -2133,25 +2147,25 @@ EOF
 			$user->addScores(6, $angreifer_new_erfahrung);
 		foreach($users_verteidiger as $user)
 			$user->addScores(6, $verteidiger_new_erfahrung);
-		
-		
+
+
 		# $winner:  1: Angreifer gewinnt
 		#           0: Unentschieden
 		#          -1: Verteidiger gewinnt
-		# 
+		#
 		# $angreifer: Wie uebergeben, Flotten nach der Schlacht
 		# $verteidiger: Wie uebergeben, Flotten nach der Schlacht
-		# 
+		#
 		# $nachrichten_text: Kampfbericht, es muessen noch fuer jeden Benutzer die regenerierten
 		#                    Verteidigungsrohstoffe aus $verteidiger_ress angehaengt werden.
-		# 
+		#
 		# $truemmerfeld: Das Truemmerfeld, das entstehen wird
-		# 
+		#
 		# Rohstoffe muessen noch gestohlen werden
 
 		return array($winner, $angreifer, $verteidiger, $nachrichten_text, $verteidiger_ress, $truemmerfeld);
 	}
-	
+
 	function array_sum_r($array)
 	{
 		$sum = 0;

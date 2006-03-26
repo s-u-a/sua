@@ -409,7 +409,7 @@ function do_make_users_list(node)
 		return;
 	}
 
-	node.onblur = function(){t=this; setTimeout('if(users_list){users_list.parentNode.removeChild(users_list);users_list=false;users_list_selected=false;}',100);}
+	node.onblur = function(){t=this; setTimeout('if(users_list){users_list.parentNode.removeChild(users_list);users_list=false;users_list_selected=false;}',500);}
 	node.onkeypress = function(e)
 	{
 		if(!e) e = window.event;
