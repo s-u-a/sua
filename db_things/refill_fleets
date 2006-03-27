@@ -1,0 +1,29 @@
+#!/usr/bin/php
+<?php
+	require('../engine/include.php');
+
+	if(!isset($_SERVER['argv'][1]))
+	{
+		echo "Usage: ".$_SERVER['argv'][0]." [Database dir]\n";
+		exit(1);
+	}
+	else
+		define_globals($_SERVER['argv'][1]);
+
+	$eventfile = Classes::EventFile();
+	$eventfile->_empty();
+
+	$dh = opendir(DB_FLEETS);
+	while(($fname = readdir($dh)) !== false)
+	{
+		if($fname == '.' || $fname == '..') continue;
+
+		$fleet_id = urldecode($fname);
+		$fleet = new Fleet($fleet_id);
+		if(!$fleet->getStatus()) continue;
+
+		$eventfile->addNewFleet($fleet->getNextArrival(), $fleet_id);
+		unset($fleet);
+	}
+	closedir($dh);
+?>
