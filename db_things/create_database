@@ -38,7 +38,6 @@ ln -s $CWD/forschung $1/items/forschung
 ln -s $CWD/roboter $1/items/roboter
 ln -s $CWD/schiffe $1/items/schiffe
 ln -s $CWD/verteidigung $1/items/verteidigung
-touch $1/logfile
 mkdir $1/messages
 mkdir $1/messages_public
 mkdir $1/players

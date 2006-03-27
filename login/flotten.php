@@ -1,19 +1,10 @@
 <?php
-	if(isset($_GET['action']))
+	if(!defined('ajax'))
 	{
-		$requ_uri = $_SERVER['REQUEST_URI'];
-		$_SERVER['REQUEST_URI'] = '';
-		if(isset($_SERVER['HTTP_REFERER'])) $_SERVER['REQUEST_URI'] = $_SERVER['HTTP_REFERER'];
-	}
-
-	if(!defined('ajax'))
-	require('scripts/include.php');
-
-	if(isset($_GET['action']))
-		$_SERVER['REQUEST_URI'] = $requ_uri;
-
-	if(!defined('ajax'))
+		if(isset($_GET['action'])) define('ignore_action', true);
+		require('scripts/include.php');
 		login_gui::html_head();
+	}
 
 	$show_versenden = true;
 
