@@ -855,6 +855,12 @@ EOF
 								if($level <= 0) continue;
 								$verteidiger[$target_owner][$item] = $level;
 							}
+							foreach($target_user->getItemsList('verteidigung') as $item)
+							{
+								$level = $target_user->getItemLevel($item, 'verteidigung');
+								if($level <= 0) continue;
+								$verteidiger[$target_owner][$item] = $level;
+							}
 							$foreign_users = $target_user->getForeignUsersList();
 							foreach($foreign_users as $username)
 								$verteidiger[$username] = $target_user->getForeignFleetsList($username);

@@ -620,3 +620,79 @@ function do_make_users_list(node)
 
 	xmlhttp.send(null);
 }
+
+preloaded_systems = new Array();
+preloading_systems = new Array();
+function preload_systems(systems)
+{
+	if(typeof systems != 'object')
+	{
+		pr_system = systems;
+		systems = new Array();
+		systems.push(pr_system);
+	}
+
+	request_url = '<?=h_root?>/login/scripts/ajax.php?action=universe&'+encodeURIComponent(session_cookie)+'='+encodeURIComponent(session_id);
+	var c = 0;
+	for(var i in systems)
+	{
+		if(typeof preloaded_systems[systems[i]] != 'undefined' || preloading_systems[systems[i]]) continue;
+		request_url += '&system[]='+encodeURIComponent(systems[i]);
+		preloading_systems[systems[i]] = true;
+		c++;
+	}
+
+	if(c <= 0) return;
+
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open('GET', request_url, true);
+
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200 && xmlhttp.responseXML)
+		{
+			system_results = xmlhttp.responseXML.getElementsByTagName('system');
+			for(i=0; i<system_results.length; i++)
+			{
+				system_number = system_results[i].getAttribute('number');
+				preloaded_systems[system_number] = new Array();
+				system_info = system_results[i].childNodes;
+				for(j=0; j<system_info.length; j++)
+				{
+					if(system_info[j].nodeType != 1) continue;
+					planet_number = system_info[j].getAttribute('number');
+					preloaded_systems[system_number][planet_number] = new Array();
+					planet_infos = system_info[j].childNodes;
+					if(planet_infos.length <= 0) continue;
+					for(k=0; k<planet_infos.length; k++)
+					{
+						if(planet_infos[k].nodeType != 1) continue;
+						var this_info = '';
+						if(planet_infos[k].childNodes.length > 0)
+							this_info = planet_infos[k].firstChild.data;
+						preloaded_systems[system_number][planet_number][planet_infos[k].nodeName.toLowerCase()] = this_info;
+					}
+					//alert(system_info.firstChild);
+				}
+			}
+			for(var i in systems)
+			{
+				if(typeof preloaded_systems[systems[i]] == 'undefined')
+					preloaded_systems[systems[i]] = false;
+			}
+		}
+	}
+
+	xmlhttp.send(null);
+}
+
+function print_r(a,prefix)
+{
+	if(!prefix) prefix = '';
+	var s = '';
+	for(i in a)
+	{
+		if(typeof a[i] == 'array' || typeof a[i] == 'object') s += print_r(a[i], prefix+'['+i+']');
+		else s += prefix+"["+i+"] => ("+(typeof a[i])+") "+a[i]+"\n";
+	}
+	return s;
+}

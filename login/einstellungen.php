@@ -131,7 +131,7 @@
 ?>
 					<option value=""<?=(!$one_selected) ? ' selected="selected"' : ''?>>Benutzerdefiniert</option>
 				</select>
-				<input type="text" name="skin" id="skin" value="<?=htmlentities($user_array['skin'])?>" tabindex="<?=$tabindex++?>" />
+				<input type="text" name="skin" id="skin" value="<?=htmlentities($me->checkSetting('skin'))?>" tabindex="<?=$tabindex++?>" />
 			</dd>
 
 			<dt class="c-schrift"><label for="schrift-choice">Schrift</label></dt>

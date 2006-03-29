@@ -3,17 +3,18 @@
 	define('ajax', true);
 	require('../scripts/include.php');
 
-	$additionals = array('result' => array());
-	$results = &$additionals['result'];
+	header('Content-type: text/xml;charset=UTF-8');
+	echo "<xmlresponse>\n";
 
 	if(!isset($_GET['action'])) $_GET['action'] = null;
-	if(!isset($_GET['query'])) $_GET['query'] = '';
 
 	switch($_GET['action'])
 	{
 		case 'userlist':
-			$_GET['query'] = strtolower(urlencode($_GET['query']));
-			$query_length = strlen($_GET['query']);
+			$query = '';
+			if(isset($_GET['query']))
+				$query = strtolower(urlencode($_GET['query']));
+			$query_length = strlen($query);
 			if($query_length < LIST_MIN_CHARS) break;
 
 			$dh = opendir(DB_PLAYERS);
@@ -22,8 +23,8 @@
 				if($fname == '.' || $fname == '..') continue;
 				$fname = $fname;
 
-				if(strlen($fname) >= $query_length && substr($fname, 0, $query_length) == $_GET['query'])
-					$results[] = urldecode($fname);
+				if(strlen($fname) >= $query_length && substr($fname, 0, $query_length) == $query)
+					echo "\t<result>".htmlspecialchars(urldecode($fname))."</result>\n";
 			}
 			closedir($dh);
 
@@ -32,20 +33,36 @@
 			break;
 
 		case 'spionage': case 'besiedeln': case 'sammeln':
-			list($additionals['classname'], $results[]) = include('../flotten.php');
+			list($classname, $result) = include('../flotten.php');
+			echo "\t<classname>".htmlspecialchars($classname)."</classname>\n";
+			echo "\t<result>".htmlspecialchars($result)."</result>\n";
 			break;
+
+		case 'universe':
+			if(!isset($_GET['system']) || !is_array($_GET['system'])) $_GET['system'] = array();
+			foreach($_GET['system'] as $systemo)
+			{
+				$system = explode(':', $systemo);
+				if(count($system) != 2) continue;
+				$galaxy_obj = Classes::Galaxy($system[0]);
+				if(!$galaxy_obj->getStatus() || !($planets_count = $galaxy_obj->getPlanetsCount($system[1])))
+					continue;
+				echo "\t<system number=\"".htmlspecialchars($systemo)."\">\n";
+
+				for($i=1; $i<=$planets_count; $i++)
+				{
+					echo "\t\t<planet number=\"".htmlspecialchars($i)."\">\n";
+					echo "\t\t\t<owner>".htmlspecialchars($galaxy_obj->getPlanetOwner($system[1], $i))."</owner>\n";
+					echo "\t\t\t<name>".htmlspecialchars($galaxy_obj->getPlanetName($system[1], $i))."</name>\n";
+					echo "\t\t\t<alliance>".htmlspecialchars($galaxy_obj->getPlanetOwnerAlliance($system[1], $i))."</alliance>\n";
+					echo "\t\t\t<flag>".htmlspecialchars($galaxy_obj->getPlanetOwnerFlag($system[1], $i))."</flag>\n";
+					/* Fehlt noch: Truemmerfeld */
+					echo "\t\t</planet>\n";
+				}
+
+				echo "\t</system>\n";
+			}
 	}
 
-
-	header('Content-type: text/xml;charset=UTF-8');
-	echo "<xmlresponse>\n";
-	foreach($additionals as $tagname=>$contents)
-	{
-		if(!is_array($contents)) $contents = array($contents);
-		if(count($contents) <= 0) continue;
-
-		foreach($contents as $content)
-			echo "\t<".$tagname.">".htmlspecialchars($content)."</".$tagname.">\n";
-	}
 	echo "</xmlresponse>\n";
 ?>

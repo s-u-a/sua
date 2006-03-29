@@ -185,6 +185,10 @@
 	<head>
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 		<title xml:lang="en">S-U-A &ndash; Stars Under Attack</title>
+		<script type="text/javascript">
+			var session_cookie = '<?=str_replace('\'', '\\\'', SESSION_COOKIE)?>';
+			var session_id = '<?=str_replace('\'', '\\\'', session_id())?>';
+		</script>
 		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts.js.php')?>"></script>
 <?php
 			if($me->checkSetting('ajax'))
@@ -196,8 +200,6 @@
 ?>
 		<script type="text/javascript">
 			set_time_globals(<?=time()+1?>);
-			var session_cookie = '<?=str_replace('\'', '\\\'', SESSION_COOKIE)?>';
-			var session_id = '<?=str_replace('\'', '\\\'', session_id())?>';
 		</script>
 <?php
 			$skin_path = '';
@@ -445,7 +447,7 @@
 ?>
 			</div></div>
 <?php
-			/*if(!$me->checkSetting('noads'))
+			if($me->checkSetting('noads'))
 			{
 ?>
 <!--[if IE]>
@@ -459,7 +461,7 @@
 			{
 ?>
 				<script type="text/javascript">
-					google_ad_client = "pub-5173730573608246";
+					google_ad_client = "pub-2662652449578921";
 					google_alternate_color = "445577";
 					google_ad_width = 120;
 					google_ad_height = 600;
@@ -478,12 +480,12 @@
 ?>
 			</div>
 <?php
-			if(!$me->checkSetting('noads'))
+			if($me->checkSetting('noads'))
 			{
 ?>
 <![endif]-->
 <?php
-			}*/
+			}
 ?>
 			<div id="css-1"></div>
 		</div></div>
