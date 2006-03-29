@@ -644,45 +644,76 @@ function preload_systems(systems)
 
 	if(c <= 0) return;
 
+	add_loading_instance();
+
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open('GET', request_url, true);
 
 	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4 && xmlhttp.status == 200 && xmlhttp.responseXML)
+		if (xmlhttp.readyState == 4)
 		{
-			system_results = xmlhttp.responseXML.getElementsByTagName('system');
-			for(i=0; i<system_results.length; i++)
+			if(xmlhttp.status == 200 && xmlhttp.responseXML)
 			{
-				system_number = system_results[i].getAttribute('number');
-				preloaded_systems[system_number] = new Array();
-				system_info = system_results[i].childNodes;
-				for(j=0; j<system_info.length; j++)
+				system_results = xmlhttp.responseXML.getElementsByTagName('system');
+				for(i=0; i<system_results.length; i++)
 				{
-					if(system_info[j].nodeType != 1) continue;
-					planet_number = system_info[j].getAttribute('number');
-					preloaded_systems[system_number][planet_number] = new Array();
-					planet_infos = system_info[j].childNodes;
-					if(planet_infos.length <= 0) continue;
-					for(k=0; k<planet_infos.length; k++)
+					system_number = system_results[i].getAttribute('number');
+					preloaded_systems[system_number] = new Array();
+					system_info = system_results[i].childNodes;
+					for(j=0; j<system_info.length; j++)
 					{
-						if(planet_infos[k].nodeType != 1) continue;
-						var this_info = '';
-						if(planet_infos[k].childNodes.length > 0)
-							this_info = planet_infos[k].firstChild.data;
-						preloaded_systems[system_number][planet_number][planet_infos[k].nodeName.toLowerCase()] = this_info;
+						if(system_info[j].nodeType != 1) continue;
+						planet_number = system_info[j].getAttribute('number');
+						preloaded_systems[system_number][planet_number] = new Array();
+						preloading_systems[system_number] = false;
+						planet_infos = system_info[j].childNodes;
+						if(planet_infos.length <= 0) continue;
+						for(k=0; k<planet_infos.length; k++)
+						{
+							if(planet_infos[k].nodeType != 1) continue;
+							var this_info = '';
+							if(planet_infos[k].childNodes.length > 0)
+								this_info = planet_infos[k].firstChild.data;
+							preloaded_systems[system_number][planet_number][planet_infos[k].nodeName.toLowerCase()] = this_info;
+						}
 					}
-					//alert(system_info.firstChild);
+				}
+				for(var i in systems)
+				{
+					if(typeof preloaded_systems[systems[i]] == 'undefined')
+						preloaded_systems[systems[i]] = false;
 				}
 			}
-			for(var i in systems)
-			{
-				if(typeof preloaded_systems[systems[i]] == 'undefined')
-					preloaded_systems[systems[i]] = false;
-			}
+			remove_loading_instance();
 		}
 	}
 
 	xmlhttp.send(null);
+}
+
+var loading_instances = 0;
+var loading_element = false;
+
+function add_loading_instance()
+{
+	if(!loading_element)
+	{
+		loading_element = document.createElement('p');
+		loading_element.id = 'loading';
+		loading_element.appendChild(document.createTextNode('Laden...'));
+		document.getElementsByTagName('body')[0].appendChild(loading_element);
+	}
+	loading_instances++;
+}
+
+function remove_loading_instance()
+{
+	loading_instances--;
+	if(loading_instances <= 0)
+	{
+		loading_element.parentNode.removeChild(loading_element);
+		loading_element = false;
+	}
 }
 
 function print_r(a,prefix)

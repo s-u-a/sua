@@ -14,7 +14,7 @@
 #navigation #navigation-karte,#navigation #navigation-board { border-color:#568; }
 #change-planet select { background-color:#568; border-color:#678; }
 
-select,option,textarea,input,button,#js-title,.popup { background-color:#568; border-color:#679; }
+select,option,textarea,input,button,#js-title,.popup,#loading { background-color:#568; border-color:#679; }
 select:hover,select:focus,select:active,input:hover,input:focus,input:active,textarea:hover,textarea:focus,textarea:active,button:hover,button:focus,button:active,.highscores-modi .active a,.imperium-modi .active a { background-color:#679; }
 
 #content-13 * h3 { background-color:transparent; }

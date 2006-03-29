@@ -1,7 +1,8 @@
 <?php
 	require('scripts/include.php');
 
-	$DISABLE_ADS = true;
+	if(!$me->checkSetting('ajax'))
+		$DISABLE_ADS = true;
 	login_gui::html_head();
 
 	$pos = $me->getPos();
@@ -42,11 +43,14 @@
 		$verb_jcheck = implode(' || ', $verb_jcheck);
 	}
 	else $verb_jcheck = 'false';
+
+	if($me->checkSetting('ajax'))
+	{
 ?>
 <script type="text/javascript">
 	var current_system = <?=$system_n?>;
-	var min_preload = 10;
-	var max_preload = 30;
+	var min_preload = 5;
+	var max_preload = 15;
 
 	function change_system(new_system)
 	{
@@ -154,18 +158,41 @@
 		next_system = get_system_after(current_system);
 		prev_system = get_system_before(current_system);
 
-		var to_preload = new Array();
-		var next_system2 = next_system;
-		var prev_system2 = prev_system;
+		var has_to_preload = false;
+		var to_preload = new Object();
+		if(typeof preloaded_systems['<?=$galaxy_n?>:'+current_system] == 'undefined' && !preloading_systems['<?=$galaxy_n?>:'+current_system])
+			has_to_preload = true;
+		to_preload['<?=$galaxy_n?>:'+current_system] = true;
+
+		var next_system2 = current_system;
+		var prev_system2 = current_system;
 		for(i=0; i<max_preload; i++)
 		{
 			next_system2 = get_system_after(next_system2);
-			to_preload.push(next_system2);
 			prev_system2 = get_system_before(prev_system2);
-			to_preload.push(prev_system2);
+			if(i<min_preload && typeof preloaded_systems['<?=$galaxy_n?>:'+next_system2] == 'undefined' && !preloading_systems['<?=$galaxy_n?>:'+next_system2])
+				has_to_preload = true;
+			to_preload['<?=$galaxy_n?>:'+next_system2] = true;
+
+			if(i<min_preload && typeof preloaded_systems['<?=$galaxy_n?>:'+prev_system2] == 'undefined' && !preloading_systems['<?=$galaxy_n?>:'+prev_system2])
+				has_to_preload = true;
+			to_preload['<?=$galaxy_n?>:'+prev_system2] = true;
 		}
 
-		preload_systems(to_preload);
+		to_preload2 = new Array();
+		for(i in to_preload)
+			to_preload2.push(i);
+
+		if(has_to_preload)
+		{
+			//alert(print_r(to_preload2));
+			preload_systems(to_preload2);
+			for(i in preloaded_systems)
+			{
+				if(!to_preload[i])
+					delete preloaded_systems[i];
+			}
+		}
 	}
 	get_systems_around();
 
@@ -196,6 +223,9 @@
 		return false;
 	}
 </script>
+<?php
+	}
+?>
 <h3>Karte <span class="karte-koords">(<?=utf8_htmlentities($galaxy_n)?>:<?=utf8_htmlentities($system_n)?>)</span></h3>
 <form action="karte.php" method="get" class="karte-wahl">
 	<fieldset class="karte-galaxiewahl">

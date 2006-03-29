@@ -397,6 +397,7 @@ h2#punkte { clear:right; }
 #js-title.hidden { display:none; }
 #js-title.show { display:block; }
 .popup { z-index:60000; border:.2em solid #aaa; padding:.5em; font-weight:bold; background-color:#888; margin:-.2em -.7em -.12em -.7em; }
+#loading { z-index:40000; border:.2em solid #aaa; padding:.5em; font-weight:bold; background-color:#888; position:fixed; bottom:3em; right:1em; color:#f00; }
 
 .handelsrechner-handelskurs { text-align:center; }
 .handelsrechner-handelskurs dl dt { display:inline; font-size:.9em; font-weight:bold; float:none; margin:0; padding:0 0 0 .5ex; width:auto; border-left:.1em solid #aaa; }
