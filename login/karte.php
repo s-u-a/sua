@@ -157,7 +157,7 @@
 				playername2.appendChild(document.createTextNode(sinfo[i]['owner']));
 				playername1.appendChild(playername2);
 				if(sinfo[i]['flag'])
-					playername2.appendChild(document.createTextNode(' ('+sinfo[i]['flag']+')'));
+					playername1.appendChild(document.createTextNode(' ('+sinfo[i]['flag']+')'));
 				playername1.appendChild(document.createTextNode(')'));
 				new_td.appendChild(playername1);
 			}
