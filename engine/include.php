@@ -96,7 +96,12 @@
 
 	__autoload('Classes');
 
-	header('Content-type: text/html; charset=UTF-8');
+	//if(isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/xhtml+xml') !== false)
+	//	define('CONTENT_TYPE', 'application/xhtml+xml; charset=UTF-8');
+	//else
+		define('CONTENT_TYPE', 'text/html; charset=UTF-8');
+	header('Content-type: '.CONTENT_TYPE);
+
 	if(!isset($USE_OB) || $USE_OB)
 		ob_start('ob_gzhandler');
 	$tabindex = 1;

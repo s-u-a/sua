@@ -48,6 +48,7 @@
 	{
 ?>
 <script type="text/javascript">
+// <![CDATA[
 	var current_system = <?=$system_n?>;
 	var min_preload = 5;
 	var max_preload = 15;
@@ -64,13 +65,38 @@
 		}
 
 		tbody = document.getElementById('karte-system');
-		while(tbody.childNodes.length > 0)
-			tbody.removeChild(tbody.firstChild);
-
 		sinfo = preloaded_systems[new_system];
+		for(i=0,j=0; i<tbody.childNodes.length; i++)
+		{
+			if(tbody.childNodes[i].nodeType == 1)
+			{
+				if(j>=sinfo.length-1)
+				{
+					tbody.removeChild(tbody.childNodes[i]);
+					i--;
+				}
+				else j++;
+			}
+			else
+			{
+				tbody.removeChild(tbody.childNodes[i]);
+				i--;
+			}
+		}
+
 		for(i=1; i<sinfo.length; i++)
 		{
-			var new_tr = document.createElement('tr');
+			if(tbody.childNodes[i-1])
+			{
+				new_tr = tbody.childNodes[i-1];
+				while(new_tr.childNodes.length > 0) new_tr.removeChild(new_tr.firstChild);
+			}
+			else
+			{
+				new_tr = document.createElement('tr');
+				tbody.appendChild(new_tr);
+			}
+
 			if(!sinfo[i]['owner'])
 				new_tr.className = 'leer';
 			else
@@ -90,6 +116,14 @@
 			var new_td = document.createElement('td');
 			new_td.className = 'c-planet';
 			new_td.appendChild(document.createTextNode(i));
+			if(sinfo[i]['truemmerfeld'])
+			{
+				new_td.appendChild(document.createTextNode(' '));
+				new_tf = document.createElement('abbr');
+				new_tf.setAttribute('title', 'Trümmerfeld: '+ths(sinfo[i]['truemmerfeld'][0])+'\u00a0Carbon, '+ths(sinfo[i]['truemmerfeld'][1])+'\u00a0Aluminium, '+ths(sinfo[i]['truemmerfeld'][2])+'\u00a0Wolfram, '+ths(sinfo[i]['truemmerfeld'][3])+'\u00a0Radium');
+				new_tf.appendChild(document.createTextNode('T'));
+				new_td.appendChild(new_tf);
+			}
 			new_tr.appendChild(new_td);
 
 			var new_td = document.createElement('td');
@@ -131,6 +165,8 @@
 
 			var new_td = document.createElement('td');
 			new_td.className = 'c-aktionen';
+
+			// Koordinaten verwenden
 			new_td.appendChild(document.createElement('ul'));
 			new_td.firstChild.appendChild(document.createElement('li'));
 			new_td.firstChild.firstChild.className = 'c-koordinaten-verwenden';
@@ -139,9 +175,72 @@
 			new_td.firstChild.firstChild.firstChild.href = 'flotten.php?action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
 			new_td.firstChild.firstChild.firstChild.appendChild(document.createTextNode('Koordinaten verwenden'));
 
+			if(sinfo[i]['owner'] != '<?=str_replace("'", "\\'", $_SESSION['username'])?>')
+			{
+<?php
+		if($me->permissionToAct() && $me->getItemLevel('S5', 'schiffe') > 0)
+		{
+?>
+				// Spionieren
+				if(sinfo[i]['flag'] != 'U')
+				{
+					new_td.firstChild.appendChild(new_el1 = document.createElement('li'));
+					new_el1.className = 'c-spionieren';
+					new_el1.appendChild(new_el2 = document.createElement('a'));
+					new_el2.href = 'flotten.php?action=spionage&action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+					new_el2.title = 'Spionieren Sie diesen Planeten aus';
+					new_el2.onclick = new Function('return fast_action(this, "spionage", '+system_split[0]+', '+system_split[1]+', '+i+');');
+					new_el2.appendChild(document.createTextNode('Spionieren'));
+				}
+<?php
+		}
+?>
+				// Nachricht schreiben
+				if(sinfo[i]['owner'])
+				{
+					new_td.firstChild.appendChild(new_el1 = document.createElement('li'));
+					new_el1.className = 'c-nachricht';
+					new_el1.appendChild(new_el2 = document.createElement('a'));
+					new_el2.href = 'nachrichten.php?to='+encodeURIComponent(sinfo[i]['owner'])+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+					new_el2.title = 'Schreiben Sie diesem Spieler eine Nachricht';
+					new_el2.appendChild(document.createTextNode('Nachricht'));
+				}
+<?php
+		if($me->permissionToAct() && $me->checkPlanetCount() && $me->getItemLevel('S6', 'schiffe') > 0)
+		{
+?>
+				// Besiedeln
+				if(!sinfo[i]['owner'])
+				{
+					new_td.firstChild.appendChild(new_el1 = document.createElement('li'));
+					new_el1.className = 'c-besiedeln';
+					new_el1.appendChild(new_el2 = document.createElement('a'));
+					new_el2.href = 'flotten.php?action=besiedeln&action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+					new_el2.title = 'Schicken Sie ein Besiedelungsschiff zu diesem Planeten';
+					new_el2.onclick = new Function('return fast_action(this, "besiedeln", '+system_split[0]+', '+system_split[1]+', '+i+');');
+					new_el2.appendChild(document.createTextNode('Besiedeln'));
+				}
+<?php
+		}
+		if($me->permissionToAct() && $me->getItemLevel('S3', 'schiffe') > 0)
+		{
+?>
+				// Sammeln
+				if(sinfo[i]['truemmerfeld'])
+				{
+					new_td.firstChild.appendChild(new_el1 = document.createElement('li'));
+					new_el1.className = 'c-truemmerfeld';
+					new_el1.appendChild(new_el2 = document.createElement('a'));
+					new_el2.href = 'flotten.php?action=sammeln&action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+					new_el2.title = 'Schicken Sie ausreichend Sammler zu diesem Trümmerfeld.';
+					new_el2.onclick = new Function('return fast_action(this, "sammeln", '+system_split[0]+', '+system_split[1]+', '+i+');');
+					new_el2.appendChild(document.createTextNode('Sammeln'));
+				}
+<?php
+		}
+?>
+			}
 			new_tr.appendChild(new_td);
-
-			tbody.appendChild(new_tr);
 		}
 
 		current_system = parseInt(system_split[1]);
@@ -185,7 +284,6 @@
 
 		if(has_to_preload)
 		{
-			//alert(print_r(to_preload2));
 			preload_systems(to_preload2);
 			for(i in preloaded_systems)
 			{
@@ -222,17 +320,18 @@
 		change_system('<?=$galaxy_n?>:'+prev_system);
 		return false;
 	}
+// ]]>
 </script>
 <?php
 	}
 ?>
 <h3>Karte <span class="karte-koords">(<?=utf8_htmlentities($galaxy_n)?>:<?=utf8_htmlentities($system_n)?>)</span></h3>
-<form action="karte.php" method="get" class="karte-wahl">
+<form action="karte.php" method="get" class="karte-wahl"<?php if($me->checkSetting('ajax')){?> onsubmit="if(document.getElementById('current-galaxy-number').value=='<?=$galaxy_n?>'){change_system('<?=$galaxy_n?>:'+document.getElementById('current-system-number').value);return false;}"<?php }?>>
 	<fieldset class="karte-galaxiewahl">
 		<legend>Galaxie</legend>
 		<ul>
 			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($prev_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="6" accesskey="u" title="[U]" id="galaxy-prev-link">Vorige</a></li>
-			<li><input type="text" name="galaxy" value="<?=utf8_htmlentities($galaxy_n)?>" tabindex="1" /></li>
+			<li><input type="text" name="galaxy" value="<?=utf8_htmlentities($galaxy_n)?>" tabindex="1" id="current-galaxy-number" /></li>
 			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($next_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="5" accesskey="x" title="[X]" id="galaxy-next-link">Nächste</a></li>
 		</ul>
 	</fieldset>

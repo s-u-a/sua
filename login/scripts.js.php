@@ -438,6 +438,31 @@ function popup_fadeout(el_key)
 	window.setTimeout('fadeout_elements['+el_key+'].parentNode.removeChild(el);', timel);
 }
 
+var loading_instances = 0;
+var loading_element = false;
+
+function add_loading_instance()
+{
+	if(!loading_element)
+	{
+		loading_element = document.createElement('p');
+		loading_element.id = 'loading';
+		loading_element.appendChild(document.createTextNode('Laden...'));
+		document.getElementsByTagName('body')[0].appendChild(loading_element);
+	}
+	loading_instances++;
+}
+
+function remove_loading_instance()
+{
+	loading_instances--;
+	if(loading_instances <= 0)
+	{
+		loading_element.parentNode.removeChild(loading_element);
+		loading_element = false;
+	}
+}
+
 
 users_list_timeout = false;
 users_list = false;
@@ -672,7 +697,9 @@ function preload_systems(systems)
 						{
 							if(planet_infos[k].nodeType != 1) continue;
 							var this_info = '';
-							if(planet_infos[k].childNodes.length > 0)
+							if(planet_infos[k].nodeName.toLowerCase() == 'truemmerfeld')
+								this_info = new Array(planet_infos[k].getAttribute('carbon'), planet_infos[k].getAttribute('aluminium'), planet_infos[k].getAttribute('wolfram'), planet_infos[k].getAttribute('radium'));
+							else if(planet_infos[k].childNodes.length > 0)
 								this_info = planet_infos[k].firstChild.data;
 							preloaded_systems[system_number][planet_number][planet_infos[k].nodeName.toLowerCase()] = this_info;
 						}
@@ -689,31 +716,6 @@ function preload_systems(systems)
 	}
 
 	xmlhttp.send(null);
-}
-
-var loading_instances = 0;
-var loading_element = false;
-
-function add_loading_instance()
-{
-	if(!loading_element)
-	{
-		loading_element = document.createElement('p');
-		loading_element.id = 'loading';
-		loading_element.appendChild(document.createTextNode('Laden...'));
-		document.getElementsByTagName('body')[0].appendChild(loading_element);
-	}
-	loading_instances++;
-}
-
-function remove_loading_instance()
-{
-	loading_instances--;
-	if(loading_instances <= 0)
-	{
-		loading_element.parentNode.removeChild(loading_element);
-		loading_element = false;
-	}
 }
 
 function print_r(a,prefix)
