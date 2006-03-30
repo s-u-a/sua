@@ -155,9 +155,9 @@
 				playername2.href = 'help/playerinfo.php?player='+encodeURIComponent(sinfo[i]['owner'])+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
 				playername2.title = 'Informationen zu diesem Spieler anzeigen';
 				playername2.appendChild(document.createTextNode(sinfo[i]['owner']));
+				playername1.appendChild(playername2);
 				if(sinfo[i]['flag'])
 					playername2.appendChild(document.createTextNode(' ('+sinfo[i]['flag']+')'));
-				playername1.appendChild(playername2);
 				playername1.appendChild(document.createTextNode(')'));
 				new_td.appendChild(playername1);
 			}
