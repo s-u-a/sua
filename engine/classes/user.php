@@ -2788,7 +2788,7 @@
 
 		function resolveName($name)
 		{
-			$instance = Classes::Alliance($name);
+			$instance = Classes::User($name);
 			return $instance->getName();
 		}
 	}
