@@ -1,6 +1,6 @@
 <?php
 	require('scripts/include.php');
-	
+
 	$laufende_forschungen = array();
 	$planets = $me->getPlanetsList();
 	$active_planet = $me->getActivePlanet();
@@ -10,6 +10,8 @@
 		$building = $me->checkBuildingThing('forschung');
 		if($building)
 			$laufende_forschungen[] = $building[0];
+		elseif($building = $me->checkBuildingThing('gebaeude') && $building[0] == 'B8')
+			$laufende_forschungen[] = false;
 	}
 	$me->setActivePlanet($active_planet);
 
@@ -23,7 +25,7 @@
 		$a_id = $_GET['global'];
 		$global = true;
 	}
-	
+
 	if(isset($a_id) && $me->permissionToAct() && $me->buildForschung($a_id, $global))
 		delete_request();
 
@@ -45,7 +47,7 @@
 	foreach($forschungen as $id)
 	{
 		$item_info = $me->getItemInfo($id, 'forschung');
-		
+
 		if(!$item_info['deps-okay'] && $item_info['level'] <= 0 && (!$building || $building[0] != $id))
 			continue;
 

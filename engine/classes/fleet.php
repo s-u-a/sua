@@ -1300,7 +1300,6 @@ EOF
 				# Vom Empfaenger entfernen
 				if($target_user && $target_owner != $first_user)
 					$target_user->unsetFleet($this->getName());
-				$this->changed = false;
 
 				$this->changed = true;
 
