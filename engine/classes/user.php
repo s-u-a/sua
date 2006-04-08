@@ -2205,8 +2205,8 @@
 		{
 			if(!$this->status) return false;
 
-			if(count($this->raw['planets']) < 15) return true;
-			else return true;
+			if(MAX_PLANETS > 0 && count($this->raw['planets']) < MAX_PLANETS) return true;
+			else return false;
 		}
 
 		function buildGebaeude($id, $rueckbau=false)
@@ -2790,6 +2790,37 @@
 		{
 			$instance = Classes::User($name);
 			return $instance->getName();
+		}
+
+		function getNotificationType()
+		{
+			if(!$this->status) return false;
+
+			if(!isset($this->raw['im_notification'])) return false;
+			return $this->raw['im_notification'];
+		}
+
+		function checkNewNotificationType($uin, $protocol)
+		{
+			if(!$this->status) return false;
+
+			$this->raw['im_notification_check'] = array($uin, $protocol, time());
+			$this->changed = true;
+			return true;
+		}
+
+		function doSetNotificationType($uin, $protocol)
+		{
+			if(!$this->status) return false;
+
+			if(!isset($this->raw['im_notification_check'])) return false;
+			if($this->raw['im_notification_check'][0] != $uin || $this->raw['im_notification_check'][1] != $protocol)
+				return false;
+			if(time()-$this->raw['im_notification_check'][2] > 86400) return false;
+
+			$this->raw['im_notification'] = array($this->raw['im_notification_check'][0], $this->raw['im_notification_check'][1]);
+			$this->changed = true;
+			return true;
 		}
 	}
 
