@@ -174,17 +174,14 @@ EOF
 	set_error_handler('error_handler', E_WARNING);
 	set_error_handler('error_handler', E_NOTICE);
 
-	function arrive($fleet)
+	function arrive($fleet_id)
 	{
 		global $errlog;
 		global $process;
 
-		if($fleet->getNextArrival() > time())
-			return false;
-
 		if(function_exists('pcntl_fork'))
 		{
-			Classes::resetInstances(false, false);
+			Classes::resetInstances();
 			$pid = pcntl_fork();
 		}
 		else $pid = -1;
@@ -193,7 +190,9 @@ EOF
 		{
 			if($pid != -1) set_time_limit(30);
 
-			if(!$fleet->arriveAtNextTarget())
+			$fleet = Classes::Fleet($fleet_id);
+
+			if($fleet->getStatus() > 1 || $fleet->getNextArrival() > time() || !$fleet->arriveAtNextTarget())
 			{
 				fputs($errlog, time_prefix()."Warning: Couldn't complete fleet ".$process['fleet'].". The time was ".$process['time'].". Gonna process it later.\n");
 				$eventfile = Classes::EventFile();
@@ -241,20 +240,8 @@ EOF
 	{
 		$event_obj = Classes::EventFile();
 		while($process = $event_obj->removeNextFleet())
-		{
-			$fleet = new Fleet($process['fleet']);
-			$users = $fleet->getUsersList();
+			arrive($process['fleet']);
 
-			if($fleet->getStatus() != 1)
-			{
-				if($fleet->getStatus() == 0)
-					fputs($errlog, time_prefix()."Notice: Fleet ".$process['fleet']." had status 0.\n");
-				else
-					fputs($errlog, time_prefix()."Warning: Fleet ".$process['fleet']." had status ".$fleet->getStatus().". The time was ".$process['time'].". Please re-put it into the database if you want it to be processed.\n");
-			}
-			else arrive($fleet);
-			unset($fleet);
-		}
 		if(defined('terminate') && terminate)
 		{
 			fputs($errlog, time_prefix()."Terminated.\n");
