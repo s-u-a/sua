@@ -177,7 +177,6 @@ EOF
 	function arrive($fleet_id)
 	{
 		global $errlog;
-		global $process;
 
 		if(function_exists('pcntl_fork'))
 		{
@@ -194,10 +193,12 @@ EOF
 
 			if($fleet->getStatus() > 1 || $fleet->getNextArrival() > time() || !$fleet->arriveAtNextTarget())
 			{
-				fputs($errlog, time_prefix()."Warning: Couldn't complete fleet ".$process['fleet'].". The time was ".$process['time'].". Gonna process it later.\n");
+				fputs($errlog, time_prefix()."Warning: Couldn't complete fleet ".$fleet_id.". Gonna process it later.\n");
 				$eventfile = Classes::EventFile();
-				$eventfile->addNewFleet(time()+EVENTHANDLER_INTERVAL, $process['fleet']);
+				$eventfile->addNewFleet(time()+EVENTHANDLER_INTERVAL, $fleet_id);
 			}
+
+			unset($fleet);
 
 			Classes::resetInstances();
 			if($pid != -1) exit(0);
