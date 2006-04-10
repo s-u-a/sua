@@ -184,7 +184,7 @@ EOF
 
 		if(function_exists('pcntl_fork'))
 		{
-			Classes::resetInstances();
+			Classes::resetInstances(false, false);
 			$pid = pcntl_fork();
 		}
 		else $pid = -1;
@@ -203,11 +203,7 @@ EOF
 			Classes::resetInstances();
 			if($pid != -1) exit(0);
 		}
-		else
-		{
-			pcntl_waitpid($pid, &$status);
-			$fleet->read(true);
-		}
+		else pcntl_waitpid($pid, &$status);
 	}
 
 	function walkthrough_users()

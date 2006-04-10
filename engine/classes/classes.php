@@ -35,7 +35,7 @@
 			return $objectInstances[$classname][$p1];
 		}
 
-		function resetInstances($classname=false)
+		function resetInstances($classname=false, $destruct=true)
 		{
 			global $objectInstances;
 
@@ -55,8 +55,8 @@
 
 			foreach($objectInstances[$classname] as $key=>$instance)
 			{
-				/*if(method_exists($instance, '__destruct'))
-					$instance->__destruct();*/
+				if($destruct && method_exists($instance, '__destruct'))
+					$instance->__destruct();
 				unset($objectInstances[$classname][$key]);
 			}
 			unset($objectInstances[$classname]);
@@ -87,5 +87,5 @@
 		function IMFile() { return new IMFile(); }
 	}
 
-	//register_shutdown_function(array('Classes', 'resetInstances'));
+	register_shutdown_function(array('Classes', 'resetInstances'));
 ?>
