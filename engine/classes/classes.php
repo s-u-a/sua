@@ -15,8 +15,6 @@
 				exit();
 			}
 
-			if($p1) $p1 = strtolower($p1);
-
 			if(!isset($objectInstances)) $objectInstances = array();
 			if(!isset($objectInstances[$classname])) $objectInstances[$classname] = array();
 			if(!isset($objectInstances[$classname][$p1]))
