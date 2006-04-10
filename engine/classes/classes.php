@@ -55,8 +55,8 @@
 
 			foreach($objectInstances[$classname] as $key=>$instance)
 			{
-				if(method_exists($instance, '__destruct'))
-					$instance->__destruct();
+				/*if(method_exists($instance, '__destruct'))
+					$instance->__destruct();*/
 				unset($objectInstances[$classname][$key]);
 			}
 			unset($objectInstances[$classname]);
@@ -84,7 +84,8 @@
 		# SQLite
 		function EventFile() { return new EventFile(); }
 		function Highscores() { return new Highscores(); }
+		function IMFile() { return new IMFile(); }
 	}
 
-	register_shutdown_function(array('Classes', 'resetInstances'));
+	//register_shutdown_function(array('Classes', 'resetInstances'));
 ?>

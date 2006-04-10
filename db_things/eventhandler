@@ -181,13 +181,17 @@ EOF
 
 		if($fleet->getNextArrival() > time())
 			return false;
-		if(function_exists('pcntl_fork')) $pid = pcntl_fork();
+
+		if(function_exists('pcntl_fork'))
+		{
+			Classes::resetInstances();
+			$pid = pcntl_fork();
+		}
 		else $pid = -1;
 
 		if(!$pid || $pid == -1)
 		{
 			if($pid != -1) set_time_limit(30);
-			Classes::resetInstances();
 
 			if(!$fleet->arriveAtNextTarget())
 			{
@@ -199,7 +203,11 @@ EOF
 			Classes::resetInstances();
 			if($pid != -1) exit(0);
 		}
-		else pcntl_waitpid($pid, &$status);
+		else
+		{
+			pcntl_waitpid($pid, &$status);
+			$fleet->read(true);
+		}
 	}
 
 	function walkthrough_users()
