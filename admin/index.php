@@ -1,8 +1,8 @@
 <?php
 	require('include.php');
-	
+
 	__autoload('User');
-	
+
 	if($admin_array['permissions'][1] && isset($_POST['ghost_username']) && User::userExists(trim($_POST['ghost_username'])))
 	{
 		# Als Geist als ein Benutzer anmelden
@@ -75,7 +75,7 @@
 			if(!$to)
 			{
 				# An alle Benutzer versenden
-	
+
 				$dh = opendir(DB_PLAYERS);
 				while(($uname = readdir($dh)) !== false)
 					$message->addUser(urldecode($uname), 6);
@@ -85,7 +85,7 @@
 			{
 				$to = explode("\r\n", $to);
 				foreach($to as $t)
-					$message->addUser(urldecode($uname), 6);
+					$message->addUser(urldecode($t), 6);
 			}
 			unset($message);
 		}
