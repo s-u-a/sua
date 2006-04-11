@@ -14,7 +14,7 @@
 			{
 				$instance = new $classname($p1);
 				$p1 = $instance->getName();
-				$objectInstances[$p1] = $instance;
+				$objectInstances[$classname][$p1] = $instance;
 			}
 
 			return $objectInstances[$classname][$p1];
