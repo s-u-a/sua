@@ -186,7 +186,7 @@ EOF
 
 			$fleet = Classes::Fleet($fleet_id);
 
-			if($fleet->getStatus() > 1 || $fleet->getNextArrival() > time() || !$fleet->arriveAtNextTarget())
+			if($fleet->getStatus() > 0 && ($fleet->getStatus() > 1 || $fleet->getNextArrival() > time() || !$fleet->arriveAtNextTarget()))
 			{
 				fputs($errlog, time_prefix()."Warning: Couldn't complete fleet ".$fleet_id.". Gonna process it later.\n");
 				$eventfile = Classes::EventFile();
