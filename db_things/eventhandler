@@ -115,18 +115,13 @@ EOF
 		}
 
 		fputs($errlog, $errstr);
-		fputs($errlog, " in ".$errfile." on line ".$errline.".\n");
+		fputs($errlog, " in ".$errfile." on line ".$errline.".");
 
-		global $verbose;
-		if($verbose)
-		{
-			fputs($errlog, "Error context:\n");
-			ob_start();
-			var_dump($errcontext);
-			$context_string = ob_get_contents();
-			ob_end_clean();
-			fputs($errlog, $context_string."\n");
-		}
+		global $process;
+		if(isset($process) && isset($process['fleet']))
+			fputs($errlog, " Last fleet was ".$process['fleet'].".");
+
+		fputs($errlog, "\n");
 	}
 
 	function sig_handler($signo)
