@@ -4,30 +4,17 @@
 
 	class Classes
 	{
-		function Dataset($classname, $p1=false, $reset=false)
+		function Dataset($classname, $p1=false)
 		{
 			global $objectInstances;
-
-			if($reset)
-			{
-				echo "Use deprecated reset method Classes::Dataset. Please use the <a href=\"https://bugs.s-u-a.net/\">Bugtracker</a>.\n";
-				ob_end_clean();
-				exit();
-			}
 
 			if(!isset($objectInstances)) $objectInstances = array();
 			if(!isset($objectInstances[$classname])) $objectInstances[$classname] = array();
 			if(!isset($objectInstances[$classname][$p1]))
 			{
-				$objectInstances[$classname][$p1] = new $classname($p1);
-				$p1_2 = strtolower($objectInstances[$classname][$p1]->getName());
-				if($p1_2 != $p1)
-				{
-					if(!isset($objectInstances[$classname][$p1_2]))
-						$objectInstances[$classname][$p1_2] = $objectInstances[$classname][$p1];
-					unset($objectInstances[$classname][$p1]);
-					$p1 = $p1_2;
-				}
+				$instance = new $classname($p1);
+				$p1 = $instance->getName();
+				$objectInstances[$p1] = $instance;
 			}
 
 			return $objectInstances[$classname][$p1];
