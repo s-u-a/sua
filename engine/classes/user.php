@@ -3,7 +3,6 @@
 	{
 		protected $save_dir = DB_PLAYERS;
 		protected $active_planet = false;
-		protected $planet_info = false;
 		private $datatype = 'user';
 		protected $recalc_highscores = array(false,false,false,false,false);
 
@@ -2508,6 +2507,7 @@
 			$planets = $this->getPlanetsList();
 			foreach($planets as $planet)
 			{
+				$this->setActivePlanet($planet);
 				if(!$this->removePlanet()) return false;
 			}
 
