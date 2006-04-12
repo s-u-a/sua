@@ -9,7 +9,7 @@
 		if($flotte->callBack($_SESSION['username']))
 			delete_request();
 	}
-	
+
 	function makeFleetString($user, $fleet)
 	{
 		$user = Classes::User($user);
@@ -22,7 +22,7 @@
 		$flotte_string = implode('; ', $flotte_string);
 		return $flotte_string;
 	}
-	
+
 	login_gui::html_head();
 ?>
 <ul id="planeten-umbenennen">
@@ -32,7 +32,7 @@
 	if(!$me->checkSetting('notify'))
 	{
 		global $message_type_names;
-		
+
 		$ncount = array(
 			1 => 0,
 			2 => 0,
@@ -43,7 +43,7 @@
 			7 => 0
 		);
 		$ges_ncount = 0;
-		
+
 		$cats = $me->getMessageCategoriesList();
 		foreach($cats as $cat)
 		{
@@ -99,7 +99,7 @@
 			if(!$fl->getStatus()) continue;
 			$users = $fl->getUsersList();
 			if(count($users) <= 0) continue;
-			
+
 			$me_in_users = array_search($_SESSION['username'], $users);
 			if($me_in_users !== false)
 			{
@@ -107,13 +107,13 @@
 				unset($users[$me_in_users]);
 			}
 			else $first_user = array_shift($users);
-			
+
 			if($me_in_users !== false) $string = 'Ihre';
 			else $string = 'Eine';
-			
+
 			$string .= ' <span class="beschreibung schiffe" title="'.makeFleetString($first_user, $fl->getFleetList($first_user)).'">Flotte</span> kommt ';
-			
-			
+
+
 			if(count($users) > 0)
 			{
 				$other_strings = array();
@@ -133,9 +133,9 @@
 					$string .= 'zusammen mit '.implode(', ', $other_strings).' und '.$last_string;
 				}
 			}
-			
+
 			$string .= ' ';
-			
+
 			$from_pos = $fl->getLastTarget($first_user);
 			if($me->isOwnPlanet($from_pos))
 			{
@@ -156,9 +156,9 @@
 				}
 				else $string .= 'vom Planeten '.$from_pos.' (unbesiedelt)';
 			}
-			
+
 			$string .= ' und erreicht ';
-			
+
 			$to_pos = $fl->getCurrentTarget();
 			if($me->isOwnPlanet($to_pos))
 			{
@@ -179,7 +179,7 @@
 				}
 				else $string .= ' den Planeten '.$to_pos.' (unbesiedelt).';
 			}
-			
+
 			if($fl->isFlyingBack())
 				$string .= ' Ihr Auftrag lautete ';
 			else $string .= ' Ihr Auftrag lautet ';
@@ -221,14 +221,14 @@
 			$string .= '<span class="beschreibung transport"';
 			if(strlen($ress_string) > 0) $string .= ' title="'.$ress_string.'"';
 			$string .= '>';
-			
+
 			$type = $fl->getCurrentType();
 			if(isset($type_names[$type]))
 				$string .= htmlentities($type_names[$type]);
 			else
 				$string .= utf8_htmlentities($type);
 			$string .= '</span>.';
-			
+
 			$handel = array(array(0, 0, 0, 0, 0), array());
 			foreach($users as $user)
 			{
@@ -244,22 +244,13 @@
 					else $handel[1][$id] = $count;
 				}
 			}
-			
+
 			if(array_sum($handel[0]) > 0 || array_sum($handel[1]) > 0)
 			{
 				$string .= ' Es wird ein <span class="beschreibung handel" title="';
 				$string .= 'Carbon: '.ths($handel[0][0]).', Aluminium: '.ths($handel[0][1]).', Wolfram: '.ths($handel[0][2]).', Radium: '.ths($handel[0][3]).', Tritium: '.ths($handel[0][4]);
 				if(array_sum($handel[1]) > 0)
-				{
-					$string .= '; ';
-					$rob = array();
-					foreach($handel[1] as $id=>$anzahl)
-					{
-						if(!isset($items['roboter'][$id]) || $anzahl <= 0)
-							$rob[] = utf8_htmlentities($items['roboter'][$id]['name']).': '.ths($anzahl);
-					}
-					$string .= implode(', ', $rob);
-				}
+					$string .= '; '.makeItemsString($handel[1]);
 				$string .= '">Handel</span> durchgeführt werden.';
 			}
 ?>
@@ -360,7 +351,7 @@
 <?php
 			}
 		}
-		
+
 		if($show_building['roboter'] && $me->getItemLevel('B9', 'gebaeude') > 0)
 		{
 ?>
@@ -406,7 +397,7 @@
 <?php
 			}
 		}
-		
+
 		if($show_building['schiffe'] && $me->getItemLevel('B10', 'gebaeude') > 0)
 		{
 ?>
@@ -452,7 +443,7 @@
 <?php
 			}
 		}
-		
+
 		if($show_building['verteidigung'] && $me->getItemLevel('B10', 'gebaeude') > 0)
 		{
 ?>
@@ -503,7 +494,7 @@
 	</li>
 <?php
 	}
-	
+
 	$me->setActivePlanet($active_planet);
 ?>
 </ol>
