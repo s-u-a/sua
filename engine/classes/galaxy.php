@@ -296,7 +296,9 @@
 		}
 
 		function setPlanetSize($system, $planet, $size)
-		{ # UNTESTED!!!
+		{
+			return true; # UNTESTED!!!
+
 			if($this->status != 1) return false;
 
 			$system = (int) $system;

@@ -1,0 +1,36 @@
+#!/usr/bin/php
+<?php
+	$USE_OB = false;
+	require('../engine/include.php');
+
+	if(!isset($_SERVER['argv'][1]))
+	{
+		echo "Usage: ".$_SERVER['argv'][0]." [Database dir]\n";
+		exit(1);
+	}
+	else
+		define_globals($_SERVER['argv'][1]);
+
+	$dh = opendir(DB_PLAYERS);
+	while(($fname = readdir($dh)) !== false)
+	{
+		if($fname == '.' || $fname == '..') continue;
+
+		$user_obj = new User($fname);
+		if(!$user_obj->getStatus())
+		{
+			unset($user_obj);
+			continue;
+		}
+
+		foreach($user_obj->getPlanetsList() as $planet)
+		{
+			$planet = explode(':', $planet);
+			$galaxy_obj = Classes::Galaxy($planet[0]);
+			$galaxy_obj->setPlanetOwner($planet[1], $planet[2], $user_obj->getName());
+		}
+		unset($user_obj);
+	}
+	closedir($dh);
+	exit(0);
+?>

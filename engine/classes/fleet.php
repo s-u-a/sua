@@ -2038,7 +2038,7 @@ EOF
 				$item_info = $users_verteidiger[$name]->getItemInfo($id, false, true, true);
 
 				if(isset($verteidiger[$name]) && isset($verteidiger[$name][$id]))
-					$anzahl = $angreifer[$name][$id];
+					$anzahl = $verteidiger[$name][$id];
 				else $anzahl = 0;
 
 				$diff = $anzahl_old-$anzahl;

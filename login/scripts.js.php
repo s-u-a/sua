@@ -389,14 +389,11 @@ function fast_action(node, action_type, galaxy, system, planet)
 {
 	var xmlhttp = new XMLHttpRequest();
 	var request_url = '<?=h_root?>/login/scripts/ajax.php?action='+encodeURIComponent(action_type)+'&action_galaxy='+encodeURIComponent(galaxy)+'&action_system='+encodeURIComponent(system)+'&action_planet='+encodeURIComponent(planet)+'&'+encodeURIComponent(session_cookie)+'='+encodeURIComponent(session_id);
-	xmlhttp.open('GET', request_url, true);
-
-	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4 && xmlhttp.status == 200 && xmlhttp.responseXML)
-			popup_message(xmlhttp.responseXML.getElementsByTagName('result')[0].firstChild.data, xmlhttp.responseXML.getElementsByTagName('classname')[0].firstChild.data, node);
-	}
-
+	xmlhttp.open('GET', request_url, false);
 	xmlhttp.send(null);
+
+	if (xmlhttp.readyState == 4 && xmlhttp.status == 200 && xmlhttp.responseXML)
+		popup_message(xmlhttp.responseXML.getElementsByTagName('result')[0].firstChild.data, xmlhttp.responseXML.getElementsByTagName('classname')[0].firstChild.data, node);
 
 	return false;
 }
