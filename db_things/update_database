@@ -4,6 +4,7 @@
 
 	fputs(STDERR, "This script has not been tested! Please report any bugs to https://bugs.s-u-a.net/\n");
 
+	$USE_OB = false;
 	require('../engine/include.php');
 
 	if(!isset($_SERVER['argv'][1]))

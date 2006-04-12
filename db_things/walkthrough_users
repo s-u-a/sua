@@ -1,9 +1,12 @@
 #!/usr/bin/php
 <?php
 	if(!isset($errlog)) $errlog = STDERR;
-	
+
+	$USE_OB = false;
 	require_once('../engine/include.php');
-	
+
+	set_time_limit(0);
+
 	if(!defined('DONT_EXIT'))
 	{
 		if(!isset($_SERVER['argv'][1]))
@@ -22,28 +25,28 @@
 	# Alte Nachrichten loeschen
 	$deleted_messages = 0;
 	$processed_messages = array();
-	
+
 	global $message_type_times;
 	$max_ages = $message_type_times;
 	foreach($max_ages as $k=>$v) $max_ages[$k] *= 86400;
-	
+
 	$dh = opendir(DB_PLAYERS);
 	while(($filename = readdir($dh)) !== false)
 	{
 		if(!is_file(DB_PLAYERS.'/'.$filename))
 			continue;
-		
+
 		$user = Classes::User(urldecode($filename));
 		if(!$user->getStatus()) continue;
-		
+
 		$last_activity = $user->getLastActivity();
 		if($last_activity !== false)
 			$days = ceil((time()-$last_activity)/86400);
 		else
 			$days = ceil((time()-$user->getRegistrationTime())/86400);
-		
+
 		$today = date('Y-m-d');
-		
+
 		# Wenn der Spieler inaktiv ist, loeschen
 		if($last_activity !== false)
 		{
@@ -113,27 +116,27 @@
 				{
 					if($val < $min && $val != 0) $min = $val;
 				}
-				
+
 				$ress[0] /= $min;
 				$ress[1] /= $min;
 				$ress[2] /= $min;
 				$ress[3] /= $min;
 				$ress[4] /= $min;
 			}
-			
+
 			$ress[0] = pow($ress[0], 1/($days+1));
 			$ress[1] = pow($ress[1], 1/($days+1));
 			$ress[2] = pow($ress[2], 1/($days+1));
 			$ress[3] = pow($ress[3], 1/($days+1));
 			$ress[4] = pow($ress[4], 1/($days+1));
-			
+
 			$ges_ress[0] += $ress[0];
 			$ges_ress[1] += $ress[1];
 			$ges_ress[2] += $ress[2];
 			$ges_ress[3] += $ress[3];
 			$ges_ress[4] += $ress[4];
 		}
-		
+
 		$message_categories = $user->getMessageCategoriesList();
 		foreach($message_categories as $category)
 		{
@@ -152,7 +155,7 @@
 				}
 			}
 		}
-		
+
 		unset($user);
 		Classes::resetInstances();
 	}
@@ -204,19 +207,19 @@
 
 	flock($fh, LOCK_UN);
 	fclose($fh);
-	
+
 	fputs($errlog, "Handelskurs recalculated.\n");
-	
-	
+
+
 	# Nachrichten, die niemandem gehoeren, loeschen
-	
+
 	$dh = opendir(DB_MESSAGES);
 	while(($fname = readdir($dh)) !== false)
 	{
 		if($fname[0] == '.') continue;
-		
+
 		$fname = urldecode($fname);
-		
+
 		if(!isset($processed_messages[$fname]))
 		{
 			$message = Classes::Message($fname);
@@ -224,32 +227,32 @@
 		}
 	}
 	closedir($dh);
-	
+
 	$processed_messages = count($processed_messages);
 	Classes::resetInstances();
-	
+
 	fputs($errlog, "Checked ".$processed_messages." messages.\n");
 	fputs($errlog, "Deleted ".$deleted_messages." messages.\n");
-	
-	
+
+
 	# Oeffentliche Nachrichten loeschen
-	
+
 	$processed_messages_public = 0;
 	$deleted_messages_public = 0;
-	
+
 	global $public_messages_time;
 	$max_age = $public_messages_time*86400;
 	$dh = opendir(DB_MESSAGES_PUBLIC);
 	while(($fname = readdir($dh)) !== false)
 	{
 		if($fname[0] == '.') continue;
-		
+
 		$fname = urldecode($fname);
-		
+
 		$message = Classes::PublicMessage($fname);
 		if(!$message->getStatus()) continue;
 		else $processed_messages_public++;
-		
+
 		if(time()-$message->getLastViewTime() > $max_age)
 		{
 			$message->destroy();
@@ -257,11 +260,11 @@
 		}
 	}
 	closedir($dh);
-	
+
 	Classes::resetInstances();
-	
+
 	fputs($errlog, "Checked ".$processed_messages_public." public messages.\n");
 	fputs($errlog, "Deleted ".$deleted_messages_public." public messages.\n");
-	
+
 	if(!defined('DONT_EXIT')) exit(0);
 ?>
