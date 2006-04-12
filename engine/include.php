@@ -459,6 +459,44 @@
 		return $version;
 	}
 
+	function get_revision()
+	{
+		# Aktuell laufende Revision herausfinden
+
+		if(!is_dir(s_root.'/.svn')) return false;
+
+		$revision_file = s_root.'/revision';
+		$entries_file = s_root.'/.svn/entries';
+
+		if(!is_file($revision_file) && !is_file($entries_file)) return false;
+
+		if(is_file($entries_file))
+		{
+			if(!is_file($revision_file) || filemtime($entries_file) > filemtime($revision_file))
+			{
+				# Update revision file
+				if(!function_exists('simplexml_load_file')) return false;
+				$entries_xml = simplexml_load_file($entries_file);
+				if(!$entries_xml) return false;
+
+				$new_revision = false;
+				foreach($entries_xml->{'wc_entries'}[0]->entry as $e)
+				{
+					if($e['name'] == '')
+					{
+						$new_revision = $e['revision'];
+						break;
+					}
+				}
+				if($new_revision === false) return false;
+
+				file_put_contents($revision_file, $new_revision, LOCK_EX);
+			}
+		}
+
+		return floor(file_get_contents($revision_file));
+	}
+
 	function get_databases()
 	{
 		# Liste der Runden/Universen herausfinden

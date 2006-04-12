@@ -1,5 +1,5 @@
 <?php
-	$include_filename = substr(__FILE__, 0, strrpos(__FILE__, '/')).'/../../engine/include.php';
+	$include_filename = dirname(__FILE__).'/../../engine/include.php';
 	$LOGIN = true;
 	require($include_filename);
 
@@ -337,7 +337,7 @@
 		<ul id="gameinfo">
 			<li><?=utf8_htmlentities($_SESSION['username'])?></li>
 			<li><?=utf8_htmlentities($databases[$_SESSION['database']][1])?></li>
-			<li><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/changelog.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Changelog anzeigen">Version <?=VERSION?></a></li>
+			<li><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/changelog.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Changelog anzeigen">Version <?=VERSION?><?php if(($rev = get_revision()) !== false){?> <span class="revision">(Revision <?=htmlspecialchars($rev)?>)<?php }?></span></a></li>
 		</ul>
 <?php
 			$cur_ress = $me->getRess();
