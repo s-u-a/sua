@@ -335,9 +335,17 @@
 ?>
 		</div>
 		<ul id="gameinfo">
-			<li><?=utf8_htmlentities($_SESSION['username'])?></li>
-			<li><?=utf8_htmlentities($databases[$_SESSION['database']][1])?></li>
-			<li><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/changelog.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Changelog anzeigen">Version <?=VERSION?><?php if(($rev = get_revision()) !== false){?> <span class="revision">(Revision <?=htmlspecialchars($rev)?>)<?php }?></span></a></li>
+			<li class="username"><?=utf8_htmlentities($_SESSION['username'])?></li>
+			<li class="database"><?=utf8_htmlentities($databases[$_SESSION['database']][1])?></li>
+			<li class="version"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/changelog.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Changelog anzeigen">Version <?=VERSION?></a></li>
+<?php
+			if(($rev = get_revision()) !== false)
+			{
+?>
+			<li class="revision">Revision <?=htmlspecialchars($rev)?></li>
+<?php
+			}
+?>
 		</ul>
 <?php
 			$cur_ress = $me->getRess();

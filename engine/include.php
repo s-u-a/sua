@@ -477,7 +477,7 @@
 				# Update revision file
 				if(!function_exists('simplexml_load_file')) return false;
 				$entries_xml = new DomDocument;
-				$entries_xml->loadXML(file_get_contents($entries_file));
+				$entries_xml->loadXML(file_get_contents($entries_file), LIBXML_NSCLEAN);
 				if(!$entries_xml) return false;
 
 				$new_revision = false;
