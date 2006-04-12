@@ -476,15 +476,16 @@
 			{
 				# Update revision file
 				if(!function_exists('simplexml_load_file')) return false;
-				$entries_xml = simplexml_load_file($entries_file);
+				$entries_xml = new DomDocument;
+				$entries_xml->loadXML(file_get_contents($entries_file));
 				if(!$entries_xml) return false;
 
 				$new_revision = false;
-				foreach($entries_xml->{'wc_entries'}[0]->entry as $e)
+				foreach($entries_xml->getElementsByTagName('entry') as $e)
 				{
-					if($e['name'] == '')
+					if($e->hasAttribute('name') && $e->getAttribute('name') == '' && $e->hasAttribute('revision'))
 					{
-						$new_revision = $e['revision'];
+						$new_revision = $e->getAttribute('revision');
 						break;
 					}
 				}
