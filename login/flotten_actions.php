@@ -1,27 +1,27 @@
 <?php
 	require('scripts/include.php');
-	
+
 	if(!isset($_GET['action']))
 		$_GET['action'] = false;
-	
+
 	login_gui::html_head();
-	
+
 	switch($_GET['action'])
 	{
 		case 'handel':
 			if(!isset($_GET['id'])) $flotten_id = false;
 			else $flotten_id = $_GET['id'];
-			
+
 			$fleet = Classes::Fleet($_GET['id']);
 			if(!$fleet->getStatus()) $flotten_id = false;
 			$flotten_id = $fleet->getName();
-			
+
 			$planet_key = $me->getPlanetByPos($fleet->getCurrentTarget());
 			$type = $fleet->getCurrentType();
-			
+
 			if($planet_key === false || $type != '4' || $fleet->isFlyingBack())
 				$flotten_id = false;
-			
+
 			if(!$flotten_id)
 			{
 ?>
@@ -30,7 +30,7 @@
 				login_gui::html_foot();
 				exit();
 			}
-			
+
 			$active_planet = $me->getActivePlanet();
 			$me->setActivePlanet($planet_key);
 			$available_ress = $me->getRess();
@@ -44,7 +44,7 @@
 			foreach($fleet->getUsersList() as $username)
 			{
 				$verb = $me->isVerbuendet($username);
-				
+
 				if($username == $_SESSION['username']) $class = 'eigen';
 				elseif($verb) $class = 'verbuendet';
 				else $class = 'fremd';
@@ -56,13 +56,13 @@
 				$trans = $fleet->getTransportCapacity($username);
 				$handel = $fleet->getHandel($username);
 				$remaining_trans = array($trans[0]-array_sum($handel[0]), $trans[1]-array_sum($handel[1]));
-				
+
 				if(isset($_POST['handel_username']) && $_POST['handel_username'] == $username && isset($_POST['handel']) && is_array($_POST['handel']))
 				{
 					if(!isset($_POST['handel_type']) || ($_POST['handel_type'] != 'set' && $_POST['handel_type'] != 'add'))
 						$type = ($verb ? 'set' : 'add');
 					else $type = $_POST['handel_type'];
-					
+
 					$new_handel = array(array(0,0,0,0,0),array());
 					if(isset($_POST['handel'][0]) && is_array($_POST['handel'][0]))
 					{
@@ -74,7 +74,7 @@
 					}
 					if(isset($_POST['handel'][1]) && is_array($_POST['handel'][1]))
 						$new_handel[1] = $_POST['handel'][1];
-					
+
 					foreach($new_handel[0] as $i=>$v)
 					{
 						$av = $available_ress[$i];
@@ -84,7 +84,7 @@
 							if(!$verb && $v < $add) $v = $add;
 							$av += $add;
 						}
-							
+
 						if($v > $av) $v = $av;
 						$new_handel[0][$i] = $v;
 					}
@@ -103,12 +103,12 @@
 						if($v > $av) $new_handel[1][$i] = $av;
 						$new_handel[1][$i] = $v;
 					}
-					
+
 					if($type == 'set') $max = $trans;
 					else $max = $remaining_trans;
-					
+
 					$new_handel = array(fit_to_max($new_handel[0], $max[0]), fit_to_max($new_handel[1], $max[1]));
-					
+
 					if($type == 'set') $status = $fleet->setHandel($_POST['handel_username'], $new_handel[0], $new_handel[1]);
 					else $status = $fleet->addHandel($_POST['handel_username'], $new_handel[0], $new_handel[1]);
 					if($status)
@@ -132,7 +132,7 @@
 							}
 						}
 						else list($ress_sub, $rob_sub) = $new_handel;
-						
+
 						$me->subtractRess($ress_sub, false);
 						$available_ress = $me->getRess();
 						foreach($rob_sub as $id=>$sub)
@@ -140,7 +140,7 @@
 							$available_robs[$id] -= $sub;
 							$me->changeItemLevel($ress_sub, -$sub, 'roboter');
 						}
-						
+
 						if($type == 'set') $handel = $new_handel;
 						else
 						{
@@ -155,7 +155,7 @@
 						$remaining_trans = array($trans[0]-array_sum($handel[0]), $trans[1]-array_sum($handel[1]));
 					}
 				}
-				
+
 				if($verb)
 				{
 					$mess1 = 'Sie können das Handelsangebot zu diesem Spieler ändern, da Sie mit ihm verbündet sind.';
@@ -305,16 +305,19 @@
 			</tfoot>
 <?php
 				}
+?>
+		</table>
+<?php
 			}
-			
+
 			break;
-		
+
 		default:
 ?>
 <p class="error">Ungültige Aktion.</p>
 <?php
 			break;
 	}
-	
+
 	login_gui::html_foot();
 ?>
