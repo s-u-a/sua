@@ -49,19 +49,31 @@
 		{
 			if(!$this->status) return false;
 
-			return array_keys($this->raw[0]);
+			$targets = array_keys($this->raw[0]);
+			foreach($targets as $i=>$target)
+			{
+				if(substr($target, -1) == 'T') $targets[$i] = substr($target, 0, -1);
+			}
+			return $targets;
 		}
 
 		function getOldTargetsList()
 		{
 			if(!$this->status) return false;
 
-			return array_keys($this->raw[3]);
+			$targets = array_keys($this->raw[3]);
+			foreach($targets as $i=>$target)
+			{
+				if(substr($target, -1) == 'T') $targets[$i] = substr($target, 0, -1);
+			}
+			return $targets;
 		}
 
 		function addTarget($pos, $type, $back)
 		{
 			if(!$this->status) return false;
+
+			if($type == 2 && !$back) $pos .= 'T';
 
 			if(isset($this->raw[0][$pos])) return false;
 
@@ -91,7 +103,9 @@
 			if(!$this->status) return false;
 
 			$keys = array_keys($this->raw[0]);
-			return array_shift($keys);
+			$t = array_shift($keys);
+			if(substr($t, -1) == 'T') $t = substr($t, 0, -1);
+			return $t;
 		}
 
 		function getLastTarget($user=false)
@@ -104,7 +118,9 @@
 			if($user == $first_user && count($this->raw[3]) > 0)
 			{
 				$keys = array_keys($this->raw[3]);
-				return array_pop($keys);
+				$l = array_pop($keys);
+				if(substr($l, -1) == 'T') $l = substr($l, 0, -1);
+				return $l;
 			}
 			else
 			{
@@ -164,6 +180,7 @@
 				$user2 = array_shift($keys);
 				$koords = array_keys($this->raw[0]);
 				$koords = array_shift($koords);
+				if(substr($koords, -1) == 'T') $koords = substr($koords, 0, -1);
 				$time = $this->calcTime($user2, $this->raw[1][$user2][1], $koords);
 				$time2 = $this->calcTime($user2, $from, $koords);
 				if($time2 > $time) return false;
@@ -383,6 +400,7 @@
 				$old_target = $this->raw[1][$user][1];
 				foreach($this->raw[0] as $target=>$info)
 				{
+					if(substr($target, -1) == 'T') $target = substr($target, 0, -1);
 					$tritium += $this->getTritium($user, $old_target, $target);
 					$old_target = $target;
 				}
@@ -416,7 +434,7 @@
 
 		function getTime($i)
 		{
-			if(!$this->status || !isset($this->raw[0][$i])) return false;
+			if(!$this->status || (!isset($this->raw[0][$i]) && !isset($this->raw[0][$i.'T']))) return false;
 			if(count($this->raw[1]) <= 0) return false;
 
 			$keys = array_keys($this->raw[1]);
@@ -451,15 +469,17 @@
 
 			$start = $this->raw[1][$user][1];
 			$keys = array_keys($this->raw[0]);
-			$to = array_shift($keys);
+			$to = $to_t = array_shift($keys);
+			if(substr($to, -1) == 'T') $to = substr($to, 0, -1);
 			if(count($this->raw[3]) > 0)
 			{
 				$keys = array_keys($this->raw[3]);
-				$from = array_pop($keys);
+				$from = $from_t = array_pop($keys);
+				if(substr($from, -1) == 'T') $from = substr($from, 0, -1);
 			}
-			else $from = $start;
+			else $from = $from_t = $start;
 
-			if($to == $start) return false;
+			if($to_t == $start) return false;
 
 			# Aus der Eventdatei entfernen
 			$event_obj = Classes::EventFile();
@@ -477,7 +497,7 @@
 			$back_tritium = $total_tritium*$missing_part;
 
 			$new_raw = array(
-				array($start => array($this->raw[0][$to][0], 1)),
+				array($start => array($this->raw[0][$to_t][0], 1)),
 				array($user => $this->raw[1][$user]),
 				time()-($time1-$back_time),
 				array_merge($this->raw[3], $this->raw[0])
@@ -553,7 +573,7 @@
 		{
 			if(!$this->status) return false;
 
-			return isset($this->raw[0][$target]);
+			return (isset($this->raw[0][$target]) || isset($this->raw[0][$target.'T']));
 		}
 
 		function start()
@@ -568,7 +588,8 @@
 
 			# Geschwindigkeitsfaktoren der anderen Teilnehmer abstimmen
 			$koords = array_keys($this->raw[0]);
-			$koords = array_shift($koords);
+			$koords = $koords_t = array_shift($koords);
+			if(substr($koords, -1) == 'T') $koords = substr($koords, 0, -1);
 			$time = $this->calcTime($user, $this->raw[1][$user][1], $koords);
 			if(count($keys) > 1)
 			{
@@ -659,7 +680,8 @@
 			global $types_message_types;
 
 			$keys = array_keys($this->raw[0]);
-			$next_target = array_shift($keys);
+			$next_target = $next_target_nt = array_shift($keys);
+			if(substr($next_target_nt, -1) == 'T') $next_target_nt = substr($next_target_nt, 0, -1);
 			$keys2 = array_keys($this->raw[1]);
 			$first_user = array_shift($keys2);
 
@@ -670,7 +692,7 @@
 			if($type == 1 && !$back)
 			{
 				# Besiedeln
-				$target = explode(':', $next_target);
+				$target = explode(':', $next_target_nt);
 				$target_galaxy = Classes::Galaxy($target[0]);
 				$target_owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
 
@@ -680,8 +702,8 @@
 					$message = Classes::Message();
 					if($message->create())
 					{
-						$message->text('Ihre Flotte erreicht den Planeten '.$next_target.' und will mit der Besiedelung anfangen. Jedoch ist der Planet bereits vom Spieler '.$target_owner." besetzt, und Ihre Flotte macht sich auf den R\xc3\xbcckweg.");
-						$message->subject('Besiedelung von '.$next_target.' fehlgeschlagen');
+						$message->text('Ihre Flotte erreicht den Planeten '.$next_target_nt.' und will mit der Besiedelung anfangen. Jedoch ist der Planet bereits vom Spieler '.$target_owner." besetzt, und Ihre Flotte macht sich auf den R\xc3\xbcckweg.");
+						$message->subject('Besiedelung von '.$next_target_nt.' fehlgeschlagen');
 						$message->addUser($first_user, 5);
 					}
 				}
@@ -694,8 +716,8 @@
 						$message = Classes::Message();
 						if($message->create())
 						{
-							$message->subject('Besiedelung von '.$next_target.' fehlgeschlagen');
-							$message->text("Ihre Flotte erreicht den Planeten ".$next_target." und will mit der Besiedelung anfangen. Als Sie jedoch Ihren Zentralcomputer um Bestätigung für die Besiedelung bittet, kommt dieser durcheinander, da Sie schon so viele Planeten haben und er nicht so viele gleichzeitig kontrollieren kann, und schickt in Panik Ihrer Flotte das Signal zum Rückflug.");
+							$message->subject('Besiedelung von '.$next_target_nt.' fehlgeschlagen');
+							$message->text("Ihre Flotte erreicht den Planeten ".$next_target_nt." und will mit der Besiedelung anfangen. Als Sie jedoch Ihren Zentralcomputer um Bestätigung für die Besiedelung bittet, kommt dieser durcheinander, da Sie schon so viele Planeten haben und er nicht so viele gleichzeitig kontrollieren kann, und schickt in Panik Ihrer Flotte das Signal zum Rückflug.");
 							$message->addUser($first_user, 5);
 						}
 					}
@@ -709,14 +731,14 @@
 
 				$further = true;
 
-				$target = explode(':', $next_target);
+				$target = explode(':', $next_target_nt);
 				$target_galaxy = Classes::Galaxy($target[0]);
 				$target_owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
 				if($target_owner)
 				{
 					$target_user = Classes::User($target_owner);
 					if(!$target_user->getStatus()) $target_user = false;
-					else $target_user->setActivePlanet($target_user->getPlanetByPos($next_target));
+					else $target_user->setActivePlanet($target_user->getPlanetByPos($next_target_nt));
 				}
 				else $target_user = false;
 
@@ -728,8 +750,8 @@
 					$message_obj = Classes::Message();
 					if($message_obj->create())
 					{
-						$message_obj->subject($next_target.' unbesiedelt');
-						$message_obj->text("Ihre Flotte erreicht den Planeten ".$next_target." und will ihren Auftrag ausf\xc3\xbchren. Jedoch wurde der Planet zwischenzeitlich verlassen und Ihre Flotte macht sich auf den weiteren Weg.");
+						$message_obj->subject($next_target_nt.' unbesiedelt');
+						$message_obj->text("Ihre Flotte erreicht den Planeten ".$next_target_nt." und will ihren Auftrag ausf\xc3\xbchren. Jedoch wurde der Planet zwischenzeitlich verlassen und Ihre Flotte macht sich auf den weiteren Weg.");
 						foreach(array_keys($this->raw[1]) as $username)
 							$message_obj->addUser($username, $types_message_types[$type]);
 					}
@@ -820,9 +842,9 @@
 							{
 								$message = Classes::Message();
 								if(!$message->create()) continue;
-								$message->subject('Abbau auf '.$next_target);
+								$message->subject('Abbau auf '.$next_target_nt);
 								$message->text(sprintf(<<<EOF
-<p>Ihre Flotte erreicht das Trümmerfeld auf {$next_target} und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s Carbon, %s Aluminium, %s Wolfram und %s Radium.</p>
+<p>Ihre Flotte erreicht das Trümmerfeld auf {$next_target_nt} und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s Carbon, %s Aluminium, %s Wolfram und %s Radium.</p>
 <h3>Verbleibende Rohstoffe im Trümmerfeld</h3>
 <dl class="ress truemmerfeld-verbleibend">
 	<dt class="c-carbon">Carbon</dt>
@@ -979,7 +1001,7 @@ EOF
 								$message = Classes::Message();
 								if(!$message->create()) continue;
 								$message->text($text);
-								$message->subject("Kampf auf ".$next_target);
+								$message->subject("Kampf auf ".$next_target_nt);
 								$message->html(true);
 								$message->addUser($username, 1);
 							}
@@ -1018,7 +1040,7 @@ EOF
 							break;
 						case 4: # Transport
 							$message_text = array(
-								$target_owner => "Ein Transport erreicht Ihren Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target."). Folgende Spieler liefern Güter ab:\n"
+								$target_owner => "Ein Transport erreicht Ihren Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target_nt."). Folgende Spieler liefern Güter ab:\n"
 							);
 
 							# Rohstoffe abliefern, Handel
@@ -1026,7 +1048,7 @@ EOF
 							$make_handel_message = false;
 							foreach($this->raw[1] as $username=>$data)
 							{
-								$message_text[$username] = "Ihre Flotte erreicht den Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target.", Eigent\xc3\xbcmer: ".$target_owner.") und liefert folgende Güter ab:\n";
+								$message_text[$username] = "Ihre Flotte erreicht den Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target_nt.", Eigent\xc3\xbcmer: ".$target_owner.") und liefert folgende Güter ab:\n";
 								$message_text[$target_owner] .= $username.": ";
 								$message_text[$username] .= "Carbon: ".ths($data[3][0][0], true).", Aluminium: ".ths($data[3][0][1], true).", Wolfram: ".ths($data[3][0][2], true).", Radium: ".ths($data[3][0][3], true).", Tritium: ".ths($data[3][0][4], true);
 								$message_text[$target_owner] .= "Carbon: ".ths($data[3][0][0], true).", Aluminium: ".ths($data[3][0][1], true).", Wolfram: ".ths($data[3][0][2], true).", Radium: ".ths($data[3][0][3], true).", Tritium: ".ths($data[3][0][4], true);
@@ -1079,13 +1101,13 @@ EOF
 								{
 									if($username == $target_owner)
 									{
-										$message_obj->subject('Ankunft eines fremden Transportes auf '.$next_target);
+										$message_obj->subject('Ankunft eines fremden Transportes auf '.$next_target_nt);
 										$users = array_keys($this->raw[1]);
 										$message_obj->from(array_shift($users));
 									}
 									else
 									{
-										$message_obj->subject('Ankunft Ihres Transportes auf '.$next_target);
+										$message_obj->subject('Ankunft Ihres Transportes auf '.$next_target_nt);
 										$message_obj->from($target_owner);
 									}
 									$message_obj->text($text);
@@ -1100,7 +1122,7 @@ EOF
 							if(!$target_owner)
 							{
 								# Zielplanet ist nicht besiedelt
-								$message_text = "<h3>Spionagebericht des Planeten ".utf8_htmlentities($next_target)."</h3>\n";
+								$message_text = "<h3>Spionagebericht des Planeten ".utf8_htmlentities($next_target_nt)."</h3>\n";
 								$message_text .= "<div id=\"spionage-planet\">\n";
 								$message_text .= "\t<h4>Planet</h4>\n";
 								$message_text .= "\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
@@ -1118,7 +1140,7 @@ EOF
 								if($message->create())
 								{
 									$message->text($message_text);
-									$message->subject('Spionage des Planeten '.$next_target);
+									$message->subject('Spionage des Planeten '.$next_target_nt);
 									foreach(array_keys($this->raw[1]) as $username)
 										$message->addUser($username, $types_message_types[$type]);
 									$message->html(true);
@@ -1169,7 +1191,7 @@ EOF
 								if($diff > 5)
 									$diff = 5;
 
-								$message_text = "<h3>Spionagebericht des Planeten \xe2\x80\x9e".utf8_htmlentities($target_galaxy->getPlanetName($target[1], $target[2]))."\xe2\x80\x9c (".utf8_htmlentities($next_target).", Eigent\xc3\xbcmer: ".utf8_htmlentities($target_owner).")</h3>\n";
+								$message_text = "<h3>Spionagebericht des Planeten \xe2\x80\x9e".utf8_htmlentities($target_galaxy->getPlanetName($target[1], $target[2]))."\xe2\x80\x9c (".utf8_htmlentities($next_target_nt).", Eigent\xc3\xbcmer: ".utf8_htmlentities($target_owner).")</h3>\n";
 								$message_text .= "<div id=\"spionage-planet\">\n";
 								$message_text .= "\t<h4>Planet</h4>\n";
 								$message_text .= "\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
@@ -1261,7 +1283,7 @@ EOF
 								$message = Classes::Message();
 								if($message->create())
 								{
-									$message->subject('Spionage des Planeten '.$next_target);
+									$message->subject('Spionage des Planeten '.$next_target_nt);
 									$message->text($message_text);
 									$message->html(true);
 									$message->from($target_owner);
@@ -1272,12 +1294,12 @@ EOF
 								$message = Classes::Message();
 								if($message->create())
 								{
-									$message->subject('Fremde Flotte auf dem Planeten '.$next_target);
+									$message->subject('Fremde Flotte auf dem Planeten '.$next_target_nt);
 									$first_user = array_shift($users);
 									$from_pos_str = $this->raw[1][$first_user][1];
 									$from_pos = explode(':', $from_pos_str);
 									$from_galaxy = Classes::Galaxy($from_pos[0]);
-									$message->text("Eine fremde Flotte vom Planeten \xe2\x80\x9e".$from_galaxy->getPlanetName($from_pos[1], $from_pos[2])."\xe2\x80\x9c (".$from_pos_str.", Eigent\xc3\xbcmer: ".$first_user.") wurde von Ihrem Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target.") aus bei der Spionage gesichtet.");
+									$message->text("Eine fremde Flotte vom Planeten \xe2\x80\x9e".$from_galaxy->getPlanetName($from_pos[1], $from_pos[2])."\xe2\x80\x9c (".$from_pos_str.", Eigent\xc3\xbcmer: ".$first_user.") wurde von Ihrem Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target_nt.") aus bei der Spionage gesichtet.");
 									$message->from($first_user);
 									$message->addUser($target_owner, $types_message_types[$type]);
 								}
@@ -1328,7 +1350,7 @@ EOF
 			{
 				# Stationieren
 
-				$target = explode(':', $next_target);
+				$target = explode(':', $next_target_nt);
 				$target_galaxy = Classes::Galaxy($target[0]);
 
 				$owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
@@ -1336,19 +1358,19 @@ EOF
 				if($besiedeln || $owner == $first_user)
 				{
 					# Ueberschuessiges Tritium
-					$this->raw[1][$first_user][3][2] += $this->getTritium($first_user, $this->raw[1][$first_user][1], $next_target);
+					$this->raw[1][$first_user][3][2] += $this->getTritium($first_user, $this->raw[1][$first_user][1], $next_target_nt);
 				}
 
 				if($besiedeln)
 				{
 					$user_obj = Classes::User($first_user);
-					if($user_obj->registerPlanet($next_target) === false)
+					if($user_obj->registerPlanet($next_target_nt) === false)
 						return false;
 					if(isset($this->raw[1][$first_user][0]['S6']))
 					{
 						$this->raw[1][$first_user][0]['S6']--;
 						$active_planet = $user_obj->getActivePlanet();
-						$user_obj->setActivePlanet($user_obj->getPlanetByPos($next_target));
+						$user_obj->setActivePlanet($user_obj->getPlanetByPos($next_target_nt));
 						$item_info = $user_obj->getItemInfo('S6', 'schiffe');
 						$besiedelung_ress = $item_info['ress'];
 						$besiedelung_ress[0] *= .4;
@@ -1370,7 +1392,7 @@ EOF
 				$owner_obj = Classes::User($owner);
 				if(!$owner_obj->getStatus()) return false;
 
-				$planet_index = $owner_obj->getPlanetByPos($next_target);
+				$planet_index = $owner_obj->getPlanetByPos($next_target_nt);
 				if($planet_index === false)
 				{
 					$this->destroy();
@@ -1408,7 +1430,7 @@ EOF
 						}
 
 						if($username != $first_user)
-							$this->raw[1][$username][3][2] += $this->getTritium($username, $this->raw[1][$username][1], $next_target);
+							$this->raw[1][$username][3][2] += $this->getTritium($username, $this->raw[1][$username][1], $next_target_nt);
 					}
 					else
 					{
@@ -1425,7 +1447,7 @@ EOF
 
 				if($besiedeln)
 				{
-					$message_text = "Ihre Flotte erreicht den Planeten ".$next_target." und beginnt mit seiner Besiedelung.";
+					$message_text = "Ihre Flotte erreicht den Planeten ".$next_target_nt." und beginnt mit seiner Besiedelung.";
 					if(isset($besiedelung_ress))
 						$message_text .= " Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe wiederhergestellt werden: ".ths($besiedelung_ress[0], true)." Carbon, ".ths($besiedelung_ress[1], true)." Aluminium, ".ths($besiedelung_ress[2], true)." Wolfram, ".ths($besiedelung_ress[3], true)." Radium.";
 					$message_text .= "\n";
@@ -1481,7 +1503,7 @@ EOF
 					{
 						$message_obj->text($message_text);
 						if($besiedeln)
-							$message_obj->subject("Besiedelung von ".$next_target);
+							$message_obj->subject("Besiedelung von ".$next_target_nt);
 						else
 							$message_obj->subject("Stationierung auf ".$owner_obj->getPosString());
 						$message_obj->from($owner_obj->getName());
