@@ -271,6 +271,7 @@ legend { font-weight:bold; }
 .nachricht-loeschen-formular { clear:left; }
 .nachricht-informationen.type-2.html + .nachricht-loeschen-formular { display:block; text-align:center; padding:.5em 0; }
 .nachricht-informationen.type-2.html .besiedeln { text-align:center; }
+.type-2 div ul li { position:relative; }
 
 .nachricht-informationen.type-1 dd.c-nachricht { padding:0; }
 .nachricht-informationen.type-1 p { padding:0 .5em; }
