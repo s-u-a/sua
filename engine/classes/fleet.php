@@ -1587,7 +1587,7 @@ EOF
 		foreach($angreifer as $name=>$flotten)
 		{
 			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
-			$nachrichten_text .= "\t\t\t<th colspan=\"4\">".utf8_htmlentities($name)."</th>\n";
+			$nachrichten_text .= "\t\t\t<th colspan=\"4\"><span class=\"angreifer-name\">".utf8_htmlentities($name)."</span></th>\n";
 			$nachrichten_text .= "\t\t</tr>\n";
 
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
@@ -1657,7 +1657,7 @@ EOF
 		foreach($verteidiger as $name=>$flotten)
 		{
 			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
-			$nachrichten_text .= "\t\t\t<th colspan=\"4\">".utf8_htmlentities($name)."</th>\n";
+			$nachrichten_text .= "\t\t\t<th colspan=\"4\"><span class=\"verteidiger-name\">".utf8_htmlentities($name)."</span></th>\n";
 			$nachrichten_text .= "\t\t</tr>\n";
 
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
@@ -1861,18 +1861,18 @@ EOF
 					$floor_diff = floor($diff);
 					$nachrichten_text .= "\t\t<li>";
 					if($floor_diff <= 0)
-						$nachrichten_text .= "Eine Einheit des Typs ".utf8_htmlentities($item_info['name'])." (".utf8_htmlentities($att_user).") wird angeschossen.</li>\n";
+						$nachrichten_text .= "Eine Einheit des Typs ".utf8_htmlentities($item_info['name'])." (<span class=\"".$runde_anderer."-name\">".utf8_htmlentities($att_user)."</span>) wird angeschossen.</li>\n";
 					else
 					{
 						$nachrichten_text .= ths($floor_diff)."&nbsp;Einheit";
 						if($floor_diff != 1) $nachrichten_text .= "en";
-						$nachrichten_text .= " des Typs ".utf8_htmlentities($item_info['name'])." (".utf8_htmlentities($att_user).") werden zerst\xc3\xb6rt. ".ths(ceil($d[$att_user][$att_id]))." verbleiben.</li>\n";
+						$nachrichten_text .= " des Typs ".utf8_htmlentities($item_info['name'])." (<span class=\"".$runde_anderer."-name\">".utf8_htmlentities($att_user)."</span>) werden zerst\xc3\xb6rt. ".ths(ceil($d[$att_user][$att_id]))." verbleiben.</li>\n";
 					}
 					$staerke = 0;
 				}
 				else
 				{
-					$nachrichten_text .= "\t\t<li>Alle Einheiten des Typs ".utf8_htmlentities($item_info['name'])." (".ths(ceil($d[$att_user][$att_id])).") (".utf8_htmlentities($att_user).") werden zerst\xc3\xb6rt.</li>\n";
+					$nachrichten_text .= "\t\t<li>Alle Einheiten des Typs ".utf8_htmlentities($item_info['name'])." (".ths(ceil($d[$att_user][$att_id])).") (<span class=\"".$runde_anderer."-name\">".utf8_htmlentities($att_user)."</span>) werden zerst\xc3\xb6rt.</li>\n";
 					$aff_staerke = $this_shield;
 					unset($d[$att_user][$att_id]);
 					if(count($d[$att_user]) <= 0) unset($d[$att_user]);
@@ -1951,7 +1951,7 @@ EOF
 		foreach($angreifer_anfang as $name=>$flotten)
 		{
 			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
-			$nachrichten_text .= "\t\t\t<th colspan=\"4\">".utf8_htmlentities($name)."</th>\n";
+			$nachrichten_text .= "\t\t\t<th colspan=\"4\"><span class=\"angreifer-name\">".utf8_htmlentities($name)."</span></th>\n";
 			$nachrichten_text .= "\t\t</tr>\n";
 
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
@@ -2048,7 +2048,7 @@ EOF
 		foreach($verteidiger_anfang as $name=>$flotten)
 		{
 			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
-			$nachrichten_text .= "\t\t\t<th colspan=\"4\">".utf8_htmlentities($name)."</th>\n";
+			$nachrichten_text .= "\t\t\t<th colspan=\"4\"><span class=\"verteidiger-name\">".utf8_htmlentities($name)."</span></th>\n";
 			$nachrichten_text .= "\t\t</tr>\n";
 
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;

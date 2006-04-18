@@ -38,8 +38,8 @@
 			if($html)
 			{
 				$text = preg_replace('/ ?<span class="koords">.*?<\\/span>/', '', $text);
-				$text = preg_replace('/ ?<span class="angreifer-name">.*?<\\/span>/', 'Der Angreifer', $text);
-				$text = preg_replace('/ ?<span class="verteidiger-name">.*?<\\/span>/', 'Der Verteidiger', $text);
+				$text = preg_replace('/ ?<span class="angreifer-name">.*?<\\/span>/', 'Ein Angreifer', $text);
+				$text = preg_replace('/ ?<span class="verteidiger-name">.*?<\\/span>/', 'Ein Verteidiger', $text);
 			}
 			$this->text($text);
 			
