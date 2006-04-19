@@ -32,7 +32,7 @@
 
 			break;
 
-		case 'spionage': case 'besiedeln': case 'sammeln':
+		case 'spionage': case 'besiedeln': case 'sammeln': case 'shortcut':
 			list($classname, $result) = include('../flotten.php');
 			echo "\t<classname>".htmlspecialchars($classname)."</classname>\n";
 			echo "\t<result>".htmlspecialchars($result)."</result>\n";

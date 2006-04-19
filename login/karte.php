@@ -410,6 +410,13 @@
 				<ul>
 					<li class="c-koordinaten-verwenden"><a href="flotten.php?action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten ins Flottenmenü einsetzen">Koordinaten verwenden</a></li>
 <?php
+		if(!in_array($galaxy_n.':'.$system_n.':'.$i, $me->getPosShortcutsList()))
+		{
+?>
+					<li class="c-lesezeichen-hinzufuegen"><a href="flotten.php?action=shortcut&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten zu den Lesezeichen hinzufgen"<?php if($me->checkSetting('ajax')){?> onclick="return fast_action(this, 'shortcut', <?=$galaxy_n?>, <?=$system_n?>, <?=$i?>);"<?php }?>>Lesezeichen hinzufügen</a></li>
+<?php
+		}
+		
 		if($that_uname != $_SESSION['username'])
 		{
 			if($planet[4] != 'U' && $me->permissionToAct() && $me->getItemLevel('S5', 'schiffe') > 0)

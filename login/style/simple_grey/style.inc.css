@@ -81,6 +81,7 @@ abbr,acronym { border-style:none; text-decoration:none; font-style:normal; }
 
 .error { color:#f00; font-weight:bold; text-align:center; font-size:1.2em; }
 .successful,.flotte-versandt p { color:#0f0; font-weight:bold; text-align:center; font-size:1.2em; }
+.nothingtodo { color:#8bf; font-weight:bold; text-align:center; font-size:1.2em; }
 
 form { margin:0; padding:0; }
 form ul { list-style-type:none; margin:0; padding:0; }
