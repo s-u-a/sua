@@ -128,7 +128,7 @@
 								if(isset($handel[1][$id])) $old = $handel[1][$id];
 								if(isset($new_handel[1][$id])) $new = $new_handel[1][$id];
 								if($new != $old)
-									$rob_sum[$id] = $new-$old;
+									$rob_sub[$id] = $new-$old;
 							}
 						}
 						else list($ress_sub, $rob_sub) = $new_handel;
@@ -138,7 +138,7 @@
 						foreach($rob_sub as $id=>$sub)
 						{
 							$available_robs[$id] -= $sub;
-							$me->changeItemLevel($ress_sub, -$sub, 'roboter');
+							$me->changeItemLevel($id, -$sub, 'roboter');
 						}
 
 						if($type == 'set') $handel = $new_handel;
@@ -313,12 +313,12 @@
 			}
 
 			break;
-			
+
 		case 'shortcuts':
-			if(isset($_GET['up'])) movePosShortcutUp($_GET['up']);
-			if(isset($_GET['down'])) movePosShortcutDown($_GET['down']);
-			if(isset($_GET['remove'])) removePosShortcut($_GET['remove']);
-			$shortcuts = getPosShortcutsList();
+			if(isset($_GET['up'])) $me->movePosShortcutUp($_GET['up']);
+			if(isset($_GET['down'])) $me->movePosShortcutDown($_GET['down']);
+			if(isset($_GET['remove'])) $me->removePosShortcut($_GET['remove']);
+			$shortcuts = $me->getPosShortcutsList();
 			$count = count($shortcuts);
 			if($count <= 0)
 			{
@@ -331,20 +331,24 @@
 			else
 			{
 ?>
-<ul class="shortcuts-verwalten">
+<fieldset>
+	<legend>Lesezeichen verwalten</legend>
+	<ul class="shortcuts-verwalten">
 <?php
 				$i = 0;
 				foreach($shortcuts as $shortcut)
 				{
 ?>
-	<li><?=htmlspecialchars($shortcut)?><span class="aktionen"> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i != $count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="runter">[Runter]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="loeschen">[Löschen]</a></span></li>
+		<li><?=htmlspecialchars($shortcut)?><span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="runter">[Runter]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="loeschen">[Löschen]</a></span></li>
 <?php
 					$i++;
 				}
 ?>
-</ul>
+	</ul>
+</fieldset>
 <?php
 			}
+			break;
 		default:
 ?>
 <p class="error">Ungültige Aktion.</p>
