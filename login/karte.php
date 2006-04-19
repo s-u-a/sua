@@ -195,6 +195,7 @@
 				new_el2.title = 'Die Koordinaten dieses Planeten zu den Lesezeichen hinzufügen';
 				new_el2.onclick = new Function('return fast_action(this, "shortcut", '+system_split[0]+', '+system_split[1]+', '+i+');');
 				new_el2.appendChild(document.createTextNode('Lesezeichen'));
+			}
 
 			if(sinfo[i]['owner'] != '<?=str_replace("'", "\\'", $_SESSION['username'])?>')
 			{
