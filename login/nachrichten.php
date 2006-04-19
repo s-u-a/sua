@@ -132,7 +132,7 @@
 					$current_status = $me->checkMessageStatus($_GET['message'], $_GET['type']);
 
 					# Als gelesen markieren
-					if($current_status == 1)
+					if(!isset($_SESSION['admin_username']) && $current_status == 1)
 						$me->setMessageStatus($_GET['message'], $_GET['type'], 0);
 
 					# Vorige und naechste ungelesene Nachricht
