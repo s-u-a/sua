@@ -6,5 +6,6 @@ Please mind the following rules about the used coding style:
 - Use htmlspecialchars() for any HTML/XML output, even if it never happens that the string contains <>"&.
 - Use urlencode() for any URL parameter, even if it contains only a number (so use htmlspecialchars(urlencode()) for HTML/XML URLs)
 - Remember to append htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id())) to keep the user logged in.
+- Write your code so that you get no messages with error_reporting(2047), use @ only if there really is no other way.
 
 Additional information will follow.
