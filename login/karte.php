@@ -44,6 +44,16 @@
 	}
 	else $verb_jcheck = 'false';
 
+	$shortcuts_list = $me->getPosShortcutsList();
+	if(count($shortcuts_list) > 0)
+	{
+		$sc_jcheck = array();
+		foreach($shortcuts_list as $sc)
+			$sc_jcheck[] = "scp != '".str_replace("'", "\\'", $sc)."'";
+		$sc_jcheck = implode(' && ', $sc_jcheck);
+	}
+	else $sc_jcheck = 'false';
+
 	if($me->checkSetting('ajax'))
 	{
 ?>
@@ -174,6 +184,17 @@
 			new_td.firstChild.firstChild.firstChild.title = 'Die Koordinaten dieses Planeten ins Flottenmenü einsetzen';
 			new_td.firstChild.firstChild.firstChild.href = 'flotten.php?action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
 			new_td.firstChild.firstChild.firstChild.appendChild(document.createTextNode('Koordinaten verwenden'));
+
+			var scp = new_system+':'+i;
+			if(<?=$sc_jcheck?>)
+			{
+				new_td.firstChild.appendChild(new_el1 = document.createElement('li'));
+				new_el1.className = 'c-lesezeichen';
+				new_el1.appendChild(new_el2 = document.createElement('a'));
+				new_el2.href = 'flotten.php?action=shortcut&action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+				new_el2.title = 'Die Koordinaten dieses Planeten zu den Lesezeichen hinzufügen';
+				new_el2.onclick = new Function('return fast_action(this, "shortcut", '+system_split[0]+', '+system_split[1]+', '+i+');');
+				new_el2.appendChild(document.createTextNode('Lesezeichen'));
 
 			if(sinfo[i]['owner'] != '<?=str_replace("'", "\\'", $_SESSION['username'])?>')
 			{
@@ -413,10 +434,10 @@
 		if(!in_array($galaxy_n.':'.$system_n.':'.$i, $me->getPosShortcutsList()))
 		{
 ?>
-					<li class="c-lesezeichen-hinzufuegen"><a href="flotten.php?action=shortcut&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten zu den Lesezeichen hinzufgen"<?php if($me->checkSetting('ajax')){?> onclick="return fast_action(this, 'shortcut', <?=$galaxy_n?>, <?=$system_n?>, <?=$i?>);"<?php }?>>Lesezeichen hinzufügen</a></li>
+					<li class="c-lesezeichen"><a href="flotten.php?action=shortcut&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten zu den Lesezeichen hinzufügen"<?php if($me->checkSetting('ajax')){?> onclick="return fast_action(this, 'shortcut', <?=$galaxy_n?>, <?=$system_n?>, <?=$i?>);"<?php }?>>Lesezeichen</a></li>
 <?php
 		}
-		
+
 		if($that_uname != $_SESSION['username'])
 		{
 			if($planet[4] != 'U' && $me->permissionToAct() && $me->getItemLevel('S5', 'schiffe') > 0)

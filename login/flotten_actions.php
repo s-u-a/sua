@@ -338,8 +338,20 @@
 				$i = 0;
 				foreach($shortcuts as $shortcut)
 				{
+					$s_pos = explode(':', $shortcut);
+					$galaxy_obj = Classes::Galaxy($s_pos[0]);
+					$owner = $galaxy_obj->getPlanetOwner($s_pos[1], $s_pos[2]);
+					$s = $shortcut.': ';
+					if($owner)
+					{
+						$s .= $galaxy_obj->getPlanetName($s_pos[1], $s_pos[2]).' (';
+						$alliance = $galaxy_obj->getPlanetOwnerAlliance($s_pos[1], $s_pos[2]);
+						if($alliance) $s .= '['.$alliance.'] ';
+						$s .= $owner.')';
+					}
+					else $s .= '[unbesiedelt]';
 ?>
-		<li><?=htmlspecialchars($shortcut)?><span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="runter">[Runter]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="loeschen">[Löschen]</a></span></li>
+		<li><?=htmlspecialchars($s)?> <span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="runter">[Runter]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="loeschen">[Löschen]</a></span></li>
 <?php
 					$i++;
 				}
