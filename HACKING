@@ -1,0 +1,10 @@
+You’re welcome to commit patches and fixes using the bugtracker on https://bugs.s-u-a.net/
+
+Please mind the following rules about the used coding style:
+
+- Indent by using one tab.
+- Use htmlspecialchars() for any HTML/XML output, even if it never happens that the string contains <>"&.
+- Use urlencode() for any URL parameter, even if it contains only a number (so use htmlspecialchars(urlencode()) for HTML/XML URLs)
+- Remember to append htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id())) to keep the user logged in.
+
+Additional information will follow.

@@ -756,7 +756,14 @@
 ?>
 					document.write('</select>');
 					document.write('</optgroup>');
+<?php
+				if(count($shortcuts) > 0)
+				{
+?>
 					document.write('<a href="flotten_actions.php?action=shortcuts&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" class="lesezeichen-verwalten-link">[Lesezeichen verwalten]</a>');
+<?php
+				}
+?>
 					document.write('</dd>');
 
 					function syncronise(input_select)
