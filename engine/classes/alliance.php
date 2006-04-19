@@ -521,6 +521,55 @@
 			$instance = Classes::Alliance($name);
 			return $instance->getName();
 		}
+
+		function renameAllowed()
+		{
+			if(!$this->status) return false;
+
+			if(!isset($this->raw['last_rename'])) return true;
+			return (time()-$this->raw['last_rename'] >= ALLIANCE_RENAME_PERIOD*86400);
+		}
+
+		function rename($new_name)
+		{
+			if(!$this->status) return false;
+
+			$new_name = trim($new_name);
+
+			$really_rename = (strtolower($new_name) != strtolower($this->getName()));
+
+			if($really_rename)
+			{
+				$new_fname = $this->save_dir.'/'.urlencode(strtolower($new_name));
+				if(file_exists($new_fname)) return false;
+			}
+
+			# Alliancetag bei den Mitgliedern aendern
+			foreach($this->raw['members'] as $username=>$info)
+			{
+				$user = Classes::User($username);
+				$user->allianceTag($new_name, false);
+			}
+
+			# Highscores-Eintrag aendern
+			$hs = Classes::Highscores();
+			$hs->renameAlliance($this->getName(), $new_name);
+
+			$this->raw['tag'] = $new_name;
+			if($really_rename) $this->raw['last_rename'] = time();
+			$this->changed = true;
+
+			if($really_rename)
+			{
+				# Datei umbenennen
+				$this->__destruct();
+				rename($this->filename, $new_fname);
+				$this->__construct($new_name);
+			}
+			else $this->name = $new_name;
+
+			return true;
+		}
 	}
 
 

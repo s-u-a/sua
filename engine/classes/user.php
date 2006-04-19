@@ -2043,7 +2043,7 @@
 			else return false;
 		}
 
-		function allianceTag($tag='')
+		function allianceTag($tag='', $check=true)
 		{
 			if(!$this->status) return false;
 
@@ -2056,7 +2056,7 @@
 			}
 			else
 			{
-				if($tag)
+				if($tag && $check)
 				{
 					$that_alliance = Classes::Alliance($tag);
 					if(!$that_alliance->getStatus()) return false;
@@ -2064,23 +2064,29 @@
 				if((isset($this->raw['alliance']) && trim($this->raw['alliance']) != '') && (!$tag || $tag != $this->raw['alliance']))
 				{
 					# Aus der aktuellen Allianz austreten
-					$my_alliance = Classes::Alliance(trim($this->raw['alliance']));
-					if(!$my_alliance->getStatus()) return false;
-					if(!$my_alliance->removeUser($this->getName())) return false;
+					if($check)
+					{
+						$my_alliance = Classes::Alliance(trim($this->raw['alliance']));
+						if(!$my_alliance->getStatus()) return false;
+						if(!$my_alliance->removeUser($this->getName())) return false;
+					}
 					$this->raw['alliance'] = '';
 					$this->changed = true;
 				}
 
-				if($tag)
+				if($check)
 				{
-					$that_alliance->addUser($this->getName(), $this->getScores());
-					$tag = $that_alliance->getName();
+					if($tag)
+					{
+						$that_alliance->addUser($this->getName(), $this->getScores());
+						$tag = $that_alliance->getName();
+					}
+					else $tag = '';
 				}
-				else $tag = '';
 
 				$this->raw['alliance'] = $tag;
 
-				$this->cancelAllianceApplication(false);
+				if($check) $this->cancelAllianceApplication(false);
 				$this->changed = true;
 
 				$highscores = Classes::Highscores();

@@ -60,6 +60,7 @@
 			define('MAX_PLANETS', 15);
 			define('SESSION_COOKIE', session_name());
 			define('LIST_MIN_CHARS', 2); # Fuer Ajax-Auswahllisten
+			define('ALLIANCE_RENAME_PERIOD', 3); # Minimalabstand fuers Umbenennen von Allianzen in Tagen
 
 			if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
 				define('PROTOCOL', 'https');

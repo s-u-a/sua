@@ -387,16 +387,43 @@
 			}
 			elseif($alliance->checkUserPermissions($_SESSION['username'], 3) && $action == 'extern')
 			{
+?>
+<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht" tabindex="<?=$tabindex+2?>" accesskey="z">Allian<kbd>z</kbd></a></h2>
+<?php
 				if(isset($_POST['extern-text']))
 					$alliance->setExternalDescription($_POST['extern-text']);
 				if(isset($_POST['extern-name']) && strlen(trim($_POST['extern-name'])) > 0)
 					$alliance->name($_POST['extern-name']);
+				if(isset($_POST['extern-tag']) && trim($_POST['extern-tag']) != $alliance->getName() && $alliance->renameAllowed())
+				{
+					if(strlen($_POST['extern-tag']) < 2)
+					{
 ?>
-<h2><a href="allianz.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Zurück zur Allianzübersicht" tabindex="<?=$tabindex+2?>" accesskey="z">Allian<kbd>z</kbd></a></h2>
+<p class="error">Das Allianz<span xml:lang="en">tag</span> muss mindestens zwei <span xml:lang="en">Bytes</span> lang sein.</p>
+<?php
+					}
+					elseif(strlen($_POST['extern-tag']) > 6)
+					{
+?>
+<p class="error">Das Allianz<span xml:lang="en">tag</span> darf höchstens sechs <span xml:lang="en">Bytes</span> lang sein.</p>
+<?php
+					}
+					elseif(Alliance::allianceExists($_POST['extern-tag']))
+					{
+?>
+<p class="error">Es gibt schon eine Allianz mit diesem <span xml:lang="en">Tag</span>.</p>
+<?php
+					}
+					else $alliance->rename($_POST['extern-tag']);
+				}
+?>
 <form action="allianz.php?action=extern&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="allianz-extern-form">
 	<dl>
+		<dt class="c-tag"><label for="i-allianz-tag">Allianztag</label></dt>
+		<dd class="c-tag"><input type="text" name="extern-tag" id="i-allianz-tag" value="<?=htmlspecialchars($alliance->getName())?>" tabindex="<?=$tabindex+3?>"<?php if(!$alliance->renameAllowed()){?> disabled="disabled"<?php }?> /> <span class="allianztag-aendern-hinweis">Das Allianztag kann alle <?=htmlspecialchars(ALLIANCE_RENAME_PERIOD)?> Tag<?=(ALLIANCE_RENAME_PERIOD != 1) ? 'e' : ''?> geändert werden.</span></dd>
+
 		<dt class="c-name"><label for="allianz-name-input">Allianzname</label></dt>
-		<dd class="c-name"><input type="text" name="extern-name" id="allianz-name-input" value="<?=utf8_htmlentities($alliance->name())?>" tabindex="<?=$tabindex+3?>" /></dd>
+		<dd class="c-name"><input type="text" name="extern-name" id="allianz-name-input" value="<?=utf8_htmlentities($alliance->name())?>" tabindex="<?=$tabindex+4?>" /></dd>
 
 		<dt class="c-text"><label for="allianz-extern-textarea">E<kbd>x</kbd>terner Allianztext</label></dt>
 		<dd class="c-text"><textarea name="extern-text" id="allianz-extern-textarea" cols="50" rows="17" tabindex="<?=$tabindex++?>" accesskey="x"><?=preg_replace("/[\t\r\n]/e", "'&#'.ord('\$0').';'", utf8_htmlentities($alliance->getExternalDescription(false)))?></textarea></dd>
@@ -404,7 +431,7 @@
 	<div><button type="submit" accesskey="n" tabindex="<?=$tabindex++?>">Speicher<kbd>n</kbd></button></div>
 </form>
 <?php
-				$tabindex += 2;
+				$tabindex += 3;
 			}
 			elseif($alliance->checkUserPermissions($_SESSION['username'], 7) && $action == 'permissions')
 			{
