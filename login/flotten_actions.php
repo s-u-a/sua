@@ -307,11 +307,44 @@
 				}
 ?>
 		</table>
+	</fieldset>
+</form>
 <?php
 			}
 
 			break;
-
+			
+		case 'shortcuts':
+			if(isset($_GET['up'])) movePosShortcutUp($_GET['up']);
+			if(isset($_GET['down'])) movePosShortcutDown($_GET['down']);
+			if(isset($_GET['remove'])) removePosShortcut($_GET['remove']);
+			$shortcuts = getPosShortcutsList();
+			$count = count($shortcuts);
+			if($count <= 0)
+			{
+?>
+<p class="nothingtodo">
+	Sie haben keine Planetenlesezeichen gespeichert. In der Karte können Sie Lesezeichen anlegen.
+</p>
+<?php
+			}
+			else
+			{
+?>
+<ul class="shortcuts-verwalten">
+<?php
+				$i = 0;
+				foreach($shortcuts as $shortcut)
+				{
+?>
+	<li><?=htmlspecialchars($shortcut)?><span class="aktionen"> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i != $count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="runter">[Runter]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="loeschen">[Löschen]</a></span></li>
+<?php
+					$i++;
+				}
+?>
+</ul>
+<?php
+			}
 		default:
 ?>
 <p class="error">Ungültige Aktion.</p>
