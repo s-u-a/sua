@@ -22,8 +22,16 @@
 	}
 
 	$fast_action = false;
-	if(isset($_GET['action_galaxy']) && isset($_GET['action_system']) && isset($_GET['action_planet']) && isset($_GET['action']) && ($_GET['action'] == 'spionage' || $_GET['action'] == 'besiedeln' || $_GET['action'] == 'sammeln'))
+	if(isset($_GET['action_galaxy']) && isset($_GET['action_system']) && isset($_GET['action_planet']) && isset($_GET['action']) && ($_GET['action'] == 'spionage' || $_GET['action'] == 'besiedeln' || $_GET['action'] == 'sammeln' || ($_GET['action'] == 'shortcut' && defined('ajax'))))
 	{
+		if($_GET['action'] == 'shortcut')
+		{
+			$result = $me->addPosShortcut($_GET['action_galaxy'].':'.$_GET['action_system'].':'.$_GET['action_planet']);
+			if($result === 2) return array('nothingtodo', 'Dieser Planet ist schon in Ihren Lesezeichen.');
+			elseif($result) return array('successful', 'Der Planet wurde zu den Lesezeichen hinzugefügt.');
+			else return array('error', 'Datenbankfehler.');
+		}
+
 		$fast_action = true;
 
 		$galaxy = Classes::Galaxy($_GET['action_galaxy']);
@@ -704,18 +712,51 @@
 					document.write('<select id="ziel-planet-wahl" accesskey="n" tabindex="4" onchange="syncronise(false);" onkeyup="syncronise(false);">');
 					document.write('<option value="">Benutzerdefiniert</option>');
 <?php
+				$shortcuts = $me->getPosShortcutsList();
+				if(count($shortcuts) > 0)
+				{
+?>
+					document.write('<optgroup label="Lesezeichen">');
+<?php
+					foreach($shortcuts as $shortcut)
+					{
+						$s_pos = explode(':', $shortcut);
+						$galaxy_obj = Classes::Galaxy($s_pos[0]);
+						$owner = $galaxy_obj->getPlanetOwner($s_pos[1], $s_pos[2]);
+						$s = $shortcut.': ';
+						if($owner)
+						{
+							$s .= $galaxy_obj->getPlanetName($s_pos[1], $s_pos[2]).' (';
+							$alliance = $galaxy_obj->getPlanetOwnerAlliance($s_pos[1], $s_pos[2]);
+							if($alliance) $s .= '['.$alliance.'] ';
+							$s .= $owner.')';
+						}
+						else $s .= '[unbesiedelt]';
+?>
+					document.write('<option value="<?=htmlspecialchars($shortcut)?>"><?=htmlspecialchars($s)?></option>');
+<?php
+					}
+?>
+					document.write('</optgroup>');
+<?php
+				}
+?>
+					document.write('<optgroup label="Eigene Planeten">');
+<?php
 				$planets = $me->getPlanetsList();
 				$active_planet = $me->getActivePlanet();
 				foreach($planets as $planet)
 				{
 					$me->setActivePlanet($planet);
 ?>
-					document.write('<option value="<?=utf8_htmlentities($me->getPosString())?>"<?=($planet == $active_planet) ? ' selected="selected"' : ''?>><?=preg_replace('/[\'\\\\]/', '\\\\\\0', utf8_htmlentities($me->planetName()))?> (<?=utf8_htmlentities($me->getPosString())?>)</option>');
+					document.write('<option value="<?=utf8_htmlentities($me->getPosString())?>"<?=($planet == $active_planet) ? ' selected="selected"' : ''?>><?=utf8_htmlentities($me->getPosString())?>: <?=preg_replace('/[\'\\\\]/', '\\\\\\0', utf8_htmlentities($me->planetName()))?></option>');
 <?php
 				}
 				$me->setActivePlanet($active_planet);
 ?>
 					document.write('</select>');
+					document.write('</optgroup>');
+					document.write('<a href="flotten_actions.php?action=shortcuts&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" class="lesezeichen-verwalten-link">[Lesezeichen verwalten]</a>');
 					document.write('</dd>');
 
 					function syncronise(input_select)

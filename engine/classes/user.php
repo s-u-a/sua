@@ -1596,8 +1596,8 @@
 					if($type == 'forschung' && $this->planet_info['building'][$type][2])
 					{
 						$source_planet = $this->planet_info['building'][$type][4];
-						if(!isset($this->raw['planets'][$source_planet]['building'][$type]) || trim($this->raw['planets'][$source_planet]['building'][$type][0]) == '')
-							return false;
+						//if(!isset($this->raw['planets'][$source_planet]['building'][$type]) || trim($this->raw['planets'][$source_planet]['building'][$type][0]) == '')
+						//	return false;
 						$active_planet = $this->getActivePlanet();
 						$planets = $this->getPlanetsList();
 						foreach($planets as $planet)
@@ -1605,7 +1605,8 @@
 							$this->setActivePlanet($planet);
 							if($planet == $source_planet && $cancel)
 								$this->addRess($this->planet_info['building'][$type][3]);
-							unset($this->planet_info['building'][$type]);
+							if(isset($this->planet_info['building'][$type]))
+								unset($this->planet_info['building'][$type]);
 						}
 						$this->setActivePlanet($active_planet);
 					}
@@ -2819,6 +2820,76 @@
 			if(time()-$this->raw['im_notification_check'][2] > 86400) return false;
 
 			$this->raw['im_notification'] = array($this->raw['im_notification_check'][0], $this->raw['im_notification_check'][1]);
+			$this->changed = true;
+			return true;
+		}
+
+		function addPosShortcut($pos)
+		{ # Fuegt ein Koordinatenlesezeichen hinzu
+			if(!$this->status) return false;
+
+			if(!is_array($this->raw['pos_shortcuts'])) $this->raw['pos_shortcuts'] = array();
+			if(in_array($pos, $this->raw['pos_shortcuts'])) return 2;
+
+			$this->raw['pos_shortcuts'][] = $pos;
+			$this->changed = true;
+			return true;
+		}
+
+		function getPosShortcutsList()
+		{ # Gibt die Liste der Koordinatenlesezeichen zurueck
+			if(!$this->status) return false;
+
+			if(!isset($this->raw['pos_shortcuts'])) return array();
+			return $this->raw['pos_shortcuts'];
+		}
+
+		function removePosShortcut($pos)
+		{ # Entfernt ein Koordinatenlesezeichen wieder
+			if(!$this->status) return false;
+
+			if(!isset($this->raw['pos_shortcuts'])) return 2;
+			$idx = array_search($pos, $this->raw['pos_shortcuts']);
+			if($idx === false) return 2;
+			unset($this->raw['pos_shortcuts'][$idx]);
+			$this->changed = true;
+			return true;
+		}
+
+		function movePosShortcutUp($pos)
+		{ # Veraendert die Reihenfolge der Lesezeichen
+			if(!$this->status) return false;
+
+			if(!isset($this->raw['pos_shortcuts'])) return false;
+
+			$idx = array_search($pos, $this->raw['pos_shortcuts']);
+			if($idx === false) return false;
+
+			$keys = array_keys($this->raw['pos_shortcuts']);
+			$keys_idx = array_search($idx, $keys);
+
+			if(!isset($keys[$keys_idx-1])) return false;
+
+			list($this->raw['pos_shortcuts'][$idx], $this->raw['pos_shortcuts'][$keys[$keys_idx-1]]) = array($this->raw['pos_shortcuts'][$keys[$keys_idx-1]], $this->raw['pos_shortcuts'][$idx]); # Confusing, ain't it? ;-)
+			$this->changed = true;
+			return true;
+		}
+
+		function movePosShortcutDown($pos)
+		{ # Veraendert die Reihenfolge der Lesezeichen
+			if(!$this->status) return false;
+
+			if(!isset($this->raw['pos_shortcuts'])) return false;
+
+			$idx = array_search($pos, $this->raw['pos_shortcuts']);
+			if($idx === false) return false;
+
+			$keys = array_keys($this->raw['pos_shortcuts']);
+			$keys_idx = array_search($idx, $keys);
+
+			if(!isset($keys[$keys_idx+1])) return false;
+
+			list($this->raw['pos_shortcuts'][$idx], $this->raw['pos_shortcuts'][$keys[$keys_idx+1]]) = array($this->raw['pos_shortcuts'][$keys[$keys_idx+1]], $this->raw['pos_shortcuts'][$idx]); # The same another time...
 			$this->changed = true;
 			return true;
 		}

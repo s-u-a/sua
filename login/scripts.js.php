@@ -714,15 +714,3 @@ function preload_systems(systems)
 
 	xmlhttp.send(null);
 }
-
-function print_r(a,prefix)
-{
-	if(!prefix) prefix = '';
-	var s = '';
-	for(i in a)
-	{
-		if(typeof a[i] == 'array' || typeof a[i] == 'object') s += print_r(a[i], prefix+'['+i+']');
-		else s += prefix+"["+i+"] => ("+(typeof a[i])+") "+a[i]+"\n";
-	}
-	return s;
-}
