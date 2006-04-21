@@ -1,15 +1,21 @@
 <?php
 	require('engine/include.php');
-	
+
 	$channels = array(
 		'sua' => array('S-U-A player&rsquo;s channel', 'irc.gamesurge.net', '#sua'),
 		'sua-dev' => array('S-U-A developer&rsquo;s channel', 'irc.epd-me.net', '#sua-dev')
 	);
-	
-	gui::html_head('http://'.$_SERVER['HTTP_HOST'].h_root.'/chat/');
+
+	$popup = (isset($_REQUEST['channel']) && isset($_REQUEST['nickname']) && isset($channels[$_REQUEST['channel']]) && isset($_GET['popup']) && $_GET['popup']);
+
+	if(!$popup)
+	{
+		gui::html_head('http://'.$_SERVER['HTTP_HOST'].h_root.'/chat/');
 ?>
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; <span xml:lang="en">Chat</span></h2>
 <?php
+	}
+
 	if(!isset($_REQUEST['channel']) || !isset($_REQUEST['nickname']) || !isset($channels[$_REQUEST['channel']]))
 	{
 ?>
@@ -26,12 +32,34 @@
 		}
 ?>
 		</select></dd>
-		
+
 		<dt class="c-spitzname"><label for="i-spitzname">Spitzname</label></dt>
 		<dd class="c-spitzname"><input type="text" name="nickname" id="i-spitzname" /></dd>
 	</dl>
 	<div><button type="submit">Verbinden</button></div>
 </form>
+<script type="text/javascript">
+// <![CDATA[
+	document.getElementById('i-spitzname').parentNode.parentNode.appendChild(dt_el = document.createElement('dt'));
+	dt_el.className = 'c-neues-fenster';
+	dt_el.appendChild(label_el = document.createElement('label'));
+	label_el.setAttribute('for', 'i-neues-fenster');
+	label_el.appendChild(document.createTextNode('Chat in neuem Fenster öffnen'));
+	dt_el.parentNode.appendChild(dd_el = document.createElement('dd'));
+	input_el = document.createElement('input');
+	input_el.type = 'checkbox';
+	input_el.id = 'i-neues-fenster';
+	dd_el.appendChild(input_el);
+	document.getElementById('chat-form').onsubmit = function()
+	{
+		if(input_el.checked)
+		{
+			open('<?=USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/chat.php'?>?channel='+encodeURIComponent(document.getElementById('i-kanal').value)+'&nickname='+encodeURIComponent(document.getElementById('i-spitzname').value)+"&popup=1", "_blank", "location=no,menubar=no,resizable=yes,scrollbars=yes,status=yes,toolbar=no");
+			return false;
+		}
+	}
+// ]]>
+</script>
 <p id="chat-hinweis">Sie erreichen die Kanäle alternativ mit einem beliebigen <abbr title="Internet Relay Chat" xml:lang="en"><span xml:lang="de">IRC</span></abbr>-<span xml:lang="en">Client</span>.</p>
 <dl id="chat-irc-liste">
 <?php
@@ -49,8 +77,30 @@
 	}
 	else
 	{
+		if($popup)
+		{
+?>
+<?='<?xml version="1.0" encoding="UTF-8"?>'."\n"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+	<head>
+		<title><?=$channels[$_REQUEST['channel']][0]?></title>
+		<base href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/chat/')?>" />
+		<style type="text/css">
+			html,body,#chat-applet { width:100%; height:100%; margin:0; padding:0; border-style:none; }
+		</style>
+	</head>
+	<body>
+<?php
+		}
+		else
+		{
 ?>
 <h3><?=$channels[$_REQUEST['channel']][0]?></h3>
+<?php
+		}
+?>
 <applet code="IRCApplet.class" archive="irc.jar,pixx.jar" id="chat-applet">
 	<param name="CABINETS" value="irc.cab,securedirc.cab,pixx.cab" />
 	<param name="nick" value="<?=$_REQUEST['nickname']?>" />
@@ -92,7 +142,14 @@
 	<param name="pixx:showhelp" value="false" />
 </applet>
 <?php
+		if($popup)
+		{
+?>
+	</body>
+</html>
+<?php
+		}
 	}
-	
+
 	gui::html_foot();
 ?>
