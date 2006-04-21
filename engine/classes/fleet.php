@@ -485,23 +485,38 @@
 			$event_obj = Classes::EventFile();
 			$event_obj->removeCanceledFleet($this->getName());
 
-			if($from == $start) $time1 = 0;
+			if($from_t == $start) $time1 = 0;
 			else $time1 = $this->calcTime($user, $from, $start);
 			$time2 = $this->calcTime($user, $to, $start);
+			$time3 = $this->calcTime($user, $from, $to);
+			$progress = (time()-$this->raw[2])/$time3;
 
-			$progress = (time()-$this->raw[2])/$this->calcTime($user, $from, $to);
-			$missing_part = 1-$progress;
-			$back_time = $time1+abs($time2-$time1)*$progress;
+			/* Dreieck ABC:
+			A: $start
+			B: $to
+			C: $from
+			AB: $time2
+			BC: $time3
+			AC: $time1
+			D teilt CB in die Anteile $progress und 1-$progress
+			Gesucht: AD: $back_time */
+
+			$time1_sq = pow($time1, 2);
+			$time3_sq = pow($time3, 2);
+			$back_time = round(sqrt($time1_sq - $progress*$time1_sq + $progress*pow($time2,2) - $progress*$time3_sq + pow($progress,2)*$time3_sq));
 
 			$total_tritium = $this->getTritium($user, $from, $to);
-			$back_tritium = $total_tritium*$missing_part;
+			$back_tritium = $total_tritium*(1-$progress);
+			# FIXME: Tritium der weiteren Ziele fehlt
 
 			$new_raw = array(
 				array($start => array($this->raw[0][$to_t][0], 1)),
 				array($user => $this->raw[1][$user]),
-				time()-($time1-$back_time),
-				array_merge($this->raw[3], $this->raw[0])
+				(time()+$back_time)-$time2,
+				array($to_t => $this->raw[0][$to_t])
 			);
+			if(array_search($user, array_keys($this->raw[1])) == 0)
+				$new_raw[3] = array_merge($this->raw[3], $new_raw[3]);
 			$new_raw[1][$user][3][2] += $back_tritium;
 
 			unset($this->raw[1][$user]);
