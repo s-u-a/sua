@@ -6,8 +6,8 @@
 		# Flotte zurueckrufen
 
 		$flotte = Classes::Fleet($_GET['cancel']);
-		if($flotte->callBack($_SESSION['username']));
-			#delete_request();
+		if($flotte->callBack($_SESSION['username']))
+			delete_request();
 	}
 
 	function makeFleetString($user, $fleet)
