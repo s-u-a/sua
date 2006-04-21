@@ -219,6 +219,7 @@ legend { font-weight:bold; }
 .karte-system td.c-aktionen li { width:1.5ex; overflow:hidden; float:left; display:block; margin-right:.3em; white-space:nowrap; line-height:1em; height:1em; }
 .karte-system td.c-aktionen li:first-letter,.karte-system td.c-aktionen a:first-letter { color:#fff !important; }
 .karte-system td.c-aktionen a { color:#777; }
+.karte-system td.c-aktionen { white-space:nowrap; }
 
 .karte-system .eigen .playername a,.highscores .eigen .playername { color:#8f8; }
 .karte-system .verbuendet .playername a,.highscores .verbuendet .playername { color:#8bf; }

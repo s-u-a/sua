@@ -259,7 +259,7 @@
 		<div id="navigation">
 			<form action="<?=htmlentities($_SERVER['PHP_SELF'])?>" method="get" id="change-planet">
 				<fieldset>
-					<legend>Planet wechseln<input type="hidden" name="<?=htmlentities(SESSION_COOKIE)?>" value="<?=htmlentities(session_id())?>" /></legend>
+					<legend>Planet wechseln</legend>
 <?php
 			foreach($_GET as $key=>$val)
 			{
