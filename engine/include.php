@@ -58,7 +58,7 @@
 			define('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
 			define('EMAIL_FROM', 'webmaster@s-u-a.net');
 			define('MAX_PLANETS', 15);
-			define('SESSION_COOKIE', 'sess_id');
+			define('SESSION_COOKIE', session_name());
 			define('LIST_MIN_CHARS', 2); # Fuer Ajax-Auswahllisten
 			define('ALLIANCE_RENAME_PERIOD', 3); # Minimalabstand fuers Umbenennen von Allianzen in Tagen
 
@@ -87,8 +87,6 @@
 			else
 				define('USE_PROTOCOL', 'http');
 			define('other_globals', true);
-
-			session_name(SESSION_COOKIE);
 		}
 	}
 
