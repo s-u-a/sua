@@ -92,8 +92,19 @@
 <h2>Flottenbewegungen</h2>
 <dl id="flotten">
 <?php
-		$countdowns = array();
+		# Flotten sortieren
+		$flotten_sorted = array();
 		foreach($flotten as $flotte)
+		{
+			$fl = Classes::Fleet($flotte);
+			if(!$fl->getStatus() || count($fl->getUsersList()) <= 0) continue;
+			$flotten_sorted[$flotte] = $fl->getNextArrival();
+		}
+
+		asort($flotten_sorted, SORT_NUMERIC);
+
+		$countdowns = array();
+		foreach($flotten_sorted as $flotte=>$next_arrival)
 		{
 			$fl = Classes::Fleet($flotte);
 			if(!$fl->getStatus()) continue;
@@ -265,9 +276,9 @@
 			}
 ?>
 	</dt>
-	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($flotte)?>">Ankunft: <?=date('H:i:s, Y-m-d', $fl->getNextArrival())?> (Serverzeit)<?php if(!$fl->isFlyingBack() && ($me_in_users !== false)){?>, <a href="index.php?cancel=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
+	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($flotte)?>">Ankunft: <?=date('H:i:s, Y-m-d', $next_arrival)?> (Serverzeit)<?php if(!$fl->isFlyingBack() && ($me_in_users !== false)){?>, <a href="index.php?cancel=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
 <?php
-			$countdowns[] = array($flotte, $fl->getNextArrival(), ($fl->isFlyingBack() || ($me_in_users === false)));
+			$countdowns[] = array($flotte, $next_arrival, ($fl->isFlyingBack() || ($me_in_users === false)));
 		}
 ?>
 </dl>

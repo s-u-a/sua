@@ -62,6 +62,7 @@
 
 		if($show_form)
 		{
+			# Formular zum Absenden anzeigen
 ?>
 <form action="nachrichten.php?to=&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post" class="nachrichten-neu" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
 	<fieldset>
@@ -94,6 +95,7 @@
 			{
 ?>
 <script type="text/javascript">
+	// Autocompletion des Empfaengers
 	activate_users_list(document.getElementById('empfaenger-input'));
 </script>
 <?php
@@ -102,6 +104,8 @@
 	}
 	elseif(isset($_GET['type']) && isset($message_type_names[$_GET['type']]))
 	{
+		# Nachrichtentyp wurde bereits ausgewaehlt, Nachricht oder Nachrichtenliste anzeigen
+
 		if(isset($_GET['message']))
 		{
 			# Nachricht anzeigen
@@ -129,13 +133,14 @@
 				}
 				else
 				{
-					$current_status = $me->checkMessageStatus($_GET['message'], $_GET['type']);
+					# Nachricht kann angezeigt werden
 
+					$current_status = $me->checkMessageStatus($_GET['message'], $_GET['type']);
 					# Als gelesen markieren
 					if(!isset($_SESSION['admin_username']) && $current_status == 1)
 						$me->setMessageStatus($_GET['message'], $_GET['type'], 0);
 
-					# Vorige und naechste ungelesene Nachricht
+					# Vorige und naechste ungelesene Nachricht bestimmen
 					$unread_prev = false;
 					$unread_next = false;
 					$messages = $me->getMessagesList($_GET['type']);
@@ -159,6 +164,7 @@
 
 					if($unread_next !== false || $unread_prev !== false)
 					{
+						# Vorige und naechste verlinken
 ?>
 <ul class="ungelesene-nachrichten">
 <?php
@@ -199,7 +205,45 @@
 	<dt class="c-nachricht">Nachricht</dt>
 	<dd class="c-nachricht">
 <?php
-					print("\t\t".preg_replace("/\r\n|\r|\n/", "\n\t\t", $message->text()));
+					function repl_links($a, $b, $c)
+					{
+						# Haengt bei Links die Session-ID an
+						$url2 = html_entity_decode($b);
+						if(substr($url2, 0, 7) != 'http://')
+						{
+						$url3 = explode('#', $url2);
+						$url3[0] = explode('?', $url3[0]);
+						$url = array($url3[0][0]);
+						if(isset($url3[0][1]))
+							$url[1] = $url3[0][1];
+						else
+							$url[1] = '';
+						if(isset($url3[1]))
+							$url[2] = $url[1];
+						else
+							$url[2] = '';
+
+						if($url[1] != '')
+							$url[1] .= '&';
+						$url[1] .= urlencode(session_name()).'='.urlencode(session_id());
+
+						$url2 = $url[0].'?'.$url[1];
+						if($url[2] != '')
+							$url2 .= '#'.$url[2];
+						}
+
+						return $a.htmlspecialchars($url2).$c;
+					}
+
+					$text = $message->text();
+
+					if($message->html())
+					{
+						# Session-ID an Links anhaengen
+						$text = preg_replace('/(<a [^>]*href=")([^"]*)(")/ei', 'repl_links("\\1", "\\2", "\\3")', $text);
+					}
+
+					print("\t\t".preg_replace("/\r\n|\r|\n/", "\n\t\t", $text));
 ?>
 	</dd>
 </dl>

@@ -22,14 +22,30 @@
 	}
 
 	$fast_action = false;
-	if(isset($_GET['action_galaxy']) && isset($_GET['action_system']) && isset($_GET['action_planet']) && isset($_GET['action']) && ($_GET['action'] == 'spionage' || $_GET['action'] == 'besiedeln' || $_GET['action'] == 'sammeln' || ($_GET['action'] == 'shortcut' && defined('ajax'))))
+	if(isset($_GET['action_galaxy']) && isset($_GET['action_system']) && isset($_GET['action_planet']) && isset($_GET['action']) && ($_GET['action'] == 'spionage' || $_GET['action'] == 'besiedeln' || $_GET['action'] == 'sammeln' || $_GET['action'] == 'shortcut'))
 	{
 		if($_GET['action'] == 'shortcut')
 		{
 			$result = $me->addPosShortcut($_GET['action_galaxy'].':'.$_GET['action_system'].':'.$_GET['action_planet']);
-			if($result === 2) return array('nothingtodo', 'Dieser Planet ist schon in Ihren Lesezeichen.');
-			elseif($result) return array('successful', 'Der Planet wurde zu den Lesezeichen hinzugefügt.');
-			else return array('error', 'Datenbankfehler.');
+			if($result === 2) $return = array('nothingtodo', 'Dieser Planet ist schon in Ihren Lesezeichen.');
+			elseif($result) $return = array('successful', 'Der Planet wurde zu den Lesezeichen hinzugefügt.');
+			else $return = array('error', 'Datenbankfehler.');
+
+			if(defined('ajax')) return $return;
+			elseif($return[0] == 'error')
+			{
+?>
+<p class="<?=htmlspecialchars($return[0])?>"><?=htmlspecialchars($return[1])?></p>
+<?php
+				login_gui::html_foot();
+				exit();
+			}
+			else
+			{
+				header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
+				ob_end_clean();
+				die();
+			}
 		}
 
 		$fast_action = true;
@@ -357,7 +373,6 @@
 										{
 											header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 											ob_end_clean();
-											#ob_end_clean();
 											die();
 										}
 										else
@@ -393,7 +408,6 @@
 						{
 							header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 							ob_end_clean();
-							#ob_end_clean();
 							die();
 						}
 
@@ -681,7 +695,6 @@
 		{
 			header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
 			ob_end_clean();
-			#ob_end_clean();
 			die();
 		}
 ?>
