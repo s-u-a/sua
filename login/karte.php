@@ -52,7 +52,7 @@
 			$sc_jcheck[] = "scp != '".str_replace("'", "\\'", $sc)."'";
 		$sc_jcheck = implode(' && ', $sc_jcheck);
 	}
-	else $sc_jcheck = 'false';
+	else $sc_jcheck = 'true';
 
 	if($me->checkSetting('ajax'))
 	{
