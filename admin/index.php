@@ -58,6 +58,14 @@
 		$that_user->rename($_POST['rename_new']);
 	}
 
+	if($admin_array['permissions'][7] && isset($_POST['noob']))
+	{
+		if($_POST['noob'] && !file_exists(NOOB_FILE))
+			touch(NOOB_FILE);
+		elseif(!$_POST['noob'] && file_exists(NOOB_FILE))
+			unlink(NOOB_FILE);
+	}
+
 	if($admin_array['permissions'][9] && isset($_POST['message_text']) && trim($_POST['message_text']) != '')
 	{
 		$message = new Message();
@@ -173,6 +181,7 @@
 <?php }if($admin_array['permissions'][4]){?>	<li><a href="#action-4">Einen Benutzer löschen</a></li>
 <?php }if($admin_array['permissions'][5]){?>	<li><a href="#action-5">Einen Benutzer sperren / entsperren</a></li>
 <?php }if($admin_array['permissions'][6]){?>	<li><a href="#action-6">Einen Benutzer umbenennen</a></li>
+<?php }if($admin_array['permissions'][7]){?>	<li><a href="#action-14">Anfängerschutz ein-/ausschalten</a></li>
 <?php }if($admin_array['permissions'][8]){?>	<li><a href="#action-8"><span xml:lang="en">Changelog</span> bearbeiten</a></li>
 <?php }if($admin_array['permissions'][9]){?>	<li><a href="#action-9">Nachricht versenden</a></li>
 <?php }/*if($admin_array['permissions'][10]){?>	<li><a href="#action-10"><span xml:lang="en">Log</span>dateien einsehen</a></li>
@@ -354,6 +363,30 @@
 <?php
 	}
 
+	if($admin_array['permissions'][7])
+	{
+		if(file_exists(NOOB_FILE))
+		{
+?>
+<hr />
+<h2 id="action-7">Anfängerschutz einschalten</h2>
+<form action="index.php" method="post">
+        <div><input type="hidden" name="noob" value="0" /><button type="submit">Einschalten</button></div>
+</form>
+<?php
+		}
+		else
+		{
+?>
+<hr />
+<h2 id="action-7">Anfängerschutz ausschalten</h2>
+<form action="index.php" method="post">
+        <div><input type="hidden" name="noob" value="1"/><button type="submit">Ausschalten</button></div>
+</form>
+<?php
+		}
+	}
+
 	if($admin_array['permissions'][8])
 	{
 ?>
@@ -460,9 +493,11 @@
 <form action="index.php" method="post">
 	<div><input type="hidden" name="lock" value="1" /><button type="submit">Sperren</button></div>
 </form>
+
+
 <?php
-		}
-	}
+                }
+        }
 
 	if($admin_array['permissions'][14])
 	{
