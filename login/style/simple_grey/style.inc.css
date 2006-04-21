@@ -214,12 +214,12 @@ legend { font-weight:bold; }
 
 .karte-system { width:75%; border-spacing:0; border-collapse:collapse; text-align:center; margin:.5em auto; }
 .karte-system th,.karte-system td { border:.1em solid #aaa; padding:.2em; font-weight:bold; }
-.karte-system th.c-planet,.karte-system th.c-aktionen { width:1px; }
+.karte-system th.c-planet { width:1px; }
+.karte-system th.c-aktionen { width:10ex; }
 .karte-system td.c-aktionen ul { margin:0; padding:0; list-style-type:none; }
-.karte-system td.c-aktionen li { width:1.5ex; overflow:hidden; float:left; display:block; margin-right:.3em; white-space:nowrap; line-height:1em; height:1em; }
+.karte-system td.c-aktionen li { width:1.5ex; overflow:hidden; float:left; display:block; margin-right:.5ex; white-space:nowrap; line-height:1em; height:1em; }
 .karte-system td.c-aktionen li:first-letter,.karte-system td.c-aktionen a:first-letter { color:#fff !important; }
 .karte-system td.c-aktionen a { color:#777; }
-.karte-system td.c-aktionen { white-space:nowrap; }
 
 .karte-system .eigen .playername a,.highscores .eigen .playername { color:#8f8; }
 .karte-system .verbuendet .playername a,.highscores .verbuendet .playername { color:#8bf; }
