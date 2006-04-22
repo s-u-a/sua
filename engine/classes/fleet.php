@@ -591,6 +591,19 @@
 			return (isset($this->raw[0][$target]) || isset($this->raw[0][$target.'T']));
 		}
 
+		function renameUser($old_name, $new_name)
+		{
+			if(!$this->status) return false;
+
+			if(!isset($this->raw[1][$old_name])) return true;
+			if($old_name == $new_name) return 2;
+
+			$this->raw[1][$new_name] = $this->raw[1][$old_name];
+			unset($this->raw[1][$old_name]);
+			$this->changed = true;
+			return true;
+		}
+
 		function start()
 		{
 			if(!$this->status || $this->started()) return false;

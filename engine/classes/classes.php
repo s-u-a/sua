@@ -40,8 +40,8 @@
 
 			foreach($objectInstances[$classname] as $key=>$instance)
 			{
-				if($destruct && method_exists($instance, '__destruct'))
-					$instance->__destruct();
+				/*if($destruct && method_exists($instance, '__destruct'))
+					$instance->__destruct();*/
 				unset($objectInstances[$classname][$key]);
 			}
 			unset($objectInstances[$classname]);

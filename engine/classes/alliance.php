@@ -522,6 +522,18 @@
 			return $instance->getName();
 		}
 
+		function renameUser($old_name, $new_name)
+		{
+			if(!$this->status) return false;
+			if($old_name == $new_name) return 2;
+			if(!isset($this->raw['members'][$old_name])) return true;
+
+			$this->raw['members'][$new_name] = $this->raw['members'][$old_name];
+			unset($this->raw['members'][$old_name]);
+			$this->changed = true;
+			return true;
+		}
+
 		function renameAllowed()
 		{
 			if(!$this->status) return false;

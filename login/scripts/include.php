@@ -50,7 +50,7 @@
 				die('Not logged in. Please <a href="'.htmlentities($url).'">relogin</a>.');
 			}
 			else
-				die('Anmeldung fehlgeschlagen. Haben Sie sich bereits registriert und Ihren Benutzernamen und Ihr Passwort korrekt in die zugehörigen Felder über dem Anmelden-Button eingetragen? Haben Sie Groß-Klein-Schreibung sowohl beim Passwort als auch beim Benutzernamen beachtet? <a href="'.htmlentities($url).'">Probieren Sie es noch einmal.</a>');
+				die('Anmeldung fehlgeschlagen. Haben Sie sich bereits registriert und Ihren Benutzernamen und Ihr Passwort korrekt in die zugehörigen Felder über dem Anmelden-Button eingetragen? Haben Sie Groß-Klein-Schreibung beim Passwort beachtet? <a href="'.htmlentities($url).'">Probieren Sie es noch einmal.</a>');
 		}
 		else
 		{

@@ -1808,6 +1808,25 @@
 			);
 		}
 
+		function renameVerbuendet($old_name, $new_name)
+		{
+			if(!$this->status) return false;
+
+			if($old_name == $new_name) return 2;
+
+			$k1 = (isset($this->raw['verbuendete']) ? array_search($old_name, $this->raw['verbuendete']) : false);
+			$k2 = (isset($this->raw['verbuendete_bewerbungen']) ? array_search($old_name, $this->raw['verbuendete_bewerbungen']) : false);
+			$k3 = (isset($this->raw['verbuendete_anfragen']) ? array_search($old_name, $this->raw['verbuendete_anfragen']) : false);
+
+			if($k1 !== false) $this->raw['verbuendete'][$k1] = $new_name;
+			if($k2 !== false) $this->raw['verbuendete_bewerbungen'][$k2] = $new_name;
+			if($k3 !== false) $this->raw['verbuendete_anfragen'][$k3] = $new_name;
+
+			$this->changed = ($k1 !== false || $k2 !== false || $k3 !== false);
+
+			return true;
+		}
+
 		function getVerbuendetList()
 		{
 			if(!$this->status) return false;
@@ -2737,18 +2756,81 @@
 
 		function rename($new_name)
 		{
-			# Fehlt noch.
+			# Ueberpruefen
+			$really_rename = (strtolower($new_name) != strtolower($this->name));
+
+			if($really_rename)
+			{
+				$new_fname = $this->save_dir.'/'.urlencode(strtolower($new_name));
+				if(file_exists($new_fname)) return false;
+			}
 
 			# Planeteneigentuemer aendern
-			# Nachrichtenabsender aendern
-			# Bei Buendnispartnern abaendern
-			# In Flottenbewegungen umbenennen
-			# In der Allianz umbenennen
-			# Datei umbenennen
-			# Raw-interne Werte aendern
-			# Highscores-Eintrag neu schreiben
+			$active_planet = $this->getActivePlanet();
+			foreach($this->getPlanetsList() as $planet)
+			{
+				$this->setActivePlanet($planet);
+				$pos = $this->getPos();
+				$galaxy_obj = Classes::Galaxy($pos[0]);
+				$galaxy_obj->setPlanetOwner($pos[1], $pos[2], $new_name);
+			}
+			$this->setActivePlanet($active_planet);
 
-			return false;
+			# Nachrichtenabsender aendern
+			Classes::resetInstances('Message');
+			$dh = opendir(DB_MESSAGES);
+			while(($fname = readdir($dh)) !== false)
+			{
+				if($fname == '.' || $fname == '..') continue;
+
+				$message = new Message(urldecode($fname));
+				$message->renameUser($this->name, $new_name);
+				unset($message);
+			}
+			closedir($dh);
+
+			# Bei Buendnispartnern abaendern
+			Classes::resetInstances('Users');
+			foreach(array_merge($this->getVerbuendetList(), $this->getVerbuendetRequestList(), $this->getVerbuendetApplicationList()) as $username)
+			{
+				$user = new User($username);
+				$user->renameVerbuendet($this->name, $new_name);
+				unset($user);
+			}
+
+			# In Flottenbewegungen umbenennen
+			Classes::resetInstances('Fleet');
+			foreach($this->getFleetsList() as $fleet)
+			{
+				$fleet = new Fleet($fleet);
+				$fleet->renameUser($this->name, $new_name);
+			}
+
+			# In der Allianz umbenennen
+			if($this->allianceTag())
+			{
+				$alliance = Classes::Alliance($this->allianceTag());
+				$alliance->renameUser($this->name, $new_name);
+			}
+
+			# Highscores-Eintrag neu schreiben
+			$highscores = Classes::Highscores();
+			$highscores->renameUser($this->name, $new_name);
+
+			$this->raw['username'] = $new_name;
+			$this->changed = true;
+
+			if($really_rename)
+			{
+				# Datei umbenennen
+				$this->__destruct();
+				rename($this->filename, $new_fname);
+				$this->__construct($new_name);
+				$this->setActivePlanet($active_planet);
+			}
+			else $this->name = $new_name;
+
+			return true;
 		}
 
 		function lastMailSent($time=false)
