@@ -108,9 +108,9 @@ legend { font-weight:bold; }
 .item .ress dd:after,.item-info .ress dd:after { content:",\a0"; font-weight:normal; }
 .item .ress dd.ress-radium:after,.item-info .ress dd.ress-radium:after { content:""; }
 .item dt.item-kosten,.item dt.item-bauzeit { float:left; }
-.item dt.item-kosten:after,.item dt.item-bauzeit:after,.item-info dt.item-kosten:after,.item-info dt.item-bauzeit:after { content:":\a0"; }
-.item dd.item-bauzeit,.item-info dd.item-bauzeit { font-weight:bold; }
-.item-info dt.item-bauzeit,.item-info dt.item-kosten { display:inline; font-weight:bold; }
+.item dt.item-kosten:after,.item dt.item-bauzeit:after,.item-info dt.item-kosten:after,.item-info dt.item-bauzeit:after,.item-info dt.item-bauzeit-lokal:after,.item-info dt.item-bauzeit-global:after { content:":\a0"; }
+.item dd.item-bauzeit,.item-info dd.item-bauzeit,.item-info dd.item-bauzeit-lokal,.item-info dd.item-bauzeit-global { font-weight:bold; }
+.item-info dt.item-bauzeit,.item-info dt.item-kosten,.item-info dt.item-bauzeit-lokal,.item-info dt.item-bauzeit-global { display:inline; font-weight:bold; }
 .item-info dd,.item-info dl { display:inline; }
 .item-info .ress dd.ress-radium:after { content:"\0a"; white-space:pre; }
 .item ul { padding:0; list-style-type:none; float:right; margin:-1.5em 0 1em 1em; }

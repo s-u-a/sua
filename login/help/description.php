@@ -52,10 +52,25 @@
 		<?=format_ress($item_info['ress'], 3)?>
 	</dd>
 
+<?php
+			if($type == 'forschung')
+			{
+?>
+	<dt class="item-bauzeit-lokal">Bauzeit lokal</dt>
+	<dd class="item-bauzeit-lokal"><?=format_btime($item_info['time_local'])?></dd>
+
+	<dt class="item-bauzeit-global">Bauzeit global</dt>
+	<dd class="item-bauzeit-global"><?=format_btime($item_info['time_global'])?></dd>
+<?php
+			}
+			else
+			{
+?>
 	<dt class="item-bauzeit">Bauzeit</dt>
 	<dd class="item-bauzeit"><?=format_btime($item_info['time'])?></dd>
 </dl>
 <?php
+			}
 		}
 
 		if($type == 'gebaeude')

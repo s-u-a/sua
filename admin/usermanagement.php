@@ -50,7 +50,7 @@
 				<th rowspan="2" title="Name des Administrators">Name</th>
 				<th rowspan="2">Passwort</th>
 				<th colspan="7">Benutzeraktionen</th>
-				<th rowspan="2" xml:lang="en" title="Anfängerschuutz ein-/ausschalten">Anfängerschutz</th>
+				<th rowspan="2" xml:lang="en" title="Anfängerschutz ein-/ausschalten">Anfängerschutz</th>
 				<th rowspan="2" xml:lang="en" title="Changelog bearbeiten">Changelog</th>
 				<th rowspan="2" title="Nachricht versenden">Nachricht</th>
 				<th rowspan="2" title="Log-Dateien ansehen"><span xml:lang="en">Logs</span></th>
@@ -146,7 +146,7 @@
 			<tr>
 				<th rowspan="2" title="Name des Administrators">Name</th>
 				<th colspan="7">Benutzeraktionen</th>
-				<th rowspan="2" xml:lang="en" title="Anfängerschuutz ein-/ausschalten">Anfängerschutz</th>
+				<th rowspan="2" xml:lang="en" title="Anfängerschutz ein-/ausschalten">Anfängerschutz</th>
 				<th rowspan="2" xml:lang="en" title="Changelog bearbeiten">Changelog</th>
 				<th rowspan="2" title="Nachricht versenden">Nachricht</th>
 				<th rowspan="2" title="Log-Dateien ansehen"><span xml:lang="en">Logs</span></th>
