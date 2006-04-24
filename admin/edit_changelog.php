@@ -72,6 +72,8 @@
 
 				flock($fh, LOCK_UN);
 				fclose($fh);
+
+				protocol("8.2", $_POST['add']);
 			}
 		}
 		unset($old_changelog);
@@ -90,6 +92,8 @@
 			fwrite($fh, $old_changelog);
 			flock($fh, LOCK_UN);
 			fclose($fh);
+
+			protocol("8.1", $_POST['add']);
 		}
 		unset($old_changelog);
 	}

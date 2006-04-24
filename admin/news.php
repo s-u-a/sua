@@ -14,13 +14,18 @@
 		{
 			if(isset($_POST['delete']) && $_POST['delete'] && isset($news_array[$i]))
 			{
+				protocol("14.3", (isset($news_array[$i]['title']) ? $news_array[$i]['title'] : ''));
 				unset($news_array[$i]);
 				continue;
 			}
 			if(!isset($news[1]))
 				continue;
 			if(!isset($news_array[$i]))
+			{
 				$news_array[$i] = array();
+				protocol("14.1", (isset($news[0]) ? $news[0] : ''));
+			}
+			else protocol("14.2", (isset($news_array[$i]['title']) ? $news_array[$i]['title'] : ''), (isset($news[0]) ? $news[0] : ''));
 			if(!isset($news_array[$i]['time']))
 				$news_array[$i]['time'] = time();
 			if(!isset($news_array[$i]['author']))

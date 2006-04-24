@@ -28,7 +28,6 @@
 			define('DB_DIR', $DB_DIR);
 
 			define('EVENT_FILE', DB_DIR.'/events');
-			define('LOG_FILE', DB_DIR.'/logfile');
 			define('LOCK_FILE', DB_DIR.'/locked');
 			define('DB_ALLIANCES', DB_DIR.'/alliances');
 			define('DB_FLEETS', DB_DIR.'/fleets');
@@ -46,6 +45,7 @@
 			define('DB_NONOOBS', DB_DIR.'/nonoobs');
 			define('DB_MESSENGERS', DB_DIR.'/messengers');
 			define('DB_NOTIFICATIONS', DB_DIR.'/notifications');
+			define('DB_ADMIN_LOGFILE', DB_DIR.'/admin_logfile');
 		}
 
 		if(!defined('other_globals'))

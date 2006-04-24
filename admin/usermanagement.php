@@ -38,7 +38,7 @@
 				for($i=0; $i<=14; $i++)
 					$admins[$_POST['new_admin'][0]]['permissions'][$i] = (isset($_POST['new_admin'][$i+2]) ? '1' : '0');
 
-				write_admin_list($admins);
+				write_admin_list($admins) && protocol("11.1", $_POST['new_admin'][0]);
 			}
 			else
 			{
@@ -99,7 +99,7 @@
 			if(isset($_GET['delete']) && isset($admin_keys[$_GET['delete']]) && $admin_keys[$_GET['delete']] != $_SESSION['admin_username'])
 			{
 				unset($admins[$admin_keys[$_GET['delete']]]);
-				write_admin_list($admins);
+				write_admin_list($admins) && protocol("11.4", $_GET['delete']);
 			}
 
 		case 'edit':
@@ -127,13 +127,23 @@
 							$i++;
 						$this_name .= '_'.$i;
 					}
-					if($old_admins[$no] != $this_name && $no == $session_key)
-						$_SESSION['admin_username'] = $this_name;
+					if($old_admins[$no] != $this_name)
+					{
+						protocol("11.3", $old_admins[$no], $this_name);
+						if($no == $session_key)
+							$_SESSION['admin_username'] = $this_name;
+					}
 					$new_admins[$this_name] = array();
 					$new_admins[$this_name]['password'] = $this_password;
 					$new_admins[$this_name]['permissions'] = array();
+					$prot = false;
 					for($i=0; $i<=14; $i++)
+					{
 						$new_admins[$this_name]['permissions'][$i] = (isset($admin[$i+1]) ? '1' : '0');
+						if($admins[$this_name]['permissions'][$i] != $new_admins[$this_name]['permissions'][$i])
+							$prot = true;
+					}
+					if($prot) protocol("11.2", $this_name);
 					$new_admins[$_SESSION['admin_username']]['permissions'][11] = '1';
 				}
 				write_admin_list($new_admins);
@@ -149,7 +159,7 @@
 				<th rowspan="2" xml:lang="en" title="Anfängerschutz ein-/ausschalten">Anfängerschutz</th>
 				<th rowspan="2" xml:lang="en" title="Changelog bearbeiten">Changelog</th>
 				<th rowspan="2" title="Nachricht versenden">Nachricht</th>
-				<th rowspan="2" title="Log-Dateien ansehen"><span xml:lang="en">Logs</span></th>
+				<th rowspan="2" title="Admin-og-Dateien ansehen"><span xml:lang="en">Admin</span>-<span xml:lang="en">Logs</span></th>
 				<th rowspan="2" title="Adminstratoren verwalten"><span xml:lang="en">Admins</span></th>
 				<th rowspan="2" title="Wartungsarbeiten ein-/ausschalten">Wartung</th>
 				<th rowspan="2" title="Spiel sperren/entsperren">Spiel sperren</th>

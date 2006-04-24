@@ -10,6 +10,8 @@
 		$_SESSION['ghost'] = true;
 		$_SESSION['resume'] = true;
 
+		protocol("1", $_SESSION['username']);
+
 		$url = 'https://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php?'.urlencode(SESSION_COOKIE).'='.urlencode(session_id());
 		header('Location: '.$url, true, 303);
 		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
@@ -22,7 +24,7 @@
 		$_POST['passwd_username'] = trim($_POST['passwd_username']);
 
 		$that_user = Classes::User($_POST['passwd_username']);
-		$that_user->setPassword($_POST['passwd_password']);
+		$that_user->setPassword($_POST['passwd_password']) && protocol("2", $_POST['passwd_username']);
 		unset($that_user);
 	}
 
@@ -33,7 +35,7 @@
 		$_POST['delete_username'] = trim($_POST['delete_username']);
 
 		$that_user = Classes::User($_POST['delete_username']);
-		$that_user->destroy();
+		$that_user->destroy() && protocol("4", $_POST['delete_username']);
 	}
 
 	if($admin_array['permissions'][5] && isset($_POST['lock_username']) && User::userExists(trim($_POST['lock_username'])))
@@ -43,7 +45,7 @@
 		$_POST['lock_username'] = trim($_POST['lock_username']);
 
 		$that_user = Classes::User($_POST['lock_username']);
-		$that_user->lockUser();
+		$that_user->lockUser() && protocol(($that_user->userLocked() ? '5.1' : '5.2'), $_POST['lock_username']);
 		unset($that_user);
 	}
 
@@ -55,15 +57,15 @@
 		$_POST['rename_new'] = substr(trim($_POST['rename_new']), 0, 20);
 
 		$that_user = Classes::User($_POST['rename_old']);
-		$that_user->rename($_POST['rename_new']);
+		$that_user->rename($_POST['rename_new']) && protocol("6", $_POST['rename_old'], $_POST['rename_new']);
 	}
 
 	if($admin_array['permissions'][7] && isset($_POST['noob']))
 	{
 		if($_POST['noob'] && !file_exists(DB_NONOOBS))
-			touch(DB_NONOOBS);
+			touch(DB_NONOOBS) && protocol("7.1");
 		elseif(!$_POST['noob'] && file_exists(DB_NONOOBS))
-			unlink(DB_NONOOBS);
+			unlink(DB_NONOOBS) && protocol("7.2");
 	}
 
 	if($admin_array['permissions'][9] && isset($_POST['message_text']) && trim($_POST['message_text']) != '')
@@ -95,6 +97,7 @@
 				foreach($to as $t)
 					$message->addUser(urldecode($t), 6);
 			}
+			protocol("9", $_POST['message_subject'], str_replace("\r\n", ", ", $_POST['message_to']));
 			unset($message);
 		}
 	}
@@ -107,7 +110,7 @@
 				touch('../.htaccess');
 			if(rename('../.htaccess', '../.htaccess.wartungsarbeiten.sav'))
 			{
-				$fh = fopen('../.htaccess', 'w');
+				$fh = fopen('../.htaccess', 'w') && protocol("12.1");
 				flock($fh, LOCK_EX);
 
 				fwrite($fh, "Order Deny,Allow\n");
@@ -125,7 +128,7 @@
 		{
 			if(is_file('../.htaccess'))
 				unlink('../.htaccess');
-			rename('../.htaccess.wartungsarbeiten.sav', '../.htaccess');
+			rename('../.htaccess.wartungsarbeiten.sav', '../.htaccess') && protocol("12.2");
 		}
 	}
 
@@ -146,7 +149,7 @@
 			}
 			closedir($dh);
 
-			touch(LOCK_FILE);
+			touch(LOCK_FILE) && protocol("13.1");
 		}
 		elseif(!$_POST['lock'] && file_exists(LOCK_FILE))
 		{
@@ -163,7 +166,7 @@
 			}
 			closedir($dh);
 
-			unlink(LOCK_FILE);
+			unlink(LOCK_FILE) && protocol("13.2");
 		}
 	}
 
@@ -184,8 +187,8 @@
 <?php }if($admin_array['permissions'][7]){?>	<li><a href="#action-7">Anfängerschutz ein-/ausschalten</a></li>
 <?php }if($admin_array['permissions'][8]){?>	<li><a href="#action-8"><span xml:lang="en">Changelog</span> bearbeiten</a></li>
 <?php }if($admin_array['permissions'][9]){?>	<li><a href="#action-9">Nachricht versenden</a></li>
-<?php }/*if($admin_array['permissions'][10]){?>	<li><a href="#action-10"><span xml:lang="en">Log</span>dateien einsehen</a></li>
-<?php }*/if($admin_array['permissions'][11]){?>	<li><a href="#action-11">Benutzerverwaltung</a></li>
+<?php }if($admin_array['permissions'][10]){?>	<li><a href="#action-10"><span xml:lang="en">Admin</span>-<span xml:lang="en">Log</span>dateien einsehen</a></li>
+<?php }if($admin_array['permissions'][11]){?>	<li><a href="#action-11">Benutzerverwaltung</a></li>
 <?php }if($admin_array['permissions'][12]){?>	<li><a href="#action-12">Wartungsarbeiten</a></li>
 <?php }if($admin_array['permissions'][13]){?>	<li><a href="#action-13">Spiel sperren</a></li>
 <?php }if($admin_array['permissions'][14]){?>	<li><a href="#action-14"><span xml:lang="en">News</span> bearbeiten</a></li>
@@ -292,12 +295,14 @@
 			$pwd_2 = $user_2->getPasswordSum();
 			if($pwd_1 && $pwd_2 && $pwd_1 == $pwd_2)
 			{
+				protocol("3", $_POST['compare1'], $_POST['compare2'], "1");
 ?>
 <p><strong>Die Passwörter der Benutzer &bdquo;<?=utf8_htmlentities($_POST['compare_1'])?>&ldquo; und &bdquo;<?=utf8_htmlentities($_POST['compare_2'])?>&ldquo; stimmen überein.</strong></p>
 <?php
 			}
 			else
 			{
+				protocol("3", $_POST['compare1'], $_POST['compare2'], "0");
 ?>
 <p><strong>Die Passwörter der Benutzer &bdquo;<?=utf8_htmlentities($_POST['compare_1'])?>&ldquo; und &bdquo;<?=utf8_htmlentities($_POST['compare_2'])?>&ldquo; unterscheiden sich.</strong></p>
 <?php
@@ -365,11 +370,13 @@
 
 	if($admin_array['permissions'][7])
 	{
-		if(file_exists(DB_NONOOBS))
-		{
 ?>
 <hr />
 <h2 id="action-7">Anfängerschutz ein-/ausschalten</h2>
+<?php
+		if(file_exists(DB_NONOOBS))
+		{
+?>
 <form action="index.php" method="post">
         <div><input type="hidden" name="noob" value="0" /><button type="submit">Anfängerschutz einschalten</button></div>
 </form>
@@ -378,8 +385,6 @@
 		else
 		{
 ?>
-<hr />
-<h2 id="action-7">Anfängerschutz ein-/ausschalten</h2>
 <form action="index.php" method="post">
         <div><input type="hidden" name="noob" value="1" /><button type="submit">Anfängerschutz ausschalten</button></div>
 </form>
@@ -422,20 +427,13 @@
 <?php
 	}
 
-	/*if($admin_array['permissions'][10])
+	if($admin_array['permissions'][10])
 	{
 ?>
 <hr />
-<h2 id="action-10"><span xml:lang="en">Log</span>dateien einsehen</h2>
-<ul>
-	<li><a href="logfiles.php?action=select_username">Nach Benutzernamen filtern</a></li>
-	<li><a href="logfiles.php?action=select_ip">Nach <abbr title="Internet Protocol" xml:lang="en"><span xml:lang="de">IP</span></abbr>-Adressen filtern</a></li>
-	<li><a href="logfiles.php?action=select_session">Nach <span xml:lang="en">Sessions</span> filtern</a></li>
-	<li><a href="logfiles.php?action=scan_multis">Nach Multi-<span xml:lang="en">Accounts</span> suchen</a></li>
-	<li><a href="logfiles.php?action=whole">Gesamte Logdatei einsehen</a></li>
-</ul>
+<h2 id="action-10"><a href="logs.php"><span xml:lang="en">Admin</span>-<span xml:lang="en">Log</span>dateien einsehen</a></h2>
 <?php
-	}*/
+	}
 
 	if($admin_array['permissions'][11])
 	{

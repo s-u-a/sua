@@ -765,12 +765,12 @@
 				if($target_owner)
 				{
 					$target_user = Classes::User($target_owner);
-					if(!$target_user->getStatus()) $target_user = false;
-					else $target_user->setActivePlanet($target_user->getPlanetByPos($next_target_nt));
+					if(!$target_user->getStatus()) return false;
+					$target_user->setActivePlanet($target_user->getPlanetByPos($next_target_nt));
 				}
 				else $target_user = false;
 
-				if(($type == 3 || $type == 4) && !$target_user)
+				if(($type == 3 || $type == 4) && !$target_owner)
 				{
 					# Angriff und Transport nur bei besiedelten Planeten
 					# moeglich.

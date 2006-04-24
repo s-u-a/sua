@@ -1,6 +1,34 @@
 <?php
 	require('../engine/include.php');
 
+	$actions = array(
+		"0" => "%s hat sich in Runde %s angemeldet.",
+		"1" => "%s hat sich als Geist unter dem Benutzer %s angemeldet.",
+		"2" => "%s hat das Passwort des Benutzers %s geändert.",
+		"3" => "%s hat die Passwörter von %s und %s verglichen.",
+		"4" => "%s hat den Benutzer %s gelöscht.",
+		"5.1" => "%s hat den Benutzer %s gesperrt.",
+		"5.2" => "%s hat den Benutzer %s entsperrt.",
+		"6" => "%s hat den Benutzer %s nach %s umbenannt.",
+		"7.1" => "%s hat den Anfängerschutz eingeschaltet.",
+		"7.2" => "%s hat den Anfängerschutz ausgeschaltet.",
+		"8.1" => "%s hat einen Eintrag zum Changelog hinzugefügt: %s",
+		"8.2" => "%s hat einen Eintrag aus dem Changelog gelöscht: %s",
+		"9" => "%s hat einen Eintrag eine Nachricht mit dem Betreff %s an %s versandt.",
+		"10" => "%s hat den Logeintrag %s, %s, %s angeschaut.",
+		"11.1" => "%s hat den Administrator %s hinzugefügt.",
+		"11.2" => "%s hat die Rechte des Administrators %s verändert.",
+		"11.3" => "%s hat den Administrator %s nach %s umbenannt.",
+		"11.4" => "%s hat den Administrator %s entfernt.",
+		"12.1" => "%s hat die Wartungsarbeiten eingeschaltet.",
+		"12.2" => "%s hat die Wartungsarbeiten ausgeschaltet.",
+		"13.1" => "%s hat das Spiel gesperrt.",
+		"13.2" => "%s hat das Spiel entsperrt.",
+		"14.1" => "%s hat einen Newseintrag mit dem Titel %s hinzugefügt.",
+		"14.2" => "%s hat den Newseintrag mit dem Titel %s verändert.",
+		"14.3" => "%s hat den Newseintrag mit dem Titel %s gelöscht."
+	);
+
 	if(PROTOCOL != 'https')
 	{
 		$url = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -23,7 +51,7 @@
 		if(isset($_SESSION[SESSION_COOKIE]))
 			setcookie(SESSION_COOKIE, '');
 	}
-	
+
 	$databases = get_databases();
 	if(isset($_SESSION['database']) && isset($databases[$_SESSION['database']]))
 	{
@@ -38,7 +66,7 @@
 		{
 			define_globals($databases[$_POST['database']][0]);
 			$admins = get_admin_list();
-			
+
 			if(isset($admins[$_POST['admin_username']]) && md5($_POST['admin_password']) == $admins[$_POST['admin_username']]['password'])
 			{
 				$_SESSION['admin_username'] = $_POST['admin_username'];
@@ -48,7 +76,7 @@
 				$show_login = false;
 			}
 		}
-		
+
 		if($show_login)
 		{
 			admin_gui::html_head();
@@ -77,7 +105,7 @@
 			}
 ?>
 		</select></dd>
-		
+
 		<dt><label for="admin-benutzername-input">Benutzername</label></dt>
 		<dd><input type="text" name="admin_username" id="admin-benutzername-input" /></dd>
 
@@ -120,5 +148,19 @@
 </html>
 <?php
 		}
+	}
+
+	function protocol($type)
+	{
+		$fh = fopen(DB_ADMIN_LOGFILE, "a");
+		if(!$fh) return false;
+		flock($fh, LOCK_EX);
+		fwrite($fh, time()."\t".$_SESSION['admin_username']);
+		foreach(func_get_args() as $arg)
+			fwrite($fh, "\t".preg_replace("/[\n\t]/", " ", $arg));
+		fwrite($fh, "\n");
+		flock($fh, LOCK_UN);
+		fclose($fh);
+		return true;
 	}
 ?>
