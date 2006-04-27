@@ -1650,15 +1650,8 @@
 			  )*/
 
 			$run = false;
-			$active_planet = $this->getActivePlanet();
 			$beginning_building = array();
-			foreach($this->getPlanetsList() as $planet)
-			{
-				$this->setActivePlanet($planet);
-				$beginning_building[$planet] = array();
-				if(isset($this->planet_info['building'])) $beginning_building[$planet] = $this->planet_info['building'];
-			}
-			$this->setActivePlanet($active_planet);
+			if(isset($this->planet_info['building'])) $beginning_building = $this->planet_info['building'];
 			$beginning_changed = $this->changed;
 
 			$building = $this->checkBuildingThing('gebaeude', false);
@@ -1673,6 +1666,7 @@
 
 
 			# Forschung muss auf allen Planeten ueberprueft werden
+			$active_planet = $this->getActivePlanet();
 			foreach($this->getPlanetsList() as $planet)
 			{
 				$this->setActivePlanet($planet);
@@ -1680,7 +1674,7 @@
 				if($building !== false && $building[1] <= time() && $this->removeBuildingThing('forschung', false))
 				{
 					$actions[] = array($building[1], $building[0], 1, true);
-					if($check_forschung || $building[0]==$check_id) $run = true;
+					$run = true; # $check_forschung zu beachten waere viel zu unperformant
 					if($building[2]) break; # Global
 				}
 			}
@@ -1795,12 +1789,7 @@
 			}
 			elseif(!$run)
 			{
-				foreach($beginning_building as $planet=>$building)
-				{
-					$this->setActivePlanet($planet);
-					$this->planet_info['building'] = $building;
-				}
-				$this->setActivePlanet($active_planet);
+				$this->planet_info['building'] = $beginning_building;
 				$this->changed = $beginning_changed;
 			}
 		}
