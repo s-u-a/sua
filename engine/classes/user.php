@@ -1534,6 +1534,9 @@
 
 		protected function getRawFromData()
 		{
+			if($this->recalc_highscores[0] || $this->recalc_highscores[1] || $this->recalc_highscores[2] || $this->recalc_highscores[3] || $this->recalc_highscores[4])
+				$this->doRecalcHighscores($this->recalc_highscores[0], $this->recalc_highscores[1], $this->recalc_highscores[2], $this->recalc_highscores[3], $this->recalc_highscores[4]);
+
 			foreach($this->settings as $setting=>$value)
 				$this->raw[$setting] = $value;
 			$this->raw['forschung'] = $this->items['forschung'];
@@ -1547,9 +1550,6 @@
 				$this->planet_info['verteidigung'] = $this->items['verteidigung'];
 				$this->planet_info['ress'] = $this->ress;
 			}
-
-			if($this->recalc_highscores[0] || $this->recalc_highscores[1] || $this->recalc_highscores[2] || $this->recalc_highscores[3] || $this->recalc_highscores[4])
-				$this->doRecalcHighscores($this->recalc_highscores[0], $this->recalc_highscores[1], $this->recalc_highscores[2], $this->recalc_highscores[3], $this->recalc_highscores[4]);
 		}
 
 		function checkBuildingThing($type, $run_eventhandler=true)
@@ -1650,8 +1650,15 @@
 			  )*/
 
 			$run = false;
+			$active_planet = $this->getActivePlanet();
 			$beginning_building = array();
-			if(isset($this->planet_info['building'])) $beginning_building = $this->planet_info['building'];
+			foreach($this->getPlanetsList() as $planet)
+			{
+				$this->setActivePlanet($planet);
+				$beginning_building[$planet] = array();
+				if(isset($this->planet_info['building'])) $beginning_building[$planet] = $this->planet_info['building'];
+			}
+			$this->setActivePlanet($active_planet);
 			$beginning_changed = $this->changed;
 
 			$building = $this->checkBuildingThing('gebaeude', false);
@@ -1665,12 +1672,19 @@
 			}
 
 
-			$building = $this->checkBuildingThing('forschung', false);
-			if($building !== false && $building[1] <= time() && $this->removeBuildingThing('forschung', false))
+			# Forschung muss auf allen Planeten ueberprueft werden
+			foreach($this->getPlanetsList() as $planet)
 			{
-				$actions[] = array($building[1], $building[0], 1, true);
-				if($check_forschung || $building[0]==$check_id) $run = true;
+				$this->setActivePlanet($planet);
+				$building = $this->checkBuildingThing('forschung', false);
+				if($building !== false && $building[1] <= time() && $this->removeBuildingThing('forschung', false))
+				{
+					$actions[] = array($building[1], $building[0], 1, true);
+					if($check_forschung || $building[0]==$check_id) $run = true;
+					if($building[2]) break; # Global
+				}
 			}
+			$this->setActivePlanet($active_planet);
 
 
 			$building = $this->checkBuildingThing('roboter', false);
@@ -1781,7 +1795,12 @@
 			}
 			elseif(!$run)
 			{
-				$this->planet_info['building'] = $beginning_building;
+				foreach($beginning_building as $planet=>$building)
+				{
+					$this->setActivePlanet($planet);
+					$this->planet_info['building'] = $building;
+				}
+				$this->setActivePlanet($active_planet);
 				$this->changed = $beginning_changed;
 			}
 		}
