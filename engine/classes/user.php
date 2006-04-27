@@ -1293,7 +1293,7 @@
 
 			if($this->planet_info['last_refresh'] >= $time) return false;
 
-			$prod = $this->getProduction();
+			$prod = $this->getProduction($time !== false);
 
 			$f = ($time-$this->planet_info['last_refresh'])/3600;
 
@@ -1340,7 +1340,7 @@
 			return true;
 		}
 
-		function getProduction()
+		function getProduction($run_eventhandler=true)
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 
@@ -1357,7 +1357,7 @@
 					$energie_need = 0;
 					foreach($gebaeude as $id)
 					{
-						$item = $this->getItemInfo($id, 'gebaeude');
+						$item = $this->getItemInfo($id, 'gebaeude', false);
 						if($item['prod'][5] < 0) $energie_need -= $item['prod'][5];
 						elseif($item['prod'][5] > 0) $energie_prod += $item['prod'][5];
 
@@ -1647,6 +1647,7 @@
 				[1] => ID
 				[2] => Stufen hinzuzaehlen
 				[3] => Rohstoffe neu berechnen?
+				[4]? => Planet zur Forschung entfernen
 			  )*/
 
 			$run = false;
@@ -1671,10 +1672,10 @@
 			{
 				$this->setActivePlanet($planet);
 				$building = $this->checkBuildingThing('forschung', false);
-				if($building !== false && $building[1] <= time() && $this->removeBuildingThing('forschung', false))
+				if($building !== false && $building[1] <= time())
 				{
-					$actions[] = array($building[1], $building[0], 1, true);
-					$run = true; # $check_forschung zu beachten waere viel zu unperformant
+					$actions[] = array($building[1], $building[0], 1, true, $planet);
+					if($check_forschung || $building[0]==$check_id) $run = true;
 					if($building[2]) break; # Global
 				}
 			}
@@ -1775,6 +1776,12 @@
 					if($action[3])
 						$this->refreshRess($action[0]);
 
+					if(isset($action[4]))
+					{
+						$this->setActivePlanet($action[4]);
+						$this->removeBuildingThing('forschung', false);
+						$this->setActivePlanet($active_planet);
+					}
 					$this->changeItemLevel($action[1], $action[2], false, $action[0], &$actions);
 
 					if(isset($this->cache['getProduction']))
