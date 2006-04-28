@@ -96,7 +96,7 @@
 		$flotten_sorted = array();
 		foreach($flotten as $flotte)
 		{
-			$fl = Classes::Fleet($flotte);
+			$fl = Classes::Fleet($flotte, false);
 			if(!$fl->getStatus() || count($fl->getUsersList()) <= 0) continue;
 			$flotten_sorted[$flotte] = $fl->getNextArrival();
 		}

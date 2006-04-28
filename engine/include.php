@@ -1221,12 +1221,16 @@
 
 	function fancy_flock($file, $lock_flag)
 	{
+		if($lock_flag == LOCK_SH) $timeout = 0.1;
+		else $timeout = 5;
+
 		$flag = $lock_flag+LOCK_NB;
 
+		$steps = $timeout*10000;
 		for($i=0; $i<100; $i++)
 		{
 			if(flock($file, $flag)) return true;
-			usleep(50000);
+			usleep($steps);
 		}
 		return false;
 	}

@@ -4,7 +4,7 @@
 
 	class Classes
 	{
-		function Dataset($classname, $p1=false)
+		function Dataset($classname, $p1=false, $write=true)
 		{
 			global $objectInstances;
 
@@ -12,9 +12,14 @@
 			if(!isset($objectInstances[$classname])) $objectInstances[$classname] = array();
 			if(!isset($objectInstances[$classname][$p1]))
 			{
-				$instance = new $classname($p1);
+				$instance = new $classname($p1, $write);
 				$p1 = $instance->getName();
 				$objectInstances[$classname][$p1] = $instance;
+			}
+			elseif($write && $objectInstances[$classname][$p1]->readonly())
+			{ # Von Readonly auf Read and write schalten
+				$objectInstances[$classname][$p1]->__destruct();
+				$objectInstances[$classname][$p1]->__construct($p1, $write);
 			}
 
 			return $objectInstances[$classname][$p1];
@@ -50,13 +55,13 @@
 		}
 
 		# Serialize mit Instanzen und Locking
-		function User($p1=false){ return self::Dataset('User', $p1); }
-		function Alliance($p1=false){ return self::Dataset('Alliance', $p1); }
-		function Message($p1=false){ return self::Dataset('Message', $p1); }
-		function PublicMessage($p1=false){ return self::Dataset('PublicMessage', $p1); }
-		function Fleet($p1=false) {
+		function User($p1=false, $write=true){ return self::Dataset('User', $p1, $write); }
+		function Alliance($p1=false, $write=true){ return self::Dataset('Alliance', $p1, $write); }
+		function Message($p1=false, $write=true){ return self::Dataset('Message', $p1, $write); }
+		function PublicMessage($p1=false, $write=true){ return self::Dataset('PublicMessage', $p1, $write); }
+		function Fleet($p1=false, $write=true) {
 			if($p1 === false) $p1 = str_replace('.', '-', array_sum(explode(' ', microtime())));
-			return self::Dataset('Fleet', $p1);
+			return self::Dataset('Fleet', $p1, $write);
 		}
 
 		# Serialize
@@ -64,7 +69,7 @@
 		function Item($id){ return new Item($id); }
 
 		# Eigenes Binaerformat
-		function Galaxy($p1){ return self::Dataset('Galaxy', $p1); }
+		function Galaxy($p1, $write=true){ return self::Dataset('Galaxy', $p1, $write); }
 
 		# SQLite
 		function EventFile() { return new EventFile(); }

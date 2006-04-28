@@ -21,7 +21,7 @@
 			$highscores->updateAlliance($this->name, 0, 0, 0);
 
 			$this->write(true, false);
-			$this->__construct($this->name);
+			$this->__construct($this->name, !$this->readonly);
 			return true;
 		}
 
@@ -576,7 +576,7 @@
 				# Datei umbenennen
 				$this->__destruct();
 				rename($this->filename, $new_fname);
-				$this->__construct($new_name);
+				$this->__construct($new_name, !$this->readonly);
 			}
 			else $this->name = $new_name;
 

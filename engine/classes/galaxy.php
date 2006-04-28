@@ -7,15 +7,17 @@
 		private $filesize = false;
 		private $filename = false;
 		private $galaxy = false;
+		protected $readonly = true;
 
-		function __construct($galaxy)
+		function __construct($galaxy, $write=true)
 		{
 			$this->filename = DB_UNIVERSE.'/'.$galaxy;
 			$this->galaxy = $galaxy;
+			$this->readonly = !$write;
 			if(is_file($this->filename) && is_readable($this->filename))
 			{
 				$this->filesize = $filesize = filesize($this->filename);
-				if(is_writeable($this->filename))
+				if($write && is_writeable($this->filename))
 				{
 					$this->file_pointer = fopen($this->filename, 'r+');
 					if(!fancy_flock($this->file_pointer, LOCK_EX))
@@ -25,9 +27,8 @@
 				else
 				{
 					$this->file_pointer = fopen($this->filename, 'r');
-					if(!fancy_flock($this->file_pointer, LOCK_SH))
-						$this->status = false;
-					else $this->status = 2;
+					fancy_flock($this->file_pointer, LOCK_SH);
+					$this->status = 2;
 				}
 			}
 		}
@@ -51,6 +52,8 @@
 		{
 			return $this->status;
 		}
+
+		function readonly() { return $this->readonly; }
 
 		function getSystemsCount()
 		{

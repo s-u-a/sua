@@ -11,15 +11,18 @@
 		protected $file_pointer = false;
 		protected $cache = array();
 		protected $location = false;
+		protected $readonly = true;
 
 		abstract function create();
 
-		function __construct($name=false)
+		function __construct($name=false, $write=true)
 		{
 			if($name === false)
 			{
 				do $name = substr(md5(rand()), 0, 16); while(file_exists($this->save_dir.'/'.$name));
 			}
+
+			$this->readonly = !$write;
 
 			if($this->save_dir === false)
 				$this->status = 0;
@@ -32,16 +35,16 @@
 					$this->status = 0;
 				else
 				{
-					$this->status = 1;
-					if(!is_writeable($this->filename))
+					if(!$write || !is_writeable($this->filename))
 					{
-						$this->file_pointer = fopen($this->location, 'rb');
-						$this->status = 2;
+						if($this->file_pointer = fopen($this->location, 'rb'))
+						{
+							$this->status = 2;
+							fancy_flock($this->file_pointer, LOCK_SH);
+						}
 					}
-					else $this->file_pointer = fopen($this->location, 'r+b');
-
-					if(!$this->file_pointer || !fancy_flock($this->file_pointer, LOCK_EX))
-						$this->status = 0;
+					elseif(($this->file_pointer = fopen($this->location, 'r+b')) && fancy_flock($this->file_pointer, LOCK_EX))
+						$this->status = 1;
 					if($this->status)
 						$this->read();
 				}
@@ -129,5 +132,7 @@
 		{
 			return $this->name;
 		}
+
+		function readonly() { return $this->readonly; }
 	}
 ?>
