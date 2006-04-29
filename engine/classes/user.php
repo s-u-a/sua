@@ -5,7 +5,7 @@
 		protected $active_planet = false;
 		private $datatype = 'user';
 		protected $recalc_highscores = array(false,false,false,false,false);
-		protected $last_eventhandler_run = array(0, array(false, false, false, false, false));
+		protected $last_eventhandler_run = array();
 
 		function create()
 		{
@@ -1646,7 +1646,9 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 
-			if(microtime(true)-$this->last_eventhandler_run[0] < .5 && (($this->last_eventhandler_run[1][0] || !$check_gebaeude) || ($this->last_eventhandler_run[1][1] || !$check_forschung) || ($this->last_eventhandler_run[1][2] || !$check_roboter) || ($this->last_eventhandler_run[1][3] || !$check_schiffe) || ($this->last_eventhandler_run[1][4] || !$check_verteidigung)))
+			if(!isset($this->last_eventhandler_run[$this->getActivePlanet()]))
+				$this->last_eventhandler_run[$this->getActivePlanet()] = array(0, array(false, false, false, false, false));
+			if(microtime(true)-$this->last_eventhandler_run[$this->getActivePlanet()][0] < .5 && (($this->last_eventhandler_run[$this->getActivePlanet()][1][0] || !$check_gebaeude) || ($this->last_eventhandler_run[$this->getActivePlanet()][1][1] || !$check_forschung) || ($this->last_eventhandler_run[$this->getActivePlanet()][1][2] || !$check_roboter) || ($this->last_eventhandler_run[$this->getActivePlanet()][1][3] || !$check_schiffe) || ($this->last_eventhandler_run[$this->getActivePlanet()][1][4] || !$check_verteidigung)))
 				return 2;
 
 			$actions = array();
@@ -1809,7 +1811,7 @@
 				$this->changed = $beginning_changed;
 			}
 
-			$this->last_eventhandler_run = array(microtime(true), array($this->last_eventhandler_run[1][0] || $check_gebaeude, $this->last_eventhandler_run[1][1] || $check_forschung, $this->last_eventhandler_run[1][2] || $check_roboter, $this->last_eventhandler_run[1][3] || $check_schiffe, $this->last_eventhandler_run[1][4] || $check_verteidigung));
+			$this->last_eventhandler_run[$this->getActivePlanet()] = array(microtime(true), array($this->last_eventhandler_run[$this->getActivePlanet()][1][0] || $check_gebaeude, $this->last_eventhandler_run[$this->getActivePlanet()][1][1] || $check_forschung, $this->last_eventhandler_run[$this->getActivePlanet()][1][2] || $check_roboter, $this->last_eventhandler_run[$this->getActivePlanet()][1][3] || $check_schiffe, $this->last_eventhandler_run[$this->getActivePlanet()][1][4] || $check_verteidigung));
 		}
 
 		function isVerbuendet($user)
