@@ -760,7 +760,8 @@
 				$further = true;
 
 				$target = explode(':', $next_target_nt);
-				$target_galaxy = Classes::Galaxy($target[0]);
+				$target_galaxy = Classes::Galaxy($target[0], false);
+				if(!$target_galaxy->getStatus()) return false;
 				$target_owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
 				if($target_owner)
 				{
@@ -1379,7 +1380,9 @@ EOF
 				# Stationieren
 
 				$target = explode(':', $next_target_nt);
-				$target_galaxy = Classes::Galaxy($target[0]);
+				$target_galaxy = Classes::Galaxy($target[0], $besiedeln);
+				if(($besiedeln && $target_galaxy->getStatus() != 1) || !$target_galaxy->getStatus())
+					return false;
 
 				$owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
 
@@ -1422,10 +1425,7 @@ EOF
 
 				$planet_index = $owner_obj->getPlanetByPos($next_target_nt);
 				if($planet_index === false)
-				{
-					$this->destroy();
 					return false;
-				}
 
 				$owner_obj->setActivePlanet($planet_index);
 
