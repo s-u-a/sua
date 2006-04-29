@@ -764,9 +764,9 @@
 			if(md5($password) == $this->raw['password'])
 			{
 				# Passwort stimmt, Passwort-vergessen-Funktion deaktivieren
-				if(isset($this->raw['email_password']) && $this->raw['email_password'])
+				if(isset($this->raw['email_passwd']) && $this->raw['email_passwd'])
 				{
-					$this->raw['email_password'] = false;
+					$this->raw['email_passwd'] = false;
 					$this->changed = true;
 				}
 
@@ -780,6 +780,10 @@
 			if(!$this->status) return false;
 
 			$this->raw['password'] = md5($password);
+
+			if(isset($this->raw['email_passwd']) && $this->raw['email_passwd'])
+				$this->raw['email_passwd'] = false;
+
 			$this->changed = true;
 			return true;
 		}
@@ -3001,6 +3005,23 @@
 			list($this->raw['pos_shortcuts'][$idx], $this->raw['pos_shortcuts'][$keys[$keys_idx+1]]) = array($this->raw['pos_shortcuts'][$keys[$keys_idx+1]], $this->raw['pos_shortcuts'][$idx]); # The same another time...
 			$this->changed = true;
 			return true;
+		}
+
+		function getPasswordSendID()
+		{ # Liefert eine ID zurueck, die zum Senden des Passworts benutzt werden kann
+			if($this->status != 1) return false;
+
+			$send_id = md5(microtime());
+			$this->raw['email_passwd'] = $send_id;
+			$this->changed = true;
+			return true;
+		}
+
+		function checkPasswordSendID($id)
+		{ # Ueberprueft, ob eine vom Benutzer eingegebene ID der letzten durch getPasswordSendID zurueckgelieferten ID entspricht
+			if(!$this->status) return false;
+
+			return (isset($this->raw['email_passwd']) && $this->raw['email_passwd'] && $this->raw['email_passwd'] == $id);
 		}
 	}
 

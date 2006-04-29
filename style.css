@@ -81,3 +81,6 @@ fieldset { border:1px solid #777; padding:.5em; }
 .news { position:relative; }
 .news .time { font-size:.8em; position:absolute; bottom:0; right:0; }
 * html .news .time { display:none; }
+
+.error { text-align:center; font-weight:bold; color:#f00; }
+.successful { text-align:center; font-weight:bold; color:#47f; }
