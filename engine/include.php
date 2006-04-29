@@ -244,6 +244,14 @@
 			<li class="c-board"><a href="<?=htmlentities(USE_PROTOCOL)?>://board.s-u-a.net/index.php" xml:lang="en">Board</a></li>
 			<li class="c-bugtracker"><a href="https://bugs.s-u-a.net/" xml:lang="en">Bugtracker</a></li>
 			<li class="c-impressum"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/impressum.php">Impressum</a></li>
+<?php
+			if(isset($_COOKIE['sua_is_admin']) && $_COOKIE['sua_is_admin'])
+			{
+?>
+			<li class="c-adminbereich"><a href="https://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/admin/index.php"><span xml:lang="en">Admin</span>bereich</a></li>
+<?php
+			}
+?>
 			<li class="c-browsergames24"><a href="http://www.browsergames24.de/modules.php?name=Web_Links&amp;l_op=ratelink&amp;lid=1236" xml:lang="en">Browsergames24</a></li>
 		</ol></div></div>
 		<div id="content"><div id="content2"><div id="content3"><div id="content4">

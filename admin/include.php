@@ -74,6 +74,8 @@
 				$_SESSION['debug'] = true;
 				$_SESSION['database'] = $_POST['database'];
 				$show_login = false;
+
+				setcookie("sua_is_admin", "1", time()+2419200, h_root.'/');
 			}
 		}
 
@@ -114,6 +116,9 @@
 	</dl>
 	<div><button type="submit">Anmelden</button></div>
 </form>
+<ul>
+	<li><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/index.php">Zurück zum Spiel</a></li>
+</ul>
 <?php
 			admin_gui::html_foot();
 			die();

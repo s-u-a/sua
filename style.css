@@ -14,7 +14,7 @@ body { min-height:100%; width:100%; }
 * html #navigation a { width:155px; }
 #navigation a:hover,#navigation a:focus { color:#b1b1b3; }
 #navigation a:active { background-image:url(images/navigation_button_down.png); }
-#navigation li.c-browsergames24 { margin-top:1em; }
+#navigation li.c-adminbereich,#navigation li.c-browsergames24 { margin-top:1em; }
 
 #content { padding:20px 0; }
 #content2 { margin:20px 0 20px 50px; }
