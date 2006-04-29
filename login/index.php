@@ -404,7 +404,7 @@
 			else
 			{
 ?>
-			<dd class="c-roboter">Gelangweilt</dd>
+			<dd class="c-roboter gelangweilt">Gelangweilt</dd>
 <?php
 			}
 		}
@@ -450,7 +450,7 @@
 			else
 			{
 ?>
-			<dd class="c-schiffe">Gelangweilt</dd>
+			<dd class="c-schiffe gelangweilt">Gelangweilt</dd>
 <?php
 			}
 		}
@@ -496,7 +496,7 @@
 			else
 			{
 ?>
-			<dd class="c-verteidigung">Gelangweilt</dd>
+			<dd class="c-verteidigung gelangweilt">Gelangweilt</dd>
 <?php
 			}
 		}
