@@ -14,7 +14,7 @@
 	}
 	define('s_root', substr($__FILE__, 0, -strlen($this_filename)));
 	if(isset($_SERVER['SCRIPT_FILENAME']) && isset($_SERVER['PHP_SELF']) && substr($_SERVER['SCRIPT_FILENAME'], -strlen($_SERVER['PHP_SELF'])) == $_SERVER['PHP_SELF'])
-		$document_root = substr($_SERVER['SCRIPT_FILENAME'], 0, -strlen($_SERVER['PHP_SELF']));
+		$document_root = substr(realpath($_SERVER['SCRIPT_FILENAME']), 0, -strlen($_SERVER['PHP_SELF']));
 	elseif(isset($_SERVER['DOCUMENT_ROOT']))
 		$document_root = $_SERVER['DOCUMENT_ROOT'];
 	else $document_root = '/';
