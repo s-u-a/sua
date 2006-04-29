@@ -700,7 +700,8 @@
 ?>
 <h3>Flotte versenden</h3>
 <p class="flotte-anzahl<?=($my_flotten >= $max_flotten) ? ' voll' : ''?>">
-	Sie haben derzeit <?=ths($my_flotten)?> von <?=ths($max_flotten)?> <?=($max_flotten == 1) ? 'möglichen Flotte' : 'möglichen Flotten'?> unterwegs. Bauen Sie das Kontrollwesen aus, um die maximale Anzahl zu erhöhen.
+	Sie haben derzeit <?=ths($my_flotten)?> von <?=ths($max_flotten)?> <?=($max_flotten == 1) ? 'möglichen Flotte' : 'möglichen Flotten'?> unterwegs.<br />
+	Bauen Sie das Kontrollwesen aus, um die maximale Anzahl zu erhöhen.
 </p>
 <?php
 		$this_pos = $me->getPos();
