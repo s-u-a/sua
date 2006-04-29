@@ -2695,6 +2695,7 @@
 					foreach($this->getFleetsList() as $flotte)
 					{
 						$fl = Classes::Fleet($flotte);
+						if(!$fl->getStatus()) continue;
 						if($fl->userExists($this->getName()))
 						{
 							if($recalc_schiffe)

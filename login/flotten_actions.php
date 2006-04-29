@@ -91,7 +91,10 @@
 					foreach($new_handel[1] as $i=>$v)
 					{
 						if(!isset($available_robs[$i]))
-							unset($available_robs[$i]);
+						{
+							unset($new_handel[1][$i]);
+							continue;
+						}
 						$av = $available_robs[$i];
 						if($type == 'set')
 						{
@@ -100,7 +103,7 @@
 							if(!$verb && $v < $add) $v = $add;
 							$av += $add;
 						}
-						if($v > $av) $new_handel[1][$i] = $av;
+						if($v > $av) $v = $av;
 						$new_handel[1][$i] = $v;
 					}
 
@@ -286,7 +289,7 @@
 ?>
 				<tr class="c-ro-<?=utf8_htmlentities($id)?>">
 					<th class="c-gut"><?=utf8_htmlentities($item_info['name'])?></th>
-					<td class="c-einlagern"><input type="text" name="handel[1][<?=$id?>]" value="<?=utf8_htmlentities($h)?>"<?php if($remaining_trans[1]<=0){?> disabled="disabled"<?php }?> /></td>
+					<td class="c-einlagern"><input type="text" name="handel[1][<?=$id?>]" value="<?=utf8_htmlentities($h)?>" /></td>
 					<td class="c-verfuegbar"><?=ths($available_robs[$id])?></td>
 				</tr>
 <?php
