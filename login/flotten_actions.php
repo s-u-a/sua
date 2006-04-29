@@ -315,6 +315,8 @@
 <?php
 			}
 
+			$me->setActivePlanet($active_planet);
+
 			break;
 
 		case 'shortcuts':

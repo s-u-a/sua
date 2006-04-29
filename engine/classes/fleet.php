@@ -1108,18 +1108,22 @@ EOF
 								$message_text[$target_owner] .= "\nFolgender Handel wird durchgef\xc3\xbchrt:\n";
 								foreach($handel as $username=>$h)
 								{
-									$message_text[$username] .= "\nFolgender Handel wird durchgef\xc3\xbchrt:\n";
-									$message_text[$username] .= "Carbon: ".ths($h[0][0], true).", Aluminium: ".ths($h[0][1], true).", Wolfram: ".ths($h[0][2], true).", Radium: ".ths($h[0][3], true).", Tritium: ".ths($h[0][4], true);
+									$write_this_username = ($username != $target_owner);
+									if($write_this_username)
+									{
+										$message_text[$username] .= "\nFolgender Handel wird durchgef\xc3\xbchrt:\n";
+										$message_text[$username] .= "Carbon: ".ths($h[0][0], true).", Aluminium: ".ths($h[0][1], true).", Wolfram: ".ths($h[0][2], true).", Radium: ".ths($h[0][3], true).", Tritium: ".ths($h[0][4], true);
+									}
 									$message_text[$target_owner] .= $username.": Carbon: ".ths($h[0][0], true).", Aluminium: ".ths($h[0][1], true).", Wolfram: ".ths($h[0][2], true).", Radium: ".ths($h[0][3], true).", Tritium: ".ths($h[0][4], true);
 									if(array_sum($h[1]) > 0)
 									{
-										$message_text[$username] .= "\n";
+										if($write_this_username) $message_text[$username] .= "\n";
 										$message_text[$target_owner] .= "; ";
 										$items_string = makeItemsString($h[1]);
-										$message_text[$username] .= $items_string;
+										if($write_this_username) $message_text[$username] .= $items_string;
 										$message_text[$target_owner] .= $items_string;
 									}
-									$message_text[$username] .= "\n";
+									if($write_this_username) $message_text[$username] .= "\n";
 									$message_text[$target_owner] .= "\n";
 								}
 							}
@@ -1128,7 +1132,7 @@ EOF
 								$message_obj = Classes::Message();
 								if($message_obj->create())
 								{
-									if($username == $target_owner)
+									if($username != $target_owner)
 									{
 										$message_obj->subject('Ankunft eines fremden Transportes auf '.$next_target_nt);
 										$users = array_keys($this->raw[1]);

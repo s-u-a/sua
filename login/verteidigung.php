@@ -6,7 +6,7 @@
 		if($me->checkPassword($_POST['cancel-all-verteidigung']) && $me->removeBuildingThing('verteidigung'))
 			delete_request();
 	}
-	
+
 	if($me->permissionToAct() && isset($_POST['verteidigung']) && is_array($_POST['verteidigung']))
 	{
 		# Verteidigungsanlagen in Auftrag geben
@@ -76,7 +76,7 @@
 <ol class="queue verteidigung">
 <?php
 		$i = 0;
-		
+
 		$keys = array_keys($building_verteidigung);
 		$first_building = &$building_verteidigung[array_shift($keys)];
 		$first = array($first_building[0], $first_building[1]+$first_building[3]);
@@ -96,7 +96,7 @@
 				$finishing_time = $bau[1]+$bau[2]*$bau[3];
 				$item_info = $me->getItemInfo($bau[0]);
 ?>
-	<li class="<?=utf8_htmlentities($bau[0])?><?=($key == $last) ? ' last' : ''?>" title="Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)"><?=utf8_htmlentities($item_info['name'])?> (<?=$bau[2]?>)<?php if($key == $last){?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span><?php }?></li>
+	<li class="<?=utf8_htmlentities($bau[0])?><?=($key == $last) ? ' last' : ''?>" title="Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)"><?=utf8_htmlentities($item_info['name'])?> &times; <?=$bau[2]?><?php if($key == $last){?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span><?php }?></li>
 <?php
 			}
 		}

@@ -337,7 +337,7 @@ p.neue-nachrichten { font-weight:bold; margin:0; padding:.5em; }
 #planets dt { margin:0; padding:0; width:1.5ex; overflow:hidden; display:block; float:left; color:#777; line-height:1.2em; height:1.2em; }
 #planets dt:first-letter { color:#fff; }
 #planets dd { margin:0; padding:0; display:block; line-height:1.2em; }
-#planets dd:before { content:":\a0"; }
+#planets dd:before { content:":\a0"; color:#fff; }
 #planets dl { margin:0; padding:0; }
 #planets li { float:right; clear:right; width:40ex; padding:.5em 1ex; font-weight:bold; border-color:#aaa; border-width:.4ex; border-style:none none none solid; display:block; }
 * html #planets li { width:48.2ex; text-align:left; float:none; clear:none; border-width:.1em .4ex; border-style:solid; padding:.2em .5em; }
