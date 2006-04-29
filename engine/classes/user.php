@@ -396,6 +396,7 @@
 			else $this->raw['punkte'][$i] += $scores;
 
 			if(isset($this->cache['getScores'])) $this->cache['getScores'] += $scores;
+			$this->changed = true;
 			return true;
 		}
 
