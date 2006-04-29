@@ -10,19 +10,21 @@
 
 			if(!isset($objectInstances)) $objectInstances = array();
 			if(!isset($objectInstances[$classname])) $objectInstances[$classname] = array();
-			if(!isset($objectInstances[$classname][$p1]))
+			$p1_lower = preg_replace('/[\x00-\x7f]/e', 'strtolower("$0")', $p1);
+			if(!isset($objectInstances[$classname][$p1_lower]))
 			{
 				$instance = new $classname($p1, $write);
 				$p1 = $instance->getName();
-				$objectInstances[$classname][$p1] = $instance;
+				$p1_lower = preg_replace('/[\x00-\x7f]/e', 'strtolower("$0")', $p1);
+				$objectInstances[$classname][$p1_lower] = $instance;
 			}
-			elseif($write && $objectInstances[$classname][$p1]->readonly())
+			elseif($write && $objectInstances[$classname][$p1_lower]->readonly())
 			{ # Von Readonly auf Read and write schalten
-				$objectInstances[$classname][$p1]->__destruct();
-				$objectInstances[$classname][$p1]->__construct($p1, $write);
+				$objectInstances[$classname][$p1_lower]->__destruct();
+				$objectInstances[$classname][$p1_lower]->__construct($p1, $write);
 			}
 
-			return $objectInstances[$classname][$p1];
+			return $objectInstances[$classname][$p1_lower];
 		}
 
 		function resetInstances($classname=false, $destruct=true)

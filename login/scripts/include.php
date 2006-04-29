@@ -87,6 +87,12 @@
 		unset($_SESSION['last_click_ignore']);
 	$_SESSION['last_click'] = $now_time;
 
+	# Skins bekommen
+	$skins = get_skins();
+
+	# Version herausfinden
+	$version = get_version();
+	define('VERSION', $version);
 
 	$me = Classes::User($_SESSION['username']);
 	$_SESSION['username'] = $me->getName();
@@ -162,13 +168,6 @@
 
 	if((!isset($_SESSION['ghost']) || !$_SESSION['ghost']) && !defined('ignore_action'))
 		$me->registerAction();
-
-	# Skins bekommen
-	$skins = get_skins();
-
-	# Version herausfinden
-	$version = get_version();
-	define('VERSION', $version);
 
 	class login_gui
 	{
