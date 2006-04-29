@@ -3014,7 +3014,7 @@
 			$send_id = md5(microtime());
 			$this->raw['email_passwd'] = $send_id;
 			$this->changed = true;
-			return true;
+			return $send_id;
 		}
 
 		function checkPasswordSendID($id)
