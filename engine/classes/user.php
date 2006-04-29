@@ -2612,11 +2612,11 @@
 		{
 			if(!$this->status) return false;
 
-			$this->recalc_highscores[0] = $this->recalc_highscores[0] && $recalc_gebaeude;
-			$this->recalc_highscores[1] = $this->recalc_highscores[1] && $recalc_forschung;
-			$this->recalc_highscores[2] = $this->recalc_highscores[2] && $recalc_roboter;
-			$this->recalc_highscores[3] = $this->recalc_highscores[3] && $recalc_schiffe;
-			$this->recalc_highscores[4] = $this->recalc_highscores[4] && $recalc_verteidigung;
+			$this->recalc_highscores[0] = ($this->recalc_highscores[0] || $recalc_gebaeude);
+			$this->recalc_highscores[1] = ($this->recalc_highscores[1] || $recalc_forschung);
+			$this->recalc_highscores[2] = ($this->recalc_highscores[2] || $recalc_roboter);
+			$this->recalc_highscores[3] = ($this->recalc_highscores[3] || $recalc_schiffe);
+			$this->recalc_highscores[4] = ($this->recalc_highscores[4] || $recalc_verteidigung);
 
 			$this->changed = true;
 			return 2;
@@ -2694,7 +2694,7 @@
 				{
 					foreach($this->getFleetsList() as $flotte)
 					{
-						$fl = Classes::Fleet($flotte);
+						$fl = Classes::Fleet($flotte, false);
 						if(!$fl->getStatus()) continue;
 						if($fl->userExists($this->getName()))
 						{
