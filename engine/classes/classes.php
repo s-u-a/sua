@@ -65,7 +65,7 @@
 		}
 
 		# Serialize
-		function Items(){ return self::Dataset('Items'); }
+		function Items(){ return self::Dataset('Items', 'items'); }
 		function Item($id){ return new Item($id); }
 
 		# Eigenes Binaerformat
