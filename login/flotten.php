@@ -747,7 +747,7 @@
 						}
 						else $s .= '[unbesiedelt]';
 ?>
-					document.write('<option value="<?=htmlspecialchars($shortcut)?>"><?=htmlspecialchars($s)?></option>');
+					document.write('<option value="<?=htmlspecialchars($shortcut)?>"><?=preg_replace('/[\'\\\\]/', '\\\\\\0', htmlspecialchars($s))?></option>');
 <?php
 					}
 ?>
