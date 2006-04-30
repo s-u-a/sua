@@ -656,7 +656,7 @@ function preload_systems(systems)
 
 	request_url = '<?=h_root?>/login/scripts/ajax.php?action=universe&'+encodeURIComponent(session_cookie)+'='+encodeURIComponent(session_id);
 	var c = 0;
-	for(var i in systems)
+	for(var i=0; i<systems.length; i++)
 	{
 		if(typeof preloaded_systems[systems[i]] != 'undefined' || preloading_systems[systems[i]]) continue;
 		request_url += '&system[]='+encodeURIComponent(systems[i]);

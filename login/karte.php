@@ -314,7 +314,7 @@
 			}
 		}
 	}
-	get_systems_around();
+	window.onload = get_systems_around;
 
 	function get_system_after(which_system)
 	{
