@@ -15,7 +15,7 @@
 		"8.1" => "%s hat einen Eintrag zum Changelog hinzugefügt: %s",
 		"8.2" => "%s hat einen Eintrag aus dem Changelog gelöscht: %s",
 		"9" => "%s hat einen Eintrag eine Nachricht mit dem Betreff %s an %s versandt.",
-		"10" => "%s hat den Logeintrag %s, %s, %s angeschaut.",
+		"10" => "%s hat den Logeintrag %s angeschaut.",
 		"11.1" => "%s hat den Administrator %s hinzugefügt.",
 		"11.2" => "%s hat die Rechte des Administrators %s verändert.",
 		"11.3" => "%s hat den Administrator %s nach %s umbenannt.",
@@ -29,7 +29,7 @@
 		"14.3" => "%s hat den Newseintrag mit dem Titel %s gelöscht."
 	);
 
-	if(PROTOCOL != 'https')
+	if(PROTOCOL != 'https' && false)
 	{
 		$url = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		header('Location: '.$url, true, 307);
@@ -41,15 +41,15 @@
 	if((isset($_SESSION['ip']) && $_SESSION['ip'] != $_SERVER['REMOTE_ADDR']) || (isset($_GET['logout']) && $_GET['logout']) || (isset($_SESSION['last_admin_access']) && time()-$_SESSION['last_admin_access'] > 600))
 	{
 		if(isset($_COOKIE[SESSION_COOKIE]))
-			setcookie(SESSION_COOKIE, '');
+			setcookie(SESSION_COOKIE, '', 0, h_root.'/admin/');
 		unset($_SESSION);
 		$_SESSION = array();
 	}
 	if((isset($_GET['logout']) && $_GET['logout']) || (isset($_SESSION['last_admin_access']) && time()-$_SESSION['last_admin_access'] > 600))
 	{
 		session_destroy();
-		if(isset($_SESSION[SESSION_COOKIE]))
-			setcookie(SESSION_COOKIE, '');
+		if(isset($_COOKIE[SESSION_COOKIE]))
+			setcookie(SESSION_COOKIE, '', 0, h_root.'/admin/');
 	}
 
 	$databases = get_databases();
@@ -76,6 +76,8 @@
 				$show_login = false;
 
 				setcookie("sua_is_admin", "1", time()+2419200, h_root.'/');
+
+				protocol("0", $_SESSION['database']);
 			}
 		}
 
@@ -160,7 +162,7 @@
 		$fh = fopen(DB_ADMIN_LOGFILE, "a");
 		if(!$fh) return false;
 		flock($fh, LOCK_EX);
-		fwrite($fh, time()."\t".$_SESSION['admin_username']);
+		fwrite($fh, session_id()."\t".time()."\t".$_SESSION['admin_username']);
 		foreach(func_get_args() as $arg)
 			fwrite($fh, "\t".preg_replace("/[\n\t]/", " ", $arg));
 		fwrite($fh, "\n");
