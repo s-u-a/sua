@@ -29,7 +29,7 @@
 		"14.3" => "%s hat den Newseintrag mit dem Titel %s gelöscht."
 	);
 
-	if(PROTOCOL != 'https' && false)
+	if(PROTOCOL != 'https')
 	{
 		$url = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		header('Location: '.$url, true, 307);
