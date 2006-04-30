@@ -2,7 +2,7 @@
 	require('../engine/include.php');
 
 	$actions = array(
-		"0" => "%s hat sich in Runde %s angemeldet.",
+		"0" => "%s hat sich angemeldet.",
 		"1" => "%s hat sich als Geist unter dem Benutzer %s angemeldet.",
 		"2" => "%s hat das Passwort des Benutzers %s geändert.",
 		"3" => "%s hat die Passwörter von %s und %s verglichen.",

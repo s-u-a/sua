@@ -17,10 +17,8 @@
 			$expl = explode("\t", preg_replace("/(\r|\n|(\r\n))$/", "", $line));
 			if(count($expl) < 4) continue;
 
-			if(!isset($sessions[$expl[0]])) $sessions[$expl[0]] = array($expl[2], false, $expl[1], ftell($fh)-strlen($line), false);
-
-			if(!$sessions[$expl[0]][1] && $expl[3] == "0" && count($expl) >= 5) $sessions[$expl[0]][1] = $expl[4];
-			$sessions[$expl[0]][4] = ftell($fh);
+			if(!isset($sessions[$expl[0]])) $sessions[$expl[0]] = array($expl[2], $expl[1], ftell($fh)-strlen($line), false);
+			$sessions[$expl[0]][3] = ftell($fh);
 		}
 
 		flock($fh, LOCK_UN);
@@ -30,12 +28,9 @@
 <?php
 		foreach($sessions as $sid=>$sess)
 		{
-			$string = $sid.": ".$sess[0].", ".date('Y-m-d, H:i:s', $sess[2]).", ";
-			if(!$sess[1]) $string .= "unbekannte Datenbank";
-			elseif(isset($databases[$sess[1]])) $string .= $databases[$sess[1]][1];
-			else $string .= $sess[1];
+			$string = $sid.": ".$sess[0].", ".date('Y-m-d, H:i:s', $sess[1]);
 ?>
-	<li><a href="logs.php?<?=htmlspecialchars('session='.urlencode($sid).'&start='.urlencode($sess[3]).'&end='.urlencode($sess[4]))?>"><?=htmlspecialchars($string)?></a></li>
+	<li><a href="logs.php?<?=htmlspecialchars('session='.urlencode($sid).'&start='.urlencode($sess[2]).'&end='.urlencode($sess[3]))?>"><?=htmlspecialchars($string)?></a></li>
 <?php
 		}
 ?>
@@ -56,24 +51,16 @@
 		<tr>
 			<th>Zeit</th>
 			<th>Benutzername</th>
-			<th>Runde</th>
 			<th>Aktion</th>
 		</tr>
 	</thead>
 	<tbody>
 <?php
-		$cur_database = false;
 		while(($line = fgets($fh)) !== false)
 		{
 			$expl = explode("\t", preg_replace("/(\r|\n|(\r\n))$/", "", $line));
 			$count = count($expl);
 			if($count < 4) continue;
-
-			if($expl[3] == "0" && $count >= 5) $cur_database = $expl[4];
-
-			if(!$cur_database) $db_string = 'Unbekannte Datenbank';
-			elseif(isset($databases[$cur_database])) $db_string = $databases[$cur_database][1];
-			else $db_string = $cur_database;
 
 			if(isset($actions[$expl[3]]))
 			{
@@ -104,7 +91,6 @@
 		<tr>
 			<td><?=date('Y-m-d, H:i:s', $expl[1])?></td>
 			<td><?=htmlspecialchars($expl[2])?></td>
-			<td><?=htmlspecialchars($db_string)?></td>
 			<td><?=htmlspecialchars($action_string)?></td>
 		</tr>
 <?php
