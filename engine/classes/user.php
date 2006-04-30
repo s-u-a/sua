@@ -311,6 +311,8 @@
 
 			if(isset($this->cache['getPlanetsList'])) unset($this->cache['getPlanetsList']);
 
+			$this->changed = true;
+
 			return $planet_index;
 		}
 
