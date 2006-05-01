@@ -181,8 +181,7 @@
 
 <div class="faq" id="download">
 	<h3>Wie kann ich mir das Spiel herunterladen?</h3>
-	<p>Das Spiel ist per <a href="http://subversion.tigris.org/" xml:lang="en">Subversion</a> verfügbar, das <span xml:lang="en">Repository</span> liegt unter <a href="svn://svn.s-u-a.net/home/srv/svn/sua/">svn://svn.s-u-a.net/home/srv/svn/sua/</a>.</p>
-	<p>Den Zugriff auf das <abbr title="Subversion" xml:lang="en"><span xml:lang="de">SVN</span></abbr>-<span xml:lang="en">Repository</span> erhalten Sie auch per <a href="http://websvn.tigris.org/">WebSVN</a>, unter <a href="http://svn.s-u-a.net/listing.php?repname=Stars%20Under%20Attack&amp;path=%2F&amp;sc=0">http://svn.s-u-a.net/</a>.</p>
+	<p>Besuchen Sie doch einmal die <a href="http://dev.s-u-a.net/"><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr>-Entwicklerseiten</a>, dort finden Sie weitere Informationen, wie Sie das Spiel bekommen können.</p>
 </div>
 <?php
 	gui::html_foot();

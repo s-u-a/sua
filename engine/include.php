@@ -242,7 +242,7 @@
 			<li class="c-faq"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/faq.php"><abbr title="Frequently Asked Questions" xml:lang="en">FAQ</abbr></a></li>
 			<li class="c-chat"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/chat.php" xml:lang="en">Chat</a></li>
 			<li class="c-board"><a href="<?=htmlentities(USE_PROTOCOL)?>://board.s-u-a.net/index.php" xml:lang="en">Board</a></li>
-			<li class="c-bugtracker"><a href="https://bugs.s-u-a.net/" xml:lang="en">Bugtracker</a></li>
+			<li class="c-bugtracker"><a href="https://dev.s-u-a.net/bugs/" xml:lang="en">Bugtracker</a></li>
 			<li class="c-impressum"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/impressum.php">Impressum</a></li>
 <?php
 			if(isset($_COOKIE['sua_is_admin']) && $_COOKIE['sua_is_admin'])
