@@ -64,14 +64,10 @@
 
 			if(isset($actions[$expl[3]]))
 			{
-				if($count == 4) $action_string = $actions[$expl[3]];
-				else
-				{
-					$code = '$action_string = sprintf($actions[$expl[3]], $expl[2]';
-					for($i=4; $i<$count; $i++) $code .= ', \''.preg_replace("/['\\\\]/", "\\\\$0", $expl[$i]).'\'';
-					$code .= ');';
-					eval($code);
-				}
+				$code = '$action_string = sprintf($actions[$expl[3]], $expl[2]';
+				for($i=4; $i<$count; $i++) $code .= ', \''.preg_replace("/['\\\\]/", "\\\\$0", $expl[$i]).'\'';
+				$code .= ');';
+				eval($code);
 			}
 			else
 			{
