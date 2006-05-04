@@ -258,11 +258,11 @@
 				$rob_sum = array_sum($robs);
 				if($rob_sum > $max_robs)
 				{
-					$f = $max_robs/$robs_sum;
+					$f = $max_robs/$rob_sum;
 					foreach($robs as $i=>$rob)
 						$robs[$i] = floor($rob/$f);
 					$rob_sum = array_sum($robs);
-					$diff = $max_robs-$robs_sum;
+					$diff = $max_robs-$rob_sum;
 					foreach($robs as $i=>$rob)
 					{
 						if($diff <= 0) break;
@@ -323,11 +323,11 @@
 				$rob_sum = array_sum($robs);
 				if($rob_sum > $max_robs)
 				{
-					$f = $max_robs/$robs_sum;
+					$f = $max_robs/$rob_sum;
 					foreach($robs as $i=>$rob)
 						$robs[$i] = floor($rob/$f);
 					$rob_sum = array_sum($robs);
-					$diff = $max_robs-$robs_sum;
+					$diff = $max_robs-$rob_sum;
 					foreach($robs as $i=>$rob)
 					{
 						if($diff <= 0) break;
