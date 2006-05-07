@@ -227,25 +227,7 @@
 			$max_robs -= array_sum($this->raw[1][$user][3][1]);
 			if($ress)
 			{
-				$ress_sum = array_sum($ress);
-				if($ress_sum > $max_ress)
-				{
-					# Kuerzen
-					$f = $max_ress/$ress_sum;
-					$ress[0] = floor($ress[0]*$f);
-					$ress[1] = floor($ress[1]*$f);
-					$ress[2] = floor($ress[2]*$f);
-					$ress[3] = floor($ress[3]*$f);
-					$ress[4] = floor($ress[4]*$f);
-					$ress_sum = array_sum($ress);
-					switch($max_ress-$ress_sum)
-					{
-						case 4: $ress[3]++;
-						case 3: $ress[2]++;
-						case 2: $ress[1]++;
-						case 1: $ress[0]++;
-					}
-				}
+				$ress = fit_to_max($ress, $max_ress);
 				$this->raw[1][$user][3][0][0] += $ress[0];
 				$this->raw[1][$user][3][0][1] += $ress[1];
 				$this->raw[1][$user][3][0][2] += $ress[2];
@@ -255,21 +237,7 @@
 
 			if($robs)
 			{
-				$rob_sum = array_sum($robs);
-				if($rob_sum > $max_robs)
-				{
-					$f = $max_robs/$rob_sum;
-					foreach($robs as $i=>$rob)
-						$robs[$i] = floor($rob/$f);
-					$rob_sum = array_sum($robs);
-					$diff = $max_robs-$rob_sum;
-					foreach($robs as $i=>$rob)
-					{
-						if($diff <= 0) break;
-						$robs[$i]++;
-						$diff--;
-					}
-				}
+				$robs = fit_to_max($robs, $max_robs);
 				foreach($robs as $i=>$rob)
 				{
 					if(!isset($this->raw[1][$user][3][1][$i]))
@@ -292,25 +260,7 @@
 			$max_robs -= array_sum($this->raw[1][$user][4][1]);
 			if($ress)
 			{
-				$ress_sum = array_sum($ress);
-				if($ress_sum > $max_ress)
-				{
-					# Kuerzen
-					$f = $max_ress/$ress_sum;
-					$ress[0] = floor($ress[0]*$f);
-					$ress[1] = floor($ress[1]*$f);
-					$ress[2] = floor($ress[2]*$f);
-					$ress[3] = floor($ress[3]*$f);
-					$ress[4] = floor($ress[4]*$f);
-					$ress_sum = array_sum($ress);
-					switch($max_ress-$ress_sum)
-					{
-						case 4: $ress[3]++;
-						case 3: $ress[2]++;
-						case 2: $ress[1]++;
-						case 1: $ress[0]++;
-					}
-				}
+				$ress = fit_to_max($ress, $max_ress);
 				$this->raw[1][$user][4][0][0] += $ress[0];
 				$this->raw[1][$user][4][0][1] += $ress[1];
 				$this->raw[1][$user][4][0][2] += $ress[2];
@@ -320,21 +270,7 @@
 
 			if($robs)
 			{
-				$rob_sum = array_sum($robs);
-				if($rob_sum > $max_robs)
-				{
-					$f = $max_robs/$rob_sum;
-					foreach($robs as $i=>$rob)
-						$robs[$i] = floor($rob/$f);
-					$rob_sum = array_sum($robs);
-					$diff = $max_robs-$rob_sum;
-					foreach($robs as $i=>$rob)
-					{
-						if($diff <= 0) break;
-						$robs[$i]++;
-						$diff--;
-					}
-				}
+				$robs = fit_to_max($robs, $max_robs);
 				foreach($robs as $i=>$rob)
 				{
 					if(!isset($this->raw[1][$user][4][1][$i]))
@@ -352,6 +288,7 @@
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
 
+			list($max_ress, $max_robs) = $this->getTransportCapacity($user);
 			if($ress !== false && is_array($ress))
 			{
 				if(!isset($ress[0])) $ress[0] = 0;
@@ -360,10 +297,15 @@
 				if(!isset($ress[3])) $ress[3] = 0;
 				if(!isset($ress[4])) $ress[4] = 0;
 
+				$ress = fit_to_max($ress, $max_ress);
+
 				$this->raw[1][$user][4][0] = $ress;
 			}
 			if($robs !== false && is_array($robs))
+			{
+				$robs = fit_to_max($robs, $max_robs);
 				$this->raw[1][$user][4][1] = $robs;
+			}
 
 			$this->changed = true;
 			return true;
