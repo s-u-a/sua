@@ -1,5 +1,6 @@
 <?php
-	$include_filename = dirname(__FILE__).'/../../engine/include.php';
+	$__FILE__ = str_replace("\\", "/", __FILE__);
+	$include_filename = dirname($__FILE__).'/../../engine/include.php';
 	$LOGIN = true;
 	require($include_filename);
 

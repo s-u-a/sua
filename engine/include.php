@@ -1263,16 +1263,22 @@
 		{
 			$f = $max/$sum;
 			$sum = 0;
+			global $_fit_to_max_usort;
+			$_fit_to_max_usort = array();
 			foreach($array as $k=>$v)
 			{
-				$array[$k] = floor($v*$f);
+				$new_c = $v*$f;
+				$fl = ceil($new_c)-$new_c;
+				if($fl > 0) $_fit_to_max_usort[$k] = $fl;
+				$array[$k] = floor($new_c);
 				$sum += $array[$k];
 			}
 
 			$remaining = $max-$sum;
-			while($remaining > 0)
+			uksort($_fit_to_max_usort, "_fit_to_max_usort");
+			while($remaining > 0 && count($_fit_to_max_usort) > 0)
 			{
-				foreach($array as $k=>$v)
+				foreach($_fit_to_max_usort as $k=>$v)
 				{
 					if($v <= 0) continue;
 					$array[$k]++;
@@ -1281,6 +1287,17 @@
 			}
 		}
 		return $array;
+	}
+
+	function _fit_to_max_usort($a, $b)
+	{
+		global $_fit_to_max_usort;
+
+		if($_fit_to_max_usort[$a] > $_fit_to_max_usort[$b]) return -1;
+		elseif($_fit_to_max_usort[$a] < $_fit_to_max_usort[$b]) return 1;
+		elseif($a > $b) return 1;
+		elseif($a < $b) return -1;
+		else return 0;
 	}
 
 	function get_messenger_info($type=false)
