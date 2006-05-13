@@ -8,13 +8,13 @@
 
 	if(isset($_POST['skin-choice']))
 	{
-		if($_POST['skin-choice'] == '')
+		if($_POST['skin-choice'] == 'custom')
 		{
 			if(isset($_POST['skin']))
-				$me->setSetting('skin', $_POST['skin']);
+				$me->setSetting('skin', array('custom', $_POST['skin']));
 		}
-		else
-			$me->setSetting('skin', $_POST['skin-choice']);
+		elseif(strstr($_POST['skin-choice'], '/'))
+			$me->setSetting('skin', explode('/', $_POST['skin-choice']));
 	}
 
 	if(isset($_POST['schrift']))
@@ -118,20 +118,29 @@
 			<dd class="c-skin">
 				<select name="skin-choice" id="skin-choice" accesskey="n" tabindex="<?=$tabindex++?>" onchange="recalc_skin();" onkeyup="recalc_skin();">
 <?php
-	$selected = $one_selected = !$me->checkSetting('skin');
-	foreach($skins as $id=>$name)
+	$my_skin = $me->checkSetting('skin');
+	foreach($skins as $skin=>$skin_info)
 	{
-		if($id == $me->checkSetting('skin'))
-			$selected = $one_selected = true;
+		$skin_selected = ($my_skin && $skin == $my_skin[0]);
 ?>
-					<option value="<?=utf8_htmlentities($id)?>"<?=$selected ? ' selected="selected"' : ''?>><?=utf8_htmlentities($name)?></option>
+					<optgroup label="<?=htmlspecialchars($skin_info[0])?>">
 <?php
-		$selected = false;
-	}
+		foreach($skin_info[1] as $type=>$type_info)
+		{
+			$type_selected = ($skin_selected && $my_skin && $type == $my_skin[1]);
 ?>
-					<option value=""<?=(!$one_selected) ? ' selected="selected"' : ''?>>Benutzerdefiniert</option>
+						<option value="<?=htmlspecialchars($skin)?>/<?=htmlspecialchars($type)?>"<?=$type_selected ? ' selected="selected"' : ''?>><?=htmlspecialchars($type_info[0])?></option>
+<?php
+		}
+?>
+					</optgroup>
+<?php
+	}
+	$custom_skin = (!$my_skin || $my_skin[0] == 'custom');
+?>
+					<option value="custom"<?=$custom_skin ? ' selected="selected"' : ''?>>Benutzerdefiniert</option>
 				</select>
-				<input type="text" name="skin" id="skin" value="<?=htmlentities($me->checkSetting('skin'))?>" tabindex="<?=$tabindex++?>" />
+				<input type="text" name="skin" id="skin" value="<?=htmlentities($my_skin[1])?>" tabindex="<?=$tabindex++?>" />
 			</dd>
 
 			<dt class="c-schrift"><label for="schrift-choice">Schrift</label></dt>
@@ -179,7 +188,7 @@
 			function recalc_skin()
 			{
 				var skin = document.getElementById('skin-choice').value;
-				if(skin == '')
+				if(skin == 'custom')
 				{
 					document.getElementById('skin').removeAttribute('readonly');
 				}

@@ -448,18 +448,28 @@
 	{
 		# Vorgegebene Skins-Liste bekommen
 		$skins = array();
-		if(is_file(s_root.'/login/style/skins') && is_readable(s_root.'/login/style/skins'))
+		if(is_dir(s_root.'/login/style') && is_readable(s_root.'/login/style'))
 		{
-			$skins_file = preg_split("/\r\n|\r|\n/", file_get_contents(s_root.'/login/style/skins'));
-			foreach($skins_file as $skins_line)
+			$dh = opendir(s_root.'/login/style');
+			while(($fname = readdir($dh)) !== false)
 			{
-				$skins_line = explode("\t", $skins_line, 3);
-				if(count($skins_line) < 3)
-					continue;
-				$skins[$skins_line[0]] = $skins_line[1];
+				if($fname[0] == '.') continue;
+				$new_skin = &$skins[$fname];
+				$fname = s_root.'/login/style/'.$fname;
+				if(!is_dir($fname) || !is_readable($fname)) continue;
+				if(!is_file($fname.'/skins') || !is_readable($fname.'/skins')) continue;
+				$skins_file = preg_split("/\r\n|\r|\n/", file_get_contents($fname.'/skins'));
+				$new_skin = array(array_shift($skins_file), array());
+				foreach($skins_file as $skins_line)
+				{
+					$skins_line = explode("\t", $skins_line, 3);
+					if(count($skins_line) < 3)
+						continue;
+					$new_skin[1][$skins_line[0]] = array($skins_line[1], explode(' ', $skins_line[2]));
+				}
+				unset($new_skin);
 			}
-			unset($skins_file);
-			unset($skins_line);
+			closedir($dh);
 		}
 		return $skins;
 	}

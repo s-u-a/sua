@@ -206,15 +206,22 @@
 			$my_skin = $me->checkSetting('skin');
 			if($my_skin)
 			{
-				if(isset($skins[$my_skin]))
-					$skin_path = h_root.'/login/style/skin.php?'.urlencode($my_skin);
-				else
-					$skin_path = $my_skin;
+				if(!is_array($my_skin))
+				{
+					if(isset($skins['default']) && isset($skins['default'][1][$my_skin]))
+						$my_skin = array('default', $my_skin);
+					else $my_skin = array('custom', $my_skin);
+					$me->setSetting('skin', $my_skin);
+				}
+				if($my_skin[0] == 'custom')
+					$skin_path = $my_skin[1];
+				elseif(isset($skins[$my_skin[0]]))
+					$skin_path = h_root.'/login/style/skin.php?skin='.urlencode($my_skin[0]).'&type='.urlencode($my_skin[1]);
 			}
-			elseif(count($skins) > 0)
+			elseif(isset($skins['default']))
 			{
-				$skin_keys = array_keys($skins);
-				$skin_path = h_root.'/login/style/skin.php?'.urlencode(array_shift($skin_keys));
+				$keys = array_keys($skins['default'][1]);
+				$skin_path = h_root.'/login/style/skin.php?skin=default&type='.urlencode($skins['default'][1][array_shift($keys)]);
 			}
 
 			if(trim($skin_path) != '')
