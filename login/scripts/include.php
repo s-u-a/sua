@@ -221,7 +221,7 @@
 			elseif(isset($skins['default']))
 			{
 				$keys = array_keys($skins['default'][1]);
-				$skin_path = h_root.'/login/style/skin.php?skin=default&type='.urlencode($skins['default'][1][array_shift($keys)]);
+				$skin_path = h_root.'/login/style/skin.php?skin=default&type='.urlencode(array_shift($keys));
 			}
 
 			if(trim($skin_path) != '')
