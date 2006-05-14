@@ -335,7 +335,7 @@
 				<li id="navigation-board" xml:lang="en"><a href="<?=htmlentities(USE_PROTOCOL)?>://board.s-u-a.net/">Board</a></li>
 				<li id="navigation-faq" xml:lang="en"><a href="http://<?=htmlentities(get_default_hostname().h_root)?>/faq.php"><abbr title="Frequently Asked Questions">FAQ</abbr></a></li>
 				<li id="navigation-chat" xml:lang="en"><a href="http://<?=htmlentities(get_default_hostname().h_root)?>/chat.php">Chat</a></li>
-				<li id="navigation-bugtracker" xml:lang="en"><a href="https://dev.s-u-a.net/bugs/">Bugtracker</a></li>
+				<li id="navigation-developers"><a href="http://dev.s-u-a.net/">Entwicklerseite</a></li>
 			</ul>
 <?php
 			}
