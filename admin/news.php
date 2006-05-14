@@ -97,11 +97,11 @@
 			<dt><label for="text-<?=$i?>-textarea">Text</label></dt>
 			<dd><textarea name="news[<?=$i?>][1]" id="text-<?=$i?>-textarea" rows="15" cols="50"><?=preg_replace("/[\r\n\t]/e", '"&#".ord("$0").";"', utf8_htmlentities($news['text']))?></textarea></dd>
 		</dl>
+		<ul>
+			<li><button type="submit">Speichern</button></li>
+			<li><button type="submit" name="delete" value="1">Löschen</button></li>
+		</ul>
 	</fieldset>
-	<ul>
-		<li><button type="submit">Speichern</button></li>
-		<li><button type="submit" name="delete" value="1">Löschen</button></li>
-	</ul>
 </form>
 <?php
 	}
