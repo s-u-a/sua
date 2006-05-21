@@ -110,7 +110,7 @@
 				touch('../.htaccess');
 			if(rename('../.htaccess', '../.htaccess.wartungsarbeiten.sav'))
 			{
-				$fh = fopen('../.htaccess', 'w') && protocol("12.1");
+				($fh = fopen('../.htaccess', 'w')) && (protocol("12.1"));
 				flock($fh, LOCK_EX);
 
 				fwrite($fh, "Order Deny,Allow\n");
