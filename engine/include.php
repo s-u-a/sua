@@ -254,7 +254,10 @@
 ?>
 			<li class="c-browsergames24"><a href="http://www.browsergames24.de/modules.php?name=Web_Links&amp;l_op=ratelink&amp;lid=1236" xml:lang="en">Browsergames24</a></li>
 		</ol></div></div>
-		<div id="content"><div id="content2"><div id="content3"><div id="content4">
+		<div id="content">
+		<div id="content2-0"><div id="content2-1"><div id="content2-2"><div id="content2-3">
+		<div id="content3-0"><div id="content3-1"><div id="content3-2"><div id="content3-3">
+		<div id="content4-1"><div id="content4-2"><div id="content4-3">
 			<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
 				<fieldset>
 					<legend>Anmelden</legend>
@@ -299,7 +302,9 @@
 					</ul>
 				</fieldset>
 			</form>
-			<div id="innercontent"><div id="innercontent2"><div id="innercontent3">
+			<div id="innercontent1-1"><div id="innercontent1-2"><div id="innercontent1-3">
+			<div id="innercontent2-1"><div id="innercontent2-2">
+			<div id="innercontent3">
 <?php
 		}
 
@@ -307,7 +312,11 @@
 		{
 ?>
 			</div></div></div>
+			</div></div>
+			</div>
 		</div></div></div></div>
+		</div></div></div></div>
+		</div></div></div>
 		<br style="clear:both;" />
 	</div></body>
 </html>

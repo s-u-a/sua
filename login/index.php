@@ -332,6 +332,12 @@
 <?php
 				$countdowns[] = array('ge-'.$planet, $building_gebaeude[1]);
 			}
+			elseif($me->getRemainingFields() <= 0)
+			{
+?>
+			<dd class="c-gebaeudebau ausgebaut">Ausgebaut</dd>
+<?php
+			}
 			else
 			{
 ?>
