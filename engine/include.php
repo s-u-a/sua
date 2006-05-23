@@ -463,11 +463,11 @@
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname[0] == '.') continue;
+				$path = s_root.'/login/style/'.$fname;
+				if(!is_dir($path) || !is_readable($path)) continue;
+				if(!is_file($path.'/types') || !is_readable($path.'/types')) continue;
+				$skins_file = preg_split("/\r\n|\r|\n/", file_get_contents($path.'/types'));
 				$new_skin = &$skins[$fname];
-				$fname = s_root.'/login/style/'.$fname;
-				if(!is_dir($fname) || !is_readable($fname)) continue;
-				if(!is_file($fname.'/types') || !is_readable($fname.'/types')) continue;
-				$skins_file = preg_split("/\r\n|\r|\n/", file_get_contents($fname.'/types'));
 				$new_skin = array(array_shift($skins_file), array());
 				foreach($skins_file as $skins_line)
 				{
