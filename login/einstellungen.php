@@ -136,7 +136,7 @@
 					</optgroup>
 <?php
 	}
-	$custom_skin = (!$my_skin || $my_skin[0] == 'custom');
+	$custom_skin = ($my_skin && $my_skin[0] == 'custom');
 ?>
 					<option value="custom"<?=$custom_skin ? ' selected="selected"' : ''?>>Benutzerdefiniert</option>
 				</select>
