@@ -55,8 +55,8 @@
 
 		if(!defined('other_globals'))
 		{
-			define('DB_NEWS', s_root.'/db_things/news');
-			define('DB_EVENTHANDLER_STOP_FILE', '/dev/shm/stop_eventhandler');
+			define('GDB_DIR', s_root.'/database.global');
+			define('DB_NEWS', GDB_DIR.'/news');
 			define('EVENTHANDLER_INTERVAL', 10);
 			define('THS_HTML', '&nbsp;');
 			define('THS_UTF8', "\xc2\xa0");
@@ -114,11 +114,10 @@
 		ob_start('ob_gzhandler');
 	$tabindex = 1;
 
+	define_globals();
+
 	if(!isset($LOGIN) || !$LOGIN)
-	{
-		define_globals();
 		check_hostname();
-	}
 
 	if(!isset($_SESSION))
 		$GLOBALS['_SESSION'] = array();
@@ -487,8 +486,8 @@
 	{
 		# Aktuell installierte Version herausfinden
 		$version = '';
-		if(is_file(s_root.'/db_things/version') && is_readable(s_root.'/db_things/version'))
-			$version = trim(file_get_contents(s_root.'/db_things/version'));
+		if(is_file(GDB_DIR.'/version') && is_readable(GDB_DIR.'/version'))
+			$version = trim(file_get_contents(GDB_DIR.'/version'));
 		return $version;
 	}
 
@@ -498,7 +497,7 @@
 
 		if(!is_dir(s_root.'/.svn')) return false;
 
-		$revision_file = s_root.'/revision';
+		$revision_file = GDB_DIR.'/revision';
 		$entries_file = s_root.'/.svn/entries';
 
 		if(!is_file($revision_file) && !is_file($entries_file)) return false;
@@ -534,10 +533,10 @@
 	function get_databases()
 	{
 		# Liste der Runden/Universen herausfinden
-		if(!is_file(s_root.'/db_things/databases') || !is_readable(s_root.'/db_things/databases'))
+		if(!is_file(GDB_DIR.'/databases') || !is_readable(GDB_DIR.'/databases'))
 			return false;
 
-		$databases = preg_split("/\r\n|\r|\n/", file_get_contents(s_root.'/db_things/databases'));
+		$databases = preg_split("/\r\n|\r|\n/", file_get_contents(GDB_DIR.'/databases'));
 		array_shift($databases);
 
 		$return = array();
@@ -559,10 +558,10 @@
 		# Die folgende Zeile auskommentieren, um diese Funktion zu deaktivieren
 		#return (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : false);
 
-		if(!is_file(s_root.'/db_things/databases') || !is_readable(s_root.'/db_things/databases'))
+		if(!is_file(GDB_DIR.'/databases') || !is_readable(GDB_DIR.'/databases'))
 			return false;
 
-		$fh = fopen(s_root.'/db_things/databases', 'r');
+		$fh = fopen(GDB_DIR.'/databases', 'r');
 		flock($fh, LOCK_SH);
 
 		$hostname = trim(fgets($fh, 1024));
@@ -587,29 +586,32 @@
 					$real_hostname = $databases[$_SESSION['database']][2];
 			}
 
-			$request_uri = $_SERVER['REQUEST_URI'];
-			if(strpos($request_uri, '?') !== false)
-				$request_uri = substr($request_uri, 0, strpos($request_uri, '?'));
-
-			if(strtolower($hostname) == strtolower($real_hostname) && substr($request_uri, -1) != '/')
-				return true;
-
-			$url = PROTOCOL.'://'.$real_hostname.$_SERVER['PHP_SELF'];
-			if($_SERVER['QUERY_STRING'] != '')
-				$url .= '?'.$_SERVER['QUERY_STRING'];
-			header('Location: '.$url, true, 307);
-
-			if(count($_POST) > 0)
+			if($real_hostname)
 			{
-				echo '<form action="'.htmlentities($url).'" method="post">';
-				foreach($_POST as $key=>$val)
-					echo '<input type="hidden" name="'.htmlentities($key).'" value="'.htmlentities($val).'" />';
-				echo '<button type="submit">'.htmlentities($url).'</button>';
-				echo '</form>';
+				$request_uri = $_SERVER['REQUEST_URI'];
+				if(strpos($request_uri, '?') !== false)
+					$request_uri = substr($request_uri, 0, strpos($request_uri, '?'));
+
+				if(strtolower($hostname) == strtolower($real_hostname) && substr($request_uri, -1) != '/')
+					return true;
+
+				$url = PROTOCOL.'://'.$real_hostname.$_SERVER['PHP_SELF'];
+				if($_SERVER['QUERY_STRING'] != '')
+					$url .= '?'.$_SERVER['QUERY_STRING'];
+				header('Location: '.$url, true, 307);
+
+				if(count($_POST) > 0)
+				{
+					echo '<form action="'.htmlentities($url).'" method="post">';
+					foreach($_POST as $key=>$val)
+						echo '<input type="hidden" name="'.htmlentities($key).'" value="'.htmlentities($val).'" />';
+					echo '<button type="submit">'.htmlentities($url).'</button>';
+					echo '</form>';
+				}
+				else
+					echo 'HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>';
+				die();
 			}
-			else
-				echo 'HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>';
-			die();
 		}
 	}
 

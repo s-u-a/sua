@@ -1,3 +1,5 @@
 Please run db_things/update_database on every update to make sure that the database format matches to the current version.
 
 When updating to Revision 622 or later, please read paragraph 2.5 of the INSTALL guide.
+
+When updating to Revision 634 or later, please move the files db_things/news, db_things/databases and revision to database.global/
