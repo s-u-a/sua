@@ -180,12 +180,12 @@
 	);
 
 
-	function stripslashes_r($var)
+	function &stripslashes_r(&$var)
 	{ # Macht rekursiv in einem Array addslashes() rueckgaengig
 		if(is_array($var))
 		{
 			foreach($var as $key=>$val)
-				$var[$key] = stripslashes_r($val);
+				$var[$key] = &stripslashes_r($val);
 		}
 		else
 			$var = stripslashes($var);
@@ -194,9 +194,9 @@
 	# magic_quotes_gpc abschalten
 	if(get_magic_quotes_gpc())
 	{
-		stripslashes_r(&$_POST);
-		stripslashes_r(&$_GET);
-		stripslashes_r(&$_COOKIE);
+		stripslashes_r($_POST);
+		stripslashes_r($_GET);
+		stripslashes_r($_COOKIE);
 	}
 
 
@@ -1242,7 +1242,7 @@
 		return $a.htmlentities($url2).$c;
 	}
 
-	function stdround($a, $d=0)
+	function stdround(&$a, $d=0)
 	{
 		$f = pow(10, $d);
 		$a *= $f;

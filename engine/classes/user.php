@@ -1015,18 +1015,18 @@
 						$info['debuildable'] = ($info['level'] >= 1 && -$info['fields'] <= $this->getRemainingFields());
 
 						# Runden
-						stdround(&$info['prod'][0]);
-						stdround(&$info['prod'][1]);
-						stdround(&$info['prod'][2]);
-						stdround(&$info['prod'][3]);
-						stdround(&$info['prod'][4]);
-						stdround(&$info['prod'][5]);
-						stdround(&$info['time']);
-						stdround(&$info['ress'][0]);
-						stdround(&$info['ress'][1]);
-						stdround(&$info['ress'][2]);
-						stdround(&$info['ress'][3]);
-						stdround(&$info['ress'][4]);
+						stdround($info['prod'][0]);
+						stdround($info['prod'][1]);
+						stdround($info['prod'][2]);
+						stdround($info['prod'][3]);
+						stdround($info['prod'][4]);
+						stdround($info['prod'][5]);
+						stdround($info['time']);
+						stdround($info['ress'][0]);
+						stdround($info['ress'][1]);
+						stdround($info['ress'][2]);
+						stdround($info['ress'][3]);
+						stdround($info['ress'][4]);
 						break;
 					case 'forschung':
 						$info['time'] *= pow($info['level']+1, 2);
@@ -1063,13 +1063,13 @@
 						$info['ress'][3] *= $ress_f;
 
 						# Runden
-						stdround(&$info['time_local']);
-						stdround(&$info['time_global']);
-						stdround(&$info['ress'][0]);
-						stdround(&$info['ress'][1]);
-						stdround(&$info['ress'][2]);
-						stdround(&$info['ress'][3]);
-						stdround(&$info['ress'][4]);
+						stdround($info['time_local']);
+						stdround($info['time_global']);
+						stdround($info['ress'][0]);
+						stdround($info['ress'][1]);
+						stdround($info['ress'][2]);
+						stdround($info['ress'][3]);
+						stdround($info['ress'][4]);
 						break;
 					case 'roboter':
 						$info['time'] *= pow(0.95, $this->getItemLevel('B9', 'gebaeude', $run_eventhandler));
@@ -1080,7 +1080,7 @@
 							$info['scores'] = $info['simple_scores']*$info['level'];
 						}
 
-						stdround(&$info['time']);
+						stdround($info['time']);
 						break;
 					case 'schiffe':
 						$info['att'] *= pow(1.05, $this->getItemLevel('F4', 'forschung', $run_eventhandler));
@@ -1100,12 +1100,12 @@
 						}
 
 						# Runden
-						stdround(&$info['att']);
-						stdround(&$info['def']);
-						stdround(&$info['trans'][0]);
-						stdround(&$info['trans'][1]);
-						stdround(&$info['time']);
-						stdround(&$info['speed']);
+						stdround($info['att']);
+						stdround($info['def']);
+						stdround($info['trans'][0]);
+						stdround($info['trans'][1]);
+						stdround($info['time']);
+						stdround($info['speed']);
 						break;
 					case 'verteidigung':
 						$info['att'] *= pow(1.05, $this->getItemLevel('F4', 'forschung', $run_eventhandler));
@@ -1118,9 +1118,9 @@
 							$info['scores'] = $info['simple_scores']*$info['level'];
 						}
 
-						stdround(&$info['att']);
-						stdround(&$info['def']);
-						stdround(&$info['time']);
+						stdround($info['att']);
+						stdround($info['def']);
+						stdround($info['time']);
 						break;
 				}
 
@@ -1391,12 +1391,12 @@
 
 					$prod[5] = $energie_prod-$energie_need;
 
-					stdround(&$prod[0]);
-					stdround(&$prod[1]);
-					stdround(&$prod[2]);
-					stdround(&$prod[3]);
-					stdround(&$prod[4]);
-					stdround(&$prod[5]);
+					stdround($prod[0]);
+					stdround($prod[1]);
+					stdround($prod[2]);
+					stdround($prod[3]);
+					stdround($prod[4]);
+					stdround($prod[5]);
 
 					$prod[6] = $f;
 				}
@@ -1778,7 +1778,7 @@
 						if($action[3])
 							$this->refreshRess($action[0]);
 
-						$this->changeItemLevel($action[1], $action[2], false, $action[0], &$actions);
+						$this->changeItemLevel($action[1], $action[2], false, $action[0], $actions);
 
 						if(isset($this->cache['getProduction']))
 							unset($this->cache['getProduction']);
