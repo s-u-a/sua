@@ -80,9 +80,10 @@
 			else return false;
 		}
 
-		function addMessage($uin, $protocol, $username, $message, $database)
+		function addMessage($uin, $protocol, $username, $message, $database, $time=false)
 		{
-			return sqlite_query($this->connection, "INSERT INTO notifications ( uin, time, protocol, username, message, database ) VALUES ( '".sqlite_escape_string($uin)."', '".sqlite_escape_string(time())."', '".sqlite_escape_string($protocol)."', '".sqlite_escape_string($username)."', '".sqlite_escape_string($message)."', '".sqlite_escape_string($database)."' );");
+			if($time === false) $time = time();
+			return sqlite_query($this->connection, "INSERT INTO notifications ( uin, time, protocol, username, message, database ) VALUES ( '".sqlite_escape_string($uin)."', '".sqlite_escape_string($time)."', '".sqlite_escape_string($protocol)."', '".sqlite_escape_string($username)."', '".sqlite_escape_string($message)."', '".sqlite_escape_string($database)."' );");
 		}
 	}
 ?>

@@ -140,7 +140,9 @@
 
 			$this->raw['users'][$user] = $type;
 			$this->changed = true;
-			$this->im_check_notify[$user] = $type;
+
+			if($type != 8)
+				$this->im_check_notify[$user] = $type;
 
 			return true;
 		}
@@ -222,7 +224,7 @@
 					{
 						$im_receive = $user_obj->checkSetting('messenger_receive');
 						if($im_receive['messages'][$type])
-							$imfile->addMessage($im_settings[0], $im_settings[1], $user, "Sie haben eine neue Nachricht der Sorte ".$message_type_names[$type]." erhalten. Der Betreff lautet: ".$this->subject(), global_setting("DB"));
+							$imfile->addMessage($im_settings[0], $im_settings[1], $user, "Sie haben eine neue Nachricht der Sorte ".$message_type_names[$type].($this->from() ? " von ".$this->from() : '')." erhalten. Der Betreff lautet: ".$this->subject(), global_setting("DB"));
 					}
 					unset($this->im_check_notify[$user]);
 				}

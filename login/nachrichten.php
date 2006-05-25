@@ -20,7 +20,7 @@
 
 			if(!User::userExists($_POST['empfaenger']))
 				$error = 'Der Empfänger, den Sie eingegeben haben, existiert nicht.';
-			elseif($_POST['empfaenger'] == $_SESSION['username'])
+			elseif(strtolower($_POST['empfaenger']) == strtolower($_SESSION['username']))
 				$error = 'Sie können sich nicht selbst eine Nachricht schicken.';
 			elseif(strlen($_POST['betreff']) > 30)
 				$error = 'Der Betreff darf maximal 30 Bytes lang sein.';
