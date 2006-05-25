@@ -223,6 +223,8 @@ EOF
 						else
 						{
 							$use_jabber = true;
+							$jabber->username = $jabber_auth_info['username'];
+							$jabber->password = $jabber_auth_info['password'];
 							fputs($errlog, time_prefix()."Reconnecting Jabber... ");
 							connect_jabber();
 							fputs($errlog, "Done.\n");
@@ -580,10 +582,16 @@ EOF
 	### Jabber-Client ###
 	#####################
 
-	if($use_jabber)
+	if($wanna_use_jabber)
 	{
 		$jabber_messengers = get_messenger_info();
 		$jabber_auth_info = get_messenger_info('jabber');
+		$jabber = new Jabber();
+		$jabber->server = $jabber_transport_services['jabber'];
+		$jabber->port = 5222;
+		$jabber->resource = false;
+		$imfile = Classes::IMFile();
+
 		if(!$jabber_auth_info || !isset($jabber_auth_info['username']) || !isset($jabber_auth_info['password']))
 		{
 			fputs($errlog, time_prefix()."Notice: no Jabber account information. Won't use instant messaging.\n");
@@ -591,15 +599,6 @@ EOF
 		}
 		else
 		{
-			$jabber = new Jabber();
-			$jabber->server = $jabber_transport_services['jabber'];
-			$jabber->port = 5222;
-			$jabber->username = $jabber_auth_info['username'];
-			$jabber->password = $jabber_auth_info['password'];
-			$jabber->resource = false;
-
-			$imfile = Classes::IMFile();
-
 			fputs($errlog, time_prefix()."Connecting Jabber client... ");
 			connect_jabber();
 			fputs($errlog, "Done.\n");
