@@ -67,7 +67,12 @@ EOF
 
 	function time_prefix()
 	{
-		return date('Y-m-d, H:i:s')."\t";
+		global $selected_database;
+
+		$prefix = date('Y-m-d, H:i:s')."\t";
+		if(isset($selected_database) && $selected_database)
+			$prefix .= $selected_database."\t";
+		return $prefix;
 	}
 
 	if($daemon)
