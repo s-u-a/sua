@@ -12,14 +12,14 @@
 		define_globals($_SERVER['argv'][1]);
 
 
-	unlink(DB_HIGHSCORES);
+	unlink(global_setting("DB_HIGHSCORES"));
 
 	$highscores_obj = Classes::Highscores();
 
-	$dh = opendir(DB_PLAYERS);
+	$dh = opendir(global_setting("DB_PLAYERS"));
 	while(($fname = readdir($dh)) !== false)
 	{
-		if(!is_file(DB_PLAYERS.'/'.$fname) || !is_readable(DB_PLAYERS.'/'.$fname))
+		if(!is_file(global_setting("DB_PLAYERS").'/'.$fname) || !is_readable(global_setting("DB_PLAYERS").'/'.$fname))
 			continue;
 
 		# Not using instances for memory reasons
@@ -32,10 +32,10 @@
 	}
 	closedir($dh);
 
-	$dh = opendir(DB_ALLIANCES);
+	$dh = opendir(global_setting("DB_ALLIANCES"));
 	while(($fname = readdir($dh)) !== false)
 	{
-		if(!is_file(DB_ALLIANCES.'/'.$fname) || !is_readable(DB_ALLIANCES.'/'.$fname))
+		if(!is_file(global_setting("DB_ALLIANCES").'/'.$fname) || !is_readable(global_setting("DB_ALLIANCES").'/'.$fname))
 			continue;
 
 		$this_alliance = new Alliance(urldecode($fname));

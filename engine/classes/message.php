@@ -1,8 +1,13 @@
 <?php
 	class Message extends Dataset
 	{
-		protected $save_dir = DB_MESSAGES;
 		private $datatype = 'message';
+
+		function __construct($name=false, $write=true)
+		{
+			$this->save_dir = global_setting("DB_MESSAGES");
+			parent::__construct($name, $write);
+		}
 
 		function create()
 		{

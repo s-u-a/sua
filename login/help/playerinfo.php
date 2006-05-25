@@ -27,7 +27,7 @@
 			if($user->userLocked()) $suf = ' (g)';
 			elseif($user->umode()) $suf = ' (U)';
 ?>
-<h2>Spielerinfo <?php if($at){?><span class="playerinfo-allianz">[<a href="allianceinfo.php?alliance=<?=htmlentities(urlencode($at).'&'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($at)?></a>]</span> <?php }?><em class="playername"><?=utf8_htmlentities($user->getName())?></em><span class="suffix"><?=$suf?></span></h2>
+<h2>Spielerinfo <?php if($at){?><span class="playerinfo-allianz">[<a href="allianceinfo.php?alliance=<?=htmlentities(urlencode($at).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($at)?></a>]</span> <?php }?><em class="playername"><?=utf8_htmlentities($user->getName())?></em><span class="suffix"><?=$suf?></span></h2>
 <h3 id="punkte">Punkte</h3>
 <dl class="punkte">
 	<dt class="c-gebaeude">Gebäude</dt>
@@ -107,7 +107,7 @@
 				foreach($verbuendet as $verbuendeter)
 				{
 ?>
-	<li><a href="playerinfo.php?player=<?=htmlentities(urlencode($verbuendeter))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($verbuendeter)?></a></li>
+	<li><a href="playerinfo.php?player=<?=htmlentities(urlencode($verbuendeter))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($verbuendeter)?></a></li>
 <?php
 				}
 ?>
@@ -166,7 +166,7 @@
 					$pos = $user->getPos();
 					$pos_string = $user->getPosString();
 ?>
-	<li><?=utf8_htmlentities($user->planetName())?> <span class="koords">(<a href="../karte.php?galaxy=<?=htmlentities(urlencode($pos[0]))?>&amp;system=<?=htmlentities(urlencode($pos[1]))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Jenes Sonnensystem in der Karte ansehen"><?=utf8_htmlentities($pos_string)?></a>)</span></li>
+	<li><?=utf8_htmlentities($user->planetName())?> <span class="koords">(<a href="../karte.php?galaxy=<?=htmlentities(urlencode($pos[0]))?>&amp;system=<?=htmlentities(urlencode($pos[1]))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Jenes Sonnensystem in der Karte ansehen"><?=utf8_htmlentities($pos_string)?></a>)</span></li>
 <?php
 				}
 				if($active_planet !== false) $user->setActivePlanet($active_planet);
@@ -179,7 +179,7 @@
 			{
 ?>
 <h3 id="nachricht">Nachricht</h3>
-<form action="../nachrichten.php?to=&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="playerinfo-nachricht" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
+<form action="../nachrichten.php?to=&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="playerinfo-nachricht" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
 	<dl>
 		<dt class="c-betreff"><label for="betreff-input">Betreff</label></dt>
 		<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" maxlength="30" tabindex="1" /></dd>

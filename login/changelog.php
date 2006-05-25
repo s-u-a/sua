@@ -4,8 +4,8 @@
 	login_gui::html_head();
 
 	$changelog = '';
-	if(is_file(GDB_DIR.'/changelog') && is_readable(GDB_DIR.'/changelog'))
-		$changelog = file_get_contents(GDB_DIR.'/changelog');
+	if(is_file(global_setting("DB_CHANGELOG")) && is_readable(global_setting("DB_CHANGELOG")))
+		$changelog = file_get_contents(global_setting("DB_CHANGELOG"));
 
 	$changelog = preg_split("/\r\n|\r|\n/", $changelog);
 ?>

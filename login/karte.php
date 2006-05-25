@@ -148,7 +148,7 @@
 						new_alliance1.className += ' verbuendet';
 					new_alliance1.appendChild(document.createTextNode('['));
 					var new_alliance2 = document.createElement('a');
-					new_alliance2.href = 'help/allianceinfo.php?alliance='+encodeURIComponent(sinfo[i]['alliance'])+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+					new_alliance2.href = 'help/allianceinfo.php?alliance='+encodeURIComponent(sinfo[i]['alliance'])+'&<?=urlencode(session_name()).'='.urlencode(session_id())?>';
 					new_alliance2.title = 'Informationen zu dieser Allianz anzeigen';
 					new_alliance2.appendChild(document.createTextNode(sinfo[i]['alliance']));
 					new_alliance1.appendChild(new_alliance2);
@@ -162,7 +162,7 @@
 				playername1.className = 'playername';
 				playername1.appendChild(document.createTextNode('('));
 				var playername2 = document.createElement('a');
-				playername2.href = 'help/playerinfo.php?player='+encodeURIComponent(sinfo[i]['owner'])+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+				playername2.href = 'help/playerinfo.php?player='+encodeURIComponent(sinfo[i]['owner'])+'&<?=urlencode(session_name()).'='.urlencode(session_id())?>';
 				playername2.title = 'Informationen zu diesem Spieler anzeigen';
 				playername2.appendChild(document.createTextNode(sinfo[i]['owner']));
 				playername1.appendChild(playername2);
@@ -182,7 +182,7 @@
 			new_td.firstChild.firstChild.className = 'c-koordinaten-verwenden';
 			new_td.firstChild.firstChild.appendChild(document.createElement('a'));
 			new_td.firstChild.firstChild.firstChild.title = 'Die Koordinaten dieses Planeten ins Flottenmenü einsetzen';
-			new_td.firstChild.firstChild.firstChild.href = 'flotten.php?action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+			new_td.firstChild.firstChild.firstChild.href = 'flotten.php?action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(session_name()).'='.urlencode(session_id())?>';
 			new_td.firstChild.firstChild.firstChild.appendChild(document.createTextNode('Koordinaten verwenden'));
 
 			var scp = new_system+':'+i;
@@ -191,7 +191,7 @@
 				new_td.firstChild.appendChild(new_el1 = document.createElement('li'));
 				new_el1.className = 'c-lesezeichen';
 				new_el1.appendChild(new_el2 = document.createElement('a'));
-				new_el2.href = 'flotten.php?action=shortcut&action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+				new_el2.href = 'flotten.php?action=shortcut&action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(session_name()).'='.urlencode(session_id())?>';
 				new_el2.title = 'Die Koordinaten dieses Planeten zu den Lesezeichen hinzufügen';
 				new_el2.onclick = new Function('return fast_action(this, "shortcut", '+system_split[0]+', '+system_split[1]+', '+i+');');
 				new_el2.appendChild(document.createTextNode('Lesezeichen'));
@@ -209,7 +209,7 @@
 					new_td.firstChild.appendChild(new_el1 = document.createElement('li'));
 					new_el1.className = 'c-spionieren';
 					new_el1.appendChild(new_el2 = document.createElement('a'));
-					new_el2.href = 'flotten.php?action=spionage&action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+					new_el2.href = 'flotten.php?action=spionage&action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(session_name()).'='.urlencode(session_id())?>';
 					new_el2.title = 'Spionieren Sie diesen Planeten aus';
 					new_el2.onclick = new Function('return fast_action(this, "spionage", '+system_split[0]+', '+system_split[1]+', '+i+');');
 					new_el2.appendChild(document.createTextNode('Spionieren'));
@@ -223,7 +223,7 @@
 					new_td.firstChild.appendChild(new_el1 = document.createElement('li'));
 					new_el1.className = 'c-nachricht';
 					new_el1.appendChild(new_el2 = document.createElement('a'));
-					new_el2.href = 'nachrichten.php?to='+encodeURIComponent(sinfo[i]['owner'])+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+					new_el2.href = 'nachrichten.php?to='+encodeURIComponent(sinfo[i]['owner'])+'&<?=urlencode(session_name()).'='.urlencode(session_id())?>';
 					new_el2.title = 'Schreiben Sie diesem Spieler eine Nachricht';
 					new_el2.appendChild(document.createTextNode('Nachricht'));
 				}
@@ -237,7 +237,7 @@
 					new_td.firstChild.appendChild(new_el1 = document.createElement('li'));
 					new_el1.className = 'c-besiedeln';
 					new_el1.appendChild(new_el2 = document.createElement('a'));
-					new_el2.href = 'flotten.php?action=besiedeln&action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+					new_el2.href = 'flotten.php?action=besiedeln&action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(session_name()).'='.urlencode(session_id())?>';
 					new_el2.title = 'Schicken Sie ein Besiedelungsschiff zu diesem Planeten';
 					new_el2.onclick = new Function('return fast_action(this, "besiedeln", '+system_split[0]+', '+system_split[1]+', '+i+');');
 					new_el2.appendChild(document.createTextNode('Besiedeln'));
@@ -253,7 +253,7 @@
 					new_td.firstChild.appendChild(new_el1 = document.createElement('li'));
 					new_el1.className = 'c-truemmerfeld';
 					new_el1.appendChild(new_el2 = document.createElement('a'));
-					new_el2.href = 'flotten.php?action=sammeln&action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+					new_el2.href = 'flotten.php?action=sammeln&action_galaxy='+encodeURIComponent(system_split[0])+'&action_system='+encodeURIComponent(system_split[1])+'&action_planet='+encodeURIComponent(i)+'&<?=urlencode(session_name()).'='.urlencode(session_id())?>';
 					new_el2.title = 'Schicken Sie ausreichend Sammler zu diesem Trümmerfeld.';
 					new_el2.onclick = new Function('return fast_action(this, "sammeln", '+system_split[0]+', '+system_split[1]+', '+i+');');
 					new_el2.appendChild(document.createTextNode('Sammeln'));
@@ -268,10 +268,10 @@
 		current_system = parseInt(system_split[1]);
 		get_systems_around();
 		document.getElementById('current-system-number').value = current_system;
-		document.getElementById('galaxy-prev-link').href = 'karte.php?galaxy=<?=urlencode($prev_galaxy)?>&system='+encodeURIComponent(current_system)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
-		document.getElementById('galaxy-next-link').href = 'karte.php?galaxy=<?=urlencode($next_galaxy)?>&system='+encodeURIComponent(current_system)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
-		document.getElementById('system-prev-link').href = 'karte.php?galaxy=<?=urlencode($galaxy_n)?>&system='+encodeURIComponent(prev_system)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
-		document.getElementById('system-next-link').href = 'karte.php?galaxy=<?=urlencode($galaxy_n)?>&system='+encodeURIComponent(next_system)+'&<?=urlencode(SESSION_COOKIE).'='.urlencode(session_id())?>';
+		document.getElementById('galaxy-prev-link').href = 'karte.php?galaxy=<?=urlencode($prev_galaxy)?>&system='+encodeURIComponent(current_system)+'&<?=urlencode(session_name()).'='.urlencode(session_id())?>';
+		document.getElementById('galaxy-next-link').href = 'karte.php?galaxy=<?=urlencode($next_galaxy)?>&system='+encodeURIComponent(current_system)+'&<?=urlencode(session_name()).'='.urlencode(session_id())?>';
+		document.getElementById('system-prev-link').href = 'karte.php?galaxy=<?=urlencode($galaxy_n)?>&system='+encodeURIComponent(prev_system)+'&<?=urlencode(session_name()).'='.urlencode(session_id())?>';
+		document.getElementById('system-next-link').href = 'karte.php?galaxy=<?=urlencode($galaxy_n)?>&system='+encodeURIComponent(next_system)+'&<?=urlencode(session_name()).'='.urlencode(session_id())?>';
 	}
 
 	function get_systems_around()
@@ -352,21 +352,21 @@
 	<fieldset class="karte-galaxiewahl">
 		<legend>Galaxie</legend>
 		<ul>
-			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($prev_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="6" accesskey="u" title="[U]" id="galaxy-prev-link">Vorige</a></li>
+			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($prev_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" tabindex="6" accesskey="u" title="[U]" id="galaxy-prev-link">Vorige</a></li>
 			<li><input type="text" name="galaxy" value="<?=utf8_htmlentities($galaxy_n)?>" tabindex="1" id="current-galaxy-number" /></li>
-			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($next_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="5" accesskey="x" title="[X]" id="galaxy-next-link">Nächste</a></li>
+			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($next_galaxy))?>&amp;system=<?=htmlentities(urlencode($system_n))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" tabindex="5" accesskey="x" title="[X]" id="galaxy-next-link">Nächste</a></li>
 		</ul>
 	</fieldset>
 	<fieldset class="karte-systemwahl">
 		<legend>System</legend>
 		<ul>
-			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;system=<?=htmlentities(urlencode($prev_system))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="4" rel="prev" accesskey="o" id="system-prev-link"<?php if($me->checkSetting('ajax')){?> onclick="return sw_prev_system();"<?php }?>>V<kbd>o</kbd>rige</a></li>
+			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;system=<?=htmlentities(urlencode($prev_system))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" tabindex="4" rel="prev" accesskey="o" id="system-prev-link"<?php if($me->checkSetting('ajax')){?> onclick="return sw_prev_system();"<?php }?>>V<kbd>o</kbd>rige</a></li>
 			<li><input type="text" name="system" value="<?=utf8_htmlentities($system_n)?>" tabindex="2" id="current-system-number" /></li>
-			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;system=<?=htmlentities(urlencode($next_system))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" tabindex="3" rel="next" accesskey="n" id="system-next-link"<?php if($me->checkSetting('ajax')){?> onclick="return sw_next_system();"<?php }?>><kbd>N</kbd>ächste</a></li>
+			<li><a href="karte.php?galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;system=<?=htmlentities(urlencode($next_system))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" tabindex="3" rel="next" accesskey="n" id="system-next-link"<?php if($me->checkSetting('ajax')){?> onclick="return sw_next_system();"<?php }?>><kbd>N</kbd>ächste</a></li>
 		</ul>
 	</fieldset>
 	<div class="karte-wahl-absenden">
-		<button type="submit" tabindex="7" accesskey="w"><kbd>W</kbd>echseln</button><input type="hidden" name="<?=htmlentities(SESSION_COOKIE)?>" value="<?=htmlentities(session_id())?>" />
+		<button type="submit" tabindex="7" accesskey="w"><kbd>W</kbd>echseln</button><input type="hidden" name="<?=htmlentities(session_name())?>" value="<?=htmlentities(session_id())?>" />
 	</div>
 </form>
 <table class="karte-system">
@@ -416,7 +416,7 @@
 		if($planet[1])
 		{
 ?>
-			<td class="c-name"><?php if($planet[3]){?><span class="allianz<?=($planet[3] == $me->allianceTag()) ? ' verbuendet' : ''?>">[<a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($planet[3]))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($planet[3])?></a>]</span> <?php }?><?=utf8_htmlentities($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($that_uname)?></a><?=$planet[4] ? ' ('.htmlspecialchars($planet[4]).')' : ''?>)</span></td>
+			<td class="c-name"><?php if($planet[3]){?><span class="allianz<?=($planet[3] == $me->allianceTag()) ? ' verbuendet' : ''?>">[<a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($planet[3]))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($planet[3])?></a>]</span> <?php }?><?=utf8_htmlentities($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($that_uname)?></a><?=$planet[4] ? ' ('.htmlspecialchars($planet[4]).')' : ''?>)</span></td>
 <?php
 		}
 		else
@@ -430,12 +430,12 @@
 ?>
 			<td class="c-aktionen">
 				<ul>
-					<li class="c-koordinaten-verwenden"><a href="flotten.php?action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten ins Flottenmenü einsetzen">Koordinaten verwenden</a></li>
+					<li class="c-koordinaten-verwenden"><a href="flotten.php?action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten ins Flottenmenü einsetzen">Koordinaten verwenden</a></li>
 <?php
 		if(!in_array($galaxy_n.':'.$system_n.':'.$i, $me->getPosShortcutsList()))
 		{
 ?>
-					<li class="c-lesezeichen"><a href="flotten.php?action=shortcut&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten zu den Lesezeichen hinzufügen"<?php if($me->checkSetting('ajax')){?> onclick="return fast_action(this, 'shortcut', <?=$galaxy_n?>, <?=$system_n?>, <?=$i?>);"<?php }?>>Lesezeichen</a></li>
+					<li class="c-lesezeichen"><a href="flotten.php?action=shortcut&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Die Koordinaten dieses Planeten zu den Lesezeichen hinzufügen"<?php if($me->checkSetting('ajax')){?> onclick="return fast_action(this, 'shortcut', <?=$galaxy_n?>, <?=$system_n?>, <?=$i?>);"<?php }?>>Lesezeichen</a></li>
 <?php
 		}
 
@@ -444,21 +444,21 @@
 			if($planet[4] != 'U' && $me->permissionToAct() && $me->getItemLevel('S5', 'schiffe') > 0)
 			{
 ?>
-					<li class="c-spionieren"><a href="flotten.php?action=spionage&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Spionieren Sie diesen Planeten aus"<?php if($me->checkSetting('ajax')){?> onclick="return fast_action(this, 'spionage', <?=$galaxy_n?>, <?=$system_n?>, <?=$i?>);"<?php }?>>Spionieren</a></li>
+					<li class="c-spionieren"><a href="flotten.php?action=spionage&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Spionieren Sie diesen Planeten aus"<?php if($me->checkSetting('ajax')){?> onclick="return fast_action(this, 'spionage', <?=$galaxy_n?>, <?=$system_n?>, <?=$i?>);"<?php }?>>Spionieren</a></li>
 <?php
 			}
 
 			if($planet[1])
 			{
 ?>
-					<li class="c-nachricht"><a href="nachrichten.php?to=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Schreiben Sie diesem Spieler eine Nachricht">Nachricht</a></li>
+					<li class="c-nachricht"><a href="nachrichten.php?to=<?=htmlentities(urlencode($that_uname))?>&amp;<?=htmlentities(session_name().'='.urlencode(session_id()))?>" title="Schreiben Sie diesem Spieler eine Nachricht">Nachricht</a></li>
 <?php
 			}
 
 			if(!$planet[1] && $me->permissionToAct() && $me->checkPlanetCount() && $me->getItemLevel('S6', 'schiffe') > 0)
 			{
 ?>
-					<li class="c-besiedeln"><a href="flotten.php?action=besiedeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Schicken Sie ein Besiedelungsschiff zu diesem Planeten"<?php if($me->checkSetting('ajax')){?>  onclick="return fast_action(this, 'besiedeln', <?=$galaxy_n?>, <?=$system_n?>, <?=$i?>);"<?php }?>>Besiedeln</a></li>
+					<li class="c-besiedeln"><a href="flotten.php?action=besiedeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Schicken Sie ein Besiedelungsschiff zu diesem Planeten"<?php if($me->checkSetting('ajax')){?>  onclick="return fast_action(this, 'besiedeln', <?=$galaxy_n?>, <?=$system_n?>, <?=$i?>);"<?php }?>>Besiedeln</a></li>
 <?php
 			}
 		}
@@ -466,7 +466,7 @@
 		if($show_sammeln)
 		{
 ?>
-					<li class="c-truemmerfeld"><a href="flotten.php?action=sammeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Schicken Sie ausreichend Sammler zu diesem Trümmerfeld"<?php if($me->checkSetting('ajax')){?>  onclick="return fast_action(this, 'sammeln', <?=$galaxy_n?>, <?=$system_n?>, <?=$i?>);"<?php }?>>Trümmerfeld</a></li>
+					<li class="c-truemmerfeld"><a href="flotten.php?action=sammeln&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Schicken Sie ausreichend Sammler zu diesem Trümmerfeld"<?php if($me->checkSetting('ajax')){?>  onclick="return fast_action(this, 'sammeln', <?=$galaxy_n?>, <?=$system_n?>, <?=$i?>);"<?php }?>>Trümmerfeld</a></li>
 <?php
 		}
 ?>

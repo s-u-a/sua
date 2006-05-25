@@ -22,7 +22,7 @@
 	login_gui::html_head();
 ?>
 <h2>Verteidigung</h2>
-<form action="verteidigung.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post">
+<form action="verteidigung.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post">
 <?php
 	$tabindex = 1;
 	$verteidigung = $me->getItemsList('verteidigung');
@@ -35,7 +35,7 @@
 			continue;
 ?>
 	<div class="item verteidigung" id="item-<?=htmlentities($id)?>">
-		<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a> <span class="anzahl">(<?=utf8_htmlentities($item_info['level'])?>)</span></h3>
+		<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a> <span class="anzahl">(<?=utf8_htmlentities($item_info['level'])?>)</span></h3>
 <?php
 		if($me->permissionToAct() && $building_possible && $item_info['buildable'])
 		{
@@ -113,7 +113,7 @@
 		}
 ?>
 </script>
-<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/verteidigung.php?'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="alle-abbrechen">
+<form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/verteidigung.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="alle-abbrechen">
 	<p>Geben Sie hier Ihr Passwort ein, um alle im Bau befindlichen Verteidigungsanlagen <strong>ohne Kostenrückerstattung</strong> abzubrechen.</p>
 	<div><input type="password" name="cancel-all-verteidigung" /><input type="submit" value="Alle abbrechen" /></div>
 </form>

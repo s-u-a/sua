@@ -1,8 +1,13 @@
 <?php
 	class Alliance extends Dataset
 	{
-		protected $save_dir = DB_ALLIANCES;
 		private $datatype = 'alliance';
+
+		function __construct($name=false, $write=true)
+		{
+			$this->save_dir = global_setting("DB_ALLIANCES");
+			parent::__construct($name, $write);
+		}
 
 		function create()
 		{
@@ -70,7 +75,7 @@
 
 		function allianceExists($alliance)
 		{
-			$filename = DB_ALLIANCES.'/'.strtolower(urlencode($alliance));
+			$filename = global_setting("DB_ALLIANCES").'/'.strtolower(urlencode($alliance));
 			return (is_file($filename) && is_readable($filename));
 		}
 
@@ -539,7 +544,7 @@
 			if(!$this->status) return false;
 
 			if(!isset($this->raw['last_rename'])) return true;
-			return (time()-$this->raw['last_rename'] >= ALLIANCE_RENAME_PERIOD*86400);
+			return (time()-$this->raw['last_rename'] >= global_setting("ALLIANCE_RENAME_PERIOD")*86400);
 		}
 
 		function rename($new_name)
@@ -617,10 +622,10 @@
 	{
 		$preg = '/^'.str_replace(array('\\*', '\\?'), array('.*', '.?'), preg_quote($search_string, '/')).'$/i';
 		$alliances = array();
-		$dh = opendir(DB_ALLIANCES);
+		$dh = opendir(global_setting("DB_ALLIANCES"));
 		while(($fname = readdir($dh)) !== false)
 		{
-			if(!is_file(DB_ALLIANCES.'/'.$fname) || !is_readable(DB_ALLIANCES.'/'.$fname))
+			if(!is_file(global_setting("DB_ALLIANCES").'/'.$fname) || !is_readable(global_setting("DB_ALLIANCES").'/'.$fname))
 				continue;
 			$alliance = urldecode($fname);
 			if(preg_match($preg, $alliance))

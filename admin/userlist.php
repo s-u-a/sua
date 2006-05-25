@@ -13,10 +13,10 @@
 	if($sort)
 	{
 		$unames = array();
-		$dh = opendir(DB_PLAYERS);
+		$dh = opendir(global_setting("DB_PLAYERS"));
 		while(($uname = readdir($dh)) !== false)
 		{
-			if(!is_file(DB_PLAYERS.'/'.$uname) || !is_readable(DB_PLAYERS.'/'.$uname))
+			if(!is_file(global_setting("DB_PLAYERS").'/'.$uname) || !is_readable(global_setting("DB_PLAYERS").'/'.$uname))
 				continue;
 			$unames[] = urldecode($uname);
 		}
@@ -42,10 +42,10 @@
 ?>
 <ul>
 <?php
-		$dh = opendir(DB_PLAYERS);
+		$dh = opendir(global_setting("DB_PLAYERS"));
 		while(($uname = readdir($dh)) !== false)
 		{
-			if(!is_file(DB_PLAYERS.'/'.$uname) || !is_readable(DB_PLAYERS.'/'.$uname))
+			if(!is_file(global_setting("DB_PLAYERS").'/'.$uname) || !is_readable(global_setting("DB_PLAYERS").'/'.$uname))
 				continue;
 ?>
 	<li><?=utf8_htmlentities(urldecode($uname))?></li>

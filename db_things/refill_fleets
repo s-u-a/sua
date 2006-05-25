@@ -14,7 +14,7 @@
 	$eventfile = Classes::EventFile();
 	$eventfile->_empty();
 
-	$dh = opendir(DB_FLEETS);
+	$dh = opendir(global_setting("DB_FLEETS"));
 	while(($fname = readdir($dh)) !== false)
 	{
 		if($fname == '.' || $fname == '..') continue;

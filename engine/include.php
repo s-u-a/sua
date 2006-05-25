@@ -23,76 +23,82 @@
 		$document_root = substr($document_root, 0, -1);
 	define('h_root', substr(s_root, strlen($document_root)));
 
-	function define_globals($DB_DIR=false)
+	if(isset($_GET['nossl']))
 	{
-		if($DB_DIR)
+		if($_GET['nossl'] && (!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl']))
 		{
-			if(substr($DB_DIR, 0, 1) != '/')
-				$DB_DIR = s_root.'/'.$DB_DIR;
-
-			define('DB_DIR', $DB_DIR);
-
-			define('EVENT_FILE', DB_DIR.'/events');
-			define('LOCK_FILE', DB_DIR.'/locked');
-			define('DB_ALLIANCES', DB_DIR.'/alliances');
-			define('DB_FLEETS', DB_DIR.'/fleets');
-			define('DB_PLAYERS', DB_DIR.'/players');
-			define('DB_UNIVERSE', DB_DIR.'/universe');
-			define('DB_ITEMS', DB_DIR.'/items');
-			define('DB_ITEM_DB', DB_DIR.'/items.db');
-			define('DB_MESSAGES', DB_DIR.'/messages');
-			define('DB_MESSAGES_PUBLIC', DB_DIR.'/messages_public');
-			define('DB_HIGHSCORES', DB_DIR.'/highscores');
-			define('DB_TRUEMMERFELDER', DB_DIR.'/truemmerfelder');
-			define('DB_HANDEL', DB_DIR.'/handel');
-			define('DB_HANDELSKURS', DB_DIR.'/handelskurs');
-			define('DB_ADMINS', DB_DIR.'/admins');
-			define('DB_NONOOBS', DB_DIR.'/nonoobs');
-			define('DB_MESSENGERS', DB_DIR.'/messengers');
-			define('DB_NOTIFICATIONS', DB_DIR.'/notifications');
-			define('DB_ADMIN_LOGFILE', DB_DIR.'/admin_logfile');
+			setcookie('use_ssl', '0', time()+4838400, h_root);
+			$_COOKIE['use_ssl'] = '0';
 		}
-
-		if(!defined('other_globals'))
+		elseif(!$_GET['nossl'] && isset($_COOKIE['use_ssl']) && !$_COOKIE['use_ssl'])
 		{
-			define('GDB_DIR', s_root.'/database.global');
-			define('DB_NEWS', GDB_DIR.'/news');
-			define('EVENTHANDLER_INTERVAL', 10);
-			define('THS_HTML', '&nbsp;');
-			define('THS_UTF8', "\xc2\xa0");
-			define('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
-			define('EMAIL_FROM', 'webmaster@s-u-a.net');
-			define('MAX_PLANETS', 15);
-			define('SESSION_COOKIE', session_name());
-			define('LIST_MIN_CHARS', 2); # Fuer Ajax-Auswahllisten
-			define('ALLIANCE_RENAME_PERIOD', 3); # Minimalabstand fuers Umbenennen von Allianzen in Tagen
-
-			if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
-				define('PROTOCOL', 'https');
-			else
-				define('PROTOCOL', 'http');
-
-			if(isset($_GET['nossl']))
-			{
-				if($_GET['nossl'] && (!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl']))
-				{
-					setcookie('use_ssl', '0', time()+4838400, h_root);
-					$_COOKIE['use_ssl'] = '0';
-				}
-				elseif(!$_GET['nossl'] && isset($_COOKIE['use_ssl']) && !$_COOKIE['use_ssl'])
-				{
-					setcookie('use_ssl', '1', time()+4838400, h_root);
-					$_COOKIE['use_ssl'] = '1';
-				}
-			}
-			if(isset($_SESSION['use_protocol']))
-				define('USE_PROTOCOL', $_SESSION['use_protocol']);
-			elseif(!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])
-				define('USE_PROTOCOL', 'https');
-			else
-				define('USE_PROTOCOL', 'http');
-			define('other_globals', true);
+			setcookie('use_ssl', '1', time()+4838400, h_root);
+			$_COOKIE['use_ssl'] = '1';
 		}
+	}
+
+	function global_setting($key, $value=null)
+	{
+		static $settings;
+
+		if($value === null)
+		{
+			if(!isset($settings[$key])) return null;
+			else return $settings[$key];
+		}
+		else
+		{
+			$settings[$key] = $value;
+			return true;
+		}
+	}
+
+	global_setting('GDB_DIR', s_root.'/database.global');
+	global_setting('DB_NEWS', global_setting("GDB_DIR").'/news');
+	global_setting('DB_CHANGELOG', global_setting("GDB_DIR").'/changelog');
+	global_setting('DB_VERSION', global_setting("GDB_DIR").'/version');
+	global_setting('DB_REVISION', global_setting("GDB_DIR").'/revision');
+	global_setting('EVENTHANDLER_INTERVAL', 10);
+	global_setting('THS_HTML', '&nbsp;');
+	global_setting('THS_UTF8', "\xc2\xa0");
+	global_setting('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
+	global_setting('EMAIL_FROM', 'webmaster@s-u-a.net');
+	global_setting('MAX_PLANETS', 15);
+	global_setting('LIST_MIN_CHARS', 2); # Fuer Ajax-Auswahllisten
+	global_setting('ALLIANCE_RENAME_PERIOD', 3); # Minimalabstand fuers Umbenennen von Allianzen in Tagen
+	global_setting('PROTOCOL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http');
+	global_setting('USE_PROTOCOL', (isset($_SESSION['use_protocol']) ? $_SESSION['use_protocol'] : (((!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])) ? 'https' : 'http')));
+
+	function define_globals($DB_DIR)
+	{
+		global $SUA_SETTINGS;
+
+		if(substr($DB_DIR, 0, 1) != '/')
+			$DB_DIR = s_root.'/'.$DB_DIR;
+
+		global_setting('DB_DIR', $DB_DIR);
+
+		global_setting('EVENT_FILE', $DB_DIR.'/events');
+		global_setting('LOCK_FILE', $DB_DIR.'/locked');
+		global_setting('DB_ALLIANCES', $DB_DIR.'/alliances');
+		global_setting('DB_FLEETS', $DB_DIR.'/fleets');
+		global_setting('DB_PLAYERS', $DB_DIR.'/players');
+		global_setting('DB_UNIVERSE', $DB_DIR.'/universe');
+		global_setting('DB_ITEMS', $DB_DIR.'/items');
+		global_setting('DB_ITEM_DB', $DB_DIR.'/items.db');
+		global_setting('DB_MESSAGES', $DB_DIR.'/messages');
+		global_setting('DB_MESSAGES_PUBLIC', $DB_DIR.'/messages_public');
+		global_setting('DB_HIGHSCORES', $DB_DIR.'/highscores');
+		global_setting('DB_TRUEMMERFELDER', $DB_DIR.'/truemmerfelder');
+		global_setting('DB_HANDEL', $DB_DIR.'/handel');
+		global_setting('DB_HANDELSKURS', $DB_DIR.'/handelskurs');
+		global_setting('DB_ADMINS', $DB_DIR.'/admins');
+		global_setting('DB_NONOOBS', $DB_DIR.'/nonoobs');
+		global_setting('DB_MESSENGERS', $DB_DIR.'/messengers');
+		global_setting('DB_NOTIFICATIONS', $DB_DIR.'/notifications');
+		global_setting('DB_ADMIN_LOGFILE', $DB_DIR.'/admin_logfile');
+
+		return true;
 	}
 
 	function __autoload($class)
@@ -113,8 +119,6 @@
 	if(!isset($USE_OB) || $USE_OB)
 		ob_start('ob_gzhandler');
 	$tabindex = 1;
-
-	define_globals();
 
 	if(!isset($LOGIN) || !$LOGIN)
 		check_hostname();
@@ -240,7 +244,7 @@
 			<li class="c-rules"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/rules.php">Regeln</a></li>
 			<li class="c-faq"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/faq.php"><abbr title="Frequently Asked Questions" xml:lang="en">FAQ</abbr></a></li>
 			<li class="c-chat"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/chat.php" xml:lang="en">Chat</a></li>
-			<li class="c-board"><a href="<?=htmlentities(USE_PROTOCOL)?>://board.s-u-a.net/index.php" xml:lang="en">Board</a></li>
+			<li class="c-board"><a href="<?=htmlentities(global_setting("USE_PROTOCOL"))?>://board.s-u-a.net/index.php" xml:lang="en">Board</a></li>
 			<li class="c-developers"><a href="http://dev.s-u-a.net/">Entwicklerseite</a></li>
 			<li class="c-impressum"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/impressum.php">Impressum</a></li>
 <?php
@@ -257,7 +261,7 @@
 		<div id="content2-0"><div id="content2-1"><div id="content2-2"><div id="content2-3">
 		<div id="content3-0"><div id="content3-1"><div id="content3-2"><div id="content3-3">
 		<div id="content4-1"><div id="content4-2"><div id="content4-3">
-			<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
+			<form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
 				<fieldset>
 					<legend>Anmelden</legend>
 					<dl>
@@ -285,7 +289,7 @@
 						<li class="c-registrieren"><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/register.php">Registrieren</a></li>
 						<li class="c-passwort-vergessen"><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/passwd.php">Passwort vergessen?</a></li>
 <?php
-			if(USE_PROTOCOL == 'https')
+			if(global_setting("USE_PROTOCOL") == 'https')
 			{
 ?>
 						<li class="c-ssl-abschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=1"><abbr title="Secure Sockets Layer" xml:lang="en"><span xml:lang="de">SSL</span></abbr> abschalten</a></li>
@@ -331,13 +335,13 @@
 		{
 			# Bekommt die Groesse eines Truemmerfelds
 
-			if(!is_file(DB_TRUEMMERFELDER.'/'.$galaxy.'_'.$system.'_'.$planet))
+			if(!is_file(global_setting("DB_TRUEMMERFELDER").'/'.$galaxy.'_'.$system.'_'.$planet))
 				return array(0, 0, 0, 0);
-			elseif(!is_readable(DB_TRUEMMERFELDER.'/'.$galaxy.'_'.$system.'_'.$planet))
+			elseif(!is_readable(global_setting("DB_TRUEMMERFELDER").'/'.$galaxy.'_'.$system.'_'.$planet))
 				return false;
 			else
 			{
-				$string = file_get_contents(DB_TRUEMMERFELDER.'/'.$galaxy.'_'.$system.'_'.$planet);
+				$string = file_get_contents(global_setting("DB_TRUEMMERFELDER").'/'.$galaxy.'_'.$system.'_'.$planet);
 
 				$rohstoffe = array('', '', '', '');
 
@@ -402,8 +406,8 @@
 		{
 			if($carbon <= 0 && $aluminium <= 0 && $wolfram <= 0 && $radium <= 0)
 			{
-				if(is_file(DB_TRUEMMERFELDER.'/'.$galaxy.'_'.$system.'_'.$planet))
-					return unlink(DB_TRUEMMERFELDER.'/'.$galaxy.'_'.$system.'_'.$planet);
+				if(is_file(global_setting("DB_TRUEMMERFELDER").'/'.$galaxy.'_'.$system.'_'.$planet))
+					return unlink(global_setting("DB_TRUEMMERFELDER").'/'.$galaxy.'_'.$system.'_'.$planet);
 				else
 					return true;
 			}
@@ -436,7 +440,7 @@
 			unset($new);
 
 			# Schreiben
-			$fh = fopen(DB_TRUEMMERFELDER.'/'.$galaxy.'_'.$system.'_'.$planet, 'w');
+			$fh = fopen(global_setting("DB_TRUEMMERFELDER").'/'.$galaxy.'_'.$system.'_'.$planet, 'w');
 			if(!$fh)
 				return false;
 			flock($fh, LOCK_EX);
@@ -486,8 +490,8 @@
 	{
 		# Aktuell installierte Version herausfinden
 		$version = '';
-		if(is_file(GDB_DIR.'/version') && is_readable(GDB_DIR.'/version'))
-			$version = trim(file_get_contents(GDB_DIR.'/version'));
+		if(is_file(global_setting("DB_VERSION")) && is_readable(global_setting("DB_VERSION")))
+			$version = trim(file_get_contents(global_setting("DB_VERSION")));
 		return $version;
 	}
 
@@ -497,7 +501,7 @@
 
 		if(!is_dir(s_root.'/.svn')) return false;
 
-		$revision_file = GDB_DIR.'/revision';
+		$revision_file = global_setting("DB_REVISION");
 		$entries_file = s_root.'/.svn/entries';
 
 		if(!is_file($revision_file) && !is_file($entries_file)) return false;
@@ -533,10 +537,10 @@
 	function get_databases()
 	{
 		# Liste der Runden/Universen herausfinden
-		if(!is_file(GDB_DIR.'/databases') || !is_readable(GDB_DIR.'/databases'))
+		if(!is_file(global_setting("GDB_DIR").'/databases') || !is_readable(global_setting("GDB_DIR").'/databases'))
 			return false;
 
-		$databases = preg_split("/\r\n|\r|\n/", file_get_contents(GDB_DIR.'/databases'));
+		$databases = preg_split("/\r\n|\r|\n/", file_get_contents(global_setting("GDB_DIR").'/databases'));
 		array_shift($databases);
 
 		$return = array();
@@ -558,10 +562,10 @@
 		# Die folgende Zeile auskommentieren, um diese Funktion zu deaktivieren
 		#return (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : false);
 
-		if(!is_file(GDB_DIR.'/databases') || !is_readable(GDB_DIR.'/databases'))
+		if(!is_file(global_setting("GDB_DIR").'/databases') || !is_readable(global_setting("GDB_DIR").'/databases'))
 			return false;
 
-		$fh = fopen(GDB_DIR.'/databases', 'r');
+		$fh = fopen(global_setting("GDB_DIR").'/databases', 'r');
 		flock($fh, LOCK_SH);
 
 		$hostname = trim(fgets($fh, 1024));
@@ -595,7 +599,7 @@
 				if(strtolower($hostname) == strtolower($real_hostname) && substr($request_uri, -1) != '/')
 					return true;
 
-				$url = PROTOCOL.'://'.$real_hostname.$_SERVER['PHP_SELF'];
+				$url = global_setting("PROTOCOL").'://'.$real_hostname.$_SERVER['PHP_SELF'];
 				if($_SERVER['QUERY_STRING'] != '')
 					$url .= '?'.$_SERVER['QUERY_STRING'];
 				header('Location: '.$url, true, 307);
@@ -619,9 +623,9 @@
 	{
 		# Gibt eine Liste aller Administratoren zurueck
 		$admins = array();
-		if(!is_file(DB_ADMINS) || !is_readable(DB_ADMINS))
+		if(!is_file(global_setting("DB_ADMINS")) || !is_readable(global_setting("DB_ADMINS")))
 			return false;
-		$admin_file = preg_split("/\r\n|\r|\n/", file_get_contents(DB_ADMINS));
+		$admin_file = preg_split("/\r\n|\r|\n/", file_get_contents(global_setting("DB_ADMINS")));
 		foreach($admin_file as $line)
 		{
 			$line = explode("\t", $line);
@@ -653,7 +657,7 @@
 			unset($this_admin);
 		}
 
-		$fh = fopen(DB_ADMINS, 'w');
+		$fh = fopen(global_setting("DB_ADMINS"), 'w');
 		if(!$fh)
 			return false;
 		flock($fh, LOCK_EX);
@@ -787,9 +791,9 @@
 				$count = (double) substr($count, 1);
 		}
 
-		$ths = THS_HTML;
+		$ths = global_setting("THS_HTML");
 		if($utf8)
-			$ths = THS_UTF8;
+			$ths = global_setting("THS_UTF8");
 		$count = str_replace('.', $ths, number_format($count, $round, ',', '.'));
 
 		if($neg)
@@ -1234,7 +1238,7 @@
 
 			if($url[1] != '')
 				$url[1] .= '&';
-			$url[1] .= SESSION_COOKIE.'='.urlencode(session_id());
+			$url[1] .= session_name().'='.urlencode(session_id());
 
 			$url2 = $url[0].'?'.$url[1];
 			if($url[2] != '')
@@ -1327,8 +1331,8 @@
 
 		if(!isset($messenger_parsed_file))
 		{
-			if(!is_file(DB_MESSENGERS) || !is_readable(DB_MESSENGERS)) $messenger_parsed_file = false;
-			else $messenger_parsed_file = parse_ini_file(DB_MESSENGERS, true);
+			if(!is_file(global_setting("DB_MESSENGERS")) || !is_readable(global_setting("DB_MESSENGERS"))) $messenger_parsed_file = false;
+			else $messenger_parsed_file = parse_ini_file(global_setting("DB_MESSENGERS"), true);
 		}
 
 		if(!$messenger_parsed_file) return false;

@@ -2,7 +2,7 @@
 	require('engine/include.php');
 
 	$databases = get_databases();
-	
+
 	gui::html_head();
 ?>
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Registrieren</h2>
@@ -10,7 +10,7 @@
 	if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['password2']) && isset($_POST['database']) && isset($databases[$_POST['database']]))
 	{
 		define_globals($databases[$_POST['database']][0]);
-		
+
 		$error = '';
 
 		if(!isset($_POST['nutzungsbedingungen']) || !$_POST['nutzungsbedingungen'])
@@ -26,7 +26,7 @@
 		else
 		{
 			$_POST['username'] = str_replace("\x0a", ' ', trim($_POST['username'])); # nbsp
-			
+
 			__autoload('User');
 			if(User::UserExists($_POST['username']))
 				$error = 'Dieser Spieler existiert bereits. Bitte wählen Sie einen anderen Namen.';
@@ -39,7 +39,7 @@
 				$user_obj = Classes::User($_POST['username']);
 				if(!$user_obj->create())
 					$error = 'Datenbankfehler beim Anlegen des Benutzeraccounts.';
-				
+
 				# Koordinaten des Hauptplaneten bestimmen
 
 				__autoload('Galaxy');
@@ -89,9 +89,9 @@
 						$error = 'Der Hauptplanet konnte nicht besiedelt werden.';
 						$user_obj->destroy();
 					}
-					
+
 					$user_obj->setActivePlanet($index);
-					
+
 					$user_obj->addRess(array(20000, 10000, 7500, 5000, 2000));
 					$user_obj->setPassword($_POST['password']);
 
@@ -126,7 +126,7 @@
 	}
 
 ?>
-<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/register.php')?>" method="post" id="register-form">
+<form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/register.php')?>" method="post" id="register-form">
 	<fieldset>
 		<legend>Registrieren</legend>
 		<dl>
@@ -141,7 +141,7 @@
 	}
 ?>
 			</select></dd>
-			
+
 			<dt><label for="username">Benutzername</label></dt>
 			<dd><input type="text" id="username" name="username"<?=isset($_POST['username']) ? ' value="'.utf8_htmlentities($_POST['username']).'"' : ''?> maxlength="24" /></dd>
 

@@ -1,10 +1,7 @@
 <?php
-	if(!defined('ajax'))
-	{
-		if(isset($_GET['action'])) define('ignore_action', true);
-		require('scripts/include.php');
-		login_gui::html_head();
-	}
+	if(isset($_GET['action'])) define('ignore_action', true);
+	require_once('scripts/include.php');
+	if(!defined('ajax')) login_gui::html_head();
 
 	$show_versenden = true;
 
@@ -260,7 +257,7 @@
 							$that_user = Classes::User($planet_owner);
 
 							$noob = false;
-							if($planet_owner && ($_POST['auftrag'] == '3' || $_POST['auftrag'] == '5') && !$that_user->userLocked() && !file_exists(DB_NONOOBS))
+							if($planet_owner && ($_POST['auftrag'] == '3' || $_POST['auftrag'] == '5') && !$that_user->userLocked() && !file_exists(global_setting("DB_NONOOBS")))
 							{
 								# Anfaengerschutz ueberpruefen
 								$that_punkte = $that_user->getScores();
@@ -437,7 +434,7 @@
 							# Kein Robotertransport zu fremden Planeten
 							if($planet_owner != $_SESSION['username']) $transport[1] = 0;
 ?>
-<form action="flotten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
+<form action="flotten.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
 	<dl>
 		<dt class="c-ziel">Ziel</dt>
 		<dd class="c-ziel"><?=utf8_htmlentities($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'])?> &ndash; <?=$planet_owner ? utf8_htmlentities($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])).' <span class="playername">('.utf8_htmlentities($planet_owner).')</span>' : 'Unbesiedelt'?></dd>
@@ -709,7 +706,7 @@
 		if(isset($_GET['action_system'])) $this_pos[1] = $_GET['action_system'];
 		if(isset($_GET['action_planet'])) $this_pos[2] = $_GET['action_planet'];
 ?>
-<form action="flotten.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden">
+<form action="flotten.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden">
 <?php
 		if($my_flotten < $max_flotten && $me->permissionToAct())
 		{
@@ -836,7 +833,7 @@
 			if($me->getItemLevel($id, 'schiffe') < 1) continue;
 			$item_info = $me->getItemInfo($id, 'schiffe');
 ?>
-			<dt><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a> <span class="vorhanden">(<?=ths($item_info['level'])?>&nbsp;vorhanden)</span></dt>
+			<dt><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a> <span class="vorhanden">(<?=ths($item_info['level'])?>&nbsp;vorhanden)</span></dt>
 			<dd><input type="text" name="flotte[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$i?>"<?=($my_flotten >= $max_flotten || !$me->permissionToAct()) ? ' readonly="readonly"' : ''?> /></dd>
 <?php
 			$i++;

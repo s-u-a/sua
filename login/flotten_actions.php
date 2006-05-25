@@ -49,9 +49,9 @@
 				elseif($verb) $class = 'verbuendet';
 				else $class = 'fremd';
 ?>
-<form action="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($_GET['id']).'&'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="handel <?=$class?>">
+<form action="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($_GET['id']).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="handel <?=$class?>">
 	<fieldset>
-		<legend><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($username).'&'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($username)?></a></legend>
+		<legend><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($username).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($username)?></a></legend>
 <?php
 				$trans = $fleet->getTransportCapacity($username);
 				$handel = $fleet->getHandel($username);
@@ -356,7 +356,7 @@
 					}
 					else $s .= '[unbesiedelt]';
 ?>
-		<li><?=htmlspecialchars($s)?> <span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="runter">[Runter]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="loeschen">[Löschen]</a></span></li>
+		<li><?=htmlspecialchars($s)?> <span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(session_name()).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(session_name()).'='.session_id())?>" class="runter">[Runter]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(session_name()).'='.session_id())?>" class="loeschen">[Löschen]</a></span></li>
 <?php
 					$i++;
 				}

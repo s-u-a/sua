@@ -1,8 +1,13 @@
 <?php
 	class Fleet extends Dataset
 	{
-		protected $save_dir = DB_FLEETS;
 		private $datatype = 'fleet';
+
+		function __construct($name=false, $write=true)
+		{
+			$this->save_dir = global_setting("DB_FLEETS");
+			parent::__construct($name, $write);
+		}
 
 		function create()
 		{
@@ -41,7 +46,7 @@
 
 		function fleetExists($fleet)
 		{
-			$filename = DB_FLEETS.'/'.urlencode($fleet);
+			$filename = global_setting("DB_FLEETS").'/'.urlencode($fleet);
 			return (is_file($filename) && is_readable($filename));
 		}
 

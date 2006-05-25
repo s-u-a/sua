@@ -26,7 +26,7 @@
 	login_gui::html_head();
 ?>
 <ul id="planeten-umbenennen">
-	<li><a href="scripts/rename.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>
+	<li><a href="scripts/rename.php?<?=htmlentities(session_name().'='.urlencode(session_id()))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>
 </ul>
 <?php
 	if(!$me->checkSetting('notify'))
@@ -75,7 +75,7 @@
 				$link .= '?';
 			else
 				$link .= '&';
-			$link .= urlencode(SESSION_COOKIE).'='.urlencode(session_id());
+			$link .= urlencode(session_name()).'='.urlencode(session_id());
 ?>
 <p class="neue-nachrichten">
 	<a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root.'/login/'.$link)?>" title="<?=$title?>">Sie haben <?=htmlentities($ges_ncount)?> neue <kbd>N</kbd>achricht<?=($ges_ncount != 1) ? 'en' : ''?>.</a>
@@ -271,12 +271,12 @@
 			if($fl->getCurrentType() == 4 && !$fl->isFlyingBack() && $me->isOwnPlanet($fl->getCurrentTarget()))
 			{
 ?>
-		<div class="handel"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Geben Sie dieser Flotte Ladung mit auf den Rückweg">Handel</a></div>
+		<div class="handel"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Geben Sie dieser Flotte Ladung mit auf den Rückweg">Handel</a></div>
 <?php
 			}
 ?>
 	</dt>
-	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($flotte)?>">Ankunft: <?=date('H:i:s, Y-m-d', $next_arrival)?> (Serverzeit)<?php if(!$fl->isFlyingBack() && ($me_in_users !== false)){?>, <a href="index.php?cancel=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
+	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($flotte)?>">Ankunft: <?=date('H:i:s, Y-m-d', $next_arrival)?> (Serverzeit)<?php if(!$fl->isFlyingBack() && ($me_in_users !== false)){?>, <a href="index.php?cancel=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
 <?php
 			$countdowns[] = array($flotte, $next_arrival, ($fl->isFlyingBack() || ($me_in_users === false)));
 		}
@@ -291,7 +291,7 @@
 			foreach($countdowns as $countdown)
 			{
 ?>
-	init_countdown('<?=$countdown[0]?>', <?=$countdown[1]?>, <?=$countdown[2] ? 'false' : 'true'?>, <?=EVENTHANDLER_INTERVAL?>);
+	init_countdown('<?=$countdown[0]?>', <?=$countdown[1]?>, <?=$countdown[2] ? 'false' : 'true'?>, <?=global_setting("EVENTHANDLER_INTERVAL")?>);
 <?php
 			}
 ?>
@@ -313,7 +313,7 @@
 		$me->setActivePlanet($planet);
 		$class = $me->getPlanetClass();
 ?>
-	<li class="planet-<?=htmlentities($class)?><?=($planet == $active_planet) ? ' active' : ''?>"><?=($planet != $active_planet) ? '<a href="index.php?planet='.htmlentities(urlencode($planet).'&'.urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?><?=utf8_htmlentities($me->planetName())?><?=($planet != $active_planet) ? '</a>' : ''?> <span class="koords">(<?=utf8_htmlentities($me->getPosString())?>)</span>
+	<li class="planet-<?=htmlentities($class)?><?=($planet == $active_planet) ? ' active' : ''?>"><?=($planet != $active_planet) ? '<a href="index.php?planet='.htmlentities(urlencode($planet).'&'.urlencode(session_name()).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?><?=utf8_htmlentities($me->planetName())?><?=($planet != $active_planet) ? '</a>' : ''?> <span class="koords">(<?=utf8_htmlentities($me->getPosString())?>)</span>
 		<dl class="planet-info">
 			<dt class="c-felder">Felder</dt>
 			<dd class="c-felder"><?=ths($me->getUsedFields())?> <span class="gesamtgroesse">(<?=ths($me->getTotalFields())?>)</span></dd>

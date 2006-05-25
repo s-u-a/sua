@@ -60,7 +60,7 @@
 <?php
 	}
 ?>
-<form action="rename.php?<?=htmlentities(SESSION_COOKIE.'='.urlencode(session_id()))?>" method="post">
+<form action="rename.php?<?=htmlentities(session_name().'='.urlencode(session_id()))?>" method="post">
 	<fieldset>
 		<legend>Planeten umbenennen</legend>
 		<dl>
@@ -90,7 +90,7 @@
 <?php
 		}
 ?>
-<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/scripts/rename.php?'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post">
+<form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/scripts/rename.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post">
 	<fieldset>
 		<legend>Planeten aufgeben<input type="hidden" name="act_planet" value="<?=htmlentities($_SESSION['act_planet'])?>" /></legend>
 		<dl>
@@ -115,7 +115,7 @@
 		{
 			$me->setActivePlanet($planet);
 ?>
-		<li><?=utf8_htmlentities($me->planetName())?> <span class="pos">(<?=utf8_htmlentities($me->getPosString())?>)</span><span class="aktionen"><?php if($i != 0){?> &ndash; <a href="rename.php?up=<?=htmlentities(urlencode($planet))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i != count($planets)-1){?> &ndash; <a href="rename.php?down=<?=htmlentities(urlencode($planet))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.session_id())?>" class="runter">[Runter]</a><?php }?></span></li>
+		<li><?=utf8_htmlentities($me->planetName())?> <span class="pos">(<?=utf8_htmlentities($me->getPosString())?>)</span><span class="aktionen"><?php if($i != 0){?> &ndash; <a href="rename.php?up=<?=htmlentities(urlencode($planet))?>&amp;<?=htmlentities(urlencode(session_name()).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i != count($planets)-1){?> &ndash; <a href="rename.php?down=<?=htmlentities(urlencode($planet))?>&amp;<?=htmlentities(urlencode(session_name()).'='.session_id())?>" class="runter">[Runter]</a><?php }?></span></li>
 <?php
 		}
 		$me->setActivePlanet($active_planet);

@@ -5,8 +5,8 @@
 		die('No access.');
 
 	$news_array = array();
-	if(is_file(DB_NEWS) && filesize(DB_NEWS) > 0 && is_readable(DB_NEWS))
-		$news_array = array_values(unserialize(gzuncompress(file_get_contents(DB_NEWS))));
+	if(is_file(global_setting("DB_NEWS")) && filesize(global_setting("DB_NEWS")) > 0 && is_readable(global_setting("DB_NEWS")))
+		$news_array = array_values(unserialize(gzuncompress(file_get_contents(global_setting("DB_NEWS")))));
 
 	if(isset($_POST['news']))
 	{
@@ -36,7 +36,7 @@
 			$news_array[$i]['text_parsed'] = parse_html($news_array[$i]['text']);
 		}
 		$news_array = array_values($news_array);
-		$fh = fopen(DB_NEWS, 'w');
+		$fh = fopen(global_setting("DB_NEWS"), 'w');
 		if($fh)
 		{
 			flock($fh, LOCK_EX);

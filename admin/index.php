@@ -12,7 +12,7 @@
 
 		protocol("1", $_SESSION['username']);
 
-		$url = 'https://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php?'.urlencode(SESSION_COOKIE).'='.urlencode(session_id());
+		$url = 'https://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php?'.urlencode(session_name()).'='.urlencode(session_id());
 		header('Location: '.$url, true, 303);
 		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 	}
@@ -62,10 +62,10 @@
 
 	if($admin_array['permissions'][7] && isset($_POST['noob']))
 	{
-		if($_POST['noob'] && !file_exists(DB_NONOOBS))
-			touch(DB_NONOOBS) && protocol("7.1");
-		elseif(!$_POST['noob'] && file_exists(DB_NONOOBS))
-			unlink(DB_NONOOBS) && protocol("7.2");
+		if($_POST['noob'] && !file_exists(global_setting("DB_NONOOBS")))
+			touch(global_setting("DB_NONOOBS")) && protocol("7.1");
+		elseif(!$_POST['noob'] && file_exists(global_setting("DB_NONOOBS")))
+			unlink(global_setting("DB_NONOOBS")) && protocol("7.2");
 	}
 
 	if($admin_array['permissions'][9] && isset($_POST['message_text']) && trim($_POST['message_text']) != '')
@@ -86,7 +86,7 @@
 			{
 				# An alle Benutzer versenden
 
-				$dh = opendir(DB_PLAYERS);
+				$dh = opendir(global_setting("DB_PLAYERS"));
 				while(($uname = readdir($dh)) !== false)
 					$message->addUser(urldecode($uname), 6);
 				closedir($dh);
@@ -134,14 +134,14 @@
 
 	if($admin_array['permissions'][13] && isset($_POST['lock']))
 	{
-		if($_POST['lock'] && !file_exists(LOCK_FILE))
+		if($_POST['lock'] && !file_exists(global_setting("LOCK_FILE")))
 		{
 			# Bei allen Benutzern den Eventhandler ausfuehren
 
-			$dh = opendir(DB_PLAYERS);
+			$dh = opendir(global_setting("DB_PLAYERS"));
 			while(($player = readdir($dh)) !== false)
 			{
-				if(!is_file(DB_PLAYERS.'/'.$player) || !is_readable(DB_PLAYERS.'/'.$player))
+				if(!is_file(global_setting("DB_PLAYERS").'/'.$player) || !is_readable(global_setting("DB_PLAYERS").'/'.$player))
 					continue;
 				$this_user = Classes::User(urldecode($player));
 				$this_user->eventhandler(0, 1,1,1,1,1);
@@ -149,16 +149,16 @@
 			}
 			closedir($dh);
 
-			touch(LOCK_FILE) && protocol("13.1");
+			touch(global_setting("LOCK_FILE")) && protocol("13.1");
 		}
-		elseif(!$_POST['lock'] && file_exists(LOCK_FILE))
+		elseif(!$_POST['lock'] && file_exists(global_setting("LOCK_FILE")))
 		{
 			# Bei allen Benutzern den Eventhandler ausfuehren
 
-			$dh = opendir(DB_PLAYERS);
+			$dh = opendir(global_setting("DB_PLAYERS"));
 			while(($player = readdir($dh)) !== false)
 			{
-				if(!is_file(DB_PLAYERS.'/'.$player) || !is_readable(DB_PLAYERS.'/'.$player))
+				if(!is_file(global_setting("DB_PLAYERS").'/'.$player) || !is_readable(global_setting("DB_PLAYERS").'/'.$player))
 					continue;
 				$this_user = Classes::User(urldecode($player));
 				$this_user->eventhandler(0, 1,1,1,1,1);
@@ -166,7 +166,7 @@
 			}
 			closedir($dh);
 
-			unlink(LOCK_FILE) && protocol("13.2");
+			unlink(global_setting("LOCK_FILE")) && protocol("13.2");
 		}
 	}
 
@@ -287,7 +287,7 @@
 <hr />
 <h2 id="action-3">Die Passwörter zweier Benutzer vergleichen</h2>
 <?php
-		if(isset($_POST['compare_1']) && isset($_POST['compare_2']) && is_file(DB_PLAYERS.'/'.urlencode($_POST['compare_1'])) && is_readable(DB_PLAYERS.'/'.urlencode($_POST['compare_1'])) && is_file(DB_PLAYERS.'/'.urlencode($_POST['compare_2'])) && is_readable(DB_PLAYERS.'/'.urlencode($_POST['compare_2'])))
+		if(isset($_POST['compare_1']) && isset($_POST['compare_2']) && is_file(global_setting("DB_PLAYERS").'/'.urlencode($_POST['compare_1'])) && is_readable(global_setting("DB_PLAYERS").'/'.urlencode($_POST['compare_1'])) && is_file(global_setting("DB_PLAYERS").'/'.urlencode($_POST['compare_2'])) && is_readable(global_setting("DB_PLAYERS").'/'.urlencode($_POST['compare_2'])))
 		{
 			$user_1 = Classes::User($_POST['compare_1']);
 			$user_2 = Classes::User($_POST['compare_2']);
@@ -374,7 +374,7 @@
 <hr />
 <h2 id="action-7">Anfängerschutz ein-/ausschalten</h2>
 <?php
-		if(file_exists(DB_NONOOBS))
+		if(file_exists(global_setting("DB_NONOOBS")))
 		{
 ?>
 <form action="index.php" method="post">
@@ -473,7 +473,7 @@
 
 	if($admin_array['permissions'][13])
 	{
-		if(file_exists(LOCK_FILE))
+		if(file_exists(global_setting("LOCK_FILE")))
 		{
 ?>
 <hr />

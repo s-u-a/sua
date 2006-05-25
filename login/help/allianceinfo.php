@@ -57,7 +57,7 @@
 				{
 ?>
 <ul class="allianz-bewerben">
-	<li><a href="../allianz.php?action=apply&amp;for=<?=htmlentities(urlencode($alliance->getName()))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Bei dieser Allianz bewerben</a></li>
+	<li><a href="../allianz.php?action=apply&amp;for=<?=htmlentities(urlencode($alliance->getName()))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>">Bei dieser Allianz bewerben</a></li>
 </ul>
 <?php
 				}

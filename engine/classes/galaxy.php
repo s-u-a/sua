@@ -11,7 +11,7 @@
 
 		function __construct($galaxy, $write=true)
 		{
-			$this->filename = DB_UNIVERSE.'/'.$galaxy;
+			$this->filename = global_setting("DB_UNIVERSE").'/'.$galaxy;
 			$this->galaxy = $galaxy;
 			$this->readonly = !$write;
 			if(is_file($this->filename) && is_readable($this->filename))
@@ -354,7 +354,7 @@
 
 	function getGalaxiesCount()
 	{
-		for($i=0; is_file(DB_UNIVERSE.'/'.($i+1)) && is_readable(DB_UNIVERSE.'/'.($i+1)); $i++);
+		for($i=0; is_file(global_setting("DB_UNIVERSE").'/'.($i+1)) && is_readable(global_setting("DB_UNIVERSE").'/'.($i+1)); $i++);
 		return $i;
 	}
 

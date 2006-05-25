@@ -4,8 +4,8 @@
 	session_start();
 
 	$_SESSION = array();
-	if(isset($_COOKIE[SESSION_COOKIE]))
-		setcookie(SESSION_COOKIE, '');
+	if(isset($_COOKIE[session_name()]))
+		setcookie(session_name(), '');
 	session_destroy();
 
 	$url = explode('/', $_SERVER['PHP_SELF']);

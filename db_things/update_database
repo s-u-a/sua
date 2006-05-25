@@ -15,16 +15,16 @@
 	else
 		define_globals($_SERVER['argv'][1]);
 
-	if(is_file(DB_DIR.'/.version'))
+	if(is_file(global_setting("DB_DIR").'/.version'))
 	{
-		if(!is_readable(DB_DIR.'/.version'))
+		if(!is_readable(global_setting("DB_DIR").'/.version'))
 		{
-			fputs(STDERR, "Could not read ".DB_DIR."/.version.\n");
+			fputs(STDERR, "Could not read ".global_setting("DB_DIR")."/.version.\n");
 			exit(1);
 		}
-		$current_version = trim(file_get_contents(DB_DIR.'/.version'));
+		$current_version = trim(file_get_contents(global_setting("DB_DIR").'/.version'));
 	}
-	elseif(is_dir(DB_DIR.'/fleets')) $current_version = '2';
+	elseif(is_dir(global_setting("DB_DIR").'/fleets')) $current_version = '2';
 	else $current_version = '1';
 
 	fputs(STDERR, "Current database version seems to be ".$current_version.".\n");
@@ -86,35 +86,35 @@
 			# GZip-Dateien auf BZip2-Dateien umstellen
 			$fnames = array();
 
-			$dh = opendir(DB_PLAYERS);
+			$dh = opendir(global_setting("DB_PLAYERS"));
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname == '.' || $fname == '..') continue;
-				$fnames[] = DB_PLAYERS.'/'.$fname;
+				$fnames[] = global_setting("DB_PLAYERS").'/'.$fname;
 			}
 			closedir($dh);
 
-			$dh = opendir(DB_ALLIANCES);
+			$dh = opendir(global_setting("DB_ALLIANCES"));
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname == '.' || $fname == '..') continue;
-				$fnames[] = DB_ALLIANCES.'/'.$fname;
+				$fnames[] = global_setting("DB_ALLIANCES").'/'.$fname;
 			}
 			closedir($dh);
 
-			$dh = opendir(DB_MESSAGES);
+			$dh = opendir(global_setting("DB_MESSAGES"));
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname == '.' || $fname == '..') continue;
-				$fnames[] = DB_MESSAGES.'/'.$fname;
+				$fnames[] = global_setting("DB_MESSAGES").'/'.$fname;
 			}
 			closedir($dh);
 
-			$dh = opendir(DB_MESSAGES_PUBLIC);
+			$dh = opendir(global_setting("DB_MESSAGES_PUBLIC"));
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname == '.' || $fname == '..') continue;
-				$fnames[] = DB_MESSAGES_PUBLIC.'/'.$fname;
+				$fnames[] = global_setting("DB_MESSAGES_PUBLIC").'/'.$fname;
 			}
 			closedir($dh);
 
@@ -132,7 +132,7 @@
 			}
 
 			# fleets-Verzeichnis anlegen
-			if(!file_exists(DB_FLEETS)) mkdir(DB_FLEETS, 0777);
+			if(!file_exists(global_setting("DB_FLEETS"))) mkdir(global_setting("DB_FLEETS"), 0777);
 
 
 		#######################
@@ -141,8 +141,8 @@
 
 		case 2:
 			# events-Datei auf SQLite umstellen
-			$events_old = DB_EVENTS.'.bkp.'.time();
-			if(is_file(DB_EVENTS) && rename(DB_EVENTS, $events_old))
+			$events_old = global_setting("DB_EVENTS").'.bkp.'.time();
+			if(is_file(global_setting("DB_EVENTS")) && rename(global_setting("DB_EVENTS"), $events_old))
 			{
 				$events_new = Classes::EventFile();
 				$fh = fopen($events_old, 'r');
@@ -161,9 +161,9 @@
 
 		case 3:
 			# Highscores-Dateien auf SQLite umstellen
-			$hs_old1 = DB_DIR.'/highscores';
-			$hs_old2 = DB_DIR.'/highscores_alliances';
-			$hs_old3 = DB_DIR.'/highscores_alliances2';
+			$hs_old1 = global_setting("DB_DIR").'/highscores';
+			$hs_old2 = global_setting("DB_DIR").'/highscores_alliances';
+			$hs_old3 = global_setting("DB_DIR").'/highscores_alliances2';
 			$hs_suffix = '.bkp.'.time();
 			if((!is_file($hs_old1) || rename($hs_old1.$hs_suffix)) && (!is_file($hs_old2) || rename($hs_old2, $hs_old2.$hs_suffix)) && (!is_file($hs_old3) || rename($hs_old3, $hs_old3.$hs_suffix)))
 			{
@@ -190,23 +190,23 @@
 
 		case 4:
 			# strtolower auf Users und Alliances
-			$dh = opendir(DB_PLAYERS);
+			$dh = opendir(global_setting("DB_PLAYERS"));
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname == '.' || $fname == '..') continue;
-				$old_fname = DB_PLAYERS.'/'.$fname;
-				$new_fname = DB_PLAYERS.'/'.strtolower($fname);
+				$old_fname = global_setting("DB_PLAYERS").'/'.$fname;
+				$new_fname = global_setting("DB_PLAYERS").'/'.strtolower($fname);
 				if($old_fname == $new_fname) continue;
 				if(file_exists($new_fname)) fputs(STDERR, "Skipped ".$old_fname.", ".$new_fname." already exists. Please fix this manually.\n");
 				else rename($old_fname, $new_fname);
 			}
 			closedir($dh);
-			$dh = opendir(DB_ALLIANCES);
+			$dh = opendir(global_setting("DB_ALLIANCES"));
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname == '.' || $fname == '..') continue;
-				$old_fname = DB_ALLIANCES.'/'.$fname;
-				$new_fname = DB_ALLIANCES.'/'.strtolower($fname);
+				$old_fname = global_setting("DB_ALLIANCES").'/'.$fname;
+				$new_fname = global_setting("DB_ALLIANCES").'/'.strtolower($fname);
 				if($old_fname == $new_fname) continue;
 				if(file_exists($new_fname)) fputs(STDERR, "Skipped ".$old_fname.", ".$new_fname." already exists. Please fix this manually.\n");
 				else rename($old_fname, $new_fname);
@@ -215,8 +215,8 @@
 	}
 
 	fputs(STDERR, "Database version is now ".$newest_version.".\n");
-	$fh = fopen(DB_DIR.'/.version', 'w');
-	if(!$fh) fputs(STDERR, "Please put ".$newest_version." into ".DB_DIR."/.version manually.\n");
+	$fh = fopen(global_setting("DB_DIR").'/.version', 'w');
+	if(!$fh) fputs(STDERR, "Please put ".$newest_version." into ".global_setting("DB_DIR")."/.version manually.\n");
 	else
 	{
 		fwrite($fh, $newest_version);

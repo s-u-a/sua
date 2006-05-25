@@ -4,7 +4,7 @@
 	$planets = $me->getPlanetsList();
 	$active_planet = $me->getActivePlanet();
 	$act = array_search($active_planet, $planets);
-	
+
 	# Naechsten nicht bauenden Planeten herausfinden
 	$i = $act+1;
 	$fastbuild_next = false;
@@ -46,7 +46,7 @@
 
 		$i--;
 	}
-	
+
 	$me->setActivePlanet($active_planet);
 
 	if(isset($_GET['ausbau']))
@@ -67,7 +67,7 @@
 			# Fastbuild
 
 			$_SESSION['last_click_ignore'] = true;
-			$url = PROTOCOL.'://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?planet='.urlencode($fastbuild_next).'&'.SESSION_COOKIE.'='.urlencode(session_id());
+			$url = global_setting("PROTOCOL").'://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?planet='.urlencode($fastbuild_next).'&'.session_name().'='.urlencode(session_id());
 			header('Location: '.$url, true, 303);
 			die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 		}
@@ -96,14 +96,14 @@
 		{
 			$me->setActivePlanet($fastbuild_prev);
 ?>
-	<li class="c-voriger"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_prev))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($me->planetName())?>&ldquo; (<?=utf8_htmlentities($me->getPosString())?>) [U]" tabindex="1" accesskey="u" rel="prev">&larr;</a></li>
+	<li class="c-voriger"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_prev))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($me->planetName())?>&ldquo; (<?=utf8_htmlentities($me->getPosString())?>) [U]" tabindex="1" accesskey="u" rel="prev">&larr;</a></li>
 <?php
 		}
 		if($fastbuild_next !== false)
 		{
 			$me->setActivePlanet($fastbuild_next);
 ?>
-	<li class="c-naechster"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_next))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($me->planetName())?>&ldquo; (<?=utf8_htmlentities($me->getPosString())?>) [Q]" tabindex="2" accesskey="q" rel="next">&rarr;</a></li>
+	<li class="c-naechster"><a href="gebaeude.php?planet=<?=htmlentities(urlencode($fastbuild_next))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=utf8_htmlentities($me->planetName())?>&ldquo; (<?=utf8_htmlentities($me->getPosString())?>) [Q]" tabindex="2" accesskey="q" rel="next">&rarr;</a></li>
 <?php
 		}
 		$me->setActivePlanet($active_planet);
@@ -118,12 +118,12 @@
 	{
 		$geb = $me->getItemInfo($id, 'gebaeude');
 		$building = false;
-		
+
 		if(!$geb['deps-okay']) # Abhaengigkeiten nicht erfuellt
 			continue;
 ?>
 <div class="item gebaeude" id="item-<?=htmlentities($id)?>">
-	<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=ths($geb['level'])?>)</span></h3>
+	<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($geb['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=ths($geb['level'])?>)</span></h3>
 <?php
 		if($me->permissionToAct() && ($geb['buildable'] || $geb['debuildable']) && !($building = $me->checkBuildingThing('gebaeude')) && ($id != 'B8' || !$me->checkBuildingThing('forschung')) && ($id != 'B9' || !$me->checkBuildingThing('roboter')) && ($id != 'B10' || (!$me->checkBuildingThing('schiffe') && !$me->checkBuildingThing('verteidigung'))))
 		{
@@ -134,7 +134,7 @@
 			{
 				$enough_ress = $me->checkRess($geb['ress']);
 ?>
-		<li class="item-ausbau<?=$enough_ress ? '' : ' no-ress'?>"><?=$enough_ress ? '<a href="gebaeude.php?ausbau='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Ausbau auf Stufe&nbsp;<?=ths($geb['level']+1)?><?=$enough_ress ? '</a>' : ''?></li>
+		<li class="item-ausbau<?=$enough_ress ? '' : ' no-ress'?>"><?=$enough_ress ? '<a href="gebaeude.php?ausbau='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(session_name()).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Ausbau auf Stufe&nbsp;<?=ths($geb['level']+1)?><?=$enough_ress ? '</a>' : ''?></li>
 <?php
 			}
 			if($geb['debuildable'])
@@ -146,7 +146,7 @@
 				$ress[3] /= 2;
 				$enough_ress = $me->checkRess($ress);
 ?>
-		<li class="item-rueckbau<?=$enough_ress ? '' : ' no-ress'?>"><?=$enough_ress ? '<a href="gebaeude.php?abbau='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">' : ''?>Rückbau auf Stufe&nbsp;<?=ths($geb['level']-1)?><?=$enough_ress ? '</a>' : ''?></li>
+		<li class="item-rueckbau<?=$enough_ress ? '' : ' no-ress'?>"><?=$enough_ress ? '<a href="gebaeude.php?abbau='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(session_name()).'='.urlencode(session_id())).'">' : ''?>Rückbau auf Stufe&nbsp;<?=ths($geb['level']-1)?><?=$enough_ress ? '</a>' : ''?></li>
 <?php
 			}
 ?>
@@ -156,7 +156,7 @@
 		elseif($building && $building[0] == $id)
 		{
 ?>
-	<div class="restbauzeit" id="restbauzeit-<?=htmlentities($building[0])?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building[1])?> (Serverzeit), <a href="gebaeude.php?cancel=<?=htmlentities(urlencode($building[0]))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a></div>
+	<div class="restbauzeit" id="restbauzeit-<?=htmlentities($building[0])?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building[1])?> (Serverzeit), <a href="gebaeude.php?cancel=<?=htmlentities(urlencode($building[0]))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a></div>
 	<script type="text/javascript">
 		init_countdown('<?=$building[0]?>', <?=$building[1]?>);
 	</script>

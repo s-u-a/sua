@@ -18,7 +18,7 @@
 <p>Sollten Sie eine Frage oder Anmerkung bezüglich des Spiels haben, haben Sie folgende Möglichkeiten:</p>
 <ul>
 	<li>Setzen Sie sich <a href="mailto:webmaster@s-u-a.net">per <span xml:lang="en">E-Mail</span></a> mit Candid Dauth in Verbindung.</li>
-	<li>Stellen Sie ihre Frage öffentlich im <a href="<?=USE_PROTOCOL?>://board.s-u-a.net/index.php" xml:lang="en">Board</a>.</li>
+	<li>Stellen Sie ihre Frage öffentlich im <a href="<?=global_setting("USE_PROTOCOL")?>://board.s-u-a.net/index.php" xml:lang="en">Board</a>.</li>
 	<li>Fragen Sie im Entwickler-Kanal des <a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/chat.php">Chats</a> nach.</li>
 	<li>Melden Sie Fehler im <a href="https://bugs.s-u-a.net/" xml:lang="en">Bugtracker</a>.</li>
 </ul>

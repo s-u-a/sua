@@ -9,7 +9,7 @@
 			if(!$this->status)
 			{
 				# Datenbankverbindung herstellen
-				$this->connection = sqlite_open(EVENT_FILE, 0666);
+				$this->connection = sqlite_open(global_setting("EVENT_FILE"), 0666);
 				if($this->connection)
 				{
 					$table_check = sqlite_query($this->connection, "SELECT name FROM sqlite_master WHERE type='table' AND name='events'");

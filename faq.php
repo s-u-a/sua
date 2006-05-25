@@ -4,7 +4,7 @@
 	gui::html_head();
 ?>
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; <abbr title="Frequently Asked Questions" xml:lang="en"><span xml:lang="de">FAQ</span></abbr></h2>
-<p>Hier eine Liste häufig gestellter Fragen. Sollte die Frage, die Sie suchen, nicht dabei sein, schreiben Sie einfach ins <a href="<?=USE_PROTOCOL?>://board.s-u-a.net/index.php" xml:lang="en">Board</a>.</p>
+<p>Hier eine Liste häufig gestellter Fragen. Sollte die Frage, die Sie suchen, nicht dabei sein, schreiben Sie einfach ins <a href="<?=global_setting("USE_PROTOCOL")?>://board.s-u-a.net/index.php" xml:lang="en">Board</a>.</p>
 <ol id="question-list">
 	<li><a href="#requirements">Was brauche ich, um <abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> zu spielen?</a></li>
 	<li><a href="#register">Wie kann ich mich anmelden?</a></li>
@@ -73,11 +73,11 @@
 
 <div class="faq" id="planets">
 	<h3>Kann man mehrere Planeten haben?</h3>
-	<p>Ja, selbstverständlich. Derzeit können Sie maximal <?=htmlentities(MAX_PLANETS)?>&nbsp;Planeten haben.</p>
+	<p>Ja, selbstverständlich. Derzeit können Sie maximal <?=htmlentities(global_setting("MAX_PLANETS"))?>&nbsp;Planeten haben.</p>
 	<p>Wenn Sie mit der Spionagesonde einen leeren Planeten ausspionieren, können Sie nachsehen, wieviele Felder dieser hat. Die Felderzahl variiert dabei unabhängig von der Position des Planeten, die Felderzahl beträgt 100&ndash;500&nbsp;Felder. Haben Sie einen Planeten gefunden, den Sie besiedeln möchten, können Sie einem Besiedelungsschiff den Auftrag dazu erteilen.</p>
 	<p>Optional können Sie dem Besiedelungsschiff zusätzliche Flotte mitschicken, diese wird nach der Besiedelung rückkehren. (Anders als das Besiedelungsschiff, dieses wird bei der Besiedelung abgebaut, um ein Startkapital auf dem Planeten zur Verfügung zu stellen.) Auf diese Weise können Sie auf dem neuen Planeten sofort Rohstoffe und Roboter durch die Transportkapazität der Flotte bereitstellen.</p>
 	<p>Überlegen Sie sich gut, wo Sie Ihre Planeten platzieren. Wenn Sie vorhaben, auf bestimmten Kolonien nur bestimmte Minen auszubauen, ist es möglicherweise sinnvoll für Sie, Ihre Planeten nah beieinander zu halten, um schnell Rohstoffe zwischen den Kolonien hin- und herzuschicken. Wenn Sie sich mehr auf den Handel spezialisieren möchten, ist es vielleicht geschickt, in jeder Galaxie mindestens einen Planeten zu besitzen, damit der Transport vom und zum Kunden nicht so lange dauert.</p>
-	<p>Einige Spieler bevorzugen es, ein oder zwei Kolonien des <?=htmlentities(MAX_PLANETS)?>-Planeten-<span xml:lang="en">Limit</span>s offenzulassen, um später sogenannte &bdquo;<span xml:lang="en">Raid</span>kolonien&ldquo; besetzen zu können &ndash; solche Kolonien werden temporär besiedelt und auf Tritiumproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann.</p>
+	<p>Einige Spieler bevorzugen es, ein oder zwei Kolonien des <?=htmlentities(global_setting("MAX_PLANETS"))?>-Planeten-<span xml:lang="en">Limit</span>s offenzulassen, um später sogenannte &bdquo;<span xml:lang="en">Raid</span>kolonien&ldquo; besetzen zu können &ndash; solche Kolonien werden temporär besiedelt und auf Tritiumproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann.</p>
 </div>
 
 <div class="faq" id="times">

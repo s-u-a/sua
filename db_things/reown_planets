@@ -11,7 +11,7 @@
 	else
 		define_globals($_SERVER['argv'][1]);
 
-	$dh = opendir(DB_PLAYERS);
+	$dh = opendir(global_setting("DB_PLAYERS"));
 	while(($fname = readdir($dh)) !== false)
 	{
 		if($fname == '.' || $fname == '..') continue;

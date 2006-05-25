@@ -62,23 +62,23 @@
 		function __construct()
 		{
 			$refresh = false;
-			if(!file_exists(DB_ITEM_DB)) $refresh = true;
+			if(!file_exists(global_setting("DB_ITEM_DB"))) $refresh = true;
 			else
 			{
 				$mtimes = array();
-				if(is_file(DB_ITEMS.'/gebaeude')) $mtimes[] = filemtime(DB_ITEMS.'/gebaeude');
-				if(is_file(DB_ITEMS.'/forschung')) $mtimes[] = filemtime(DB_ITEMS.'/forschung');
-				if(is_file(DB_ITEMS.'/roboter')) $mtimes[] = filemtime(DB_ITEMS.'/roboter');
-				if(is_file(DB_ITEMS.'/schiffe')) $mtimes[] = filemtime(DB_ITEMS.'/schiffe');
-				if(is_file(DB_ITEMS.'/verteidigung')) $mtimes[] = filemtime(DB_ITEMS.'/verteidigung');
-				if(count($mtimes) > 0 && max($mtimes) > filemtime(DB_ITEM_DB))
+				if(is_file(global_setting("DB_ITEMS").'/gebaeude')) $mtimes[] = filemtime(global_setting("DB_ITEMS").'/gebaeude');
+				if(is_file(global_setting("DB_ITEMS").'/forschung')) $mtimes[] = filemtime(global_setting("DB_ITEMS").'/forschung');
+				if(is_file(global_setting("DB_ITEMS").'/roboter')) $mtimes[] = filemtime(global_setting("DB_ITEMS").'/roboter');
+				if(is_file(global_setting("DB_ITEMS").'/schiffe')) $mtimes[] = filemtime(global_setting("DB_ITEMS").'/schiffe');
+				if(is_file(global_setting("DB_ITEMS").'/verteidigung')) $mtimes[] = filemtime(global_setting("DB_ITEMS").'/verteidigung');
+				if(count($mtimes) > 0 && max($mtimes) > filemtime(global_setting("DB_ITEM_DB")))
 					$refresh = true;
 			}
 
 			if($refresh)
 				$this->refreshItemDatabase();
 
-			$this->elements = unserialize(file_get_contents(DB_ITEM_DB));
+			$this->elements = unserialize(file_get_contents(global_setting("DB_ITEM_DB")));
 			$this->elements['ids'] = array();
 			foreach($this->elements as $type=>$elements)
 			{
@@ -127,9 +127,9 @@
 		function refreshItemDatabase()
 		{
 			$items = array('gebaeude' => array(), 'forschung' => array(), 'roboter' => array(), 'schiffe' => array(), 'verteidigung' => array(), 'ids' => array());
-			if(is_file(DB_ITEMS.'/gebaeude') && is_readable(DB_ITEMS.'/gebaeude'))
+			if(is_file(global_setting("DB_ITEMS").'/gebaeude') && is_readable(global_setting("DB_ITEMS").'/gebaeude'))
 			{
-				$fh = fopen(DB_ITEMS.'/gebaeude', 'r');
+				$fh = fopen(global_setting("DB_ITEMS").'/gebaeude', 'r');
 				fancy_flock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
@@ -151,9 +151,9 @@
 				fclose($fh);
 			}
 
-			if(is_file(DB_ITEMS.'/forschung') && is_readable(DB_ITEMS.'/forschung'))
+			if(is_file(global_setting("DB_ITEMS").'/forschung') && is_readable(global_setting("DB_ITEMS").'/forschung'))
 			{
-				$fh = fopen(DB_ITEMS.'/forschung', 'r');
+				$fh = fopen(global_setting("DB_ITEMS").'/forschung', 'r');
 				fancy_flock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
@@ -173,9 +173,9 @@
 				fclose($fh);
 			}
 
-			if(is_file(DB_ITEMS.'/roboter') && is_readable(DB_ITEMS.'/roboter'))
+			if(is_file(global_setting("DB_ITEMS").'/roboter') && is_readable(global_setting("DB_ITEMS").'/roboter'))
 			{
-				$fh = fopen(DB_ITEMS.'/roboter', 'r');
+				$fh = fopen(global_setting("DB_ITEMS").'/roboter', 'r');
 				fancy_flock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
@@ -195,9 +195,9 @@
 				fclose($fh);
 			}
 
-			if(is_file(DB_ITEMS.'/schiffe') && is_readable(DB_ITEMS.'/schiffe'))
+			if(is_file(global_setting("DB_ITEMS").'/schiffe') && is_readable(global_setting("DB_ITEMS").'/schiffe'))
 			{
-				$fh = fopen(DB_ITEMS.'/schiffe', 'r');
+				$fh = fopen(global_setting("DB_ITEMS").'/schiffe', 'r');
 				fancy_flock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
@@ -221,9 +221,9 @@
 				}
 			}
 
-			if(is_file(DB_ITEMS.'/verteidigung') && is_readable(DB_ITEMS.'/verteidigung'))
+			if(is_file(global_setting("DB_ITEMS").'/verteidigung') && is_readable(global_setting("DB_ITEMS").'/verteidigung'))
 			{
-				$fh = fopen(DB_ITEMS.'/verteidigung', 'r');
+				$fh = fopen(global_setting("DB_ITEMS").'/verteidigung', 'r');
 				fancy_flock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
@@ -245,7 +245,7 @@
 				fclose($fh);
 			}
 
-			$fh = fopen(DB_ITEM_DB, 'a+');
+			$fh = fopen(global_setting("DB_ITEM_DB"), 'a+');
 			if(!$fh) return false;
 			if(!fancy_flock($fh, LOCK_EX)) return false;
 

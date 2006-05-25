@@ -110,7 +110,7 @@
 <?php
 	}
 ?>
-<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/login/einstellungen.php?'.urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular">
+<form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/einstellungen.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular">
 	<fieldset class="verschiedene-einstellungen">
 		<legend>Verschiedene Einstellungen<input type="hidden" name="change-checkboxes" value="1" /></legend>
 		<dl>

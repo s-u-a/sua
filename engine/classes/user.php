@@ -1,11 +1,16 @@
 <?php
 	class User extends Dataset
 	{
-		protected $save_dir = DB_PLAYERS;
 		protected $active_planet = false;
 		private $datatype = 'user';
 		protected $recalc_highscores = array(false,false,false,false,false);
 		protected $last_eventhandler_run = array();
+
+		function __construct($name=false, $write=true)
+		{
+			$this->save_dir = global_setting("DB_PLAYERS");
+			parent::__construct($name, $write);
+		}
 
 		function create()
 		{
@@ -34,7 +39,7 @@
 
 		function userExists($user)
 		{
-			$filename = DB_PLAYERS.'/'.strtolower(urlencode($user));
+			$filename = global_setting("DB_PLAYERS").'/'.strtolower(urlencode($user));
 			return (is_file($filename) && is_readable($filename));
 		}
 
@@ -1407,7 +1412,7 @@
 
 		function gameLocked()
 		{
-			return file_exists(LOCK_FILE);
+			return file_exists(global_setting("LOCK_FILE"));
 		}
 
 		function userLocked()
@@ -2238,7 +2243,7 @@
 		{
 			if(!$this->status) return false;
 
-			if(MAX_PLANETS > 0 && count($this->raw['planets']) < MAX_PLANETS) return true;
+			if(global_setting("MAX_PLANETS") > 0 && count($this->raw['planets']) < global_setting("MAX_PLANETS")) return true;
 			else return false;
 		}
 
@@ -2787,7 +2792,7 @@
 
 			# Nachrichtenabsender aendern
 			Classes::resetInstances('Message');
-			$dh = opendir(DB_MESSAGES);
+			$dh = opendir(global_setting("DB_MESSAGES"));
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname == '.' || $fname == '..') continue;

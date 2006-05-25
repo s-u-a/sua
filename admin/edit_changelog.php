@@ -39,7 +39,7 @@
 	if($version != $old_version)
 	{
 		$version_string = implode('.', $version);
-		$fh = fopen(GDB_DIR.'/version', 'w');
+		$fh = fopen(global_setting("DB_VERSION"), 'w');
 		if($fh)
 		{
 			flock($fh, LOCK_EX);
@@ -54,15 +54,15 @@
 	if(isset($_GET['delete']))
 	{
 		$old_changelog = '';
-		if(is_file(GDB_DIR.'/changelog') && is_readable(GDB_DIR.'/changelog'))
-			$old_changelog = trim(file_get_contents(GDB_DIR.'/changelog'));
+		if(is_file(global_setting("DB_CHANGELOG")) && is_readable(global_setting("DB_CHANGELOG")))
+			$old_changelog = trim(file_get_contents(global_setting("DB_CHANGELOG")));
 		if(strlen($old_changelog) <= 0)
 			$old_changelog = array();
 		else
 			$old_changelog = preg_split("/\r\n|\r|\n/", $old_changelog);
 		if(isset($old_changelog[count($old_changelog)-$_GET['delete']]))
 		{
-			$fh = fopen(GDB_DIR.'/changelog', 'w');
+			$fh = fopen(global_setting("DB_CHANGELOG"), 'w');
 			if($fh)
 			{
 				flock($fh, LOCK_EX);
@@ -82,9 +82,9 @@
 	if(isset($_POST['add']) && strlen(trim($_POST['add'])) > 0)
 	{
 		$old_changelog = '';
-		if(is_file(GDB_DIR.'/changelog') && is_readable(GDB_DIR.'/changelog'))
-			$old_changelog = trim(file_get_contents(GDB_DIR.'/changelog'));
-		$fh = fopen(GDB_DIR.'/changelog', 'w');
+		if(is_file(global_setting("DB_CHANGELOG")) && is_readable(global_setting("DB_CHANGELOG")))
+			$old_changelog = trim(file_get_contents(global_setting("DB_CHANGELOG")));
+		$fh = fopen(global_setting("DB_CHANGELOG"), 'w');
 		if($fh)
 		{
 			flock($fh, LOCK_EX);
@@ -112,8 +112,8 @@
 		<li><input type="text" name="add" value="" /> <button type="submit">Hinzufügen</button></li>
 <?php
 	$changelog = '';
-	if(is_file(GDB_DIR.'/changelog') && is_readable(GDB_DIR.'/changelog'))
-		$changelog = trim(file_get_contents(GDB_DIR.'/changelog'));
+	if(is_file(global_setting("DB_CHANGELOG")) && is_readable(global_setting("DB_CHANGELOG")))
+		$changelog = trim(file_get_contents(global_setting("DB_CHANGELOG")));
 	if(strlen($changelog) <= 0)
 		$changelog = array();
 	else

@@ -15,8 +15,8 @@
 	}
 ?>
 <ul class="highscores-modi">
-	<li class="c-spieler<?=($mode=='users') ? ' active' :''?>"><a href="highscores.php?<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Spieler</a></li>
-	<li class="c-allianzen<?=($mode=='alliances') ? ' active' : ''?>"><a href="highscores.php?alliances=1&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>">Allianzen</a></li>
+	<li class="c-spieler<?=($mode=='users') ? ' active' :''?>"><a href="highscores.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>">Spieler</a></li>
+	<li class="c-allianzen<?=($mode=='alliances') ? ' active' : ''?>"><a href="highscores.php?alliances=1&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>">Allianzen</a></li>
 </ul>
 <?php
 	$highscores = Classes::Highscores();
@@ -39,7 +39,7 @@
 			$start_prev = $start-100;
 			if($start_prev < 1) $start_prev = 1;
 ?>
-	<li class="c-vorige"><a href="highscores.php?<?=htmlentities($mode_prefix)?>start=<?=htmlentities(urlencode($start_prev))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" rel="prev">&larr; <?=htmlentities($start_prev)?>&ndash;<?=htmlentities($start_prev+99)?></a></li>
+	<li class="c-vorige"><a href="highscores.php?<?=htmlentities($mode_prefix)?>start=<?=htmlentities(urlencode($start_prev))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" rel="prev">&larr; <?=htmlentities($start_prev)?>&ndash;<?=htmlentities($start_prev+99)?></a></li>
 <?php
 		}
 		if($start+100 <= $count)
@@ -48,7 +48,7 @@
 			$end_next = $start_next+99;
 			if($end_next > $count) $end_next = $count;
 ?>
-	<li class="c-naechste"><a href="highscores.php?<?=htmlentities($mode_prefix)?>start=<?=htmlentities(urlencode($start_next))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" rel="next"><?=htmlentities($start_next)?>&ndash;<?=htmlentities($end_next)?> &rarr;</a></li>
+	<li class="c-naechste"><a href="highscores.php?<?=htmlentities($mode_prefix)?>start=<?=htmlentities(urlencode($start_next))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" rel="next"><?=htmlentities($start_next)?>&ndash;<?=htmlentities($end_next)?> &rarr;</a></li>
 <?php
 		}
 ?>
@@ -78,8 +78,8 @@
 		<tr>
 			<th class="c-platz">Platz</th>
 			<th class="c-allianz">Allianz</th>
-			<th class="c-punkteschnitt"><?=($_GET['alliances']=='2') ? '<a href="highscores.php?alliances=1&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">Punkteschnitt</a>' : 'Punkteschnitt'?></th>
-			<th class="c-gesamtpunkte"><?=($_GET['alliances']=='2') ? 'Gesamtpunkte' : '<a href="highscores.php?alliances=2&amp;'.htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id())).'">Gesamtpunkte</a>'?></th>
+			<th class="c-punkteschnitt"><?=($_GET['alliances']=='2') ? '<a href="highscores.php?alliances=1&amp;'.htmlentities(urlencode(session_name()).'='.urlencode(session_id())).'">Punkteschnitt</a>' : 'Punkteschnitt'?></th>
+			<th class="c-gesamtpunkte"><?=($_GET['alliances']=='2') ? 'Gesamtpunkte' : '<a href="highscores.php?alliances=2&amp;'.htmlentities(urlencode(session_name()).'='.urlencode(session_id())).'">Gesamtpunkte</a>'?></th>
 			<th class="c-mitglieder">Mitglieder</th>
 		</tr>
 	</thead>
@@ -104,12 +104,12 @@
 ?>
 		<tr class="<?=$class?> allianz-<?=$alliance_class?>">
 			<th class="c-platz"><?=ths($start+$i)?></th>
-			<td class="c-spieler"><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($info['username']))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen" class="playername"><?=utf8_htmlentities($info['username'])?></a></td>
+			<td class="c-spieler"><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($info['username']))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen" class="playername"><?=utf8_htmlentities($info['username'])?></a></td>
 <?php
 			if($info['alliance'])
 			{
 ?>
-			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info['alliance']))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info['alliance'])?></a></td>
+			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info['alliance']))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info['alliance'])?></a></td>
 <?php
 			}
 			else
@@ -132,7 +132,7 @@
 ?>
 		<tr class="<?=$class?>">
 			<th class="c-platz"><?=ths($start+$i)?></th>
-			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info['tag']))?>&amp;<?=htmlentities(urlencode(SESSION_COOKIE).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info['tag'])?></a></td>
+			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlentities(urlencode($info['tag']))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu dieser Allianz anzeigen"><?=utf8_htmlentities($info['tag'])?></a></td>
 			<td class="c-punkteschnitt"><?=ths($info['scores_average'])?></td>
 			<td class="c-gesamtpunkte"><?=ths($info['scores_total'])?></td>
 			<td class="c-mitglieder"><?=ths($info['members_count'])?></td>

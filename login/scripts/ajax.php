@@ -1,12 +1,18 @@
 <?php
 	define('ignore_action', true);
 	define('ajax', true);
-	require('../scripts/include.php');
+	require_once('../../engine/include.php');
 
 	header('Content-type: text/xml;charset=UTF-8');
 	echo "<xmlresponse>\n";
 
 	if(!isset($_GET['action'])) $_GET['action'] = null;
+	else
+	{
+		$databases = get_databases();
+		if(!isset($_GET['database']) || !isset($databases[$_GET['database']])) $_GET['action'] = false;
+		else define_globals($databases[$_GET['database']][0]);
+	}
 
 	switch($_GET['action'])
 	{
@@ -15,20 +21,24 @@
 			if(isset($_GET['query']))
 				$query = strtolower(urlencode($_GET['query']));
 			$query_length = strlen($query);
-			if($query_length < LIST_MIN_CHARS) break;
+			if($query_length < global_setting("LIST_MIN_CHARS")) break;
 
-			$dh = opendir(DB_PLAYERS);
+			$results = array();
+			$dh = opendir(global_setting("DB_PLAYERS"));
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname == '.' || $fname == '..') continue;
 				$fname = $fname;
 
 				if(strlen($fname) >= $query_length && substr($fname, 0, $query_length) == $query)
-					echo "\t<result>".htmlspecialchars(urldecode($fname))."</result>\n";
+					$results[] = urldecode($fname);
 			}
 			closedir($dh);
 
 			natcasesort($results);
+
+			foreach($results as $result)
+				echo "\t<result>".htmlspecialchars(urldecode($result))."</result>\n";
 
 			break;
 

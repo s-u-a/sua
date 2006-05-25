@@ -19,7 +19,7 @@
 	if(!isset($_REQUEST['channel']) || !isset($_REQUEST['nickname']) || !isset($channels[$_REQUEST['channel']]))
 	{
 ?>
-<form action="<?=htmlentities(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/chat.php')?>" method="get" id="chat-form">
+<form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/chat.php')?>" method="get" id="chat-form">
 	<dl>
 		<dt class="c-kanal"><label for="i-kanal">Kanal</label></dt>
 		<dd class="c-kanal"><select name="channel" id="i-kanal">
@@ -54,7 +54,7 @@
 	{
 		if(input_el.checked)
 		{
-			open('<?=USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/chat.php'?>?channel='+encodeURIComponent(document.getElementById('i-kanal').value)+'&nickname='+encodeURIComponent(document.getElementById('i-spitzname').value)+"&popup=1", "_blank", "location=no,menubar=no,resizable=yes,scrollbars=yes,status=yes,toolbar=no");
+			open('<?=global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/chat.php'?>?channel='+encodeURIComponent(document.getElementById('i-kanal').value)+'&nickname='+encodeURIComponent(document.getElementById('i-spitzname').value)+"&popup=1", "_blank", "location=no,menubar=no,resizable=yes,scrollbars=yes,status=yes,toolbar=no");
 			return false;
 		}
 	}

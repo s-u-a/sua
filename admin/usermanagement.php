@@ -6,7 +6,7 @@
 
 	if(!isset($_GET['action']))
 	{
-		$url = PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/admin/index.php';
+		$url = global_setting("PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/admin/index.php';
 		header('Location: '.$url, true, 303);
 		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
 	}

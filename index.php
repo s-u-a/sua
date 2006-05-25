@@ -18,8 +18,8 @@
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Neuigkeiten</h2>
 <?php
 	$news_array = array();
-	if(is_file(DB_NEWS) && filesize(DB_NEWS) > 0 && is_readable(DB_NEWS))
-		$news_array = array_reverse(unserialize(gzuncompress(file_get_contents(DB_NEWS))));
+	if(is_file(global_setting("DB_NEWS")) && filesize(global_setting("DB_NEWS")) > 0 && is_readable(global_setting("DB_NEWS")))
+		$news_array = array_reverse(unserialize(gzuncompress(file_get_contents(global_setting("DB_NEWS")))));
 
 	foreach($news_array as $news)
 	{

@@ -29,7 +29,7 @@
 		"14.3" => "%s hat den Newseintrag mit dem Titel %s gelöscht."
 	);
 
-	if(PROTOCOL != 'https')
+	if(global_setting("PROTOCOL") != 'https')
 	{
 		$url = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		header('Location: '.$url, true, 307);
@@ -40,16 +40,16 @@
 
 	if((isset($_SESSION['ip']) && $_SESSION['ip'] != $_SERVER['REMOTE_ADDR']) || (isset($_GET['logout']) && $_GET['logout']) || (isset($_SESSION['last_admin_access']) && time()-$_SESSION['last_admin_access'] > 600))
 	{
-		if(isset($_COOKIE[SESSION_COOKIE]))
-			setcookie(SESSION_COOKIE, '', 0, h_root.'/admin/');
+		if(isset($_COOKIE[session_name()]))
+			setcookie(session_name(), '', 0, h_root.'/admin/');
 		unset($_SESSION);
 		$_SESSION = array();
 	}
 	if((isset($_GET['logout']) && $_GET['logout']) || (isset($_SESSION['last_admin_access']) && time()-$_SESSION['last_admin_access'] > 600))
 	{
 		session_destroy();
-		if(isset($_COOKIE[SESSION_COOKIE]))
-			setcookie(SESSION_COOKIE, '', 0, h_root.'/admin/');
+		if(isset($_COOKIE[session_name()]))
+			setcookie(session_name(), '', 0, h_root.'/admin/');
 	}
 
 	$databases = get_databases();
@@ -159,7 +159,7 @@
 
 	function protocol($type)
 	{
-		$fh = fopen(DB_ADMIN_LOGFILE, "a");
+		$fh = fopen(global_setting("DB_ADMIN_LOGFILE"), "a");
 		if(!$fh) return false;
 		flock($fh, LOCK_EX);
 		fwrite($fh, session_id()."\t".time()."\t".$_SESSION['admin_username']);
