@@ -1333,11 +1333,11 @@
 		else return 0;
 	}
 
-	function get_messenger_info($type=false)
+	function get_messenger_info($type=false, $force_reload=false)
 	{
 		global $messengers_parsed_file;
 
-		if(!isset($messenger_parsed_file))
+		if(!isset($messenger_parsed_file) || $force_reload)
 		{
 			if(!is_file(global_setting("DB_MESSENGERS")) || !is_readable(global_setting("DB_MESSENGERS"))) $messenger_parsed_file = false;
 			else $messenger_parsed_file = parse_ini_file(global_setting("DB_MESSENGERS"), true);

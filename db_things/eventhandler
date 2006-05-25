@@ -101,8 +101,8 @@ EOF
 			global $selected_database;
 
 			$prefix = date('Y-m-d, H:i:s')."\t";
-			if(isset($selected_database) && $selected_database)
-				$prefix .= $selected_database."\t";
+			#if(isset($selected_database) && $selected_database)
+			#	$prefix .= $selected_database."\t";
 			return $prefix;
 		}
 
@@ -195,10 +195,21 @@ EOF
 					break;
 				case SIGUSR1:
 					fputs($errlog, "SIGUSR1 (".SIGUSR1.")\n");
-					fputs($errlog, "Rescanning databases... ");
+
+					fputs($errlog, time_prefix()."Rescanning databases... ");
 					global $databases;
-					fputs($errlog, "Done\n");
 					$databases = get_databases();
+					fputs($errlog, "Done\n");
+
+					global $jabber,$jabber_messengers;
+					fputs($errlog, time_prefix()."Disconnecting Jabber and rescanning config... ");
+					$jabber->Disconnect();
+					$jabber_messengers = get_messenger_info(false, true);
+					fputs($errlog, "Done.\n");
+					fputs($errlog, time_prefix()."Reconnecting Jabber... ");
+					connect_jabber();
+					fputs($errlog, "Done.\n");
+
 					break;
 			}
 		}
