@@ -1,8 +1,7 @@
 #!/usr/bin/php
 <?php
-	define('DONT_EXIT', true);
-
 	chdir(dirname(__FILE__));
+	chdir('..');
 
 	$print_usage = false;
 	$error = false;
@@ -44,19 +43,8 @@
 					break;
 			}
 		}
-
-		if(!isset($options[1][0]))
-		{
-			if(!$print_usage) $error = true;
-		}
-		else $db_dir = $options[1][0];
 	}
-	else
-	{
-		fputs(STDERR, "Warning: PEAR package Console_Getopt does not exist. Switching to default options.\n\n");
-		if(isset($_SERVER['argv'][1])) $db_dir = $_SERVER['argv'][1];
-		else $error = true;
-	}
+	else fputs(STDERR, "Warning: PEAR package Console_Getopt does not exist. Switching to default options.\n\n");
 
 	if($print_usage || $error)
 	{
@@ -64,7 +52,7 @@
 		else $stream = STDOUT;
 
 		fputs($stream, <<<EOF
-Usage: {$_SERVER['argv'][0]} [Options] <Database directory>
+Usage: {$_SERVER['argv'][0]} [Options]
 Options:
   -h, --help:    Display this help and exit
   -d, --daemon:  Run in background
@@ -141,6 +129,13 @@ EOF
 			case SIGHUP:
 				fputs($errlog, "SIGHUP (".SIGHUP.")\n");
 				break;
+			case SIGUSR1:
+				fputs($errlog, "SIGUSR1 (".SIGUSR1.")\n");
+				fputs($errlog, "Rescanning databases... ");
+				global $databases;
+				fputs($errlog, "Done\n");
+				$databases = get_databases();
+				break;
 		}
 	}
 
@@ -148,6 +143,7 @@ EOF
 	{
 		pcntl_signal(SIGTERM, "sig_handler");
 		pcntl_signal(SIGINT, "sig_handler");
+		pcntl_signal(SIGUSR1, "sig_handler");
 		if($daemon)
 		{
 			pcntl_signal(SIGHUP, "sig_handler");
@@ -156,14 +152,25 @@ EOF
 		}
 	}
 
+	function check_termination()
+	{
+		global $errlog;
+
+		if(defined('terminate') && terminate)
+		{
+			fputs($errlog, time_prefix()."Terminated.\n");
+			exit(0);
+		}
+	}
+
 	$USE_OB = false;
-	require('../engine/include.php');
+	require('engine/include.php');
 
 	set_time_limit(0);
 
-	define_globals($db_dir);
+	$databases = get_databases();
 
-	if($daemon) $errlog = fopen(global_setting("DB_DIR").'/eventhandler.log', 'a');
+	if($daemon) $errlog = fopen(global_setting("GDB_DIR").'/eventhandler.log', 'a');
 	else $errlog = STDERR;
 
 	set_error_handler('error_handler', E_WARNING);
@@ -470,18 +477,35 @@ EOF
 
 	while(true)
 	{
-		$event_obj = Classes::EventFile();
-		while($process = $event_obj->removeNextFleet())
-			arrive($process['fleet']);
+		check_termination();
 
-		if(defined('terminate') && terminate)
+		foreach($databases as $selected_database=>$dbinfo)
 		{
-			fputs($errlog, time_prefix()."Terminated.\n");
-			exit(0);
+			if(!is_dir($dbinfo[0])) continue;
+
+			define_globals($dbinfo[0]);
+
+			$event_obj = Classes::EventFile();
+			while($process = $event_obj->removeNextFleet())
+			{
+				arrive($process['fleet']);
+				check_termination();
+			}
 		}
 
-		 if(date('H')*3600+date('i')*60+60 > 16200 && $last_walked != date('Y-m-d')) // 4:30 Uhr
-			walkthrough_users();
+		check_termination();
+
+		if(date('H')*3600+date('i')*60+60 > 16200 && $last_walked != date('Y-m-d')) // 4:30 Uhr
+		{
+			foreach($databases as $selected_database=>$dbinfo)
+			{
+				if(!is_dir($dbinfo[0])) continue;
+
+				define_globals($dbinfo[0]);
+				walkthrough_users();
+				check_termination();
+			}
+		}
 
 		sleep(global_setting("EVENTHANDLER_INTERVAL"));
 	}
