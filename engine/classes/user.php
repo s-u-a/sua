@@ -1530,7 +1530,7 @@
 				),
 				'prod_show_days' => 1,
 				'messenger_receive' => array(
-					'messages' => array(true, true, true, true, true, true, true)
+					'messages' => array(1=>true, 2=>true, 3=>true, 4=>true, 5=>true, 6=>true, 7=>true)
 				)
 			);
 
