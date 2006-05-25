@@ -551,6 +551,7 @@ EOF
 			global $jabber;
 			global $jabber_messengers;
 			global $jabber_transport_services;
+			global $errlog;
 
 			if(!$jabber->Connect() || !$jabber->SendAuth())
 			{
