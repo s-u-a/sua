@@ -12,7 +12,7 @@
 		$error = false;
 		$daemon = false;
 		$verbose = false;
-		$use_jabber = true;
+		$use_jabber = $wanna_use_jabber = true;
 
 		$getopt_exists = false;
 		foreach(explode(':', get_include_path()) as $path)
@@ -48,7 +48,7 @@
 						$verbose = true;
 						break;
 					case 'J': case '--no-jabber':
-						$use_jabber = false;
+						$use_jabber = $wanna_use_jabber = false;
 						break;
 				}
 			}
@@ -201,14 +201,33 @@ EOF
 					$databases = get_databases();
 					fputs($errlog, "Done\n");
 
-					global $jabber,$jabber_messengers;
-					fputs($errlog, time_prefix()."Disconnecting Jabber and rescanning config... ");
-					$jabber->Disconnect();
-					$jabber_messengers = get_messenger_info(false, true);
-					fputs($errlog, "Done.\n");
-					fputs($errlog, time_prefix()."Reconnecting Jabber... ");
-					connect_jabber();
-					fputs($errlog, "Done.\n");
+					global $use_jabber,$wanna_use_jabber,$jabber,$jabber_messengers,$jabber_auth_info;
+					if($wanna_use_jabber)
+					{
+						if($use_jabber && $jabber->connected)
+						{
+							fputs($errlog, time_prefix()."Disconnecting Jabber and rescanning config... ");
+							$jabber->Disconnect();
+						}
+						else
+							fputs($errlog, time_prefix()."Rescanning Jabber config... ");
+						$jabber_messengers = get_messenger_info(false, true);
+						$jabber_auth_info = get_messenger_info('jabber');
+						fputs($errlog, "Done.\n");
+
+						if(!$jabber_auth_info || !isset($jabber_auth_info['username']) || !isset($jabber_auth_info['password']))
+						{
+							fputs($errlog, time_prefix()."Notice: no Jabber account information. Won't use instant messaging.\n");
+							$use_jabber = false;
+						}
+						else
+						{
+							$use_jabber = true;
+							fputs($errlog, time_prefix()."Reconnecting Jabber... ");
+							connect_jabber();
+							fputs($errlog, "Done.\n");
+						}
+					}
 
 					break;
 			}
