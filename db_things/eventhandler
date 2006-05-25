@@ -600,6 +600,8 @@ EOF
 		}
 		else
 		{
+			$jabber->username = $jabber_auth_info['username'];
+			$jabber->password = $jabber_auth_info['password'];
 			fputs($errlog, time_prefix()."Connecting Jabber client... ");
 			connect_jabber();
 			fputs($errlog, "Done.\n");
