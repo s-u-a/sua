@@ -469,6 +469,9 @@ function activate_users_list(element)
 {
 	element.onkeypress = make_users_list;
 	element.setAttribute('autocomplete', 'off');
+
+	// Opera fix
+	element.style.position = 'relative';
 }
 
 function make_users_list(e)
@@ -590,9 +593,6 @@ function do_make_users_list(node)
 
 	old_l = false;
 	if(users_list) old_l = users_list;
-
-	// Opera fix
-	node.style.position = 'relative';
 
 	l = document.createElement('ul');
 	l.className = 'autocomplete';

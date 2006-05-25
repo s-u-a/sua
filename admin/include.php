@@ -142,6 +142,14 @@
 	<head>
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 		<title>S-U-A &ndash; Adminbereich</title>
+		<link rel="stylesheet" href="<?=htmlspecialchars(h_root.'/admin/style.css')?>" type="text/css" />
+		<script type="text/javascript">
+			var session_cookie = '<?=str_replace('\'', '\\\'', session_name())?>';
+			var session_id = '<?=str_replace('\'', '\\\'', session_id())?>';
+			var database_id = '<?=str_replace('\'', '\\\'', $_SESSION['database'])?>';
+		</script>
+		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts.js.php')?>"></script>
+		<script type="text/javascript" src="<?=htmlentities(h_root.'/sarissa.js')?>"></script>
 	</head>
 	<body>
 		<h1><a href="<?=htmlentities(h_root.'/admin/index.php')?>"><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Adminbereich</a> [<a href="?logout=1">Abmelden nicht vergessen</a>]</h1>

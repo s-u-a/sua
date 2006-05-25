@@ -260,6 +260,10 @@
 	</dl>
 	<div><button type="submit">Anmelden</button></div>
 </form>
+<script type="text/javascript">
+	// Autocompletion
+	activate_users_list(document.getElementById('ghost-input'));
+</script>
 <?php
 	}
 
@@ -278,6 +282,10 @@
 	</dl>
 	<div><button type="submit">Passwort ändern</button></div>
 </form>
+<script type="text/javascript">
+	// Autocompletion
+	activate_users_list(document.getElementById('passwd-name-input'));
+</script>
 <?php
 	}
 
@@ -311,11 +319,16 @@
 ?>
 <form action="index.php#action-3" method="post">
 	<ul>
-		<li><input type="text" name="compare_1" /></li>
-		<li><input type="text" name="compare_2" /></li>
+		<li><input type="text" name="compare_1" id="i-compare-1" /></li>
+		<li><input type="text" name="compare_2" id="i-compare-2" /></li>
 	</ul>
 	<div><button type="submit">Vergleichen</button></div>
 </form>
+<script type="text/javascript">
+	// Autocompletion
+	activate_users_list(document.getElementById('i-compare-1'));
+	activate_users_list(document.getElementById('i-compare-2'));
+</script>
 <?php
 	}
 
@@ -332,6 +345,10 @@
 	</dl>
 	<div><button type="submit">Löschen</button></div>
 </form>
+<script type="text/javascript">
+	// Autocompletion
+	activate_users_list(document.getElementById('delete-input'));
+</script>
 <?php
 	}
 
@@ -347,6 +364,10 @@
 	</dl>
 	<div><button type="submit">Sperren / Entsperren</button></div>
 </form>
+<script type="text/javascript">
+	// Autocompletion
+	activate_users_list(document.getElementById('lock-input'));
+</script>
 <?php
 	}
 
@@ -365,6 +386,10 @@
 	</dl>
 	<div><button type="submit">Umbenennen</button></div>
 </form>
+<script type="text/javascript">
+	// Autocompletion
+	activate_users_list(document.getElementById('rename-from'));
+</script>
 <?php
 	}
 
