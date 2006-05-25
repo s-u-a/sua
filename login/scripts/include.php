@@ -190,7 +190,7 @@
 			var session_id = '<?=str_replace('\'', '\\\'', session_id())?>';
 			var database_id = '<?=str_replace('\'', '\\\'', $_SESSION['database'])?>';
 		</script>
-		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts.js.php')?>"></script>
+		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts.js.php?'.urlencode(session_name()).'='.session_id())?>"></script>
 <?php
 			if($me->checkSetting('ajax'))
 			{
@@ -217,12 +217,12 @@
 				if($my_skin[0] == 'custom')
 					$skin_path = $my_skin[1];
 				elseif(isset($skins[$my_skin[0]]))
-					$skin_path = h_root.'/login/style/skin.php?skin='.urlencode($my_skin[0]).'&type='.urlencode($my_skin[1]);
+					$skin_path = h_root.'/login/style/skin.php?skin='.urlencode($my_skin[0]).'&type='.urlencode($my_skin[1]).'&'.urlencode(session_name()).'='.session_id();
 			}
 			elseif(isset($skins['default']))
 			{
 				$keys = array_keys($skins['default'][1]);
-				$skin_path = h_root.'/login/style/skin.php?skin=default&type='.urlencode(array_shift($keys));
+				$skin_path = h_root.'/login/style/skin.php?skin=default&type='.urlencode(array_shift($keys)).'&'.urlencode(session_name()).'='.session_id();
 			}
 
 			if(trim($skin_path) != '')
