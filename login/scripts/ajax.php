@@ -1,4 +1,5 @@
 <?php
+	$LOGIN = true;
 	define('ignore_action', true);
 	define('ajax', true);
 	require_once('../../engine/include.php');

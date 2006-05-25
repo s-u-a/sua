@@ -1,4 +1,5 @@
 <?php
+	$LOGIN = true;
 	require('../engine/include.php');
 	header('Content-type: text/javascript; charset=ISO-8859-1');
 	header('Cache-control: max-age=152800');
