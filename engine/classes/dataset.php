@@ -1,7 +1,7 @@
 <?php
 	abstract class Dataset
 	{
-		private $datatype = 'dataset';
+		protected $datatype = 'dataset';
 		protected $save_dir = false;
 		protected $name = false;
 		protected $filename = false;

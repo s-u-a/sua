@@ -5,11 +5,20 @@
 
 	if(!isset($_SERVER['argv'][1]))
 	{
-		echo "Usage: ".$_SERVER['argv'][0]." [Database dir]\n";
+		echo "Usage: ".$_SERVER['argv'][0]." <Database ID>\n";
 		exit(1);
 	}
 	else
-		define_globals($_SERVER['argv'][1]);
+	{
+		$databases = get_databases();
+		if(!isset($databases[$_SERVER['argv'][1]]))
+		{
+			echo "Unknown database.\n";
+			exit(1);
+		}
+		else
+			define_globals($_SERVER['argv'][1], true);
+	}
 
 	$dh = opendir(global_setting("DB_PLAYERS"));
 	while(($fname = readdir($dh)) !== false)

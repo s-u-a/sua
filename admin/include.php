@@ -55,7 +55,7 @@
 	$databases = get_databases();
 	if(isset($_SESSION['database']) && isset($databases[$_SESSION['database']]))
 	{
-		define_globals($databases[$_SESSION['database']][0]);
+		define_globals($_SESSION['database']);
 		$admins = get_admin_list();
 	}
 
@@ -64,7 +64,7 @@
 		$show_login = true;
 		if(isset($_POST['admin_username']) && isset($_POST['admin_password']) && isset($_POST['database']) && isset($databases[$_POST['database']]))
 		{
-			define_globals($databases[$_POST['database']][0]);
+			define_globals($_POST['database']);
 			$admins = get_admin_list();
 
 			if(isset($admins[$_POST['admin_username']]) && md5($_POST['admin_password']) == $admins[$_POST['admin_username']]['password'])

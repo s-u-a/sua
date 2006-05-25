@@ -53,12 +53,15 @@
 		}
 	}
 
-	global_setting('GDB_DIR', s_root.'/database.global');
-	global_setting('DB_NEWS', global_setting("GDB_DIR").'/news');
-	global_setting('DB_CHANGELOG', global_setting("GDB_DIR").'/changelog');
-	global_setting('DB_VERSION', global_setting("GDB_DIR").'/version');
-	global_setting('DB_REVISION', global_setting("GDB_DIR").'/revision');
-	global_setting('EVENTHANDLER_INTERVAL', 10);
+	$GDB_DIR = s_root.'/database.global';
+	global_setting('GDB_DIR', $GDB_DIR);
+	global_setting('DB_NEWS', $GDB_DIR.'/news');
+	global_setting('DB_CHANGELOG', $GDB_DIR.'/changelog');
+	global_setting('DB_VERSION', $GDB_DIR.'/version');
+	global_setting('DB_REVISION', $GDB_DIR.'/revision');
+	global_setting('DB_MESSENGERS', $GDB_DIR.'/messengers');
+	global_setting('DB_NOTIFICATIONS', $GDB_DIR.'/notifications');
+	global_setting('EVENTHANDLER_INTERVAL', 2);
 	global_setting('THS_HTML', '&nbsp;');
 	global_setting('THS_UTF8', "\xc2\xa0");
 	global_setting('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
@@ -69,10 +72,17 @@
 	global_setting('PROTOCOL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http');
 	global_setting('USE_PROTOCOL', (isset($_SESSION['use_protocol']) ? $_SESSION['use_protocol'] : (((!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])) ? 'https' : 'http')));
 
-	function define_globals($DB_DIR)
+	function define_globals($DB)
 	{
-		global $SUA_SETTINGS;
+		global $databases;
+		if(!isset($databases))
+			$databases = get_databases();
 
+		if(!isset($databases[$DB])) return false;
+
+		global_setting('DB', $DB);
+
+		$DB_DIR = $databases[$DB][0];
 		if(substr($DB_DIR, 0, 1) != '/')
 			$DB_DIR = s_root.'/'.$DB_DIR;
 
@@ -94,8 +104,6 @@
 		global_setting('DB_HANDELSKURS', $DB_DIR.'/handelskurs');
 		global_setting('DB_ADMINS', $DB_DIR.'/admins');
 		global_setting('DB_NONOOBS', $DB_DIR.'/nonoobs');
-		global_setting('DB_MESSENGERS', $DB_DIR.'/messengers');
-		global_setting('DB_NOTIFICATIONS', $DB_DIR.'/notifications');
 		global_setting('DB_ADMIN_LOGFILE', $DB_DIR.'/admin_logfile');
 
 		return true;

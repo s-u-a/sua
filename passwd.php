@@ -5,7 +5,7 @@
 
 	if(isset($_POST['benutzername']) && isset($_POST['email']) && isset($_POST['database']) && isset($databases[$_POST['database']]))
 	{
-		define_globals($databases[$_POST['database']][0]);
+		define_globals($_POST['database']);
 
 		$_POST['benutzername'] = trim($_POST['benutzername']);
 		$_POST['email'] = trim($_POST['email']);
@@ -35,7 +35,7 @@
 <?php
 	if(isset($_GET['name']) && isset($_GET['id']) && isset($_GET['database']) && isset($databases[$_GET['database']]))
 	{
-		define_globals($databases[$_GET['database']][0]);
+		define_globals($_GET['database']);
 
 		if(!User::userExists($_GET['name']))
 		{

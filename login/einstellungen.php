@@ -6,6 +6,10 @@
 	$receive_settings = $me->checkSetting('receive');
 	$show_building = $me->checkSetting('show_building');
 
+	$messengers = get_messenger_info();
+	$messenger_settings = $me->getNotificationType();
+	$messenger_receive = $me->checkSetting('messenger_receive');
+
 	if(isset($_POST['skin-choice']))
 	{
 		if($_POST['skin-choice'] == 'custom')
@@ -60,6 +64,20 @@
 		$me->setSetting('show_extern', isset($_POST['show_extern']));
 		$me->setSetting('notify', isset($_POST['notify']));
 		$me->setSetting('ajax', isset($_POST['ajax']));
+
+		if(!isset($_POST['im-receive']) || !isset($_POST['im-receive']['messages']))
+			$messenger_receive['messages'] = array(1=>false, 2=>false, 3=>false, 4=>false, 5=>false, 6=>false, 7=>false);
+		else
+		{
+			$messenger_receive['messages'][1] = isset($_POST['im-receive']['messages'][1]);
+			$messenger_receive['messages'][2] = isset($_POST['im-receive']['messages'][2]);
+			$messenger_receive['messages'][3] = isset($_POST['im-receive']['messages'][3]);
+			$messenger_receive['messages'][4] = isset($_POST['im-receive']['messages'][4]);
+			$messenger_receive['messages'][5] = isset($_POST['im-receive']['messages'][5]);
+			$messenger_receive['messages'][6] = isset($_POST['im-receive']['messages'][6]);
+			$messenger_receive['messages'][7] = isset($_POST['im-receive']['messages'][7]);
+		}
+		$me->setSetting('messenger_receive', $messenger_receive);
 	}
 
 	if(isset($_POST['building']))
@@ -93,6 +111,27 @@
 			$error = 'Die beiden neuen Passwörter stimmen nicht überein.';
 		else
 			$me->setPassword($_POST['new-password']);
+	}
+
+	if((!$messenger_settings && isset($_POST['im-protocol']) && isset($messengers[$_POST['im-protocol']]) && isset($_POST['im-uin']) && trim($_POST['im-uin'])) || ($messenger_settings && ((isset($_POST['im-protocol']) && trim($_POST['im-protocol']) != $messenger_settings[1]) || (isset($_POST['im-uin']) && trim($_POST['im-uin']) != $messenger_settings[0]))))
+	{
+		if((isset($_POST['im-protocol']) && !isset($messengers[$_POST['im-protocol']])) || (isset($_POST['im-uin']) && !trim($_POST['im-uin'])))
+		{
+			# IM deaktivieren
+			$me->disableNotification();
+		}
+		else
+		{
+			$new_uin = (isset($_POST['im-uin']) ? trim($_POST['im-uin']) : $messenger_settings[0]);
+			$new_protocol = (isset($_POST['im-protocol']) ? trim($_POST['im-protocol']) : $messenger_settings[1]);
+
+			if($me->checkNewNotificationType($new_uin, $new_protocol))
+			{
+				$imfile = Classes::IMFile();
+				$rand_id = $imfile->addCheck($new_uin, $new_protocol, $me->getName(), $_SESSION['database']);
+				$imfile->addMessage($new_uin, $new_protocol, $me->getName(), "Sie erhalten diese Nachricht, weil jemand in Stars Under Attack diesen Account zur Benachrichtigung eingetragen hat. Ignorieren Sie die Nachricht, wenn Sie die Eintragung nicht vornehmen möchten. Um die Einstellung zu bestätigen, antworten Sie bitte auf diese Nachricht folgenden Code: ".$rand_id, $_SESSION['database']);
+			}
+		}
 	}
 
 	login_gui::html_head();
@@ -291,6 +330,63 @@
 			</tbody>
 		</table>
 	</fieldset>
+<?php
+	if(isset($messengers['jabber']) && isset($messengers['jabber']['username']) && isset($messengers['jabber']['password']))
+	{
+?>
+	<fieldset class="instant-messenger">
+		<legend>Instant-Messenger-Benachrichtigung</legend>
+		<p>Nach Änderung des Accounts wird zunächst eine Bestätigungsnachricht versandt.</p>
+		<dl>
+			<dt class="c-im-account"><label for="i-im-protocol"><abbr title="Instant-Messaging">IM</abbr>-Account</label></dt>
+			<dd class="c-im-account">
+				<select name="im-protocol" id="i-im-protocol" onchange="document.getElementById('i-im-uin').disabled = !this.value;" onkeyup="this.onchange();">
+					<option value="">Deaktiviert</option>
+<?php
+		foreach($messengers as $protocol=>$minfo)
+		{
+			$name = (isset($minfo['name']) ? $minfo['name'] : $protocol);
+?>
+					<option value="<?=htmlspecialchars($protocol)?>"<?=($messenger_settings && $messenger_settings[1] == $protocol) ? ' selected="selected"' : ''?>><?=htmlspecialchars($name)?></option>
+<?php
+		}
+?>
+				</select>
+				<input type="text" name="im-uin" id="i-im-uin" title="UIN"<?=$messenger_settings ? ' value="'.htmlspecialchars($messenger_settings[0]).'"' : ''?> />
+			</dd>
+		</dl>
+		<script type="text/javascript">
+			document.getElementById('i-im-uin').disabled = !document.getElementById('i-im-protocol').value;
+		</script>
+		<fieldset>
+			<legend>Benachrichtigung bei Nachrichten</legend>
+			<dl>
+				<dt class="c-kaempfe"><label for="i-im-message-kaempfe">Kämpfe</label></dt>
+				<dd class="c-kaempfe"><input type="checkbox" name="im-receive[messages][1]" id="i-im-message-kaempfe"<?=$messenger_receive['messages'][1] ? ' checked="checked"' : ''?> /></dd>
+
+				<dt class="c-spionage"><label for="i-im-message-spionage">Spionage</label></dt>
+				<dd class="c-spionage"><input type="checkbox" name="im-receive[messages][2]" id="i-im-message-spionage"<?=$messenger_receive['messages'][2] ? ' checked="checked"' : ''?> /></dd>
+
+				<dt class="c-transport"><label for="i-im-message-transport">Transport</label></dt>
+				<dd class="c-transport"><input type="checkbox" name="im-receive[messages][3]" id="i-im-message-transport"<?=$messenger_receive['messages'][3] ? ' checked="checked"' : ''?> /></dd>
+
+				<dt class="c-sammeln"><label for="i-im-message-sammeln">Sammeln</label></dt>
+				<dd class="c-sammeln"><input type="checkbox" name="im-receive[messages][4]" id="i-im-message-sammeln"<?=$messenger_receive['messages'][4] ? ' checked="checked"' : ''?> /></dd>
+
+				<dt class="c-besiedelung"><label for="i-im-message-besiedelung">Besiedelung</label></dt>
+				<dd class="c-besiedelung"><input type="checkbox" name="im-receive[messages][5]" id="i-im-message-besiedelung"<?=$messenger_receive['messages'][5] ? ' checked="checked"' : ''?> /></dd>
+
+				<dt class="c-benutzernachrichten"><label for="i-im-message-benutzernachrichten">Benutzernachrichten</label></dt>
+				<dd class="c-benutzernachrichten"><input type="checkbox" name="im-receive[messages][6]" id="i-im-message-benutzernachrichten"<?=$messenger_receive['messages'][6] ? ' checked="checked"' : ''?> /></dd>
+
+				<dt class="c-verbuendete"><label for="i-im-message-verbuendete">Verbündete</label></dt>
+				<dd class="c-verbuendete"><input type="checkbox" name="im-receive[messages][7]" id="i-im-message-verbuendete"<?=$messenger_receive['messages'][7] ? ' checked="checked"' : ''?> /></dd>
+			</dl>
+		</fieldset>
+	</fieldset>
+<?php
+	}
+?>
 	<div class="einstellungen-speichern-1"><input type="submit" title="[W]" value="Speichern" /></div>
 <?php
 	$save_tabindex = $tabindex++;

@@ -1,57 +1,66 @@
 #!/usr/bin/php
 <?php
-	chdir(dirname(__FILE__));
-	chdir('..');
+	###########################
+	### Parameter auswerten ###
+	###########################
 
-	$print_usage = false;
-	$error = false;
-	$daemon = false;
-	$verbose = false;
-
-	$getopt_exists = false;
-	foreach(explode(':', get_include_path()) as $path)
 	{
-		if(is_file($path.'/Console/Getopt.php') && is_readable($path.'/Console/Getopt.php'))
-		{
-			$getopt_exists = true;
-			break;
-		}
-	}
+		chdir(dirname(__FILE__));
+		chdir('..');
 
-	if($getopt_exists)
-	{
-		require_once('Console/Getopt.php'); # PEAR
-		$options = Console_Getopt::getopt($_SERVER['argv'], 'hdv', array('help', 'daemon', 'verbose'));
-		if($options instanceof PEAR_Error)
-		{
-			fputs(STDERR, $options->message."\n");
-			exit(1);
-		}
+		$print_usage = false;
+		$error = false;
+		$daemon = false;
+		$verbose = false;
+		$use_jabber = true;
 
-		foreach($options[0] as $o)
+		$getopt_exists = false;
+		foreach(explode(':', get_include_path()) as $path)
 		{
-			switch($o[0])
+			if(is_file($path.'/Console/Getopt.php') && is_readable($path.'/Console/Getopt.php'))
 			{
-				case 'h': case '--help':
-					$print_usage = true;
-					break;
-				case 'd': case '--daemon':
-					$daemon = true;
-					break;
-				case 'v': case '--verbose':
-					$verbose = true;
-					break;
+				$getopt_exists = true;
+				break;
 			}
 		}
-	}
-	else fputs(STDERR, "Warning: PEAR package Console_Getopt does not exist. Switching to default options.\n\n");
 
-	if($print_usage || $error)
-	{
-		if($error) $stream = STDERR;
-		else $stream = STDOUT;
+		if($getopt_exists)
+		{
+			require_once('Console/Getopt.php'); # PEAR
+			$options = Console_Getopt::getopt($_SERVER['argv'], 'hdvJ', array('help', 'daemon', 'verbose', 'no-jabber'));
+			if($options instanceof PEAR_Error)
+			{
+				fputs(STDERR, $options->message."\n");
+				exit(1);
+			}
 
-		fputs($stream, <<<EOF
+			foreach($options[0] as $o)
+			{
+				switch($o[0])
+				{
+					case 'h': case '--help':
+						$print_usage = true;
+						break;
+					case 'd': case '--daemon':
+						$daemon = true;
+						break;
+					case 'v': case '--verbose':
+						$verbose = true;
+						break;
+					case 'J': case '--no-jabber':
+						$use_jabber = false;
+						break;
+				}
+			}
+		}
+		else fputs(STDERR, "Warning: PEAR package Console_Getopt does not exist. Switching to default options.\n\n");
+
+		if($print_usage || $error)
+		{
+			if($error) $stream = STDERR;
+			else $stream = STDOUT;
+
+			fputs($stream, <<<EOF
 Usage: {$_SERVER['argv'][0]} [Options]
 Options:
   -h, --help:    Display this help and exit
@@ -59,459 +68,632 @@ Options:
   -v, --verbose: Verbose output
 
 EOF
-		);
+			);
 
-		if($error) exit(1);
-		else exit(0);
-	}
-
-	function time_prefix()
-	{
-		global $selected_database;
-
-		$prefix = date('Y-m-d, H:i:s')."\t";
-		if(isset($selected_database) && $selected_database)
-			$prefix .= $selected_database."\t";
-		return $prefix;
-	}
-
-	if($daemon)
-	{
-		declare(ticks=1);
-
-		if(function_exists('pcntl_fork')) $pid = pcntl_fork();
-		else $pid = -1;
-
-		if($pid == -1) fputs(STDERR, time_prefix()."Forking failed, continuing.\n");
-		elseif($pid)
-		{
-			fputs(STDOUT, time_prefix()."Eventhandler forked, PID ".$pid.".\n");
-			exit(0);
-		}
-	}
-
-	function error_handler($errno, $errstr, $errfile, $errline, $errcontext)
-	{
-		global $errlog;
-		fputs($errlog, time_prefix());
-		switch($errno)
-		{
-			case E_WARNING:
-				fputs($errlog, "Warning: ");
-				break;
-			case E_NOTICE:
-				fputs($errlog, "Notice: ");
-				break;
-			default:
-				fputs($errlog, "Error ".$errno.": ");
-				break;
+			if($error) exit(1);
+			else exit(0);
 		}
 
-		fputs($errlog, $errstr);
-		fputs($errlog, " in ".$errfile." on line ".$errline.".");
 
-		global $process;
-		if(isset($process) && isset($process['fleet']))
-			fputs($errlog, " Last fleet was ".$process['fleet'].".");
+		$USE_OB = false;
+		require('engine/include.php');
 
-		fputs($errlog, "\n");
+		set_time_limit(0);
+
+		$databases = get_databases();
+
+		if($daemon) $errlog = fopen(global_setting("GDB_DIR").'/eventhandler.log', 'a');
+		else $errlog = STDERR;
+
+		__autoload('Classes');
+		__autoload('Fleet');
+		__autoload('Galaxy');
 	}
 
-	function sig_handler($signo)
+	################
+	### Routinen ###
+	################
+
 	{
-		global $errlog;
-		fputs($errlog, time_prefix());
-		switch($signo)
+
+		function time_prefix()
 		{
-			case SIGTERM:
-				fputs($errlog, "SIGTERM (".SIGTERM.")\n");
-				if(!defined('terminate')) define('terminate', true);
-				break;
-			case SIGINT:
-				fputs($errlog, "SIGINT (".SIGINT.")\n");
-				if(!defined('terminate')) define('terminate', true);
-				break;
-			case SIGHUP:
-				fputs($errlog, "SIGHUP (".SIGHUP.")\n");
-				break;
-			case SIGUSR1:
-				fputs($errlog, "SIGUSR1 (".SIGUSR1.")\n");
-				fputs($errlog, "Rescanning databases... ");
-				global $databases;
-				fputs($errlog, "Done\n");
-				$databases = get_databases();
-				break;
+			global $selected_database;
+
+			$prefix = date('Y-m-d, H:i:s')."\t";
+			if(isset($selected_database) && $selected_database)
+				$prefix .= $selected_database."\t";
+			return $prefix;
 		}
+
+		function check_termination()
+		{
+			global $errlog;
+			global $use_jabber;
+			global $jabber;
+
+			if(defined('terminate') && terminate)
+			{
+				if($use_jabber && $jabber->connected)
+				{
+					fputs($errlog, time_prefix()."Disconnecting Jabber client... ");
+					$jabber->Disconnect();
+					fputs($errlog, "Done.\n");
+				}
+
+				fputs($errlog, time_prefix()."Terminated.\n");
+				exit(0);
+			}
+		}
+
 	}
 
-	if(function_exists('pcntl_signal'))
+	########################
+	### Prozesskontrolle ###
+	########################
+
 	{
-		pcntl_signal(SIGTERM, "sig_handler");
-		pcntl_signal(SIGINT, "sig_handler");
-		pcntl_signal(SIGUSR1, "sig_handler");
+
 		if($daemon)
 		{
-			pcntl_signal(SIGHUP, "sig_handler");
-			if(function_exists('posix_setsid'))
-				posix_setsid();
-		}
-	}
+			declare(ticks=1);
 
-	function check_termination()
-	{
-		global $errlog;
+			if(function_exists('pcntl_fork')) $pid = pcntl_fork();
+			else $pid = -1;
 
-		if(defined('terminate') && terminate)
-		{
-			fputs($errlog, time_prefix()."Terminated.\n");
-			exit(0);
-		}
-	}
-
-	$USE_OB = false;
-	require('engine/include.php');
-
-	set_time_limit(0);
-
-	$databases = get_databases();
-
-	if($daemon) $errlog = fopen(global_setting("GDB_DIR").'/eventhandler.log', 'a');
-	else $errlog = STDERR;
-
-	set_error_handler('error_handler', E_WARNING);
-	set_error_handler('error_handler', E_NOTICE);
-
-	function arrive($fleet_id)
-	{
-		global $errlog;
-
-		if(function_exists('pcntl_fork'))
-		{
-			Classes::resetInstances();
-			$pid = pcntl_fork();
-		}
-		else $pid = -1;
-
-		if(!$pid || $pid == -1)
-		{
-			if($pid != -1) set_time_limit(30);
-
-			$fleet = Classes::Fleet($fleet_id);
-
-			if($fleet->getStatus() > 0 && ($fleet->getStatus() > 1 || $fleet->getNextArrival() > time() || !$fleet->arriveAtNextTarget()))
+			if($pid == -1) fputs(STDERR, time_prefix()."Forking failed, continuing.\n");
+			elseif($pid)
 			{
-				fputs($errlog, time_prefix()."Warning: Couldn't complete fleet ".$fleet_id.". Gonna process it later.\n");
-				$eventfile = Classes::EventFile();
-				$eventfile->addNewFleet(time()+global_setting("EVENTHANDLER_INTERVAL"), $fleet_id);
+				fputs(STDOUT, time_prefix()."Eventhandler forked, PID ".$pid.".\n");
+				exit(0);
+			}
+		}
+
+		function error_handler($errno, $errstr, $errfile, $errline, $errcontext)
+		{
+			global $errlog;
+			fputs($errlog, time_prefix());
+			switch($errno)
+			{
+				case E_WARNING:
+					fputs($errlog, "Warning: ");
+					break;
+				case E_NOTICE:
+					fputs($errlog, "Notice: ");
+					break;
+				default:
+					fputs($errlog, "Error ".$errno.": ");
+					break;
 			}
 
-			unset($fleet);
+			fputs($errlog, $errstr);
+			fputs($errlog, " in ".$errfile." on line ".$errline.".");
 
-			Classes::resetInstances();
-			if($pid != -1) exit(0);
+			global $process;
+			if(isset($process) && isset($process['fleet']))
+				fputs($errlog, " Last fleet was ".$process['fleet'].".");
+
+			fputs($errlog, "\n");
 		}
-		else pcntl_waitpid($pid, &$status);
+
+		function sig_handler($signo)
+		{
+			global $errlog;
+			fputs($errlog, time_prefix());
+			switch($signo)
+			{
+				case SIGTERM:
+					fputs($errlog, "SIGTERM (".SIGTERM.")\n");
+					if(!defined('terminate')) define('terminate', true);
+					break;
+				case SIGINT:
+					fputs($errlog, "SIGINT (".SIGINT.")\n");
+					if(!defined('terminate')) define('terminate', true);
+					break;
+				case SIGHUP:
+					fputs($errlog, "SIGHUP (".SIGHUP.")\n");
+					break;
+				case SIGUSR1:
+					fputs($errlog, "SIGUSR1 (".SIGUSR1.")\n");
+					fputs($errlog, "Rescanning databases... ");
+					global $databases;
+					fputs($errlog, "Done\n");
+					$databases = get_databases();
+					break;
+			}
+		}
+
+		if(function_exists('pcntl_signal'))
+		{
+			pcntl_signal(SIGTERM, "sig_handler");
+			pcntl_signal(SIGINT, "sig_handler");
+			pcntl_signal(SIGUSR1, "sig_handler");
+			if($daemon)
+			{
+				pcntl_signal(SIGHUP, "sig_handler");
+				if(function_exists('posix_setsid'))
+					posix_setsid();
+			}
+		}
+
+		set_error_handler('error_handler', E_WARNING);
+		set_error_handler('error_handler', E_NOTICE);
+
 	}
 
-	function walkthrough_users()
+	##########################
+	### Spezielle Routinen ###
+	##########################
+
 	{
-		global $errlog;
-		global $last_walked;
-		$last_walked = date('Y-m-d');
-
-		fputs($errlog, "\n".time_prefix()."Walking through users...\n");
-
-		# Rohstoffe aller Planeten aller Benutzer zusammenzaehlen
-		# Alte Nachrichten loeschen
-		$deleted_messages = 0;
-		$processed_messages = array();
-
-		global $message_type_times;
-		$max_ages = $message_type_times;
-		foreach($max_ages as $k=>$v) $max_ages[$k] *= 86400;
-
-		$dh = opendir(global_setting("DB_PLAYERS"));
-		while(($filename = readdir($dh)) !== false)
+		function arrive($fleet_id)
 		{
-			if(!is_file(global_setting("DB_PLAYERS").'/'.$filename))
-				continue;
+			global $errlog;
 
-			$user = Classes::User(urldecode($filename));
-			if(!$user->getStatus()) continue;
+			if(function_exists('pcntl_fork'))
+			{
+				Classes::resetInstances();
+				$pid = pcntl_fork();
+			}
+			else $pid = -1;
 
-			$last_activity = $user->getLastActivity();
-			if($last_activity !== false)
-				$days = ceil((time()-$last_activity)/86400);
+			if(!$pid || $pid == -1)
+			{
+				if($pid != -1) set_time_limit(30);
+
+				$fleet = Classes::Fleet($fleet_id);
+
+				if($fleet->getStatus() > 0 && ($fleet->getStatus() > 1 || $fleet->getNextArrival() > time() || !$fleet->arriveAtNextTarget()))
+				{
+					fputs($errlog, time_prefix()."Warning: Couldn't complete fleet ".$fleet_id.". Gonna process it later.\n");
+					$eventfile = Classes::EventFile();
+					$eventfile->addNewFleet(time()+global_setting("EVENTHANDLER_INTERVAL"), $fleet_id);
+				}
+
+				unset($fleet);
+
+				Classes::resetInstances();
+				if($pid != -1) exit(0);
+			}
+			else pcntl_waitpid($pid, &$status);
+		}
+
+		function walkthrough_users()
+		{
+			global $errlog;
+			global $last_walked;
+			$last_walked = date('Y-m-d');
+
+			fputs($errlog, "\n".time_prefix()."Walking through users...\n");
+
+			# Rohstoffe aller Planeten aller Benutzer zusammenzaehlen
+			# Alte Nachrichten loeschen
+			$deleted_messages = 0;
+			$processed_messages = array();
+
+			global $message_type_times;
+			$max_ages = $message_type_times;
+			foreach($max_ages as $k=>$v) $max_ages[$k] *= 86400;
+
+			$dh = opendir(global_setting("DB_PLAYERS"));
+			while(($filename = readdir($dh)) !== false)
+			{
+				if(!is_file(global_setting("DB_PLAYERS").'/'.$filename))
+					continue;
+
+				$user = Classes::User(urldecode($filename));
+				if(!$user->getStatus()) continue;
+
+				$last_activity = $user->getLastActivity();
+				if($last_activity !== false)
+					$days = ceil((time()-$last_activity)/86400);
+				else
+					$days = ceil((time()-$user->getRegistrationTime())/86400);
+
+				$today = date('Y-m-d');
+
+				# Wenn der Spieler inaktiv ist, loeschen
+				if($last_activity !== false)
+				{
+					if($user->umode())
+					{
+						if($days == 175 && $user->lastMailSent() != $today) # 25 Wochen: Nachricht
+						{
+							if($user->checkSetting('email'))
+							{
+								mail($user->checkSetting('email'), "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben zwei Wochen Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
+								$user->lastMailSent($today);
+							}
+						}
+						elseif($days >= 189) # 27 Wochen: Loeschung
+						{
+							if($user->destroy())
+								fputs($errlog, "Deleted user `".$user->getName()."' because of inactivity.\n");
+							else
+								fputs($errlog, "Error: Couldn't delete user `".$user->getName()."'.\n");
+							continue;
+						}
+					}
+					else
+					{
+						if(($days == 21 || $days == 34) && $user->lastMailSent() != $today)
+						{
+							if($user->checkSetting('email'))
+							{
+								mail($user->checkSetting('email'), "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben ".(($days == 34) ? 'einen Tag' : 'zwei Wochen')." Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
+								$user->lastMailSent($today);
+							}
+						}
+						elseif($days >= 35)
+						{
+							if($user->destroy())
+								fputs($errlog, "Deleted user `".$user->getName()."' because of inactivity.\n");
+							else
+								fputs($errlog, "Error: Couldn't delete user `".$user->getName()."'.\n");
+							continue;
+						}
+					}
+				}
+				elseif($days == 7 && $user->lastMailSent() != $today)
+				{
+					if($user->checkSetting('email'))
+						mail($user->checkSetting('email'), "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben eine Woche Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
+				}
+				elseif($days >= 14)
+				{
+					if($user->destroy())
+						fputs($errlog, "Deleted user `".$user->getName()."' because of inactivity.\n");
+					else
+						fputs($errlog, "Error: Couldn't delete user `".$user->getName()."'.\n");
+					continue;
+				}
+
+				$planets = $user->getPlanetsList();
+				foreach($planets as $planet)
+				{
+					$user->setActivePlanet($planet);
+					$ress = $user->getRess();
+					unset($ress[5]); # Energie soll nicht miteinberechnet werden
+					$min = max($ress);
+					if($min != 0)
+					{
+						foreach($ress as $val)
+						{
+							if($val < $min && $val != 0) $min = $val;
+						}
+
+						$ress[0] /= $min;
+						$ress[1] /= $min;
+						$ress[2] /= $min;
+						$ress[3] /= $min;
+						$ress[4] /= $min;
+					}
+
+					$ress[0] = pow($ress[0], 1/($days+1));
+					$ress[1] = pow($ress[1], 1/($days+1));
+					$ress[2] = pow($ress[2], 1/($days+1));
+					$ress[3] = pow($ress[3], 1/($days+1));
+					$ress[4] = pow($ress[4], 1/($days+1));
+
+					$ges_ress[0] += $ress[0];
+					$ges_ress[1] += $ress[1];
+					$ges_ress[2] += $ress[2];
+					$ges_ress[3] += $ress[3];
+					$ges_ress[4] += $ress[4];
+				}
+
+				$message_categories = $user->getMessageCategoriesList();
+				foreach($message_categories as $category)
+				{
+					$max_diff = $max_ages[$category];
+					$messages_list = $user->getMessagesList($category);
+					foreach($messages_list as $message_id)
+					{
+						$processed_messages[$message_id] = true;
+						if($user->checkMessageStatus($message_id, $category))
+							continue; # Ungelesen / Archiviert
+						$message_obj = Classes::Message($message_id);
+						if(!$message_obj->getStatus() || (time()-$message_obj->getTime()) > $max_diff)
+						{
+							$user->removeMessage($message_id, $category);
+							$deleted_messages++;
+						}
+					}
+				}
+
+				unset($user);
+				Classes::resetInstances();
+			}
+			closedir($dh);
+
+			# Kurs berechnen
+			$min = max($ges_ress);
+			if($min != 0)
+			{
+				foreach($ges_ress as $val)
+				{
+					if($val < $min && $val != 0)
+						$min = $val;
+				}
+			}
+
+			if($min == 0)
+				$kurs = array(10, 5, 3.75, 2.5, 1);
 			else
-				$days = ceil((time()-$user->getRegistrationTime())/86400);
-
-			$today = date('Y-m-d');
-
-			# Wenn der Spieler inaktiv ist, loeschen
-			if($last_activity !== false)
 			{
-				if($user->umode())
+				$kurs = array();
+				$kurs[0] = $ges_ress[0]/$min;
+				$kurs[1] = $ges_ress[1]/$min;
+				$kurs[2] = $ges_ress[2]/$min;
+				$kurs[3] = $ges_ress[3]/$min;
+				$kurs[4] = $ges_ress[4]/$min;
+
+				foreach($kurs as $key=>$val)
 				{
-					if($days == 175 && $user->lastMailSent() != $today) # 25 Wochen: Nachricht
-					{
-						if($user->checkSetting('email'))
-						{
-							mail($user->checkSetting('email'), "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben zwei Wochen Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
-							$user->lastMailSent($today);
-						}
-					}
-					elseif($days >= 189) # 27 Wochen: Loeschung
-					{
-						if($user->destroy())
-							fputs($errlog, "Deleted user `".$user->getName()."' because of inactivity.\n");
-						else
-							fputs($errlog, "Error: Couldn't delete user `".$user->getName()."'.\n");
-						continue;
-					}
-				}
-				else
-				{
-					if(($days == 21 || $days == 34) && $user->lastMailSent() != $today)
-					{
-						if($user->checkSetting('email'))
-						{
-							mail($user->checkSetting('email'), "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben ".(($days == 34) ? 'einen Tag' : 'zwei Wochen')." Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
-							$user->lastMailSent($today);
-						}
-					}
-					elseif($days >= 35)
-					{
-						if($user->destroy())
-							fputs($errlog, "Deleted user `".$user->getName()."' because of inactivity.\n");
-						else
-							fputs($errlog, "Error: Couldn't delete user `".$user->getName()."'.\n");
-						continue;
-					}
-				}
-			}
-			elseif($days == 7 && $user->lastMailSent() != $today)
-			{
-				if($user->checkSetting('email'))
-					mail($user->checkSetting('email'), "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack angemeldet haben. Sie haben eine Woche Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
-			}
-			elseif($days >= 14)
-			{
-				if($user->destroy())
-					fputs($errlog, "Deleted user `".$user->getName()."' because of inactivity.\n");
-				else
-					fputs($errlog, "Error: Couldn't delete user `".$user->getName()."'.\n");
-				continue;
-			}
-
-			$planets = $user->getPlanetsList();
-			foreach($planets as $planet)
-			{
-				$user->setActivePlanet($planet);
-				$ress = $user->getRess();
-				unset($ress[5]); # Energie soll nicht miteinberechnet werden
-				$min = max($ress);
-				if($min != 0)
-				{
-					foreach($ress as $val)
-					{
-						if($val < $min && $val != 0) $min = $val;
-					}
-
-					$ress[0] /= $min;
-					$ress[1] /= $min;
-					$ress[2] /= $min;
-					$ress[3] /= $min;
-					$ress[4] /= $min;
-				}
-
-				$ress[0] = pow($ress[0], 1/($days+1));
-				$ress[1] = pow($ress[1], 1/($days+1));
-				$ress[2] = pow($ress[2], 1/($days+1));
-				$ress[3] = pow($ress[3], 1/($days+1));
-				$ress[4] = pow($ress[4], 1/($days+1));
-
-				$ges_ress[0] += $ress[0];
-				$ges_ress[1] += $ress[1];
-				$ges_ress[2] += $ress[2];
-				$ges_ress[3] += $ress[3];
-				$ges_ress[4] += $ress[4];
-			}
-
-			$message_categories = $user->getMessageCategoriesList();
-			foreach($message_categories as $category)
-			{
-				$max_diff = $max_ages[$category];
-				$messages_list = $user->getMessagesList($category);
-				foreach($messages_list as $message_id)
-				{
-					$processed_messages[$message_id] = true;
-					if($user->checkMessageStatus($message_id, $category))
-						continue; # Ungelesen / Archiviert
-					$message_obj = Classes::Message($message_id);
-					if(!$message_obj->getStatus() || (time()-$message_obj->getTime()) > $max_diff)
-					{
-						$user->removeMessage($message_id, $category);
-						$deleted_messages++;
-					}
+					if($val == 0)
+						$kurs[$key] = 1;
 				}
 			}
 
-			unset($user);
+			unset($ges_ress);
+
+			# Kurs schreiben
+			$handelskurs = preg_split("/\r\n|\r|\n/", file_get_contents(global_setting("DB_HANDELSKURS")));
+			$handelskurs[0] = $kurs[0];
+			$handelskurs[1] = $kurs[1];
+			$handelskurs[2] = $kurs[2];
+			$handelskurs[3] = $kurs[3];
+			$handelskurs[4] = $kurs[4];
+
+			$fh = fopen(global_setting("DB_HANDELSKURS"), 'w');
+			flock($fh, LOCK_EX);
+
+			fwrite($fh, implode("\n", $handelskurs));
+
+			flock($fh, LOCK_UN);
+			fclose($fh);
+
+			fputs($errlog, "Handelskurs recalculated.\n");
+
+
+			# Nachrichten, die niemandem gehoeren, loeschen
+
+			$dh = opendir(global_setting("DB_MESSAGES"));
+			while(($fname = readdir($dh)) !== false)
+			{
+				if($fname[0] == '.') continue;
+
+				$fname = urldecode($fname);
+
+				if(!isset($processed_messages[$fname]))
+				{
+					$message = Classes::Message($fname);
+					$message->destroy();
+				}
+			}
+			closedir($dh);
+
+			$processed_messages = count($processed_messages);
 			Classes::resetInstances();
-		}
-		closedir($dh);
 
-		# Kurs berechnen
-		$min = max($ges_ress);
-		if($min != 0)
-		{
-			foreach($ges_ress as $val)
+			fputs($errlog, "Checked ".$processed_messages." messages.\n");
+			fputs($errlog, "Deleted ".$deleted_messages." messages.\n");
+
+
+			# Oeffentliche Nachrichten loeschen
+
+			$processed_messages_public = 0;
+			$deleted_messages_public = 0;
+
+			global $public_messages_time;
+			$max_age = $public_messages_time*86400;
+			$dh = opendir(global_setting("DB_MESSAGES_PUBLIC"));
+			while(($fname = readdir($dh)) !== false)
 			{
-				if($val < $min && $val != 0)
-					$min = $val;
+				if($fname[0] == '.') continue;
+
+				$fname = urldecode($fname);
+
+				$message = Classes::PublicMessage($fname);
+				if(!$message->getStatus()) continue;
+				else $processed_messages_public++;
+
+				if(time()-$message->getLastViewTime() > $max_age)
+				{
+					$message->destroy();
+					$deleted_messages_public++;
+				}
 			}
+			closedir($dh);
+
+			Classes::resetInstances();
+
+			fputs($errlog, "Checked ".$processed_messages_public." public messages.\n");
+			fputs($errlog, "Deleted ".$deleted_messages_public." public messages.\n");
+
+			fputs($errlog, time_prefix()."Finished.\n\n");
 		}
 
-		if($min == 0)
-			$kurs = array(10, 5, 3.75, 2.5, 1);
+		function connect_jabber()
+		{
+			global $jabber;
+			global $jabber_messengers;
+			global $jabber_transport_services;
+
+			if(!$jabber->Connect() || !$jabber->SendAuth())
+			{
+				fputs($errlog, time_prefix()."Warning: Could not connect to Jabber server.\n");
+				return false;
+			}
+
+			$jabber->SendPresence(NULL, NULL, "online");
+
+			# Transports
+			foreach($jabber_messengers as $m=>$ai)
+			{
+				if($m == 'jabber') continue;
+				if(!isset($ai['username']) || !isset($ai['password'])) continue;
+
+				$m = strtolower($m);
+				if(!isset($jabber_transport_services[$m])) continue;
+
+				$jabber->TransportRegistration($jabber_transport_services[$m], $ai);
+			}
+
+			return true;
+		}
+
+	}
+
+
+	#####################
+	### Jabber-Client ###
+	#####################
+
+	if($use_jabber)
+	{
+		$jabber_messengers = get_messenger_info();
+		$jabber_auth_info = get_messenger_info('jabber');
+		if(!$jabber_auth_info || !isset($jabber_auth_info['username']) || !isset($jabber_auth_info['password']))
+		{
+			fputs($errlog, time_prefix()."Notice: no Jabber account information. Won't use instant messaging.\n");
+			$use_jabber = false;
+		}
 		else
 		{
-			$kurs = array();
-			$kurs[0] = $ges_ress[0]/$min;
-			$kurs[1] = $ges_ress[1]/$min;
-			$kurs[2] = $ges_ress[2]/$min;
-			$kurs[3] = $ges_ress[3]/$min;
-			$kurs[4] = $ges_ress[4]/$min;
+			$jabber = new Jabber();
+			$jabber->server = $jabber_transport_services['jabber'];
+			$jabber->port = 5222;
+			$jabber->username = $jabber_auth_info['username'];
+			$jabber->password = $jabber_auth_info['password'];
+			$jabber->resource = false;
 
-			foreach($kurs as $key=>$val)
-			{
-				if($val == 0)
-					$kurs[$key] = 1;
-			}
+			$imfile = Classes::IMFile();
+
+			fputs($errlog, time_prefix()."Connecting Jabber client... ");
+			connect_jabber();
+			fputs($errlog, "Done.\n");
 		}
-
-		unset($ges_ress);
-
-		# Kurs schreiben
-		$handelskurs = preg_split("/\r\n|\r|\n/", file_get_contents(global_setting("DB_HANDELSKURS")));
-		$handelskurs[0] = $kurs[0];
-		$handelskurs[1] = $kurs[1];
-		$handelskurs[2] = $kurs[2];
-		$handelskurs[3] = $kurs[3];
-		$handelskurs[4] = $kurs[4];
-
-		$fh = fopen(global_setting("DB_HANDELSKURS"), 'w');
-		flock($fh, LOCK_EX);
-
-		fwrite($fh, implode("\n", $handelskurs));
-
-		flock($fh, LOCK_UN);
-		fclose($fh);
-
-		fputs($errlog, "Handelskurs recalculated.\n");
-
-
-		# Nachrichten, die niemandem gehoeren, loeschen
-
-		$dh = opendir(global_setting("DB_MESSAGES"));
-		while(($fname = readdir($dh)) !== false)
-		{
-			if($fname[0] == '.') continue;
-
-			$fname = urldecode($fname);
-
-			if(!isset($processed_messages[$fname]))
-			{
-				$message = Classes::Message($fname);
-				$message->destroy();
-			}
-		}
-		closedir($dh);
-
-		$processed_messages = count($processed_messages);
-		Classes::resetInstances();
-
-		fputs($errlog, "Checked ".$processed_messages." messages.\n");
-		fputs($errlog, "Deleted ".$deleted_messages." messages.\n");
-
-
-		# Oeffentliche Nachrichten loeschen
-
-		$processed_messages_public = 0;
-		$deleted_messages_public = 0;
-
-		global $public_messages_time;
-		$max_age = $public_messages_time*86400;
-		$dh = opendir(global_setting("DB_MESSAGES_PUBLIC"));
-		while(($fname = readdir($dh)) !== false)
-		{
-			if($fname[0] == '.') continue;
-
-			$fname = urldecode($fname);
-
-			$message = Classes::PublicMessage($fname);
-			if(!$message->getStatus()) continue;
-			else $processed_messages_public++;
-
-			if(time()-$message->getLastViewTime() > $max_age)
-			{
-				$message->destroy();
-				$deleted_messages_public++;
-			}
-		}
-		closedir($dh);
-
-		Classes::resetInstances();
-
-		fputs($errlog, "Checked ".$processed_messages_public." public messages.\n");
-		fputs($errlog, "Deleted ".$deleted_messages_public." public messages.\n");
-
-		fputs($errlog, time_prefix()."Finished.\n\n");
 	}
 
-	__autoload('Classes');
-	__autoload('Fleet');
-	__autoload('Galaxy');
 
-	$fposition = 0;
+	#################
+	### Durchlauf ###
+	#################
 
-	if(date('H')*3600+date('i')*60+60 < 16200) $last_walked = false;
-	else $last_walked = date('Y-m-d');
-
-	fputs($errlog, time_prefix()."Eventhandler started.\n");
-
-	while(true)
 	{
-		check_termination();
 
-		foreach($databases as $selected_database=>$dbinfo)
+		$fposition = 0;
+
+		if(date('H')*3600+date('i')*60+60 < 16200) $last_walked = false;
+		else $last_walked = date('Y-m-d');
+
+		fputs($errlog, time_prefix()."Eventhandler started.\n");
+
+		while(true)
 		{
-			if(!is_dir($dbinfo[0])) continue;
+			check_termination();
 
-			define_globals($dbinfo[0]);
-
-			$event_obj = Classes::EventFile();
-			while($process = $event_obj->removeNextFleet())
-			{
-				arrive($process['fleet']);
-				check_termination();
-			}
-		}
-
-		check_termination();
-
-		if(date('H')*3600+date('i')*60+60 > 16200 && $last_walked != date('Y-m-d')) // 4:30 Uhr
-		{
+			# Flotten ankommen lassen
 			foreach($databases as $selected_database=>$dbinfo)
 			{
 				if(!is_dir($dbinfo[0])) continue;
 
-				define_globals($dbinfo[0]);
-				walkthrough_users();
-				check_termination();
-			}
-		}
+				define_globals($selected_database);
 
-		sleep(global_setting("EVENTHANDLER_INTERVAL"));
+				$event_obj = Classes::EventFile();
+				while($process = $event_obj->removeNextFleet())
+				{
+					arrive($process['fleet']);
+					check_termination();
+				}
+			}
+
+			check_termination();
+
+			# Handelskurs neu berechnen und Inaktive loeschen
+			if(date('H')*3600+date('i')*60+60 > 16200 && $last_walked != date('Y-m-d')) // 4:30 Uhr
+			{
+				foreach($databases as $selected_database=>$dbinfo)
+				{
+					if(!is_dir($dbinfo[0])) continue;
+
+					define_globals($selected_database);
+					walkthrough_users();
+					check_termination();
+				}
+			}
+
+			# Jabber-Nachrichten ueberpruefen
+			if($use_jabber)
+			{
+				if(!$jabber->connected)
+				{
+					fputs($errlog, time_prefix()."Disconnected. Trying to reconnect.\n");
+					connect_jabber();
+
+					if($jabber->connected)
+						fputs($errlog, time_prefix()."Reconnected!\n");
+					else
+						fputs($errlog, time_prefix()."Couldn't reconnect.\n");
+				}
+
+				if($jabber->connected)
+				{
+					while($next_notification = $imfile->shiftNextMessage())
+					{
+						$to = $next_notification['uin'];
+						if($next_notification['protocol'] != 'jabber')
+						{
+							if(!isset($jabber_transport_services[$next_notification['protocol']]))
+								continue;
+							$to .= '@'.$jabber_transport_services[$next_notification['protocol']];
+						}
+
+						$message = "Automatische Benachrichtigung von http://s-u-a.net/, ".$databases[$next_notification['database']][1].", ".$next_notification['username'].":\n";
+						$message .= $next_notification['message'];
+
+						$jabber->SendMessage($to, 'normal', NULL, array('body' => htmlspecialchars($message)));
+					}
+
+					$jabber->Listen();
+					while($p = array_shift($jabber->packet_queue))
+					{
+						if(!isset($p['message'])) continue;
+
+						$message = $p['message']['#']['body'][0]['#'];
+						list($from) = explode('/', $p['message']['@']['from'], 2);
+						$transport = 'jabber';
+						foreach($jabber_transport_services as $tn=>$t)
+						{
+							if(substr($from, -strlen($t)-1) == '@'.$t)
+							{
+								$transport = $tn;
+								$from = substr($from, 0, -strlen($t)-1);
+								break;
+							}
+						}
+
+						$username = $imfile->checkCheckID($from, $transport, trim($message));
+						if($username && isset($databases[$username[1]]))
+						{
+							define_globals($username[1]);
+							$user = Classes::User($username[0]);
+							if($user->getStatus() == 1 && $user->doSetNotificationType($from, $transport))
+							{
+								$imfile->removeChecks($username[0]);
+								unset($user);
+								Classes::resetInstances();
+
+								$jabber->sendMessage($p['message']['@']['from'], 'normal', NULL, array('body' => 'Accepted'));
+							}
+						}
+						else $jabber->sendMessage($p['message']['@']['from'], 'normal', NULL, array('body' => 'Unrecognised command'));
+					}
+				}
+			}
+
+			sleep(global_setting("EVENTHANDLER_INTERVAL"));
+		}
 	}
 ?>

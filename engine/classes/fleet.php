@@ -1,7 +1,7 @@
 <?php
 	class Fleet extends Dataset
 	{
-		private $datatype = 'fleet';
+		protected $datatype = 'fleet';
 
 		function __construct($name=false, $write=true)
 		{

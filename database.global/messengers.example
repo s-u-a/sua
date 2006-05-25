@@ -1,0 +1,11 @@
+[jabber]
+name = Jabber
+username = suabot
+password = foo
+blocked = suabot,suabot2
+
+[icq]
+name = ICQ
+username = 123456789
+password = foo
+blocked = 123456789

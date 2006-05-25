@@ -632,7 +632,7 @@ class Jabber
 
 		foreach ($this->packet_queue as $key => $value)
 		{
-			if ($value[$packet_type]['@']['id'] == $id)
+			if (isset($value[$packet_type]) && $value[$packet_type]['@']['id'] == $id)
 			{
 				$found_message = $value;
 				unset($this->packet_queue[$key]);
@@ -1248,7 +1248,7 @@ class Jabber
 
 	function GetInfoFromIqKey($packet = NULL)
 	{
-		return (is_array($packet)) ? $packet['iq']['#']['query'][0]['#']['key'][0]['#'] : FALSE;
+		return (is_array($packet) && is_array($packet['iq']['#']['query'][0]['#'])) ? $packet['iq']['#']['query'][0]['#']['key'][0]['#'] : FALSE;
 	}
 
 
@@ -1896,9 +1896,7 @@ class CJP_StandardConnector
 
 	function ReadFromSocket($chunksize)
 	{
-		set_magic_quotes_runtime(0);
 		$buffer = fread($this->active_socket, $chunksize);
-		set_magic_quotes_runtime(get_magic_quotes_gpc());
 
 		return $buffer;
 	}

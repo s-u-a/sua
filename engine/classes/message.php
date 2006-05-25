@@ -1,7 +1,8 @@
 <?php
 	class Message extends Dataset
 	{
-		private $datatype = 'message';
+		protected $datatype = 'message';
+		protected $im_check_notify = array();
 
 		function __construct($name=false, $write=true)
 		{
@@ -139,6 +140,8 @@
 
 			$this->raw['users'][$user] = $type;
 			$this->changed = true;
+			$this->im_check_notify[$user] = $type;
+
 			return true;
 		}
 
@@ -205,6 +208,25 @@
 		}
 
 		protected function getDataFromRaw(){}
-		protected function getRawFromData(){}
+		protected function getRawFromData()
+		{
+			if(count($this->im_check_notify) > 0)
+			{
+				global $message_type_names;
+				$imfile = Classes::IMFile();
+				foreach($this->im_check_notify as $user=>$type)
+				{
+					$user_obj = Classes::User($user);
+					$im_settings = $user_obj->getNotificationType();
+					if($im_settings)
+					{
+						$im_receive = $user_obj->checkSetting('messenger_receive');
+						if($im_receive['messages'][$type])
+							$imfile->addMessage($im_settings[0], $im_settings[1], $user, "Sie haben eine neue Nachricht der Sorte ".$message_type_names[$type]." erhalten. Der Betreff lautet: ".$this->subject(), global_setting("DB"));
+					}
+					unset($this->im_check_notify[$user]);
+				}
+			}
+		}
 	}
 ?>

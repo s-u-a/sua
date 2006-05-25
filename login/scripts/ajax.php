@@ -11,7 +11,7 @@
 	{
 		$databases = get_databases();
 		if(!isset($_GET['database']) || !isset($databases[$_GET['database']])) $_GET['action'] = false;
-		else define_globals($databases[$_GET['database']][0]);
+		else define_globals($_GET['database']);
 	}
 
 	switch($_GET['action'])

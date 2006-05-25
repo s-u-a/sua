@@ -1,23 +1,23 @@
 <?php
 	require('engine/include.php');
-	
+
 	$players = 0;
 	$alliances = 0;
 	$databases = get_databases();
 	$first = true;
-	foreach($databases as $database)
+	foreach($databases as $dbid=>$database)
 	{
 		if($first)
 		{
-			define_globals($database[0]);
+			define_globals($dbid);
 			$first = false;
 		}
 		$players += Highscores::getCount('users', $database[0].'/highscores');
 		$alliances += Highscores::getCount('alliances', $database[0].'/highscores');
 	}
-	
+
 	$items = Classes::Items();
-	
+
 	gui::html_head();
 ?>
 <h2 xml:lang="en">Features</h2>

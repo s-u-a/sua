@@ -1,7 +1,7 @@
 <?php
 	class Alliance extends Dataset
 	{
-		private $datatype = 'alliance';
+		protected $datatype = 'alliance';
 
 		function __construct($name=false, $write=true)
 		{

@@ -2,7 +2,7 @@
 	class User extends Dataset
 	{
 		protected $active_planet = false;
-		private $datatype = 'user';
+		protected $datatype = 'user';
 		protected $recalc_highscores = array(false,false,false,false,false);
 		protected $last_eventhandler_run = array();
 
@@ -1528,7 +1528,10 @@
 					'schiffe' => 0,
 					'verteidigung' => 0
 				),
-				'prod_show_days' => 1
+				'prod_show_days' => 1,
+				'messenger_receive' => array(
+					'messages' => array(true, true, true, true, true, true, true)
+				)
 			);
 
 			$this->settings = array();
@@ -2922,6 +2925,16 @@
 			if(time()-$this->raw['im_notification_check'][2] > 86400) return false;
 
 			$this->raw['im_notification'] = array($this->raw['im_notification_check'][0], $this->raw['im_notification_check'][1]);
+			$this->changed = true;
+			return true;
+		}
+
+		function disableNotification()
+		{
+			if(!$this->status) return false;
+
+			$this->raw['im_notification_check'] = false;
+			$this->raw['im_notification'] = false;
 			$this->changed = true;
 			return true;
 		}

@@ -9,7 +9,7 @@
 <?php
 	if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['password2']) && isset($_POST['database']) && isset($databases[$_POST['database']]))
 	{
-		define_globals($databases[$_POST['database']][0]);
+		define_globals($_POST['database']);
 
 		$error = '';
 

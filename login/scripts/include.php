@@ -11,7 +11,7 @@
 
 	$databases = get_databases();
 	if(isset($_SESSION['database']) && isset($databases[$_SESSION['database']]))
-		define_globals($databases[$_SESSION['database']][0]);
+		define_globals($_SESSION['database']);
 
 	if(!isset($_SESSION['username']) || !isset($_SESSION['database']) || (isset($_SESSION['database']) && (!isset($databases[$_SESSION['database']]) || !User::userExists($_SESSION['username']))))
 	{
@@ -23,7 +23,7 @@
 				$loggedin = false;
 			else
 			{
-				define_globals($databases[$_REQUEST['database']][0]);
+				define_globals($_REQUEST['database']);
 				if(!User::userExists($_REQUEST['username']))
 					$loggedin = false;
 				else

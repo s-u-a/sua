@@ -13,7 +13,7 @@
 				if($this->connection)
 				{
 					$table_check = sqlite_query($this->connection, "SELECT name FROM sqlite_master WHERE type='table' AND name='to_check' OR name='notifications';");
-					if(sqlite_num_rows($table_check)!=0 || sqlite_query($this->connection, "CREATE TABLE to_check ( uin, protocol, username, checksum );\nCREATE TABLE notifications ( no INT PRIMARY KEY, time INT, uin, protocol, username, message, database );"))
+					if(sqlite_num_rows($table_check)!=0 || (sqlite_query($this->connection, "CREATE TABLE to_check ( uin, protocol, username, database, checksum );") && sqlite_query($this->connection, "CREATE TABLE notifications ( no INT PRIMARY KEY, time INT, uin, protocol, username, message, database );")))
 						$this->status = true;
 				}
 			}
@@ -36,13 +36,13 @@
 			return $number.': '.sqlite_error_string($this->connection);
 		}
 
-		function addCheck($uin, $protocol, $username)
+		function addCheck($uin, $protocol, $username, $database)
 		{
 			if(!$this->status) return false;
 
 			$rand_id = substr(md5(rand()), 0, 8);
 
-			if(sqlite_query($this->connection, "INSERT INTO to_check ( uin, protocol, username, checksum ) VALUES ( '".sqlite_escape_string($uin)."', '".sqlite_escape_string($protocol)."', '".sqlite_escape_string($username)."', '".sqlite_escape_string($rand_id)."' );"))
+			if(sqlite_query($this->connection, "INSERT INTO to_check ( uin, protocol, username, database, checksum ) VALUES ( '".sqlite_escape_string($uin)."', '".sqlite_escape_string($protocol)."', '".sqlite_escape_string($username)."', '".sqlite_escape_string($database)."', '".sqlite_escape_string($rand_id)."' );"))
 				return $rand_id;
 			else return false;
 		}
@@ -55,7 +55,7 @@
 			if(count($ret) >= 1)
 			{
 				list($ret) = $ret;
-				return $ret['username'];
+				return array($ret['username'], $ret['database']);
 			}
 			return false;
 		}

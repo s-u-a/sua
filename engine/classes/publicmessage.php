@@ -1,7 +1,7 @@
 <?php
 	class PublicMessage extends Dataset
 	{
-		private $datatype = 'public_message';
+		protected $datatype = 'public_message';
 
 		function publicMessageExists($name)
 		{

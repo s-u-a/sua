@@ -15,7 +15,7 @@
 <?php
 	$databases = get_databases();
 	if(isset($_GET['database']) && isset($databases[$_GET['database']]))
-		define_globals($databases[$_GET['database']][0]);
+		define_globals($_GET['database']);
 	if(!isset($_GET['database']) || !isset($databases[$_GET['database']]) || !isset($_GET['id']) || !PublicMessage::publicMessageExists($_GET['id']))
 	{
 ?>
