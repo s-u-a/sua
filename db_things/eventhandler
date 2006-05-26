@@ -80,9 +80,24 @@ EOF
 
 		set_time_limit(0);
 
+		if(!touch(global_setting("DB_EVENTHANDLER_PIDFILE")) || !($fh_pid = fopen(global_setting("DB_EVENTHANDLER_PIDFILE"), 'r+')))
+		{
+			fputs(STDERR, "Error, couldn't create pid file ".global_setting("DB_EVENTHANDLER_PIDFILE").".\n");
+			exit(1);
+		}
+
+		if(!flock($fh_pid, LOCK_EX + LOCK_NB))
+		{
+			fputs(STDERR, "Error, another instance seems already to be running. The PID seems to be ".trim(file_get_contents(global_setting("DB_EVENTHANDLER_PIDFILE"))).".\n");
+			exit(1);
+		}
+
+		ftruncate($fh_pid, 0);
+		fwrite($fh_pid, getmypid()."\n");
+
 		$databases = get_databases();
 
-		if($daemon) $errlog = fopen(global_setting("GDB_DIR").'/eventhandler.log', 'a');
+		if($daemon) $errlog = fopen(global_setting("DB_EVENTHANDLER_LOG"), 'a');
 		else $errlog = STDERR;
 
 		__autoload('Classes');
@@ -111,6 +126,8 @@ EOF
 			global $errlog;
 			global $use_jabber;
 			global $jabber;
+			global $fh_pid;
+			global $daemon;
 
 			if(defined('terminate') && terminate)
 			{
@@ -122,6 +139,12 @@ EOF
 				}
 
 				fputs($errlog, time_prefix()."Terminated.\n");
+
+				ftruncate($fh_pid, 0);
+				flock($fh_pid, LOCK_UN);
+				fclose($fh_pid);
+				if($daemon) fclose($errlog);
+
 				exit(0);
 			}
 		}
@@ -179,22 +202,22 @@ EOF
 		function sig_handler($signo)
 		{
 			global $errlog;
-			fputs($errlog, time_prefix());
+			global $databases;
 			switch($signo)
 			{
 				case SIGTERM:
-					fputs($errlog, "SIGTERM (".SIGTERM.")\n");
+					fputs($errlog, time_prefix()."SIGTERM (".SIGTERM.")\n");
 					if(!defined('terminate')) define('terminate', true);
 					break;
 				case SIGINT:
-					fputs($errlog, "SIGINT (".SIGINT.")\n");
+					fputs($errlog, time_prefix()."SIGINT (".SIGINT.")\n");
 					if(!defined('terminate')) define('terminate', true);
 					break;
 				case SIGHUP:
-					fputs($errlog, "SIGHUP (".SIGHUP.")\n");
+					fputs($errlog, time_prefix()."SIGHUP (".SIGHUP.")\n");
 					break;
 				case SIGUSR1:
-					fputs($errlog, "SIGUSR1 (".SIGUSR1.")\n");
+					fputs($errlog, time_prefix()."SIGUSR1 (".SIGUSR1.")\n");
 
 					fputs($errlog, time_prefix()."Rescanning databases... ");
 					global $databases;
@@ -232,6 +255,17 @@ EOF
 					}
 
 					break;
+				case SIGUSR2:
+					fputs($errlog, time_prefix()."SIGUSR2 (".SIGUSR2.")\n");
+					foreach($databases as $selected_database=>$dbinfo)
+					{
+						if(!is_dir($dbinfo[0])) continue;
+
+						define_globals($selected_database);
+						walkthrough_users();
+						check_termination();
+					}
+					break;
 			}
 		}
 
@@ -240,6 +274,7 @@ EOF
 			pcntl_signal(SIGTERM, "sig_handler");
 			pcntl_signal(SIGINT, "sig_handler");
 			pcntl_signal(SIGUSR1, "sig_handler");
+			pcntl_signal(SIGUSR2, "sig_handler");
 			if($daemon)
 			{
 				pcntl_signal(SIGHUP, "sig_handler");
@@ -300,6 +335,7 @@ EOF
 
 			# Rohstoffe aller Planeten aller Benutzer zusammenzaehlen
 			# Alte Nachrichten loeschen
+			$ges_ress = array(0, 0, 0, 0, 0);
 			$deleted_messages = 0;
 			$processed_messages = array();
 

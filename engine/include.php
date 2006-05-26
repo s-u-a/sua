@@ -61,6 +61,8 @@
 	global_setting('DB_REVISION', $GDB_DIR.'/revision');
 	global_setting('DB_MESSENGERS', $GDB_DIR.'/messengers');
 	global_setting('DB_NOTIFICATIONS', $GDB_DIR.'/notifications');
+	global_setting('DB_EVENTHANDLER_LOG', $GDB_DIR.'/eventhandler.log');
+	global_setting('DB_EVENTHANDLER_PIDFILE', $GDB_DIR.'/eventhandler.pid');
 	global_setting('EVENTHANDLER_INTERVAL', 2);
 	global_setting('THS_HTML', '&nbsp;');
 	global_setting('THS_UTF8', "\xc2\xa0");
