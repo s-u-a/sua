@@ -80,7 +80,7 @@
 			else return false;
 		}
 
-		function addMessage($uin, $protocol, $username, $message, $database, $special_id, $time=false)
+		function addMessage($uin, $protocol, $username, $message, $database, $special_id="", $time=false)
 		{
 			if(!$this->status) return false;
 
