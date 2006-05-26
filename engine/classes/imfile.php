@@ -51,7 +51,7 @@
 		{
 			if(!$this->status) return false;
 
-			$ret = sqlite_array_query($this->connection, "SELECT * FROM to_check WHERE uin = '".sqlite_escape_string($uin)."' AND protocol = '".sqlite_escape_string($protocol)."' AND checksum = '".sqlite_escape_string($checksum)."' AND database = '".sqlite_escape_string(global_setting("DB"))."' LIMIT 1;", SQLITE_ASSOC);
+			$ret = sqlite_array_query($this->connection, "SELECT * FROM to_check WHERE uin = '".sqlite_escape_string($uin)."' AND protocol = '".sqlite_escape_string($protocol)."' AND checksum = '".sqlite_escape_string($checksum)."' LIMIT 1;", SQLITE_ASSOC);
 			if(count($ret) >= 1)
 			{
 				list($ret) = $ret;
