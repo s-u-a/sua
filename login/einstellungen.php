@@ -161,9 +161,9 @@
 		else
 		{
 			$new_uin = (isset($_POST['im-uin']) ? trim($_POST['im-uin']) : $messenger_settings[0]);
-			$new_protocol = (isset($_POST['im-protocol']) ? trim($_POST['im-protocol']) : $messenger_settings[1]);
+			$new_protocol = ((isset($_POST['im-protocol']) && isset($messengers[$_POST['im-protocol']])) ? trim($_POST['im-protocol']) : $messenger_settings[1]);
 
-			if($me->checkNewNotificationType($new_uin, $new_protocol))
+			if((!isset($messengers[$new_protocol]['blocked']) || !in_array(strtolower($new_uin), explode(',', strtolower(trim($messengers[$new_protocol]['blocked']))))) && $me->checkNewNotificationType($new_uin, $new_protocol))
 			{
 				$imfile = Classes::IMFile();
 				$rand_id = $imfile->addCheck($new_uin, $new_protocol, $me->getName());
