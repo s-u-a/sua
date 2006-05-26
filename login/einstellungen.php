@@ -155,6 +155,8 @@
 		{
 			# IM deaktivieren
 			$me->disableNotification();
+			$imfile = Classes::IMFile();
+			$imfile->removeMessages($me->getName());
 		}
 		else
 		{
@@ -164,8 +166,8 @@
 			if($me->checkNewNotificationType($new_uin, $new_protocol))
 			{
 				$imfile = Classes::IMFile();
-				$rand_id = $imfile->addCheck($new_uin, $new_protocol, $me->getName(), $_SESSION['database']);
-				$imfile->addMessage($new_uin, $new_protocol, $me->getName(), "Sie erhalten diese Nachricht, weil jemand in Stars Under Attack diesen Account zur Benachrichtigung eingetragen hat. Ignorieren Sie die Nachricht, wenn Sie die Eintragung nicht vornehmen möchten. Um die Einstellung zu bestätigen, antworten Sie bitte auf diese Nachricht folgenden Code: ".$rand_id, $_SESSION['database']);
+				$rand_id = $imfile->addCheck($new_uin, $new_protocol, $me->getName());
+				$imfile->addMessage($new_uin, $new_protocol, $me->getName(), "Sie erhalten diese Nachricht, weil jemand in Stars Under Attack diesen Account zur Benachrichtigung eingetragen hat. Ignorieren Sie die Nachricht, wenn Sie die Eintragung nicht vornehmen möchten. Um die Einstellung zu bestätigen, antworten Sie bitte auf diese Nachricht folgenden Code: ".$rand_id);
 			}
 		}
 	}

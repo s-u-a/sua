@@ -3092,7 +3092,7 @@
 						$message = "Gebäudebau abgeschlossen: ".$item_info['name']." (".($item_info['level']+($building[2] ? -1 : 1)).")";
 					else
 						$message = "Forschung fertiggestellt: ".$item_info['name']." (".($item_info['level']+1).")";
-					$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $message, global_setting("DB"), $special_id, $building[1]);
+					$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $message, $special_id, $building[1]);
 					break;
 				case 'roboter': case 'schiffe': case 'verteidigung':
 					switch($type)
@@ -3112,7 +3112,7 @@
 								for($i=0; $i<$b[2]; $i++)
 								{
 									$time += $b[3];
-									$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), ucfirst($art)." ".$singular." der Sorte ".$item_info['name']." wurde fertiggestellt.", global_setting("DB"), $special_id, $time);
+									$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), ucfirst($art)." ".$singular." der Sorte ".$item_info['name']." wurde fertiggestellt.", $special_id, $time);
 								}
 							}
 							break;
@@ -3120,13 +3120,13 @@
 							foreach($building as $b)
 							{
 								$item_info = $this->getItemInfo($b[0], $type);
-								$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $b[2]." ".($b[2]==1 ? $singular : $plural)." der Sorte ".$item_info['name']." ".($b[2]==1 ? 'wurde' : 'wurden')." fertiggestellt.", global_setting("DB"), $special_id, $b[1]+$b[2]*$b[3]);
+								$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $b[2]." ".($b[2]==1 ? $singular : $plural)." der Sorte ".$item_info['name']." ".($b[2]==1 ? 'wurde' : 'wurden')." fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
 							}
 							break;
 						case 3:
 							$keys = array_keys($building);
 							$b = $building[array_pop($keys)];
-							$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), "Alle ".$plural." wurden fertiggestellt.", global_setting("DB"), $special_id, $b[1]+$b[2]*$b[3]);
+							$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), "Alle ".$plural." wurden fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
 							break;
 					}
 					break;

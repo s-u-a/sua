@@ -759,6 +759,7 @@ EOF
 							if($user->getStatus() == 1 && $user->doSetNotificationType($from, $transport))
 							{
 								$imfile->removeChecks($username[0]);
+								$imfile->changeUIN($username[0], $from, $transport);
 								unset($user);
 								Classes::resetInstances();
 

@@ -36,13 +36,13 @@
 			return $number.': '.sqlite_error_string($this->connection);
 		}
 
-		function addCheck($uin, $protocol, $username, $database)
+		function addCheck($uin, $protocol, $username)
 		{
 			if(!$this->status) return false;
 
 			$rand_id = substr(md5(rand()), 0, 8);
 
-			if(sqlite_query($this->connection, "INSERT INTO to_check ( uin, protocol, username, database, checksum ) VALUES ( '".sqlite_escape_string($uin)."', '".sqlite_escape_string($protocol)."', '".sqlite_escape_string($username)."', '".sqlite_escape_string($database)."', '".sqlite_escape_string($rand_id)."' );"))
+			if(sqlite_query($this->connection, "INSERT INTO to_check ( uin, protocol, username, database, checksum ) VALUES ( '".sqlite_escape_string($uin)."', '".sqlite_escape_string($protocol)."', '".sqlite_escape_string($username)."', '".sqlite_escape_string(global_setting("DB"))."', '".sqlite_escape_string($rand_id)."' );"))
 				return $rand_id;
 			else return false;
 		}
@@ -51,7 +51,7 @@
 		{
 			if(!$this->status) return false;
 
-			$ret = sqlite_array_query($this->connection, "SELECT * FROM to_check WHERE uin = '".sqlite_escape_string($uin)."' AND protocol = '".sqlite_escape_string($protocol)."' AND checksum = '".sqlite_escape_string($checksum)."' LIMIT 1;", SQLITE_ASSOC);
+			$ret = sqlite_array_query($this->connection, "SELECT * FROM to_check WHERE uin = '".sqlite_escape_string($uin)."' AND protocol = '".sqlite_escape_string($protocol)."' AND checksum = '".sqlite_escape_string($checksum)."' AND database = '".sqlite_escape_string(global_setting("DB"))."' LIMIT 1;", SQLITE_ASSOC);
 			if(count($ret) >= 1)
 			{
 				list($ret) = $ret;
@@ -64,7 +64,7 @@
 		{
 			if(!$this->status) return false;
 
-			return sqlite_query($this->connection, "DELETE FROM to_check WHERE username='".sqlite_escape_string($username)."';");
+			return sqlite_query($this->connection, "DELETE FROM to_check WHERE username='".sqlite_escape_string($username)."' AND database = '".sqlite_escape_string(global_setting("DB"))."';");
 		}
 
 		function shiftNextMessage()
@@ -80,19 +80,19 @@
 			else return false;
 		}
 
-		function addMessage($uin, $protocol, $username, $message, $database, $special_id="", $time=false)
+		function addMessage($uin, $protocol, $username, $message, $special_id="", $time=false)
 		{
 			if(!$this->status) return false;
 
 			if($time === false) $time = time();
-			return sqlite_query($this->connection, "INSERT INTO notifications ( uin, time, protocol, username, message, database, special_id ) VALUES ( '".sqlite_escape_string($uin)."', '".sqlite_escape_string($time)."', '".sqlite_escape_string($protocol)."', '".sqlite_escape_string($username)."', '".sqlite_escape_string($message)."', '".sqlite_escape_string($database)."', '".sqlite_escape_string($special_id)."' );");
+			return sqlite_query($this->connection, "INSERT INTO notifications ( uin, time, protocol, username, message, database, special_id ) VALUES ( '".sqlite_escape_string($uin)."', '".sqlite_escape_string($time)."', '".sqlite_escape_string($protocol)."', '".sqlite_escape_string($username)."', '".sqlite_escape_string($message)."', '".sqlite_escape_string(global_setting("DB"))."', '".sqlite_escape_string($special_id)."' );");
 		}
 
 		function renameUser($old_username, $new_username)
 		{
 			if(!$this->status) return false;
 
-			return (sqlite_query($this->connection, "UPDATE notifications SET username = '".sqlite_escape_string($new_username)."' WHERE username = '".sqlite_escape_string($old_username)."';") && sqlite_query($this->connection, "UPDATE to_check SET username = '".sqlite_escape_string($new_username)."' WHERE username = '".sqlite_escape_string($old_username)."';"));
+			return (sqlite_query($this->connection, "UPDATE notifications SET username = '".sqlite_escape_string($new_username)."' WHERE username = '".sqlite_escape_string($old_username)."' AND database = '".sqlite_escape_string(global_setting("DB"))."';") && sqlite_query($this->connection, "UPDATE to_check SET username = '".sqlite_escape_string($new_username)."' WHERE username = '".sqlite_escape_string($old_username)."' AND database = '".sqlite_escape_string(global_setting("DB"))."';"));
 		}
 
 		function removeMessages($username, $special_id=false)
@@ -100,9 +100,16 @@
 			if(!$this->status) return false;
 
 			if($special_id === false)
-				return sqlite_query($this->connection, "DELETE FROM notifications WHERE username = '".sqlite_escape_string($username)."';");
+				return sqlite_query($this->connection, "DELETE FROM notifications WHERE username = '".sqlite_escape_string($username)."' AND database = '".sqlite_escape_string(global_setting("DB"))."';");
 			else
-				return sqlite_query($this->connection, "DELETE FROM notifications WHERE username = '".sqlite_escape_string($username)."' AND special_id = '".sqlite_escape_string($special_id)."';");
+				return sqlite_query($this->connection, "DELETE FROM notifications WHERE username = '".sqlite_escape_string($username)."' AND database = '".sqlite_escape_string(global_setting("DB"))."' AND special_id = '".sqlite_escape_string($special_id)."';");
+		}
+
+		function changeUIN($username, $uin, $protocol)
+		{
+			if(!$this->status) return false;
+
+			return sqlite_query($this->connection, "UPDATE notifications set uin = '".sqlite_escape_string($uin)."', protocol = '".sqlite_escape_string($protocol)."' WHERE username = '".sqlite_escape_string($username)."' AND database = '".sqlite_escape_string(global_setting("DB"))."';");
 		}
 	}
 ?>
