@@ -1543,6 +1543,8 @@
 				if(isset($this->raw[$setting])) $this->settings[$setting] = $this->raw[$setting];
 				else $this->settings[$setting] = $default;
 			}
+			if(!isset($this->settings['messenger_receive']['building']))
+				$this->settings['messenger_receive']['building'] = array('gebaeude' => 1, 'forschung' => 1, 'roboter' => 3, 'schiffe' => 3, 'verteidigung' => 3);
 
 			$this->items = array();
 			$this->items['forschung'] = $this->raw['forschung'];

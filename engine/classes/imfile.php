@@ -13,7 +13,7 @@
 				if($this->connection)
 				{
 					$table_check = sqlite_query($this->connection, "SELECT name FROM sqlite_master WHERE type='table' AND name='to_check' OR name='notifications';");
-					if(sqlite_num_rows($table_check)!=0 || (sqlite_query($this->connection, "CREATE TABLE to_check ( uin, protocol, username, database, checksum );") && sqlite_query($this->connection, "CREATE TABLE notifications ( no INT PRIMARY KEY, time INT, uin, protocol, username, message, database, special_id );")))
+					if(sqlite_num_rows($table_check)!=0 || (sqlite_query($this->connection, "CREATE TABLE to_check ( uin, protocol, username, database, checksum );") && sqlite_query($this->connection, "CREATE TABLE notifications ( time INT, uin, protocol, username, message, database, special_id );")))
 						$this->status = true;
 				}
 			}
