@@ -96,6 +96,42 @@
 		$me->setSetting('show_building', $show_building);
 	}
 
+	if(isset($_POST['im-receive']) && isset($_POST['im-receive']['building']))
+	{
+		$im_recalc = array('gebaeude' => false, 'forschung' => false, 'roboter' => false, 'schiffe' => false, 'verteidigung' => false);
+		if(isset($_POST['im-receive']['building']['gebaeude']) && in_array($_POST['im-receive']['building']['gebaeude'], array(0,1)) && $_POST['im-receive']['building']['gebaeude'] != $messenger_receive['building']['gebaeude'])
+		{
+			$messenger_receive['building']['gebaeude'] = $_POST['im-receive']['building']['gebaeude'];
+			$im_recalc['gebaeude'] = true;
+		}
+		if(isset($_POST['im-receive']['building']['forschung']) && in_array($_POST['im-receive']['building']['forschung'], array(0,1)) && $_POST['im-receive']['building']['forschung'] != $messenger_receive['building']['forschung'])
+		{
+			$messenger_receive['building']['forschung'] = $_POST['im-receive']['building']['forschung'];
+			$im_recalc['forschung'] = true;
+		}
+		if(isset($_POST['im-receive']['building']['roboter']) && in_array($_POST['im-receive']['building']['roboter'], array(0,1,2,3)) && $_POST['im-receive']['building']['roboter'] != $messenger_receive['building']['roboter'])
+		{
+			$messenger_receive['building']['roboter'] = $_POST['im-receive']['building']['roboter'];
+			$im_recalc['roboter'] = true;
+		}
+		if(isset($_POST['im-receive']['building']['schiffe']) && in_array($_POST['im-receive']['building']['schiffe'], array(0,1,2,3)) && $_POST['im-receive']['building']['schiffe'] != $messenger_receive['building']['schiffe'])
+		{
+			$messenger_receive['building']['schiffe'] = $_POST['im-receive']['building']['schiffe'];
+			$im_recalc['schiffe'] = true;
+		}
+		if(isset($_POST['im-receive']['building']['verteidigung']) && in_array($_POST['im-receive']['building']['verteidigung'], array(0,1,2,3)) && $_POST['im-receive']['building']['verteidigung'] != $messenger_receive['building']['verteidigung'])
+		{
+			$messenger_receive['building']['verteidigung'] = $_POST['im-receive']['building']['verteidigung'];
+			$im_recalc['verteidigung'] = true;
+		}
+
+		$me->setSetting('messenger_receive', $messenger_receive);
+		foreach($im_recalc as $which=>$whether)
+		{
+			if($whether) $me->refreshMessengerBuildingNotifications($which);
+		}
+	}
+
 	if(!$me->userLocked() && isset($_POST['umode']) && ($me->permissionToUmode() || isset($_SESSION['admin_username'])))
 		$me->umode(!$me->umode());
 
@@ -310,22 +346,22 @@
 					<th>Roboter</th>
 					<td><input type="radio" name="building[roboter]" value="0"<?=($show_building['roboter']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 					<td><input type="radio" name="building[roboter]" value="1"<?=($show_building['roboter']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
-					<td><input type="radio" name="building[roboter]" value="2"<?=($show_building['roboter']===2) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
-					<td><input type="radio" name="building[roboter]" value="3"<?=($show_building['roboter']===3) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[roboter]" value="2"<?=($show_building['roboter']==2) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[roboter]" value="3"<?=($show_building['roboter']==3) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 				</tr>
 				<tr class="c-schiffe">
 					<th>Schiffe</th>
 					<td><input type="radio" name="building[schiffe]" value="0"<?=($show_building['schiffe']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 					<td><input type="radio" name="building[schiffe]" value="1"<?=($show_building['schiffe']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
-					<td><input type="radio" name="building[schiffe]" value="2"<?=($show_building['schiffe']===2) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
-					<td><input type="radio" name="building[schiffe]" value="3"<?=($show_building['schiffe']===3) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[schiffe]" value="2"<?=($show_building['schiffe']==2) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[schiffe]" value="3"<?=($show_building['schiffe']==3) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 				</tr>
 				<tr class="c-verteidigung">
 					<th>Verteidigung</th>
 					<td><input type="radio" name="building[verteidigung]" value="0"<?=($show_building['verteidigung']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 					<td><input type="radio" name="building[verteidigung]" value="1"<?=($show_building['verteidigung']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
-					<td><input type="radio" name="building[verteidigung]" value="2"<?=($show_building['verteidigung']===2) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
-					<td><input type="radio" name="building[verteidigung]" value="3"<?=($show_building['verteidigung']===3) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[verteidigung]" value="2"<?=($show_building['verteidigung']==2) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					<td><input type="radio" name="building[verteidigung]" value="3"<?=($show_building['verteidigung']==3) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 				</tr>
 			</tbody>
 		</table>
@@ -358,7 +394,7 @@
 		<script type="text/javascript">
 			document.getElementById('i-im-uin').disabled = !document.getElementById('i-im-protocol').value;
 		</script>
-		<fieldset>
+		<fieldset class="benachrichtigung-nachrichten">
 			<legend>Benachrichtigung bei Nachrichten</legend>
 			<dl>
 				<dt class="c-kaempfe"><label for="i-im-message-kaempfe">Kämpfe</label></dt>
@@ -382,6 +418,57 @@
 				<dt class="c-verbuendete"><label for="i-im-message-verbuendete">Verbündete</label></dt>
 				<dd class="c-verbuendete"><input type="checkbox" name="im-receive[messages][7]" id="i-im-message-verbuendete"<?=$messenger_receive['messages'][7] ? ' checked="checked"' : ''?> /></dd>
 			</dl>
+		</fieldset>
+		<fieldset class="benachrichtigung-fertigstellung">
+			<legend>Benachrichtigung bei Fertigstellung</legend>
+			<table>
+				<thead>
+					<tr>
+						<th>Gegenstandsart</th>
+						<th title="Benachrichtigt nicht bei Fertigstellung">Ausgeschaltet</th>
+						<th title="Benachrichtigt bei jedem Gegenstand, der fertiggestellt wird.">Jeder Gegenstand</th>
+						<th title="Benachricht, sobald alle Gegenstände einer Sorte fertiggestellt wurden (zum Beispiel sobald alle Bauroboter fertiggestellt wurden und nun mit der Produktion von Carbonrobotern begonnen wird).">Jeder Gegenstandstyp</th>
+						<th title="Benachrichtigt, sobald alle Gegenstände fertiggestellt wurden.">Alle Gegenstände</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="c-gebauede">
+						<th>Gebäude</th>
+						<td><input type="radio" name="im-receive[building][gebaeude]" value="0"<?=($messenger_receive['building']['gebaeude']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td><input type="radio" name="im-receive[building][gebaeude]" value="1"<?=($messenger_receive['building']['gebaeude']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr class="c-forschung">
+						<th>Forschung</th>
+						<td><input type="radio" name="im-receive[building][forschung]" value="0"<?=($messenger_receive['building']['forschung']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td><input type="radio" name="im-receive[building][forschung]" value="1"<?=($messenger_receive['building']['forschung']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr class="c-roboter">
+						<th>Roboter</th>
+						<td><input type="radio" name="im-receive[building][roboter]" value="0"<?=($messenger_receive['building']['roboter']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td><input type="radio" name="im-receive[building][roboter]" value="1"<?=($messenger_receive['building']['roboter']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td><input type="radio" name="im-receive[building][roboter]" value="2"<?=($messenger_receive['building']['roboter']==2) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td><input type="radio" name="im-receive[building][roboter]" value="3"<?=($messenger_receive['building']['roboter']==3) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					</tr>
+					<tr class="c-schiffe">
+						<th>Schiffe</th>
+						<td><input type="radio" name="im-receive[building][schiffe]" value="0"<?=($messenger_receive['building']['schiffe']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td><input type="radio" name="im-receive[building][schiffe]" value="1"<?=($messenger_receive['building']['schiffe']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td><input type="radio" name="im-receive[building][schiffe]" value="2"<?=($messenger_receive['building']['schiffe']==2) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td><input type="radio" name="im-receive[building][schiffe]" value="3"<?=($messenger_receive['building']['schiffe']==3) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					</tr>
+					<tr class="c-verteidigung">
+						<th>Verteidigung</th>
+						<td><input type="radio" name="im-receive[building][verteidigung]" value="0"<?=($messenger_receive['building']['verteidigung']==0) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td><input type="radio" name="im-receive[building][verteidigung]" value="1"<?=($messenger_receive['building']['verteidigung']==1) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td><input type="radio" name="im-receive[building][verteidigung]" value="2"<?=($messenger_receive['building']['verteidigung']==2) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td><input type="radio" name="im-receive[building][verteidigung]" value="3"<?=($messenger_receive['building']['verteidigung']==3) ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+					</tr>
+				</tbody>
+			</table>
 		</fieldset>
 	</fieldset>
 <?php

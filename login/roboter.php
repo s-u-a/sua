@@ -3,7 +3,7 @@
 
 	if(isset($_POST['cancel-all-roboter']))
 	{
-		if($me->checkPassword($_POST['cancel-all-roboter']) && $me->removeBuildingThing('roboter'))
+		if($me->checkPassword($_POST['cancel-all-roboter']) && $me->removeBuildingThing('roboter', true))
 			delete_request();
 	}
 

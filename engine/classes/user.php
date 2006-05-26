@@ -365,11 +365,13 @@
 			$active_forschung = $this->checkBuildingThing('forschung');
 			if($active_forschung && $active_forschung[2])
 				$this->planet_info['building']['forschung'][4] = $planet2;
+			$this->refreshMessengerBuildingNotifications();
 
 			$this->setActivePlanet($planet2);
 			$active_forschung = $this->checkBuildingThing('forschung');
 			if($active_forschung && $active_forschung[2])
 				$this->planet_info['building']['forschung'][4] = $planet;
+			$this->refreshMessengerBuildingNotifications();
 
 			if($new_active_planet != $planet2) $this->setActivePlanet($new_active_planet);
 
@@ -1646,12 +1648,19 @@
 					unset($this->planet_info['building'][$type]);
 					$this->changed = true;
 
+					if($cancel)
+						$this->refreshMessengerBuildingNotifications($type);
+
 					return true;
 				case 'roboter': case 'schiffe': case 'verteidigung':
 					if(!isset($this->planet_info['building']) || !isset($this->planet_info['building'][$type]) || count($this->planet_info['building'][$type]) <= 0)
 						return false;
 					unset($this->planet_info['building'][$type]);
 					$this->changed = true;
+
+					if($cancel)
+						$this->refreshMessengerBuildingNotifications($type);
+
 					return true;
 			}
 		}
@@ -2287,6 +2296,8 @@
 				# Rohstoffe abziehen
 				$this->subtractRess($ress);
 
+				$this->refreshMessengerBuildingNotifications('gebaeude');
+
 				return true;
 			}
 			return false;
@@ -2332,6 +2343,8 @@
 				else $this->planet_info['building']['forschung'] = $build_array;
 
 				$this->subtractRess($item_info['ress']);
+
+				$this->refreshMessengerBuildingNotifications('forschung');
 
 				$this->changed = true;
 
@@ -2402,6 +2415,8 @@
 
 			$this->subtractRess($ress);
 
+			$this->refreshMessengerBuildingNotifications('roboter');
+
 			$this->changed = true;
 
 			return true;
@@ -2468,6 +2483,8 @@
 			$build_array[2] += $anzahl;
 
 			$this->subtractRess($ress);
+
+			$this->refreshMessengerBuildingNotifications('schiffe');
 
 			$this->changed = true;
 
@@ -2536,6 +2553,8 @@
 
 			$this->subtractRess($ress);
 
+			$this->refreshMessengerBuildingNotifications('verteidigung');
+
 			$this->changed = true;
 
 			return true;
@@ -2588,6 +2607,10 @@
 				foreach(array_reverse($fleet_obj->getUsersList()) as $username)
 					$fleet_obj->callBack($username);
 			}
+
+			# IM-Benachrichtigungen entfernen
+			$imfile = Classes::IMFile();
+			$imfile->removeMessages($this->getName());
 
 			$status = (unlink($this->filename) || chmod($this->filename, 0));
 			if($status)
@@ -2834,6 +2857,10 @@
 			$highscores = Classes::Highscores();
 			$highscores->renameUser($this->name, $new_name);
 
+			# IM-Benachrichtigungen aendern
+			$imfile = Classes::IMFile();
+			$imfile->renameUser($this->name, $new_name);
+
 			$this->raw['username'] = $new_name;
 			$this->changed = true;
 
@@ -3024,6 +3051,86 @@
 			if(!$this->status) return false;
 
 			return (isset($this->raw['email_passwd']) && $this->raw['email_passwd'] && $this->raw['email_passwd'] == $id);
+		}
+
+		function refreshMessengerBuildingNotifications($type=false)
+		{
+			if(!$this->status || !$this->planet_info) return false;
+
+			if($type == false)
+			{
+				return ($this->refreshMessengerBuildingNotifications('gebaeude')
+				&& $this->refreshMessengerBuildingNotifications('forschung')
+				&& $this->refreshMessengerBuildingNotifications('roboter')
+				&& $this->refreshMessengerBuildingNotifications('schiffe')
+				&& $this->refreshMessengerBuildingNotifications('verteidigung'));
+			}
+
+			if(!in_array($type, array('gebaeude', 'forschung', 'roboter', 'schiffe', 'verteidigung')))
+				return false;
+
+			$special_id = $this->getActivePlanet().'-'.$type;
+			$imfile = Classes::IMFile();
+			$imfile->removeMessages($this->getName(), $special_id);
+
+			$messenger_receive = $this->checkSetting('messenger_receive');
+			if(!$messenger_receive['building'][$type]) return 2;
+			$building = $this->checkBuildingThing($type);
+			if(!$building) return false;
+			$messenger_settings = $this->getNotificationType();
+
+			switch($type)
+			{
+				case 'gebaeude': case 'forschung':
+					if(!$building || ($type == 'forschung' && $building[2] && $this->getActivePlanet() != $building[4]))
+						break;
+
+					$item_info = $this->getItemInfo($building[0], $type);
+
+					if($type == 'gebaeude')
+						$message = "Gebäudebau abgeschlossen: ".$item_info['name']." (".($item_info['level']+($building[2] ? -1 : 1)).")";
+					else
+						$message = "Forschung fertiggestellt: ".$item_info['name']." (".($item_info['level']+1).")";
+					$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $message, global_setting("DB"), $special_id, $building[1]);
+					break;
+				case 'roboter': case 'schiffe': case 'verteidigung':
+					switch($type)
+					{
+						case 'roboter': $singular = 'Roboter'; $plural = 'Roboter'; $art = 'ein'; break;
+						case 'schiffe': $singular = 'Schiff'; $plural = 'Schiffe'; $art = 'ein'; break;
+						case 'verteidigung': $singular = 'Verteidigungsanlage'; $plural = 'Verteidigungsanlagen'; $art = 'eine'; break;
+					}
+
+					switch($messenger_receive['building'][$type])
+					{
+						case 1:
+							foreach($building as $b)
+							{
+								$item_info = $this->getItemInfo($b[0], $type);
+								$time = $b[1];
+								for($i=0; $i<$b[2]; $i++)
+								{
+									$time += $b[3];
+									$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), ucfirst($art)." ".$singular." der Sorte ".$item_info['name']." wurde fertiggestellt.", global_setting("DB"), $special_id, $time);
+								}
+							}
+							break;
+						case 2:
+							foreach($building as $b)
+							{
+								$item_info = $this->getItemInfo($b[0], $type);
+								$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $b[2]." ".($b[2]==1 ? $singular : $plural)." der Sorte ".$item_info['name']." ".($b[2]==1 ? 'wurde' : 'wurden')." fertiggestellt.", global_setting("DB"), $special_id, $b[1]+$b[2]*$b[3]);
+							}
+							break;
+						case 3:
+							$keys = array_keys($building);
+							$b = $building[array_pop($keys)];
+							$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), "Alle ".$plural." wurden fertiggestellt.", global_setting("DB"), $special_id, $b[1]+$b[2]*$b[3]);
+							break;
+					}
+					break;
+			}
+			return true;
 		}
 	}
 
