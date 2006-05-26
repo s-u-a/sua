@@ -137,7 +137,7 @@ EOF
 					fputs($errlog, "Done.\n");
 				}
 
-				fputs($errlog, time_prefix()."Terminated.\n");
+				fputs($errlog, time_prefix()."Terminated.\n\n");
 
 				ftruncate($fh_pid, 0);
 				flock($fh_pid, LOCK_UN);
@@ -736,7 +736,7 @@ EOF
 					$jabber->Listen();
 					while($p = array_shift($jabber->packet_queue))
 					{
-						if(!isset($p['message'])) continue;
+						if(!isset($p['message']) || !isset($p['message']['#']['body'])) continue;
 
 						$message = $p['message']['#']['body'][0]['#'];
 						list($from) = explode('/', $p['message']['@']['from'], 2);
