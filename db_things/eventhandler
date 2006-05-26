@@ -93,7 +93,6 @@ EOF
 		}
 
 		ftruncate($fh_pid, 0);
-		fwrite($fh_pid, getmypid()."\n");
 
 		$databases = get_databases();
 
@@ -164,13 +163,16 @@ EOF
 			if(function_exists('pcntl_fork')) $pid = pcntl_fork();
 			else $pid = -1;
 
-			if($pid == -1) fputs(STDERR, time_prefix()."Forking failed, continuing.\n");
+			if($pid == -1)
+				fputs(STDERR, time_prefix()."Forking failed, continuing.\n");
 			elseif($pid)
 			{
 				fputs(STDOUT, time_prefix()."Eventhandler forked, PID ".$pid.".\n");
 				exit(0);
 			}
 		}
+
+		fwrite($fh_pid, getmypid()."\n");
 
 		function error_handler($errno, $errstr, $errfile, $errline, $errcontext)
 		{
