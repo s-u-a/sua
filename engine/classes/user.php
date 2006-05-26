@@ -3077,8 +3077,9 @@
 			$messenger_receive = $this->checkSetting('messenger_receive');
 			if(!$messenger_receive['building'][$type]) return 2;
 			$building = $this->checkBuildingThing($type);
-			if(!$building) return false;
+			if(!$building) return 2;
 			$messenger_settings = $this->getNotificationType();
+			if(!$messenger_settings) return 2;
 
 			switch($type)
 			{
