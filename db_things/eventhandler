@@ -333,7 +333,7 @@ EOF
 			global $last_walked;
 			$last_walked = date('Y-m-d');
 
-			fputs($errlog, "\n".time_prefix()."Walking through users...\n");
+			fputs($errlog, "\n".time_prefix()."Walking through users for database ".global_setting("DB")."...\n");
 
 			# Rohstoffe aller Planeten aller Benutzer zusammenzaehlen
 			# Alte Nachrichten loeschen
@@ -424,6 +424,13 @@ EOF
 					$user->setActivePlanet($planet);
 					$ress = $user->getRess();
 					unset($ress[5]); # Energie soll nicht miteinberechnet werden
+
+					if(min($ress) < 0)
+					{
+						fputs($errlog, time_prefix()."Warning: Planet ".$user->getPosString()." (".$user->getName().") has negative resources.\n");
+						continue;
+					}
+
 					$min = max($ress);
 					if($min != 0)
 					{
