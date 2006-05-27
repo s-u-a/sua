@@ -179,24 +179,6 @@
 	# Zu jeder Flottenauftragsart die zugehoerige Nachrichtensorte
 	$types_message_types = array(1=>5, 2=>4, 3=>1, 4=>3, 5=>2, 6=>3);
 
-	# Jabber-Services und -Server
-	$jabber_transport_services = array(
-		'jabber' => 'amessage.info',
-		'aim' => 'aim.gate.amessage.de',
-		'icq' => 'icq.amessage.info',
-		'msn' => 'msn.gate.amessage.de',
-		'yahoo' => 'yahoo.amessage.info'
-	);
-
-	$jabber_transport_names = array(
-		'jabber' => "Jabber",
-		'icq', "ICQ",
-		'aim', "AIM",
-		'msn', "MSN",
-		'yahoo', "Yahoo"
-	);
-
-
 	function &stripslashes_r(&$var)
 	{ # Macht rekursiv in einem Array addslashes() rueckgaengig
 		if(is_array($var))
