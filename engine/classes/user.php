@@ -957,6 +957,27 @@
 					}
 				}*/
 
+				$global_factors = get_global_factors();
+
+				if(isset($info['time']))
+					$info['time'] *= $global_factors['time'];
+				if(isset($info['prod']))
+				{
+					$info['prod'][0] *= $global_factors['prod'];
+					$info['prod'][1] *= $global_factors['prod'];
+					$info['prod'][2] *= $global_factors['prod'];
+					$info['prod'][3] *= $global_factors['prod'];
+					$info['prod'][4] *= $global_factors['prod'];
+					$info['prod'][5] *= $global_factors['prod'];
+				}
+				if(isset($info['ress']))
+				{
+					$info['ress'][0] *= $global_factors['cost'];
+					$info['ress'][1] *= $global_factors['cost'];
+					$info['ress'][2] *= $global_factors['cost'];
+					$info['ress'][3] *= $global_factors['cost'];
+				}
+
 				switch($type)
 				{
 					case 'gebaeude':

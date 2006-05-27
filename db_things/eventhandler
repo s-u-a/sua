@@ -756,10 +756,14 @@ EOF
 						{
 							define_globals($username[1]);
 							$user = Classes::User($username[0]);
+							$old_settings = $user->getNotificationType();
 							if($user->getStatus() == 1 && $user->doSetNotificationType($from, $transport))
 							{
 								$imfile->removeChecks($username[0]);
-								$imfile->changeUIN($username[0], $from, $transport);
+
+								if($old_settings)
+									$imfile->changeUIN($username[0], $from, $transport);
+								else $user->refreshMessengerBuildingNotifications();
 								unset($user);
 								Classes::resetInstances();
 

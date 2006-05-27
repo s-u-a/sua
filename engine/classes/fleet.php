@@ -370,7 +370,9 @@
 				$mass += $item_info['mass']*$count;
 			}
 
-			return $this->getDistance($from, $to)*$mass/1000000;
+			$global_factors = get_global_factors();
+
+			return $global_factors['cost']*$this->getDistance($from, $to)*$mass/1000000;
 		}
 
 		function getScores($user, $from, $to)
@@ -408,6 +410,10 @@
 
 			$time = sqrt($this->getDistance($from, $to)/$speed)*2;
 			$time /= $this->raw[1][$user][2];
+
+			$global_factors = get_global_factors();
+			$time *= $global_factors['time'];
+
 			return $time;
 		}
 

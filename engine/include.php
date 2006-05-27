@@ -107,6 +107,10 @@
 		global_setting('DB_ADMINS', $DB_DIR.'/admins');
 		global_setting('DB_NONOOBS', $DB_DIR.'/nonoobs');
 		global_setting('DB_ADMIN_LOGFILE', $DB_DIR.'/admin_logfile');
+		global_setting('DB_NO_STRICT_ROB_LIMITS', $DB_DIR.'/no_strict_rob_limits');
+		global_setting('DB_GLOBAL_TIME_FACTOR', $DB_DIR.'/global_time_factor');
+		global_setting('DB_GLOBAL_PROD_FACTOR', $DB_DIR.'/global_prod_factor');
+		global_setting('DB_GLOBAL_COST_FACTOR', $DB_DIR.'/global_cost_factor');
 
 		return true;
 	}
@@ -1353,5 +1357,35 @@
 			return $messenger_parsed_file[$type];
 		}
 		else return $messenger_parsed_file;
+	}
+
+	function get_global_factors($force_reload=false)
+	{
+		static $factors;
+
+		if(!isset($factors) || $force_reload)
+		{
+			$factors = array('time' => 1, 'prod' => 1, 'cost' => 1);
+			if(is_file(global_setting('DB_GLOBAL_TIME_FACTOR')) && is_readable(global_setting('DB_GLOBAL_TIME_FACTOR')))
+			{
+				$content = str_replace(',', '.', trim(file_get_contents(global_setting('DB_GLOBAL_TIME_FACTOR'))));
+				if(strlen($content) > 0 && preg_match("/^[0-9]*(\.[0-9]+)?$/", $content))
+					$factors['time'] = $content;
+			}
+			if(is_file(global_setting('DB_GLOBAL_PROD_FACTOR')) && is_readable(global_setting('DB_GLOBAL_PROD_FACTOR')))
+			{
+				$content = str_replace(',', '.', trim(file_get_contents(global_setting('DB_GLOBAL_PROD_FACTOR'))));
+				if(strlen($content) > 0 && preg_match("/^[0-9]*(\.[0-9]+)?$/", $content))
+					$factors['prod'] = $content;
+			}
+			if(is_file(global_setting('DB_GLOBAL_COST_FACTOR')) && is_readable(global_setting('DB_GLOBAL_COST_FACTOR')))
+			{
+				$content = str_replace(',', '.', trim(file_get_contents(global_setting('DB_GLOBAL_COST_FACTOR'))));
+				if(strlen($content) > 0 && preg_match("/^[0-9]*(\.[0-9]+)?$/", $content))
+					$factors['cost'] = $content;
+			}
+		}
+
+		return $factors;
 	}
 ?>

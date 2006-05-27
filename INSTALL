@@ -40,6 +40,7 @@ svn co svn://s-u-a.net/home/srv/svn/sua-extras/game-skins/default
 - To create more galaxies, change to universe/ in the database directory and run ./create_galaxy as many times as you wish.
 - To change building times or to create your own items, remove the symlinks from items/ in your database directory and copy their targets there (the files `gebaeude', `forschung', `roboter', `schiffe', `verteidigung' from the database.global/ game directory). Then you can change them without affecting other databases.
 - To configure instant messaging notifications, edit the file database.global/messengers. You find an example in database.global/messengers.example. Please mind that you have at least to define a Jabber account. Supported protocols until now: jabber, aim, icq, msn, yahoo. Only jabber and icq seem to work properly.
+- You can configure global factors for production, costs and time. Just enter numbers into the database files global_prod_factor, global_cost_factor, and global_time_factor.
 
 
 -----------------

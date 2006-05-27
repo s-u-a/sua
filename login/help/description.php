@@ -145,6 +145,14 @@
 		</thead>
 		<tbody>
 <?php
+				$global_factors = get_global_factors();
+				$prod[0] *= $global_factors['prod'];
+				$prod[1] *= $global_factors['prod'];
+				$prod[2] *= $global_factors['prod'];
+				$prod[3] *= $global_factors['prod'];
+				$prod[4] *= $global_factors['prod'];
+				$prod[5] *= $global_factors['prod'];
+
 				$start_lvl = $lvl-3;
 				if($start_lvl < 1)
 					$start_lvl = 1;
