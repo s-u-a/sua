@@ -1,8 +1,8 @@
 <?php
 	require('scripts/include.php');
-	
+
 	$active_planet = $me->getActivePlanet();
-	
+
 	switch(isset($_GET['action']) ? $_GET['action'] : false)
 	{
 		case 'roboter':
@@ -13,7 +13,7 @@
 			$action = 'ress';
 			break;
 	}
-	
+
 	function get_prod_class($prod)
 	{
 		if($prod > 0)
@@ -23,9 +23,9 @@
 		else
 			return 'null';
 	}
-	
+
 	login_gui::html_head();
-	
+
 	$tabindex = 1;
 ?>
 <h2>Imperium</h2>
@@ -114,7 +114,7 @@
 			{
 				$me->setActivePlanet($planet);
 				$this_prod = $me->getProduction();
-				
+
 				$ges[0] += $this_prod[0];
 				$ges[1] += $this_prod[1];
 				$ges[2] += $this_prod[2];
@@ -136,7 +136,7 @@
 		</tr>
 <?php
 			}
-			
+
 			$day_prod = array($ges[0]*24, $ges[1]*24, $ges[2]*24, $ges[3]*24, $ges[4]*24);
 			$show_day_prod = $day_prod;
 			$show_days = $me->checkSetting('prod_show_days');
@@ -225,7 +225,7 @@
 		if(tritium > 0) tritium_class = 'positiv';
 		else if(tritium < 0) tritium_class = 'negativ';
 		else tritium_class = 'null';
-		
+
 		if(gesamt > 0) gesamt_class = 'positiv';
 		else if(gesamt < 0) gesamt_class = 'negativ';
 		else gesamt_class = 'null';
@@ -289,10 +289,12 @@
 <?php
 			$ges = array();
 			$ges_max = array();
+			$use_max_limit = !file_exists(global_setting('DB_NO_STRICT_ROB_LIMITS'));
 			$planets = $me->getPlanetsList();
 			foreach($planets as $planet)
 			{
 				$me->setActivePlanet($planet);
+				$max_rob_limit = floor($me->getBasicFields()/2);
 ?>
 		<tr<?=($planet==$active_planet) ? ' class="active"' : ''?>>
 			<th class="c-planet" title="<?=utf8_htmlentities($me->planetName())?>"><a href="imperium.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>&amp;planet=<?=htmlentities(urlencode($planet))?>&amp;action=roboter"><?=utf8_htmlentities($me->getPosString())?></a></th>
@@ -304,12 +306,12 @@
 					$ges[$id] += $count;
 					switch($id)
 					{
-						case 'R01': $max = floor($me->getBasicFields()/2); break;
-						case 'R02': $max = $me->getItemLevel('B0'); break;
-						case 'R03': $max = $me->getItemLevel('B1'); break;
-						case 'R04': $max = $me->getItemLevel('B2'); break;
-						case 'R05': $max = $me->getItemLevel('B3'); break;
-						case 'R06': $max = $me->getItemLevel('B4'); break;
+						case 'R01': $max = $max_rob_limit; break;
+						case 'R02': $max = ($use_max_limit ? min($max_rob_limit, $me->getItemLevel('B0')) : $me->getItemLevel('B0')); break;
+						case 'R03': $max = ($use_max_limit ? min($max_rob_limit, $me->getItemLevel('B1')) : $me->getItemLevel('B1')); break;
+						case 'R04': $max = ($use_max_limit ? min($max_rob_limit, $me->getItemLevel('B2')) : $me->getItemLevel('B2')); break;
+						case 'R05': $max = ($use_max_limit ? min($max_rob_limit, $me->getItemLevel('B3')) : $me->getItemLevel('B3')); break;
+						case 'R06': $max = ($use_max_limit ? min($max_rob_limit, $me->getItemLevel('B4')) : $me->getItemLevel('B4')); break;
 					}
 					if(!isset($ges_max[$id])) $ges_max[$id] = 0;
 					$ges_max[$id] += $max;
@@ -341,7 +343,7 @@
 <dl class="imperium-roboter-auswirkungsgrade">
 	<dt class="c-bauroboter">Bauroboter</dt>
 	<dd class="c-bauroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.125)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
-	
+
 	<dt class="c-minenroboter">Minenroboter</dt>
 	<dd class="c-minenroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.03125)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 </dl>
@@ -418,23 +420,23 @@
 <dl class="imperium-schiffe-auswirkungsgrade">
 	<dt class="c-antriebe">Antriebe</dt>
 	<dd class="c-antriebe"><?=str_replace('.', ',', round((pow(1.025, $me->getItemLevel('F6', 'forschung'))*pow(1.05, $me->getItemLevel('F7', 'forschung'))*pow(1.5, $me->getItemLevel('F8', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
-	
+
 	<dt class="c-waffen">Waffen</dt>
 	<dd class="c-waffen"><?=str_replace('.', ',', round((pow(1.05, $me->getItemLevel('F4', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
-	
+
 	<dt class="c-schilde">Schilde</dt>
 	<dd class="c-schilde"><?=str_replace('.', ',', round((pow(1.05, $me->getItemLevel('F5', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
-	
+
 	<dt class="c-schildreparatur-pro-runde">Schildreparatur pro Runde</dt>
 	<dd class="c-schildreparatur-pro-runde"><?=str_replace('.', ',', round((pow(1.025, $me->getItemLevel('F10', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
-	
+
 	<dt class="c-laderaumvergroesserung">Laderaumvergrößerung</dt>
 	<dd class="c-laderaumvergroesserung"><?=str_replace('.', ',', round((pow(1.2, $me->getItemLevel('F11', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 </dl>
 <?php
 	}
-	
+
 	$me->setActivePlanet($active_planet);
-	
+
 	login_gui::html_foot();
 ?>

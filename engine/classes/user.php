@@ -981,6 +981,8 @@
 				switch($type)
 				{
 					case 'gebaeude':
+						$max_rob_limit = floor($this->getBasicFields()/2);
+
 						$info['has_prod'] = ($info['prod'][0] > 0 || $info['prod'][1] > 0 || $info['prod'][2] > 0 || $info['prod'][3] > 0 || $info['prod'][4] > 0 || $info['prod'][5] > 0);
 						$level_f = pow($info['level'], 2);
 						$percent_f = $this->checkProductionFactor($id);
@@ -994,24 +996,31 @@
 						$minen_rob = 1+0.0003125*$this->getItemLevel('F2', 'forschung', $run_eventhandler);
 						if($minen_rob > 1)
 						{
+							$use_max_limit = !file_exists(global_setting('DB_NO_STRICT_ROB_LIMITS'));
+
 							$rob = $this->getItemLevel('R02', 'roboter', $run_eventhandler);
 							if($rob > $this->getItemLevel('B0', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B0', 'gebaeude', $run_eventhandler);
+							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
 							$info['prod'][0] *= pow($minen_rob, $rob);
 
 							$rob = $this->getItemLevel('R03', 'roboter', $run_eventhandler);
 							if($rob > $this->getItemLevel('B1', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B1', 'gebaeude', $run_eventhandler);
+							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
 							$info['prod'][1] *= pow($minen_rob, $rob);
 
 							$rob = $this->getItemLevel('R04', 'roboter', $run_eventhandler);
 							if($rob > $this->getItemLevel('B2', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B2', 'gebaeude', $run_eventhandler);
+							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
 							$info['prod'][2] *= pow($minen_rob, $rob);
 
 							$rob = $this->getItemLevel('R05', 'roboter', $run_eventhandler);
 							if($rob > $this->getItemLevel('B3', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B3', 'gebaeude', $run_eventhandler);
+							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
 							$info['prod'][3] *= pow($minen_rob, $rob);
 
 							$rob = $this->getItemLevel('R06', 'roboter', $run_eventhandler);
 							if($rob > $this->getItemLevel('B4', 'gebaeude', $run_eventhandler)*2) $rob = $this->getItemLevel('B4', 'gebaeude', $run_eventhandler)*2;
+							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
 							$info['prod'][4] *= pow($minen_rob, $rob);
 						}
 						if($info['prod'][5] > 0)
@@ -1020,7 +1029,7 @@
 						$info['time'] *= pow($info['level']+1, 1.5);
 						$baurob = 1-0.00125*$this->getItemLevel('F2', 'forschung', $run_eventhandler);
 						$rob = $this->getItemLevel('R01', 'roboter', $run_eventhandler);
-						if($rob > $this->getBasicFields()/2) $rob = floor($this->getBasicFields()/2);
+						if($rob > $max_rob_limit) $rob = $max_rob_limit;
 						$info['time'] *= pow($baurob, $rob);
 
 						if($calc_scores)
