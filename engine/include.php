@@ -1346,7 +1346,15 @@
 		if(!isset($messenger_parsed_file) || $force_reload)
 		{
 			if(!is_file(global_setting("DB_MESSENGERS")) || !is_readable(global_setting("DB_MESSENGERS"))) $messenger_parsed_file = false;
-			else $messenger_parsed_file = parse_ini_file(global_setting("DB_MESSENGERS"), true);
+			else
+			{
+				$messenger_parsed_file = parse_ini_file(global_setting("DB_MESSENGERS"), true);
+				foreach($messenger_parsed_file as $k=>$v)
+				{
+					if(!is_array($v) || !isset($v['server']) || !isset($v['username']) || !isset($v['server']))
+						unset($messenger_parsed_file[$k]);
+				}
+			}
 		}
 
 		if(!$messenger_parsed_file) return false;

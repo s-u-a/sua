@@ -595,7 +595,6 @@ EOF
 		{
 			global $jabber;
 			global $jabber_messengers;
-			global $jabber_transport_services;
 			global $errlog;
 
 			if(!$jabber->Connect() || !$jabber->SendAuth())
@@ -610,12 +609,10 @@ EOF
 			foreach($jabber_messengers as $m=>$ai)
 			{
 				if($m == 'jabber') continue;
-				if(!isset($ai['username']) || !isset($ai['password'])) continue;
 
 				$m = strtolower($m);
-				if(!isset($jabber_transport_services[$m])) continue;
 
-				$jabber->TransportRegistration($jabber_transport_services[$m], $ai);
+				$jabber->TransportRegistration($ai['server'], $ai);
 			}
 
 			return true;
@@ -633,7 +630,7 @@ EOF
 		$jabber_messengers = get_messenger_info();
 		$jabber_auth_info = get_messenger_info('jabber');
 		$jabber = new Jabber();
-		$jabber->server = $jabber_transport_services['jabber'];
+		$jabber->server = $jabber_auth_info['server'];
 		$jabber->port = 5222;
 		$jabber->resource = false;
 		$imfile = Classes::IMFile();
@@ -722,9 +719,9 @@ EOF
 						$to = $next_notification['uin'];
 						if($next_notification['protocol'] != 'jabber')
 						{
-							if(!isset($jabber_transport_services[$next_notification['protocol']]))
+							if(!isset($jabber_messengers[$next_notification['protocol']]))
 								continue;
-							$to .= '@'.$jabber_transport_services[$next_notification['protocol']];
+							$to .= '@'.$jabber_messengers[$next_notification['protocol']]['server'];
 						}
 
 						$message = "Automatische Benachrichtigung von http://s-u-a.net/, ".$databases[$next_notification['database']][1].", ".$next_notification['username'].":\n";
@@ -741,12 +738,12 @@ EOF
 						$message = $p['message']['#']['body'][0]['#'];
 						list($from) = explode('/', $p['message']['@']['from'], 2);
 						$transport = 'jabber';
-						foreach($jabber_transport_services as $tn=>$t)
+						foreach($jabber_messengers as $tn=>$t)
 						{
-							if(substr($from, -strlen($t)-1) == '@'.$t)
+							if(substr($from, -strlen($t)-1) == '@'.$t['server'])
 							{
 								$transport = $tn;
-								$from = substr($from, 0, -strlen($t)-1);
+								$from = substr($from, 0, -strlen($t['server'])-1);
 								break;
 							}
 						}
