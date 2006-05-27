@@ -740,7 +740,7 @@ EOF
 						$transport = 'jabber';
 						foreach($jabber_messengers as $tn=>$t)
 						{
-							if(substr($from, -strlen($t)-1) == '@'.$t['server'])
+							if(substr($from, -strlen($t['server'])-1) == '@'.$t['server'])
 							{
 								$transport = $tn;
 								$from = substr($from, 0, -strlen($t['server'])-1);
