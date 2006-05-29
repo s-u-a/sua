@@ -10,16 +10,16 @@
 	header('Cache-Control: no-cache', true);
 
 	$databases = get_databases();
-	if(isset($_SESSION['database']) && isset($databases[$_SESSION['database']]))
+	if(isset($_SESSION['database']) && isset($databases[$_SESSION['database']]) && ($databases[$_SESSION['database']]['enabled'] || isset($_SESSION['admin_username'])))
 		define_globals($_SESSION['database']);
 
-	if(!isset($_SESSION['username']) || !isset($_SESSION['database']) || (isset($_SESSION['database']) && (!isset($databases[$_SESSION['database']]) || !User::userExists($_SESSION['username']))))
+	if(!isset($_SESSION['username']) || !isset($_SESSION['database']) || (isset($_SESSION['database']) && (!isset($databases[$_SESSION['database']]) || (!$databases[$_SESSION['database']]['enabled'] && !isset($_SESSION['admin_username'])) || !User::userExists($_SESSION['username']))))
 	{
 		if(isset($_REQUEST['username']) && isset($_REQUEST['password']) && isset($_REQUEST['database']))
 		{
 			# Anmelden
 
-			if(!isset($databases[$_REQUEST['database']]))
+			if(!isset($databases[$_REQUEST['database']]) || !$databases[$_REQUEST['database']]['enabled'])
 				$loggedin = false;
 			else
 			{
@@ -125,7 +125,12 @@
 	if($resume && $last_request = $me->lastRequest())
 	{
 		$_SESSION['act_planet'] = $last_request[1];
-		$url = 'http://'.$databases[$_SESSION['database']][2].$last_request[0];
+		$url = 'http://';
+		if($databases[$_SESSION['database']]['hostname']) $url .= $databases[$_SESSION['database']]['hostname'];
+		elseif($dhostname = get_default_hostname()) $url .= $dhostname;
+		else $url .= $_SERVER['HTTP_HOST'];
+		$url .= $last_request[0];
+
 		$url = explode('?', $url, 2);
 		if(isset($url[1]))
 			$url[1] = explode('&', $url[1]);
@@ -344,7 +349,7 @@
 		</div>
 		<ul id="gameinfo">
 			<li class="username"><?=utf8_htmlentities($_SESSION['username'])?></li>
-			<li class="database"><?=utf8_htmlentities($databases[$_SESSION['database']][1])?></li>
+			<li class="database"><?=utf8_htmlentities($databases[$_SESSION['database']]['name'])?></li>
 			<li class="version"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/changelog.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Changelog anzeigen">Version <?=VERSION?></a></li>
 <?php
 			if(($rev = get_revision()) !== false)

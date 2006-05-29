@@ -261,7 +261,7 @@ EOF
 					fputs($errlog, time_prefix()."SIGUSR2 (".SIGUSR2.")\n");
 					foreach($databases as $selected_database=>$dbinfo)
 					{
-						if(!is_dir($dbinfo[0])) continue;
+						if(!is_dir($dbinfo['directory']) || !$dbinfo['enabled']) continue;
 
 						define_globals($selected_database);
 						walkthrough_users();
@@ -671,7 +671,7 @@ EOF
 			# Flotten ankommen lassen
 			foreach($databases as $selected_database=>$dbinfo)
 			{
-				if(!is_dir($dbinfo[0])) continue;
+				if(!is_dir($dbinfo['directory']) || !$dbinfo['enabled']) continue;
 
 				define_globals($selected_database);
 
@@ -690,7 +690,7 @@ EOF
 			{
 				foreach($databases as $selected_database=>$dbinfo)
 				{
-					if(!is_dir($dbinfo[0])) continue;
+					if(!is_dir($dbinfo['directory']) || !$dbinfo['enabled']) continue;
 
 					define_globals($selected_database);
 					walkthrough_users();

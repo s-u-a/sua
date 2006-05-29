@@ -3,7 +3,7 @@
 
 	$databases = get_databases();
 
-	if(isset($_POST['benutzername']) && isset($_POST['email']) && isset($_POST['database']) && isset($databases[$_POST['database']]))
+	if(isset($_POST['benutzername']) && isset($_POST['email']) && isset($_POST['database']) && isset($databases[$_POST['database']]) && $databases[$_POST['database']]['enabled'])
 	{
 		define_globals($_POST['database']);
 
@@ -33,7 +33,7 @@
 ?>
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Passwort vergessen</h2>
 <?php
-	if(isset($_GET['name']) && isset($_GET['id']) && isset($_GET['database']) && isset($databases[$_GET['database']]))
+	if(isset($_GET['name']) && isset($_GET['id']) && isset($_GET['database']) && isset($databases[$_GET['database']]) && $databases[$_GET['database']]['enabled'])
 	{
 		define_globals($_GET['database']);
 
@@ -135,8 +135,9 @@
 <?php
 		foreach($databases as $id=>$info)
 		{
+			if(!$info['enabled']) continue;
 ?>
-			<option value="<?=htmlspecialchars($id)?>"><?=htmlspecialchars($info[1])?></option>
+			<option value="<?=htmlspecialchars($id)?>"><?=htmlspecialchars($info['name'])?></option>
 <?php
 		}
 ?>

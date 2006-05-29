@@ -1,0 +1,11 @@
+[default]
+directory = ../sua.db
+name = Runde 1
+hostname = runde1.localhost
+
+; Alte Datenbank, existiert nur noch wegen der oeffentlichen Nachrichten
+[old]
+directory = ../sua.db.old
+name = Alte Datenbank
+hostname = old.localhost
+enabled = false

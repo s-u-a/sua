@@ -104,7 +104,7 @@
 			foreach($databases as $id=>$info)
 			{
 ?>
-			<option value="<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($info[1])?></option>
+			<option value="<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($info['name'])?></option>
 <?php
 			}
 ?>

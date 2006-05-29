@@ -21,15 +21,14 @@ You will be asked for the desired admin username and password during the install
 
 3. To create more galaxies, run ./create_galaxy from you universe/ database directory.
 
-4. Edit the file database.global/databases in your S-U-A installation directory (create it if it doesn't exist). Put the hostname where the game will be reachable into the first line. (It doesn't matter in which directory from the server root the game is installed.)
-The following lines will contain information about the installed databases. The game can manage multiple databases (Â«universesÂ»), which the user can select one of at the login form. Each following line represents a database:
-(Database ID, must be unique) [Tab] (Database directory, you can specify this relatively from you S-U-A installation directory) [Tab] (Database name, will be shown in the select box at the login form) [Tab] (Hostname to where the game will redirect users that select this database. By this you can run an own host / virtual host for each database.)
-I propose you already noticed that you can access an example for this file under http://s-u-a.net/database.global/databases.
+4. Edit the file database.global/databases in your S-U-A installation directory (create it if it doesn't exist). The file contain information about the installed databases. The game can manage multiple databases (Â«universesÂ»), which the user can select one of at the login form. See database.global/databases.example for an example configuration.
 
-5. Check out some skins. Every directory you can see at http://websvn.dev.s-u-a.net/S-U-A-Extras/game-skins/?rev=0&sc=0 is a skin pack. To install the default skin pack for example, check it out from the login/style/ directory of your game installation:
+5. If you want to configure a default hostname (for example to redirect all requests on http://www.example.org/ to http://example.org/) put that into the file database.global/hostname.
+
+6. Check out some skins. Every directory you can see at http://websvn.dev.s-u-a.net/S-U-A-Extras/game-skins/?rev=0&sc=0 is a skin pack. To install the default skin pack for example, check it out from the login/style/ directory of your game installation:
 svn co svn://s-u-a.net/home/srv/svn/sua-extras/game-skins/default
 
-6. Start the event handler for fleet actions. Just execute db_things/eventhandler. When using the -d option, the event handler will fork itself and run in background then.
+7. Start the event handler for fleet actions. Just execute db_things/eventhandler. When using the -d option, the event handler will fork itself and run in background then.
 
 
 -------------------------

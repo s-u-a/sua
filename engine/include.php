@@ -63,6 +63,8 @@
 	global_setting('DB_NOTIFICATIONS', $GDB_DIR.'/notifications');
 	global_setting('DB_EVENTHANDLER_LOG', $GDB_DIR.'/eventhandler.log');
 	global_setting('DB_EVENTHANDLER_PIDFILE', $GDB_DIR.'/eventhandler.pid');
+	global_setting('DB_DATABASES', $GDB_DIR.'/databases');
+	global_setting('DB_HOSTNAME', $GDB_DIR.'/hostname');
 	global_setting('EVENTHANDLER_INTERVAL', 2);
 	global_setting('THS_HTML', '&nbsp;');
 	global_setting('THS_UTF8', "\xc2\xa0");
@@ -84,7 +86,7 @@
 
 		global_setting('DB', $DB);
 
-		$DB_DIR = $databases[$DB][0];
+		$DB_DIR = $databases[$DB]['directory'];
 		if(substr($DB_DIR, 0, 1) != '/')
 			$DB_DIR = s_root.'/'.$DB_DIR;
 
@@ -267,8 +269,9 @@
 			$databases = get_databases();
 			foreach($databases as $id=>$info)
 			{
+				if(!$info['enabled']) continue;
 ?>
-							<option value="<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($info[1])?></option>
+							<option value="<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($info['name'])?></option>
 <?php
 			}
 ?>
@@ -533,43 +536,40 @@
 	function get_databases()
 	{
 		# Liste der Runden/Universen herausfinden
-		if(!is_file(global_setting("GDB_DIR").'/databases') || !is_readable(global_setting("GDB_DIR").'/databases'))
+		if(!is_file(global_setting("DB_DATABASES")) || !is_readable(global_setting("DB_DATABASES")))
 			return false;
 
-		$databases = preg_split("/\r\n|\r|\n/", file_get_contents(global_setting("GDB_DIR").'/databases'));
-		array_shift($databases);
+		$databases = parse_ini_file(global_setting("DB_DATABASES"), true);
 
-		$return = array();
-		foreach($databases as $database)
+		foreach($databases as $i=>$database)
 		{
-			$database = explode("\t", $database, 4);
-			if(count($database) < 4)
+			if(!isset($database['directory']))
+			{
+				unset($databases[$i]);
 				continue;
-			$return[array_shift($database)] = $database;
+			}
+
+			$databases[$i] = array (
+				'directory' => $database['directory'],
+				'name' => (isset($database['name']) && strlen($database['name'] = trim($database['name'])) > 0) ? $database['name'] : $i,
+				'enabled' => (!isset($database['enabled']) || $database['enabled']),
+				'hostname' => (isset($database['hostname']) && strlen($database['hostname'] = trim($database['hostname'])) > 0) ? $database['hostname'] : false
+			);
 		}
 
-		return $return;
+		return $databases;
 	}
 
 	function get_default_hostname()
 	{
 		# Den Hostnamen herausfinden, der fuer die Startseite verwendet werden soll
 
-		# Die folgende Zeile auskommentieren, um diese Funktion zu deaktivieren
-		#return (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : false);
-
-		if(!is_file(global_setting("GDB_DIR").'/databases') || !is_readable(global_setting("GDB_DIR").'/databases'))
+		if(!is_file(global_setting("DB_HOSTNAME")) || !is_readable(global_setting("DB_HOSTNAME")))
 			return false;
 
-		$fh = fopen(global_setting("GDB_DIR").'/databases', 'r');
-		flock($fh, LOCK_SH);
-
-		$hostname = trim(fgets($fh, 1024));
-
-		flock($fh, LOCK_UN);
-		fclose($fh);
-
-		return $hostname;
+		$hostname = trim(file_get_contents(global_setting("DB_HOSTNAME")));
+		if(strlen($hostname) > 0) return $hostname;
+		else return false;
 	}
 
 	function check_hostname()
@@ -582,8 +582,8 @@
 			if(isset($_SESSION['database']))
 			{
 				$databases = get_databases();
-				if(isset($databases[$_SESSION['database']]))
-					$real_hostname = $databases[$_SESSION['database']][2];
+				if(isset($databases[$_SESSION['database']]) && $databases[$_SESSION['database']]['hostname'])
+					$real_hostname = $databases[$_SESSION['database']]['hostname'];
 			}
 
 			if($real_hostname)
