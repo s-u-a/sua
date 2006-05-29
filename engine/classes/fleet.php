@@ -858,23 +858,21 @@
 								if(!$message->create()) continue;
 								$message->subject('Abbau auf '.$next_target_nt);
 								$message->text(sprintf(<<<EOF
-<div class="nachricht-sammeln">
-	<p>Ihre Flotte erreicht das Trümmerfeld auf {$next_target_nt} und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s Carbon, %s Aluminium, %s Wolfram und %s Radium.</p>
-	<h3>Verbleibende Rohstoffe im Trümmerfeld</h3>
-	<dl class="ress truemmerfeld-verbleibend">
-		<dt class="c-carbon">Carbon</dt>
-		<dd class="c-carbon">%s</dd>
+<p>Ihre Flotte erreicht das Trümmerfeld auf {$next_target_nt} und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s Carbon, %s Aluminium, %s Wolfram und %s Radium.</p>
+<h3>Verbleibende Rohstoffe im Trümmerfeld</h3>
+<dl class="ress truemmerfeld-verbleibend">
+	<dt class="c-carbon">Carbon</dt>
+	<dd class="c-carbon">%s</dd>
 
-		<dt class="c-aluminium">Aluminium</dt>
-		<dd class="c-aluminium">%s</dd>
+	<dt class="c-aluminium">Aluminium</dt>
+	<dd class="c-aluminium">%s</dd>
 
-		<dt class="c-wolfram">Wolfram</dt>
-		<dd class="c-wolfram">%s</dd>
+	<dt class="c-wolfram">Wolfram</dt>
+	<dd class="c-wolfram">%s</dd>
 
-		<dt class="c-radium">Radium</dt>
-		<dd class="c-radium">%s</dd>
-	</dl>
-</div>
+	<dt class="c-radium">Radium</dt>
+	<dd class="c-radium">%s</dd>
+</dl>
 EOF
 									, ths($trans_total), ths($rtrans[0]), ths($rtrans[1]), ths($rtrans[2]), ths($rtrans[3]), ths($tr_verbl[0]), ths($tr_verbl[1]), ths($tr_verbl[2]), ths($tr_verbl[3])));
 								$message->addUser($username, 4);
@@ -1143,20 +1141,18 @@ EOF
 							if(!$target_owner)
 							{
 								# Zielplanet ist nicht besiedelt
-								$message_text = "<div class=\"nachricht-spionage\">\n";
-								$message_text .= "\t<h3>Spionagebericht des Planeten ".utf8_htmlentities($next_target_nt)."</h3>\n";
-								$message_text .= "\t<div id=\"spionage-planet\">\n";
-								$message_text .= "\t\t<h4>Planet</h4>\n";
-								$message_text .= "\t\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
-								$message_text .= "\t\t\t<dt class=\"c-felder\">Felder</dt>\n";
-								$message_text .= "\t\t\t<dd class=\"c-felder\">".ths($target_galaxy->getPlanetSize($target[1], $target[2]))."</dd>\n";
-								$message_text .= "\t\t</dl>\n";
-								$message_text .= "\t</div>\n";
-								$message_text .= "</div>\n";
+								$message_text = "<h3>Spionagebericht des Planeten ".utf8_htmlentities($next_target_nt)."</h3>\n";
+								$message_text .= "<div id=\"spionage-planet\">\n";
+								$message_text .= "\t<h4>Planet</h4>\n";
+								$message_text .= "\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
+								$message_text .= "\t\t<dt class=\"c-felder\">Felder</dt>\n";
+								$message_text .= "\t\t<dd class=\"c-felder\">".ths($target_galaxy->getPlanetSize($target[1], $target[2]))."</dd>\n";
+								$message_text .= "\t</dl>\n";
+								$message_text .= "</div>";
 
-								$message_text .= "\t<p class=\"besiedeln\">\n";
-								$message_text .= "\t\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlentities(urlencode($target[0]))."&amp;action_system=".htmlentities(urlencode($target[1]))."&amp;action_planet=".htmlentities(urlencode($target[2]))."\" title=\"Schicken Sie ein Besiedelungsschiff zu diesem Planeten\">Besiedeln</a>\n";
-								$message_text .= "\t</p>\n";
+								$message_text .= "\n<p class=\"besiedeln\">";
+								$message_text .= "\n\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlentities(urlencode($target[0]))."&amp;action_system=".htmlentities(urlencode($target[1]))."&amp;action_planet=".htmlentities(urlencode($target[2]))."\" title=\"Schicken Sie ein Besiedelungsschiff zu diesem Planeten\">Besiedeln</a>";
+								$message_text .= "\n</p>";
 
 								$message = Classes::Message();
 
@@ -1214,24 +1210,23 @@ EOF
 								if($diff > 5)
 									$diff = 5;
 
-								$message_text = "<div class=\"nachricht-spionage\">\n";
-								$message_text .= "\t<h3>Spionagebericht des Planeten \xe2\x80\x9e".utf8_htmlentities($target_galaxy->getPlanetName($target[1], $target[2]))."\xe2\x80\x9c (".utf8_htmlentities($next_target_nt).", Eigent\xc3\xbcmer: ".utf8_htmlentities($target_owner).")</h3>\n";
-								$message_text .= "\t<div id=\"spionage-planet\">\n";
-								$message_text .= "\t\t<h4>Planet</h4>\n";
-								$message_text .= "\t\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
-								$message_text .= "\t\t\t<dt class=\"c-felder\">Felder</dt>\n";
-								$message_text .= "\t\t\t<dd class=\"c-felder\">".$target_user->getTotalFields()."</dd>\n";
-								$message_text .= "\t\t</dl>\n";
-								$message_text .= "\t</div>\n";
+								$message_text = "<h3>Spionagebericht des Planeten \xe2\x80\x9e".utf8_htmlentities($target_galaxy->getPlanetName($target[1], $target[2]))."\xe2\x80\x9c (".utf8_htmlentities($next_target_nt).", Eigent\xc3\xbcmer: ".utf8_htmlentities($target_owner).")</h3>\n";
+								$message_text .= "<div id=\"spionage-planet\">\n";
+								$message_text .= "\t<h4>Planet</h4>\n";
+								$message_text .= "\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
+								$message_text .= "\t\t<dt class=\"c-felder\">Felder</dt>\n";
+								$message_text .= "\t\t<dd class=\"c-felder\">".$target_user->getTotalFields()."</dd>\n";
+								$message_text .= "\t</dl>\n";
+								$message_text .= "</div>";
 
 								$message_text2 = array();
 								switch($diff)
 								{
 									case 5: # Roboter zeigen
 										$next = &$message_text2[];
-										$next = "\t<div id=\"spionage-roboter\">\n";
-										$next .= "\t\t<h4>Roboter</h4>\n";
-										$next .= "\t\t\t<ul>\n";
+										$next = "\n<div id=\"spionage-roboter\">";
+										$next .= "\n\t<h4>Roboter</h4>";
+										$next .= "\n\t<ul>";
 										foreach($target_user->getItemsList('roboter') as $id)
 										{
 											if($target_user->getItemLevel($id, 'roboter') <= 0) continue;
@@ -1328,7 +1323,6 @@ EOF
 									$message->addUser($target_owner, $types_message_types[$type]);
 								}
 							}
-							break;
 					}
 				}
 
@@ -1623,29 +1617,29 @@ EOF
 
 
 		# Nachrichtentext
-		$nachrichten_text = "<p class=\"nachricht-kampf\">\n";
+		$nachrichten_text = '';
 		if(count($angreifer) > 1)
-			$nachrichten_text .= "\t<h3>Flotten der Angreifer</h3>\n";
+			$nachrichten_text .= "<h3>Flotten der Angreifer</h3>";
 		else
-			$nachrichten_text .= "\t<h3>Flotten des Angreifers</h3>\n";
+			$nachrichten_text .= "<h3>Flotten des Angreifers</h3>";
 
-		$nachrichten_text .= "\t<table>\n";
-		$nachrichten_text .= "\t\t<thead>\n";
-		$nachrichten_text .= "\t\t\t<tr>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
-		$nachrichten_text .= "\t\t\t</tr>\n";
-		$nachrichten_text .= "\t\t</thead>\n";
-		$nachrichten_text .= "\t\t<tbody>\n";
+		$nachrichten_text .= "<table>\n";
+		$nachrichten_text .= "\t<thead>\n";
+		$nachrichten_text .= "\t\t<tr>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
+		$nachrichten_text .= "\t\t</tr>\n";
+		$nachrichten_text .= "\t</thead>\n";
+		$nachrichten_text .= "\t<tbody>\n";
 
 		$ges_anzahl = $ges_staerke = $ges_schild = 0;
 		foreach($angreifer as $name=>$flotten)
 		{
-			$nachrichten_text .= "\t\t\t<tr class=\"benutzername\">\n";
-			$nachrichten_text .= "\t\t\t\t<th colspan=\"4\"><span class=\"angreifer-name\">".utf8_htmlentities($name)."</span></th>\n";
-			$nachrichten_text .= "\t\t\t</tr>\n";
+			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
+			$nachrichten_text .= "\t\t\t<th colspan=\"4\"><span class=\"angreifer-name\">".utf8_htmlentities($name)."</span></th>\n";
+			$nachrichten_text .= "\t\t</tr>\n";
 
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
 			foreach($flotten as $id=>$anzahl)
@@ -1655,67 +1649,67 @@ EOF
 				$staerke = $item_info['att']*$anzahl;
 				$schild = $item_info['def']*$anzahl;
 
-				$nachrichten_text .= "\t\t\t<tr>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
-				$nachrichten_text .= "\t\t\t</tr>\n";
+				$nachrichten_text .= "\t\t<tr>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
+				$nachrichten_text .= "\t\t</tr>\n";
 
 				$this_ges_anzahl += $anzahl;
 				$this_ges_staerke += $staerke;
 				$this_ges_schild += $schild;
 			}
 
-			$nachrichten_text .= "\t\t\t<tr class=\"gesamt\">\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
-			$nachrichten_text .= "\t\t\t</tr>\n";
+			$nachrichten_text .= "\t\t<tr class=\"gesamt\">\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
+			$nachrichten_text .= "\t\t</tr>\n";
 
 			$ges_anzahl += $this_ges_anzahl;
 			$ges_staerke += $this_ges_staerke;
 			$ges_schild += $this_ges_schild;
 		}
 
-		$nachrichten_text .= "\t\t</tbody>\n";
+		$nachrichten_text .= "\t</tbody>\n";
 
 		if(count($angreifer) > 1)
 		{
-			$nachrichten_text .= "\t\t<tfoot>\n";
-			$nachrichten_text .= "\t\t\t<tr>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
-			$nachrichten_text .= "\t\t\t</tr>\n";
-			$nachrichten_text .= "\t\t</tfoot>\n";
+			$nachrichten_text .= "\t<tfoot>\n";
+			$nachrichten_text .= "\t\t<tr>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
+			$nachrichten_text .= "\t\t</tr>\n";
+			$nachrichten_text .= "\t</tfoot>\n";
 		}
-		$nachrichten_text .= "\t</table>\n";
+		$nachrichten_text .= "</table>\n";
 
 		if(count($verteidiger) > 1)
-			$nachrichten_text .= "\t<h3>Flotten der Verteidigers</h3>\n";
+			$nachrichten_text .= "<h3>Flotten der Verteidigers</h3>";
 		else
-			$nachrichten_text .= "\t<h3>Flotten der Verteidiger</h3>\n";
+			$nachrichten_text .= "<h3>Flotten der Verteidiger</h3>";
 
-		$nachrichten_text .= "\t<table>\n";
-		$nachrichten_text .= "\t\t<thead>\n";
-		$nachrichten_text .= "\t\t\t<tr>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
-		$nachrichten_text .= "\t\t\t</tr>\n";
-		$nachrichten_text .= "\t\t</thead>\n";
-		$nachrichten_text .= "\t\t<tbody>\n";
+		$nachrichten_text .= "<table>\n";
+		$nachrichten_text .= "\t<thead>\n";
+		$nachrichten_text .= "\t\t<tr>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
+		$nachrichten_text .= "\t\t</tr>\n";
+		$nachrichten_text .= "\t</thead>\n";
+		$nachrichten_text .= "\t<tbody>\n";
 
 		$ges_anzahl = $ges_staerke = $ges_schild = 0;
 		foreach($verteidiger as $name=>$flotten)
 		{
-			$nachrichten_text .= "\t\t\t<tr class=\"benutzername\">\n";
-			$nachrichten_text .= "\t\t\t\t<th colspan=\"4\"><span class=\"verteidiger-name\">".utf8_htmlentities($name)."</span></th>\n";
-			$nachrichten_text .= "\t\t\t</tr>\n";
+			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
+			$nachrichten_text .= "\t\t\t<th colspan=\"4\"><span class=\"verteidiger-name\">".utf8_htmlentities($name)."</span></th>\n";
+			$nachrichten_text .= "\t\t</tr>\n";
 
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
 			$one = false;
@@ -1728,12 +1722,12 @@ EOF
 
 				if($anzahl > 0)
 				{
-					$nachrichten_text .= "\t\t\t<tr>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
-					$nachrichten_text .= "\t\t\t</tr>\n";
+					$nachrichten_text .= "\t\t<tr>\n";
+					$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
+					$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
+					$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
+					$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
+					$nachrichten_text .= "\t\t</tr>\n";
 					$one = true;
 				}
 
@@ -1744,18 +1738,18 @@ EOF
 
 			if(!$one)
 			{
-				$nachrichten_text .= "\t\t\t<tr class=\"keine\">\n";
-				$nachrichten_text .= "\t\t\t\t<td colspan=\"4\">Keine.</td>\n";
-				$nachrichten_text .= "\t\t\t</tr>\n";
+				$nachrichten_text .= "\t\t<tr class=\"keine\">\n";
+				$nachrichten_text .= "\t\t\t<td colspan=\"4\">Keine.</td>\n";
+				$nachrichten_text .= "\t\t</tr>\n";
 			}
 			else
 			{
-				$nachrichten_text .= "\t\t\t<tr class=\"gesamt\">\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
-				$nachrichten_text .= "\t\t\t</tr>\n";
+				$nachrichten_text .= "\t\t<tr class=\"gesamt\">\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
+				$nachrichten_text .= "\t\t</tr>\n";
 			}
 
 			$ges_anzahl += $this_ges_anzahl;
@@ -1763,20 +1757,20 @@ EOF
 			$ges_schild += $this_ges_schild;
 		}
 
-		$nachrichten_text .= "\t\t</tbody>\n";
+		$nachrichten_text .= "\t</tbody>\n";
 
 		if(count($verteidiger) > 1)
 		{
-			$nachrichten_text .= "\t\t<tfoot>\n";
-			$nachrichten_text .= "\t\t\t<tr>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
-			$nachrichten_text .= "\t\t\t</tr>\n";
-			$nachrichten_text .= "\t\t</tfoot>\n";
+			$nachrichten_text .= "\t<tfoot>\n";
+			$nachrichten_text .= "\t\t<tr>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
+			$nachrichten_text .= "\t\t</tr>\n";
+			$nachrichten_text .= "\t</tfoot>\n";
 		}
-		$nachrichten_text .= "\t</table>\n";
+		$nachrichten_text .= "</table>\n";
 
 		if(count($angreifer_anfang) > 1)
 		{
@@ -1818,18 +1812,18 @@ EOF
 			$runde_starter = 'angreifer';
 			$runde_anderer = 'verteidiger';
 
-			$nachrichten_text .= "\t<p class=\"erstschlag angreifer\">\n";
-			$nachrichten_text .= "\t\tDie Sensoren ".$angreifer_genitiv." sind st\xc3\xa4rker ausgebildet als die ".$verteidiger_genitiv." und erm\xc3\xb6glichen es ".$angreifer_dativ.", den Erstschlag auszuf\xc3\xbchren.\n";
-			$nachrichten_text .= "\t</p>\n";
+			$nachrichten_text .= "<p class=\"erstschlag angreifer\">\n";
+			$nachrichten_text .= "\tDie Sensoren ".$angreifer_genitiv." sind st\xc3\xa4rker ausgebildet als die ".$verteidiger_genitiv." und erm\xc3\xb6glichen es ".$angreifer_dativ.", den Erstschlag auszuf\xc3\xbchren.\n";
+			$nachrichten_text .= "</p>\n";
 		}
 		else
 		{
 			$runde_starter = 'verteidiger';
 			$runde_anderer = 'angreifer';
 
-			$nachrichten_text .= "\t<p class=\"erstschlag verteidiger\">\n";
-			$nachrichten_text .= "\t\tDie Sensoren ".$angreifer_genitiv." sind denen ".$verteidiger_genitiv." nicht \xc3\xbcberlegen, weshalb ".$verteidiger_nominativ_letzt." den Erstschlag ausf\xc3\xbchrt.\n";
-			$nachrichten_text .= "\t</p>\n";
+			$nachrichten_text .= "<p class=\"erstschlag verteidiger\">\n";
+			$nachrichten_text .= "\tDie Sensoren ".$angreifer_genitiv." sind denen ".$verteidiger_genitiv." nicht \xc3\xbcberlegen, weshalb ".$verteidiger_nominativ_letzt." den Erstschlag ausf\xc3\xbchrt.\n";
+			$nachrichten_text .= "</p>\n";
 		}
 
 		$verteidiger_no_fleet = true;
@@ -1877,13 +1871,10 @@ EOF
 			$a_objs = & ${'users_'.$runde_starter};
 			$d_objs = & ${'users_'.$runde_anderer};
 
-			$a_exp = & ${'erfahrung_'.$runde_starter};
-			$d_exp = & ${'erfahrung_'.$runde_anderer};
-
 			if($runde%2)
 			{
-				$nachrichten_text .= "\t<div class=\"runde\">\n";
-				$nachrichten_text .= "\t\t<h3>Runde ".(($runde+1)/2)."</h3>\n";
+				$nachrichten_text .= "<div class=\"runde\">\n";
+				$nachrichten_text .= "\t<h3>Runde ".(($runde+1)/2)."</h3>\n";
 			}
 
 			# Flottengesamtstaerke
@@ -1898,35 +1889,12 @@ EOF
 				}
 			}
 
-			$nachrichten_text .= "\t\t<h4>".ucfirst(${$runde_starter.'_nominativ'})." ".${$runde_starter.'_praedikat'}." am Zug (Gesamtst\xc3\xa4rke ".round($staerke).")</h4>\n";
-			$nachrichten_text .= "\t\t<ol>\n";
+			$nachrichten_text .= "\t<h4>".ucfirst(${$runde_starter.'_nominativ'})." ".${$runde_starter.'_praedikat'}." am Zug (Gesamtst\xc3\xa4rke ".round($staerke).")</h4>\n";
+			$nachrichten_text .= "\t<ol>\n";
 
 			while($staerke > 0)
 			{
 				$att_user = array_rand($d);
-
-				# Einheit auswaehlen: Kampferfahrung nutzen
-				if($a_exp > $d_exp)
-				{
-					$exp_better = 'angreifer';
-					$verhaeltnis = rand($a_exp, $d_exp)/$d_exp;
-				}
-				elseif($a_exp < $d_exp)
-				{
-					$exp_better = 'verteidiger';
-					$verhaeltnis = rand($a_exp, $d_exp)/$a_exp;
-				}
-				else
-				{
-					$exp_better = false;
-					$verhaeltnis = 1;
-				}
-
-				$keys = array_keys($d);
-				if($verhaeltnis >= 1.5)
-				{
-					# Gegnerische Flotten schiessen lieber auf Einheiten mit staerkerer Verteidigung
-
 				$att_id = array_rand($d[$att_user]);
 
 				$item_info = ${'users_'.$runde_anderer}[$att_user]->getItemInfo($att_id);
@@ -1942,7 +1910,7 @@ EOF
 					$d[$att_user][$att_id] = $this_shield/$item_info['def'];
 					$diff = $before-$d[$att_user][$att_id];
 					$floor_diff = floor($diff);
-					$nachrichten_text .= "\t\t\t<li>";
+					$nachrichten_text .= "\t\t<li>";
 					if($floor_diff <= 0)
 						$nachrichten_text .= "Eine Einheit des Typs ".utf8_htmlentities($item_info['name'])." (<span class=\"".$runde_anderer."-name\">".utf8_htmlentities($att_user)."</span>) wird angeschossen.</li>\n";
 					else
@@ -1955,7 +1923,7 @@ EOF
 				}
 				else
 				{
-					$nachrichten_text .= "\t\t\t<li>Alle Einheiten des Typs ".utf8_htmlentities($item_info['name'])." (".ths(ceil($d[$att_user][$att_id])).") (<span class=\"".$runde_anderer."-name\">".utf8_htmlentities($att_user)."</span>) werden zerst\xc3\xb6rt.</li>\n";
+					$nachrichten_text .= "\t\t<li>Alle Einheiten des Typs ".utf8_htmlentities($item_info['name'])." (".ths(ceil($d[$att_user][$att_id])).") (<span class=\"".$runde_anderer."-name\">".utf8_htmlentities($att_user)."</span>) werden zerst\xc3\xb6rt.</li>\n";
 					$aff_staerke = $this_shield;
 					unset($d[$att_user][$att_id]);
 					if(count($d[$att_user]) <= 0) unset($d[$att_user]);
@@ -1965,9 +1933,9 @@ EOF
 				if(count($angreifer) <= 0 || count($verteidiger) <= 0) break;
 			}
 
-			$nachrichten_text .= "\t\t</ol>\n";
+			$nachrichten_text .= "\t</ol>\n";
 			if(!$runde%2)
-				$nachrichten_text .= "\t</div>\n";
+				$nachrichten_text .= "</div>\n";
 
 			# Vertauschen
 			list($runde_starter, $runde_anderer) = array($runde_anderer, $runde_starter);
@@ -1977,8 +1945,8 @@ EOF
 			unset($d_objs);
 		}
 
-		$nachrichten_text .= "\t<p>\n";
-		$nachrichten_text .= "\t\tDer Kampf ist vor\xc3\xbcber. ";
+		$nachrichten_text .= "<p>\n";
+		$nachrichten_text .= "\tDer Kampf ist vor\xc3\xbcber. ";
 		if(count($angreifer) == 0)
 		{
 			$nachrichten_text .= "Gewinner ".$verteidiger_praedikat." ".$verteidiger_nominativ.".";
@@ -1995,7 +1963,7 @@ EOF
 			$winner = 0;
 		}
 		$nachrichten_text .= "\n";
-		$nachrichten_text .= "\t</p>\n";
+		$nachrichten_text .= "</p>\n";
 
 		# Flottenbestaende aufrunden
 		foreach($angreifer as $name=>$ids)
@@ -2015,27 +1983,27 @@ EOF
 		$verteidiger_punkte = array();
 
 		if(count($angreifer_anfang) > 1)
-			$nachrichten_text .= "\t<h3>Flotten der Angreifer</h3>\n";
+			$nachrichten_text .= "<h3>Flotten der Angreifer</h3>";
 		else
-			$nachrichten_text .= "\t<h3>Flotten des Angreifers</h3>\n";
+			$nachrichten_text .= "<h3>Flotten des Angreifers</h3>";
 
-		$nachrichten_text .= "\t<table>\n";
-		$nachrichten_text .= "\t\t<thead>\n";
-		$nachrichten_text .= "\t\t\t<tr>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
-		$nachrichten_text .= "\t\t\t</tr>\n";
-		$nachrichten_text .= "\t\t</thead>\n";
-		$nachrichten_text .= "\t\t<tbody>\n";
+		$nachrichten_text .= "<table>\n";
+		$nachrichten_text .= "\t<thead>\n";
+		$nachrichten_text .= "\t\t<tr>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
+		$nachrichten_text .= "\t\t</tr>\n";
+		$nachrichten_text .= "\t</thead>\n";
+		$nachrichten_text .= "\t<tbody>\n";
 
 		$ges_anzahl = $ges_staerke = $ges_schild = 0;
 		foreach($angreifer_anfang as $name=>$flotten)
 		{
-			$nachrichten_text .= "\t\t\t<tr class=\"benutzername\">\n";
-			$nachrichten_text .= "\t\t\t\t<th colspan=\"4\"><span class=\"angreifer-name\">".utf8_htmlentities($name)."</span></th>\n";
-			$nachrichten_text .= "\t\t\t</tr>\n";
+			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
+			$nachrichten_text .= "\t\t\t<th colspan=\"4\"><span class=\"angreifer-name\">".utf8_htmlentities($name)."</span></th>\n";
+			$nachrichten_text .= "\t\t</tr>\n";
 
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
 			$angreifer_punkte[$name] = 0;
@@ -2061,12 +2029,12 @@ EOF
 
 				if($anzahl > 0)
 				{
-					$nachrichten_text .= "\t\t\t<tr>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
-					$nachrichten_text .= "\t\t\t</tr>\n";
+					$nachrichten_text .= "\t\t<tr>\n";
+					$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
+					$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
+					$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
+					$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
+					$nachrichten_text .= "\t\t</tr>\n";
 					$one = true;
 				}
 
@@ -2076,18 +2044,18 @@ EOF
 			}
 			if(!$one)
 			{
-				$nachrichten_text .= "\t\t\t<tr class=\"keine\">\n";
-				$nachrichten_text .= "\t\t\t\t<td colspan=\"4\">Keine.</td>\n";
-				$nachrichten_text .= "\t\t\t</tr>\n";
+				$nachrichten_text .= "\t\t<tr class=\"keine\">\n";
+				$nachrichten_text .= "\t\t\t<td colspan=\"4\">Keine.</td>\n";
+				$nachrichten_text .= "\t\t</tr>\n";
 			}
 			else
 			{
-				$nachrichten_text .= "\t\t\t<tr class=\"gesamt\">\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
-				$nachrichten_text .= "\t\t\t</tr>\n";
+				$nachrichten_text .= "\t\t<tr class=\"gesamt\">\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
+				$nachrichten_text .= "\t\t</tr>\n";
 			}
 
 			$ges_anzahl += $this_ges_anzahl;
@@ -2095,44 +2063,44 @@ EOF
 			$ges_schild += $this_ges_schild;
 		}
 
-		$nachrichten_text .= "\t\t</tbody>\n";
+		$nachrichten_text .= "\t</tbody>\n";
 
 		if(count($angreifer_anfang) > 1)
 		{
-			$nachrichten_text .= "\t\t<tfoot>\n";
-			$nachrichten_text .= "\t\t\t<tr>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
-			$nachrichten_text .= "\t\t\t</tr>\n";
-			$nachrichten_text .= "\t\t</tfoot>\n";
+			$nachrichten_text .= "\t<tfoot>\n";
+			$nachrichten_text .= "\t\t<tr>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
+			$nachrichten_text .= "\t\t</tr>\n";
+			$nachrichten_text .= "\t</tfoot>\n";
 		}
-		$nachrichten_text .= "\t</table>\n";
+		$nachrichten_text .= "</table>\n";
 
 
 		if(count($verteidiger_anfang) > 1)
-			$nachrichten_text .= "\t<h3>Flotten der Verteidigers</h3>\n";
+			$nachrichten_text .= "<h3>Flotten der Verteidigers</h3>";
 		else
-			$nachrichten_text .= "\t<h3>Flotten der Verteidiger</h3>\n";
+			$nachrichten_text .= "<h3>Flotten der Verteidiger</h3>";
 
-		$nachrichten_text .= "\t<table>\n";
-		$nachrichten_text .= "\t\t<thead>\n";
-		$nachrichten_text .= "\t\t\t<tr>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
-		$nachrichten_text .= "\t\t\t</tr>\n";
-		$nachrichten_text .= "\t\t</thead>\n";
-		$nachrichten_text .= "\t\t<tbody>\n";
+		$nachrichten_text .= "<table>\n";
+		$nachrichten_text .= "\t<thead>\n";
+		$nachrichten_text .= "\t\t<tr>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
+		$nachrichten_text .= "\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
+		$nachrichten_text .= "\t\t</tr>\n";
+		$nachrichten_text .= "\t</thead>\n";
+		$nachrichten_text .= "\t<tbody>\n";
 
 		$ges_anzahl = $ges_staerke = $ges_schild = 0;
 		foreach($verteidiger_anfang as $name=>$flotten)
 		{
-			$nachrichten_text .= "\t\t\t<tr class=\"benutzername\">\n";
-			$nachrichten_text .= "\t\t\t\t<th colspan=\"4\"><span class=\"verteidiger-name\">".utf8_htmlentities($name)."</span></th>\n";
-			$nachrichten_text .= "\t\t\t</tr>\n";
+			$nachrichten_text .= "\t\t<tr class=\"benutzername\">\n";
+			$nachrichten_text .= "\t\t\t<th colspan=\"4\"><span class=\"verteidiger-name\">".utf8_htmlentities($name)."</span></th>\n";
+			$nachrichten_text .= "\t\t</tr>\n";
 
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
 			$verteidiger_punkte[$name] = 0;
@@ -2169,12 +2137,12 @@ EOF
 
 				if($anzahl > 0)
 				{
-					$nachrichten_text .= "\t\t\t<tr>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
-					$nachrichten_text .= "\t\t\t</tr>\n";
+					$nachrichten_text .= "\t\t<tr>\n";
+					$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
+					$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
+					$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
+					$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
+					$nachrichten_text .= "\t\t</tr>\n";
 					$one = true;
 				}
 
@@ -2185,18 +2153,18 @@ EOF
 
 			if(!$one)
 			{
-				$nachrichten_text .= "\t\t\t<tr class=\"keine\">\n";
-				$nachrichten_text .= "\t\t\t\t<td colspan=\"4\">Keine.</td>\n";
-				$nachrichten_text .= "\t\t\t</tr>\n";
+				$nachrichten_text .= "\t\t<tr class=\"keine\">\n";
+				$nachrichten_text .= "\t\t\t<td colspan=\"4\">Keine.</td>\n";
+				$nachrichten_text .= "\t\t</tr>\n";
 			}
 			else
 			{
-				$nachrichten_text .= "\t\t\t<tr class=\"gesamt\">\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
-				$nachrichten_text .= "\t\t\t</tr>\n";
+				$nachrichten_text .= "\t\t<tr class=\"gesamt\">\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
+				$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
+				$nachrichten_text .= "\t\t</tr>\n";
 			}
 
 			$ges_anzahl += $this_ges_anzahl;
@@ -2204,37 +2172,37 @@ EOF
 			$ges_schild += $this_ges_schild;
 		}
 
-		$nachrichten_text .= "\t\t</tbody>\n";
+		$nachrichten_text .= "\t</tbody>\n";
 
 		if(count($verteidiger) > 1)
 		{
-			$nachrichten_text .= "\t\t<tfoot>\n";
-			$nachrichten_text .= "\t\t\t<tr>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
-			$nachrichten_text .= "\t\t\t</tr>\n";
-			$nachrichten_text .= "\t\t</tfoot>\n";
+			$nachrichten_text .= "\t<tfoot>\n";
+			$nachrichten_text .= "\t\t<tr>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
+			$nachrichten_text .= "\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
+			$nachrichten_text .= "\t\t</tr>\n";
+			$nachrichten_text .= "\t</tfoot>\n";
 		}
-		$nachrichten_text .= "\t</table>\n";
+		$nachrichten_text .= "</table>\n";
 
-		$nachrichten_text .= "\t<ul class=\"angreifer-punkte\">\n";
+		$nachrichten_text .= "<ul class=\"angreifer-punkte\">\n";
 		foreach($angreifer_anfang as $a=>$i)
 		{
 			$p = 0;
 			if(isset($angreifer_punkte[$a])) $p = $angreifer_punkte[$a];
-			$nachrichten_text .= "\t\t<li>Der Angreifer <span class=\"koords\">".utf8_htmlentities($a)."</span> hat ".ths($p)."&nbsp;Punkte verloren.</li>\n";
+			$nachrichten_text .= "\t<li>Der Angreifer <span class=\"koords\">".utf8_htmlentities($a)."</span> hat ".ths($p)."&nbsp;Punkte verloren.</li>\n";
 		}
-		$nachrichten_text .= "\t</ul>\n";
-		$nachrichten_text .= "\t<ul class=\"verteidiger-punkte\">\n";
+		$nachrichten_text .= "</ul>\n";
+		$nachrichten_text .= "<ul class=\"verteidiger-punkte\">\n";
 		foreach($verteidiger_anfang as $v=>$i)
 		{
 			$p = 0;
 			if(isset($verteidiger_punkte[$v])) $p = $verteidiger_punkte[$v];
-			$nachrichten_text .= "\t\t<li>Der Verteidiger <span class=\"koords\">".utf8_htmlentities($v)."</span> hat ".ths($p)."&nbsp;Punkte verloren.</li>\n";
+			$nachrichten_text .= "\t<li>Der Verteidiger <span class=\"koords\">".utf8_htmlentities($v)."</span> hat ".ths($p)."&nbsp;Punkte verloren.</li>\n";
 		}
-		$nachrichten_text .= "\t</ul>\n";
+		$nachrichten_text .= "</ul>\n";
 
 		if(array_sum($truemmerfeld) > 0)
 		{
@@ -2249,16 +2217,14 @@ EOF
 		# Kampferfahrung
 		$angreifer_new_erfahrung = array_sum($verteidiger_punkte)/1000;
 		$verteidiger_new_erfahrung = array_sum($angreifer_punkte)/1000;
-		$nachrichten_text .= "\t<ul class=\"kampferfahrung\">\n";
-		$nachrichten_text .= "\t\t<li class=\"c-angreifer\">".ucfirst($angreifer_nominativ)." ".$angreifer_praedikat2." ".ths($angreifer_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
-		$nachrichten_text .= "\t\t<li class=\"c-verteidiger\">".ucfirst($verteidiger_nominativ)." ".$verteidiger_praedikat2." ".ths($verteidiger_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
-		$nachrichten_text .= "\t</ul>\n";
+		$nachrichten_text .= "<ul class=\"kampferfahrung\">\n";
+		$nachrichten_text .= "\t<li class=\"c-angreifer\">".ucfirst($angreifer_nominativ)." ".$angreifer_praedikat2." ".ths($angreifer_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
+		$nachrichten_text .= "\t<li class=\"c-verteidiger\">".ucfirst($verteidiger_nominativ)." ".$verteidiger_praedikat2." ".ths($verteidiger_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
+		$nachrichten_text .= "</ul>\n";
 		foreach($users_angreifer as $user)
 			$user->addScores(6, $angreifer_new_erfahrung);
 		foreach($users_verteidiger as $user)
 			$user->addScores(6, $verteidiger_new_erfahrung);
-
-		$nachrichten_text .= "</div>\n";
 
 
 		# $winner:  1: Angreifer gewinnt
