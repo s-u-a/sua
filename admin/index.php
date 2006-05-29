@@ -303,14 +303,14 @@
 			$pwd_2 = $user_2->getPasswordSum();
 			if($pwd_1 && $pwd_2 && $pwd_1 == $pwd_2)
 			{
-				protocol("3", $_POST['compare1'], $_POST['compare2'], "1");
+				protocol("3", $_POST['compare_1'], $_POST['compare_2'], "1");
 ?>
 <p><strong>Die Passwörter der Benutzer &bdquo;<?=utf8_htmlentities($_POST['compare_1'])?>&ldquo; und &bdquo;<?=utf8_htmlentities($_POST['compare_2'])?>&ldquo; stimmen überein.</strong></p>
 <?php
 			}
 			else
 			{
-				protocol("3", $_POST['compare1'], $_POST['compare2'], "0");
+				protocol("3", $_POST['compare_1'], $_POST['compare_2'], "0");
 ?>
 <p><strong>Die Passwörter der Benutzer &bdquo;<?=utf8_htmlentities($_POST['compare_1'])?>&ldquo; und &bdquo;<?=utf8_htmlentities($_POST['compare_2'])?>&ldquo; unterscheiden sich.</strong></p>
 <?php
