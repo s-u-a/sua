@@ -135,7 +135,7 @@
 <?php
 		foreach($databases as $id=>$info)
 		{
-			if(!$info['enabled']) continue;
+			if(!$info['enabled'] || $info['dummy']) continue;
 ?>
 			<option value="<?=htmlspecialchars($id)?>"><?=htmlspecialchars($info['name'])?></option>
 <?php

@@ -8,7 +8,17 @@
 	<head>
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 		<title xml:lang="en">S-U-A &ndash; Stars Under Attack</title>
-		<link rel="stylesheet" href="<?=h_root?>/login/style/skin.php?simple_blue_fixed" type="text/css" />
+<?php
+	$skins = get_skins();
+	if($skins && isset($skins['default']) && count($skins['default'][1]) > 0)
+	{
+		$keys = array_keys($skins['default'][1]);
+		$sub_skin = array_shift($keys);
+?>
+		<link rel="stylesheet" href="<?=h_root?>/login/style/skin.php?skin=default&amp;type=<?=htmlspecialchars($sub_skin)?>" type="text/css" />
+<?php
+	}
+?>
 	</head>
 	<body><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8"><div id="content-9"><div id="content-10"><div id="content-11"><div id="content-12"><div id="content-13">
 		<h1>Öffentliche Nachricht</h1>

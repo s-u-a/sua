@@ -78,11 +78,18 @@
 
 	function define_globals($DB)
 	{
-		global $databases;
-		if(!isset($databases))
-			$databases = get_databases();
+		$databases = get_databases(false, $databases_aliases);
 
-		if(!isset($databases[$DB])) return false;
+		$had = array(); # Um Endlosschleifen zu vermeiden
+		while(!isset($databases[$DB]))
+		{
+			if(isset($databases_aliases[$DB]) && !in_array($databases_aliases[$DB], $had))
+			{
+				$DB = $databases_aliases[$DB];
+				$had[] = $DB;
+			}
+			else return false;
+		}
 
 		global_setting('DB', $DB);
 
@@ -269,7 +276,7 @@
 			$databases = get_databases();
 			foreach($databases as $id=>$info)
 			{
-				if(!$info['enabled']) continue;
+				if(!$info['enabled'] || $info['dummy']) continue;
 ?>
 							<option value="<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($info['name'])?></option>
 <?php
@@ -533,30 +540,51 @@
 		return floor(file_get_contents($revision_file));
 	}
 
-	function get_databases()
+	function get_databases($force_reload=false, &$aliases=null)
 	{
 		# Liste der Runden/Universen herausfinden
-		if(!is_file(global_setting("DB_DATABASES")) || !is_readable(global_setting("DB_DATABASES")))
-			return false;
 
-		$databases = parse_ini_file(global_setting("DB_DATABASES"), true);
+		static $databases;
+		static $aliases_cache;
 
-		foreach($databases as $i=>$database)
+		if(!isset($databases) || $force_reload)
 		{
-			if(!isset($database['directory']))
-			{
-				unset($databases[$i]);
-				continue;
-			}
+			if(!is_file(global_setting("DB_DATABASES")) || !is_readable(global_setting("DB_DATABASES")))
+				return false;
 
-			$databases[$i] = array (
-				'directory' => $database['directory'],
-				'name' => (isset($database['name']) && strlen($database['name'] = trim($database['name'])) > 0) ? $database['name'] : $i,
-				'enabled' => (!isset($database['enabled']) || $database['enabled']),
-				'hostname' => (isset($database['hostname']) && strlen($database['hostname'] = trim($database['hostname'])) > 0) ? $database['hostname'] : false
-			);
+			$databases_raw = parse_ini_file(global_setting("DB_DATABASES"), true);
+
+			$aliases_cache = array();
+			$databases = array();
+			
+			foreach($databases_raw as $i=>$database)
+			{
+				if(!isset($database['directory'])) continue;
+
+				$databases[$i] = array (
+					'directory' => $database['directory'],
+					'name' => (isset($database['name']) && strlen($database['name'] = trim($database['name'])) > 0) ? $database['name'] : $i,
+					'enabled' => (!isset($database['enabled']) || $database['enabled']),
+					'hostname' => (isset($database['hostname']) && strlen($database['hostname'] = trim($database['hostname'])) > 0) ? $database['hostname'] : false,
+					'dummy' => false
+				);
+
+				if(isset($database['aliases']) && strlen($database['aliases'] = trim($database['aliases'])) > 0)
+				{
+					foreach(preg_split("/\s+/", $database['aliases']) as $alias)
+					{
+						if(!isset($aliases_cache[$alias]))
+						{
+							$aliases_cache[$alias] = $i;
+							$databases[$alias] = $databases[$i];
+							$databases[$alias]['dummy'] = true;
+						}
+					}
+				}
+			}
 		}
 
+		$aliases = $aliases_cache;
 		return $databases;
 	}
 

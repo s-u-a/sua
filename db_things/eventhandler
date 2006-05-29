@@ -223,7 +223,7 @@ EOF
 
 					fputs($errlog, time_prefix()."Rescanning databases... ");
 					global $databases;
-					$databases = get_databases();
+					$databases = get_databases(true);
 					fputs($errlog, "Done\n");
 
 					global $use_jabber,$wanna_use_jabber,$jabber,$jabber_messengers,$jabber_auth_info;
@@ -724,7 +724,7 @@ EOF
 							$to .= '@'.$jabber_messengers[$next_notification['protocol']]['server'];
 						}
 
-						$message = "Automatische Benachrichtigung von http://s-u-a.net/, ".$databases[$next_notification['database']][1].", ".$next_notification['username'].":\n";
+						$message = "Automatische Benachrichtigung von http://s-u-a.net/, ".$databases[$next_notification['database']]['name'].", ".$next_notification['username'].":\n";
 						$message .= $next_notification['message'];
 
 						$jabber->SendMessage($to, 'normal', NULL, array('body' => htmlspecialchars($message)));
@@ -749,9 +749,8 @@ EOF
 						}
 
 						$username = $imfile->checkCheckID($from, $transport, trim($message));
-						if($username && isset($databases[$username[1]]))
+						if($username && define_globals($username[1]))
 						{
-							define_globals($username[1]);
 							$user = Classes::User($username[0]);
 							$old_settings = $user->getNotificationType();
 							if($user->getStatus() == 1 && $user->doSetNotificationType($from, $transport))

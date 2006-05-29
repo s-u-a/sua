@@ -103,6 +103,7 @@
 <?php
 			foreach($databases as $id=>$info)
 			{
+				if($info['dummy']) continue;
 ?>
 			<option value="<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($info['name'])?></option>
 <?php

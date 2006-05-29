@@ -135,7 +135,7 @@
 <?php
 	foreach($databases as $id=>$info)
 	{
-		if(!$info['enabled']) continue;
+		if(!$info['enabled'] || $info['dummy']) continue;
 ?>
 				<option value="<?=utf8_htmlentities($id)?>"<?=(isset($_POST['database']) && $_POST['database'] == $id) ? ' selected="selected"' : ''?>><?=utf8_htmlentities($info['name'])?></option>
 <?php
