@@ -116,7 +116,7 @@
 <div class="faq" id="robots">
 	<h3>Wie funktionieren die Roboter?</h3>
 	<p>Die Roboter helfen, Gebäudebauzeiten zu verkürzen und die Rohstoffproduktion zu erhöhen. Der Auswirkungsgrad der Roboter hängt von der aktuellen Stufe der Roboterbautechnik ab. Jede Stufe der Roboterbautechnik erhöht dabei den Auswirkungsgrad Ihrer Bauroboter um ein Viertelprozent, den Ihrer Minenroboter um ein Sechzehntelprozent.</p>
-	<p>Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur Verfügung steht. Für Bauroboter liegt die Grenze bei der Hälfte der ursprünglichen Felderzahl des Planeten (Ingenieurswissenschaft zeigt also keine Wirkung), für Minenroboter liegt sie bei der aktuellen Ausbaustufe der zugehörigen Mine (Ausnahme: Tritiumroboter, hier liegt die Grenze beim 2-Fachen der Ausbaustufe des Tritiumgenerators). Übersteigt die Roboterzahl die Grenze, zeigen überschüssige Roboter keinerlei Wirkung mehr.</p>
+	<p>Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur Verfügung steht. Für Bauroboter liegt die Grenze bei der Hälfte der ursprünglichen Felderzahl des Planeten (Ingenieurswissenschaft zeigt also keine Wirkung), für Minenroboter liegt sie bei der aktuellen Ausbaustufe der zugehörigen Mine (Ausnahme: Tritiumroboter, hier liegt die Grenze beim 2-Fachen der Ausbaustufe des Tritiumgenerators). Möglicherweise liegt eine zusätzliche Grenze für Minenroboter allerdings ebenfalls bei der Hälfte der Planetengröße. Übersteigt die Roboterzahl die Grenze, zeigen überschüssige Roboter keinerlei Wirkung mehr.</p>
 </div>
 
 <div class="faq" id="fleet">

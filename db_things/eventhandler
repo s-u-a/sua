@@ -760,7 +760,14 @@ EOF
 
 								if($old_settings)
 									$imfile->changeUIN($username[0], $from, $transport);
-								else $user->refreshMessengerBuildingNotifications();
+								else
+								{
+									foreach($user->getPlanetsList() as $planet)
+									{
+										$user->setActivePlanet($planet);
+										$user->refreshMessengerBuildingNotifications();
+									}
+								}
 								unset($user);
 								Classes::resetInstances();
 

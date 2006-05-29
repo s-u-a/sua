@@ -801,7 +801,7 @@
 		function getPasswordSum()
 		{
 			if(!$this->status) return false;
-			return $this->raw['planet'];
+			return $this->raw['password'];
 		}
 
 		function checkSetting($setting)

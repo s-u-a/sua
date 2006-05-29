@@ -126,10 +126,20 @@
 		}
 
 		$me->setSetting('messenger_receive', $messenger_receive);
+		$active_planet = $me->getActivePlanet();
+		$planets = $me->getPlanetsList();
 		foreach($im_recalc as $which=>$whether)
 		{
-			if($whether) $me->refreshMessengerBuildingNotifications($which);
+			if($whether)
+			{
+				foreach($planets as $planet)
+				{
+					$me->setActivePlanet($planet);
+					$me->refreshMessengerBuildingNotifications($which);
+				}
+			}
 		}
+		$me->setActivePlanet($active_planet);
 	}
 
 	if(!$me->userLocked() && isset($_POST['umode']) && ($me->permissionToUmode() || isset($_SESSION['admin_username'])))

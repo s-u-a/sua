@@ -295,7 +295,7 @@
 <hr />
 <h2 id="action-3">Die Passwörter zweier Benutzer vergleichen</h2>
 <?php
-		if(isset($_POST['compare_1']) && isset($_POST['compare_2']) && is_file(global_setting("DB_PLAYERS").'/'.urlencode($_POST['compare_1'])) && is_readable(global_setting("DB_PLAYERS").'/'.urlencode($_POST['compare_1'])) && is_file(global_setting("DB_PLAYERS").'/'.urlencode($_POST['compare_2'])) && is_readable(global_setting("DB_PLAYERS").'/'.urlencode($_POST['compare_2'])))
+		if(isset($_POST['compare_1']) && isset($_POST['compare_2']) && User::userExists($_POST['compare_1']) && User::userExists($_POST['compare_2']))
 		{
 			$user_1 = Classes::User($_POST['compare_1']);
 			$user_2 = Classes::User($_POST['compare_2']);
