@@ -120,6 +120,7 @@
 		global_setting('DB_GLOBAL_TIME_FACTOR', $DB_DIR.'/global_time_factor');
 		global_setting('DB_GLOBAL_PROD_FACTOR', $DB_DIR.'/global_prod_factor');
 		global_setting('DB_GLOBAL_COST_FACTOR', $DB_DIR.'/global_cost_factor');
+		global_setting('DB_USE_OLD_INGTECH', $DB_DIR.'/use_old_ingtech');
 
 		return true;
 	}

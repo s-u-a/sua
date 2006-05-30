@@ -163,7 +163,7 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 
-			return ($this->planet_info['size'][1]/($this->getItemLevel('F9', 'forschung')+1));
+			return ceil($this->planet_info['size'][1]/($this->getItemLevel('F9', 'forschung')/getIngtechFactor()+1));
 		}
 
 		function setFields($size)
@@ -293,7 +293,7 @@
 
 			if(count($this->raw['planets']) <= 0) $size = 375;
 			else $size = $galaxy->getPlanetSize($pos[1], $pos[2]);
-			$size *= $this->getItemLevel('F9', 'forschung')+1;
+			$size = floor($size*($this->getItemLevel('F9', 'forschung')/getIngtechFactor()+1));
 
 			$planets = $this->getPlanetsList();
 			if(count($planets) == 0) $planet_index = 0;
@@ -1248,8 +1248,8 @@
 					foreach($planets as $planet)
 					{
 						$this->setActivePlanet($planet);
-						$size = $this->getTotalFields()/($this->getItemLevel('F9', false, false)-$value+1);
-						$this->setFields($size*($this->getItemLevel('F9', false, false)+1));
+						$size = ceil($this->getTotalFields()/(($this->getItemLevel('F9', false, false)-$value)/getIngtechFactor()+1));
+						$this->setFields(floor($size*($this->getItemLevel('F9', false, false)/getIngtechFactor()+1)));
 					}
 					$this->setActivePlanet($active_planet);
 					break;
@@ -3179,5 +3179,10 @@
 		if($a[0] < $b[0]) return -1;
 		elseif($a[0] > $b[0]) return 1;
 		else return 0;
+	}
+
+	function getIngtechFactor()
+	{
+		return (file_exists(global_setting('DB_USE_OLD_INGTECH')) ? 1 : 2);
 	}
 ?>

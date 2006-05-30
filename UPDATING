@@ -5,3 +5,5 @@ When updating to Revision 622 or later, please read paragraph 2.5 of the INSTALL
 When updating to Revision 634 or later, please move the files db_things/news, db_things/databases and revision to database.global/
 
 When updating to Revision 670 or later, update your database.global/databases: Put the first line (the default hostname) into the file database.global/hostname and have a look at database.global/databases.example for the new format.
+
+When updating to Revision 674 or later, you should probably create the file use_old_ingtech in your database directories.
