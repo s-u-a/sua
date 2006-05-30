@@ -340,7 +340,7 @@
 		{
 			if(!$this->status) return false;
 
-			return ($this->setPlanetName($system, $planet, '') && $this->setPlanetOwner($system, $planet, '')
+			return ($this->setPlanetName($system, $planet, '') && $this->_setPlanetOwner($system, $planet, '')
 			&& $this->setPlanetOwnerAlliance($system, $planet, '') && $this->setPlanetSize($system, $planet, rand(100, 500)));
 		}
 
