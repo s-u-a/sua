@@ -1912,8 +1912,7 @@ EOF
 					$this_shield -= $aff_staerke;
 					$before = $d[$att_user][$att_id];
 					$d[$att_user][$att_id] = $this_shield/$item_info['def'];
-					$diff = $before-$d[$att_user][$att_id];
-					$floor_diff = floor($diff);
+					$floor_diff = ceil($before)-ceil($d[$att_user][$att_id]);
 					$nachrichten_text .= "\t\t<li>";
 					if($floor_diff <= 0)
 						$nachrichten_text .= "Eine Einheit des Typs ".utf8_htmlentities($item_info['name'])." (<span class=\"".$runde_anderer."-name\">".utf8_htmlentities($att_user)."</span>) wird angeschossen.</li>\n";
