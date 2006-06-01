@@ -12,6 +12,7 @@
 	<li><a href="#scores">Wie bekomme ich Punkte?</a></li>
 	<li><a href="#noobs">Gibt es einen Anfängerschutz?</a></li>
 	<li><a href="#planets">Kann man mehrere Planeten haben?</a></li>
+	<li><a href="#umode">Was bewirkt der Urlaubsmodus?</a></li>
 	<li><a href="#times">Wie kann man die Bauzeiten verkürzen?</a></li>
 	<li><a href="#avatars">Wie füge ich ein Bild in meine Allianz- oder Benutzerbeschreibung ein?</a></li>
 	<li><a href="#time">Was bedeuten <span xml:lang="en">Server</span>- und Lokalzeit?</a></li>
@@ -78,6 +79,14 @@
 	<p>Optional können Sie dem Besiedelungsschiff zusätzliche Flotte mitschicken, diese wird nach der Besiedelung rückkehren. (Anders als das Besiedelungsschiff, dieses wird bei der Besiedelung abgebaut, um ein Startkapital auf dem Planeten zur Verfügung zu stellen.) Auf diese Weise können Sie auf dem neuen Planeten sofort Rohstoffe und Roboter durch die Transportkapazität der Flotte bereitstellen.</p>
 	<p>Überlegen Sie sich gut, wo Sie Ihre Planeten platzieren. Wenn Sie vorhaben, auf bestimmten Kolonien nur bestimmte Minen auszubauen, ist es möglicherweise sinnvoll für Sie, Ihre Planeten nah beieinander zu halten, um schnell Rohstoffe zwischen den Kolonien hin- und herzuschicken. Wenn Sie sich mehr auf den Handel spezialisieren möchten, ist es vielleicht geschickt, in jeder Galaxie mindestens einen Planeten zu besitzen, damit der Transport vom und zum Kunden nicht so lange dauert.</p>
 	<p>Einige Spieler bevorzugen es, ein oder zwei Kolonien des <?=htmlentities(global_setting("MAX_PLANETS"))?>-Planeten-<span xml:lang="en">Limit</span>s offenzulassen, um später sogenannte &bdquo;<span xml:lang="en">Raid</span>kolonien&ldquo; besetzen zu können &ndash; solche Kolonien werden temporär besiedelt und auf Tritiumproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann.</p>
+</div>
+
+<div class="faq" id="umode">
+	<h3>Was bewirkt der Urlaubsmodus?</h3>
+	<p>Mithilfe des Urlaubsmodus kann man seinen Account „einfrieren“, um während einer längeren Abwesenheit zu vermeiden, dass man angegriffen wird, ohne etwas dagegen tun zu können.</p>
+	<p>Im Urlaubsmodus werden keine Rohstoffe mehr produziert, außerdem können keine Flotten mehr verschickt werden und kein Bau in Auftrag gegeben werden.</p>
+	<p>Im Urlaubsmodus erscheint in der Karte hinter dem Spielernamen ein &bdquo; (U)&ldquo;, daran können andere Spieler erkennen, dass der Benutzer sich im Urlaubsmodus befindet. Flüge zu Planeten, deren Besitzer sich im Urlaubsmodus befinden, sind nicht möglich, Trümmerfelder unterliegen dieser Einschränkung nicht.</p>
+	<p>Der Urlaubsmodus wird manuell durch den Benutzer beendet.</p>
 </div>
 
 <div class="faq" id="times">
