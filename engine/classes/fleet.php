@@ -341,7 +341,7 @@
 			if($user_key === false) return false;
 
 			if($user_key)
-				return $this->getTritium($user, $this->raw[1][$user][1], $this->getCurrentTarget())*$this->raw[1][$user][2]*2;
+				return $this->getTritium($user, $this->raw[1][$user][1], $this->getCurrentTarget())*2;
 			else
 			{
 				$tritium = 0;
@@ -354,11 +354,11 @@
 				}
 				if($old_target != $this->raw[1][$user][1])
 					$tritium += $this->getTritium($user, $old_target, $this->raw[1][$user][1]);
-				return $tritium*$this->raw[1][$user][2];
+				return $tritium;
 			}
 		}
 
-		function getTritium($user, $from, $to)
+		function getTritium($user, $from, $to, $factor=true)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
 
@@ -371,8 +371,10 @@
 			}
 
 			$global_factors = get_global_factors();
+			$add_factor = 1;
+			if($factor) $add_factor = $this->raw[1][$user][2];
 
-			return $global_factors['cost']*$this->getDistance($from, $to)*$mass/1000000;
+			return $add_factor*$global_factors['cost']*$this->getDistance($from, $to)*$mass/1000000;
 		}
 
 		function getScores($user, $from, $to)
@@ -630,6 +632,8 @@
 
 		function getDistance($start, $target)
 		{
+			__autoload('Galaxy');
+
 			$this_pos = explode(':', $start);
 			$that_pos = explode(':', $target);
 
@@ -1691,7 +1695,7 @@ EOF
 		if(count($verteidiger) > 1)
 			$nachrichten_text .= "<h3>Flotten der Verteidigers</h3>";
 		else
-			$nachrichten_text .= "<h3>Flotten der Verteidiger</h3>";
+			$nachrichten_text .= "<h3>Flotten des Verteidigers</h3>";
 
 		$nachrichten_text .= "<table>\n";
 		$nachrichten_text .= "\t<thead>\n";
@@ -2082,7 +2086,7 @@ EOF
 		if(count($verteidiger_anfang) > 1)
 			$nachrichten_text .= "<h3>Flotten der Verteidigers</h3>";
 		else
-			$nachrichten_text .= "<h3>Flotten der Verteidiger</h3>";
+			$nachrichten_text .= "<h3>Flotten des Verteidigers</h3>";
 
 		$nachrichten_text .= "<table>\n";
 		$nachrichten_text .= "\t<thead>\n";

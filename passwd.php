@@ -128,7 +128,7 @@
 <p>Sollten Sie im Spiel keine gültige <span xml:lang="en">E-Mail</span>-Adresse angegeben haben, <a href="faq.php#administrators" title="FAQ: Wie kann ich die Administratoren erreichen?">wenden Sie sich bitte an einen der Administratoren</a>.</p>
 <hr />
 <p>Um Ihr Passwort ändern zu können, füllen Sie bitte in das folgende Formular Ihren Benutzernamen und diejenige <span xml:lang="en">E-Mail</span>-Adresse an, die Sie im Spiel in Ihren Einstellungen gespeichert haben.</p>
-<form action="<?=htmlspecialchars(USE_PROTOCOL.'://'.$_SERVER['HTTP_HOST'].h_root.'/passwd.php')?>" method="post">
+<form action="<?=htmlspecialchars(global_setting(USE_PROTOCOL).'://'.$_SERVER['HTTP_HOST'].h_root.'/passwd.php')?>" method="post">
 	<dl>
 		<dt><label for="runde-select">Runde</label></dt>
 		<dd><select name="database" id="runde-select">
