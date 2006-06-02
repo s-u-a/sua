@@ -554,8 +554,9 @@
 		{
 			if(!$this->status) return false;
 
-			if(isset($this->raw['flotten']))
+			if(isset($this->raw['flotten']) && count($this->raw['flotten']) > 0)
 			{
+				$eventfile = Classes::EventFile();
 				foreach($this->raw['flotten'] as $i=>$flotte)
 				{
 					__autoload('Fleet');
@@ -563,6 +564,14 @@
 					{
 						unset($this->raw['flotten'][$i]);
 						$this->changed = true;
+						continue;
+					}
+					$fl = Classes::Fleet($flotte);
+					if($fl->getStatus() == 1)
+					{
+						$arrival = $fl->getNextArrival();
+						if($arrival <= time() && $fl->arriveAtNextTarget())
+							$eventfile->removeCanceledFleet($flotte, $arrival);
 					}
 				}
 				return $this->raw['flotten'];

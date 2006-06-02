@@ -63,7 +63,14 @@
 		{
 			if(!$this->status) return false;
 
-			return sqlite_query($this->connection, "DELETE FROM events WHERE fleet = '".sqlite_escape_string($fleet)."';");
+			$query = "DELETE FROM events WHERE fleet = '".sqlite_escape_string($fleet)."'";
+			if($time !== false)
+			{
+				$time = round($time);
+				$query .= "AND time = '".sqlite_escape_string($time)."'";
+			}
+			$query .= ";";
+			return sqlite_query($this->connection, $query);
 		}
 
 		function getName()
