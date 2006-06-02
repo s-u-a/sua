@@ -23,6 +23,38 @@
 		return $flotte_string;
 	}
 
+	$active_planet = $me->getActivePlanet();
+	$flotten = $me->getFleetsList();
+
+	# Flotten sortieren
+	$flotten_sorted = array();
+	if(count($flotten) > 0)
+	{
+		$eventfile = Classes::EventFile();
+		do {
+			$reget = 0;
+			foreach($flotten as $flotte)
+			{
+				$fl = Classes::Fleet($flotte);
+				if(!$fl->getStatus() || count($fl->getUsersList()) <= 0) continue;
+				$arrival = $fl->getNextArrival();
+				if($reget != 2 && $arrival <= time() && $fl->arriveAtNextTarget())
+				{
+					$eventfile->removeCanceledFleet($flotte, $arrival);
+					$reget = 1;
+				}
+				else
+					$flotten_sorted[$flotte] = $arrival;
+			}
+			if($reget == 2) $reget = 0;
+			elseif($reget == 1)
+			{
+				$reget = 2;
+				$flotten_sorted = array();
+			}
+		} while($reget);
+	}
+
 	login_gui::html_head();
 ?>
 <ul id="planeten-umbenennen">
@@ -84,23 +116,12 @@
 		}
 	}
 
-	$active_planet = $me->getActivePlanet();
-	$flotten = $me->getFleetsList();
-	if(count($flotten) > 0)
+	if(count($flotten_sorted) > 0)
 	{
 ?>
 <h2>Flottenbewegungen</h2>
 <dl id="flotten">
 <?php
-		# Flotten sortieren
-		$flotten_sorted = array();
-		foreach($flotten as $flotte)
-		{
-			$fl = Classes::Fleet($flotte, false);
-			if(!$fl->getStatus() || count($fl->getUsersList()) <= 0) continue;
-			$flotten_sorted[$flotte] = $fl->getNextArrival();
-		}
-
 		asort($flotten_sorted, SORT_NUMERIC);
 
 		$countdowns = array();
@@ -291,7 +312,7 @@
 			foreach($countdowns as $countdown)
 			{
 ?>
-	init_countdown('<?=$countdown[0]?>', <?=$countdown[1]?>, <?=$countdown[2] ? 'false' : 'true'?>, <?=global_setting("EVENTHANDLER_INTERVAL")?>);
+	init_countdown('<?=$countdown[0]?>', <?=$countdown[1]?>, <?=$countdown[2] ? 'false' : 'true'?>);
 <?php
 			}
 ?>
