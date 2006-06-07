@@ -566,13 +566,13 @@
 						$this->changed = true;
 						continue;
 					}
-					$fl = Classes::Fleet($flotte);
+					/*$fl = Classes::Fleet($flotte);
 					if($fl->getStatus() == 1)
 					{
 						$arrival = $fl->getNextArrival();
 						if($arrival <= time() && $fl->arriveAtNextTarget())
 							$eventfile->removeCanceledFleet($flotte, $arrival);
-					}
+					}*/
 				}
 				return $this->raw['flotten'];
 			}
