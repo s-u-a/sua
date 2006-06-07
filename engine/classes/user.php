@@ -3122,7 +3122,7 @@
 			$messenger_settings = $this->getNotificationType();
 			if(!$messenger_settings) return 2;
 
-			$planet_prefix = "(".$me->planetName().", ".$me->getPosString().") ";
+			$planet_prefix = "(".$this->planetName().", ".$this->getPosString().") ";
 
 			switch($type)
 			{
