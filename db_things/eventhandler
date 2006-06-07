@@ -655,7 +655,7 @@ EOF
 	#################
 
 	{
-
+		$hostname = get_default_hostname();
 		$fposition = 0;
 
 		if(date('H')*3600+date('i')*60+60 < 16200) $last_walked = false;
@@ -723,7 +723,7 @@ EOF
 							$to .= '@'.$jabber_messengers[$next_notification['protocol']]['server'];
 						}
 
-						$message = "Automatische Benachrichtigung von http://s-u-a.net/, ".$databases[$next_notification['database']]['name'].", ".$next_notification['username'].":\n";
+						$message = "Automatische Benachrichtigung von http://".$hostname."/, ".$databases[$next_notification['database']]['name'].", ".$next_notification['username'].":\n";
 						$message .= $next_notification['message'];
 
 						$jabber->SendMessage($to, 'normal', NULL, array('body' => htmlspecialchars($message)));
