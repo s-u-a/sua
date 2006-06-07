@@ -12,11 +12,14 @@
 			define_globals($dbid);
 			$first = false;
 		}
-		$players += Highscores::getCount('users', $database[0].'/highscores');
-		$alliances += Highscores::getCount('alliances', $database[0].'/highscores');
+		$players += Highscores::getCount('users', $database['directory'].'/highscores');
+		$alliances += Highscores::getCount('alliances', $database['directory'].'/highscores');
 	}
 
 	$items = Classes::Items();
+
+	$messengers = get_messenger_info();
+	$show_im = isset($messengers['jabber']);
 
 	gui::html_head();
 ?>
@@ -34,6 +37,14 @@
 	<li>Variabler Handelskurs, der sich den Zuständen im Universum anpasst</li>
 	<li>Handelssystem: Geben Sie sich nähernden Transporten Rohstoffe mit auf den Rückweg</li>
 	<li>Komfortable Einstellungsmöglichkeiten, die das Spielen erleichtern</li>
+<?php
+	if($show_im)
+	{
+?>
+	<li>Lassen Sie sich per <abbr title="I seek you" xml:lang="en">ICQ</abbr> oder über einen anderen <span xml:lang="en">Messenger</span> über Ereignisse benachrichtigen</li>
+<?php
+	}
+?>
 	<li>Völlige Ummodellierbarkeit des <span xml:lang="en">Design</span>s durch <span xml:lang="en">Skins</span></li>
 	<li>Flug- und Kampferfahrungspunkte verschaffen Vorteil</li>
 	<li><abbr title="Secure Hypertext Transfer Protocol" xml:lang="en"><span xml:lang="de">HTTPS</span></abbr> schützt vertrauliche Daten</li>
