@@ -1637,11 +1637,11 @@ EOF
 
 
 		# Nachrichtentext
-		$nachrichten_text = "<p class=\"nachricht-kampf\">\n";
+		$nachrichten_text = "<div class=\"nachricht-kampf\">\n";
 		if(count($angreifer) > 1)
-			$nachrichten_text .= "\t<h3>Flotten der Angreifer</h3>";
+			$nachrichten_text .= "\t<h3>Flotten der Angreifer</h3>\n";
 		else
-			$nachrichten_text .= "\t<h3>Flotten des Angreifers</h3>";
+			$nachrichten_text .= "\t<h3>Flotten des Angreifers</h3>\n";
 
 		$nachrichten_text .= "\t<table>\n";
 		$nachrichten_text .= "\t\t<thead>\n";
@@ -1709,9 +1709,9 @@ EOF
 		$nachrichten_text .= "\t</table>\n";
 
 		if(count($verteidiger) > 1)
-			$nachrichten_text .= "\t<h3>Flotten der Verteidigers</h3>";
+			$nachrichten_text .= "\t<h3>Flotten der Verteidigers</h3>\n";
 		else
-			$nachrichten_text .= "\t<h3>Flotten des Verteidigers</h3>";
+			$nachrichten_text .= "\t<h3>Flotten des Verteidigers</h3>\n";
 
 		$nachrichten_text .= "\t<table>\n";
 		$nachrichten_text .= "\t\t<thead>\n";
@@ -2002,9 +2002,9 @@ EOF
 		$verteidiger_punkte = array();
 
 		if(count($angreifer_anfang) > 1)
-			$nachrichten_text .= "\t<h3>Flotten der Angreifer</h3>";
+			$nachrichten_text .= "\t<h3>Flotten der Angreifer</h3>\n";
 		else
-			$nachrichten_text .= "\t<h3>Flotten des Angreifers</h3>";
+			$nachrichten_text .= "\t<h3>Flotten des Angreifers</h3>\n";
 
 		$nachrichten_text .= "\t<table>\n";
 		$nachrichten_text .= "\t\t<thead>\n";
@@ -2099,9 +2099,9 @@ EOF
 
 
 		if(count($verteidiger_anfang) > 1)
-			$nachrichten_text .= "\t<h3>Flotten der Verteidigers</h3>";
+			$nachrichten_text .= "\t<h3>Flotten der Verteidigers</h3>\n";
 		else
-			$nachrichten_text .= "\t<h3>Flotten des Verteidigers</h3>";
+			$nachrichten_text .= "\t<h3>Flotten des Verteidigers</h3>\n";
 
 		$nachrichten_text .= "\t<table>\n";
 		$nachrichten_text .= "\t\t<thead>\n";
