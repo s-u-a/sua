@@ -70,14 +70,14 @@
 		<dl>
 			<dt class="c-empfaenger"><label for="empfaenger-input">Empfänger</label></dt>
 <?php
-		$empfaenger = $_GET['to'];
-		if(isset($_POST['empfaenger']))
-			$empfaenger = $_POST['empfaenger'];
-		$betreff = '';
-		if(isset($_GET['subject']))
-			$betreff = $_GET['subject'];
-		if(isset($_POST['betreff']))
-			$betreff = $_POST['betreff'];
+			$empfaenger = $_GET['to'];
+			if(isset($_POST['empfaenger']))
+				$empfaenger = $_POST['empfaenger'];
+			$betreff = '';
+			if(isset($_GET['subject']))
+				$betreff = $_GET['subject'];
+			if(isset($_POST['betreff']))
+				$betreff = $_POST['betreff'];
 ?>
 			<dd class="c-empfaenger"><input type="text" id="empfaenger-input" name="empfaenger" value="<?=utf8_htmlentities($empfaenger)?>" tabindex="1" accesskey="z" title="[Z]" /></dd>
 
@@ -90,16 +90,11 @@
 	</fieldset>
 	<div><button type="submit" accesskey="n" tabindex="4">Abse<kbd>n</kbd>den</button></div>
 </form>
-<?php
-			if($me->checkSetting('ajax'))
-			{
-?>
 <script type="text/javascript">
 	// Autocompletion des Empfaengers
 	activate_users_list(document.getElementById('empfaenger-input'));
 </script>
 <?php
-			}
 		}
 	}
 	elseif(isset($_GET['type']) && isset($message_type_names[$_GET['type']]))
@@ -379,15 +374,10 @@
 		<div><button type="submit" tabindex="6">Weiterleiten</button></div>
 	</fieldset>
 </form>
-<?php
-					if($me->checkSetting('ajax'))
-					{
-?>
 <script type="text/javascript">
 	activate_users_list(document.getElementById('empfaenger-input'));
 </script>
 <?php
-					}
 				}
 			}
 		}

@@ -194,8 +194,11 @@
 			var session_cookie = '<?=str_replace('\'', '\\\'', session_name())?>';
 			var session_id = '<?=str_replace('\'', '\\\'', session_id())?>';
 			var database_id = '<?=str_replace('\'', '\\\'', $_SESSION['database'])?>';
+			var ths_utf8 = '<?=utf8_jsentities(global_setting("THS_UTF8"))?>';
+			var h_root = '<?=utf8_jsentities(h_root)?>';
+			var last_min_chars = '<?=utf8_jsentities(global_setting("LAST_MIN_CHARS"))?>';
 		</script>
-		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts.js.php')?>"></script>
+		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts/javascript-'.$me->checkSetting('performance').".js")?>"></script>
 <?php
 			if($me->checkSetting('ajax'))
 			{

@@ -16,5 +16,5 @@ php_value max_execution_time 7
 php_flag magic_quotes_gpc off
 php_flag register_globals off
 
-AddOutputFilter DEFLATE css html
-AddCharset UTF-8 html css
+AddOutputFilter DEFLATE css html js
+AddCharset UTF-8 html css js

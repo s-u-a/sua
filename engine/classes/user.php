@@ -1554,7 +1554,7 @@
 				'tooltips' => false, 'ipcheck' => true,
 				'noads' => false, 'show_extern' => false,
 				'notify' => false, 'email' => false,
-				'ajax' => true,
+				'performance' => 2,
 				'receive' => array(
 					1 => array(true, true),
 					2 => array(true, false),

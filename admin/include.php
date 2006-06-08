@@ -149,7 +149,7 @@
 			var session_id = '<?=str_replace('\'', '\\\'', session_id())?>';
 			var database_id = '<?=str_replace('\'', '\\\'', $_SESSION['database'])?>';
 		</script>
-		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts.js.php')?>"></script>
+		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts/javascript-2.js')?>"></script>
 		<script type="text/javascript" src="<?=htmlentities(h_root.'/sarissa.js')?>"></script>
 	</head>
 	<body>

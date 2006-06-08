@@ -157,16 +157,9 @@
 	</dl>
 	<div><button type="submit" tabindex="6" accesskey="n">A<kbd>n</kbd>frage absenden</button></div>
 </form>
-<?php
-	if($me->checkSetting('ajax'))
-	{
-?>
 <script type="text/javascript">
 	activate_users_list(document.getElementById('spieler-input'));
 </script>
-<?php
-	}
-?>
 <?php
 	login_gui::html_foot();
 ?>

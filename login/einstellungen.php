@@ -63,7 +63,6 @@
 		$me->setSetting('noads', isset($_POST['noads']));
 		$me->setSetting('show_extern', isset($_POST['show_extern']));
 		$me->setSetting('notify', isset($_POST['notify']));
-		$me->setSetting('ajax', isset($_POST['ajax']));
 
 		if(!isset($_POST['im-receive']) || !isset($_POST['im-receive']['messages']))
 			$messenger_receive['messages'] = array(1=>false, 2=>false, 3=>false, 4=>false, 5=>false, 6=>false, 7=>false);
@@ -182,6 +181,9 @@
 		}
 	}
 
+	if(isset($_POST['performance']) && in_array($_POST['performance'], array(1,2,3)))
+		$me->setSetting('performance', $_POST['performance']);
+
 	login_gui::html_head();
 
 	$tabindex = 1;
@@ -282,8 +284,14 @@
 			<dt class="c-externe-navigationslinks"><label for="show-extern">Externe Navigationslinks</label></dt>
 			<dd class="c-externe-navigationslinks"><input type="checkbox" name="show_extern" id="show-extern"<?=$me->checkSetting('show_extern') ? ' checked="checked"' : ''?> title="Wenn diese Option aktiviert ist, werden in der Navigation Links auf spielexterne Seiten wie das Board angezeigt." tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-ajax"><label for="ajax"><acronym title="Asynchronous JavaScript and XML" xml:lang="en">AJAX</acronym></label></dt>
-			<dd class="c-ajax" xml:lang="en"><input type="checkbox" name="ajax" id="ajax"<?=$me->checkSetting('ajax') ? ' checked="checked"' : ''?> title="Nützliche Eingabevereinfachungen, empfehlenswert in neuen Browsern mit schneller Internetverbindung." tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-javascript-performance"><label for="performance">JavaScript-Performance</label></dt>
+			<dd class="c-javascript-performance">
+				<select name="performance" tabindex="<?=$tabindex++?>">
+					<option value="1"<?=($me->checkSetting('performance')==1) ? ' selected="selected"' : ''?>>Ungenau, wenig CPU-Last</option>
+					<option value="2"<?=($me->checkSetting('performance')==2) ? ' selected="selected"' : ''?>>Praktisch, mittlere CPU-Last</option>
+					<option value="3"<?=($me->checkSetting('performance')==3) ? ' selected="selected"' : ''?>>Featurereich und präzise, hohe CPU-Last</option>
+				</select>
+			</dd>
 		</dl>
 	</fieldset>
 
