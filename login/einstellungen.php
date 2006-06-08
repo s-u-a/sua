@@ -289,7 +289,7 @@
 				<select name="performance" tabindex="<?=$tabindex++?>">
 					<option value="1"<?=($me->checkSetting('performance')==1) ? ' selected="selected"' : ''?>>Ungenau, wenig CPU-Last</option>
 					<option value="2"<?=($me->checkSetting('performance')==2) ? ' selected="selected"' : ''?>>Praktisch, mittlere CPU-Last</option>
-					<option value="3"<?=($me->checkSetting('performance')==3) ? ' selected="selected"' : ''?>>Featurereich und präzise, hohe CPU-Last</option>
+					<option value="3"<?=($me->checkSetting('performance')==3) ? ' selected="selected"' : ''?>>Komfortabel und präzise, hohe CPU-Last</option>
 				</select>
 			</dd>
 		</dl>

@@ -131,6 +131,8 @@ function time_up()
 	// Durch alle Countdowns durchlaufen
 	for(var i=0; i<countdowns.length; i++)
 	{
+		if(!countdowns[i]) continue;
+
 		var c = countdowns[i];
 		var this_remain = Math.round((c[1]+time_diff)-local_time_up.getTime()/1000);
 
@@ -138,7 +140,7 @@ function time_up()
 		{ // Countdown ist abgelaufen
 			// Element leeren
 			while(c[0].firstChild)
-				c[0].removeChild(c[0]).firstChild;
+				c[0].removeChild(c[0].firstChild);
 
 			// Fertig-Link anzeigen
 			var link_fertig = document.createElement('a');
@@ -149,7 +151,7 @@ function time_up()
 			c[0].appendChild(link_fertig);
 
 			// Countdown entfernen
-			delete countdowns[codo_key];
+			countdowns[i] = false;
 			continue;
 		}
 

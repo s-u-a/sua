@@ -131,6 +131,8 @@ function time_up()
 
 	for(var i=0; i<countdowns.length; i++)
 	{
+		if(!countdowns[i]) continue;
+
 		// Count down
 		countdowns[i][1]--;
 
@@ -150,7 +152,7 @@ function time_up()
 			c[0].appendChild(link_fertig);
 
 			// Countdown abbrechen
-			delete countdowns[codo_key];
+			countdowns[i] = false;
 			continue;
 		}
 
