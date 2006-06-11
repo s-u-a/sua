@@ -2843,7 +2843,7 @@
 
 			if($really_rename)
 			{
-				$new_fname = $this->save_dir.'/'.urlencode(strtolower($new_name));
+				$new_fname = $this->save_dir.'/'.strtolower(urlencode($new_name));
 				if(file_exists($new_fname)) return false;
 			}
 
