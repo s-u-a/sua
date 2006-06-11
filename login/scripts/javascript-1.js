@@ -84,9 +84,10 @@ function init_countdown(obj_id, f_time)
 	var show_cancel = true; // Abbruchbutton anzeigen
 	if(init_countdown.arguments.length >= 3 && !init_countdown.arguments[2])
 		show_cancel = false;
-	var sleep_seconds = 0; // Zeit bleibt einige Sekunden auf 0 stehen, bevor zu Fertig gewechselt wird
-	if(init_countdown.arguments.length >= 4)
-		sleep_seconds = init_countdown.arguments[3];
+
+	var sleep_seconds = init_countdown.arguments[3]; // Zeit bleibt einige Sekunden auf 0 stehen, bevor zu Fertig gewechselt wird
+
+	var finish_url = init_countdown.arguments[4]; // Verlinkunk des Fertig-Links
 
 	var obj_obj = document.getElementById('restbauzeit-'+obj_id);
 
@@ -119,7 +120,7 @@ function init_countdown(obj_id, f_time)
 	}
 
 	// Zum Countdowns-Array hinzufuegen, wird jede Sekunde abgearbeitet
-	window.countdowns.push(new Array(obj_obj, remain, sleep_seconds));
+	window.countdowns.push(new Array(obj_obj, remain, sleep_seconds, finish_url));
 }
 
 function time_up()
@@ -145,7 +146,8 @@ function time_up()
 				c[0].removeChild(c[0].firstChild);
 			// Fertig-Link anzeigen
 			var link_fertig = document.createElement('a');
-			link_fertig.href = '?'+session_cookie+'='+encodeURIComponent(session_id);
+			if(c[3]) link_fertig.href = c[3];
+			else link_fertig.href = '?'+session_cookie+'='+encodeURIComponent(session_id);
 			link_fertig.className = 'fertig';
 			link_fertig.title = 'Seite neu laden.';
 			link_fertig.appendChild(document.createTextNode('Fertig.'));

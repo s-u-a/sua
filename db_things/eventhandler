@@ -266,6 +266,7 @@ EOF
 						define_globals($selected_database);
 						walkthrough_users();
 						check_termination();
+						Classes::resetInstances();
 					}
 					break;
 			}
@@ -680,6 +681,7 @@ EOF
 					arrive($process['fleet']);
 					check_termination();
 				}
+				Classes::resetInstances();
 			}
 
 			check_termination();
@@ -694,6 +696,7 @@ EOF
 					define_globals($selected_database);
 					walkthrough_users();
 					check_termination();
+					Classes::resetInstances();
 				}
 			}
 
@@ -766,11 +769,11 @@ EOF
 										$user->refreshMessengerBuildingNotifications();
 									}
 								}
-								unset($user);
-								Classes::resetInstances();
 
 								$jabber->sendMessage($p['message']['@']['from'], 'normal', NULL, array('body' => 'Accepted'));
 							}
+							unset($user);
+							Classes::resetInstances();
 						}
 						else $jabber->sendMessage($p['message']['@']['from'], 'normal', NULL, array('body' => 'Unrecognised command'));
 					}

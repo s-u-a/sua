@@ -78,6 +78,10 @@
 
 	function define_globals($DB)
 	{
+		static $instances_cache;
+
+		if(!isset($instances_cache)) $instances_cache = array();
+
 		$databases = get_databases(false, $databases_aliases);
 
 		$had = array(); # Um Endlosschleifen zu vermeiden
@@ -90,6 +94,19 @@
 			}
 			else return false;
 		}
+
+		// Instanzen-Cache auslagern, damit keine Konflikte entstehen
+		$old_db = global_setting('DB');
+		if($old_db && isset($GLOBALS['objectInstances']) && $GLOBALS['objectInstances'])
+		{
+			$instances[$old_db] = &$GLOBALS['objectInstances'];
+			unset($GLOBALS['objectInstances']);
+		}
+
+		if(isset($instances[$DB]))
+			$GLOBALS['objectInstances'] = &$instances[$DB];
+		else
+			$GLOBALS['objectInstances'] = array();
 
 		global_setting('DB', $DB);
 
@@ -557,7 +574,7 @@
 
 			$aliases_cache = array();
 			$databases = array();
-			
+
 			foreach($databases_raw as $i=>$database)
 			{
 				if(!isset($database['directory'])) continue;

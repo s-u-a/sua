@@ -83,9 +83,10 @@ function init_countdown(obj_id, f_time)
 		show_cancel = false;
 
 	// Sekunden, die bei 0:00 zu warten sind, bevor Fertig angezeigt wird
-	var sleep_seconds = 0;
-	if(init_countdown.arguments.length >= 4)
-		sleep_seconds = init_countdown.arguments[3];
+	var sleep_seconds = init_countdown.arguments[3];
+
+	// Verlinkung des Fertig-Links
+	var finish_url = init_countdown.arguments[4];
 
 	var obj_obj = document.getElementById('restbauzeit-'+obj_id);
 
@@ -114,7 +115,7 @@ function init_countdown(obj_id, f_time)
 	}
 
 	// In globales Array einfuegen, das jede Sekunde durchgearbeitet wird
-	window.countdowns.push(new Array(obj_obj, f_time, sleep_seconds));
+	window.countdowns.push(new Array(obj_obj, f_time, sleep_seconds, finish_url));
 
 	// Countdown gleich ausfuehren, damit der Platzhalter nicht sichtbar ist
 	time_up();
@@ -144,7 +145,8 @@ function time_up()
 
 			// Fertig-Link anzeigen
 			var link_fertig = document.createElement('a');
-			link_fertig.href = '?'+window.session_cookie+'='+encodeURIComponent(window.session_id);
+			if(c[3]) link_fertig.href = c[3];
+			else link_fertig.href = '?'+window.session_cookie+'='+encodeURIComponent(window.session_id);
 			link_fertig.className = 'fertig';
 			link_fertig.title = 'Seite neu laden.';
 			link_fertig.appendChild(document.createTextNode('Fertig.'));

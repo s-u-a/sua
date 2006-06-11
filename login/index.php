@@ -279,7 +279,9 @@
 	</dt>
 	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=utf8_htmlentities($flotte)?>">Ankunft: <?=date('H:i:s, Y-m-d', $next_arrival)?> (Serverzeit)<?php if(!$fl->isFlyingBack() && ($me_in_users !== false)){?>, <a href="index.php?cancel=<?=htmlentities(urlencode($flotte))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
 <?php
-			$countdowns[] = array($flotte, $next_arrival, ($fl->isFlyingBack() || ($me_in_users === false)));
+			$url = '';
+			if($fl->isFlyingBack()) $url = h_root.'/login/flotten.php?planet='.urlencode($me->getPlanetByPos($fl->getCurrentTarget())).'&'.urlencode(session_name()).'='.urlencode(session_id());
+			$countdowns[] = array($flotte, $next_arrival, ($fl->isFlyingBack() || ($me_in_users === false)), $url);
 		}
 ?>
 </dl>
@@ -292,7 +294,7 @@
 			foreach($countdowns as $countdown)
 			{
 ?>
-	init_countdown('<?=$countdown[0]?>', <?=$countdown[1]?>, <?=$countdown[2] ? 'false' : 'true'?>);
+	init_countdown('<?=$countdown[0]?>', <?=$countdown[1]?>, <?=$countdown[2] ? 'false' : 'true'?>, false, '<?=$countdown[3]?>');
 <?php
 			}
 ?>
@@ -331,7 +333,7 @@
 ?>
 			<dd class="c-gebaeudebau"><?=utf8_htmlentities($item_info['name'])?> <span class="restbauzeit" id="restbauzeit-ge-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building_gebaeude[1])?> (Serverzeit)</span></dd>
 <?php
-				$countdowns[] = array('ge-'.$planet, $building_gebaeude[1]);
+				$countdowns[] = array('ge-'.$planet, $building_gebaeude[1], h_root."/login/gebaeude.php?planet=".urlencode($planet)."&".urlencode(session_name())."=".urlencode(session_id()));
 			}
 			elseif($me->getRemainingFields() <= 0)
 			{
@@ -360,7 +362,7 @@
 ?>
 			<dd class="c-forschung"><?=utf8_htmlentities($item_info['name'])?> <span id="restbauzeit-fo-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building_forschung[1])?> (Serverzeit)</span></dd>
 <?php
-				$countdowns[] = array('fo-'.$planet, $building_forschung[1]);
+				$countdowns[] = array('fo-'.$planet, $building_forschung[1], h_root."/login/forschung.php?planet=".urlencode($planet)."&".urlencode(session_name())."=".urlencode(session_id()));
 			}
 			else
 			{
@@ -406,7 +408,7 @@
 <?php
 						break;
 				}
-				$countdowns[] = array('ro-'.$planet, $finishing_time);
+				$countdowns[] = array('ro-'.$planet, $finishing_time, h_root."/login/roboter.php?planet=".urlencode($planet)."&".urlencode(session_name())."=".urlencode(session_id()));
 			}
 			else
 			{
@@ -452,7 +454,7 @@
 <?php
 						break;
 				}
-				$countdowns[] = array('sc-'.$planet, $finishing_time);
+				$countdowns[] = array('sc-'.$planet, $finishing_time, h_root."/login/schiffe.php?planet=".urlencode($planet)."&".urlencode(session_name())."=".urlencode(session_id()));
 			}
 			else
 			{
@@ -498,7 +500,7 @@
 <?php
 						break;
 				}
-				$countdowns[] = array('ve-'.$planet, $finishing_time);
+				$countdowns[] = array('ve-'.$planet, $finishing_time, h_root."/login/verteidigung.php?planet=".urlencode($planet)."&".urlencode(session_name())."=".urlencode(session_id()));
 			}
 			else
 			{
@@ -525,7 +527,7 @@
 		foreach($countdowns as $countdown)
 		{
 ?>
-	init_countdown('<?=$countdown[0]?>', <?=$countdown[1]?>, false);
+	init_countdown('<?=$countdown[0]?>', <?=$countdown[1]?>, false, false, '<?=$countdown[2]?>');
 <?php
 		}
 ?>
