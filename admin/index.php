@@ -44,8 +44,24 @@
 
 		$_POST['lock_username'] = trim($_POST['lock_username']);
 
+		$lock_time = false;
+		if(isset($_POST['lock_period']) && isset($_POST['lock_period_unit']))
+		{
+			$_POST['lock_period'] = trim($_POST['lock_period']);
+			$_POST['lock_period_unit'] = trim($_POST['lock_period_unit']);
+			if($_POST['lock_period'])
+			{
+				switch($_POST['lock_period_unit'])
+				{
+					case 'min': $lock_time = time()+$_POST['lock_period']*60; break;
+					case 'h': $lock_time = time()+$_POST['lock_period']*3600; break;
+					case 'd': $lock_time = time()+$_POST['lock_period']*86400; break;
+				}
+			}
+		}
+
 		$that_user = Classes::User($_POST['lock_username']);
-		$that_user->lockUser() && protocol(($that_user->userLocked() ? '5.1' : '5.2'), $_POST['lock_username']);
+		$that_user->lockUser($lock_time) && protocol(($that_user->userLocked() ? '5.1' : '5.2'), $_POST['lock_username']);
 		unset($that_user);
 	}
 
@@ -108,18 +124,11 @@
 		{
 			if(!file_exists('../.htaccess'))
 				touch('../.htaccess');
-			if(rename('../.htaccess', '../.htaccess.wartungsarbeiten.sav'))
+			if(copy('../.htaccess', '../.htaccess.wartungsarbeiten.sav'))
 			{
-				($fh = fopen('../.htaccess', 'w')) && (protocol("12.1"));
+				($fh = fopen('../.htaccess', 'a')) && (protocol("12.1"));
 				flock($fh, LOCK_EX);
-
-				fwrite($fh, "Order Deny,Allow\n");
-				fwrite($fh, "Deny from All\n");
-				fwrite($fh, "ErrorDocument 403 /wartungsarbeiten.html\n");
-				fwrite($fh, "<Files \"wartungsarbeiten.html\">\n");
-				fwrite($fh, "\tDeny from None\n");
-				fwrite($fh, "</Files>\n");
-
+				fwrite($fh, "\nDeny from All\n");
 				flock($fh, LOCK_UN);
 				fclose($fh);
 			}
@@ -361,6 +370,9 @@
 	<dl>
 		<dt><label for="lock-input">Benutzername</label></dt>
 		<dd><input type="text" name="lock_username" id="lock-input" /></dd>
+
+		<dt><label for="lock-period-input">Dauer der Sperre</label></dt>
+		<dd><input type="text" name="lock_period" id="lock-period-input"> <select name="lock_period_unit"><option value="min">Minuten</option><option value="h">Stunden</option><option value="d">Tage</option></select></dd>
 	</dl>
 	<div><button type="submit">Sperren / Entsperren</button></div>
 </form>

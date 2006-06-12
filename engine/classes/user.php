@@ -1456,24 +1456,27 @@
 			return file_exists(global_setting("LOCK_FILE"));
 		}
 
-		function userLocked()
+		function userLocked($check_unlocked=true)
 		{
 			if(!$this->status) return false;
 
+			if($check_unlocked && isset($this->raw['lock_time']) && $this->raw['lock_time'] && time() > $this->raw['lock_time'])
+				$this->lockUser(false, false);
 			return (isset($this->raw['locked']) && $this->raw['locked']);
 		}
 
-		function lockUser()
+		function lockUser($lock_time=false, $check_unlocked=true)
 		{
 			if(!$this->status) return false;
 
 			$this->eventhandler(0, 1,1,1,1,1);
-			$this->raw['locked'] = !$this->userLocked();
+			$this->raw['locked'] = !$this->userLocked($check_unlocked);
+			$this->raw['lock_time'] = ($this->raw['locked'] ? $lock_time : false);
 			$this->changed = true;
 
 			# Planeteneigentuemer umbenennen
 			$flag = '';
-			if($this->userLocked()) $flag = 'g';
+			if($this->userLocked(false)) $flag = 'g';
 			$active_planet = $this->getActivePlanet();
 			$planets = $this->getPlanetsList();
 			foreach($planets as $planet)
