@@ -76,17 +76,19 @@ function seconds2string(seconds)
 /// Countdowns ///
 //////////////////
 
-function init_countdown(obj_id, f_time)
+function init_countdown(obj_id, f_time, show_cancel, sleep_seconds, finish_url)
 { // Initialisiert einen Countdown
-	var show_cancel = true; // Abbruchbutton anzeigen
-	if(init_countdown.arguments.length >= 3 && !init_countdown.arguments[2])
-		show_cancel = false;
+	// obj_id: ID des Items, HTML-ID: restbauzeit-[id]
+	// f_time: Fertigstellungs-Serverzeit
+
+	// Abbruchbutton anzeigen
+	show_cancel = ((show_cancel == null) ? true : (show_cancel == true));
 
 	// Sekunden, die bei 0:00 zu warten sind, bevor Fertig angezeigt wird
-	var sleep_seconds = init_countdown.arguments[3];
+	sleep_seconds = (sleep_seconds ? sleep_seconds : 0);
 
 	// Verlinkung des Fertig-Links
-	var finish_url = init_countdown.arguments[4];
+	finish_url = (finish_url ? finish_url : false);
 
 	var obj_obj = document.getElementById('restbauzeit-'+obj_id);
 
