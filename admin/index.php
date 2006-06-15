@@ -45,17 +45,17 @@
 		$_POST['lock_username'] = trim($_POST['lock_username']);
 
 		$lock_time = false;
-		if(isset($_POST['lock_period']) && isset($_POST['lock_period_unit']))
+		if(isset($_POST['user_lock_period']) && isset($_POST['user_lock_period_unit']))
 		{
-			$_POST['lock_period'] = trim($_POST['lock_period']);
-			$_POST['lock_period_unit'] = trim($_POST['lock_period_unit']);
-			if($_POST['lock_period'])
+			$_POST['user_lock_period'] = trim($_POST['user_lock_period']);
+			$_POST['user_lock_period_unit'] = trim($_POST['user_lock_period_unit']);
+			if($_POST['user_lock_period'])
 			{
-				switch($_POST['lock_period_unit'])
+				switch($_POST['user_lock_period_unit'])
 				{
-					case 'min': $lock_time = time()+$_POST['lock_period']*60; break;
-					case 'h': $lock_time = time()+$_POST['lock_period']*3600; break;
-					case 'd': $lock_time = time()+$_POST['lock_period']*86400; break;
+					case 'min': $lock_time = time()+$_POST['user_lock_period']*60; break;
+					case 'h': $lock_time = time()+$_POST['user_lock_period']*3600; break;
+					case 'd': $lock_time = time()+$_POST['user_lock_period']*86400; break;
 				}
 			}
 		}
@@ -143,7 +143,7 @@
 
 	if($admin_array['permissions'][13] && isset($_POST['lock']))
 	{
-		if($_POST['lock'] && !file_exists(global_setting("LOCK_FILE")))
+		if($_POST['lock'] && !database_locked())
 		{
 			# Bei allen Benutzern den Eventhandler ausfuehren
 
@@ -158,9 +158,30 @@
 			}
 			closedir($dh);
 
-			touch(global_setting("LOCK_FILE")) && protocol("13.1");
+			($fh = fopen(global_setting("DB_LOCKED"), "w")) and protocol("13.1");
+			if($fh)
+			{
+				if(isset($_POST['lock_period']) && isset($_POST['lock_period_unit']))
+				{
+					$lock_time = false;
+					$_POST['lock_period'] = trim($_POST['lock_period']);
+					$_POST['lock_period_unit'] = trim($_POST['lock_period_unit']);
+					if($_POST['lock_period'])
+					{
+						switch($_POST['lock_period_unit'])
+						{
+							case 'min': $lock_time = time()+$_POST['lock_period']*60; break;
+							case 'h': $lock_time = time()+$_POST['lock_period']*3600; break;
+							case 'd': $lock_time = time()+$_POST['lock_period']*86400; break;
+						}
+					}
+					if($lock_time)
+						fwrite($fh, $lock_time);
+				}
+				fclose($fh);
+			}
 		}
-		elseif(!$_POST['lock'] && file_exists(global_setting("LOCK_FILE")))
+		elseif(!$_POST['lock'] && database_locked())
 		{
 			# Bei allen Benutzern den Eventhandler ausfuehren
 
@@ -175,7 +196,7 @@
 			}
 			closedir($dh);
 
-			unlink(global_setting("LOCK_FILE")) && protocol("13.2");
+			unlink(global_setting("DB_LOCKED")) && protocol("13.2");
 		}
 	}
 
@@ -368,11 +389,11 @@
 <h2 id="action-5">Einen Benutzer sperren / entsperren</h2>
 <form action="index.php" method="post">
 	<dl>
-		<dt><label for="lock-input">Benutzername</label></dt>
-		<dd><input type="text" name="lock_username" id="lock-input" /></dd>
+		<dt><label for="user-lock-input">Benutzername</label></dt>
+		<dd><input type="text" name="lock_username" id="user-lock-input" /></dd>
 
-		<dt><label for="lock-period-input">Dauer der Sperre</label></dt>
-		<dd><input type="text" name="lock_period" id="lock-period-input"> <select name="lock_period_unit"><option value="min">Minuten</option><option value="h">Stunden</option><option value="d">Tage</option></select></dd>
+		<dt><label for="user-lock-period-input">Dauer der Sperre</label></dt>
+		<dd><input type="text" name="user_lock_period" id="user-lock-period-input"> <select name="user_lock_period_unit"><option value="min">Minuten</option><option value="h">Stunden</option><option value="d">Tage</option></select></dd>
 	</dl>
 	<div><button type="submit">Sperren / Entsperren</button></div>
 </form>
@@ -510,7 +531,7 @@
 
 	if($admin_array['permissions'][13])
 	{
-		if(file_exists(global_setting("LOCK_FILE")))
+		if(database_locked())
 		{
 ?>
 <hr />
@@ -526,6 +547,10 @@
 <hr />
 <h2 id="action-13">Spiel sperren</h2>
 <form action="index.php" method="post">
+	<dl>
+		<dt><label for="lock-period-input">Dauer der Sperre</label></dt>
+		<dd><input type="text" name="lock_period" id="lock-period-input"> <select name="lock_period_unit"><option value="min">Minuten</option><option value="h">Stunden</option><option value="d">Tage</option></select></dd>
+	</dl>
 	<div><input type="hidden" name="lock" value="1" /><button type="submit">Sperren</button></div>
 </form>
 

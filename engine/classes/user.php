@@ -1453,7 +1453,7 @@
 
 		function gameLocked()
 		{
-			return file_exists(global_setting("LOCK_FILE"));
+			return database_locked();
 		}
 
 		function userLocked($check_unlocked=true)

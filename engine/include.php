@@ -117,7 +117,7 @@
 		global_setting('DB_DIR', $DB_DIR);
 
 		global_setting('EVENT_FILE', $DB_DIR.'/events');
-		global_setting('LOCK_FILE', $DB_DIR.'/locked');
+		global_setting('DB_LOCKED', $DB_DIR.'/locked');
 		global_setting('DB_ALLIANCES', $DB_DIR.'/alliances');
 		global_setting('DB_FLEETS', $DB_DIR.'/fleets');
 		global_setting('DB_PLAYERS', $DB_DIR.'/players');
@@ -138,6 +138,7 @@
 		global_setting('DB_GLOBAL_PROD_FACTOR', $DB_DIR.'/global_prod_factor');
 		global_setting('DB_GLOBAL_COST_FACTOR', $DB_DIR.'/global_cost_factor');
 		global_setting('DB_USE_OLD_INGTECH', $DB_DIR.'/use_old_ingtech');
+		global_setting('DB_NO_ATTS', $DB_DIR.'/no_atts');
 
 		return true;
 	}
@@ -1423,5 +1424,20 @@
 		}
 
 		return $factors;
+	}
+
+	function database_locked()
+	{
+		if(!file_exists(global_setting("DB_LOCKED"))) return false;
+
+		if(!is_readable(global_setting("DB_LOCKED"))) return true;
+
+		$until = trim(file_get_contents(global_setting("DB_LOCKED")));
+		if($until && time() > $until)
+		{
+			unlink(global_setting("DB_LOCKED"));
+			return false;
+		}
+		return true;
 	}
 ?>

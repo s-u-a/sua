@@ -190,5 +190,12 @@
 
 			return ($above+1);
 		}
+
+		function destroy()
+		{
+			if(!$this->status) return false;
+
+			return (sqlite_query($this->connection, "DELETE FROM highscores_users;") && sqlite_query($this->connection, "DELETE FROM highscores_alliances;"));
+		}
 	}
 ?>

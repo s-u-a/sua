@@ -18,10 +18,8 @@
 		}
 	}
 
-
-	unlink(global_setting("DB_HIGHSCORES"));
-
 	$highscores_obj = Classes::Highscores();
+	$highscores_obj->destroy();
 
 	$dh = opendir(global_setting("DB_PLAYERS"));
 	while(($fname = readdir($dh)) !== false)
