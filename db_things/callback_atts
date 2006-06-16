@@ -41,7 +41,7 @@
 		{
 			foreach($fleet->getUsersList() as $user)
 			{
-				if(!$fleet->callBack($user))
+				if(!$fleet->callBack($user, true))
 					fputs(STDERR, "Error: Could not call back user ".$user." in fleet ".$fleet->getName().".\n");
 			}
 		}

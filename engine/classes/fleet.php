@@ -426,7 +426,7 @@
 			return $time;
 		}
 
-		function callBack($user)
+		function callBack($user, $immediately=false)
 		{
 			if(!$this->status || !$this->started() || !isset($this->raw[1][$user]) || $this->isFlyingBack()) return false;
 
@@ -448,8 +448,12 @@
 			else $time1 = $this->calcTime($user, $from, $start);
 			$time2 = $this->calcTime($user, $to, $start);
 			$time3 = $this->calcTime($user, $from, $to);
-			$progress = (time()-$this->raw[2])/$time3;
-			if($progress > 1) $progress = 1;
+			if($immediately) $progress = 0;
+			else
+			{
+				$progress = (time()-$this->raw[2])/$time3;
+				if($progress > 1) $progress = 1;
+			}
 
 			/* Dreieck ABC:
 			A: $start
