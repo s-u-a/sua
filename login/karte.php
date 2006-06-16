@@ -33,36 +33,41 @@
 	if($prev_system < 1)
 		$prev_system = $system_count;
 
-	$verb_list = $me->getVerbuendetList();
-	if(count($verb_list) > 0)
-	{
-		$verb_jcheck = array();
-		foreach($verb_list as $verb)
-			$verb_jcheck[] = "sinfo[i]['owner'] == '".str_replace("'", "\\'", $verb)."'";
-		$verb_jcheck = implode(' || ', $verb_jcheck);
-	}
-	else $verb_jcheck = 'false';
-
-	$shortcuts_list = $me->getPosShortcutsList();
-	if(count($shortcuts_list) > 0)
-	{
-		$sc_jcheck = array();
-		foreach($shortcuts_list as $sc)
-			$sc_jcheck[] = "scp != '".str_replace("'", "\\'", $sc)."'";
-		$sc_jcheck = implode(' && ', $sc_jcheck);
-	}
-	else $sc_jcheck = 'true';
-
 	if($me->checkSetting('performance') > 1)
 	{
 		# Im JavaScript wird fuer JavaScript-Tooltips das Dummy-Attribut titleAttribute verwendet, damit sich die Tooltips nicht mit Browser-Tooltips ueberschneiden
 		$title_attr = ($me->checkSetting('tooltips') ? 'titleAttribute' : 'title');
+
+		$verb_list = $me->getVerbuendetList();
+		if(count($verb_list) > 0)
+		{
+			$verb_jcheck = array();
+			foreach($verb_list as $verb)
+				$verb_jcheck[] = "username == '".str_replace("'", "\\'", $verb)."'";
+			$verb_jcheck = implode(' || ', $verb_jcheck);
+		}
+		else $verb_jcheck = 'false';
+
+		$shortcuts_list = $me->getPosShortcutsList();
+		if(count($shortcuts_list) > 0)
+		{
+			$sc_jcheck = array();
+			foreach($shortcuts_list as $sc)
+				$sc_jcheck[] = "scp != '".str_replace("'", "\\'", $sc)."'";
+			$sc_jcheck = implode(' && ', $sc_jcheck);
+		}
+		else $sc_jcheck = 'true';
 ?>
 <script type="text/javascript">
 // <![CDATA[
 	var current_system = <?=$system_n?>;
 	var min_preload = 5;
 	var max_preload = 15;
+
+	function is_verbuendet(username)
+	{
+		return (<?=$verb_jcheck?>);
+	}
 
 	function change_system(new_system)
 	{
@@ -114,7 +119,7 @@
 			{
 				if(sinfo[i]['owner'] == '<?=str_replace("'", "\\'", $_SESSION['username'])?>')
 					new_tr.className = 'eigen';
-				else if(<?=$verb_jcheck?>)
+				else if(is_verbuendet(sinfo[i]['owner']))
 					new_tr.className = 'verbuendet';
 				else
 					new_tr.className = 'fremd';
@@ -255,7 +260,7 @@
 		{
 ?>
 				// Spionieren
-				if(sinfo[i]['flag'] != 'U')
+				if(sinfo[i]['flag'] != 'U'<?php if(fleets_locked()){?> && is_verbuendet(sinfo[i]['owner'])<?php }?>)
 				{
 					new_td.firstChild.appendChild(new_el1 = document.createElement('li'));
 					new_el1.className = 'c-spionieren';
@@ -532,7 +537,7 @@
 
 		if($that_uname != $_SESSION['username'])
 		{
-			if($planet[4] != 'U' && $me->permissionToAct() && $me->getItemLevel('S5', 'schiffe') > 0)
+			if($planet[4] != 'U' && $me->permissionToAct() && $me->getItemLevel('S5', 'schiffe') > 0 && (!fleets_locked() || $me->isVerbuendet($that_uname)))
 			{
 ?>
 					<li class="c-spionieren"><a href="flotten.php?action=spionage&amp;action_galaxy=<?=htmlentities(urlencode($galaxy_n))?>&amp;action_system=<?=htmlentities(urlencode($system_n))?>&amp;action_planet=<?=htmlentities(urlencode($i))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Spionieren Sie diesen Planeten aus"<?php if($me->checkSetting('performance') > 1){?> onclick="return fast_action(this, 'spionage', <?=$galaxy_n?>, <?=$system_n?>, <?=$i?>);"<?php }?>>Spionieren</a></li>

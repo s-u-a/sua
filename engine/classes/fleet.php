@@ -62,6 +62,13 @@
 			return $targets;
 		}
 
+		function getTargetsInformation()
+		{
+			if(!$this->status) return false;
+
+			return $this->raw[0];
+		}
+
 		function getOldTargetsList()
 		{
 			if(!$this->status) return false;
@@ -442,6 +449,7 @@
 			$time2 = $this->calcTime($user, $to, $start);
 			$time3 = $this->calcTime($user, $from, $to);
 			$progress = (time()-$this->raw[2])/$time3;
+			if($progress > 1) $progress = 1;
 
 			/* Dreieck ABC:
 			A: $start
