@@ -433,7 +433,7 @@
 </form>
 <script type="text/javascript">
 	// Autocompletion
-	activate_users_list(document.getElementById('lock-input'));
+	activate_users_list(document.getElementById('user-lock-input'));
 </script>
 <?php
 	}
