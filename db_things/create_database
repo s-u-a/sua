@@ -52,7 +52,7 @@ echo
 echo -n "$ADMIN_USERNAME" > $1/admins
 echo -ne "\t" >> $1/admins
 echo -n "$ADMIN_PASSWD" | md5sum | awk '{ ORS=""; print $1; }' >> $1/admins
-echo -ne "\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1" >> $1/admins
+echo -ne "\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1" >> $1/admins
 
 unset ADMIN_PASSWD
 

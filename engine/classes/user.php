@@ -1451,11 +1451,6 @@
 			return $this->cache['getProduction'][$planet];
 		}
 
-		function gameLocked()
-		{
-			return database_locked();
-		}
-
 		function userLocked($check_unlocked=true)
 		{
 			if(!$this->status) return false;
@@ -1546,7 +1541,7 @@
 
 		function permissionToAct()
 		{
-			return !($this->gameLocked() || $this->userLocked() || $this->umode());
+			return !(database_locked() || $this->userLocked() || $this->umode());
 		}
 
 		protected function getDataFromRaw()

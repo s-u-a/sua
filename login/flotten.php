@@ -217,6 +217,14 @@
 						unset($types[3]);
 				}
 
+				if(fleets_locked()) # Flottensperre
+				{
+					if(!$me->isVerbuendet($planet_owner) && isset($types[5])) # Feindliche Spionage nicht moeglich
+						unset($types[5]);
+					if(isset($types[3])) # Angriff nicht erlaubt
+						unset($types[3]);
+				}
+
 				if(count($types) <= 0)
 				{
 					if(defined('ajax')) return array('error', 'Diese Aktion ist auf diesen Planeten nicht möglich.');

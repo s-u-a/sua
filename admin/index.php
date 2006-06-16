@@ -200,6 +200,39 @@
 		}
 	}
 
+	if($admin_array['permissions'][15] && isset($_POST['flock']))
+	{
+		if($_POST['flock'] && !fleets_locked())
+		{
+			($fh = fopen(global_setting("DB_NO_ATTS"), "w")) and protocol("15.1");
+			if($fh)
+			{
+				if(isset($_POST['flock_period']) && isset($_POST['flock_period_unit']))
+				{
+					$lock_time = false;
+					$_POST['flock_period'] = trim($_POST['flock_period']);
+					$_POST['flock_period_unit'] = trim($_POST['flock_period_unit']);
+					if($_POST['flock_period'])
+					{
+						switch($_POST['flock_period_unit'])
+						{
+							case 'min': $lock_time = time()+$_POST['flock_period']*60; break;
+							case 'h': $lock_time = time()+$_POST['flock_period']*3600; break;
+							case 'd': $lock_time = time()+$_POST['flock_period']*86400; break;
+						}
+					}
+					if($lock_time)
+						fwrite($fh, $lock_time);
+				}
+				fclose($fh);
+			}
+		}
+		elseif(!$_POST['flock'] && fleets_locked())
+		{
+			unlink(global_setting("DB_NO_ATTS")) && protocol("15.2");
+		}
+	}
+
 	admin_gui::html_head();
 ?>
 <p>Willkommen im Adminbereich. Wählen Sie aus der Liste eine der Funktionen, die Ihnen zur Verfügung stehen.</p>
@@ -221,6 +254,7 @@
 <?php }if($admin_array['permissions'][11]){?>	<li><a href="#action-11">Benutzerverwaltung</a></li>
 <?php }if($admin_array['permissions'][12]){?>	<li><a href="#action-12">Wartungsarbeiten</a></li>
 <?php }if($admin_array['permissions'][13]){?>	<li><a href="#action-13">Spiel sperren</a></li>
+<?php }if($admin_array['permissions'][15]){?>	<li><a href="#action-15">Flottensperre</a></li>
 <?php }if($admin_array['permissions'][14]){?>	<li><a href="#action-14"><span xml:lang="en">News</span> bearbeiten</a></li>
 <?php }?></ol>
 <hr />
@@ -558,6 +592,36 @@
 <?php
                 }
         }
+
+	if($admin_array['permissions'][15])
+	{
+		if(fleets_locked())
+		{
+?>
+<hr />
+<h2 id="action-15">Flottensperre</h2>
+<form action="index.php" method="post">
+	<div><input type="hidden" name="flock" value="0" /><button type="submit">Aufheben</button></div>
+</form>
+<?php
+		}
+		else
+		{
+?>
+<hr />
+<h2 id="action-15">Flottensperre</h2>
+<form action="index.php" method="post">
+	<dl>
+		<dt><label for="flock-period-input">Dauer der Flottensperre</label></dt>
+		<dd><input type="text" name="flock_period" id="lock-period-input"> <select name="flock_period_unit"><option value="min">Minuten</option><option value="h">Stunden</option><option value="d">Tage</option></select></dd>
+	</dl>
+	<div><input type="hidden" name="flock" value="1" /><button type="submit">Setzen</button></div>
+</form>
+
+
+<?php
+		}
+	}
 
 	if($admin_array['permissions'][14])
 	{

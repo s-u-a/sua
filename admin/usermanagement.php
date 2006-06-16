@@ -57,6 +57,7 @@
 				<th rowspan="2" title="Adminstratoren verwalten"><span xml:lang="en">Admins</span></th>
 				<th rowspan="2" title="Wartungsarbeiten ein-/ausschalten">Wartung</th>
 				<th rowspan="2" title="Spiel sperren/entsperren">Spiel sperren</th>
+				<th rowspan="2">Flottensperre</th>
 				<th rowspan="2" title="News bearbeiten"><span xml:lang="en">News</span></th>
 			</tr>
 			<tr>
@@ -74,11 +75,13 @@
 				<td><input type="text" name="new_admin[0]" /></td>
 				<td><input type="text" name="new_admin[1]" /></td>
 <?php
-				for($j=0; $j<=14; $j++)
+				for($j=0; $j<=15; $j++)
 				{
+					if($j == 15) $j = 14; elseif($j == 14) $j = 15;
 ?>
 				<td><input type="checkbox" name="new_admin[<?=htmlentities($j+2)?>]" value="1" /></td>
 <?php
+					if($j == 15) $j = 14; elseif($j == 14) $j = 15;
 				}
 ?>
 			</tr>
@@ -137,7 +140,7 @@
 					$new_admins[$this_name]['password'] = $this_password;
 					$new_admins[$this_name]['permissions'] = array();
 					$prot = false;
-					for($i=0; $i<=14; $i++)
+					for($i=0; $i<=15; $i++)
 					{
 						$new_admins[$this_name]['permissions'][$i] = (isset($admin[$i+1]) ? '1' : '0');
 						if($admins[$this_name]['permissions'][$i] != $new_admins[$this_name]['permissions'][$i])
@@ -163,6 +166,7 @@
 				<th rowspan="2" title="Adminstratoren verwalten"><span xml:lang="en">Admins</span></th>
 				<th rowspan="2" title="Wartungsarbeiten ein-/ausschalten">Wartung</th>
 				<th rowspan="2" title="Spiel sperren/entsperren">Spiel sperren</th>
+				<th rowspan="2">Flottensperre</th>
 				<th rowspan="2" title="News bearbeiten"><span xml:lang="en">News</span></th>
 				<th rowspan="2">Löschen</th>
 			</tr>
@@ -185,11 +189,13 @@
 			<tr>
 				<td><input type="text" name="admin_array[<?=htmlentities($i)?>][0]" value="<?=utf8_htmlentities($name)?>" /></td>
 <?php
-				for($j=0; $j<=14; $j++)
+				for($j=0; $j<=15; $j++)
 				{
+					if($j == 14) $j = 15; elseif($j == 15) $j = 14;
 ?>
 				<td><input type="checkbox" name="admin_array[<?=htmlentities($i)?>][<?=htmlentities($j+1)?>]" value="1"<?=$settings['permissions'][$j] ? ' checked="checked"' : ''?><?=($j==11 && $name==$_SESSION['admin_username'])? ' disabled="disabled"' : ''?> /></td>
 <?php
+					if($j == 14) $j = 15; elseif($j == 15) $j = 14;
 				}
 
 				if($name == $_SESSION['admin_username'])

@@ -1440,4 +1440,19 @@
 		}
 		return true;
 	}
+
+	function fleets_locked()
+	{
+		if(!file_exists(global_setting("DB_NO_ATTS"))) return false;
+
+		if(!is_readable(global_setting("DB_NO_ATTS"))) return true;
+
+		$until = trim(file_get_contents(global_setting("DB_NO_ATTS")));
+		if($until && time() > $until)
+		{
+			unlink(global_setting("DB_NO_ATTS"));
+			return false;
+		}
+		return true;
+	}
 ?>

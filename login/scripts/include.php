@@ -388,7 +388,7 @@
 			</dl>
 			<div id="content-10"><div id="content-11"><div id="content-12"><div id="content-13">
 <?php
-			if($me->gameLocked())
+			if(database_locked())
 			{
 ?>
 				<p id="gesperrt-hinweis" class="spiel"><strong>Das Spiel ist derzeit gesperrt.</strong></p>
@@ -404,6 +404,12 @@
 			{
 ?>
 				<p id="gesperrt-hinweis" class="urlaub"><strong>Ihr Benutzeraccount befindet sich im Urlaubsmodus.</strong></p>
+<?php
+			}
+			elseif(fleets_locked())
+			{
+?>
+				<p id="gesperrt-hinweis" class="flotten"><strong>Es herrscht eine Flottensperre für feindliche Flüge.</strong></p>
 <?php
 			}
 ?>
