@@ -1460,6 +1460,15 @@
 			return (isset($this->raw['locked']) && $this->raw['locked']);
 		}
 
+		function lockedUntil()
+		{
+			if(!$this->status) return false;
+
+			if(!$this->userLocked()) return false;
+			if(!isset($this->raw['lock_time'])) return false;
+			return $this->raw['lock_time'];
+		}
+
 		function lockUser($lock_time=false, $check_unlocked=true)
 		{
 			if(!$this->status) return false;

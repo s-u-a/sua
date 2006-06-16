@@ -388,16 +388,20 @@
 			</dl>
 			<div id="content-10"><div id="content-11"><div id="content-12"><div id="content-13">
 <?php
-			if(database_locked())
+			$locked_until = false;
+			if($l = database_locked())
 			{
+				if($l !== true) $locked_until = $l;
 ?>
-				<p id="gesperrt-hinweis" class="spiel"><strong>Das Spiel ist derzeit gesperrt.</strong></p>
+				<p id="gesperrt-hinweis" class="spiel"><strong>Das Spiel ist derzeit gesperrt.</strong><?php if($locked_until){?> <span id="restbauzeit-sperre">bis <?=date('Y-m-d, H:i:s', $locked_until)?>, Serverzeit</span><?php }?></p>
 <?php
 			}
 			elseif($me->userLocked())
 			{
+				$l = $me->lockedUntil();
+				if($l) $locked_until = $l;
 ?>
-				<p id="gesperrt-hinweis" class="account"><strong>Ihr Benutzeraccount ist gesperrt.</strong></p>
+				<p id="gesperrt-hinweis" class="account"><strong>Ihr Benutzeraccount ist gesperrt.</strong><?php if($locked_until){?> <span id="restbauzeit-sperre">bis <?=date('Y-m-d, H:i:s', $locked_until)?>, Serverzeit</span><?php }?></p>
 <?php
 			}
 			elseif($me->umode())
@@ -406,10 +410,19 @@
 				<p id="gesperrt-hinweis" class="urlaub"><strong>Ihr Benutzeraccount befindet sich im Urlaubsmodus.</strong></p>
 <?php
 			}
-			elseif(fleets_locked())
+			elseif($l = fleets_locked())
+			{
+				if($l !== true) $locked_until = $l;
+?>
+				<p id="gesperrt-hinweis" class="flotten"><strong>Es herrscht eine Flottensperre für feindliche Flüge.</strong><?php if($locked_until){?> <span id="restbauzeit-sperre">bis <?=date('Y-m-d, H:i:s', $locked_until)?>, Serverzeit</span><?php }?></p>
+<?php
+			}
+			if($locked_until)
 			{
 ?>
-				<p id="gesperrt-hinweis" class="flotten"><strong>Es herrscht eine Flottensperre für feindliche Flüge.</strong></p>
+				<script type="text/javascript">
+					init_countdown("sperre", <?=$locked_until?>, false);
+				</script>
 <?php
 			}
 ?>

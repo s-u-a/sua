@@ -1438,7 +1438,7 @@
 			unlink(global_setting("DB_LOCKED"));
 			return false;
 		}
-		return true;
+		return ($until ? $until : true);
 	}
 
 	function fleets_locked()
@@ -1453,6 +1453,6 @@
 			unlink(global_setting("DB_NO_ATTS"));
 			return false;
 		}
-		return true;
+		return ($until ? $until : true);
 	}
 ?>
