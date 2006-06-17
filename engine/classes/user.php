@@ -2071,7 +2071,7 @@
 			if(!$this->isVerbuendet($user)) return false;
 
 			$user_obj = Classes::User($user);
-			if($user_obj->_removeVerbuendet($me->getName()))
+			if($user_obj->_removeVerbuendet($this->getName()))
 			{
 				$this->_removeVerbuendet($user);
 
