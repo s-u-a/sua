@@ -31,7 +31,7 @@
 			if(!$verb_obj->isVerbuendet($user->getName()))
 			{
 				$user->_removeVerbuendet($verb);
-				fputs(STDOUT, $verb.": ".$user->getName()." isn't Verbuendet anymore.\n");
+				fputs(STDOUT, $user->getName().": ".$verb." isn't Verbuendet anymore.\n");
 			}
 			unset($verb_obj);
 		}
