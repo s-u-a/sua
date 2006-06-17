@@ -79,5 +79,5 @@
 		function IMFile() { return new IMFile(); }
 	}
 
-	//register_shutdown_function(array('Classes', 'resetInstances'));
+	register_shutdown_function(array('Classes', 'resetInstances'));
 ?>
