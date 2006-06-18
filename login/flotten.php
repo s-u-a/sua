@@ -295,7 +295,9 @@
 
 							if(!$noob)
 							{
+								echo "Creating fleet 299...<br />\n";
 								$fleet_obj = Classes::Fleet();
+								echo "Created fleet 299...<br />\n";
 								if($fleet_obj->create())
 								{
 									# Geschwindigkeitsfaktor
@@ -417,7 +419,9 @@
 						}
 
 						$distance = Fleet::getDistance($me->getPosString(), $_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet']);
+						echo "Creating fleet 420...<br />\n";
 						$fleet_obj = Classes::Fleet();
+						echo "Created fleet 420.<br />\n";
 						if($fleet_obj->create())
 						{
 							$fleet_obj->addUser($_SESSION['username'], $me->getPosString());

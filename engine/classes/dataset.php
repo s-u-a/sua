@@ -30,6 +30,7 @@
 			{
 				$this->name = $name;
 				$this->filename = $this->save_dir.'/'.strtolower(urlencode($this->name));
+				echo "Constructing ".$this->filename.".<br />\n";
 				$this->location = $this->filename;
 				if(!is_file($this->filename) || !is_readable($this->filename))
 					$this->status = 0;
@@ -60,6 +61,8 @@
 				flock($this->file_pointer, LOCK_UN);
 				fclose($this->file_pointer);
 
+				echo "Destructing ".$this->filename."<br />\n";
+
 				$this->status = 0;
 			}
 		}
@@ -82,6 +85,8 @@
 			if(!$this->status && (!$force || file_exists($this->filename)))
 				return false;
 			if(!$this->changed && !$force) return 2;
+
+			echo "Writing ".$this->filename."<br />\n";
 
 			if($getraw)
 				$this->getRawFromData();

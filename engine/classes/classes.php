@@ -13,6 +13,7 @@
 			$p1_lower = preg_replace('/[\x00-\x7f]/e', 'strtolower("$0")', $p1);
 			if(!isset($objectInstances[$classname][$p1_lower]))
 			{
+				echo "Creating instance ".$classname."/".$p1_lower."<br />\n";
 				$instance = new $classname($p1, $write);
 				$p1 = $instance->getName();
 				$p1_lower = preg_replace('/[\x00-\x7f]/e', 'strtolower("$0")', $p1);
@@ -20,9 +21,12 @@
 			}
 			elseif($write && $objectInstances[$classname][$p1_lower]->readonly())
 			{ # Von Readonly auf Read and write schalten
+				echo "Reopening instance ".$classname."/".$p1_lower."<br />\n";
 				$objectInstances[$classname][$p1_lower]->__destruct();
 				$objectInstances[$classname][$p1_lower]->__construct($p1, $write);
 			}
+			else
+				echo "Linked instance ".$classname."/".$p1_lower."<br />\n";
 
 			return $objectInstances[$classname][$p1_lower];
 		}
@@ -45,6 +49,8 @@
 
 			if(!isset($objectInstances[$classname])) return true;
 
+			echo "<br />Now clearing instances ".$classname.".<br /><br />\n";
+
 			foreach($objectInstances[$classname] as $key=>$instance)
 			{
 				/*if($destruct && method_exists($instance, '__destruct'))
@@ -61,7 +67,7 @@
 		function Alliance($p1=false, $write=true){ return self::Dataset('Alliance', $p1, $write); }
 		function Message($p1=false, $write=true){ return self::Dataset('Message', $p1, $write); }
 		function PublicMessage($p1=false, $write=true){ return self::Dataset('PublicMessage', $p1, $write); }
-		function Fleet($p1=false, $write=true) {
+		function Fleet($p1=false, $write=true, $bla) {
 			if($p1 === false) $p1 = str_replace('.', '-', array_sum(explode(' ', microtime())));
 			return self::Dataset('Fleet', $p1, $write);
 		}

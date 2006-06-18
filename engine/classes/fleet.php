@@ -3,7 +3,7 @@
 	{
 		protected $datatype = 'fleet';
 
-		function __construct($name=false, $write=true)
+		function __construct($name=false, $write=true, $bla)
 		{
 			$this->save_dir = global_setting("DB_FLEETS");
 			parent::__construct($name, $write);
@@ -12,6 +12,7 @@
 		function create()
 		{
 			if(file_exists($this->filename)) return false;
+			echo "Creating ".$this->filename."<br />\n";
 			$this->raw = array(array(), array(), false, array());
 			$this->write(true);
 			$this->__construct($this->name);

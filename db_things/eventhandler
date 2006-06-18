@@ -334,6 +334,7 @@ EOF
 
 		function walkthrough_users()
 		{
+			return true;
 			global $errlog;
 			global $last_walked;
 			$last_walked = date('Y-m-d');
