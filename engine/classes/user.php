@@ -2866,17 +2866,10 @@
 			$this->setActivePlanet($active_planet);
 
 			# Nachrichtenabsender aendern
-			Classes::resetInstances('Message');
-			$dh = opendir(global_setting("DB_MESSAGES"));
-			while(($fname = readdir($dh)) !== false)
-			{
-				if($fname == '.' || $fname == '..') continue;
-
-				$message = new Message(urldecode($fname));
-				$message->renameUser($this->name, $new_name);
-				unset($message);
-			}
-			closedir($dh);
+			__autoload("Message");
+			$message_db = new MessageDatabase();
+			$message_db->renameUser($this->name, $new_name);
+			unset($message_db);
 
 			# Bei Buendnispartnern abaendern
 			Classes::resetInstances('Users');

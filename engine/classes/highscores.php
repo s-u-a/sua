@@ -1,51 +1,14 @@
 <?php
-	class Highscores
+	class Highscores extends SQLite
 	{
-		protected $connection=false;
-		protected $status=false;
-
-		function __construct()
-		{
-			if(!$this->status)
-			{
-				# Datenbankverbindung herstellen
-				$this->connection = sqlite_open(global_setting("DB_HIGHSCORES"), 0666);
-				if($this->connection)
-				{
-					$table_check1 = sqlite_query($this->connection, "SELECT name FROM sqlite_master WHERE type='table' AND name='highscores_users'");
-					$table_check2 = sqlite_query($this->connection, "SELECT name FROM sqlite_master WHERE type='table' AND name='highscores_alliances'");
-					if((sqlite_num_rows($table_check1)>0 || sqlite_query($this->connection, "CREATE TABLE highscores_users ( username, alliance, scores INTEGER, changed INTEGER );")) && (sqlite_num_rows($table_check2)>0 || sqlite_query($this->connection, "CREATE TABLE highscores_alliances ( tag, scores_average INTEGER, scores_total INTEGER, members_count INTEGER, changed INTEGER );")))
-						$this->status = true;
-				}
-			}
-		}
-
-		function __destruct()
-		{
-			if($this->status)
-			{
-				# Datenbankerbindung schliessen
-				sqlite_close($this->connection);
-				$this->status = false;
-			}
-		}
-
-		function getName()
-		{ # For instances
-			return "highscores";
-		}
-
-		function getStatus()
-		{
-			return $this->status;
-		}
+		protected $tables = array("highscores_users" => array("username", "alliance", "scores INT", "changed INT"), "highscores_alliances" => array("tag", "scores_average INT", "scores_total INT", "members_count INT", "changed INT"));
 
 		function updateUser($username, $alliance=false, $scores=false)
 		{
 			if(!$this->status) return false;
 
-			$exists_query = sqlite_query($this->connection, "SELECT username FROM highscores_users WHERE username='".sqlite_escape_string($username)."' LIMIT 1;");
-			$exists = (sqlite_num_rows($exists_query) > 0);
+			$this->query("SELECT username FROM highscores_users WHERE username='".$this->escape($username)."' LIMIT 1;");
+			$exists = ($this->lastResultCount() > 0);
 
 			if($scores !== false) $scores = (float) $scores;
 
@@ -55,44 +18,44 @@
 
 				$query = "UPDATE highscores_users SET ";
 				$set = array();
-				if($alliance !== false) $set[] = "alliance = '".sqlite_escape_string($alliance)."'";
+				if($alliance !== false) $set[] = "alliance = '".$this->escape($alliance)."'";
 				if($scores !== false)
 				{
-					$set[] = "scores = '".sqlite_escape_string($scores)."'";
-					$set[] = "changed = '".sqlite_escape_string(microtime(true))."'";
+					$set[] = "scores = '".$this->escape($scores)."'";
+					$set[] = "changed = '".$this->escape(microtime(true))."'";
 				}
 				$query .= implode(', ', $set);
-				$query .= " WHERE username = '".sqlite_escape_string($username)."';";
+				$query .= " WHERE username = '".$this->escape($username)."';";
 			}
 			else
 			{
 				$scores = (float) $scores;
-				$query = "INSERT INTO highscores_users ( username, alliance, scores, changed ) VALUES ( '".sqlite_escape_string($username)."', '".sqlite_escape_string($alliance)."', '".sqlite_escape_string($scores)."', '".sqlite_escape_string(microtime(true))."' );";
+				$query = "INSERT INTO highscores_users ( username, alliance, scores, changed ) VALUES ( '".$this->escape($username)."', '".$this->escape($alliance)."', '".$this->escape($scores)."', '".$this->escape(microtime(true))."' );";
 			}
 
-			return sqlite_query($this->connection, $query);
+			return $this->query($query);
 		}
 
 		function renameUser($old_username, $new_username)
 		{
 			if(!$this->status) return false;
 
-			return sqlite_query($this->connection, "UPDATE highscores_users SET username = '".sqlite_escape_string($new_username)."' WHERE username = '".sqlite_escape_string($old_username)."';");
+			return $this->query("UPDATE highscores_users SET username = '".$this->escape($new_username)."' WHERE username = '".$this->escape($old_username)."';");
 		}
 
 		function renameAlliance($old_alliance, $new_alliance)
 		{
 			if(!$this->status) return false;
 
-			return sqlite_query($this->connection, "UPDATE highscores_alliances SET tag = '".sqlite_escape_string($new_alliance)."' WHERE tag = '".sqlite_escape_string($old_alliance)."';");
+			return $this->query("UPDATE highscores_alliances SET tag = '".$this->escape($new_alliance)."' WHERE tag = '".$this->escape($old_alliance)."';");
 		}
 
 		function updateAlliance($tag, $scores_average=false, $scores_total=false, $members_count=false)
 		{
 			if(!$this->status) return false;
 
-			$exists_query = sqlite_query($this->connection, "SELECT tag FROM highscores_alliances WHERE tag='".sqlite_escape_string($tag)."' LIMIT 1;");
-			$exists = (sqlite_num_rows($exists_query) > 0);
+			$exists_query = $this->query("SELECT tag FROM highscores_alliances WHERE tag='".$this->escape($tag)."' LIMIT 1;");
+			$exists = ($this->lastResultCount() > 0);
 
 			if($exists)
 			{
@@ -100,15 +63,15 @@
 
 				$query = "UPDATE highscores_alliances SET ";
 				$set = array();
-				if($scores_average !== false) $set[] = "scores_average = '".sqlite_escape_string($scores_average)."'";
-				if($scores_total !== false) $set[] = "scores_total = '".sqlite_escape_string($scores_total)."'";
-				if($members_count !== false) $set[] = "members_count = '".sqlite_escape_string($members_count)."'";
+				if($scores_average !== false) $set[] = "scores_average = '".$this->escape($scores_average)."'";
+				if($scores_total !== false) $set[] = "scores_total = '".$this->escape($scores_total)."'";
+				if($members_count !== false) $set[] = "members_count = '".$this->escape($members_count)."'";
 				$query .= implode(', ', $set);
-				$query .= " WHERE tag = '".sqlite_escape_string($tag)."';";
+				$query .= " WHERE tag = '".$this->escape($tag)."';";
 			}
-			else $query = "INSERT INTO highscores_alliances ( tag, scores_average, scores_total, members_count ) VALUES ( '".sqlite_escape_string($tag)."', '".sqlite_escape_string($scores_average)."', '".sqlite_escape_string($scores_total)."', '".sqlite_escape_string($members_count)."' );";
+			else $query = "INSERT INTO highscores_alliances ( tag, scores_average, scores_total, members_count ) VALUES ( '".$this->escape($tag)."', '".$this->escape($scores_average)."', '".$this->escape($scores_total)."', '".$this->escape($members_count)."' );";
 
-			return sqlite_query($this->connection, $query);
+			return $this->query($query);
 		}
 
 		function removeEntry($type, $id)
@@ -118,7 +81,7 @@
 			if($type == 'users') $index = 'username';
 			else $index = 'tag';
 
-			return sqlite_query($this->connection, "DELETE FROM highscores_".$type." WHERE ".$index." = '".sqlite_escape_string($id)."';");
+			return $this->query("DELETE FROM highscores_".$type." WHERE ".$index." = '".$this->escape($id)."';");
 		}
 
 		function getList($type, $from, $to, $sort_field=false)
@@ -136,30 +99,14 @@
 			if($from > $to) list($from, $to) = array($to, $from);
 			$from--;
 
-			return sqlite_array_query($this->connection, "SELECT * FROM highscores_".$type." ORDER BY ".$sort_field." DESC,changed ASC LIMIT ".$from.", ".($to-$from).";", SQLITE_ASSOC);
+			return $this->arrayQuery("SELECT * FROM highscores_".$type." ORDER BY ".$sort_field." DESC,changed ASC LIMIT ".$from.", ".($to-$from).";");
 		}
 
 		function getCount($type, $highscores_file=false)
 		{
 			if($type != 'users' && $type != 'alliances') return false;
 
-			$connection = false;
-			if($highscores_file !== false)
-			{
-				if(is_file($highscores_file))
-					$connection = sqlite_open($highscores_file);
-			}
-			elseif(isset($this) && $this->status)
-				$connection = &$this->connection;
-
-			if(!$connection) return false;
-
-			$result = sqlite_single_query($connection, "SELECT count(*) FROM highscores_".$type.";", true);
-
-			if($highscores_file !== false)
-				sqlite_close($connection);
-
-			return $result;
+			return $this->singleField("SELECT count(*) FROM highscores_".$type.";");
 		}
 
 		function getPosition($type, $id, $sort_field=false)
@@ -178,15 +125,15 @@
 			elseif(!in_array($sort_field, $allowed_sort_fields[$type])) return false;
 
 			# Zuerst Punkte herausfinden
-			$query = sqlite_query($this->connection, "SELECT ".$sort_field.",changed FROM highscores_".$type." WHERE ".$index." = '".sqlite_escape_string($id)."' LIMIT 1;");
-			if(!$query) return false;
-			list($scores, $changed) = sqlite_fetch_array($query, SQLITE_NUM);
+			$r =  $this->singleQuery("SELECT ".$sort_field.",changed FROM highscores_".$type." WHERE ".$index." = '".$this->escape($id)."' LIMIT 1;");
+			$scores = $r['scores'];
+			$changed = $r['changed'];
 
 			# Wieviele Spieler sind von den Punkten her darueber?
-			$above = sqlite_single_query($this->connection, "SELECT COUNT(*) FROM highscores_".$type." WHERE ".$sort_field." > '".sqlite_escape_string($scores)."';", true);
+			$above = $this->singleField("SELECT COUNT(*) FROM highscores_".$type." WHERE ".$sort_field." > '".$this->escape($scores)."';");
 
 			# Wieviele Spieler haben die gleiche Punktzahl, aber hatten diese frueher?
-			$above += sqlite_single_query($this->connection, "SELECT COUNT(*) FROM highscores_".$type." WHERE ".$sort_field." = '".sqlite_escape_string($scores)."' AND changed < '".sqlite_escape_string($changed)."';", true);
+			$above += $this->singleField("SELECT COUNT(*) FROM highscores_".$type." WHERE ".$sort_field." = '".$this->escape($scores)."' AND changed < '".$this->escape($changed)."';");
 
 			return ($above+1);
 		}
@@ -195,7 +142,7 @@
 		{
 			if(!$this->status) return false;
 
-			return (sqlite_query($this->connection, "DELETE FROM highscores_users;") && sqlite_query($this->connection, "DELETE FROM highscores_alliances;"));
+			return ($this->query("DELETE FROM highscores_users;") && $this->query("DELETE FROM highscores_alliances;"));
 		}
 	}
 ?>

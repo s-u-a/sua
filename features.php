@@ -4,16 +4,14 @@
 	$players = 0;
 	$alliances = 0;
 	$databases = get_databases();
-	$first = true;
 	foreach($databases as $dbid=>$database)
 	{
-		if($first)
-		{
-			define_globals($dbid);
-			$first = false;
-		}
-		$players += Highscores::getCount('users', $database['directory'].'/highscores');
-		$alliances += Highscores::getCount('alliances', $database['directory'].'/highscores');
+		if(!$database['enabled']) continue;
+		define_globals($dbid);
+		$highscores = new Highscores;
+		$players += $highscores->getCount('users');
+		$alliances += $highscores->getCount('alliances');
+		unset($highscores);
 	}
 
 	$items = Classes::Items();

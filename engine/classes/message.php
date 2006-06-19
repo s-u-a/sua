@@ -1,145 +1,251 @@
 <?php
-	class Message extends Dataset
+	class MessageDatabase extends SQLite
 	{
-		protected $datatype = 'message';
-		protected $im_check_notify = array();
+		protected $tables = array("messages" => array("message_id PRIMARY KEY", "time INT", "text", "parsed_text", "sender", "users", "subject", "html INT"));
 
-		function __construct($name=false, $write=true)
+		function setField($message_id, $field_name, $field_value)
 		{
-			$this->save_dir = global_setting("DB_MESSAGES");
-			parent::__construct($name, $write);
+			if(!$this->messageExists($message_id)) return false;
+
+			return $this->query("UPDATE messages SET ".$field_name." = '".$this->escape($field_value)."' WHERE message_id = '".$this->escape($message_id)."';");
 		}
 
-		function create()
+		function getField($message_id, $field_name)
 		{
-			if(file_exists($this->filename)) return false;
-			$this->raw = array('time' => time());
-			$this->write(true);
-			$this->__construct($this->name);
-			return true;
+			if(!$this->messageExists($message_id)) return false;
+
+			$result = $this->singleQuery("SELECT ".$field_name." FROM messages WHERE message_id = '".$this->escape($message_id)."' LIMIT 1;");
+			if($result) $result = $result[$field_name];
+			return $result;
 		}
 
-		function text($text=false)
+		function getNewName()
 		{
-			if(!$this->status) return false;
+			do $name = substr(md5(rand()), 0, 16);
+				while($this->messageExists($name));
+			return $name;
+		}
 
-			if($text === false)
+		function createNewMessage($message_id, $time=null)
+		{
+			if($this->messageExists($message_id)) return false;
+
+			return $this->query("INSERT INTO messages ( message_id, time ) VALUES ( '".$this->escape($message_id)."', '".$this->escape($time)."' );");
+		}
+
+		function messageText($message_id, $text=null)
+		{
+			if($text === null)
 			{
-				if(!isset($this->raw['text'])) return '';
+				if($this->messageIsHTML($message_id))
+					return $this->getField($message_id, "text");
 				else
-				{
-					if(!isset($this->raw['parsed'])) $this->_createParsed();
-					return $this->raw['parsed'];
-				}
+					return $this->getField($message_id, "parsed_text");
 			}
-
-			$this->raw['text'] = $text;
-			$this->_createParsed();
-			$this->changed = true;
-			return true;
-		}
-
-		function _createParsed()
-		{
-			if(!$this->status) return false;
-
-			if(!isset($this->raw['text'])) $this->raw['parsed'] = '';
-			elseif($this->html()) $this->raw['parsed'] = $this->raw['text'];
-			else $this->raw['parsed'] = parse_html($this->raw['text']);
-			$this->changed = true;
-			return true;
-		}
-
-		function rawText()
-		{
-			if(!$this->status) return false;
-
-			if(!isset($this->raw['text'])) return '';
-			else return $this->raw['text'];
-		}
-
-		function from($from=false)
-		{
-			if(!$this->status) return false;
-
-			if($from === false)
+			else
 			{
-				if(!isset($this->raw['from'])) return '';
-				else return $this->raw['from'];
-			}
+				$return = true;
 
-			$this->raw['from'] = $from;
-			$this->changed = true;
-			return true;
+				$return = $return && $this->setField($message_id, "text", $text);
+				if(!$this->messageIsHTML($message_id))
+					$return = $return && $this->setField($message_id, "parsed_text", parse_html($text));
+				return $return;
+			}
+		}
+
+		function messageFrom($message_id, $from=null)
+		{
+			if($from === null)
+				return $this->getField($message_id, "sender");
+			else
+				return $this->setField($message_id, "sender", $from);
+		}
+
+		function messageSubject($message_id, $subject=null)
+		{
+			if($subject === null)
+				return $this->getField($message_id, "subject");
+			else
+				return $this->setField($message_id, "subject", $subject);
+		}
+
+		function messageUsers($message_id, $users=null)
+		{
+			if($users === null)
+				return $this->getField($message_id, "users");
+			else
+				return $this->setField($message_id, "users", $users);
+		}
+
+		function messageRawText($message_id)
+		{
+			return $this->getField($message_id, "text");
+		}
+
+		function messageIsHTML($message_id, $is_html=null)
+		{
+			if($is_html === null)
+				return (bool) $this->getField($message_id, 'html');
+			else
+			{
+				$return = true;
+				if($this->messageIsHTML($message_id) && !$is_html)
+				{
+					$return = $return && $this->setField($message_id, "parsed_text", "");
+					$return = $return && $this->setField($message_id, "html", "0");
+				}
+				elseif(!$this->messageIsHTML($message_id) && $is_html)
+				{
+					$return = $return && $this->setField($message_id, "parsed_text", parse_html($this->getField($message_id, "text")));
+					$return = $return && $this->setField($message_id, "html", "1");
+				}
+				return $return;
+			}
+		}
+
+		function messageExists($message_id)
+		{
+			$this->query("SELECT message_id FROM messages WHERE message_id = '".$this->escape($message_id)."' LIMIT 1;");
+			return ($this->lastResultCount() > 0);
+		}
+
+		function messageTime($message_id, $time=null)
+		{
+			if($time === null)
+				return $this->getField($message_id, "time");
+			else
+				return $this->setField($message_id, "time", $time);
+		}
+
+		function removeMessage($message_id)
+		{
+			return $this->query("DELETE FROM messages WHERE message_id = '".$this->escape($message_id)."';");
 		}
 
 		function renameUser($old_name, $new_name)
 		{
-			if(!$this->status) return false;
-
-			if($old_name == $new_name) return 2;
-
-			if(isset($this->raw['from']) && $this->raw['from'] == $old_name)
+			$this->query("SELECT message_id,users,sender FROM messages WHERE users LIKE '%".$this->escape($old_name."\r")."%' OR sender = '".$this->escape($old_name)."';");
+			while($message = $this->nextResult())
 			{
-				$this->raw['from'] = $new_name;
-				$this->changed = true;
+				$users = explode("\n", $message['users']);
+				$users_changed = false;
+				$sender_changed = false;
+
+				if($message['sender'] == $old_name)
+				{
+					$message['sender'] = $new_name;
+					$sender_changed = true;
+				}
+
+				foreach($users as $k=>$u)
+				{
+					$u = explode("\r", $u);
+					if($u[0] == $old_name)
+					{
+						$u[0] = $new_name;
+						$users[$k] = implode("\r", $u);
+						$users_changed = true;
+					}
+				}
+				if($users_changed)
+					$message['users'] = implode("\n", $users);
+
+				if($users_changed || $sender_changed)
+				{
+					$set = array();
+					if($users_changed)
+						$set[] = "users = '".$this->escape($message['users'])."'";
+					if($sender_changed)
+						$set[] = "sender = '".$this->escape($message['sender'])."'";
+					$this->backgroundQuery("UPDATE messages SET ".implode(", ", $set)." WHERE message_id = '".$this->escape($message['message_id'])."';");
+				}
 			}
-			if(isset($this->raw['users'][$old_name]))
+			return true;
+		}
+	}
+
+	class Message
+	{
+		protected $im_check_notify = array();
+		protected static $database = false;
+		protected $name = false;
+
+		function __construct($name=false)
+		{
+			if(!self::$database)
+				self::$database = new MessageDatabase();
+
+			if(!$name)
+				$name = self::$database->getNewName();
+			$this->name = $name;
+		}
+
+		function create()
+		{
+			return self::$database->createNewMessage($this->name, time());
+		}
+
+		function text($text=false)
+		{
+			if($text === false) $text = null;
+			return self::$database->messageText($this->name, $text);
+		}
+
+		function rawText()
+		{
+			return self::$database->messageRawText($this->name);
+		}
+
+		function from($from=false)
+		{
+			if($from === false) $from = null;
+			return self::$database->messageFrom($this->name, $from);
+		}
+
+		function renameUser($old_name, $new_name)
+		{
+			$changed = false;
+			$users = explode("\n", self::$database->messageUsers($this->name));
+			foreach($users as $k=>$l)
 			{
-				$this->raw['users'][$new_name] = $this->raw['users'][$old_name];
-				unset($this->raw['users'][$old_name]);
-				$this->changed = true;
+				$l = explode("\r", $l);
+				if($l[0] == $old_name)
+				{
+					$l[0] = $new_name;
+					$users[$k] = implode("\r", $l);
+					$changed = true;
+				}
+			}
+
+			if($changed)
+			{
+				self::$database->messageUsers($this->name, implode("\n", $users));
 			}
 			return true;
 		}
 
 		function subject($subject=false)
 		{
-			if(!$this->status) return false;
-
-			if($subject === false)
-			{
-				if(!isset($this->raw['subject']) || trim($this->raw['subject']) == '') return 'Kein Betreff';
-				else return $this->raw['subject'];
-			}
-
-			$this->raw['subject'] = $subject;
-			$this->changed = true;
-			return true;
+			if($subject === false) $subject = null;
+			return self::$database->messageSubject($this->name, $subject);
 		}
 
 		function html($html=-1)
 		{
-			if(!$this->status) return false;
-
-			if($html === -1)
-			{
-				if(!isset($this->raw['html'])) return false;
-				else return $this->raw['html'];
-			}
-
-			$this->raw['html'] = (bool) $html;
-			$this->_createParsed();
-			$this->changed = true;
-			return true;
+			if($html === -1) $html = null;
+			return self::$database->messageIsHTML($this->name, $html);
 		}
 
 		function addUser($user, $type=6)
 		{
-			if(!$this->status) return false;
-
-			if(!isset($this->raw['users']))
-				$this->raw['users'] = array();
-			if(isset($this->raw['users'][$user]))
-				return false;
+			$users = explode("\n", self::$database->messageUsers($this->name));
+			$users[] = $user."\r".$type;
+			self::$database->messageUsers($this->name, implode("\n", $users));
 
 			$user_obj = Classes::User($user);
 			if(!$user_obj->getStatus()) return false;
 			$user_obj->addMessage($this->name, $type);
 			unset($user_obj);
-
-			$this->raw['users'][$user] = $type;
-			$this->changed = true;
 
 			if($type != 8)
 				$this->im_check_notify[$user] = $type;
@@ -149,68 +255,68 @@
 
 		function removeUser($user, $edit_user=true)
 		{
-			if(!$this->status) return false;
+			$users = explode("\n", self::$database->messageUsers($this->name));
+			$new_users = array();
+			$remove_type = false;
 
-			if(!isset($this->raw['users']) || !isset($this->raw['users'][$user]))
-				return 2;
+			foreach($users as $l)
+			{
+				$le = explode("\r", $l);
+				if($le[0] == $user)
+				{
+					$remove_type = $le[1];
+					continue;
+				}
+				$new_users[] = $l;
+			}
 
-			unset($this->raw['users'][$user]);
-			$this->changed = true;
+			if(count($new_users) == 0)
+				$return = self::$database->removeMessage($this->name);
+			else
+				$return = self::$database->messageUsers(implode("\n", $users));
 
 			if($edit_user)
 			{
 				$user = Classes::User($user);
-				$type = $user->findMessageType($this->name);
-				$user->removeMessage($this->name, $type, false);
+				if(!$remove_type)
+					$remove_type = $user->findMessageType($this->name);
+				$user->removeMessage($this->name, $remove_type, false);
 			}
 
-			if(count($this->raw['users']) == 0)
-			{
-				if(!unlink($this->filename)) return false;
-				else $this->status = false;
-			}
-
-			return true;
+			return $return;
 		}
 
 		function getTime()
 		{
-			if(!$this->status) return false;
-
-			if(!isset($this->raw['time'])) return false;
-
-			return $this->raw['time'];
+			return self::$database->messageTime($this->name);
 		}
 
 		function destroy()
 		{
-			if(!$this->status) return false;
+			$users = explode("\n", self::$database->getMessageUsers($this->name));
+			foreach($users as $l)
+			{
+				$l = explode("\r", $l);
+				$user = Classes::User($l[0]);
+				$user->removeMessage($this->name, $l[1], false);
+			}
 
-			if(isset($this->raw['users']) && count($this->raw['users']) > 0)
-			{
-				foreach($this->raw['users'] as $user=>$type)
-					$this->removeUser($user);
-			}
-			if($this->status)
-			{
-				if(!unlink($this->filename)) return false;
-				else
-				{
-					$this->status = false;
-					return true;
-				}
-			}
+			return self::$database->removeMessage($this->name);
 		}
 
 		function getUsersList()
 		{
-			if(!$this->status) return false;
-
-			return array_keys($this->raw['users']);
+			$return = array();
+			$users = explode("\n", self::$database->getMessageUsers($this->name));
+			foreach($users as $l)
+			{
+				$l = explode("\r", $l);
+				$return[] = $l[0];
+			}
+			return $return;
 		}
 
-		protected function getDataFromRaw(){}
-		protected function getRawFromData()
+		function __destruct()
 		{
 			if(count($this->im_check_notify) > 0)
 			{
@@ -229,6 +335,11 @@
 					unset($this->im_check_notify[$user]);
 				}
 			}
+		}
+
+		function getStatus()
+		{
+			return self::$database->messageExists($this->name);
 		}
 	}
 ?>

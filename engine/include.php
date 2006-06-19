@@ -5,6 +5,8 @@
 	ignore_user_abort(false);
 	set_time_limit(30);
 
+	class FilesystemException extends Exception {};
+
 	$this_filename = '/engine/include.php';
 	$__FILE__ = str_replace('\\', '/', __FILE__);
 	if(substr($__FILE__, -strlen($this_filename)) !== $this_filename)
@@ -116,7 +118,6 @@
 
 		global_setting('DB_DIR', $DB_DIR);
 
-		global_setting('EVENT_FILE', $DB_DIR.'/events');
 		global_setting('DB_LOCKED', $DB_DIR.'/locked');
 		global_setting('DB_ALLIANCES', $DB_DIR.'/alliances');
 		global_setting('DB_FLEETS', $DB_DIR.'/fleets');
@@ -124,9 +125,7 @@
 		global_setting('DB_UNIVERSE', $DB_DIR.'/universe');
 		global_setting('DB_ITEMS', $DB_DIR.'/items');
 		global_setting('DB_ITEM_DB', $DB_DIR.'/items.db');
-		global_setting('DB_MESSAGES', $DB_DIR.'/messages');
 		global_setting('DB_MESSAGES_PUBLIC', $DB_DIR.'/messages_public');
-		global_setting('DB_HIGHSCORES', $DB_DIR.'/highscores');
 		global_setting('DB_TRUEMMERFELDER', $DB_DIR.'/truemmerfelder');
 		global_setting('DB_HANDEL', $DB_DIR.'/handel');
 		global_setting('DB_HANDELSKURS', $DB_DIR.'/handelskurs');
@@ -139,6 +138,7 @@
 		global_setting('DB_GLOBAL_COST_FACTOR', $DB_DIR.'/global_cost_factor');
 		global_setting('DB_USE_OLD_INGTECH', $DB_DIR.'/use_old_ingtech');
 		global_setting('DB_NO_ATTS', $DB_DIR.'/no_atts');
+		global_setting("DB_SQLITE", $DB_DIR."/sqlite");
 
 		return true;
 	}
@@ -327,6 +327,7 @@
 <?php
 			}
 ?>
+						<li class="c-ssl-zertifikat-installieren"><a href="http://www.cacert.org/certs/root.crt"><abbr title="Secure Sockets Layer" xml:lang="en"><span xml:lang="de">SSL</span></abbr>-Zertifikat installieren</a></li>
 					</ul>
 				</fieldset>
 			</form>
@@ -870,16 +871,6 @@
 	function utf8_jsentities($string)
 	{
 		return utf8_htmlentities($string, true, true);
-	}
-
-	function ob_utf8($string)
-	{
-		$now_mtime = microtime(true);
-		$start_mtime = start_mtime;
-
-		#$string .= '<!-- '.($now_mtime-$start_mtime).' -->'."\n";
-
-		return utf8_encode($string);
 	}
 
 	if(!function_exists('array_product'))
@@ -1454,5 +1445,25 @@
 			return false;
 		}
 		return ($until ? $until : true);
+	}
+
+	function rm_r($fname)
+	{
+		if(is_file($fname))
+		{
+			if(!unlink($fname))
+				throw new FilesystemException("Could not delete ".$fname.".", 1);
+		}
+		else
+		{
+			if(!($dh = opendir($fname)))
+				throw new FilesystemException("Could not open directory ".$fname.".", 2);
+			while(($f = readdir($dh)) !== false)
+			{
+				if($f == "." || $f == "..") continue;
+				rm_r($fname."/".$f);
+			}
+			closedir($dh);
+		}
 	}
 ?>

@@ -317,11 +317,23 @@ EOF
 
 				$fleet = Classes::Fleet($fleet_id);
 
-				if($fleet->getStatus() > 0 && ($fleet->getStatus() > 1 || $fleet->getNextArrival() > time() || !$fleet->arriveAtNextTarget()))
+				if($fleet->getStatus() > 0)
 				{
-					fputs($errlog, time_prefix()."Warning: Couldn't complete fleet ".$fleet_id.". Gonna process it later.\n");
-					$eventfile = Classes::EventFile();
-					$eventfile->addNewFleet(time()+global_setting("EVENTHANDLER_INTERVAL"), $fleet_id);
+					try
+					{
+						if($fleet->getStatus() > 1)
+							throw new Exception("Status was ".$fleet->getStatus().".");
+						elseif($fleet->getNextArrival() > time())
+							throw new Exception("Has not yet arrived.");
+						elseif(!$fleet->arriveAtNextTarget())
+							throw new Exception("Arrival failed.");
+					}
+					catch(Exception $e)
+					{
+						fputs($errlog, time_prefix()."Warning: Couldn't complete fleet ".$fleet_id.". ".$e->getMessage()." Gonna process it later.\n");
+						$eventfile = Classes::EventFile();
+						$eventfile->addNewFleet(time()+global_setting("EVENTHANDLER_INTERVAL"), $fleet_id);
+					}
 				}
 
 				unset($fleet);
@@ -334,7 +346,6 @@ EOF
 
 		function walkthrough_users()
 		{
-			return true;
 			global $errlog;
 			global $last_walked;
 			$last_walked = date('Y-m-d');
@@ -345,7 +356,7 @@ EOF
 			# Alte Nachrichten loeschen
 			$ges_ress = array(0, 0, 0, 0, 0);
 			$deleted_messages = 0;
-			$processed_messages = array();
+			$processed_messages = 0;
 
 			global $message_type_times;
 			$max_ages = $message_type_times;
@@ -472,7 +483,7 @@ EOF
 					$messages_list = $user->getMessagesList($category);
 					foreach($messages_list as $message_id)
 					{
-						$processed_messages[$message_id] = true;
+						$processed_messages++;
 						if($user->checkMessageStatus($message_id, $category))
 							continue; # Ungelesen / Archiviert
 						$message_obj = Classes::Message($message_id);
@@ -538,25 +549,6 @@ EOF
 
 			fputs($errlog, "Handelskurs recalculated.\n");
 
-
-			# Nachrichten, die niemandem gehoeren, loeschen
-
-			$dh = opendir(global_setting("DB_MESSAGES"));
-			while(($fname = readdir($dh)) !== false)
-			{
-				if($fname[0] == '.') continue;
-
-				$fname = urldecode($fname);
-
-				if(!isset($processed_messages[$fname]))
-				{
-					$message = Classes::Message($fname);
-					$message->destroy();
-				}
-			}
-			closedir($dh);
-
-			$processed_messages = count($processed_messages);
 			Classes::resetInstances();
 
 			fputs($errlog, "Checked ".$processed_messages." messages.\n");

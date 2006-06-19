@@ -1,8 +1,10 @@
 #!/usr/bin/php
 <?php
-	$newest_version = 5;
+	$newest_version = 6;
 
 	fputs(STDERR, "This script has not been tested! Please report any bugs to https://bugs.s-u-a.net/\n");
+
+	chdir(dirname(__FILE__));
 
 	$USE_OB = false;
 	require('../engine/include.php');
@@ -21,6 +23,8 @@
 			exit(1);
 		}
 	}
+
+	global_setting("DB_MESSAGES", global_setting("DB_DIR")."/messages");
 
 	if(is_file(global_setting("DB_DIR").'/.version'))
 	{
@@ -219,6 +223,91 @@
 				else rename($old_fname, $new_fname);
 			}
 			closedir($dh);
+
+		#######################
+		### Version 5 auf 6 ###
+		#######################
+
+		case 5:
+		{
+			# Datenbanken zusammenfassen
+			$sqlite = array(
+				global_setting("DB_DIR")."/highscores" => array("highscores_users" => array("username", "alliance", "scores INT", "changed INT"), "highscores_alliances" => array("tag", "scores_average INT", "scores_total INT", "members_count INT", "changed INT")),
+				global_setting("DB_DIR")."/events" => array("events" => array("time INT", "fleet")),
+			);
+
+			$new_dbh = sqlite_popen(global_setting("DB_SQLITE"));
+
+			foreach($sqlite as $fname=>$tables)
+			{
+				$dbh = sqlite_open($fname);
+				foreach($tables as $table=>$fields)
+				{
+					sqlite_query($new_dbh, "CREATE TABLE ".$table." ( ".implode(", ", $fields).");");
+					$query = sqlite_query($dbh, "SELECT * FROM ".$table.";");
+					while($row = sqlite_fetch_array($query, SQLITE_ASSOC))
+					{
+						$values = array();
+						foreach($row as $v)
+							$values[] = "'".sqlite_escape_string($v)."'";
+						sqlite_query($new_dbh, "INSERT INTO ".$table." ( ".implode(", ", array_keys($row))." ) VALUES ( ".implode(", ", $values)." );");
+					}
+				}
+				sqlite_close($dbh);
+				unlink($fname);
+			}
+
+			# Nachrichten umwandeln
+			$messages = array("message_id PRIMARY KEY", "time INT", "text", "parsed_text", "sender", "users", "subject", "html INT");
+			sqlite_query($new_dbh, "CREATE TABLE messages ( ".implode(", ", $messages)." );");
+			$dh = opendir(global_setting("DB_DIR")."/messages/");
+			while(($fname = readdir($dh)) !== false)
+			{
+				$location = global_setting("DB_DIR")."/messages/".$fname;
+				if(!is_file($location) || !is_readable($location))
+					continue;
+
+				$arr = unserialize(bzdecompress(file_get_contents($location)));
+				$query = "INSERT INTO messages ( message_id, time, text, parsed_text, sender, users, subject, html ) VALUES ( ";
+
+				$query .= "'".sqlite_escape_string(urldecode($fname))."', ";
+
+				if(isset($arr['time'])) $query .= "'".sqlite_escape_string($arr['time'])."', ";
+				else $query .= "'', ";
+
+				if(isset($arr['text'])) $query .= "'".sqlite_escape_string($arr['text'])."', ";
+				else $query .= "'', ";
+
+				if(isset($arr['parsed'])) $query .= "'".sqlite_escape_string($arr['parsed'])."', ";
+				else $query .= "'', ";
+
+				if(isset($arr['from'])) $query .= "'".sqlite_escape_string($arr['from'])."', ";
+				else $query .= "'', ";
+
+				$u = array();
+				foreach($arr['users'] as $username=>$type)
+					$u[] = $username."\r".$type;
+				$query .= "'".sqlite_escape_string(implode("\n", $u))."', ";
+
+				if(isset($arr['subject'])) $query .= "'".sqlite_escape_string($arr['subject'])."', ";
+				else $query .= "'', ";
+
+				if(isset($arr['html'])) $query .= "'".sqlite_escape_string($arr['html'] ? '1' : '0')."' );";
+				else $query .= "'0' );";
+
+				sqlite_query($new_dbh, $query);
+			}
+			closedir($dh);
+
+			try
+			{
+				rm_r(global_setting("DB_DIR")."/messages");
+			}
+			catch(FilesystemException $exc)
+			{
+				fputs(STDERR, "Warning: Could not delete the message database directory: ".$exc->getMessage()."\n");
+			}
+		}
 	}
 
 	fputs(STDERR, "Database version is now ".$newest_version.".\n");
