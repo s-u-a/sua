@@ -9,6 +9,8 @@
 	$USE_OB = false;
 	require('../engine/include.php');
 
+	set_time_limit(0);
+
 	if(!isset($_SERVER['argv'][1]))
 	{
 		echo "Usage: ".$_SERVER['argv'][0]." <Database ID>\n";
@@ -268,6 +270,7 @@
 					continue;
 
 				$arr = unserialize(bzdecompress(file_get_contents($location)));
+				if(!isset($arr['users'])) continue;
 				$query = "INSERT INTO messages ( message_id, time, text, parsed_text, sender, users, subject, html ) VALUES ( ";
 
 				$query .= "'".sqlite_escape_string(urldecode($fname))."', ";

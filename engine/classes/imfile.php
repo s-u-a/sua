@@ -44,7 +44,7 @@
 			if(!$this->status) return false;
 
 			$return = $this->arrayQuery("SELECT * FROM notifications WHERE time <= '".time()."' LIMIT 1;");
-			if($return && $this->query($this->connection, "DELETE FROM notifications WHERE time <= '".time()."';"))
+			if($return && $this->query("DELETE FROM notifications WHERE time <= '".time()."';"))
 			{
 				list($return) = $return;
 				return $return;
@@ -64,7 +64,7 @@
 		{
 			if(!$this->status) return false;
 
-			return $this->query("UPDATE notifications SET username = '".$this->escape($new_username)."' WHERE username = '".$this->escape($old_username)."' AND database = '".$this->escape(global_setting("DB"))."';") && sqlite_query($this->connection, "UPDATE to_check SET username = '".$this->escape($new_username)."' WHERE username = '".$this->escape($old_username)."' AND database = '".$this->escape(global_setting("DB"))."';");
+			return $this->query("UPDATE notifications SET username = '".$this->escape($new_username)."' WHERE username = '".$this->escape($old_username)."' AND database = '".$this->escape(global_setting("DB"))."';") && $this->query("UPDATE to_check SET username = '".$this->escape($new_username)."' WHERE username = '".$this->escape($old_username)."' AND database = '".$this->escape(global_setting("DB"))."';");
 		}
 
 		function removeMessages($username, $special_id=false)

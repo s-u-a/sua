@@ -68,21 +68,23 @@
 
 		function arrayQuery($query)
 		{
-			if(!($result = sqlite_array_query($this->connection, $query, SQLITE_ASSOC)))
+			if(($result = sqlite_array_query($this->connection, $query, SQLITE_ASSOC)) === false)
 				throw new SQLiteException("Could not run query.", sqlite_last_error($this->connection));
 			return $result;
 		}
 
 		function singleQuery($query)
 		{
-			if(!($q = sqlite_query($this->connection, $query)))
+			if(($q = sqlite_query($this->connection, $query)) === false)
 				throw new SQLiteException("Could not run query.", sqlite_last_error($this->connection));
 			return sqlite_fetch_array($q, SQLITE_ASSOC);
 		}
 
 		function singleField($query)
 		{
-			return sqlite_single_query($this->connection, $query, true);
+			if(($result = sqlite_single_query($this->connection, $query, true)) === false)
+				throw new SQLiteException("Could not run query.", sqlite_last_error($this->connection));
+			return $result;
 		}
 
 		function escape($string)
