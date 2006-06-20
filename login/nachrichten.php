@@ -190,9 +190,11 @@
 
 <?php
 					}
+					$subject = trim($message->subject());
+					if(strlen($subject) <= 0) $subject = "Kein Betreff";
 ?>
 	<dt class="c-betreff">Betreff</dt>
-	<dd class="c-betreff"><?=utf8_htmlentities($message->subject())?></dd>
+	<dd class="c-betreff"><?=utf8_htmlentities($subject)?></dd>
 
 	<dt class="c-zeit">Zeit</dt>
 	<dd class="c-zeit"><?=date('H:i:s, Y-m-d', $message->getTime())?></dd>
