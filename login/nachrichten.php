@@ -447,10 +447,13 @@
 					if($status === 2) $class = 'archiviert';
 					elseif($status == 1 && $_GET['type'] != 8) $class = 'neu';
 					else $class = 'alt';
+
+					$subject = trim($message->subject());
+					if(strlen($subject) <= 0) $subject = "Kein Betreff";
 ?>
 			<tr class="<?=$class?>">
 				<td class="c-auswaehlen"><input type="checkbox" name="message[<?=htmlentities($message_id)?>]" tabindex="<?=$tabindex++?>" /></td>
-				<td class="c-betreff"><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($message_id))?>&amp;<?=htmlentities(session_name().'='.urlencode(session_id()))?>" tabindex="<?=$tabindex++?>"><?=utf8_htmlentities($message->subject())?></a></td>
+				<td class="c-betreff"><a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;message=<?=htmlentities(urlencode($message_id))?>&amp;<?=htmlentities(session_name().'='.urlencode(session_id()))?>" tabindex="<?=$tabindex++?>"><?=utf8_htmlentities($subject)?></a></td>
 				<td class="c-absender"><?=utf8_htmlentities($message->from())?></td>
 				<td class="c-datum"><?=date('H:i:s, Y-m-d', $message->getTime())?></td>
 			</tr>
