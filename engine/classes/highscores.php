@@ -126,7 +126,7 @@
 
 			# Zuerst Punkte herausfinden
 			$r =  $this->singleQuery("SELECT ".$sort_field.",changed FROM highscores_".$type." WHERE ".$index." = '".$this->escape($id)."' LIMIT 1;");
-			$scores = $r['scores'];
+			$scores = $r[$sort_field];
 			$changed = $r['changed'];
 
 			# Wieviele Spieler sind von den Punkten her darueber?
