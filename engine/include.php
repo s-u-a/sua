@@ -347,6 +347,11 @@
 		</div></div></div></div>
 		</div></div></div>
 		<br style="clear:both;" />
+		<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			_uacct = "UA-471643-1";
+			urchinTracker();
+		</script>
 	</div></body>
 </html>
 <?php
@@ -1465,5 +1470,67 @@
 			}
 			closedir($dh);
 		}
+	}
+
+	function finsert($fh, $string, $bs=1024)
+	{
+		if($bs <= 0) return false;
+		$pos = ftell($fh);
+		$len = strlen($string);
+
+		fseek($fh, 0, SEEK_END);
+
+		$do_break = false;
+		while(!$do_break)
+		{
+			$bytes = $bs;
+			if(ftell($fh)-$bytes < $pos)
+			{
+				$bytes -= $pos-ftell($fh)+$bytes;
+				fseek($fh, $pos, SEEK_SET);
+			}
+			else
+				fseek($fh, -$bytes, SEEK_CUR);
+			if(ftell($fh) <= $pos)
+				$do_break = true;
+
+			$part = fread($fh, $bytes);
+			fseek($fh, -$bytes+$len, SEEK_CUR);
+			fwrite($fh, $part);
+			fseek($fh, -$bytes-$len, SEEK_CUR);
+		}
+		return fwrite($fh, $string);
+	}
+
+	function fdelete($fh, $len, $bs=1024)
+	{
+		if($bs <= 0) return false;
+		$pos = ftell($fh);
+		while(true)
+		{
+			fseek($fh, $len, SEEK_CUR);
+			$part = fread($fh, $bs);
+			if($part === false) break;
+			fseek($fh, -strlen($part)-$len, SEEK_CUR);
+			fwrite($fh, $part);
+			if(strlen($part) < $bs) break;
+		}
+		$ret = ftruncate($fh, ftell($fh));
+		fseek($fh, $pos, SEEK_SET);
+		return $ret;
+	}
+
+	function irrand($array)
+	{
+		$sum = array_sum($array);
+		$rand = rand(1, $sum);
+		$c_sum = 0;
+		foreach($array as $k=>$v)
+		{
+			$c_sum += $v;
+			if($c_sum > $rand)
+				return $k;
+		}
+		return null;
 	}
 ?>
