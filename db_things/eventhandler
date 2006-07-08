@@ -484,7 +484,7 @@ EOF
 					foreach($messages_list as $message_id)
 					{
 						$processed_messages++;
-						if($user->checkMessageStatus($message_id, $category))
+						if($user->checkMessageStatus($message_id, $category) && $category != 8)
 							continue; # Ungelesen / Archiviert
 						$message_obj = Classes::Message($message_id);
 						if(!$message_obj->getStatus() || (time()-$message_obj->getTime()) > $max_diff)
