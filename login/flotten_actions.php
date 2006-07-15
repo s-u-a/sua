@@ -31,6 +31,15 @@
 				exit();
 			}
 
+			if(!$me->permissionToAct())
+			{
+?>
+<p class="error">Sie haben keine Berechtigung, Flottenaufträge aufzugeben.</p>
+<?php
+				login_gui::html_foot();
+				exit();
+			}
+
 			$active_planet = $me->getActivePlanet();
 			$me->setActivePlanet($planet_key);
 			$available_ress = $me->getRess();
