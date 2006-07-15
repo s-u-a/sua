@@ -99,7 +99,7 @@
 			if($from > $to) list($from, $to) = array($to, $from);
 			$from--;
 
-			return $this->arrayQuery("SELECT * FROM highscores_".$type." ORDER BY ".$sort_field." DESC,changed ASC LIMIT ".$from.", ".($to-$from).";");
+			return $this->arrayQuery("SELECT * FROM highscores_".$type." ORDER BY ".$sort_field." DESC,changed ASC LIMIT ".$from.", ".($to-$from-1).";");
 		}
 
 		function getCount($type, $highscores_file=false)
