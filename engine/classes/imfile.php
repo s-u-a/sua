@@ -2,6 +2,7 @@
 	class IMFile extends SQLite
 	{
 		protected $tables = array("to_check" => array("uin", "protocol", "username", "database", "checksum"), "notifications" => array("time INT", "uin", "username", "message", "database", "special_id"));
+		protected $custom_filename = true;
 
 		function __construct()
 		{

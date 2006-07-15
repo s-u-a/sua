@@ -34,11 +34,14 @@
 			if(!$classname)
 			{
 				$status = true;
-				foreach($objectInstances as $instanceName=>$instances)
+				while(count($objectInstances) > 0)
 				{
-					if($instanceName == 'EventFile') continue;
-					if(!self::resetInstances($instanceName))
-						$status = false;
+					foreach($objectInstances as $instanceName=>$instances)
+					{
+						if($instanceName == 'EventFile') continue;
+						if(!self::resetInstances($instanceName))
+							$status = false;
+					}
 				}
 				return $status;
 			}
