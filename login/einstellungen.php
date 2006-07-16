@@ -63,6 +63,7 @@
 		$me->setSetting('noads', isset($_POST['noads']));
 		$me->setSetting('show_extern', isset($_POST['show_extern']));
 		$me->setSetting('notify', isset($_POST['notify']));
+		$me->setSetting('fastbuild_full', isset($_POST['fastbuild_full']));
 
 		if(!isset($_POST['im-receive']) || !isset($_POST['im-receive']['messages']))
 			$messenger_receive['messages'] = array(1=>false, 2=>false, 3=>false, 4=>false, 5=>false, 6=>false, 7=>false);
@@ -271,6 +272,9 @@
 
 			<dt class="c-auto-schnellbau"><label for="fastbuild">Auto-Schnellbau</label></dt>
 			<dd class="c-auto-schnellbau"><input type="checkbox" name="fastbuild" id="fastbuild"<?=$me->checkSetting('fastbuild') ? ' checked="checked"' : ''?> title="Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten unbeschäftigten Planeten gewechselt [Q]" accesskey="q" tabindex="<?=$tabindex++?>" /></dd>
+
+			<dt class="c-schnellbau-auf-ausgebaute"><label for="i-full">Schnellbau auf ausgebaute</label></dt>
+			<dd class="c-schnellbau-auf-ausgebaute"><input type="checkbox" name="fastbuild_full" id="i-full"<?=$me->checkSetting('fastbuild_full') ? ' checked="checked"' : ''?> title="Durch diese Option werden auch ausgebaute Planeten bei der Schnellbau-Funktion berücksichtigt." tabindex="<?=$tabindex++?>" /></dd>
 
 			<dt class="c-schnell-shortcuts"><label for="shortcuts">Schnell-Shortcuts</label></dt>
 			<dd class="c-schnell-shortcuts"><input type="checkbox" name="shortcuts" id="shortcuts"<?=$me->checkSetting('shortcuts') ? ' checked="checked"' : ''?> title="Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere Taste zu drücken [X]" accesskey="x" tabindex="<?=$tabindex++?>" /></dd>

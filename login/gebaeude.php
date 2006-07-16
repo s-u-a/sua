@@ -17,7 +17,7 @@
 
 		$me->setActivePlanet($planets[$i]);
 		$building = $me->checkBuildingThing('gebaeude');
-		if(!$building)
+		if(!$building && ($me->getRemainingFields() > 0 || $me->checkSetting('fastbuild_full')))
 		{
 			$fastbuild_next = $planets[$i];
 			break;
@@ -38,7 +38,7 @@
 
 		$me->setActivePlanet($planets[$i]);
 		$building = $me->checkBuildingThing('gebaeude');
-		if(!$building)
+		if(!$building && ($me->getRemainingFields() > 0 || $me->checkSetting('fastbuild_full')))
 		{
 			$fastbuild_prev = $planets[$i];
 			break;

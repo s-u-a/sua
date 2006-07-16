@@ -128,13 +128,11 @@
 				fseek($fh, 0, SEEK_END);
 				fwrite($fh, $mirror."\t".$tr."\n");
 
-				echo "Redirect: ".$redirect;
-				#header("Location: ".$redirect, true, 307);
+				header("Location: ".$redirect, true, 307);
 				exit(0);
 			}
 		}
 	}
 
-	echo "Readfile.";
-	#readfile($image_path);
+	readfile($image_path);
 ?>
