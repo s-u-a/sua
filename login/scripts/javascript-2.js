@@ -530,6 +530,7 @@ function remove_loading_instance()
 users_list_timeout = false;
 users_list = false;
 users_list_selected = false;
+users_list_cache = new Object();
 
 function activate_users_list(element)
 { // Aktiviert Autocomplete fuer ein Eingabefeld
@@ -664,49 +665,81 @@ function do_make_users_list(node)
 	l.style.left = node.offsetLeft+'px';
 	l.style.width = node.offsetWidth+'px';
 
-	// Mithilfe der Sarissa-Bibliothek AJAX-Request durchfuehren
-	var xmlhttp = new XMLHttpRequest();
-	var request_url = h_root+'/login/scripts/ajax.php?action=userlist&query='+encodeURIComponent(node.value)+'&'+encodeURIComponent(session_cookie)+'='+encodeURIComponent(session_id)+'&database='+encodeURIComponent(database_id);
-	xmlhttp.open('GET', request_url, true);
-	xmlhttp.onreadystatechange = function() {
-		if(xmlhttp.readyState == 4 && xmlhttp.status == 200)
-		{ // Request war erfolgreich
-			// <result> sind die Elemente, die die Benutzernamen enthalten
-			var results = xmlhttp.responseXML.getElementsByTagName('result');
-			for(var i=0; i<results.length; i++)
-			{
-				// Benutzernamen in die noch nicht angezeigte Liste einfuegen
-				v = results[i].firstChild.data;
-				var next_li = document.createElement('li');
-
-				// Eventhandler einbauen, die das Auswaehlen der Benutzernamen und das Uebernehmen in die Eingabefelder ermoeglichen
-				next_li.onclick = function(){node.value = this.firstChild.data;if(users_list){users_list.parentNode.removeChild(users_list);users_list=false;users_list_selected=false;}}
-				next_li.onmouseover = function(){window.userlist_active_before_mouse=(this.className=='selected');this.className = 'selected';}
-				next_li.onmouseout = function(){if(!userlist_active_before_mouse)this.className = '';}
-				next_li.appendChild(document.createTextNode(v));
-				l.appendChild(next_li);
-			}
-
-			if(old_l && old_l.parentNode)
-			{ // Wenn bereits eine Auswahlliste da ist, diese entfernen
-				old_l.parentNode.removeChild(users_list);
-				users_list = false;
-				users_list_selected = false;
-			}
-			var do_insert = true;
-			if(results.length <= 0) do_insert = false;
-			else if(results.length == 1 && node.value.toLowerCase() == v.toLowerCase()) do_insert = false;
-
-			if(do_insert) // Es gibt Uebereinstimmungen, die Liste enthaelt Eintraege
-			{
-				// Liste in den DOM-Baum klatschen
-				node.parentNode.insertBefore(l, node.nextSibling);
-				users_list = l;
-			}
-			else users_list = false;
-		}
+	// Schauen, ob die Liste bereits geladen ist
+	var cache_item = '';
+	for(var i in users_list_cache)
+	{
+		if(node.value.substr(0, i.length) == i && i.length > cache_item.length)
+			cache_item = i;
 	}
-	xmlhttp.send(null);
+
+	if(cache_item)
+	{ // Liste ist bereits geladen, Cache benutzen
+		var c = users_list_cache[cache_item];
+		var new_list = new Array();
+		for(var i=0; i<c.length; i++)
+		{
+			if(c[i].substr(0, node.value.length) == node.value)
+				new_list.push(c[i]);
+		}
+		do_create_users_list(new_list);
+	}
+	else
+	{ // Mithilfe der Sarissa-Bibliothek AJAX-Request durchfuehren
+		var xmlhttp = new XMLHttpRequest();
+		var request_url = h_root+'/login/scripts/ajax.php?action=userlist&query='+encodeURIComponent(node.value)+'&'+encodeURIComponent(session_cookie)+'='+encodeURIComponent(session_id)+'&database='+encodeURIComponent(database_id);
+		xmlhttp.open('GET', request_url, true);
+		xmlhttp.onreadystatechange = function() {
+			if(xmlhttp.readyState == 4 && xmlhttp.status == 200)
+			{ // Request war erfolgreich
+				// <result> sind die Elemente, die die Benutzernamen enthalten
+				users_list_cache[node.value] = new Array();
+				var results = xmlhttp.responseXML.getElementsByTagName('result');
+				for(var i=0; i<results.length; i++)
+				{
+					v = results[i].firstChild.data;
+					users_list_cache[node.value].push(v);
+				}
+
+				do_create_users_list(users_list_cache[node.value]);
+			}
+		}
+		xmlhttp.send(null);
+	}
+}
+
+function do_create_users_list(list)
+{
+	for(var i=0; i<list.length; i++)
+	{
+		// Benutzernamen in die noch nicht angezeigte Liste einfuegen
+		var next_li = document.createElement('li');
+
+		// Eventhandler einbauen, die das Auswaehlen der Benutzernamen und das Uebernehmen in die Eingabefelder ermoeglichen
+		next_li.onclick = function(){node.value = this.firstChild.data;if(users_list){users_list.parentNode.removeChild(users_list);users_list=false;users_list_selected=false;}}
+		next_li.onmouseover = function(){window.userlist_active_before_mouse=(this.className=='selected');this.className = 'selected';}
+		next_li.onmouseout = function(){if(!userlist_active_before_mouse)this.className = '';}
+		next_li.appendChild(document.createTextNode(v));
+		l.appendChild(next_li);
+	}
+
+	if(old_l && old_l.parentNode)
+	{ // Wenn bereits eine Auswahlliste da ist, diese entfernen
+		old_l.parentNode.removeChild(users_list);
+		users_list = false;
+		users_list_selected = false;
+	}
+	var do_insert = true;
+	if(list.length <= 0) do_insert = false;
+	else if(list.length == 1 && node.value.toLowerCase() == v.toLowerCase()) do_insert = false;
+
+	if(do_insert) // Es gibt Uebereinstimmungen, die Liste enthaelt Eintraege
+	{
+		// Liste in den DOM-Baum klatschen
+		node.parentNode.insertBefore(l, node.nextSibling);
+		users_list = l;
+	}
+	else users_list = false;
 }
 
 function users_list_select(node, move_cursor) // move_cursor gibt die Anzahl der Eintraege an, um die der Cursor nach unten verschoben werden soll
