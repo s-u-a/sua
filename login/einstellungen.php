@@ -181,7 +181,7 @@
 		}
 	}
 
-	if(isset($_POST['performance']) && in_array($_POST['performance'], array(1,2,3)))
+	if(isset($_POST['performance']) && in_array($_POST['performance'], array(0,1,2,3)))
 		$me->setSetting('performance', $_POST['performance']);
 
 	login_gui::html_head();
@@ -287,6 +287,7 @@
 			<dt class="c-javascript-performance"><label for="performance">JavaScript-Performance</label></dt>
 			<dd class="c-javascript-performance">
 				<select name="performance" tabindex="<?=$tabindex++?>">
+					<option value="0"<?=($me->checkSetting('performance')==0) ? ' selected="selected"' : ''?>>Keine Bildschirmänderungen</option>
 					<option value="1"<?=($me->checkSetting('performance')==1) ? ' selected="selected"' : ''?>>Ungenau, wenig CPU-Last</option>
 					<option value="2"<?=($me->checkSetting('performance')==2) ? ' selected="selected"' : ''?>>Praktisch, mittlere CPU-Last</option>
 					<option value="3"<?=($me->checkSetting('performance')==3) ? ' selected="selected"' : ''?>>Komfortabel und präzise, hohe CPU-Last</option>

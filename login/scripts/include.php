@@ -200,17 +200,21 @@
 		</script>
 		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts/javascript-'.$me->checkSetting('performance').".js")?>"></script>
 <?php
-			if($me->checkSetting('ajax'))
+			if($me->checkSetting('performance') != 0)
 			{
+				if($me->checkSetting('ajax'))
+				{
 ?>
 		<script type="text/javascript" src="<?=htmlentities(h_root.'/sarissa.js')?>"></script>
 <?php
-			}
+				}
 ?>
 		<script type="text/javascript">
 			set_time_globals(<?=time()+1?>);
 		</script>
 <?php
+			}
+
 			$skin_path = '';
 			$my_skin = $me->checkSetting('skin');
 			if($my_skin)
@@ -261,6 +265,10 @@
 			<dt>Serverzeit</dt>
 			<dd id="time-server"><?=date('H:i:s', time()+1)?></dd>
 		</dl>
+<?php
+			if($me->checkSetting('performance') != 0)
+			{
+?>
 		<script type="text/javascript">
 			var dd_element = document.createElement('dd');
 			dd_element.setAttribute('id', 'time-local');
@@ -272,6 +280,9 @@
 			time_element.insertBefore(dt_element, dd_element);
 			setInterval('time_up()', 1000);
 		</script>
+<?php
+			}
+?>
 		<div id="navigation">
 			<form action="<?=htmlentities($_SERVER['PHP_SELF'])?>" method="get" id="change-planet">
 				<fieldset>
@@ -500,7 +511,7 @@
 			<div id="werbung">
 <?php
 			global $DISABLE_ADS;
-			if((!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http')
+			if($me->checkSetting('performance') != 0 && (!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http')
 			{
 ?>
 				<script type="text/javascript">
@@ -538,41 +549,46 @@
 		</div></div></div></div></div></div></div></div>
 		<div id="css-4"></div>
 <?php
-			if($me->checkSetting('tooltips') || $me->checkSetting('shortcuts') || $me->checkSetting('ress_refresh') > 0)
+			if($me->checkSetting('performance') != 0)
 			{
+				if($me->checkSetting('tooltips') || $me->checkSetting('shortcuts') || $me->checkSetting('ress_refresh') > 0)
+				{
 ?>
 		<script type="text/javascript">
 <?php
-				if($me->checkSetting('shortcuts'))
-				{
+					if($me->checkSetting('shortcuts'))
+					{
 ?>
 			get_key_elements();
 <?php
-				}
-				if($me->checkSetting('tooltips'))
-				{
+					}
+					if($me->checkSetting('tooltips'))
+					{
 ?>
 			load_titles();
 <?php
-				}
-				if($me->checkSetting('ress_refresh') > 0)
-				{
-					$ress = $me->getRess();
-					$prod = $me->getProduction();
+					}
+					if($me->checkSetting('ress_refresh') > 0)
+					{
+						$ress = $me->getRess();
+						$prod = $me->getProduction();
 ?>
 			refresh_ress(<?=$me->checkSetting('ress_refresh')*1000?>, <?=$ress[0]?>, <?=$ress[1]?>, <?=$ress[2]?>, <?=$ress[3]?>, <?=$ress[4]?>, <?=$prod[0]?>, <?=$prod[1]?>, <?=$prod[2]?>, <?=$prod[3]?>, <?=$prod[4]?>);
 <?php
-				}
+					}
 ?>
 		</script>
 <?php
-			}
+				}
 ?>
 		<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script>
 		<script type="text/javascript">
 			_uacct = "UA-471643-1";
 			urchinTracker();
 		</script>
+<?php
+			}
+?>
 	</body>
 </html>
 <?php
