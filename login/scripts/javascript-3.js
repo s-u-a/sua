@@ -530,6 +530,7 @@ function remove_loading_instance()
 users_list_timeout = false;
 users_list = false;
 users_list_selected = false;
+users_list_cache = new Object();
 
 function activate_users_list(element)
 { // Aktiviert Autocomplete fuer ein Eingabefeld
@@ -557,7 +558,7 @@ function make_users_list(e)
 	if(users_list_timeout) clearTimeout(users_list_timeout);
 
 	// Wartevorgang einleiten
-	users_list_timeout = setTimeout('do_make_users_list(node)', 500);
+	users_list_timeout = setTimeout('do_make_users_list(node)', 1);
 
 	// Eventhandler initialisieren, die die Benutzerliste einblenden oder verschwinden lassen
 	node.onblur = function(){clearTimeout(users_list_timeout);}
@@ -578,7 +579,7 @@ function do_make_users_list(node)
 	}
 
 	// Beim Verlassen des Feldes wird die Liste ausgeblendet
-	node.onblur = function(){t=this; setTimeout('if(users_list){users_list.parentNode.removeChild(users_list);users_list=false;users_list_selected=false;}',500);}
+	node.onblur = function(){t=this; setTimeout('if(users_list){users_list.parentNode.removeChild(users_list);users_list=false;users_list_selected=false;}',1);}
 
 	// Wenn die Liste angezeigt wird, muss das Hoch- und Runternavigieren durch Pfeiltasten ermoeglicht werden
 	node.onkeypress = function(e)
