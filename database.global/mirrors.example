@@ -1,0 +1,7 @@
+[s-u-a.net]
+path = http://www.s-u-a.net/login/style/image.php
+traffic = 15GB
+
+[example.org]
+path = http://suaskins.example.org/image.php
+traffic = 500MB

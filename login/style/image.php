@@ -1,4 +1,6 @@
 <?php
+	error_reporting(1);
+
 	$traffic_f = array(
 		"Gi" => 1073741824,
 		"G" => 1000000000,
@@ -26,6 +28,47 @@
 		return $ret;
 	}
 
+	function gcd2($i,$j)
+	{
+		if($i == $j) return $i;
+		elseif($i>$j) list($i, $j) = array($j, $i);
+
+		$r = float_mod($i,$j);
+		while($r != 0)
+		{
+			$i = $j;
+			$j = $r;
+			$r = float_mod($i,$j);
+		}
+		return $j;
+	}
+
+	function float_mod($a, $b)
+	{
+		return $a-floor($a/$b)*$b;
+	}
+
+	function gcd($a)
+	{
+		$a = array_values($a);
+		while(($c = count($a)) > 1)
+		{
+			$b = array();
+			for($i=0; $i<$c; $i+=2)
+			{
+				$o = $a[$i];
+				if(isset($a[$i+1])) $p = $a[$i+1];
+				else $p = $last;
+
+				$last = gcd2($o, $p);
+				$b[] = $last;
+			}
+			$a = $b;
+		}
+		if(count($a) == 1) return array_shift($a);
+		else return false;
+	}
+
 	header('Cache-control: max-age=1209600');
 	header('Expires: '.strftime('%a, %d %b %Y %T %Z', time()+1209600));
 
@@ -49,30 +92,31 @@
 	if(function_exists("parse_ini_file") && is_file($mirrors_ini) && is_readable($mirrors_ini))
 	{
 		$mirrors = parse_ini_file($mirrors_ini, true);
+		$mirrors_rel = array();
 		foreach($mirrors as $k=>$v)
 		{
 			if(!isset($v['path'])) continue;
 
 			$v['path'] = trim($v['path']);
-			if(!$v['path']) continue;
-
-			if(isset($v['traffic']))
+			if(!$v['path'] || !isset($v['traffic']))
 			{
-				$v['traffic'] = str_replace(",", ".", $v['traffic']);
-
-				$factor = 1;
-				foreach($traffic_f as $unit=>$f)
-				{
-					if(preg_match("/(\s*)".preg_quote($unit, "/")."(B?)$/i", $v['traffic']))
-					{
-						$factor = $f;
-						break;
-					}
-				}
-				$v['traffic'] = ((float) $v['traffic'])*$factor;
-				if($v['traffic'] <= 0) $v['traffic'] = false;
+				unset($mirrors[$k]);
+				continue;
 			}
-			else $v['traffic'] = false;
+
+			$v['traffic'] = str_replace(",", ".", $v['traffic']);
+
+			$factor = 1;
+			foreach($traffic_f as $unit=>$f)
+			{
+				if(preg_match("/(\s*)".preg_quote($unit, "/")."(B?)$/i", $v['traffic']))
+				{
+					$factor = $f;
+					break;
+				}
+			}
+			$v['traffic'] = ((float) $v['traffic'])*$factor;
+			if($v['traffic'] <= 0) $v['traffic'] = 0;
 
 			$mirrors[$k] = $v;
 		}
@@ -109,7 +153,24 @@
 
 			if(count($mirrors) > 0)
 			{
-				$mirror = array_rand($mirrors);
+				$mirrors_rel = array();
+				foreach($mirrors as $k=>$v)
+					$mirrors_rel[$k] = $v['traffic'];
+				$gcd = gcd($mirrors_rel);
+				foreach($mirrors_rel as $k=>$v)
+					$mirrors_rel[$k] /= $gcd;
+				$ip = explode(".", $_SERVER['REMOTE_ADDR']);
+				$ip = (($ip[0]<<24)+($ip[1]<<16)+($ip[2]<<8)+$ip[3])%array_sum($mirrors_rel);
+				$s = 0;
+				foreach($mirrors_rel as $k=>$v)
+				{
+					$s += $v;
+					if($ip < $s)
+					{
+						$mirror = $k;
+						break;
+					}
+				}
 				$redirect = $mirrors[$mirror]['path']."?".$_SERVER['QUERY_STRING'];
 				$filesize = filesize($image_path);
 

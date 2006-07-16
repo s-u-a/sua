@@ -1533,4 +1533,39 @@
 		}
 		return null;
 	}
+
+	function gcd2($i,$j)
+	{
+		if($i == $j) return $i;
+		elseif($i>$j) list($i, $j) = array($j, $i);
+
+		$r = $i%$j;
+		while($r != 0)
+		{
+			$i = $j;
+			$j = $r;
+			$r = $i%$j;
+		}
+		return $j;
+	}
+
+	function gcd($a)
+	{
+		while(($c = count($a)) > 1)
+		{
+			$b = array();
+			for($i=0; $i<$c; $i+=2)
+			{
+				$o = $a[$i];
+				if(isset($a[$i+1])) $p = $a[$i+1];
+				else $p = $last;
+
+				$last = gcd2($o, $p);
+				$b[] = $last;
+			}
+			$a = $b;
+		}
+		if(count($a) == 1) return array_shift($a);
+		else return false;
+	}
 ?>
