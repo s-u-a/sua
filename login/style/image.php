@@ -89,7 +89,7 @@
 
 	$mirrors = array();
 	$mirrors_ini = "../../database.global/mirrors";
-	if(function_exists("parse_ini_file") && is_file($mirrors_ini) && is_readable($mirrors_ini))
+	if((!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') && function_exists("parse_ini_file") && is_file($mirrors_ini) && is_readable($mirrors_ini))
 	{
 		$mirrors = parse_ini_file($mirrors_ini, true);
 		$mirrors_rel = array();
