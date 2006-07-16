@@ -678,7 +678,7 @@ function do_make_users_list(node)
 		var new_list = new Array();
 		for(var i=0; i<c.length; i++)
 		{
-			if(c[i].substr(0, node.value.length) == node.value)
+			if(c[i].length > node.value.length && c[i].substr(0, node.value.length) == node.value)
 				new_list.push(c[i]);
 		}
 		do_create_users_list(new_list);
@@ -718,7 +718,7 @@ function do_create_users_list(list)
 		next_li.onclick = function(){node.value = this.firstChild.data;if(users_list){users_list.parentNode.removeChild(users_list);users_list=false;users_list_selected=false;}}
 		next_li.onmouseover = function(){window.userlist_active_before_mouse=(this.className=='selected');this.className = 'selected';}
 		next_li.onmouseout = function(){if(!userlist_active_before_mouse)this.className = '';}
-		next_li.appendChild(document.createTextNode(v));
+		next_li.appendChild(document.createTextNode(list[i]));
 		l.appendChild(next_li);
 	}
 
