@@ -89,7 +89,7 @@
 
 	$mirrors = array();
 	$mirrors_ini = "../../database.global/mirrors";
-	if((!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') && function_exists("parse_ini_file") && is_file($mirrors_ini) && is_readable($mirrors_ini))
+	if((!isset($_GET['redirect']) || $_GET['redirect']) && (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') && function_exists("parse_ini_file") && is_file($mirrors_ini) && is_readable($mirrors_ini))
 	{
 		$mirrors = parse_ini_file($mirrors_ini, true);
 		$mirrors_rel = array();
@@ -171,7 +171,7 @@
 						break;
 					}
 				}
-				$redirect = $mirrors[$mirror]['path']."?".$_SERVER['QUERY_STRING'];
+				$redirect = $mirrors[$mirror]['path']."?".$_SERVER['QUERY_STRING']."&redirect=0";
 				$filesize = filesize($image_path);
 
 				$tr = 0;
