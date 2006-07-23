@@ -380,22 +380,22 @@
 		<div id="content-9">
 			<dl id="ress" class="ress">
 				<dt class="ress-carbon">Carbon</dt>
-				<dd class="ress-carbon" id="ress-carbon"><?=ths($cur_ress[0])?></dd>
+				<dd class="ress-carbon<?=($cur_ress[0]<0) ? " negativ" : ""?>" id="ress-carbon"><?=ths($cur_ress[0])?></dd>
 
 				<dt class="ress-aluminium">Aluminium</dt>
-				<dd class="ress-aluminium" id="ress-aluminium"><?=ths($cur_ress[1])?></dd>
+				<dd class="ress-aluminium<?=($cur_ress[1]<0) ? " negativ" : ""?>" id="ress-aluminium"><?=ths($cur_ress[1])?></dd>
 
 				<dt class="ress-wolfram">Wolfram</dt>
-				<dd class="ress-wolfram" id="ress-wolfram"><?=ths($cur_ress[2])?></dd>
+				<dd class="ress-wolfram<?=($cur_ress[2]<0) ? " negativ" : ""?>" id="ress-wolfram"><?=ths($cur_ress[2])?></dd>
 
 				<dt class="ress-radium">Radium</dt>
-				<dd class="ress-radium" id="ress-radium"><?=ths($cur_ress[3])?></dd>
+				<dd class="ress-radium<?=($cur_ress[3]<0) ? " negativ" : ""?>" id="ress-radium"><?=ths($cur_ress[3])?></dd>
 
 				<dt class="ress-tritium">Tritium</dt>
-				<dd class="ress-tritium" id="ress-tritium"><?=ths($cur_ress[4])?></dd>
+				<dd class="ress-tritium<?=($cur_ress[4]<0) ? " negativ" : ""?>" id="ress-tritium"><?=ths($cur_ress[4])?></dd>
 
 				<dt class="ress-energie">Energie</dt>
-				<dd class="ress-energie" id="ress-energie"><?=ths($cur_ress[5])?></dd>
+				<dd class="ress-energie<?=($cur_ress[5]<0) ? " negativ" : ""?>" id="ress-energie"><?=ths($cur_ress[5])?></dd>
 			</dl>
 			<div id="content-10"><div id="content-11"><div id="content-12"><div id="content-13">
 <?php
