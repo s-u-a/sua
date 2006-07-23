@@ -3,7 +3,7 @@
 
 	error_reporting(2047);
 	ignore_user_abort(false);
-	set_time_limit(30);
+	set_time_limit(120);
 
 	class FilesystemException extends Exception {};
 
@@ -77,6 +77,7 @@
 	global_setting('ALLIANCE_RENAME_PERIOD', 3); # Minimalabstand fuers Umbenennen von Allianzen in Tagen
 	global_setting('PROTOCOL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http');
 	global_setting('USE_PROTOCOL', (isset($_SESSION['use_protocol']) ? $_SESSION['use_protocol'] : (((!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])) ? 'https' : 'http')));
+	global_setting('MIN_BUILDING_TIME', 12); # Minimale Bauzeit in Sekunden
 
 	function define_globals($DB)
 	{

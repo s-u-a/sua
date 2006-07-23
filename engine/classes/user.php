@@ -1060,6 +1060,11 @@
 							$info['buildable'] = false;
 						$info['debuildable'] = ($info['level'] >= 1 && -$info['fields'] <= $this->getRemainingFields());
 
+						if($info['time'] < global_setting("MIN_BUILDING_TIME"))
+							$info['limit_factor'] = $info['time']/global_setting("MIN_BUILDING_TIME");
+						else
+							$info['limit_factor'] = 1;
+
 						# Runden
 						stdround($info['prod'][0]);
 						stdround($info['prod'][1]);
@@ -1108,6 +1113,15 @@
 						$info['ress'][2] *= $ress_f;
 						$info['ress'][3] *= $ress_f;
 
+						if($info['time_local'] < global_setting("MIN_BUILDING_TIME"))
+							$info['limit_factor_local'] = $info['time_local']/global_setting("MIN_BUILDING_TIME");
+						else
+							$info['limit_factor_local'] = 1;
+						if($info['time_global'] < global_setting("MIN_BUILDING_TIME"))
+							$info['limit_factor_global'] = $info['time_global']/global_setting("MIN_BUILDING_TIME");
+						else
+							$info['limit_factor_global'] = 1;
+
 						# Runden
 						stdround($info['time_local']);
 						stdround($info['time_global']);
@@ -1125,6 +1139,11 @@
 							$info['simple_scores'] = array_sum($info['ress'])/1000;
 							$info['scores'] = $info['simple_scores']*$info['level'];
 						}
+
+						if($info['time'] < global_setting("MIN_BUILDING_TIME"))
+							$info['limit_factor'] = $info['time']/global_setting("MIN_BUILDING_TIME");
+						else
+							$info['limit_factor'] = 1;
 
 						stdround($info['time']);
 						break;
@@ -1145,6 +1164,11 @@
 							$info['scores'] = $info['simple_scores']*$info['level'];
 						}
 
+						if($info['time'] < global_setting("MIN_BUILDING_TIME"))
+							$info['limit_factor'] = $info['time']/global_setting("MIN_BUILDING_TIME");
+						else
+							$info['limit_factor'] = 1;
+
 						# Runden
 						stdround($info['att']);
 						stdround($info['def']);
@@ -1164,6 +1188,11 @@
 							$info['scores'] = $info['simple_scores']*$info['level'];
 						}
 
+						if($info['time'] < global_setting("MIN_BUILDING_TIME"))
+							$info['limit_factor'] = $info['time']/global_setting("MIN_BUILDING_TIME");
+						else
+							$info['limit_factor'] = 1;
+
 						stdround($info['att']);
 						stdround($info['def']);
 						stdround($info['time']);
@@ -1173,10 +1202,10 @@
 				# Mindestbauzeit zwoelf Sekunden aufgrund von Serverbelastung
 				if($type == 'forschung')
 				{
-					if($info['time_local'] < 12) $info['time_local'] = 12;
-					if($info['time_global'] < 12) $info['time_global'] = 12;
+					if($info['time_local'] < global_setting("MIN_BUILDING_TIME")) $info['time_local'] = global_setting("MIN_BUILDING_TIME");
+					if($info['time_global'] < global_setting("MIN_BUILDING_TIME")) $info['time_global'] = global_setting("MIN_BUILDING_TIME");
 				}
-				elseif($info['time'] < 12) $info['time'] = 12;
+				elseif($info['time'] < global_setting("MIN_BUILDING_TIME")) $info['time'] = global_setting("MIN_BUILDING_TIME");
 
 				$this->cache['getItemInfo'][$this_planet][$id] = $info;
 			}
@@ -1265,17 +1294,36 @@
 
 				# Bauroboter: Laufende Bauzeit verkuerzen
 				case 'R01':
+					$max_rob_limit = floor($this->getBasicFields()/2);
+					$counting_after = $this->items[$type][$id];
+					$counting_before = $counting_after-$value;
+					if($counting_after > $max_rob_limit) $counting_after = $max_rob_limit;
+					if($counting_before > $max_rob_limit) $counting_before = $max_rob_limit;
+					$counting_value = $counting_after-$counting_before;
+
 					$building = $this->checkBuildingThing('gebaeude');
 					if($building && $building[1] > $time)
 					{
-						$remaining = ($building[1]-$time)*pow(1-0.00125*$this->getItemLevel('F2', 'forschung', false), $value);
-						$this->raw['building']['gebaeude'][1] = $time+$remaining;
+						$f = pow(1-0.00125*$this->getItemLevel('F2', 'forschung', false), $counting_value);
+						$old_finished = $building[4][0]-$building[1];
+						$old_remaining = ($building[1]-$time)*$building[4][1];
+						$new_remaining = $old_remaining*$f;
+						if(($old_finished*$f)+$new_remaining < global_setting("MIN_BUILDING_TIME"))
+						{
+							$this->planet_info['building']['gebaeude'][4][1] = $new_remaining/(global_setting("MIN_BUILDING_TIME")-($old_finished*$f));
+							$new_remaining = global_setting("MIN_BUILDING_TIME")-($old_finished*$f);
+						}
+						else
+							$this->planet_info['building']['gebaeude'][4][1] = 1;
+						$this->planet_info['building']['gebaeude'][1] = $time+$new_remaining;
 					}
 
 					# Auch in $actions schauen
 					$one = false;
 					foreach($actions as $i=>$action2)
 					{
+						if(!$action2) continue;
+
 						if($action2[4] != $this->getActivePlanet()) continue;
 						$this_item = Classes::Item($action2[1]);
 						if($this_item->getType() == 'gebaeude')
@@ -1313,6 +1361,8 @@
 							$one = false;
 							foreach($actions as $i=>$action2)
 							{
+								if(!$action2) continue;
+
 								if($action2[4] != $this->getActivePlanet()) continue;
 								$this_item = Classes::Item($action2[1]);
 								if($this_item->getType() == 'gebaeude')
@@ -1789,7 +1839,7 @@
 						$time += $items[3];
 						if($time <= time())
 						{
-							$actions[] = array($time, $items[0], 1, true, $planet);
+							$actions[] = array($time, $items[0], 1, false, $planet);
 
 							# Schiff entfernen
 							$this->planet_info['building']['schiffe'][$j][2]--;
@@ -1817,7 +1867,7 @@
 						$time += $items[3];
 						if($time <= time())
 						{
-							$actions[] = array($time, $items[0], 1, true, $planet);
+							$actions[] = array($time, $items[0], 1, false, $planet);
 
 							# Schiff entfernen
 							$this->planet_info['building']['verteidigung'][$j][2]--;
@@ -1837,7 +1887,7 @@
 				{
 					usort($actions, 'sortEventhandlerActions');
 
-					while($action = array_shift($actions))
+					foreach($actions as $k=>$action)
 					{
 						$this->setActivePlanet($action[4]);
 
@@ -1850,6 +1900,8 @@
 							unset($this->cache['getProduction']);
 						if(isset($this->cache['getItemInfo']))
 							unset($this->cache['getItemInfo']);
+
+						$actions[$k] = null;
 					}
 
 					$this->changed = true;
@@ -2340,7 +2392,7 @@
 				$time += time();
 
 				if(!isset($this->planet_info['building'])) $this->planet_info['building'] = array();
-				$this->planet_info['building']['gebaeude'] = array($id, $time, $rueckbau, $ress);
+				$this->planet_info['building']['gebaeude'] = array($id, $time, $rueckbau, $ress, array(time(), $item_info['limit_factor']));
 
 				# Rohstoffe abziehen
 				$this->subtractRess($ress);
