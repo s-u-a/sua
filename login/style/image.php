@@ -72,8 +72,10 @@
 	header('Cache-control: max-age=1209600');
 	header('Expires: '.strftime('%a, %d %b %Y %T %Z', time()+1209600));
 
-	$image_path = urldecode($_SERVER['QUERY_STRING']);
-	if($image_path == '' || !is_file($image_path) || strpos($image_path, '../') !== false)
+	$image_path = false;
+	if(isset($_GET['image'])) $image_path = $_GET['image'];
+
+	if(!$image_path || !is_file($image_path) || strpos($image_path, '../') !== false)
 		exit(1);
 
 	if(substr($image_path, -4) == '.gif')
@@ -171,7 +173,7 @@
 						break;
 					}
 				}
-				$redirect = $mirrors[$mirror]['path']."?".$_SERVER['QUERY_STRING']."&redirect=0";
+				$redirect = $mirrors[$mirror]['path']."?image=".urlencode($image_path)."&redirect=0";
 				$filesize = filesize($image_path);
 
 				$tr = 0;
