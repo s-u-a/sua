@@ -410,7 +410,6 @@
 			}
 		}
 	}
-	window.onload = get_systems_around;
 
 	function get_system_after(which_system)
 	{
@@ -465,7 +464,7 @@
 		<button type="submit" tabindex="7" accesskey="w"><kbd>W</kbd>echseln</button><input type="hidden" name="<?=htmlentities(session_name())?>" value="<?=htmlentities(session_id())?>" />
 	</div>
 </form>
-<table class="karte-system">
+<table class="karte-system" id="karte">
 	<thead>
 		<tr>
 			<th class="c-planet">Planet</th>
@@ -574,6 +573,14 @@
 ?>
 	</tbody>
 </table>
+<script type="text/javascript">
+	if(document.clientWidth) // http://www.lipfert-malik.de/webdesign/tutorial/bsp/browser_js_test.html?alph#Detail
+	{
+		// Prevent Konqueror crash (http://bugs.kde.org/show_bug.cgi?id=129253)
+		document.getElementById('karte').style.borderCollapse = "separate";
+	}
+	get_systems_around();
+</script>
 <?php
 	login_gui::html_foot();
 ?>
