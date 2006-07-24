@@ -253,7 +253,7 @@
 <?php
 			}
 ?>
-			*+html body { display:none !important; }
+			/**+html body { display:none !important; }*/
 		</style>
 <?php
 
