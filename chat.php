@@ -1,5 +1,5 @@
 <?php
-	require('engine/include.php');
+	require('include.php');
 
 	$channels = array(
 		'sua' => array('S-U-A player&rsquo;s channel', 'irc.gamesurge.net', '#sua'),
@@ -10,7 +10,7 @@
 
 	if(!$popup)
 	{
-		gui::html_head('http://'.$_SERVER['HTTP_HOST'].h_root.'/chat/');
+		home_gui::html_head('http://'.$_SERVER['HTTP_HOST'].h_root.'/chat/');
 ?>
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; <span xml:lang="en">Chat</span></h2>
 <?php
@@ -151,5 +151,5 @@
 		}
 	}
 
-	gui::html_foot();
+	home_gui::html_foot();
 ?>

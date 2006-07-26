@@ -1,7 +1,7 @@
 <?php
-	require('engine/include.php');
+	require('include.php');
 
-	gui::html_head();
+	home_gui::html_head();
 ?>
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Impressum</h2>
 <h3>Verantwortlicher</h3>
@@ -46,5 +46,5 @@
 	<dd>Diverse Schiffsbeschreibungen</dd>
 </dl>
 <?php
-	gui::html_foot();
+	home_gui::html_foot();
 ?>

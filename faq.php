@@ -1,7 +1,7 @@
 <?php
-	require('engine/include.php');
+	require('include.php');
 
-	gui::html_head();
+	home_gui::html_head();
 ?>
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; <abbr title="Frequently Asked Questions" xml:lang="en"><span xml:lang="de">FAQ</span></abbr></h2>
 <p>Hier eine Liste häufig gestellter Fragen. Sollte die Frage, die Sie suchen, nicht dabei sein, schreiben Sie einfach ins <a href="<?=global_setting("USE_PROTOCOL")?>://board.s-u-a.net/index.php" xml:lang="en">Board</a>.</p>
@@ -193,5 +193,5 @@
 	<p>Besuchen Sie doch einmal die <a href="http://dev.s-u-a.net/"><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr>-Entwicklerseiten</a>, dort finden Sie weitere Informationen, wie Sie das Spiel bekommen können.</p>
 </div>
 <?php
-	gui::html_foot();
+	home_gui::html_foot();
 ?>

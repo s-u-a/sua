@@ -1,9 +1,9 @@
 <?php
-	require('engine/include.php');
+	require('include.php');
 
 	$databases = get_databases();
 
-	gui::html_head();
+	home_gui::html_head();
 ?>
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Registrieren</h2>
 <?php
@@ -165,5 +165,5 @@
 	</fieldset>
 </form>
 <?php
-	gui::html_foot();
+	home_gui::html_foot();
 ?>

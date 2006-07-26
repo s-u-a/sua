@@ -58,6 +58,10 @@ body { min-height:100%; width:100%; }
 * html #login-form ul { margin-top:6px; }
 
 
+.cross-navigation { display:none; }
+#navigation h2 { display:none; }
+
+
 input,select,textarea { padding:0 2px; height:20px; line-height:20px; background-image:url(images/input_background.png); border:1px solid #000; width:12.5em; font-weight:bold; background-color:#212025; vertical-align:middle; color:#bbb; }
 button,input.button { padding:0 2px; height:20px; line-height:20px; background-image:url(images/button_background.png); border:1px solid #000; width:12.5em; font-weight:bold; background-color:#212025; vertical-align:middle; color:#bbb; }
 button:active,input.button:active { background-image:url(images/input_background.png); }
@@ -69,6 +73,7 @@ h2 { text-align:center; background-image:url(images/separator.png); background-r
 h3,h4,h5,h6 { padding-top:1em; margin-top:1em; margin-bottom:.5em; text-align:right; background-image:url(images/separator.png); background-repeat:no-repeat; background-position:center top; }
 p { padding:.5em 0; text-align:justify; }
 hr { background-image:url(images/separator.png); background-repeat:no-repeat; background-position:center center; height:1px; border-style:none; padding:0; }
+hr.separator { display:none; }
 ul,ol { padding:1.5em 0 1.5em 3em; }
 abbr,acronym { border-style:none; font-variant:normal; text-decoration:none; }
 a { font-weight:bold; color:#aaa; }

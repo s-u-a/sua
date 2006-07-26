@@ -1,5 +1,5 @@
 <?php
-	require('engine/include.php');
+	require('include.php');
 
 	$players = 0;
 	$alliances = 0;
@@ -19,7 +19,7 @@
 	$messengers = get_messenger_info();
 	$show_im = isset($messengers['jabber']);
 
-	gui::html_head();
+	home_gui::html_head();
 ?>
 <h2 xml:lang="en">Features</h2>
 <ul>
@@ -76,5 +76,5 @@
 	<li><a href="images/screenshots/screenshot_12.png"><img src="images/screenshots/preview_12.jpg" alt="Screenshot 12" /></a></li>
 </ul>
 <?php
-	gui::html_foot();
+	home_gui::html_foot();
 ?>

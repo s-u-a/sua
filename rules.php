@@ -1,7 +1,7 @@
 <?php
-	require('engine/include.php');
+	require('include.php');
 
-	gui::html_head();
+	home_gui::html_head();
 ?>
 <h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Regeln</h2>
 <h3 id="p1">§&thinsp;1: Allgemeine Nutzungsbedingungen</h3>
@@ -38,5 +38,5 @@
 <h3 id="p6">§&thinsp;6: Änderung der Nutzungsbedingungen</h3>
 <p id="p6-1">(1) Der Betreiber von <abbr xml:lang="en" title="Stars Under Attack">S-U-A</abbr> behält sich das Recht vor, diese Nutzungsbedingungen jederzeit zu ändern. Er verpflichtet sich jedoch, dies spätestens zwei Wochen vor Inkrafttreten der Änderungen auf der Startseite anzukündigen.</p>
 <?php
-	gui::html_foot();
+	home_gui::html_foot();
 ?>
