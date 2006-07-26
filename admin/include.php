@@ -133,7 +133,7 @@
 
 	class admin_gui
 	{
-		function html_head()
+		static function html_head()
 		{
 ?>
 <?='<?=xml version="1.0" encoding="UTF-8"?>'."\n"?>
@@ -167,7 +167,7 @@
 <?php
 		}
 
-		function html_foot()
+		static function html_foot()
 		{
 ?>
 	</body>

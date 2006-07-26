@@ -37,7 +37,7 @@
 			return true;
 		}
 
-		function userExists($user)
+		static function userExists($user)
 		{
 			$filename = global_setting("DB_PLAYERS").'/'.strtolower(urlencode($user));
 			return (is_file($filename) && is_readable($filename));

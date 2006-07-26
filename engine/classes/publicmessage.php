@@ -3,7 +3,7 @@
 	{
 		protected $datatype = 'public_message';
 
-		function publicMessageExists($name)
+		static function publicMessageExists($name)
 		{
 			return (is_file(global_setting("DB_MESSAGES_PUBLIC").'/'.urlencode($name)) && is_readable(global_setting("DB_MESSAGES_PUBLIC").'/'.urlencode($name)));
 		}

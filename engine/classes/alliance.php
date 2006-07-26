@@ -73,7 +73,7 @@
 			else return false;
 		}
 
-		function allianceExists($alliance)
+		static function allianceExists($alliance)
 		{
 			$filename = global_setting("DB_ALLIANCES").'/'.strtolower(urlencode($alliance));
 			return (is_file($filename) && is_readable($filename));

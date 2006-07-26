@@ -18,9 +18,9 @@
 			return true;
 		}
 
-		function write($force=false)
+		function write($force=false, $getraw=true)
 		{
-			if($this->started() || $force) return parent::write($force);
+			if($this->started() || $force) return parent::write($force, $getraw);
 			else return $this->destroy();
 		}
 
@@ -44,7 +44,7 @@
 			else return false;
 		}
 
-		function fleetExists($fleet)
+		static function fleetExists($fleet)
 		{
 			$filename = global_setting("DB_FLEETS").'/'.urlencode($fleet);
 			return (is_file($filename) && is_readable($filename));
@@ -381,7 +381,7 @@
 			$add_factor = 1;
 			if($factor) $add_factor = $this->raw[1][$user][2];
 
-			return $add_factor*$global_factors['cost']*$this->getDistance($from, $to)*$mass/1000000;
+			return $add_factor*$global_factors['cost']*self::getDistance($from, $to)*$mass/1000000;
 		}
 
 		function getScores($user, $from, $to)
@@ -417,7 +417,7 @@
 			}
 			$speed = min($speeds)/1000000;
 
-			$time = sqrt($this->getDistance($from, $to)/$speed)*2;
+			$time = sqrt(self::getDistance($from, $to)/$speed)*2;
 			$time /= $this->raw[1][$user][2];
 
 			$global_factors = get_global_factors();
@@ -642,7 +642,7 @@
 			return ($this->raw[2] !== false);
 		}
 
-		function getDistance($start, $target)
+		static function getDistance($start, $target)
 		{
 			__autoload('Galaxy');
 

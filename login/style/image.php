@@ -69,8 +69,11 @@
 		else return false;
 	}
 
+	if(function_exists("date_default_timezone_get"))
+		date_default_timezone_set(@date_default_timezone_get());
+
 	header('Cache-control: max-age=1209600');
-	header('Expires: '.strftime('%a, %d %b %Y %T %Z', time()+1209600));
+	header('Expires: '.date('r', time()+1209600));
 
 	$image_path = false;
 	if(isset($_GET['image'])) $image_path = $_GET['image'];

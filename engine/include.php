@@ -1,9 +1,12 @@
 <?php
 	define('start_mtime', microtime(true));
 
-	error_reporting(2047);
-	ignore_user_abort(false);
+	error_reporting(4095);
+	ignore_user_abort(true);
 	set_time_limit(120);
+
+	if(function_exists("date_default_timezone_get"))
+		date_default_timezone_set(@date_default_timezone_get());
 
 	class FilesystemException extends Exception {};
 
@@ -234,7 +237,7 @@
 
 	class gui
 	{ # Kuemmert sich ums HTML-Grundgeruest der Hauptseite
-		function html_head($base=false)
+		static function html_head($base=false)
 		{
 			global $SHOW_META_DESCRIPTION; # Sollte nur auf der Startseite der Fall sein
 ?>
@@ -338,7 +341,7 @@
 <?php
 		}
 
-		function html_foot()
+		static function html_foot()
 		{
 ?>
 			</div></div></div>
@@ -363,7 +366,7 @@
 
 	class truemmerfeld
 	{ # Bearbeitet Truemmerfelder
-		function get($galaxy, $system, $planet)
+		static function get($galaxy, $system, $planet)
 		{
 			# Bekommt die Groesse eines Truemmerfelds
 
@@ -397,7 +400,7 @@
 			}
 		}
 
-		function add($galaxy, $system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
+		static function add($galaxy, $system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
 		{
 			# Fuegt einem Truemmerfeld Rohstoffe hinzu
 			$old = truemmerfeld::get($galaxy, $system, $planet);
@@ -411,7 +414,7 @@
 			return truemmerfeld::set($galaxy, $system, $planet, $old[0], $old[1], $old[2], $old[3]);
 		}
 
-		function sub($galaxy, $system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
+		static function sub($galaxy, $system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
 		{
 			# Zieht einem Truemmerfeld Rohstoffe ab
 			$old = truemmerfeld::get($galaxy, $system, $planet);
@@ -434,7 +437,7 @@
 			return truemmerfeld::set($galaxy, $system, $planet, $old[0], $old[1], $old[2], $old[3]);
 		}
 
-		function set($galaxy, $system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
+		static function set($galaxy, $system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
 		{
 			if($carbon <= 0 && $aluminium <= 0 && $wolfram <= 0 && $radium <= 0)
 			{

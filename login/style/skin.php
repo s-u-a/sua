@@ -3,7 +3,7 @@
 
 	header('Content-type: text/css; charset=UTF-8');
 	header('Cache-control: max-age=152800');
-	header('Expires: '.strftime('%a, %d %b %Y %T %Z', time()+152800));
+	header('Expires: '.date('r', time()+152800));
 
 	if(!isset($_GET['skin']) || !isset($_GET['type'])) exit(1);
 

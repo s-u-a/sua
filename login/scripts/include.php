@@ -177,7 +177,7 @@
 
 	class login_gui
 	{
-		function html_head()
+		static function html_head()
 		{
 			global $me;
 			global $skins;
@@ -253,7 +253,7 @@
 <?php
 			}
 ?>
-			/**+html body { display:none !important; }*/
+			/**+*+html body { display:none !important; }*/
 		</style>
 <?php
 
@@ -499,7 +499,7 @@
 			}
 		}
 
-		function html_foot()
+		static function html_foot()
 		{
 			global $me;
 ?>

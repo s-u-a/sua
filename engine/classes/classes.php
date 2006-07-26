@@ -4,7 +4,7 @@
 
 	class Classes
 	{
-		function Dataset($classname, $p1=false, $write=true)
+		static function Dataset($classname, $p1=false, $write=true)
 		{
 			global $objectInstances;
 
@@ -27,7 +27,7 @@
 			return $objectInstances[$classname][$p1_lower];
 		}
 
-		function resetInstances($classname=false, $destruct=true)
+		static function resetInstances($classname=false, $destruct=true)
 		{
 			global $objectInstances;
 
@@ -60,26 +60,26 @@
 		}
 
 		# Serialize mit Instanzen und Locking
-		function User($p1=false, $write=true){ return self::Dataset('User', $p1, $write); }
-		function Alliance($p1=false, $write=true){ return self::Dataset('Alliance', $p1, $write); }
-		function PublicMessage($p1=false, $write=true){ return self::Dataset('PublicMessage', $p1, $write); }
-		function Fleet($p1=false, $write=true) {
+		static function User($p1=false, $write=true){ return self::Dataset('User', $p1, $write); }
+		static function Alliance($p1=false, $write=true){ return self::Dataset('Alliance', $p1, $write); }
+		static function PublicMessage($p1=false, $write=true){ return self::Dataset('PublicMessage', $p1, $write); }
+		static function Fleet($p1=false, $write=true) {
 			if($p1 === false) $p1 = str_replace('.', '-', array_sum(explode(' ', microtime())));
 			return self::Dataset('Fleet', $p1, $write);
 		}
 
 		# Serialize
-		function Items(){ return self::Dataset('Items', 'items'); }
-		function Item($id){ return new Item($id); }
+		static function Items(){ return self::Dataset('Items', 'items'); }
+		static function Item($id){ return new Item($id); }
 
 		# Eigenes Binaerformat
-		function Galaxy($p1, $write=true){ return self::Dataset('Galaxy', $p1, $write); }
+		static function Galaxy($p1, $write=true){ return self::Dataset('Galaxy', $p1, $write); }
 
 		# SQLite
-		function EventFile() { return new EventFile(); }
-		function Highscores() { return new Highscores(); }
-		function IMFile() { return new IMFile(); }
-		function Message($id=false){ return new Message($id); }
+		static function EventFile() { return new EventFile(); }
+		static function Highscores() { return new Highscores(); }
+		static function IMFile() { return new IMFile(); }
+		static function Message($id=false){ return new Message($id); }
 	}
 
 	register_shutdown_function(array('Classes', 'resetInstances'));
