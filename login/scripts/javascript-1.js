@@ -131,8 +131,10 @@ function time_up()
 { // Aktualisiert die Countdowns
 	local_time_up = new Date();
 	server_time_up = new Date(local_time_up.getTime() - time_diff*1000);
-	document.getElementById('time-local').firstChild.data = mk2(local_time_up.getHours())+':'+mk2(local_time_up.getMinutes())+':'+mk2(local_time_up.getSeconds());
-	document.getElementById('time-server').firstChild.data = mk2(server_time_up.getHours())+':'+mk2(server_time_up.getMinutes())+':'+mk2(server_time_up.getSeconds());
+	if(document.getElementById('time-local'))
+		document.getElementById('time-local').firstChild.data = mk2(local_time_up.getHours())+':'+mk2(local_time_up.getMinutes())+':'+mk2(local_time_up.getSeconds());
+	if(document.getElementById('time-server'))
+		document.getElementById('time-server').firstChild.data = mk2(server_time_up.getHours())+':'+mk2(server_time_up.getMinutes())+':'+mk2(server_time_up.getSeconds());
 
 	for(var i=0; i<countdowns.length; i++)
 	{
