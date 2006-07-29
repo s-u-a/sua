@@ -3013,7 +3013,7 @@
 			echo "</pre>";
 		}
 
-		function resolveName($name)
+		static function resolveName($name)
 		{
 			$instance = Classes::User($name);
 			return $instance->getName();

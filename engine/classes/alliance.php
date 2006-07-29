@@ -521,7 +521,7 @@
 		}
 		protected function getRawFromData(){}
 
-		function resolveName($name)
+		static function resolveName($name)
 		{
 			$instance = Classes::Alliance($name);
 			return $instance->getName();
