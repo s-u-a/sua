@@ -6,7 +6,7 @@
 		function addNewFleet($time, $id)
 		{
 			$time = round($time);
-			return $this->query("INSERT INTO events (time, fleet) VALUES ('".$this->escape($time)."', '".$this->escape($id)."');");
+			return $this->query("INSERT INTO events (time, fleet) VALUES (".$this->escape($time).", ".$this->escape($id).");");
 		}
 
 		function removeNextFleet()
@@ -18,17 +18,17 @@
 			if(!$field) return false;
 
 			# Gefundenes Feld aus der Datenbank loeschen
-			$this->query("DELETE FROM events WHERE time = '".$this->escape($field['time'])."' AND fleet = '".$this->escape($field['fleet'])."';");
+			$this->query("DELETE FROM events WHERE time = ".$this->escape($field['time'])." AND fleet = ".$this->escape($field['fleet']).";");
 			return $field;
 		}
 
 		function removeCanceledFleet($fleet, $time=false)
 		{
-			$query = "DELETE FROM events WHERE fleet = '".$this->escape($fleet)."'";
+			$query = "DELETE FROM events WHERE fleet = ".$this->escape($fleet);
 			if($time !== false)
 			{
 				$time = round($time);
-				$query .= "AND time = '".$this->escape($time)."'";
+				$query .= "AND time = ".$this->escape($time);
 			}
 			$query .= ";";
 			return $this->query($query);

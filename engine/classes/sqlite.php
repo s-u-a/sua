@@ -16,19 +16,15 @@
 
 		function connect()
 		{
-			if(!($this->connection = sqlite_popen($this->filename)))
-				throw new SQLiteException("Could not open database ".$filename, sqlite_last_error($this->connection));
+			$this->connection = new PDO("sqlite2:".$this->filename);
+			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 			if($this->tables)
 			{
 				foreach($this->tables as $table=>$cols)
 				{
-					$table_check = $this->query("SELECT name FROM sqlite_master WHERE type='table' AND name='".$this->escape($table)."';");
-					if($this->lastResultCount($table_check) < 1)
-					{
-						if(!sqlite_query($this->connection, "CREATE TABLE ".$table." ( ".implode(", ", $cols)." );"))
-							throw new SQLiteException("Could not create table ".$table." in database ".$filename, sqlite_last_error($this->connection));
-					}
+					if($this->singleField("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=".$this->escape($table).";") < 1)
+						$this->query("CREATE TABLE ".$table." ( ".implode(", ", $cols)." );");
 				}
 			}
 
@@ -54,60 +50,66 @@
 		function backgroundQuery($query)
 		{
 			$this->checkConnection();
-			if(sqlite_query($this->connection, $query))
-				return true;
-			else
-				throw new SQLiteException("Could not perform query.", sqlite_last_error($this->connection));
+			$result = $this->connection->query($query);
+			if($result == false) return false;
+			$result->closeCursor();
+			return true;
 		}
 
 		function query($query)
 		{
 			$this->checkConnection();
-			if(!($this->last_result = sqlite_query($this->connection, $query)))
-				throw new SQLiteException("Could not perform query.", sqlite_last_error($this->connection));
-			return ($this->last_result == true);
+			$this->last_result = $this->connection->query($query);
+			return true;
 		}
 
 		function nextResult()
 		{
 			if(!$this->last_result) return false;
 
-			return sqlite_fetch_array($this->last_result, SQLITE_ASSOC);
+			return $this->last_result->fetch(PDO::FETCH_ASSOC);
 		}
 
-		function lastResultCount()
+		function lastRowsAffected()
 		{
-			if($this->last_result) return sqlite_num_rows($this->last_result);
-			else return false;
+			if(!$this->last_result) return false;
+
+			return $this->last_result->rowCount();
 		}
 
 		function arrayQuery($query)
 		{
 			$this->checkConnection();
-			if(($result = sqlite_array_query($this->connection, $query, SQLITE_ASSOC)) === false)
-				throw new SQLiteException("Could not run query.", sqlite_last_error($this->connection));
-			return $result;
+			$result = $this->connection->query($query);
+			if($result == false) return false;
+			$data = $result->fetchAll(PDO::FETCH_ASSOC);
+			$result->closeCursor();
+			return $data;
 		}
 
 		function singleQuery($query)
 		{
 			$this->checkConnection();
-			if(($q = sqlite_query($this->connection, $query)) === false)
-				throw new SQLiteException("Could not run query.", sqlite_last_error($this->connection));
-			return sqlite_fetch_array($q, SQLITE_ASSOC);
+			$result = $this->connection->query($query);
+			if($result == false) return false;
+			$data = $result->fetch(PDO::FETCH_ASSOC);
+			$result->closeCursor();
+			return $data;
 		}
 
 		function singleField($query)
 		{
 			$this->checkConnection();
-			if(($result = sqlite_single_query($this->connection, $query, true)) === false)
-				throw new SQLiteException("Could not run query.", sqlite_last_error($this->connection));
-			return $result;
+			$result = $this->connection->query($query);
+			if($result == false) return false;
+			$data = $result->fetchColumn();
+			$result->closeCursor();
+			return $data;
 		}
 
 		function escape($string)
 		{
-			return sqlite_escape_string($string);
+			return $this->connection->quote($string);
 		}
 	}
 ?>

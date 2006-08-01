@@ -16,7 +16,7 @@
 
 			$rand_id = substr(md5(rand()), 0, 8);
 
-			$this->query("INSERT INTO to_check ( uin, protocol, username, database, checksum ) VALUES ( '".$this->escape($uin)."', '".$this->escape($protocol)."', '".$this->escape($username)."', '".$this->escape(global_setting("DB"))."', '".$this->escape($rand_id)."' );");
+			$this->query("INSERT INTO to_check ( uin, protocol, username, database, checksum ) VALUES ( ".$this->escape($uin).", ".$this->escape($protocol).", ".$this->escape($username).", ".$this->escape(global_setting("DB")).", ".$this->escape($rand_id)." );");
 			return $rand_id;
 		}
 
@@ -24,7 +24,7 @@
 		{
 			if(!$this->status) return false;
 
-			$ret = $this->arrayQuery("SELECT * FROM to_check WHERE uin = '".$this->escape($uin)."' AND protocol = '".$this->escape($protocol)."' AND checksum = '".$this->escape($checksum)."' LIMIT 1;");
+			$ret = $this->arrayQuery("SELECT * FROM to_check WHERE uin = ".$this->escape($uin)." AND protocol = ".$this->escape($protocol)." AND checksum = ".$this->escape($checksum)." LIMIT 1;");
 			if(count($ret) >= 1)
 			{
 				list($ret) = $ret;
@@ -37,7 +37,7 @@
 		{
 			if(!$this->status) return false;
 
-			return $this->query("DELETE FROM to_check WHERE username='".$this->escape($username)."' AND database = '".$this->escape(global_setting("DB"))."';");
+			return $this->query("DELETE FROM to_check WHERE username = ".$this->escape($username)." AND database = ".$this->escape(global_setting("DB")).";");
 		}
 
 		function shiftNextMessage()
@@ -58,14 +58,14 @@
 			if(!$this->status) return false;
 
 			if($time === false) $time = time();
-			return $this->query("INSERT INTO notifications ( uin, time, protocol, username, message, database, special_id ) VALUES ( '".$this->escape($uin)."', '".$this->escape($time)."', '".$this->escape($protocol)."', '".$this->escape($username)."', '".$this->escape($message)."', '".$this->escape(global_setting("DB"))."', '".$this->escape($special_id)."' );");
+			return $this->query("INSERT INTO notifications ( uin, time, protocol, username, message, database, special_id ) VALUES ( ".$this->escape($uin).", ".$this->escape($time).", ".$this->escape($protocol).", ".$this->escape($username).", ".$this->escape($message).", ".$this->escape(global_setting("DB")).", ".$this->escape($special_id)." );");
 		}
 
 		function renameUser($old_username, $new_username)
 		{
 			if(!$this->status) return false;
 
-			return $this->query("UPDATE notifications SET username = '".$this->escape($new_username)."' WHERE username = '".$this->escape($old_username)."' AND database = '".$this->escape(global_setting("DB"))."';") && $this->query("UPDATE to_check SET username = '".$this->escape($new_username)."' WHERE username = '".$this->escape($old_username)."' AND database = '".$this->escape(global_setting("DB"))."';");
+			return $this->query("UPDATE notifications SET username = ".$this->escape($new_username)." WHERE username = ".$this->escape($old_username)." AND database = ".$this->escape(global_setting("DB")).";") && $this->query("UPDATE to_check SET username = ".$this->escape($new_username)." WHERE username = ".$this->escape($old_username)." AND database = ".$this->escape(global_setting("DB")).";");
 		}
 
 		function removeMessages($username, $special_id=false)
@@ -73,16 +73,16 @@
 			if(!$this->status) return false;
 
 			if($special_id === false)
-				return $this->query("DELETE FROM notifications WHERE username = '".$this->escape($username)."' AND database = '".$this->escape(global_setting("DB"))."';");
+				return $this->query("DELETE FROM notifications WHERE username = ".$this->escape($username)." AND database = ".$this->escape(global_setting("DB")).";");
 			else
-				return $this->query("DELETE FROM notifications WHERE username = '".$this->escape($username)."' AND database = '".$this->escape(global_setting("DB"))."' AND special_id = '".$this->escape($special_id)."';");
+				return $this->query("DELETE FROM notifications WHERE username = ".$this->escape($username)." AND database = ".$this->escape(global_setting("DB"))." AND special_id = ".$this->escape($special_id).";");
 		}
 
 		function changeUIN($username, $uin, $protocol)
 		{
 			if(!$this->status) return false;
 
-			return $this->query("UPDATE notifications set uin = '".$this->escape($uin)."', protocol = '".$this->escape($protocol)."' WHERE username = '".$this->escape($username)."' AND database = '".$this->escape(global_setting("DB"))."';");
+			return $this->query("UPDATE notifications set uin = ".$this->escape($uin).", protocol = ".$this->escape($protocol)." WHERE username = ".$this->escape($username)." AND database = ".$this->escape(global_setting("DB")).";");
 		}
 	}
 ?>

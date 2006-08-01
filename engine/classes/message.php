@@ -7,14 +7,14 @@
 		{
 			if(!$this->messageExists($message_id)) return false;
 
-			return $this->query("UPDATE messages SET ".$field_name." = '".$this->escape($field_value)."' WHERE message_id = '".$this->escape($message_id)."';");
+			return $this->query("UPDATE messages SET ".$field_name." = ".$this->escape($field_value)." WHERE message_id = ".$this->escape($message_id).";");
 		}
 
 		function getField($message_id, $field_name)
 		{
 			if(!$this->messageExists($message_id)) return false;
 
-			$result = $this->singleQuery("SELECT ".$field_name." FROM messages WHERE message_id = '".$this->escape($message_id)."' LIMIT 1;");
+			$result = $this->singleQuery("SELECT ".$field_name." FROM messages WHERE message_id = ".$this->escape($message_id)." LIMIT 1;");
 			if($result) $result = $result[$field_name];
 			return $result;
 		}
@@ -30,7 +30,7 @@
 		{
 			if($this->messageExists($message_id)) return false;
 
-			return $this->query("INSERT INTO messages ( message_id, time ) VALUES ( '".$this->escape($message_id)."', '".$this->escape($time)."' );");
+			return $this->query("INSERT INTO messages ( message_id, time ) VALUES ( ".$this->escape($message_id).", ".$this->escape($time)." );");
 		}
 
 		function messageText($message_id, $text=null)
@@ -105,8 +105,7 @@
 
 		function messageExists($message_id)
 		{
-			$this->query("SELECT message_id FROM messages WHERE message_id = '".$this->escape($message_id)."' LIMIT 1;");
-			return ($this->lastResultCount() > 0);
+			return ($this->singleField("SELECT COUNT(*) FROM messages WHERE message_id = ".$this->escape($message_id)." LIMIT 1;") > 0);
 		}
 
 		function messageTime($message_id, $time=null)
@@ -119,12 +118,12 @@
 
 		function removeMessage($message_id)
 		{
-			return $this->query("DELETE FROM messages WHERE message_id = '".$this->escape($message_id)."';");
+			return $this->query("DELETE FROM messages WHERE message_id = ".$this->escape($message_id).";");
 		}
 
 		function renameUser($old_name, $new_name)
 		{
-			$this->query("SELECT message_id,users,sender FROM messages WHERE users LIKE '%".$this->escape($old_name."\r")."%' OR sender = '".$this->escape($old_name)."';");
+			$this->query("SELECT message_id,users,sender FROM messages WHERE users LIKE ".$this->escape("%".$old_name."\r%")." OR sender = ".$this->escape($old_name).";");
 			while($message = $this->nextResult())
 			{
 				$users = explode("\n", $message['users']);
@@ -154,10 +153,10 @@
 				{
 					$set = array();
 					if($users_changed)
-						$set[] = "users = '".$this->escape($message['users'])."'";
+						$set[] = "users = ".$this->escape($message['users']);
 					if($sender_changed)
-						$set[] = "sender = '".$this->escape($message['sender'])."'";
-					$this->backgroundQuery("UPDATE messages SET ".implode(", ", $set)." WHERE message_id = '".$this->escape($message['message_id'])."';");
+						$set[] = "sender = ".$this->escape($message['sender']);
+					$this->backgroundQuery("UPDATE messages SET ".implode(", ", $set)." WHERE message_id = ".$this->escape($message['message_id']).";");
 				}
 			}
 			return true;
