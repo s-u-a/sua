@@ -219,7 +219,7 @@
 
 				if(fleets_locked()) # Flottensperre
 				{
-					if(!$me->isVerbuendet($planet_owner) && isset($types[5])) # Feindliche Spionage nicht moeglich
+					if($planet_owner && !$me->isVerbuendet($planet_owner) && isset($types[5])) # Feindliche Spionage nicht moeglich
 						unset($types[5]);
 					if(isset($types[3])) # Angriff nicht erlaubt
 						unset($types[3]);
