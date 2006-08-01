@@ -66,8 +66,15 @@
 		}
 	}
 
+	# Ueberpruefen, ob Datenbank aktuell ist
+	if(($_cv = get_database_version()) < ($_sv = global_setting("DATABASE_VERSION")))
+	{
+		echo "Error: Database version is ".$_cv." but should be ".$_sv.". Please run db_things/update_database.\n";
+		exit(1);
+	}
+
 	# Schnellklicksperre
-	$now_time = array_sum(explode(' ', microtime()));
+	$now_time = microtime(true);
 
 	if(!isset($_SESSION['last_click_sleep']))
 		$_SESSION['last_click_sleep'] = 0;

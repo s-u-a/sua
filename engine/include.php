@@ -3,13 +3,17 @@
 
 	error_reporting(4095);
 	ignore_user_abort(true);
-	set_time_limit(120);
 
+	# 10 Minuten sollten wohl auch bei hoher Serverlast genuegen
+	set_time_limit(600);
+
+	# Vorlaeufiger Workaround fuer E_STRICT-Fehlermeldungen aufgrund der Zeitzone
 	if(function_exists("date_default_timezone_get"))
 		date_default_timezone_set(@date_default_timezone_get());
 
 	class FilesystemException extends Exception {};
 
+	# s_root ermitteln: Absoluter Pfad zum Spielverzeichnis
 	$this_filename = '/engine/include.php';
 	$__FILE__ = str_replace('\\', '/', __FILE__);
 	if(substr($__FILE__, -strlen($this_filename)) !== $this_filename)
@@ -24,10 +28,12 @@
 		$document_root = $_SERVER['DOCUMENT_ROOT'];
 	else $document_root = '/';
 
+	# h_root ermitteln: Absoluter Pfad zum Spielverzeichnis vom Webserver-Document-Root aus gesehen
 	if(substr($document_root, -1) == '/')
 		$document_root = substr($document_root, 0, -1);
 	define('h_root', substr(s_root, strlen($document_root)));
 
+	# SSL auf Wunsch abschalten
 	if(isset($_GET['nossl']))
 	{
 		if($_GET['nossl'] && (!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl']))
@@ -42,6 +48,7 @@
 		}
 	}
 
+	# Spielkonstanten
 	function global_setting($key, $value=null)
 	{
 		static $settings;
@@ -81,9 +88,10 @@
 	global_setting('PROTOCOL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http');
 	global_setting('USE_PROTOCOL', (isset($_SESSION['use_protocol']) ? $_SESSION['use_protocol'] : (((!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])) ? 'https' : 'http')));
 	global_setting('MIN_BUILDING_TIME', 12); # Minimale Bauzeit in Sekunden
+	global_setting('DATABASE_VERSION', 7); # Aktuelle Datenbankversion
 
 	function define_globals($DB)
-	{
+	{ # Setzt diverse Spielkonstanten zu einer bestimmten Datenbank
 		static $instances_cache;
 
 		if(!isset($instances_cache)) $instances_cache = array();
@@ -1442,5 +1450,52 @@
 		}
 		if(count($a) == 1) return array_shift($a);
 		else return false;
+	}
+
+	function sqlite2sqlite3($old_fname, $new_fname)
+	{
+		$old_db = new PDO("sqlite2:".$old_fname);
+		$old_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$new_db = new PDO("sqlite:".$new_fname);
+		$new_db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+		$tables = array();
+		$master_query = $old_db->query("SELECT * FROM sqlite_master;");
+		while(($res = $master_query->fetch(PDO::FETCH_ASSOC)) !== false)
+		{
+			if($res['sql'])
+				$new_db->query($res['sql']);
+			if($res['type'] == "table")
+				$tables[] = $res['name'];
+		}
+
+		foreach($tables as $table)
+		{
+			$data_query = $old_db->query("SELECT * FROM ".$table.";");
+			while(($res = $data_query->fetch(PDO::FETCH_ASSOC)) !== false)
+			{
+				foreach($res as $k=>$v)
+					$res[$k] = $new_db->quote($v);
+				$new_db->query("INSERT INTO ".$table." ( ".implode(", ", array_keys($res)).") VALUES ( ".implode(", ", array_values($res))." );");
+			}
+		}
+	}
+
+	function get_database_version()
+	{
+		if(is_file(global_setting("DB_DIR").'/.version'))
+		{
+			if(!is_readable(global_setting("DB_DIR").'/.version'))
+			{
+				fputs(STDERR, "Could not read ".global_setting("DB_DIR")."/.version.\n");
+				exit(1);
+			}
+			$current_version = trim(file_get_contents(global_setting("DB_DIR").'/.version'));
+		}
+		elseif(is_dir(global_setting("DB_DIR").'/fleets')) $current_version = '2';
+		else $current_version = '1';
+
+		return $current_version;
 	}
 ?>

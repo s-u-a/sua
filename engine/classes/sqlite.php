@@ -16,7 +16,7 @@
 
 		function connect()
 		{
-			$this->connection = new PDO("sqlite2:".$this->filename);
+			$this->connection = new PDO("sqlite:".$this->filename);
 			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 			if($this->tables)

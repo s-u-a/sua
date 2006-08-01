@@ -1,9 +1,5 @@
 #!/usr/bin/php
 <?php
-	$newest_version = 6;
-
-	fputs(STDERR, "This script has not been tested! Please report any bugs to https://bugs.s-u-a.net/\n");
-
 	chdir(dirname(__FILE__));
 
 	$USE_OB = false;
@@ -26,19 +22,18 @@
 		}
 	}
 
+	# Alte Konstanten wiederherstellen
 	global_setting("DB_MESSAGES", global_setting("DB_DIR")."/messages");
+	global_setting("EVENT_FILE", global_setting("DB_DIR")."/events");
+	global_setting("DB_HIGHSCORES", global_setting("DB_DIR")."/highscores");
+	global_setting("DB_HIGHSCORES_ALLIANCES", global_setting("DB_DIR")."/highscores_alliances");
+	global_setting("DB_HIGHSCORES_ALLIANCES2", global_setting("DB_DIR")."/highscores_alliances2");
 
-	if(is_file(global_setting("DB_DIR").'/.version'))
-	{
-		if(!is_readable(global_setting("DB_DIR").'/.version'))
-		{
-			fputs(STDERR, "Could not read ".global_setting("DB_DIR")."/.version.\n");
-			exit(1);
-		}
-		$current_version = trim(file_get_contents(global_setting("DB_DIR").'/.version'));
-	}
-	elseif(is_dir(global_setting("DB_DIR").'/fleets')) $current_version = '2';
-	else $current_version = '1';
+	# Aktuelle Datenbankversion herausfinden
+	$current_version = get_database_version();
+
+	# Version, auf die aktualisiert werden muss
+	$newest_version = global_setting("DATABASE_VERSION");
 
 	fputs(STDERR, "Current database version seems to be ".$current_version.".\n");
 	if($current_version >= $newest_version)
@@ -48,8 +43,8 @@
 	}
 
 	class version3
-	{
-		function decodeUserHighscoresString($string)
+	{ # Alte Funktionen wiederherstellen, die benoetigt werden, um auf Version 3 zu updaten
+		static function decodeUserHighscoresString($string)
 		{
 			$username = trim(substr($string, 0, 24));
 			$alliance = trim(substr($string, 24, 6));
@@ -64,7 +59,7 @@
 			return array($username, $points, $alliance);
 		}
 
-		function decodeAllianceHighscoresString($info)
+		static function decodeAllianceHighscoresString($info)
 		{
 			$alliancename = trim(substr($info, 0, 6));
 
@@ -96,6 +91,7 @@
 		### Version 1 auf 2 ###
 		#######################
 		case 1:
+		{
 			# GZip-Dateien auf BZip2-Dateien umstellen
 			$fnames = array();
 
@@ -146,6 +142,7 @@
 
 			# fleets-Verzeichnis anlegen
 			if(!file_exists(global_setting("DB_FLEETS"))) mkdir(global_setting("DB_FLEETS"), 0777);
+		}
 
 
 		#######################
@@ -153,9 +150,10 @@
 		#######################
 
 		case 2:
+		{
 			# events-Datei auf SQLite umstellen
-			$events_old = global_setting("DB_EVENTS").'.bkp.'.time();
-			if(is_file(global_setting("DB_EVENTS")) && rename(global_setting("DB_EVENTS"), $events_old))
+			$events_old = global_setting("EVENT_FILE").'.bkp.'.time();
+			if(is_file(global_setting("EVENT_FILE")) && rename(global_setting("EVENT_FILE"), $events_old))
 			{
 				$events_new = Classes::EventFile();
 				$fh = fopen($events_old, 'r');
@@ -167,16 +165,18 @@
 				}
 				fclose($fh);
 			}
+		}
 
 		#######################
 		### Version 3 auf 4 ###
 		#######################
 
 		case 3:
+		{
 			# Highscores-Dateien auf SQLite umstellen
-			$hs_old1 = global_setting("DB_DIR").'/highscores';
-			$hs_old2 = global_setting("DB_DIR").'/highscores_alliances';
-			$hs_old3 = global_setting("DB_DIR").'/highscores_alliances2';
+			$hs_old1 = global_setting("DB_HIGHSCORES");
+			$hs_old2 = global_setting("DB_HIGHSCORES_ALLIANCES");
+			$hs_old3 = global_setting("DB_HIGHSCORES_ALLIANCES2");
 			$hs_suffix = '.bkp.'.time();
 			if((!is_file($hs_old1) || rename($hs_old1.$hs_suffix)) && (!is_file($hs_old2) || rename($hs_old2, $hs_old2.$hs_suffix)) && (!is_file($hs_old3) || rename($hs_old3, $hs_old3.$hs_suffix)))
 			{
@@ -196,12 +196,14 @@
 				}
 				fclose($fh);
 			}
+		}
 
 		#######################
 		### Version 4 auf 5 ###
 		#######################
 
 		case 4:
+		{
 			# strtolower auf Users und Alliances
 			$dh = opendir(global_setting("DB_PLAYERS"));
 			while(($fname = readdir($dh)) !== false)
@@ -225,6 +227,7 @@
 				else rename($old_fname, $new_fname);
 			}
 			closedir($dh);
+		}
 
 		#######################
 		### Version 5 auf 6 ###
@@ -234,8 +237,8 @@
 		{
 			# Datenbanken zusammenfassen
 			$sqlite = array(
-				global_setting("DB_DIR")."/highscores" => array("highscores_users" => array("username", "alliance", "scores INT", "changed INT"), "highscores_alliances" => array("tag", "scores_average INT", "scores_total INT", "members_count INT", "changed INT")),
-				global_setting("DB_DIR")."/events" => array("events" => array("time INT", "fleet")),
+				global_setting("DB_HIGHSCORES") => array("highscores_users" => array("username", "alliance", "scores INT", "changed INT"), "highscores_alliances" => array("tag", "scores_average INT", "scores_total INT", "members_count INT", "changed INT")),
+				global_setting("EVENT_FILE") => array("events" => array("time INT", "fleet")),
 			);
 
 			$new_dbh = sqlite_popen(global_setting("DB_SQLITE"));
@@ -262,10 +265,10 @@
 			# Nachrichten umwandeln
 			$messages = array("message_id PRIMARY KEY", "time INT", "text", "parsed_text", "sender", "users", "subject", "html INT");
 			sqlite_query($new_dbh, "CREATE TABLE messages ( ".implode(", ", $messages)." );");
-			$dh = opendir(global_setting("DB_DIR")."/messages/");
+			$dh = opendir(global_setting("DB_MESSAGES"));
 			while(($fname = readdir($dh)) !== false)
 			{
-				$location = global_setting("DB_DIR")."/messages/".$fname;
+				$location = global_setting("DB_MESSAGES")."/".$fname;
 				if(!is_file($location) || !is_readable($location))
 					continue;
 
@@ -310,6 +313,29 @@
 			{
 				fputs(STDERR, "Warning: Could not delete the message database directory: ".$exc->getMessage()."\n");
 			}
+		}
+		#######################
+		### Version 6 auf 7 ###
+		#######################
+
+		case 6:
+		{
+			if(!is_writeable(global_setting("DB_DIR")))
+			{
+				fputs(STDERR, "Error: ".global_setting("DB_DIR")." is not writeable.\n");
+				exit(1);
+			}
+
+			$bkp_fname = global_setting("DB_SQLITE").".bkp.".time();
+			if(!rename(global_setting("DB_SQLITE"), $bkp_fname))
+			{
+				fputs(STDERR, "Error: Could not rename ".global_setting("DB_SQLITE").".\n");
+				exit(1);
+			}
+
+			sqlite2sqlite3($bkp_fname, global_setting("DB_SQLITE"));
+
+			fputs(STDERR, "Updated ".global_setting("DB_SQLITE")." to SQLite 3, a backup was placed into ".$bkp_fname.".\n");
 		}
 	}
 
