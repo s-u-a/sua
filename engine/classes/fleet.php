@@ -81,6 +81,22 @@
 			return $targets;
 		}
 
+		function getNeededSlots()
+		{
+			if(!$this->status) return false;
+
+			$slots = 0;
+			foreach($this->raw[0] as $k=>$v)
+			{
+				if(!$v[1]) $slots++;
+			}
+			foreach($this->raw[3] as $k=>$v)
+			{
+				if(!$v[1]) $slots++;
+			}
+			return $slots;
+		}
+
 		function addTarget($pos, $type, $back)
 		{
 			if(!$this->status) return false;

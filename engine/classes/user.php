@@ -660,7 +660,7 @@
 				if($key !== false)
 				{
 					if($key) $fleets++;
-					else $fleets += count($fl->getTargetsList())+count($fl->getOldTargetsList())-1;
+					else $fleets += $fl->getNeededSlots();
 				}
 			}
 			return $fleets;
