@@ -335,7 +335,9 @@
 
 			sqlite2sqlite3($bkp_fname, global_setting("DB_SQLITE"));
 
-			fputs(STDERR, "Updated ".global_setting("DB_SQLITE")." to SQLite 3, a backup was placed into ".$bkp_fname.".\n");
+			fputs(STDERR, "Updated ".global_setting("DB_SQLITE")." to SQLite 3, a backup was placed into ".$bkp_fname.".\n\n");
+			fputs(STDERR, "Important! Please update database.global/notifications if you haven't already done so:\n");
+			fputs(STDERR, "mv notifications notifications.sav; sqlite notifications.sav .dump | sqlite3 notifications\n\n");
 		}
 	}
 
