@@ -11,8 +11,9 @@
 		$print_usage = false;
 		$error = false;
 		$daemon = false;
-		$verbose = false;
+		$verbose = 0;
 		$use_jabber = $wanna_use_jabber = true;
+		$handelskurs_only = false;
 
 		$getopt_exists = false;
 		foreach(explode(':', get_include_path()) as $path)
@@ -27,7 +28,7 @@
 		if($getopt_exists)
 		{
 			require_once('Console/Getopt.php'); # PEAR
-			$options = Console_Getopt::getopt($_SERVER['argv'], 'hdvJ', array('help', 'daemon', 'verbose', 'no-jabber'));
+			$options = Console_Getopt::getopt($_SERVER['argv'], 'hdDvqjJe', array('help', 'daemon', 'no-daemon', 'verbose', 'quiet', 'jabber', 'no-jabber', 'handelskurs'));
 			if($options instanceof PEAR_Error)
 			{
 				fputs(STDERR, $options->message."\n");
@@ -44,11 +45,23 @@
 					case 'd': case '--daemon':
 						$daemon = true;
 						break;
+					case 'D': case '--no-daemon':
+						$daemon = false;
+						break;
 					case 'v': case '--verbose':
-						$verbose = true;
+						$verbose++;
+						break;
+					case 'q': case '--quiet':
+						$verbose--;
+						break;
+					case 'j': case '--jabber':
+						$use_jabber = $wanna_use_jabber = true;
 						break;
 					case 'J': case '--no-jabber':
 						$use_jabber = $wanna_use_jabber = false;
+						break;
+					case 'e': case '--handelskurs':
+						$handelskurs_only = true;
 						break;
 				}
 			}
@@ -63,9 +76,14 @@
 			fputs($stream, <<<EOF
 Usage: {$_SERVER['argv'][0]} [Options]
 Options:
-  -h, --help:    Display this help and exit
-  -d, --daemon:  Run in background
-  -v, --verbose: Verbose output
+  -h, --help:         Display this help and exit
+  -d, --daemon:       Run in background
+  -D, --no-daemon:    Do not run in background (default)
+  -v, --verbose:      Verbose output
+  -q, --quiet:        Quiet output
+  -j, --jabber:       Use jabber (default)
+  -J, --no-jabber:    Do not use jabber
+  -e, --handelskurs:  Calculate Handelskurs and exit
 
 EOF
 			);
@@ -349,6 +367,7 @@ EOF
 			global $errlog;
 			global $last_walked;
 			global $databases;
+			global $verbose;
 
 			$last_walked = date('Y-m-d');
 
@@ -371,7 +390,12 @@ EOF
 					continue;
 
 				$user = Classes::User(urldecode($filename));
-				if(!$user->getStatus()) continue;
+				if($verbose) fputs($errlog, time_prefix()."Processing user ".$user->getName()."\n");
+				if(!$user->getStatus())
+				{
+					if($verbose) fputs($errlog, time_prefix()."Failed.\n");
+					continue;
+				}
 
 				$last_activity = $user->getLastActivity();
 				if($last_activity !== false)
@@ -388,18 +412,21 @@ EOF
 					{
 						if($days == 175 && $user->lastMailSent() != $today) # 25 Wochen: Nachricht
 						{
+							if($verbose) fputs($errlog, time_prefix()."  User is inactive. ");
 							if($user->checkSetting('email'))
 							{
 								mail($user->checkSetting('email'), "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben zwei Wochen Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
 								$user->lastMailSent($today);
+								if($verbose) fputs($errlog, "Sent mail.\n");
 							}
+							elseif($verbose) fputs($errlog, "Didn't send mail.\n");
 						}
 						elseif($days >= 189) # 27 Wochen: Loeschung
 						{
 							if($user->destroy())
-								fputs($errlog, "Deleted user `".$user->getName()."' because of inactivity.\n");
+								fputs($errlog, "  Deleted user `".$user->getName()."' because of inactivity.\n");
 							else
-								fputs($errlog, "Error: Couldn't delete user `".$user->getName()."'.\n");
+								fputs($errlog, "  Error: Couldn't delete user `".$user->getName()."'.\n");
 							continue;
 						}
 					}
@@ -407,33 +434,41 @@ EOF
 					{
 						if(($days == 21 || $days == 34) && $user->lastMailSent() != $today)
 						{
+							if($verbose) fputs($errlog, time_prefix()."  User is inactive. ");
 							if($user->checkSetting('email'))
 							{
 								mail($user->checkSetting('email'), "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben ".(($days == 34) ? 'einen Tag' : 'zwei Wochen')." Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
 								$user->lastMailSent($today);
+								if($verbose) fputs($errlog, "Sent mail.\n");
 							}
+							elseif($verbose) fputs($errlog, "Didn't send mail.\n");
 						}
 						elseif($days >= 35)
 						{
 							if($user->destroy())
-								fputs($errlog, "Deleted user `".$user->getName()."' because of inactivity.\n");
+								fputs($errlog, "  Deleted user `".$user->getName()."' because of inactivity.\n");
 							else
-								fputs($errlog, "Error: Couldn't delete user `".$user->getName()."'.\n");
+								fputs($errlog, "  Error: Couldn't delete user `".$user->getName()."'.\n");
 							continue;
 						}
 					}
 				}
 				elseif($days == 7 && $user->lastMailSent() != $today)
 				{
+					if($verbose) fputs($errlog, time_prefix()."  User is inactive. ");
 					if($user->checkSetting('email'))
+					{
 						mail($user->checkSetting('email'), "Accountinaktivit\xc3\xa4t in S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben eine Woche Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
+						if($verbose) fputs($errlog, "Sent mail.\n");
+					}
+					else fputs($errlog, "Didn't send mail.\n");
 				}
 				elseif($days >= 14)
 				{
 					if($user->destroy())
-						fputs($errlog, "Deleted user `".$user->getName()."' because of inactivity.\n");
+						fputs($errlog, "  Deleted user `".$user->getName()."' because of inactivity.\n");
 					else
-						fputs($errlog, "Error: Couldn't delete user `".$user->getName()."'.\n");
+						fputs($errlog, "  Error: Couldn't delete user `".$user->getName()."'.\n");
 					continue;
 				}
 
@@ -441,12 +476,13 @@ EOF
 				foreach($planets as $planet)
 				{
 					$user->setActivePlanet($planet);
+					if($verbose) fputs($errlog, time_prefix()."  Processing planet ".$planet.".\n");
 					$ress = $user->getRess();
 					unset($ress[5]); # Energie soll nicht miteinberechnet werden
 
 					if(min($ress) < 0)
 					{
-						fputs($errlog, time_prefix()."Warning: Planet ".$user->getPosString()." (".$user->getName().") has negative resources.\n");
+						fputs($errlog, time_prefix()."  Warning: Planet ".$user->getPosString()." (".$user->getName().") has negative resources.\n");
 						continue;
 					}
 
@@ -493,14 +529,18 @@ EOF
 						{
 							$user->removeMessage($message_id, $category);
 							$deleted_messages++;
+							if($verbose) fputs($errlog, time_prefix()."  Deleted message ".$message_id.".\n");
 						}
 					}
 				}
 
+				fputs($errlog, time_prefix()."  Cleaning up.\n");
 				unset($user);
 				Classes::resetInstances();
 			}
 			closedir($dh);
+
+			if($verbose) fputs($errlog, time_prefix()."Calculating Handelskurs.\n");
 
 			# Kurs berechnen
 			$min = max($ges_ress);
@@ -541,6 +581,8 @@ EOF
 			$handelskurs[3] = $kurs[3];
 			$handelskurs[4] = $kurs[4];
 
+			if($verbose) fputs($errlog, time_prefix()."  The new Handelskurs is:\n".print_r($handelskurs, true)."\n");
+
 			$fh = fopen(global_setting("DB_HANDELSKURS"), 'w');
 			flock($fh, LOCK_EX);
 
@@ -579,6 +621,7 @@ EOF
 				{
 					$message->destroy();
 					$deleted_messages_public++;
+					if($verbose) fputs($errlog, time_prefix()."Deleted public message ".$fname."\n");
 				}
 			}
 			closedir($dh);
@@ -618,6 +661,17 @@ EOF
 			return true;
 		}
 
+	}
+
+
+	if($handelskurs_only)
+	{
+		foreach($databases as $selected_database=>$dbinfo)
+		{
+			define_globals($selected_database);
+			walkthrough_users();
+		}
+		exit(0);
 	}
 
 
