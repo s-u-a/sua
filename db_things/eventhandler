@@ -145,10 +145,11 @@ EOF
 			global $jabber;
 			global $fh_pid;
 			global $daemon;
+			global $handelskurs_only;
 
 			if(defined('terminate') && terminate)
 			{
-				if($use_jabber && $jabber->connected)
+				if(!$handelskurs_only && $use_jabber && $jabber->connected)
 				{
 					fputs($errlog, time_prefix()."Disconnecting Jabber client... ");
 					$jabber->Disconnect();
