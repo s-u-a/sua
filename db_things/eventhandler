@@ -390,8 +390,8 @@ EOF
 				if(!is_file(global_setting("DB_PLAYERS").'/'.$filename))
 					continue;
 
+				if($verbose) fputs($errlog, time_prefix()."Processing user ".urldecode($filename)."\n");
 				$user = Classes::User(urldecode($filename));
-				if($verbose) fputs($errlog, time_prefix()."Processing user ".$user->getName()."\n");
 				if(!$user->getStatus())
 				{
 					if($verbose) fputs($errlog, time_prefix()."Failed.\n");
