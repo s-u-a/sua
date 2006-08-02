@@ -1498,4 +1498,56 @@
 
 		return $current_version;
 	}
+
+	function mtime($name, $set=false)
+	{ # Zu Debug-Zwecken
+		static $mtimes;
+		if(!isset($mtimes)) $mtimes = array();
+
+		if($set)
+		{
+			$mtimes[$name] = microtime(true);
+			echo $name."\n";
+		}
+		elseif(isset($mtimes[$name])) echo $name.": ".(microtime(true)-$mtimes[$name])."\n";
+		else return false;
+	}
+
+	function max_index($arr)
+	{
+		$max = null;
+		$index = null;
+
+		foreach($arr as $k=>$v)
+		{
+			if($v === null || is_array($v) || is_object($v)) continue;
+
+			if($max === null || $v > $max)
+			{
+				$max = $v;
+				$index = $k;
+			}
+		}
+
+		return $index;
+	}
+
+	function min_index($arr)
+	{
+		$min = null;
+		$index = null;
+
+		foreach($arr as $k=>$v)
+		{
+			if($v === null || is_array($v) || is_object($v)) continue;
+
+			if($min === null || $v < $min)
+			{
+				$min = $v;
+				$index = $k;
+			}
+		}
+
+		return $index;
+	}
 ?>

@@ -1771,20 +1771,25 @@
 		{
 			if(!$this->raw) return false;
 
-			$actions = array();
-			/* Array
-			   (
-				[0] => Zeit
-				[1] => ID
-				[2] => Stufen hinzuzaehlen
-				[3] => Rohstoffe neu berechnen?
-				[4] => Planet
-			  )*/
-
 			$active_planet = $this->getActivePlanet();
 
 			foreach($this->getPlanetsList() as $planet)
 			{
+				$actions_gebaeude = array();
+				$actions_forschung = array();
+				$actions_roboter = array();
+				$actions_schiffe = array();
+				$actions_verteidigung = array();
+
+				/* Array
+				(
+					[0] => Zeit
+					[1] => ID
+					[2] => Stufen hinzuzaehlen
+					[3] => Rohstoffe neu berechnen?
+					[4] => Planet
+				)*/
+
 				$this->setActivePlanet($planet);
 
 				$building = $this->checkBuildingThing('gebaeude', false);
@@ -1792,13 +1797,13 @@
 				{
 					$stufen = 1;
 					if($building[2]) $stufen = -1;
-					$actions[] = array($building[1], $building[0], $stufen, true, $planet);
+					$actions_gebaeude[] = array($building[1], $building[0], $stufen, true, $planet);
 				}
 
 				$building = $this->checkBuildingThing('forschung', false);
 				if($building !== false && $building[1] <= time() && $this->removeBuildingThing('forschung', false))
 				{
-					$actions[] = array($building[1], $building[0], 1, true, $planet);
+					$actions_forschung[] = array($building[1], $building[0], 1, true, $planet);
 				}
 
 				$building = $this->checkBuildingThing('roboter', false);
@@ -1812,7 +1817,7 @@
 						$time += $items[3];
 						if($time <= time())
 						{
-							$actions[] = array($time, $items[0], 1, true, $planet);
+							$actions_roboter[] = array($time, $items[0], 1, true, $planet);
 
 							# Roboter entfernen
 							$this->planet_info['building']['roboter'][$j][2]--;
@@ -1839,7 +1844,7 @@
 						$time += $items[3];
 						if($time <= time())
 						{
-							$actions[] = array($time, $items[0], 1, false, $planet);
+							$actions_schiffe[] = array($time, $items[0], 1, false, $planet);
 
 							# Schiff entfernen
 							$this->planet_info['building']['schiffe'][$j][2]--;
@@ -1867,7 +1872,7 @@
 						$time += $items[3];
 						if($time <= time())
 						{
-							$actions[] = array($time, $items[0], 1, false, $planet);
+							$actions_verteidigung[] = array($time, $items[0], 1, false, $planet);
 
 							# Schiff entfernen
 							$this->planet_info['building']['verteidigung'][$j][2]--;
@@ -1883,10 +1888,16 @@
 					}
 				}
 
+				mergeEventhandlerActions(&$actions, array(&$actions_gebaeude, &$actions_forschung, &$actions_roboter, &$actions_schiffe, &$actions_verteidigung));
+
+				unset($actions_gebaeude);
+				unset($actions_forschung);
+				unset($actions_roboter);
+				unset($actions_schiffe);
+				unset($actions_verteidigung);
+
 				if(count($actions) > 0)
 				{
-					usort($actions, 'sortEventhandlerActions');
-
 					foreach($actions as $k=>$action)
 					{
 						$this->setActivePlanet($action[4]);
@@ -3242,6 +3253,36 @@
 		if($a[0] < $b[0]) return -1;
 		elseif($a[0] > $b[0]) return 1;
 		else return 0;
+	}
+
+	function mergeEventhandlerActions(&$actions, $pa)
+	{
+		$count = array(count($pa[0]), count($pa[1]), count($pa[2]), count($pa[3]), count($pa[4]));
+		$count_g = array_sum($count);
+
+		$next = array(0, 0, 0, 0, 0);
+
+		$tnext = array(null, null, null, null, null);
+
+		if($next[0] < $count[0]) $tnext[0] = $pa[0][$next[0]][0];
+		if($next[1] < $count[1]) $tnext[1] = $pa[1][$next[1]][0];
+		if($next[2] < $count[2]) $tnext[2] = $pa[2][$next[2]][0];
+		if($next[3] < $count[3]) $tnext[3] = $pa[3][$next[3]][0];
+		if($next[4] < $count[4]) $tnext[4] = $pa[4][$next[4]][0];
+
+		$actions = array();
+		array_pad($actions, $count_g, null);
+
+		for($i = 0; $i<$count_g; $i++)
+		{
+			$m = min_index($tnext);
+			$actions[$i] = &$pa[$m][$next[$m]];
+			$next[$m]++;
+			if($next[$m] >= $count[$m])
+				$tnext[$m] = null;
+			else
+				$tnext[$m] = $pa[$m][$next[$m]][0];
+		}
 	}
 
 	function getIngtechFactor()
