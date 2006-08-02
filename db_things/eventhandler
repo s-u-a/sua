@@ -674,6 +674,8 @@ EOF
 	{
 		foreach($databases as $selected_database=>$dbinfo)
 		{
+			if(!is_dir($dbinfo['directory']) || !$dbinfo['enabled'] || $dbinfo['dummy']) continue;
+
 			define_globals($selected_database);
 			walkthrough_users();
 		}
