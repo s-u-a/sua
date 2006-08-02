@@ -538,6 +538,7 @@ EOF
 				if($verbose) fputs($errlog, time_prefix()."  Cleaning up.\n");
 				unset($user);
 				Classes::resetInstances();
+				if($verbose) fputs($errlog, time_prefix()."  Cleaned up.\n");
 
 				check_termination();
 			}
