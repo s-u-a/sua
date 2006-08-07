@@ -1181,8 +1181,8 @@
 
 	function fancy_flock($file, $lock_flag)
 	{
-		if($lock_flag == LOCK_SH) $timeout = 0.05;
-		else $timeout = .5;
+		if($lock_flag == LOCK_SH) $timeout = 1;
+		else $timeout = 5;
 
 		$flag = $lock_flag+LOCK_NB;
 
