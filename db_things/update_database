@@ -178,8 +178,9 @@
 			$hs_old2 = global_setting("DB_HIGHSCORES_ALLIANCES");
 			$hs_old3 = global_setting("DB_HIGHSCORES_ALLIANCES2");
 			$hs_suffix = '.bkp.'.time();
-			if((!is_file($hs_old1) || rename($hs_old1.$hs_suffix)) && (!is_file($hs_old2) || rename($hs_old2, $hs_old2.$hs_suffix)) && (!is_file($hs_old3) || rename($hs_old3, $hs_old3.$hs_suffix)))
+			if((!is_file($hs_old1) || rename($hs_old1, $hs_old1.$hs_suffix)) && (!is_file($hs_old2) || rename($hs_old2, $hs_old2.$hs_suffix)) && (!is_file($hs_old3) || rename($hs_old3, $hs_old3.$hs_suffix)))
 			{
+				# FIXME: Klasse Highscores legt mittlerweile eine SQLite3-Datenbank an, was sich mit case 5 nicht mehr vertraegt
 				$highscores_new = Classes::Highscores();
 				$fh = fopen($hs_old1.$hs_suffix, 'r');
 				while($part = fread($fh, 38))

@@ -202,7 +202,7 @@ function key_event(e)
 	else if (e.srcElement) node = e.srcElement;
 	if(node.nodeName.toLowerCase() == "textarea" || (node.nodeName.toLowerCase() == "input" && node.getAttribute("type") != "checkbox" && node.getAttribute("type") != "radio") || node.nodeName.toLowerCase() == "select") return true;
 
-	if(e.altKey || e.ctrlKey)
+	if(e.altKey || e.ctrlKey || e.metaKey)
 		return true;
 
 	var num;
