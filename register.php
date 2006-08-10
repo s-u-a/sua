@@ -110,7 +110,7 @@
 	<li><a href="./">Zurück zur Startseite</a></li>
 </ul>
 <?php
-					gui::html_foot();
+					home_gui::html_foot();
 					exit();
 				}
 			}
