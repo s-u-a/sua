@@ -1122,11 +1122,6 @@
 		return $string;
 	}
 
-	function report_error($error_number)
-	{
-		return mail('webmaster@s-u-a.net', 'Fehlermeldung auf S-U-A', 'Fehlernummer: '.$error_number);
-	}
-
 	function message_repl_nl($nls)
 	{
 		$len = strlen($nls);
