@@ -224,7 +224,7 @@
 		if(is_array($var))
 		{
 			foreach($var as $key=>$val)
-				&stripslashes_r($var[$key]);
+				stripslashes_r($var[$key]);
 		}
 		else
 			$var = stripslashes($var);
