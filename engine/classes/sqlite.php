@@ -17,13 +17,19 @@
 
 		function connect()
 		{
-			if(!isset(self::$connections[$this->filename]))
+			$fname_index = null;
+			if(file_exists($this->filename))
+				$fname_index = realpath($this->filename);
+			if($fname_index === null || !isset(self::$connections[$fname_index]))
 			{
-				self::$connections[$this->filename] = new PDO("sqlite:".$this->filename);
-				self::$connections[$this->filename]->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$conn = new PDO("sqlite:".$this->filename);
+				if($fname_index === null)
+					$fname_index = realpath($this->filename);
+				self::$connections[$fname_index] = &$conn;
+				self::$connections[$fname_index]->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			}
 
-			$this->connection = &self::$connections[$this->filename];
+			$this->connection = &self::$connections[$fname_index];
 
 			if($this->tables)
 			{
