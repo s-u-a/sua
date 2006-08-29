@@ -7,6 +7,7 @@
 		protected $status = 0;
 		protected $custom_filename = false;
 		private $last_result = false;
+		static protected $connections = array();
 
 		function __construct()
 		{
@@ -16,8 +17,13 @@
 
 		function connect()
 		{
-			$this->connection = new PDO("sqlite:".$this->filename);
-			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			if(!isset(self::$connections[$this->filename]))
+			{
+				self::$connections[$this->filename] = new PDO("sqlite:".$this->filename);
+				self::$connections[$this->filename]->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			}
+
+			$this->connection = &self::$connections[$this->filename];
 
 			if($this->tables)
 			{
