@@ -7,9 +7,9 @@
 	$databases = get_databases();
 	foreach($databases as $dbid=>$database)
 	{
-		if(!$database['enabled']) continue;
+		if(!$database['enabled'] || $database['dummy']) continue;
 		define_globals($dbid);
-		$highscores = new Highscores;
+		$highscores = new Highscores();
 		$players += $highscores->getCount('users');
 		$alliances += $highscores->getCount('alliances');
 		$databases_count++;
