@@ -3,6 +3,7 @@
 
 	$players = 0;
 	$alliances = 0;
+	$databases_count = 0;
 	$databases = get_databases();
 	foreach($databases as $dbid=>$database)
 	{
@@ -11,6 +12,7 @@
 		$highscores = new Highscores;
 		$players += $highscores->getCount('users');
 		$alliances += $highscores->getCount('alliances');
+		$databases_count++;
 		unset($highscores);
 	}
 
@@ -52,10 +54,10 @@
 	<li>derzeit <?=$players?> Spieler</li>
 	<li>derzeit <?=$alliances?> Allianz<?=($alliances != 1) ? 'en' : ''?></li>
 <?php
-	if(count($databases) > 1)
+	if($databases_count > 1)
 	{
 ?>
-	<li>derzeit <?=count($databases)?> verschiedene Runden</li>
+	<li>derzeit <?=$databases_count?> verschiedene Runden</li>
 <?php
 	}
 ?>
