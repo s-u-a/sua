@@ -23,10 +23,10 @@
 			if($fname_index === null || !isset(self::$connections[$fname_index]))
 			{
 				$conn = new PDO("sqlite:".$this->filename);
+				$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				if($fname_index === null)
 					$fname_index = realpath($this->filename);
-				self::$connections[$fname_index] = &$conn;
-				self::$connections[$fname_index]->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				self::$connections[$fname_index] = $conn;
 			}
 
 			$this->connection = &self::$connections[$fname_index];
