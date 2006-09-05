@@ -204,6 +204,8 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 
+			global $types_message_types;
+
 			# Alle feindlichen Flotten, die auf diesen Planeten, zurueckrufen
 			$fleets = $this->getFleetsWithPlanet();
 			foreach($fleets as $fleet)
@@ -1293,7 +1295,7 @@
 					break;
 
 				# Bauroboter: Laufende Bauzeit verkuerzen
-				case 'R01':
+				/*case 'R01':
 					$max_rob_limit = floor($this->getBasicFields()/2);
 					$counting_after = $this->items[$type][$id];
 					$counting_before = $counting_after-$value;
@@ -1335,7 +1337,7 @@
 					}
 					if($one) usort($actions, 'sortEventhandlerActions');
 
-					break;
+					break;*/
 
 				# Roboterbautechnik: Auswirkungen der Bauroboter aendern
 				case 'F2':
@@ -2715,7 +2717,7 @@
 			$fleets = $this->getFleetsList();
 			foreach($fleets as $fleet)
 			{
-				$fleet_obj = Classes::Fleets($fleet);
+				$fleet_obj = Classes::Fleet($fleet);
 				foreach(array_reverse($fleet_obj->getUsersList()) as $username)
 					$fleet_obj->callBack($username);
 			}

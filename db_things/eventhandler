@@ -285,10 +285,10 @@ EOF
 					fputs($errlog, time_prefix()."SIGUSR2 (".SIGUSR2.")\n");
 					foreach($databases as $selected_database=>$dbinfo)
 					{
-						if(!is_dir($dbinfo['directory']) || !$dbinfo['enabled'] || $dbinfo['dummy']) continue;
+						if(!is_dir($dbinfo['directory']) || /*!$dbinfo['enabled'] ||*/ $dbinfo['dummy']) continue;
 
 						define_globals($selected_database);
-						walkthrough_users();
+						walkthrough_users($dbinfo['enabled']);
 						check_termination();
 						Classes::resetInstances();
 					}
@@ -363,7 +363,7 @@ EOF
 			else pcntl_waitpid($pid, &$status);
 		}
 
-		function walkthrough_users()
+		function walkthrough_users($send_mails=true)
 		{
 			global $errlog;
 			global $last_walked;
@@ -379,6 +379,8 @@ EOF
 			$ges_ress = array(0, 0, 0, 0, 0);
 			$deleted_messages = 0;
 			$processed_messages = 0;
+			$linked_messages = 0;
+			$linked_messages_list = array_pad(array(), Message::getMessagesCount(), "");
 
 			global $message_type_times;
 			$max_ages = $message_type_times;
@@ -414,7 +416,7 @@ EOF
 						if($days == 175 && $user->lastMailSent() != $today) # 25 Wochen: Nachricht
 						{
 							if($verbose) fputs($errlog, time_prefix()."  User is inactive. ");
-							if($user->checkSetting('email'))
+							if($send_mails && $user->checkSetting('email'))
 							{
 								mail($user->checkSetting('email'), "=?utf-8?q?Accountinaktivit=C3=A4t_in?= S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben zwei Wochen Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
 								$user->lastMailSent($today);
@@ -436,7 +438,7 @@ EOF
 						if(($days == 21 || $days == 34) && $user->lastMailSent() != $today)
 						{
 							if($verbose) fputs($errlog, time_prefix()."  User is inactive. ");
-							if($user->checkSetting('email'))
+							if($send_mails && $user->checkSetting('email'))
 							{
 								mail($user->checkSetting('email'), "=?utf-8?q?Accountinaktivit=C3=A4t_in?= S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben ".(($days == 34) ? 'einen Tag' : 'zwei Wochen')." Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
 								$user->lastMailSent($today);
@@ -457,7 +459,7 @@ EOF
 				elseif($days == 7 && $user->lastMailSent() != $today)
 				{
 					if($verbose) fputs($errlog, time_prefix()."  User is inactive. ");
-					if($user->checkSetting('email'))
+					if($send_mails && $user->checkSetting('email'))
 					{
 						mail($user->checkSetting('email'), "=?utf-8?q?Accountinaktivit=C3=A4t_in?= S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben eine Woche Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
 						if($verbose) fputs($errlog, "Sent mail.\n");
@@ -524,13 +526,25 @@ EOF
 					{
 						$processed_messages++;
 						if($user->checkMessageStatus($message_id, $category) && $category != 8)
+						{
+							if(!isset($linked_messages_list[$message_id]))
+							{
+								$linked_messages_list[$message_id] = true;
+								$linked_messages++;
+							}
 							continue; # Ungelesen / Archiviert
+						}
 						$message_obj = Classes::Message($message_id);
 						if(!$message_obj->getStatus() || (time()-$message_obj->getTime()) > $max_diff)
 						{
 							$user->removeMessage($message_id, $category);
 							$deleted_messages++;
 							if($verbose) fputs($errlog, time_prefix()."  Deleted message ".$message_id.".\n");
+						}
+						elseif(!isset($linked_messages_list[$message_id]))
+						{
+							$linked_messages_list[$message_id] = true;
+							$linked_messages++;
 						}
 					}
 				}
@@ -601,6 +615,18 @@ EOF
 
 			fputs($errlog, "Checked ".$processed_messages." messages.\n");
 			fputs($errlog, "Deleted ".$deleted_messages." messages.\n");
+
+			if($verbose) fputs($errlog, time_prefix()." Verifying message count.\n");
+
+			$existing_messages = Message::getMessagesCount();
+			if($existing_messages > $linked_messages)
+			{
+				fputs($errlog, time_prefix()." There are ".$existing_messages." messages in the database, but only ".$linked_messages." are referenced in the user accounts, cleaning up ghost messages...\n");
+				$message_db = new MessageDatabase();
+				fputs($errlog, time_prefix()." Deleted ".$message_db->cleanUp(&$linked_messages_list)." ghost messages.\n");
+			}
+			elseif($verbose)
+				fputs($errlog, time_prefix()." Referring messages count ".$linked_messages." matches database messages count.\n");
 
 			check_termination();
 
@@ -674,10 +700,10 @@ EOF
 	{
 		foreach($databases as $selected_database=>$dbinfo)
 		{
-			if(!is_dir($dbinfo['directory']) || !$dbinfo['enabled'] || $dbinfo['dummy']) continue;
+			if(!is_dir($dbinfo['directory']) || /*!$dbinfo['enabled'] ||*/ $dbinfo['dummy']) continue;
 
 			define_globals($selected_database);
-			walkthrough_users();
+			walkthrough_users($dbinfo['enabled']);
 		}
 		exit(0);
 	}
@@ -733,7 +759,7 @@ EOF
 			# Flotten ankommen lassen
 			foreach($databases as $selected_database=>$dbinfo)
 			{
-				if(!is_dir($dbinfo['directory']) || !$dbinfo['enabled'] || $dbinfo['dummy']) continue;
+				if(!is_dir($dbinfo['directory']) || /*!$dbinfo['enabled'] ||*/ $dbinfo['dummy']) continue;
 
 				define_globals($selected_database);
 
@@ -751,14 +777,25 @@ EOF
 			# Handelskurs neu berechnen und Inaktive loeschen
 			if(date('H')*3600+date('i')*60+60 > 16200 && $last_walked != date('Y-m-d')) // 4:30 Uhr
 			{
-				foreach($databases as $selected_database=>$dbinfo)
+				if(function_exists('pcntl_fork'))
 				{
-					if(!is_dir($dbinfo['directory']) || !$dbinfo['enabled'] || $dbinfo['dummy']) continue;
-
-					define_globals($selected_database);
-					walkthrough_users();
-					check_termination();
 					Classes::resetInstances();
+					$pid = pcntl_fork();
+				}
+				else $pid = -1;
+
+				if(!$pid || $pid == -1)
+				{
+					foreach($databases as $selected_database=>$dbinfo)
+					{
+						if(!is_dir($dbinfo['directory']) || /*!$dbinfo['enabled'] ||*/ $dbinfo['dummy']) continue;
+
+						define_globals($selected_database);
+						walkthrough_users($dbinfo['enabled']);
+						check_termination();
+						Classes::resetInstances();
+					}
+					if($pid != -1) exit(0);
 				}
 			}
 

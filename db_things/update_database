@@ -180,22 +180,25 @@
 			$hs_suffix = '.bkp.'.time();
 			if((!is_file($hs_old1) || rename($hs_old1, $hs_old1.$hs_suffix)) && (!is_file($hs_old2) || rename($hs_old2, $hs_old2.$hs_suffix)) && (!is_file($hs_old3) || rename($hs_old3, $hs_old3.$hs_suffix)))
 			{
-				# FIXME: Klasse Highscores legt mittlerweile eine SQLite3-Datenbank an, was sich mit case 5 nicht mehr vertraegt
-				$highscores_new = Classes::Highscores();
+				$hs_new_dbh = sqlite_open($hs_old1);
+				sqlite_query($hs_new_dbh, "CREATE TABLE highscores_users ( username, alliance, scores INT, changed INT );");
+				sqlite_query($hs_new_dbh, "CREATE TABLE highscores_alliances ( tag, scores_average INT, scores_total INT, members_count INT, changed INT );");
+
 				$fh = fopen($hs_old1.$hs_suffix, 'r');
 				while($part = fread($fh, 38))
 				{
 					$part_info = version3::decodeUserHighscoresString($part);
-					$highscores_new->updateUser($part_info[0], $part_info[2], $part_info[1]);
+					sqlite_query($hs_new_dbh, "INSERT INTO highscores_users ( username, alliance, scores, changed ) VALUES ( '".sqlite_escape_string($part_info[0])."', '".sqlite_escape_string($part_info[2])."', '".sqlite_escape_string($part_info[1])."', '".sqlite_escape_string(microtime(true))."' );");
 				}
 				fclose($fh);
 				$fh = fopen($hs_old2.$hs_suffix, 'r');
 				while($part = fread($fh, 26))
 				{
 					$part_info = version3::decodeAllianceHighscoresString($part);
-					$highscores_new->updateAlliance($part_info[0], $part_info[2], $part_info[3], $part_info[1]);
+					sqlite_query($hs_new_dbh, "INSERT INTO highscores_alliances ( tag, scores_average, scores_total, members_count, changed ) VALUES ( '".sqlite_escape_string($part_info[0])."', '".sqlite_escape_string($part_info[2])."', '".sqlite_escape_string($part_info[3])."', '".sqlite_escape_string($part_info[1])."', '".sqlite_escape_string(microtime())."' );");
 				}
 				fclose($fh);
+				sqlite_close($hs_new_dbh);
 			}
 		}
 
@@ -242,7 +245,7 @@
 				global_setting("EVENT_FILE") => array("events" => array("time INT", "fleet")),
 			);
 
-			$new_dbh = sqlite_popen(global_setting("DB_SQLITE"));
+			$new_dbh = sqlite_open(global_setting("DB_SQLITE"));
 
 			foreach($sqlite as $fname=>$tables)
 			{

@@ -108,6 +108,11 @@
 			return ($this->singleField("SELECT COUNT(*) FROM messages WHERE message_id = ".$this->escape($message_id)." LIMIT 1;") > 0);
 		}
 
+		function messagesCount()
+		{
+			return ($this->singleField("SELECT COUNT(*) FROM messages;"));
+		}
+
 		function messageTime($message_id, $time=null)
 		{
 			if($time === null)
@@ -119,6 +124,25 @@
 		function removeMessage($message_id)
 		{
 			return $this->query("DELETE FROM messages WHERE message_id = ".$this->escape($message_id).";");
+		}
+
+		function cleanUp(&$message_ids)
+		{
+			$this->query("SELECT message_id FROM messages;");
+			$count = 0;
+
+			while(($f = $this->nextResult()) !== false)
+			{
+				$message_id = &$f['message_id'];
+				if(!isset($message_ids[$message_id]))
+				{
+					$this->transactionQuery("DELETE FROM messages WHERE message_id = ".$this->escape($message_id).";");
+					$count++;
+				}
+			}
+			$this->endTransaction();
+
+			return $count;
 		}
 
 		function renameUser($old_name, $new_name)
@@ -156,9 +180,12 @@
 						$set[] = "users = ".$this->escape($message['users']);
 					if($sender_changed)
 						$set[] = "sender = ".$this->escape($message['sender']);
-					$this->backgroundQuery("UPDATE messages SET ".implode(", ", $set)." WHERE message_id = ".$this->escape($message['message_id']).";");
+					$this->transactionQuery("UPDATE messages SET ".implode(", ", $set)." WHERE message_id = ".$this->escape($message['message_id']).";");
 				}
 			}
+			foreach($bg_queries as $q)
+				$this->endTransaction($q);
+			
 			return true;
 		}
 	}
@@ -169,10 +196,22 @@
 		protected static $database = false;
 		protected $name = false;
 
-		function __construct($name=false)
+		static protected function databaseInstance()
 		{
 			if(!self::$database)
 				self::$database = new MessageDatabase();
+		}
+
+		static function getMessagesCount()
+		{
+			self::databaseInstance();
+
+			return self::$database->messagesCount();
+		}
+		
+		function __construct($name=false)
+		{
+			self::databaseInstance();
 
 			if(!$name)
 				$name = self::$database->getNewName();

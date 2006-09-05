@@ -8,6 +8,8 @@
 		protected $custom_filename = false;
 		private $last_result = false;
 		static protected $connections = array();
+		protected $transaction = false;
+		protected $transaction_calls = array();
 
 		function __construct()
 		{
@@ -68,6 +70,15 @@
 			return true;
 		}
 
+		function transactionQuery($query)
+		{
+			$this->checkConnection();
+			if(!$this->transaction)
+				$this->transaction = true;
+
+			$this->transaction_calls[] = $query;
+		}
+
 		function query($query)
 		{
 			$this->checkConnection();
@@ -122,6 +133,17 @@
 		function escape($string)
 		{
 			return $this->connection->quote($string);
+		}
+
+		function endTransaction()
+		{
+			if(!$this->transaction) return false;
+			$this->transaction = false;
+
+			$this->connection->beginTransaction();
+			foreach($this->transaction_calls as $q)
+				$this->connection->query($q);
+			return $this->connection->commit();
 		}
 	}
 ?>

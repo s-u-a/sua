@@ -1488,6 +1488,8 @@
 			}
 			$current_version = trim(file_get_contents(global_setting("DB_DIR").'/.version'));
 		}
+		elseif(file_exists(global_setting("DB_DIR").'/highscores') && !file_exists(global_setting("DB_DIR").'/highscores_alliances') && !file_exists(global_setting("DB_DIR").'/highscores_alliances2')) $current_version = '4';
+		elseif(file_exists(global_setting("DB_DIR").'/events') && @sqlite_open(global_setting("DB_DIR").'/events')) $current_version = '3';
 		elseif(is_dir(global_setting("DB_DIR").'/fleets')) $current_version = '2';
 		else $current_version = '1';
 
