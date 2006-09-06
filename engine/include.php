@@ -89,6 +89,7 @@
 	global_setting('USE_PROTOCOL', (isset($_SESSION['use_protocol']) ? $_SESSION['use_protocol'] : (((!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])) ? 'https' : 'http')));
 	global_setting('MIN_BUILDING_TIME', 12); # Minimale Bauzeit in Sekunden
 	global_setting('DATABASE_VERSION', 7); # Aktuelle Datenbankversion
+	global_setting('EVENTHANDLER_RUNTIME', 16200); # Sekunden seit Tagesbeginn, wann der Eventhandler laufen soll
 
 	function define_globals($DB)
 	{ # Setzt diverse Spielkonstanten zu einer bestimmten Datenbank
