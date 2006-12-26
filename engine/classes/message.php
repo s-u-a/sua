@@ -185,7 +185,7 @@
 			}
 			foreach($bg_queries as $q)
 				$this->endTransaction($q);
-			
+
 			return true;
 		}
 	}
@@ -208,7 +208,7 @@
 
 			return self::$database->messagesCount();
 		}
-		
+
 		function __construct($name=false)
 		{
 			self::databaseInstance();

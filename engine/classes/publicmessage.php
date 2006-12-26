@@ -1,31 +1,87 @@
 <?php
-	class PublicMessage extends Dataset
+	class PublicMessageDatabase extends SQLite
 	{
-		protected $datatype = 'public_message';
+		protected $tables = array("public_messages" => array("message_id PRIMARY KEY", "last_view INT", "sender", "text", "parsed", "subject", "html INT", "receiver", "time", "type"));
+
+		function getField($message_id, $field_name)
+		{
+			if(!$this->messageExists($message_id)) return false;
+
+			$result = $this->singleQuery("SELECT ".$field_name." FROM public_messages WHERE message_id = ".$this->escape($message_id)." LIMIT 1;");
+			if($result) $result = $result[$field_name];
+			return $result;
+		}
+
+		function setField($message_id, $field_name, $field_value)
+		{
+			if(!$this->messageExists($message_id)) return false;
+
+			return $this->query("UPDATE public_messages SET ".$field_name." = ".$this->escape($field_value)." WHERE message_id = ".$this->escape($message_id).";");
+		}
+
+		function getNewName()
+		{
+			do $name = substr(md5(rand()), 0, 16);
+				while($this->messageExists($name));
+			return $name;
+		}
+
+		function createNewMessage($message_id)
+		{
+			$this->query("INSERT INTO public_messages ( message_id, last_view ) VALUES ( ".$this->escape($message_id).", ".$this->escape(time())." );");
+		}
+
+		function messageExists($message_id)
+		{
+			return ($this->singleField("SELECT COUNT(*) FROM public_messages WHERE message_id = ".$this->escape($message_id)." LIMIT 1;") > 0);
+		}
+
+		function messagesCount()
+		{
+			return ($this->singleField("SELECT COUNT(*) FROM public_messages;"));
+		}
+
+		function cleanUp()
+		{
+			global $public_messages_time;
+
+			$count = $this->singleField("SELECT COUNT(*) FROM public_messages WHERE last_view < ".(time()-$public_messages_time*86400).";");
+			$this->query("DELETE FROM public_messages WHERE last_view < ".(time()-$public_messages_time*86400).";");
+			return $count;
+		}
+	}
+
+	class PublicMessage
+	{
+		protected static $database = false;
+		protected $name = false;
+
+		static protected function databaseInstance()
+		{
+			if(!self::$database)
+				self::$database = new PublicMessageDatabase();
+		}
 
 		static function publicMessageExists($name)
 		{
-			return (is_file(global_setting("DB_MESSAGES_PUBLIC").'/'.urlencode($name)) && is_readable(global_setting("DB_MESSAGES_PUBLIC").'/'.urlencode($name)));
+			self::databaseInstance();
+
+			return self::$database->messageExists($name);
 		}
 
 		function create()
 		{
-			if(file_exists($this->filename)) return false;
-			$this->raw = array('last_view' => time());
-			$this->write(true);
-			$this->__construct($this->name);
+			self::$database->createNewMessage($this->name);
 			return true;
 		}
 
 		function __construct($name=false)
 		{
-			$this->save_dir = global_setting("DB_MESSAGES_PUBLIC");
-			parent::__construct($name);
-			if($this->status)
-			{
-				$this->raw['last_view'] = time();
-				$this->changed = true;
-			}
+			self::databaseInstance();
+
+			if(!$name)
+				$name = self::$database->getNewName();
+			$this->name = $name;
 		}
 
 		function createFromMessage($message)
@@ -52,135 +108,89 @@
 
 		function text($text=false)
 		{
-			if(!$this->status) return false;
+			// last_view erneuern
+			$this->_read();
 
 			if($text === false)
-			{
-				if(!isset($this->raw['text'])) return '';
-				else
-				{
-					if(!isset($this->raw['parsed'])) $this->_createParsed();
-					return $this->raw['parsed'];
-				}
-			}
+				return self::$database->getField($this->name, "parsed");
 
-			$this->raw['text'] = $text;
+			self::$database->setField($this->name, "text", $text);
 			$this->_createParsed();
-			$this->changed = true;
 			return true;
 		}
 
-		function _createParsed()
+		protected function _createParsed()
 		{
-			if(!$this->status) return false;
-
-			if(!isset($this->raw['text'])) $this->raw['parsed'] = '';
-			elseif($this->html()) $this->raw['parsed'] = $this->raw['text'];
-			else $this->raw['parsed'] = parse_html($this->raw['text']);
-			$this->changed = true;
+			if($this->html())
+				self::$database->setField($this->name, "parsed", self::$database->getField($this->name, "text"));
+			else
+				self::$database->setField($this->name, "parsed", parse_html(self::$database->getField($this->name, "text")));
 			return true;
 		}
 
 		function from($from=false)
 		{
-			if(!$this->status) return false;
-
 			if($from === false)
-			{
-				if(!isset($this->raw['from'])) return '';
-				else return $this->raw['from'];
-			}
+				return self::$database->getField($this->name, "sender");
 
-			$this->raw['from'] = $from;
-			$this->changed = true;
+			self::$database->setField($this->name, "sender", $from);
 			return true;
 		}
 
 		function subject($subject=false)
 		{
-			if(!$this->status) return false;
-
 			if($subject === false)
-			{
-				if(!isset($this->raw['subject']) || trim($this->raw['subject']) == '') return 'Kein Betreff';
-				else return $this->raw['subject'];
-			}
+				return self::$database->getField($this->name, "subject");
 
-			$this->raw['subject'] = $subject;
-			$this->changed = true;
+			self::$database->setField($this->name, "subject", $subject);
 			return true;
 		}
 
 		function html($html=-1)
 		{
-			if(!$this->status) return false;
-
 			if($html === -1)
-			{
-				if(!isset($this->raw['html'])) return false;
-				else return $this->raw['html'];
-			}
+				return (self::$database->getField($this->name, "html") == true);
 
-			$this->raw['html'] = (bool) $html;
-			$this->_createParsed();
-			$this->changed = true;
+			self::$database->setField($this->name, "html", $html);
+			return true;
+		}
+
+		protected function _read()
+		{
+			self::$database->setField($this->name, "last_view", time());
 			return true;
 		}
 
 		function type($type=false)
 		{
-			if(!$this->status) return false;
-
 			if($type === false)
-			{
-				if(!isset($this->raw['type'])) return false;
-				else return $this->raw['type'];
-			}
+				return self::$database->getField($this->name, "type");
 
-			$this->raw['type'] = $type;
-			$this->changed = true;
+			self::$database->setField($this->name, "type", $type);
 			return true;
 		}
 
-
 		function time($time=false)
 		{
-			if(!$this->status) return false;
-
 			if($time === false)
-			{
-				if(!isset($this->raw['time'])) return false;
-				else return $this->raw['time'];
-			}
+				return self::$database->getField($this->name, "time");
 
-			$this->raw['time'] = $time;
-			$this->changed = true;
+			self::$database->setField($this->name, "time", $time);
 			return true;
 		}
 
 		function to($to=false)
 		{
-			if(!$this->status) return false;
-
 			if($to === false)
-			{
-				if(!isset($this->raw['to'])) return '';
-				else return $this->raw['to'];
-			}
+				return self::$database->getField($this->name, "receiver");
 
-			$this->raw['to'] = $to;
-			$this->changed = true;
+			self::$database->setField($this->name, "receiver", $to);
 			return true;
 		}
 
 		function getLastViewTime()
 		{
-			if(!$this->status) return false;
-
-			return $this->raw['last_view'];
+			return self::$database->getField($this->name, "last_view");
 		}
-
-		protected function getDataFromRaw(){}
-		protected function getRawFromData(){}
 	}
 ?>

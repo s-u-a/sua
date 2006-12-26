@@ -102,6 +102,20 @@
 	$version = get_version();
 	define('VERSION', $version);
 
+	try
+	{
+		$suaserv = new SuaservConnection();
+	}
+	catch(IOException $e)
+	{
+		login_gui::html_head();
+?>
+<p class="error">Konnte keine Verbindung zu suaserv herstellen.</p>
+<?php
+		login_gui::html_foot();
+		exit(1);
+	}
+
 	$me = Classes::User($_SESSION['username']);
 	$_SESSION['username'] = $me->getName();
 
@@ -114,6 +128,8 @@
 		login_gui::html_foot();
 		exit(1);
 	}
+
+	$suaserv->sendCommand("user", $_SESSION['username'], $me->getPasswordSum());
 
 	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] && $me->checkSetting('ipcheck'))
 	{

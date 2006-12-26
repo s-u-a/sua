@@ -1,32 +1,201 @@
 <?php
-	class Fleet extends Dataset
+	class FleetDatabase extends SQLite
 	{
-		protected $datatype = 'fleet';
+		protected $tables = array("fleets" => array("fleet_id PRIMARY KEY", "targets", "users", "start INT", "finished" ));
 
-		function __construct($name=false, $write=true)
+		function getField($fleet_id, $field_name)
 		{
-			$this->save_dir = global_setting("DB_FLEETS");
-			parent::__construct($name, $write);
+			if(!$this->fleetExists($fleet_id)) return false;
+
+			$result = $this->singleQuery("SELECT ".$field_name." FROM fleets WHERE fleet_id = ".$this->escape($fleet_id)." LIMIT 1;");
+			if($result) $result = $result[$field_name];
+			return $result;
+		}
+
+		function setField($fleet_id, $field_name, $field_value)
+		{
+			if(!$this->fleetExists($fleet_id)) return false;
+
+			return $this->query("UPDATE fleets SET ".$field_name." = ".$this->escape($field_value)." WHERE fleet_id = ".$this->escape($fleet_id).";");
+		}
+
+		function getNewName()
+		{
+			do $name = str_replace('.', '-', microtime(true));
+				while($this->fleetExists($name));
+			return $name;
+		}
+
+		function createNewFleet($fleet_id)
+		{
+			$this->query("INSERT INTO fleets ( fleet_id ) VALUES ( ".$this->escape($fleet_id)." );");
+		}
+
+		function deleteFleet($fleet_id)
+		{
+			$this->query("DELETE FROM fleets WHERE fleet_id = ".$this->escape($fleet_id).";");
+		}
+
+		function fleetExists($fleet_id)
+		{
+			return ($this->singleField("SELECT COUNT(*) FROM fleets WHERE fleet_id = ".$this->escape($fleet_id)." LIMIT 1;") > 0);
+		}
+
+		function fleetsCount()
+		{
+			return ($this->singleField("SELECT COUNT(*) FROM fleets;"));
+		}
+	}
+
+	class Fleet
+	{
+		protected static $database = false;
+		protected $status = false;
+		protected $raw = false;
+		protected $changed = false;
+		protected $name = false;
+
+		static protected function databaseInstance()
+		{
+			if(!self::$database)
+				self::$database = new FleetDatabase();
+		}
+
+		function __construct($name=false)
+		{
+			self::databaseInstance();
+
+			if($name === false) $name = self::$database->getNewName();
+
+			$this->name = $name;
+			if(self::$database->fleetExists($this->name))
+			{
+				$this->status = 1;
+				$this->read();
+			}
+		}
+
+		function getStatus()
+		{
+			return $this->status;
+		}
+
+		function getName()
+		{
+			return $this->name;
+		}
+
+		function readonly()
+		{
+			return false;
+		}
+
+		function __destruct()
+		{
+			$this->write();
 		}
 
 		function create()
 		{
-			if(file_exists($this->filename)) return false;
+			self::$database->createNewFleet($this->name);
 			$this->raw = array(array(), array(), false, array());
-			$this->write(true);
-			$this->__construct($this->name);
+			$this->changed = true;
+			$this->status = 1;
 			return true;
 		}
 
-		function write($force=false, $getraw=true)
+		function read($force=false)
 		{
-			if($this->started() || $force) return parent::write($force, $getraw);
-			else return $this->destroy();
+			if(!$this->status) return false;
+			if($this->changed && !$force) $this->write();
+
+			$this->raw = array(array(), array(), false, array());
+
+			$targets = self::$database->getField($this->name, "targets");
+			$targets = (strlen($targets) > 0 ? explode("\n", $targets) : array());
+			foreach($targets as $t)
+			{
+				$t = explode("\t", $t);
+				if(count($t) < 3) continue;
+				$this->raw[0][$t[0]] = array($t[1], ($t[2] == true));
+			}
+
+			$users = self::$database->getField($this->name, "users");
+			$users = (strlen($users) > 0 ? explode("\n", $users) : array());
+			foreach($users as $u)
+			{
+				$u = explode("\t", $u);
+				if(count($u) < 10) continue;
+				$this->raw[1][$u[0]] = array(
+					decode_item_list($u[1]),
+					$u[2],
+					(float)$u[3],
+					array(
+						decode_ress_list($u[4]),
+						decode_item_list($u[5]),
+						(float)$u[6]
+					),
+					array(
+						decode_ress_list($u[7]),
+						decode_item_list($u[8])
+					),
+					(float)$u[9]
+				);
+			}
+
+			$start = self::$database->getField($this->name, "start");
+			if($start)
+				$this->raw[2] = $start;
+
+			$finished = self::$database->getField($this->name, "finished");
+			$finished = (strlen($finished) > 0 ? explode("\n", $finished) : array());
+			foreach($finished as $f)
+			{
+				$f = explode("\t", $f);
+				if(count($f) < 3) continue;
+				$this->raw[3][$f[0]] = array($f[1], ($f[2] == true));
+			}
+		}
+
+		function write($force=false)
+		{
+			if(!$this->status) return false;
+
+			self::databaseInstance();
+
+			if(!$this->started() && !$force)
+			{
+				self::$database->deleteFleet($this->name);
+				return true;
+			}
+
+			if(!$this->changed && !$force)
+				return true;
+
+			$targets = array();
+			foreach($this->raw[0] as $k=>$v)
+				$targets[] = $k."\t".$v[0]."\t".$v[1];
+			self::$database->setField($this->name, "targets", implode("\n", $targets));
+
+			$users = array();
+			foreach($this->raw[1] as $k=>$v)
+				$users[] = $k."\t".encode_item_list($v[0])."\t".$v[1]."\t".$v[2]."\t".encode_ress_list($v[3][0])."\t".encode_item_list($v[3][1])."\t".$v[3][2]."\t".encode_ress_list($v[4][0])."\t".encode_item_list($v[4][1])."\t".$v[5];
+			self::$database->setField($this->name, "users", implode("\n", $users));
+
+			self::$database->setField($this->name, "start", $this->raw[2]);
+
+			$finished = array();
+			foreach($this->raw[3] as $k=>$v)
+				$finished[] = $k."\t".$v[0]."\t".$v[1];
+			self::$database->setField($this->name, "finished", implode("\n", $finished));
+
+			return true;
 		}
 
 		function destroy()
 		{
 			if(!$this->status) return false;
+			self::databaseInstance();
 
 			foreach($this->raw[1] as $user=>$info)
 			{
@@ -34,20 +203,16 @@
 				$user_obj->unsetFleet($this->getName());
 			}
 
-			$status = (unlink($this->filename) || chmod($this->filename, 0));
-			if($status)
-			{
-				$this->status = 0;
-				$this->changed = false;
-				return true;
-			}
-			else return false;
+			self::$database->deleteFleet($this->name);
+			$this->status = 0;
+			$this->changed = false;
+			return true;
 		}
 
 		static function fleetExists($fleet)
 		{
-			$filename = global_setting("DB_FLEETS").'/'.urlencode($fleet);
-			return (is_file($filename) && is_readable($filename));
+			self::databaseInstance();
+			return self::$database->fleetExists($fleet);
 		}
 
 		function getTargetsList()
@@ -1624,9 +1789,6 @@ EOF
 			$event_obj = Classes::EventFile();
 			return $event_obj->addNewFleet($this->getNextArrival(), $this->getName());
 		}
-
-		protected function getDataFromRaw(){}
-		protected function getRawFromData(){}
 	}
 
 	function battle($angreifer, $verteidiger)

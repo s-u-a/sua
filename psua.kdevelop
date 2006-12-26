@@ -14,7 +14,7 @@
   </general>
   <kdevscriptproject>
     <general>
-      <includepatterns>*.*</includepatterns>
+      <includepatterns>*</includepatterns>
       <excludepatterns>*~</excludepatterns>
     </general>
     <run>
@@ -37,10 +37,10 @@
       <realtimeParsing>false</realtimeParsing>
     </codeHelp>
     <general>
-      <invocationMode>2</invocationMode>
+      <invocationMode>1</invocationMode>
     </general>
     <webInvocation>
-      <weburl>http://sua.df/</weburl>
+      <weburl>http://psua.df/</weburl>
     </webInvocation>
     <shell>
       <phpexe>/usr/bin/php</phpexe>
