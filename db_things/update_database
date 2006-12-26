@@ -313,7 +313,7 @@
 			{
 				rm_r(global_setting("DB_DIR")."/messages");
 			}
-			catch(FilesystemException $exc)
+			catch(IOException $exc)
 			{
 				fputs(STDERR, "Warning: Could not delete the message database directory: ".$exc->getMessage()."\n");
 			}

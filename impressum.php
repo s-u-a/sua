@@ -7,8 +7,8 @@
 <h3>Verantwortlicher</h3>
 <address>
 	Candid Dauth<br />
-	Berthold-Hupmann-Stra&szlig;e 58<br />
-	88400 Biberach an der Riss<br />
+	Rotbachstr. 9<br />
+	88433 Schemmerhofen-Ingerkingen<br />
 	Deutschland<br />
 	<a href="mailto:webmaster@s-u-a.net">webmaster@s-u-a.net</a>
 </address>

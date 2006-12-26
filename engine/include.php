@@ -11,7 +11,7 @@
 	if(function_exists("date_default_timezone_get"))
 		date_default_timezone_set(@date_default_timezone_get());
 
-	class FilesystemException extends Exception {};
+	class IOException extends Exception {};
 
 	# s_root ermitteln: Absoluter Pfad zum Spielverzeichnis
 	$this_filename = '/engine/include.php';
@@ -1336,12 +1336,12 @@
 		if(is_file($fname))
 		{
 			if(!unlink($fname))
-				throw new FilesystemException("Could not delete ".$fname.".", 1);
+				throw new IOException("Could not delete ".$fname.".", 1);
 		}
 		else
 		{
 			if(!($dh = opendir($fname)))
-				throw new FilesystemException("Could not open directory ".$fname.".", 2);
+				throw new IOException("Could not open directory ".$fname.".", 2);
 			while(($f = readdir($dh)) !== false)
 			{
 				if($f == "." || $f == "..") continue;

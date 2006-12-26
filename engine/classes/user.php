@@ -20,6 +20,7 @@
 				'planets' => array(),
 				'forschung' => array(),
 				'password' => 'x',
+				'password_sha1' => 'x',
 				'punkte' => array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 				'registration' => time(),
 				'messages' => array(),
@@ -782,12 +783,19 @@
 			if(!$this->status) return false;
 
 			if(!isset($this->raw['password'])) return false;
-			if(md5($password) == $this->raw['password'])
+			if((!isset($this->raw['password_sha1']) || sha1($password) == $this->raw['password_sha1']) && md5($password) == $this->raw['password'])
 			{
 				# Passwort stimmt, Passwort-vergessen-Funktion deaktivieren
 				if(isset($this->raw['email_passwd']) && $this->raw['email_passwd'])
 				{
 					$this->raw['email_passwd'] = false;
+					$this->changed = true;
+				}
+
+				# SHA1-Summe fuer spaetere Zwecke speichern
+				if(!isset($this->raw['password_sha1']))
+				{
+					$this->raw['password_sha1'] = sha1($password);
 					$this->changed = true;
 				}
 
@@ -801,6 +809,7 @@
 			if(!$this->status) return false;
 
 			$this->raw['password'] = md5($password);
+			$this->raw['password_sha1'] = sha1($password);
 
 			if(isset($this->raw['email_passwd']) && $this->raw['email_passwd'])
 				$this->raw['email_passwd'] = false;
