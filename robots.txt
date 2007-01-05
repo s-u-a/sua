@@ -1,4 +1,2 @@
 User-agent: *
-Disallow: /login/
-Disallow: /forum/
-Allow: /forum/archiv/
+Disallow: /

@@ -2,7 +2,7 @@
 	class SuaservConnection
 	{
 		protected static $connection = null;
-		protected static $escape = array("[\r\n ]", "\$0");
+		protected static $escape = array("[\r\n ]", "\\\\\$0");
 		protected static $instances = 0;
 
 		public function __construct()
@@ -29,7 +29,7 @@
 			{
 				if($autoconnect)
 				{
-					self::$connection = fsockopen(global_setting("SUASERV_HOST"), global_setting("SUASERV_PORT"));
+					self::$connection = @fsockopen(global_setting("SUASERV_HOST"), global_setting("SUASERV_PORT"));
 					if(!self::$connection)
 						throw new IOException("Could not connect to suaserv.");
 
@@ -39,7 +39,7 @@
 					if($match[1] != global_setting("SUASERV_VERSION"))
 						throw new IOException("Wrong suaserv version.");
 
-					$this->sendCommand("agent", "psua");
+					$this->sendCommand("agent", "psua ".get_version());
 					$this->sendCommand("client", $_SERVER['REMOTE_ADDR']);
 				}
 				else

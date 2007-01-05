@@ -102,6 +102,8 @@
 	$version = get_version();
 	define('VERSION', $version);
 
+	$me = null;
+
 	try
 	{
 		$suaserv = new SuaservConnection();
@@ -221,25 +223,30 @@
 			var h_root = '<?=utf8_jsentities(h_root)?>';
 			var last_min_chars = '<?=utf8_jsentities(global_setting("LIST_MIN_CHARS"))?>';
 		</script>
+<?php
+			if($me)
+			{
+?>
 		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts/javascript-'.$me->checkSetting('performance').".js")?>"></script>
 <?php
-			if($me->checkSetting('performance') != 0)
-			{
-				if($me->checkSetting('ajax'))
+				if($me->checkSetting('performance') != 0)
 				{
+					if($me->checkSetting('ajax'))
+					{
 ?>
 		<script type="text/javascript" src="<?=htmlentities(h_root.'/sarissa.js')?>"></script>
 <?php
-				}
+					}
 ?>
 		<script type="text/javascript">
 			set_time_globals(<?=time()+1?>);
 		</script>
 <?php
+				}
 			}
 
 			$skin_path = '';
-			$my_skin = $me->checkSetting('skin');
+			$my_skin = $me ? $me->checkSetting('skin') : null;
 			if($my_skin)
 			{
 				if(!is_array($my_skin))
@@ -269,7 +276,7 @@
 ?>
 		<style type="text/css">
 <?php
-			if($me->checkSetting('schrift'))
+			if($me && $me->checkSetting('schrift'))
 			{ # Schrift ueberschreiben
 ?>
 			html { font-size:9pt; font-family:Arial,Tahoma,"Adobe Helvetica",sans-serif; }
@@ -279,12 +286,15 @@
 			*:first-child+html body { display:none !important; }
 		</style>
 <?php
-
-			$class = 'planet-'.$me->getPlanetClass();
-			if(!$me->checkSetting('noads'))
-				$class .= ' mit-werbung';
-			else
-				$class .= ' ohne-werbung';
+			$class = '';
+			if($me)
+			{
+				$class = 'planet-'.$me->getPlanetClass();
+				if(!$me->checkSetting('noads'))
+					$class .= ' mit-werbung';
+				else
+					$class .= ' ohne-werbung';
+			}
 ?>
 	</head>
 	<body class="<?=$class?>" id="body-root"><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
@@ -295,7 +305,9 @@
 		</ul>
 		<hr class="separator" />
 <?php
-			$cur_ress = $me->getRess();
+			if($me)
+				$cur_ress = $me->getRess();
+			else $cur_ress = array(0, 0, 0, 0, 0, 0);
 ?>
 		<div id="content-9">
 			<dl id="ress" class="ress">
@@ -328,7 +340,7 @@
 				<p id="gesperrt-hinweis" class="spiel"><strong>Das Spiel ist derzeit gesperrt.</strong><?php if($locked_until){?> <span id="restbauzeit-sperre">bis <?=date('Y-m-d, H:i:s', $locked_until)?>, Serverzeit</span><?php }?></p>
 <?php
 			}
-			elseif($me->userLocked())
+			elseif($me && $me->userLocked())
 			{
 				$l = $me->lockedUntil();
 				if($l) $locked_until = $l;
@@ -337,7 +349,7 @@
 				<p id="gesperrt-hinweis" class="account"><strong>Ihr Benutzeraccount ist gesperrt.</strong><?php if($locked_until){?> <span id="restbauzeit-sperre">bis <?=date('Y-m-d, H:i:s', $locked_until)?>, Serverzeit</span><?php }?></p>
 <?php
 			}
-			elseif($me->umode())
+			elseif($me && $me->umode())
 			{
 ?>
 				<hr class="separator" />
@@ -362,9 +374,21 @@
 			}
 ?>
 				<hr class="separator" />
+<?php
+			if($me)
+			{
+?>
 				<h1>Planet <em><?=utf8_htmlentities($me->planetName())?></em> <span class="koords">(<?=utf8_htmlentities($me->getPosString())?>)</span></h1>
 <?php
-			if($me->checkSetting('notify'))
+			}
+			else
+			{
+?>
+				<h1>Fehler</h1>
+<?php
+			}
+
+			if($me && $me->checkSetting('notify'))
 			{
 				global $message_type_names;
 
@@ -432,7 +456,7 @@
 				</div>
 			</div></div>
 <?php
-			if($me->checkSetting('noads'))
+			if($me && $me->checkSetting('noads'))
 			{
 ?>
 <!--[if IE]>
@@ -442,7 +466,7 @@
 			<div id="werbung">
 <?php
 			global $DISABLE_ADS;
-			if($me->checkSetting('performance') != 0 && (!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http')
+			if($me && $me->checkSetting('performance') != 0 && (!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http')
 			{
 ?>
 				<script type="text/javascript">
@@ -465,7 +489,7 @@
 ?>
 			</div>
 <?php
-			if($me->checkSetting('noads'))
+			if($me && $me->checkSetting('noads'))
 			{
 ?>
 <![endif]-->
@@ -501,15 +525,18 @@
 ?>
 					<select name="planet" onchange="if(this.value != <?=$_SESSION['act_planet']?>) this.form.submit();" onkeyup="if(this.value != <?=$_SESSION['act_planet']?>) this.form.submit();" accesskey="p" title="Ihre Planeten [P]">
 <?php
-			$planets = $me->getPlanetsList();
-			foreach($planets as $planet)
+			if($me)
 			{
-				$me->setActivePlanet($planet);
+				$planets = $me->getPlanetsList();
+				foreach($planets as $planet)
+				{
+					$me->setActivePlanet($planet);
 ?>
 						<option value="<?=utf8_htmlentities($planet)?>"<?=($planet == $_SESSION['act_planet']) ? ' selected="selected"' : ''?>><?=utf8_htmlentities($me->planetName())?> (<?=utf8_htmlentities($me->getPosString())?>)</option>
 <?php
+				}
+				$me->setActivePlanet($_SESSION['act_planet']);
 			}
-			$me->setActivePlanet($_SESSION['act_planet']);
 ?>
 					</select>
 					<noscript><div><button type="submit">Wechseln</button></div></noscript>
@@ -553,7 +580,7 @@
 ?>
 			</ul>
 <?php
-			if($me->checkSetting('show_extern'))
+			if($me && $me->checkSetting('show_extern'))
 			{
 ?>
 			<hr class="separator" />
@@ -575,7 +602,7 @@
 			<dd id="time-server"><?=date('H:i:s', time()+1)?></dd>
 		</dl>
 <?php
-			if($me->checkSetting('performance') != 0)
+			if($me && $me->checkSetting('performance') != 0)
 			{
 ?>
 		<script type="text/javascript">
@@ -620,7 +647,7 @@
 		</div></div></div></div></div></div></div></div>
 		<div id="css-4"></div>
 <?php
-			if($me->checkSetting('performance') != 0)
+			if($me && $me->checkSetting('performance') != 0)
 			{
 				if($me->checkSetting('tooltips') || $me->checkSetting('shortcuts') || $me->checkSetting('ress_refresh') > 0)
 				{

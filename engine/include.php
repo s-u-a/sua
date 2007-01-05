@@ -405,10 +405,7 @@
 	function get_version()
 	{
 		# Aktuell installierte Version herausfinden
-		$version = '';
-		if(is_file(global_setting("DB_VERSION")) && is_readable(global_setting("DB_VERSION")))
-			$version = trim(file_get_contents(global_setting("DB_VERSION")));
-		return $version;
+		return "2.0.0 alpha";
 	}
 
 	function get_revision()
