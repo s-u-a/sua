@@ -28,6 +28,8 @@
 	global_setting("DB_HIGHSCORES", global_setting("DB_DIR")."/highscores");
 	global_setting("DB_HIGHSCORES_ALLIANCES", global_setting("DB_DIR")."/highscores_alliances");
 	global_setting("DB_HIGHSCORES_ALLIANCES2", global_setting("DB_DIR")."/highscores_alliances2");
+	global_setting("DB_MESSAGES_PUBLIC", global_setting("DB_DIR")."/messages_public");
+	global_setting("DB_FLEETS", global_setting("DB_DIR")."/fleets");
 
 	# Aktuelle Datenbankversion herausfinden
 	$current_version = get_database_version();
@@ -318,12 +320,14 @@
 				fputs(STDERR, "Warning: Could not delete the message database directory: ".$exc->getMessage()."\n");
 			}
 		}
+
 		#######################
 		### Version 6 auf 7 ###
 		#######################
 
 		case 6:
 		{
+			# Datenbank nach SQLite3 konvertieren
 			if(!is_writeable(global_setting("DB_DIR")))
 			{
 				fputs(STDERR, "Error: ".global_setting("DB_DIR")." is not writeable.\n");
@@ -342,6 +346,84 @@
 			fputs(STDERR, "Updated ".global_setting("DB_SQLITE")." to SQLite 3, a backup was placed into ".$bkp_fname.".\n\n");
 			fputs(STDERR, "Important! Please update database.global/notifications if you haven't already done so:\n");
 			fputs(STDERR, "mv notifications notifications.sav; sqlite notifications.sav .dump | sqlite3 notifications\n\n");
+		}
+
+		#######################
+		### Version 7 auf 8 ###
+		#######################
+
+		case 7:
+		{
+			# public_messages in die SQLite-Datenbank verschieben
+			$db = new PDO("sqlite:".global_setting("DB_SQLITE"));
+			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$db->query("CREATE TABLE public_messages ( message_id PRIMARY KEY, last_view INT, sender, text, parsed, subject, html INT, receiver, time, type );");
+			$dname = global_setting("DB_MESSAGES_PUBLIC");
+			$dh = opendir($dname);
+			while(($fname = readdir($dh)) !== false)
+			{
+				$loc = $dname."/".$fname;
+				if(!is_file($loc) || !is_readable($loc))
+					continue;
+				$array = unserialize(bzdecompress(file_get_contents($loc)));
+				if(!$array) continue;
+
+				try
+				{
+					$db->query("INSERT INTO public_messages ( message_id, last_view, sender, text, parsed, subject, html, receiver, time, type ) VALUES ( ".$db->quote(urldecode($fname)).", ".$db->quote($array['last_view']).", ".$db->quote($array['from']).", ".$db->quote($array['text']).", ".$db->quote($array['parsed']).", ".$db->quote($array['subject']).", ".$db->quote($array['html']).", ".$db->quote($array['to']).", ".$db->quote($array['time']).", ".$db->quote($array['type'])." );");
+					unlink($loc);
+				}
+				catch(Exception $e)
+				{
+					fputs(STDERR, "Error converting public message ".$loc.": ".$e."\n");
+				}
+			}
+			closedir($dh);
+			rmdir($dname);
+
+			# fleets in die SQLite-Datenbank verschieben
+			$db->query("CREATE TABLE fleets ( fleet_id PRIMARY KEY, targets, users, start INT, finished );");
+			$dname = global_setting("DB_FLEETS");
+			$dh = opendir($dname);
+			while(($fname = readdir($dh)) !== false)
+			{
+				$loc = $dname."/".$fname;
+				if(!is_file($loc) || !is_readable($loc))
+					continue;
+				$array = unserialize(bzdecompress(file_get_contents($loc)));
+				if(!$array) continue;
+
+				$targets = array();
+				foreach($array[0] as $k=>$v)
+					$targets[] = $k."\t".$v[0]."\t".$v[1];
+				$targets = implode("\n", $targets);
+
+				$users = array();
+				foreach($array[1] as $k=>$v)
+					$users[] = $k."\t".encode_item_list($v[0])."\t".$v[1]."\t".$v[2]."\t".encode_ress_list($v[3][0])."\t".encode_item_list($v[3][1])."\t".$v[3][2]."\t".encode_ress_list($v[4][0])."\t".encode_item_list($v[4][1])."\t".$v[5];
+				$users = implode("\n", $users);
+
+				$start = $array[2];
+
+				$finished = array();
+				foreach($array[3] as $k=>$v)
+					$finished[] = $k."\t".$v[0]."\t".$v[1];
+				$finished = implode("\n", $finished);
+
+				try
+				{
+					$db->query("INSERT INTO fleets ( fleet_id, targets, users, start, finished ) VALUES ( ".$db->quote(urldecode($fname)).", ".$db->quote($targets).", ".$db->quote($users).", ".$db->quote($start).", ".$db->quote($finished)." );");
+					unlink($loc);
+				}
+				catch(Exception $e)
+				{
+					fputs(STDERR, "Error converting fleet ".$loc.": ".$e."\n");
+				}
+			}
+			closedir($dh);
+			rmdir($dname);
+
+			unset($db);
 		}
 	}
 

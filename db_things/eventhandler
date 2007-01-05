@@ -630,32 +630,11 @@ EOF
 
 			# Oeffentliche Nachrichten loeschen
 
-			$processed_messages_public = 0;
-			$deleted_messages_public = 0;
+			__autoload("PublicMessage");
+			$pmdb = new PublicMessageDatabase();
 
-			global $public_messages_time;
-			$max_age = $public_messages_time*86400;
-			$dh = opendir(global_setting("DB_MESSAGES_PUBLIC"));
-			while(($fname = readdir($dh)) !== false)
-			{
-				if($fname[0] == '.') continue;
-
-				$fname = urldecode($fname);
-
-				$message = Classes::PublicMessage($fname);
-				if(!$message->getStatus()) continue;
-				else $processed_messages_public++;
-
-				if(time()-$message->getLastViewTime() > $max_age)
-				{
-					$message->destroy();
-					$deleted_messages_public++;
-					if($verbose) fputs($errlog, time_prefix()."Deleted public message ".$fname."\n");
-				}
-			}
-			closedir($dh);
-
-			Classes::resetInstances();
+			$processed_messages_public = $pmdb->messagesCount();
+			$deleted_messages_public = $pmdb->cleanUp();
 
 			fputs($errlog, "Checked ".$processed_messages_public." public messages.\n");
 			fputs($errlog, "Deleted ".$deleted_messages_public." public messages.\n");
@@ -744,8 +723,9 @@ EOF
 		$hostname = get_default_hostname();
 		$fposition = 0;
 
-		if(date('H')*3600+date('i')*60+60 < global_setting("EVENTHANDLER_RUNTIME")) $last_walked = false;
-		else $last_walked = date('Y-m-d');
+		//if(date('H')*3600+date('i')*60+60 < global_setting("EVENTHANDLER_RUNTIME")) $last_walked = false;
+		//else $last_walked = date('Y-m-d');
+		$last_walked = false;
 
 		fputs($errlog, time_prefix()."Eventhandler started.\n");
 
@@ -779,20 +759,11 @@ EOF
 				{
 					Classes::resetInstances();
 					$pid = pcntl_fork();
-					if(!$pid && function_exists('posix_setsid'))
-						posix_setsid();
 				}
 				else $pid = -1;
 
-				if($verbose)
-				{
-					if($pid == -1) fputs($errlog, time_prefix()."Couldn't fork eventhandler.\n");
-					elseif($pid) fputs($errlog, time_prefix()."Forked Handelskurs eventhandler, pid ".$pid."\n");
-				}
-
 				if(!$pid || $pid == -1)
 				{
-					sleep(2);
 					foreach($databases as $selected_database=>$dbinfo)
 					{
 						if(!is_dir($dbinfo['directory']) || /*!$dbinfo['enabled'] ||*/ $dbinfo['dummy']) continue;
@@ -804,8 +775,6 @@ EOF
 					}
 					if($pid != -1) exit(0);
 				}
-				//elseif($pid > 0)
-				//	pcntl_waitpid($pid, &$status, WNOHANG);
 			}
 
 			# Jabber-Nachrichten ueberpruefen

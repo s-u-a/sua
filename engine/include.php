@@ -88,7 +88,7 @@
 	global_setting('PROTOCOL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http');
 	global_setting('USE_PROTOCOL', (isset($_SESSION['use_protocol']) ? $_SESSION['use_protocol'] : (((!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])) ? 'https' : 'http')));
 	global_setting('MIN_BUILDING_TIME', 12); # Minimale Bauzeit in Sekunden
-	global_setting('DATABASE_VERSION', 7); # Aktuelle Datenbankversion
+	global_setting('DATABASE_VERSION', 8); # Aktuelle Datenbankversion
 	global_setting('EVENTHANDLER_RUNTIME', 16200); # Sekunden seit Tagesbeginn, wann der Eventhandler laufen soll
 
 	function define_globals($DB)
@@ -133,12 +133,10 @@
 
 		global_setting('DB_LOCKED', $DB_DIR.'/locked');
 		global_setting('DB_ALLIANCES', $DB_DIR.'/alliances');
-		global_setting('DB_FLEETS', $DB_DIR.'/fleets');
 		global_setting('DB_PLAYERS', $DB_DIR.'/players');
 		global_setting('DB_UNIVERSE', $DB_DIR.'/universe');
 		global_setting('DB_ITEMS', $DB_DIR.'/items');
 		global_setting('DB_ITEM_DB', $DB_DIR.'/items.db');
-		global_setting('DB_MESSAGES_PUBLIC', $DB_DIR.'/messages_public');
 		global_setting('DB_TRUEMMERFELDER', $DB_DIR.'/truemmerfelder');
 		global_setting('DB_HANDEL', $DB_DIR.'/handel');
 		global_setting('DB_HANDELSKURS', $DB_DIR.'/handelskurs');
@@ -1547,5 +1545,35 @@
 		}
 
 		return $index;
+	}
+
+	function encode_item_list($list)
+	{
+		$ret = array();
+		foreach($list as $k=>$v)
+			$ret[] = $k." ".$v;
+		return implode(" ", $ret);
+	}
+
+	function decode_item_list($encoded)
+	{
+		$list = array();
+		$encoded_sp = (strlen($encoded) > 0 ? explode(" ", $encoded) : array());
+		for($i=0; $i<count($encoded_sp); $i+=2)
+			$list[$encoded_sp[$i]] = (float)$encoded_sp[++$i];
+		return $list;
+	}
+
+	function encode_ress_list($list)
+	{
+		return implode(" ", $list);
+	}
+
+	function decode_ress_list($encoded)
+	{
+		$list = (strlen($encoded) > 0 ? explode(" ", $encoded) : array());
+		foreach($list as $k=>$v)
+			$list[$k] = (float) $v;
+		return $list;
 	}
 ?>

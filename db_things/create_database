@@ -20,7 +20,7 @@ cd $1
 DBDIR_ABS=`pwd`
 cd $CWD
 
-echo '7' > $1/.version
+echo '8' > $1/.version
 touch $1/locked
 echo 'Order Deny,Allow' > $1/.htaccess
 echo 'Deny from All' >> $1/.htaccess
