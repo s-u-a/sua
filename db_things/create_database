@@ -4,21 +4,9 @@ then
 	exit 1
 fi
 
-mkdir $1
-RETURN_MKDIR=$?
-false
-FALSE=$?
+BINDIR="$(dirname $0)"
 
-
-if [ $RETURN_MKDIR -eq $FALSE ]
-then
-	exit 1
-fi
-
-CWD=`pwd`
-cd $1
-DBDIR_ABS=`pwd`
-cd $CWD
+mkdir $1 || exit 1
 
 echo '8' > $1/.version
 touch $1/locked
@@ -55,10 +43,7 @@ echo -ne "\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1\t1" >> $1/admins
 
 unset ADMIN_PASSWD
 
-OLD_PWD=`pwd`
-cd $1/universe
-./create_galaxy 1
-cd $OLD_PWD
+$BINDIR/create_galaxy "$1/universe/1"
 
 chmod -R a+rw $1
 
