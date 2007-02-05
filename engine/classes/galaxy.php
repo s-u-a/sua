@@ -66,7 +66,7 @@
 			if(!$this->status) return false;
 
 			$system = (int) $system;
-			if($system < 0) return false;
+			if($system < 1) return false;
 
 			$pos = ($system-1)*1655;
 			if($this->filesize < $pos+1655) return false; # System existiert nicht
@@ -103,7 +103,7 @@
 			{
 				$planets_count = $this->getPlanetsCount($system);
 				if(!$planets_count) return false;
-				if($planet > $planets_count) return false;
+				if($planet > $planets_count || $planet < 1) return false;
 
 				if(!$this->seekSystem($system)) return false;
 
@@ -143,7 +143,7 @@
 			$owner = trim(substr($owner, 0, 24));
 
 			$planets_count = $this->getPlanetsCount($system);
-			if(!$planets_count || $planet > $planets_count) return false;
+			if(!$planets_count || $planet > $planets_count || $planet < 1) return false;
 
 			if(!$this->seekSystem($system)) return false;
 
@@ -190,7 +190,7 @@
 			{
 				$planets_count = $this->getPlanetsCount($system);
 				if(!$planets_count) return false;
-				if($planet > $planets_count) return false;
+				if($planet > $planets_count || $planet < 1) return false;
 
 				if(!$this->seekSystem($system)) return false;
 
@@ -209,7 +209,7 @@
 			$name = trim(substr($name, 0, 24));
 
 			$planets_count = $this->getPlanetsCount($system);
-			if(!$planets_count || $planet > $planets_count) return false;
+			if(!$planets_count || $planet > $planets_count || $planet < 1) return false;
 
 			if(!$this->seekSystem($system)) return false;
 
@@ -236,7 +236,7 @@
 			{
 				$planets_count = $this->getPlanetsCount($system);
 				if(!$planets_count) return false;
-				if($planet > $planets_count) return false;
+				if($planet > $planets_count || $planet < 1) return false;
 
 				if(!$this->seekSystem($system)) return false;
 
@@ -255,7 +255,7 @@
 			$alliance = trim(substr($alliance, 0, 6));
 
 			$planets_count = $this->getPlanetsCount($system);
-			if(!$planets_count || $planet > $planets_count) return false;
+			if(!$planets_count || $planet > $planets_count || $planet < 1) return false;
 
 			if(!$this->seekSystem($system)) return false;
 
@@ -282,7 +282,7 @@
 			{
 				$planets_count = $this->getPlanetsCount($system);
 				if(!$planets_count) return false;
-				if($planet > $planets_count) return false;
+				if($planet > $planets_count || $planet < 1) return false;
 
 				if(!$this->seekSystem($system)) return false;
 
@@ -312,7 +312,7 @@
 
 			$planets_count = $this->getPlanetsCount($system);
 			if(!$planets_count) return false;
-			if($planet > $planets_count) return false;
+			if($planet > $planets_count || $planet < 1) return false;
 
 			if(!$this->seekSystem($system)) return false;
 
