@@ -163,6 +163,9 @@
 			}
 		}
 
+		if(!preg_match("/^[1-9]([0-9]*)$/", $_POST['galaxie']) || !preg_match("/^[1-9]([0-9]*)$/", $_POST['system']) || !preg_match("/^[1-9]([0-9]*)$/", $_POST['planet']))
+			$show_versenden = true;
+
 		if(!$show_versenden)
 		{
 			$galaxy_obj = Classes::Galaxy($_POST['galaxie']);
