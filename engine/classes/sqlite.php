@@ -132,7 +132,10 @@
 
 		function escape($string)
 		{
-			return $this->connection->quote($string);
+			if(is_numeric($string))
+				return $string;
+			else
+				return $this->connection->quote($string);
 		}
 
 		function endTransaction()
