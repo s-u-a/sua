@@ -26,6 +26,7 @@
 			{
 				$conn = new PDO("sqlite:".$this->filename);
 				$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+				$conn->setAttribute(PDO::ATTR_TIMEOUT, 86400);
 				if($fname_index === null)
 					$fname_index = realpath($this->filename);
 				self::$connections[$fname_index] = $conn;
