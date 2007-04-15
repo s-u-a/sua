@@ -9,13 +9,13 @@
 	login_gui::html_head();
 
 	$taxes = array (
-		"1" => .95,
-		"12" => .9,
-		"24" => .85,
-		"48" => .8,
-		"168" => .75,
-		"336" => .7,
-		"672" => .6
+		"1" => .05,
+		"12" => .1,
+		"24" => .15,
+		"48" => .2,
+		"168" => .25,
+		"336" => .3,
+		"672" => .4
 	);
 ?>
 <h2>Handelsbörse</h2>
@@ -65,7 +65,8 @@
 
 	function refresh_costs()
 	{
-		document.getElementById('aktueller-ertrag').firstChild.data = Math.round(myParseInt(document.getElementById('i-menge').value) * prices[document.getElementById('i-angebot-rohstoff').value][document.getElementById('i-gewuenschter-rohstoff').value] * taxes[document.getElementById('i-angebotsdauer').value]);
+		document.getElementById('aktueller-ertrag').firstChild.data = Math.round(myParseInt(document.getElementById('i-menge').value) * prices[document.getElementById('i-angebot-rohstoff').value][document.getElementById('i-gewuenschter-rohstoff').value]);
+		document.getElementById('zusaetzliche-gebuehren').firstChild.data = Math.round(myParseInt(document.getElementById('i-menge').value) * taxes[document.getElementById('i-angebotsdauer').value]);
 	}
 // ]]>
 </script>
@@ -74,7 +75,8 @@
 	if(isset($_POST['res_offered']) && isset($_POST['amount']) && isset($_POST['res_requested']) && isset($_POST['min_price']) && isset($_POST['duration']) && in_array($_POST['res_offered'], array("1", "2", "3", "4", "5")) && in_array($_POST['res_requested'], array("1", "2", "3", "4", "5")) && $_POST['res_offered'] != $_POST['res_requested'] && $_POST['amount'] > 0 && in_array($_POST['duration'], array("1", "12", "24", "48", "168", "336", "672")))
 	{
 		$cur_ress = $me->getRess();
-		if($_POST['amount'] > $cur_ress[$_POST['res_offered']-1])
+		$incl_tax = round($_POST['amount']*(1+$taxes[$_POST['duration']]));
+		if($incl_tax > $cur_ress[$_POST['res_offered']-1])
 		{
 ?>
 <p class="error">Sie können nicht mehr anbieten als Sie besitzen.</p>
@@ -83,8 +85,8 @@
 		else
 		{
 			$ress = array(0, 0, 0, 0, 0);
-			$ress[$_POST['res_offered']-1] = -$_POST['amount'];
-			$market->addOrder($me->getName(), $me->getActivePlanet(), $_POST['res_offered'], round($_POST['amount']*$taxes[$_POST['duration']]), $_POST['res_requested'], round($_POST['min_price']/$_POST['amount'], 2), time()+$_POST['duration']*3600);
+			$ress[$_POST['res_offered']-1] = -$incl_tax;
+			$market->addOrder($me->getName(), $me->getActivePlanet(), $_POST['res_offered'], $_POST['amount'], $_POST['res_requested'], round($_POST['min_price']/$_POST['amount'], 2), time()+$_POST['duration']*3600);
 			$me->addRess($ress);
 ?>
 <p class="successful">Der Auftrag wurde hinzugefügt.</p>
@@ -112,10 +114,10 @@
 	{
 		$me->setActivePlanet($order['planet']);
 ?>
-		<tr>
+		<tr class="gebot-<?=htmlspecialchars($order['offered_resource'])?> ertrag-<?=htmlspecialchars($order['requested_resource'])?>">
 			<td class="c-planet"><a href="boerse.php?planet=<?=htmlspecialchars(urlencode($order['planet']))?>&amp;<?=htmlspecialchars(urlencode(session_name())."=".urlencode(session_id()))?>"><?=htmlspecialchars($me->planetName())?> <span class="koords">(<?=htmlspecialchars($me->getPosString())?>)</span></td>
-			<td class="c-gebot"><?=ths($order['amount'])?></td>
-			<td class="c-mindestertrag"><?=ths($order['amount']*$order['min_price'])?></td>
+			<td class="c-gebot"><span class="zahl"><?=ths($order['amount'])?></span> <?=htmlspecialchars($ress_names[$order['offered_resource']-1])?></td>
+			<td class="c-mindestertrag"><span class="zahl"><?=ths($order['amount']*$order['min_price'])?></span> <?=htmlspecialchars($ress_names[$order['requested_resource']-1])?></td>
 			<td class="c-gueltigkeit" id="restbauzeit-boerse-<?=htmlspecialchars($i)?>"><?=date('H:i:s, Y-m-d', $order['expiration'])?> (Serverzeit)</td>
 <?php
 		$countdowns["boerse-".$i] = $order['expiration'];
@@ -160,51 +162,55 @@
 		<dl>
 			<dt class="c-angebot"><label for="i-angebot-rohstoff">Angebot</label></dt>
 			<dd class="c-angebot">
-				<select name="res_offered" id="i-angebot-rohstoff" onchange="refresh_requests(); refresh_costs();" onkeypress="onchange()">
-					<option value="1">Carbon</option>
-					<option value="2">Aluminium</option>
-					<option value="3">Wolfram</option>
-					<option value="4">Radium</option>
-					<option value="5">Tritium</option>
+				<select name="res_offered" id="i-angebot-rohstoff" onchange="refresh_offers(); refresh_costs();" onkeypress="onchange()">
+					<option value="1"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 1){?> selected="selected"<?php }?>>Carbon</option>
+					<option value="2"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 2){?> selected="selected"<?php }?>>Aluminium</option>
+					<option value="3"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 3){?> selected="selected"<?php }?>>Wolfram</option>
+					<option value="4"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 4){?> selected="selected"<?php }?>>Radium</option>
+					<option value="5"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 5){?> selected="selected"<?php }?>>Tritium</option>
 				</select>
-				<input type="text" id="i-menge" name="amount" value="0" onchange="refresh_costs();" onkeypress="onchange();" onclick="onchange();" />
+				<input type="text" id="i-menge" name="amount" value="<?=isset($_POST['amount']) ? htmlspecialchars($_POST['amount']) : 0?>" onchange="refresh_costs();" onkeypress="onchange();" onclick="onchange();" />
 			</dd>
 
 			<dt class="c-gewuenschter-rohstoff"><label for="i-gewuenschter-rohstoff">Gewünschter Rohstoff</label></dt>
 			<dd class="c-gewuenschter-rohstoff">
 				<select name="res_requested" id="i-gewuenschter-rohstoff" onchange="refresh_costs();" onkeypress="onchange();">
-					<option value="1">Carbon</option>
-					<option value="2">Aluminium</option>
-					<option value="3">Wolfram</option>
-					<option value="4">Radium</option>
-					<option value="5">Tritium</option>
+					<option value="1"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 1){?> selected="selected"<?php }?>>Carbon</option>
+					<option value="2"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 2){?> selected="selected"<?php }?>>Aluminium</option>
+					<option value="3"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 3){?> selected="selected"<?php }?>>Wolfram</option>
+					<option value="4"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 4){?> selected="selected"<?php }?>>Radium</option>
+					<option value="5"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 5){?> selected="selected"<?php }?>>Tritium</option>
 				</select>
 			</dd>
 
 			<dt class="c-minimale-menge"><label for="i-minimale-menge">Minimale Menge</label></dt>
-			<dd class="c-minimale-menge"><input type="text" id="i-minimale-menge" name="min_price" value="0" onchange="refresh_costs();" onkeypress="onchange();" onclick="onchange();" /></dd>
+			<dd class="c-minimale-menge"><input type="text" id="i-minimale-menge" name="min_price" value="<?=isset($_POST['min_price']) ? htmlspecialchars($_POST['min_price']) : 0?>" onchange="refresh_costs();" onkeypress="onchange();" onclick="onchange();" /></dd>
 
 			<dt class="c-angebotsdauer"><label for="i-angebotsdauer">Angebotsdauer</label></dt>
 			<dd class="c-angebotsdauer">
 				<select name="duration" id="i-angebotsdauer" onchange="refresh_costs();" onkeypress="onchange();">
-					<option value="1">Eine Stunde (5&thinsp;%)</option>
-					<option value="12">Zwölf Stunden (10&thinsp;%)</option>
-					<option value="24">Einen Tag (15&thinsp;%)</option>
-					<option value="48">Zwei Tage (20&thinsp;%)</option>
-					<option value="168">Eine Woche (25&thinsp;%)</option>
-					<option value="336">Zwei Wochen (30&thinsp;%)</option>
-					<option value="672">Vier Wochen (40&thinsp;%)</option>
+					<option value="1"<?php if(isset($_POST['duration']) && $_POST['duration'] == 1){?> selected="selected"<?php }?>>Eine Stunde (5&thinsp;%)</option>
+					<option value="12"<?php if(isset($_POST['duration']) && $_POST['duration'] == 12){?> selected="selected"<?php }?>>Zwölf Stunden (10&thinsp;%)</option>
+					<option value="24"<?php if(isset($_POST['duration']) && $_POST['duration'] == 24){?> selected="selected"<?php }?>>Einen Tag (15&thinsp;%)</option>
+					<option value="48"<?php if(isset($_POST['duration']) && $_POST['duration'] == 48){?> selected="selected"<?php }?>>Zwei Tage (20&thinsp;%)</option>
+					<option value="168"<?php if(isset($_POST['duration']) && $_POST['duration'] == 168){?> selected="selected"<?php }?>>Eine Woche (25&thinsp;%)</option>
+					<option value="336"<?php if(isset($_POST['duration']) && $_POST['duration'] == 336){?> selected="selected"<?php }?>>Zwei Wochen (30&thinsp;%)</option>
+					<option value="672"<?php if(isset($_POST['duration']) && $_POST['duration'] == 672){?> selected="selected"<?php }?>>Vier Wochen (40&thinsp;%)</option>
 				</select>
 			</dd>
 
-			<dt class="c-aktueller-ertrag">Aktueller Ertrag</label></dt>
-			<dd class="c-aktueller-ertrag"><span id="aktueller-ertrag">0</span> (inklusive Gebühren)</dd>
+			<dt class="c-aktueller-ertrag">Aktueller Ertrag</dt>
+			<dd class="c-aktueller-ertrag" id="aktueller-ertrag">0</dd>
+
+			<dt class="c-zusaetzliche-gebuehren">Zusätzliche Gebühren</dt>
+			<dd class="c-zusaetzliche-gebuehren" id="zusaetzliche-gebuehren">0</dd>
 		</dl>
 		<div><button type="submit">Auftrag aufgeben</button></div>
 	</fieldset>
 </form>
 <script type="text/javascript">
 	refresh_offers();
+	refresh_costs();
 </script>
 <h3 class="boerse-kurs-heading">Kurs</h3>
 <table class="boerse-kurs">

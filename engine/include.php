@@ -78,6 +78,7 @@
 	global_setting('DB_DATABASES', $GDB_DIR.'/databases');
 	global_setting('DB_HOSTNAME', $GDB_DIR.'/hostname');
 	global_setting('EVENTHANDLER_INTERVAL', 2);
+	global_setting('EVENTHANDLER_MARKETCACHE', 10); # Wieviele Eventhandler-Intervalle sollen aus der Boersendatenbank gecacht werden?
 	global_setting('THS_HTML', '&nbsp;');
 	global_setting('THS_UTF8', "\xc2\xa0");
 	global_setting('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
@@ -90,6 +91,8 @@
 	global_setting('MIN_BUILDING_TIME', 12); # Minimale Bauzeit in Sekunden
 	global_setting('DATABASE_VERSION', 8); # Aktuelle Datenbankversion
 	global_setting('EVENTHANDLER_RUNTIME', 16200); # Sekunden seit Tagesbeginn, wann der Eventhandler laufen soll
+	global_setting('MARKET_MIN_AMOUNT', 10); # Das Wievielfache eines Angebotes muss insgesamt geboten worden sein, damit ein Auftrag angenommen wird?
+	global_setting('MARKET_MIN_USERS', 5); # Wieviele verschiedene Benutzer muessen den Rohstoff als Angebot auf dem Markt haben, damit ein Auftrag angenommen wird?
 
 	function define_globals($DB)
 	{ # Setzt diverse Spielkonstanten zu einer bestimmten Datenbank
@@ -212,6 +215,9 @@
 		7 => 4,
 		8 => 2
 	);
+
+	$ress_names = array("Carbon", "Aluminium", "Wolfram", "Radium", "Tritium");
+
 	# Fuer veroeffentlichte Nachrichten
 	$public_messages_time = 30;
 

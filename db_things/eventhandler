@@ -727,11 +727,24 @@ EOF
 		//else $last_walked = date('Y-m-d');
 		$last_walked = false;
 
+		$market_cache_refresh = global_setting('EVENTHANDLER_MARKETCACHE');
+		$market_cache = array();
+
 		fputs($errlog, time_prefix()."Eventhandler started.\n");
 
 		while(true)
 		{
 			check_termination();
+
+			$run_marketcache = false;
+
+			if($market_cache >= global_setting('EVENTHANDLER_MARKETCACHE'))
+			{
+				$run_marketcache = true;
+				$market_cache_run = 1;
+			}
+			else
+				$market_cache_run++;
 
 			# Flotten ankommen lassen
 			foreach($databases as $selected_database=>$dbinfo)
@@ -746,6 +759,21 @@ EOF
 					arrive($process['fleet']);
 					check_termination();
 				}
+
+				# Boerse abarbeiten
+				$market = new Market();
+				if($run_marketcache)
+					$market_cache[$selected_database] = $market->getFinishingOrdersList(time()+global_setting('EVENTHANDLER_MARKETCACHE')*global_setting('EVENTHANDLER_INTERVAL'));
+				check_termination();
+				foreach($market_cache[$selected_database] as $order)
+				{
+					if($order['finish'] <= time())
+						$market->finishOrder($order['id']);
+					else
+						break;
+					check_termination();
+				}
+
 				Classes::resetInstances();
 			}
 
