@@ -1559,7 +1559,7 @@
 	{
 		$list = array();
 		$encoded_sp = (strlen($encoded) > 0 ? explode(" ", $encoded) : array());
-		for($i=0; $i<count($encoded_sp); $i+=2)
+		for($i=0; $i<count($encoded_sp); $i++)
 			$list[$encoded_sp[$i]] = (float)$encoded_sp[++$i];
 		return $list;
 	}
