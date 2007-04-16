@@ -89,7 +89,7 @@
 		public function acceptOrder($id, $transaction=false)
 		{
 			# TODO: Benachrichtigung
-			$q = "UPDATE market SET finish = ".$this->escape(time()+7200)." WHERE id = ".$this->escape($id).";";
+			$q = "UPDATE market SET finish = ".$this->escape(time()+global_setting('MARKET_DELAY'))." WHERE id = ".$this->escape($id).";";
 			if($transaction)
 				$this->transactionQuery($q);
 			else
