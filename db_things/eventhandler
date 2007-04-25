@@ -801,7 +801,7 @@ EOF
 						{
 							if(!isset($jabber_messengers[$next_notification['protocol']]))
 								continue;
-							$to .= '@'.$jabber_messengers[$next_notification['protocol']]['server'];
+							$to = str_replace('@', '%', '@'.$jabber_messengers[$next_notification['protocol']]['server']);
 						}
 
 						$message = "Automatische Benachrichtigung von http://".$hostname."/, ".$databases[$next_notification['database']]['name'].", ".$next_notification['username'].":\n";
@@ -823,7 +823,7 @@ EOF
 							if(substr($from, -strlen($t['server'])-1) == '@'.$t['server'])
 							{
 								$transport = $tn;
-								$from = substr($from, 0, -strlen($t['server'])-1);
+								$from = str_replace('%', '@', substr($from, 0, -strlen($t['server'])-1));
 								break;
 							}
 						}
