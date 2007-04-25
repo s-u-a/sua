@@ -801,7 +801,7 @@ EOF
 						{
 							if(!isset($jabber_messengers[$next_notification['protocol']]))
 								continue;
-							$to = str_replace('@', '%', $to).'@'.$jabber_messengers[$next_notification['protocol']]['server']);
+							$to = str_replace('@', '%', $to).'@'.$jabber_messengers[$next_notification['protocol']]['server'];
 						}
 
 						$message = "Automatische Benachrichtigung von http://".$hostname."/, ".$databases[$next_notification['database']]['name'].", ".$next_notification['username'].":\n";
