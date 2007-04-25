@@ -646,6 +646,7 @@ EOF
 		{
 			global $jabber;
 			global $jabber_messengers;
+			global $jabber_auth_info;
 			global $errlog;
 
 			if(!$jabber->Connect() || !$jabber->SendAuth())
@@ -654,17 +655,17 @@ EOF
 				return false;
 			}
 
-			$jabber->SendPresence(NULL, NULL, "online");
+			$jabber->SendPresence(NULL, NULL, "online", NULL, (isset($jabber_auth_info['priority']) ? $jabber_auth_info['priority'] : 100));
 
 			# Transports
-			foreach($jabber_messengers as $m=>$ai)
+			/*foreach($jabber_messengers as $m=>$ai)
 			{
 				if($m == 'jabber') continue;
 
 				$m = strtolower($m);
 
 				$jabber->TransportRegistration($ai['server'], $ai);
-			}
+			}*/
 
 			return true;
 		}
