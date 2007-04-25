@@ -697,7 +697,7 @@ EOF
 		$jabber = new Jabber();
 		$jabber->server = $jabber_auth_info['server'];
 		$jabber->port = 5222;
-		$jabber->resource = false;
+		$jabber->resource = "Eventhandler";
 		$imfile = Classes::IMFile();
 
 		if(!$jabber_auth_info || !isset($jabber_auth_info['username']) || !isset($jabber_auth_info['password']))

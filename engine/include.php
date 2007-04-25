@@ -1253,7 +1253,7 @@
 				$messenger_parsed_file = parse_ini_file(global_setting("DB_MESSENGERS"), true);
 				foreach($messenger_parsed_file as $k=>$v)
 				{
-					if(!is_array($v) || !isset($v['server']) || !isset($v['username']) || !isset($v['server']))
+					if(!is_array($v) || !isset($v['server']))
 						unset($messenger_parsed_file[$k]);
 				}
 			}
