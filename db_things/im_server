@@ -34,6 +34,7 @@
  	//$jabber->set_handler("subscribe", $imserver, "handleSubscribe");
 	$jabber->set_handler("debug_log", $imserver, "handleLog");
 	$jabber->set_handler("servicefields", $imserver, "handleServicefields");
+	$jabber->set_handler("heartbeat", $imserver, "handleHeartbeat");
 
 	$imserver->connect();
 
@@ -112,7 +113,7 @@
 					$to = str_replace('@', '%', $to).'@'.$messengers[$next_notification['protocol']]['server'];
 				}
 
-				$message = "Automatische Benachrichtigung von http://".$hostname."/, ".$databases[$next_notification['database']]['name'].", ".$next_notification['username'].":\n";
+				$message = "Automatische Benachrichtigung von http://".get_default_hostname()."/, ".$databases[$next_notification['database']]['name'].", ".$next_notification['username'].":\n";
 				$message .= $next_notification['message'];
 
 				$jabber->message($to, "normal", null, $message);

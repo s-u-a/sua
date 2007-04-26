@@ -284,7 +284,7 @@ EOF
 
 			if(!$pid || $pid == -1)
 			{
-				if($pid != -1) set_time_limit(30);
+				#if($pid != -1) set_time_limit(600);
 
 				$fleet = Classes::Fleet($fleet_id);
 
@@ -616,9 +616,8 @@ EOF
 		$hostname = get_default_hostname();
 		$fposition = 0;
 
-		//if(date('H')*3600+date('i')*60+60 < global_setting("EVENTHANDLER_RUNTIME")) $last_walked = false;
-		//else $last_walked = date('Y-m-d');
-		$last_walked = false;
+		if(date('H')*3600+date('i')*60+60 < global_setting("EVENTHANDLER_RUNTIME")) $last_walked = false;
+		else $last_walked = date('Y-m-d');
 
 		fputs($errlog, time_prefix()."Eventhandler started.\n");
 
@@ -648,7 +647,7 @@ EOF
 			if(date('H')*3600+date('i')*60+60 > global_setting("EVENTHANDLER_RUNTIME") && $last_walked != date('Y-m-d')) // 4:30 Uhr
 			{
 				$last_walked = date('Y-m-d');
-				if(function_exists('pcntl_fork'))
+				if(false && function_exists('pcntl_fork'))
 				{
 					Classes::resetInstances();
 					$pid = pcntl_fork();
