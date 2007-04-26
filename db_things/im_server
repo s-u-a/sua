@@ -17,6 +17,7 @@
 	$imserver = new IMServer();
 	$imfile = new IMFile();
 	$messengers = get_messenger_info();
+	$databases = get_databases();
 
 	if(!$messengers || !isset($messengers["jabber"]))
 	{
@@ -101,7 +102,7 @@
 
 		function handleHeartbeat()
 		{
-			global $jabber,$messengers,$imfile;
+			global $jabber,$messengers,$imfile,$databases;
 
 			while($next_notification = $imfile->shiftNextMessage())
 			{
@@ -125,9 +126,10 @@
 			global $jabber,$messengers,$imfile;
 
 			$transport = 'jabber';
+			list($from_cut) = explode("/", $from);
 			foreach($messengers as $tn=>$t)
 			{
-				if(preg_match("/^([^@]+)@".preg_quote($t['server'], '/')."(\\/|\$)/", $from, $match))
+				if(preg_match("/^([^@]+)@".preg_quote($t['server'], '/')."\$/", $from_cut, $match))
 				{
 					$transport = $tn;
 					$from_cut = str_replace('%', '@', $match[1]);
@@ -135,7 +137,7 @@
 				}
 			}
 
-			$username = $imfile->checkCheckID($from, $transport, trim($message));
+			$username = $imfile->checkCheckID($from_cut, $transport, trim($message));
 			if($username && define_globals($username[1]))
 			{
 				$user = Classes::User($username[0]);
