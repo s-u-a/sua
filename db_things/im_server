@@ -1,0 +1,180 @@
+#!/usr/bin/php
+<?php
+	chdir(dirname(__FILE__));
+	chdir('..');
+
+	$USE_OB = false;
+
+	require("engine/include.php");
+
+	error_reporting(7);
+	require_once("jabberclass/class_Jabber.php");
+
+	set_time_limit(0);
+
+	$jabber = new Jabber(false);
+	$jabber->terminated = true;
+	$imserver = new IMServer();
+	$imfile = new IMFile();
+	$messengers = get_messenger_info();
+
+	if(!$messengers || !isset($messengers["jabber"]))
+	{
+		fputs(STDERR, "No jabber account is configured.\n");
+		exit(1);
+	}
+
+	$jabber->set_handler("connected", $imserver, "handleConnected");
+	$jabber->set_handler("authenticated", $imserver, "handleAuthenticated");
+	$jabber->set_handler("error", $imserver, "handleError");
+	$jabber->set_handler("authfailure", $imserver, "handleAuthfailure");
+	$jabber->set_handler("message_chat", $imserver, "handleMessage");
+	$jabber->set_handler("message_normal", $imserver, "handleMessage");
+	$jabber->set_handler("disconnected", $imserver, "connect");
+ 	//$jabber->set_handler("subscribe", $imserver, "handleSubscribe");
+	$jabber->set_handler("debug_log", $imserver, "handleLog");
+	$jabber->set_handler("servicefields", $imserver, "handleServicefields");
+
+	$imserver->connect();
+
+	class IMServer
+	{
+		public function connect()
+		{
+			global $jabber,$messengers;
+
+			output("Connecting to server ".$messengers["jabber"]["server"]);
+			$jabber->connect($messengers["jabber"]["server"]);
+
+			if($jabber->terminated)
+			{
+				output("Starting running");
+				$jabber->execute(1);
+			}
+		}
+
+		public function handleConnected()
+		{
+			global $jabber,$messengers;
+
+			output("Connected. Logging in with username ".$messengers["jabber"]["username"]);
+			$jabber->login($messengers["jabber"]["username"], $messengers["jabber"]["password"], (isset($messengers["jabber"]["resource"]) ? $messengers["jabber"]["resource"] : "daemon"));
+		}
+
+		public function handleAuthenticated()
+		{
+			global $jabber,$messengers;
+
+			output("Logged in. Browsing for transports.");
+			$jabber->browse();
+
+			output("Setting presence.");
+			$jabber->set_presence(true, null, null, (isset($messengers["jabber"]["priority"]) ? $messengers["jabber"]["priority"] : 100));
+
+			output("Checking transports.");
+			foreach($messengers as $id=>$messenger)
+			{
+				if($id == "jabber") continue;
+
+				if(!isset($messenger["username_field"]) || !isset($messenger["password_field"]))
+					$jabber->query_service_fields($messenger["server"]);
+				/* Hier muesste der Transport hinzugefuegt werden. */
+			}
+		}
+
+		public function handleAuthFailure()
+		{
+			fputs(STDERR, "Could not log in.");
+			exit(1);
+		}
+
+		function handleServicefields($fields, $packet_id, $reg_key, $reg_instructions, $reg_x)
+		{
+			var_dump(func_get_args());
+		}
+
+		function handleError($code, $error, $xmlns)
+		{
+			fputs(STDERR, "Error: ".$error." (".$code.")".($xmlns ? " in ".$xmlns : "")."\n");
+		}
+
+		function handleHeartbeat()
+		{
+			global $jabber,$messengers,$imfile;
+
+			while($next_notification = $imfile->shiftNextMessage())
+			{
+				$to = $next_notification['uin'];
+				if($next_notification['protocol'] != 'jabber')
+				{
+					if(!isset($jabber_messengers[$next_notification['protocol']]))
+						continue;
+					$to = str_replace('@', '%', $to).'@'.$jabber_messengers[$next_notification['protocol']]['server'];
+				}
+
+				$message = "Automatische Benachrichtigung von http://".$hostname."/, ".$databases[$next_notification['database']]['name'].", ".$next_notification['username'].":\n";
+				$message .= $next_notification['message'];
+
+				$jabber->message($to, "normal", null, $message);
+			}
+		}
+
+		function handleMessage($from, $to, $message)
+		{
+			global $jabber,$messengers,$imfile;
+
+			$transport = 'jabber';
+			foreach($messengers as $tn=>$t)
+			{
+				if(preg_match("/^([^@]+)@".preg_quote($t['server'], '/')."(\\/|\$)/", $from, $match))
+				{
+					$transport = $tn;
+					$from_cut = str_replace('%', '@', $match[1]);
+					break;
+				}
+			}
+
+			$username = $imfile->checkCheckID($from, $transport, trim($message));
+			if($username && define_globals($username[1]))
+			{
+				$user = Classes::User($username[0]);
+				$old_settings = $user->getNotificationType();
+				if($user->getStatus() == 1 && $user->doSetNotificationType($from_cut, $transport))
+				{
+					$imfile->removeChecks($username[0]);
+
+					if($old_settings)
+						$imfile->changeUIN($username[0], $from_cut, $transport);
+					else
+					{
+						foreach($user->getPlanetsList() as $planet)
+						{
+							$user->setActivePlanet($planet);
+							$user->refreshMessengerBuildingNotifications();
+						}
+					}
+
+					$jabber->message($from, 'normal', null, 'Accepted');
+				}
+				unset($user);
+				Classes::resetInstances();
+			}
+			else $jabber->message($from, 'normal', null, 'Unrecognised command');
+		}
+
+		function handleSubscribe($packet)
+		{
+			var_dump($packet);
+		}
+
+		function handleLog($msg)
+		{
+			var_dump($msg);
+		}
+	}
+
+	function output($message)
+	{
+		fputs(STDOUT, $message."\n");
+	}
+?>

@@ -12,7 +12,6 @@
 		$error = false;
 		$daemon = false;
 		$verbose = 0;
-		$use_jabber = $wanna_use_jabber = true;
 		$handelskurs_only = false;
 
 		$getopt_exists = false;
@@ -28,7 +27,7 @@
 		if($getopt_exists)
 		{
 			require_once('Console/Getopt.php'); # PEAR
-			$options = Console_Getopt::getopt($_SERVER['argv'], 'hdDvqjJe', array('help', 'daemon', 'no-daemon', 'verbose', 'quiet', 'jabber', 'no-jabber', 'handelskurs'));
+			$options = Console_Getopt::getopt($_SERVER['argv'], 'hdDvqe', array('help', 'daemon', 'no-daemon', 'verbose', 'quiet', 'handelskurs'));
 			if($options instanceof PEAR_Error)
 			{
 				fputs(STDERR, $options->message."\n");
@@ -54,12 +53,6 @@
 					case 'q': case '--quiet':
 						$verbose--;
 						break;
-					case 'j': case '--jabber':
-						$use_jabber = $wanna_use_jabber = true;
-						break;
-					case 'J': case '--no-jabber':
-						$use_jabber = $wanna_use_jabber = false;
-						break;
 					case 'e': case '--handelskurs':
 						$handelskurs_only = true;
 						break;
@@ -81,8 +74,6 @@ Options:
   -D, --no-daemon:    Do not run in background (default)
   -v, --verbose:      Verbose output
   -q, --quiet:        Quiet output
-  -j, --jabber:       Use jabber (default)
-  -J, --no-jabber:    Do not use jabber
   -e, --handelskurs:  Calculate Handelskurs and exit
 
 EOF
@@ -141,21 +132,12 @@ EOF
 		function check_termination()
 		{
 			global $errlog;
-			global $use_jabber;
-			global $jabber;
 			global $fh_pid;
 			global $daemon;
 			global $handelskurs_only;
 
 			if(defined('terminate') && terminate)
 			{
-				if(!$handelskurs_only && $use_jabber && $jabber->connected)
-				{
-					fputs($errlog, time_prefix()."Disconnecting Jabber client... ");
-					$jabber->Disconnect();
-					fputs($errlog, "Done.\n");
-				}
-
 				fputs($errlog, time_prefix()."Terminated.\n\n");
 
 				ftruncate($fh_pid, 0);
@@ -249,36 +231,6 @@ EOF
 					global $databases;
 					$databases = get_databases(true);
 					fputs($errlog, "Done\n");
-
-					global $use_jabber,$wanna_use_jabber,$jabber,$jabber_messengers,$jabber_auth_info;
-					if($wanna_use_jabber)
-					{
-						if($use_jabber && $jabber->connected)
-						{
-							fputs($errlog, time_prefix()."Disconnecting Jabber and rescanning config... ");
-							$jabber->Disconnect();
-						}
-						else
-							fputs($errlog, time_prefix()."Rescanning Jabber config... ");
-						$jabber_messengers = get_messenger_info(false, true);
-						$jabber_auth_info = get_messenger_info('jabber');
-						fputs($errlog, "Done.\n");
-
-						if(!$jabber_auth_info || !isset($jabber_auth_info['username']) || !isset($jabber_auth_info['password']))
-						{
-							fputs($errlog, time_prefix()."Notice: no Jabber account information. Won't use instant messaging.\n");
-							$use_jabber = false;
-						}
-						else
-						{
-							$use_jabber = true;
-							$jabber->username = $jabber_auth_info['username'];
-							$jabber->password = $jabber_auth_info['password'];
-							fputs($errlog, time_prefix()."Reconnecting Jabber... ");
-							connect_jabber();
-							fputs($errlog, "Done.\n");
-						}
-					}
 
 					break;
 				case SIGUSR2:
@@ -641,35 +593,6 @@ EOF
 
 			fputs($errlog, time_prefix()."Finished.\n\n");
 		}
-
-		function connect_jabber()
-		{
-			global $jabber;
-			global $jabber_messengers;
-			global $jabber_auth_info;
-			global $errlog;
-
-			if(!$jabber->Connect() || !$jabber->SendAuth())
-			{
-				fputs($errlog, time_prefix()."Warning: Could not connect to Jabber server.\n");
-				return false;
-			}
-
-			$jabber->SendPresence(NULL, NULL, "online", NULL, (isset($jabber_auth_info['priority']) ? $jabber_auth_info['priority'] : 100));
-
-			# Transports
-			/*foreach($jabber_messengers as $m=>$ai)
-			{
-				if($m == 'jabber') continue;
-
-				$m = strtolower($m);
-
-				$jabber->TransportRegistration($ai['server'], $ai);
-			}*/
-
-			return true;
-		}
-
 	}
 
 
@@ -684,37 +607,6 @@ EOF
 		}
 		exit(0);
 	}
-
-
-	#####################
-	### Jabber-Client ###
-	#####################
-
-	if($wanna_use_jabber)
-	{
-		$jabber_messengers = get_messenger_info();
-		$jabber_auth_info = get_messenger_info('jabber');
-		$jabber = new Jabber();
-		$jabber->server = $jabber_auth_info['server'];
-		$jabber->port = 5222;
-		$jabber->resource = "Eventhandler";
-		$imfile = Classes::IMFile();
-
-		if(!$jabber_auth_info || !isset($jabber_auth_info['username']) || !isset($jabber_auth_info['password']))
-		{
-			fputs($errlog, time_prefix()."Notice: no Jabber account information. Won't use instant messaging.\n");
-			$use_jabber = false;
-		}
-		else
-		{
-			$jabber->username = $jabber_auth_info['username'];
-			$jabber->password = $jabber_auth_info['password'];
-			fputs($errlog, time_prefix()."Connecting Jabber client... ");
-			connect_jabber();
-			fputs($errlog, "Done.\n");
-		}
-	}
-
 
 	#################
 	### Durchlauf ###
@@ -775,86 +667,6 @@ EOF
 						Classes::resetInstances();
 					}
 					if($pid != -1) exit(0);
-				}
-			}
-
-			# Jabber-Nachrichten ueberpruefen
-			if($use_jabber)
-			{
-				if(!$jabber->connected)
-				{
-					fputs($errlog, time_prefix()."Disconnected. Trying to reconnect.\n");
-					connect_jabber();
-
-					if($jabber->connected)
-						fputs($errlog, time_prefix()."Reconnected!\n");
-					else
-						fputs($errlog, time_prefix()."Couldn't reconnect.\n");
-				}
-
-				if($jabber->connected)
-				{
-					while($next_notification = $imfile->shiftNextMessage())
-					{
-						$to = $next_notification['uin'];
-						if($next_notification['protocol'] != 'jabber')
-						{
-							if(!isset($jabber_messengers[$next_notification['protocol']]))
-								continue;
-							$to = str_replace('@', '%', $to).'@'.$jabber_messengers[$next_notification['protocol']]['server'];
-						}
-
-						$message = "Automatische Benachrichtigung von http://".$hostname."/, ".$databases[$next_notification['database']]['name'].", ".$next_notification['username'].":\n";
-						$message .= $next_notification['message'];
-
-						$jabber->SendMessage($to, 'normal', NULL, array('body' => htmlspecialchars($message)));
-					}
-
-					$jabber->Listen();
-					while($p = array_shift($jabber->packet_queue))
-					{
-						if(!isset($p['message']) || !isset($p['message']['#']['body'])) continue;
-
-						$message = $p['message']['#']['body'][0]['#'];
-						list($from) = explode('/', $p['message']['@']['from'], 2);
-						$transport = 'jabber';
-						foreach($jabber_messengers as $tn=>$t)
-						{
-							if(substr($from, -strlen($t['server'])-1) == '@'.$t['server'])
-							{
-								$transport = $tn;
-								$from = str_replace('%', '@', substr($from, 0, -strlen($t['server'])-1));
-								break;
-							}
-						}
-
-						$username = $imfile->checkCheckID($from, $transport, trim($message));
-						if($username && define_globals($username[1]))
-						{
-							$user = Classes::User($username[0]);
-							$old_settings = $user->getNotificationType();
-							if($user->getStatus() == 1 && $user->doSetNotificationType($from, $transport))
-							{
-								$imfile->removeChecks($username[0]);
-
-								if($old_settings)
-									$imfile->changeUIN($username[0], $from, $transport);
-								else
-								{
-									foreach($user->getPlanetsList() as $planet)
-									{
-										$user->setActivePlanet($planet);
-										$user->refreshMessengerBuildingNotifications();
-									}
-								}
-
-								$jabber->sendMessage($p['message']['@']['from'], 'normal', NULL, array('body' => 'Accepted'));
-							}
-							unset($user);
-							Classes::resetInstances();
-						}
-						else $jabber->sendMessage($p['message']['@']['from'], 'normal', NULL, array('body' => 'Unrecognised command'));
-					}
 				}
 			}
 

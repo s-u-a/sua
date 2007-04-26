@@ -11,3 +11,5 @@ server = icq.amessage.info
 username = 123456789
 password = foo
 blocked = 123456789
+username_field = username
+password_field = password
