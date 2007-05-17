@@ -192,18 +192,15 @@
 			return true;
 		}
 
-		function destroy($delete_from_users=true)
+		function destroy()
 		{
 			if(!$this->status) return false;
 			self::databaseInstance();
 
-			if($delete_from_users)
+			foreach($this->raw[1] as $user=>$info)
 			{
-				foreach($this->raw[1] as $user=>$info)
-				{
-					$user_obj = Classes::User($user);
-					$user_obj->unsetFleet($this->getName());
-				}
+				$user_obj = Classes::User($user);
+				$user_obj->unsetFleet($this->getName());
 			}
 
 			self::$database->deleteFleet($this->name);
@@ -699,13 +696,14 @@
 			$new_raw[1][$user][3][2] += $back_tritium;
 
 			unset($this->raw[1][$user]);
+
 			if(count($this->raw[1]) <= 0)
 			{
 				# Aus der Eventdatei entfernen
 				$event_obj = Classes::EventFile();
 				$event_obj->removeCanceledFleet($this->getName());
 
-				$this->destroy(false);
+				$this->destroy();
 			}
 
 			$new = Classes::Fleet();
