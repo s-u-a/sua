@@ -696,15 +696,14 @@
 			$new_raw[1][$user][3][2] += $back_tritium;
 
 			unset($this->raw[1][$user]);
+
 			if(count($this->raw[1]) <= 0)
 			{
 				# Aus der Eventdatei entfernen
 				$event_obj = Classes::EventFile();
 				$event_obj->removeCanceledFleet($this->getName());
 
-				unlink($this->filename) or chmod($this->filename, 0);
-				$this->status = false;
-				$this->changed = false;
+				$this->destroy();
 			}
 
 			$new = Classes::Fleet();

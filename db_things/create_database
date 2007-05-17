@@ -19,14 +19,12 @@ echo 5 > $1/handelskurs
 echo 3.75 > $1/handelskurs
 echo 2.5 > $1/handelskurs
 echo 1 > $1/handelskurs
-mkdir $1/fleets
 mkdir $1/items
 ln -s $CWD/gebaeude $1/items/gebaeude
 ln -s $CWD/forschung $1/items/forschung
 ln -s $CWD/roboter $1/items/roboter
 ln -s $CWD/schiffe $1/items/schiffe
 ln -s $CWD/verteidigung $1/items/verteidigung
-mkdir $1/messages_public
 mkdir $1/players
 mkdir $1/truemmerfelder
 mkdir $1/universe

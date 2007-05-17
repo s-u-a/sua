@@ -21,17 +21,16 @@
 	$eventfile = Classes::EventFile();
 	$eventfile->_empty();
 
-	$dh = opendir(global_setting("DB_FLEETS"));
-	while(($fname = readdir($dh)) !== false)
+	__autoload("Fleet");
+	$fd = new FleetDatabase();
+	$fd->query("SELECT fleet_id FROM fleets");
+	while($r = $fd->nextResult())
 	{
-		if($fname == '.' || $fname == '..') continue;
-
-		$fleet_id = urldecode($fname);
+		$fleet_id = $r['fleet_id'];
 		$fleet = new Fleet($fleet_id);
 		if(!$fleet->getStatus()) continue;
 
 		$eventfile->addNewFleet($fleet->getNextArrival(), $fleet_id);
 		unset($fleet);
 	}
-	closedir($dh);
 ?>

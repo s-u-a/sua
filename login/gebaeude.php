@@ -119,7 +119,7 @@
 		$geb = $me->getItemInfo($id, 'gebaeude');
 		$building = false;
 
-		if(!$geb['deps-okay']) # Abhaengigkeiten nicht erfuellt
+		if(!$geb['deps-okay'] && $geb['level'] <= 0) # Abhaengigkeiten nicht erfuellt
 			continue;
 ?>
 <div class="item gebaeude" id="item-<?=htmlentities($id)?>">

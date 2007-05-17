@@ -1253,7 +1253,7 @@
 				$messenger_parsed_file = parse_ini_file(global_setting("DB_MESSENGERS"), true);
 				foreach($messenger_parsed_file as $k=>$v)
 				{
-					if(!is_array($v) || !isset($v['server']) || !isset($v['username']) || !isset($v['server']))
+					if(!is_array($v) || !isset($v['server']))
 						unset($messenger_parsed_file[$k]);
 				}
 			}
@@ -1559,7 +1559,7 @@
 	{
 		$list = array();
 		$encoded_sp = (strlen($encoded) > 0 ? explode(" ", $encoded) : array());
-		for($i=0; $i<count($encoded_sp); $i+=2)
+		for($i=0; $i<count($encoded_sp); $i++)
 			$list[$encoded_sp[$i]] = (float)$encoded_sp[++$i];
 		return $list;
 	}
