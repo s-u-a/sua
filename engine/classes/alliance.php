@@ -49,6 +49,26 @@
 						$message->addUser($member, 7);
 					}
 				}
+
+				$applicants = $this->getApplicationsList();
+				if(count($applicants) > 0)
+				{
+					$message = Classes::Message();
+					if($message->create())
+					{
+						$message->subject("Allianz aufgel\xc3\xb6st");
+						$message->text("Die Allianz ".$this->getName()." wurde aufgelöst. Ihre Bewerbung wurde deshalb zurückgewiesen.");
+						foreach($applicants as $applicant)
+							$message->addUser($applicant, 7);
+					}
+				}
+
+				foreach($applicants as $applicant)
+				{
+					$user = Classes::User($applicant);
+					$user_obj->cancelAllianceApplication(false);
+				}
+
 				$i = count($members);
 				foreach($members as $member)
 				{
