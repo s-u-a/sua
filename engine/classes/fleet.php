@@ -192,15 +192,18 @@
 			return true;
 		}
 
-		function destroy()
+		function destroy($delete_from_users=true)
 		{
 			if(!$this->status) return false;
 			self::databaseInstance();
 
-			foreach($this->raw[1] as $user=>$info)
+			if($delete_from_users)
 			{
-				$user_obj = Classes::User($user);
-				$user_obj->unsetFleet($this->getName());
+				foreach($this->raw[1] as $user=>$info)
+				{
+					$user_obj = Classes::User($user);
+					$user_obj->unsetFleet($this->getName());
+				}
 			}
 
 			self::$database->deleteFleet($this->name);
@@ -702,9 +705,7 @@
 				$event_obj = Classes::EventFile();
 				$event_obj->removeCanceledFleet($this->getName());
 
-				unlink($this->filename) or chmod($this->filename, 0);
-				$this->status = false;
-				$this->changed = false;
+				$this->destroy(false);
 			}
 
 			$new = Classes::Fleet();
