@@ -23,7 +23,7 @@
 	$fd->query("SELECT fleet_id FROM fleets");
 	while($r = $fd->nextResult())
 	{
-		$fleet = Classes::Fleet($r);
+		$fleet = Classes::Fleet($r["fleet_id"]);
 		if($fleet->getStatus() != 1)
 			fputs(STDERR, "Error: Could not not process fleet ".$fleet->getName().".\n");
 		$callback = false;
