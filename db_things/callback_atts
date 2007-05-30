@@ -18,13 +18,12 @@
 		}
 	}
 
-	$dh = opendir(global_setting("DB_FLEETS"));
-	while(($fname = readdir($dh)) !== false)
+	__autoload("Fleet");
+	$fd = new FleetDatabase();
+	$fd->query("SELECT fleet_id FROM fleets");
+	while($r = $fd->nextResult())
 	{
-		$path = global_setting("DB_FLEETS")."/".$fname;
-		if(!is_file($path)) continue;
-
-		$fleet = Classes::Fleet(urldecode($fname));
+		$fleet = Classes::Fleet($r);
 		if($fleet->getStatus() != 1)
 			fputs(STDERR, "Error: Could not not process fleet ".$fleet->getName().".\n");
 		$callback = false;
@@ -46,5 +45,4 @@
 			}
 		}
 	}
-	closedir($dh);
 ?>
