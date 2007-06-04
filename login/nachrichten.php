@@ -389,27 +389,31 @@
 ?>
 <h2><a href="nachrichten.php?<?=htmlentities(session_name().'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" accesskey="w" tabindex="4">Nachrichten</a>: <?=utf8_htmlentities($message_type_names[$_GET['type']])?></h2>
 <?php
-			$messages_list = $me->getMessagesList($_GET['type']);
-			if(count($messages_list) > 0)
+			if(isset($_POST['message']) && is_array($_POST['message']))
 			{
-				if(isset($_POST['read']) && isset($_POST['message']) && is_array($_POST['message']))
+				if(isset($_POST['read']))
 				{
 					# Als gelesen markieren
 					foreach($_POST['message'] as $message_id=>$v)
 						$me->setMessageStatus($message_id, $_GET['type'], 0);
 				}
-				elseif(isset($_POST['delete']) && isset($_POST['message']) && is_array($_POST['message']))
+				elseif(isset($_POST['delete']))
 				{
 					# Loeschen
 					foreach($_POST['message'] as $message_id=>$v)
 						$me->removeMessage($message_id, $_GET['type']);
 				}
-				elseif(isset($_POST['archive']) && isset($_POST['message']) && is_array($_POST['message']))
+				elseif(isset($_POST['archive']))
 				{
 					# Archivieren
 					foreach($_POST['message'] as $message_id=>$v)
 						$me->setMessageStatus($message_id, $_GET['type'], 2);
 				}
+			}
+
+			$messages_list = $me->getMessagesList($_GET['type']);
+			if(count($messages_list) > 0)
+			{
 ?>
 <script type="text/javascript">
 // <![CDATA[
