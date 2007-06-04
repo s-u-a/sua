@@ -26,6 +26,7 @@
 				'description' => '',
 				'description_parsed' => '',
 				'flotten' => array(),
+				'flotten_passwds' => array(),
 				'alliance' => false
 			);
 
@@ -3240,6 +3241,55 @@
 					}
 					break;
 			}
+			return true;
+		}
+
+		function resolveFleetPasswd($passwd)
+		{
+			if(!$this->status) return false;
+
+			if(!isset($this->raw["flotten_passwds"]) || !isset($this->raw["flotten_passwds"][$passwd])) return null;
+			$fleet_id = $this->raw["flotten_passwds"][$passwd];
+
+			# Ueberpruefen, ob die Flotte noch die Kriterien erfuellt, ansonsten aus der Liste loeschen
+			$fleet = Classes::Fleet($fleet_id);
+			if($fleet->getCurrentType() != 3 || $fleet->isFlyingBack() || array_search($this->getName(), $fleet->getUsersList()) !== 0)
+			{
+				unset($this->raw["flotten_passwds"][$passwd]);
+				$this->changed = true;
+				return null;
+			}
+
+			return $fleet_id;
+		}
+
+		function getFleetPasswd($fleet_id)
+		{
+			if(!$this->status) return false;
+
+			if(!isset($this->raw["flotten_passwds"]) || ($idx = array_search($fleet_id, $this->raw["flotten_passwds"])) === false)
+				return null;
+			return $idx;
+		}
+
+		function changeFleetPasswd($fleet_id, $passwd)
+		{
+			if(!$this->status) return false;
+
+			if(!isset($this->raw["flotten_passwds"]))
+				$this->raw["flotten_passwds"] = array();
+
+			$old_passwd = $this->getFleetPasswd($fleet_id);
+			if(($old_passwd === null || $old_passwd != $passwd) && $this->resolveFleetPasswd($passwd) !== null)
+				return false;
+
+			if($old_passwd !== null)
+				unset($this->raw["flotten_passwds"][$old_passwd]);
+
+			if($passwd)
+				$this->raw["flotten_passwds"][$passwd] = $fleet_id;
+
+			$this->changed = true;
 			return true;
 		}
 	}

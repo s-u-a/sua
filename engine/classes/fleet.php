@@ -504,7 +504,6 @@
 			return true;
 		}
 
-
 		function getTransport($user)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
@@ -585,7 +584,7 @@
 			return $this->calcTime($user, $from, $to);
 		}
 
-		function calcTime($user, $from, $to)
+		function calcTime($user, $from, $to, $use_min_time=true)
 		{
 			if(!$this->status || !isset($this->raw[1][$user]) || count($this->raw[1][$user]) <= 0) return false;
 
@@ -603,6 +602,9 @@
 
 			$global_factors = get_global_factors();
 			$time *= $global_factors['time'];
+
+			if($use_min_time && $time < global_setting("MIN_BUILDING_TIME"))
+				$time = global_setting("MIN_BUILDING_TIME");
 
 			return $time;
 		}
@@ -1321,7 +1323,7 @@ EOF
 								$message_obj = Classes::Message();
 								if($message_obj->create())
 								{
-									if($username != $target_owner)
+									if($username == $target_owner && !isset($this->raw[1][$username]))
 									{
 										$message_obj->subject('Ankunft eines fremden Transportes auf '.$next_target_nt);
 										$users = array_keys($this->raw[1]);

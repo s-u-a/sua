@@ -9,23 +9,30 @@
 	switch($_GET['action'])
 	{
 		case 'handel':
+		{
 			if(!isset($_GET['id'])) $flotten_id = false;
 			else $flotten_id = $_GET['id'];
 
-			$fleet = Classes::Fleet($_GET['id']);
-			if(!$fleet->getStatus()) $flotten_id = false;
-			$flotten_id = $fleet->getName();
+			if($flotten_id)
+			{
+				$fleet = Classes::Fleet($flotten_id);
+				if(!$fleet->getStatus()) $flotten_id = false;
+				$flotten_id = $fleet->getName();
 
-			$planet_key = $me->getPlanetByPos($fleet->getCurrentTarget());
-			$type = $fleet->getCurrentType();
+				if($flotten_id)
+				{
+					$planet_key = $me->getPlanetByPos($fleet->getCurrentTarget());
+					$type = $fleet->getCurrentType();
 
-			if($planet_key === false || $type != '4' || $fleet->isFlyingBack())
-				$flotten_id = false;
+					if($planet_key === false || $type != '4' || $fleet->isFlyingBack())
+						$flotten_id = false;
+				}
+			}
 
 			if(!$flotten_id)
 			{
 ?>
-<p class="error">Ungültiger Transport ausgewählt.</p>
+<p class="error">Ungültigen Transport ausgewählt.</p>
 <?php
 				login_gui::html_foot();
 				exit();
@@ -58,9 +65,9 @@
 				elseif($verb) $class = 'verbuendet';
 				else $class = 'fremd';
 ?>
-<form action="flotten_actions.php?action=handel&amp;id=<?=htmlentities(urlencode($_GET['id']).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="handel <?=$class?>">
+<form action="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="handel <?=$class?>">
 	<fieldset>
-		<legend><a href="help/playerinfo.php?player=<?=htmlentities(urlencode($username).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($username)?></a></legend>
+		<legend><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($username).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($username)?></a></legend>
 <?php
 				$trans = $fleet->getTransportCapacity($username);
 				$handel = $fleet->getHandel($username);
@@ -327,8 +334,9 @@
 			$me->setActivePlanet($active_planet);
 
 			break;
-
+		}
 		case 'shortcuts':
+		{
 			if(isset($_GET['up'])) $me->movePosShortcutUp($_GET['up']);
 			if(isset($_GET['down'])) $me->movePosShortcutDown($_GET['down']);
 			if(isset($_GET['remove'])) $me->removePosShortcut($_GET['remove']);
@@ -375,11 +383,70 @@
 <?php
 			}
 			break;
+		}
+		case "buendnisangriff":
+		{
+			if(!isset($_GET['id'])) $flotten_id = false;
+			else $flotten_id = $_GET['id'];
+
+			if($flotten_id)
+			{
+				$fleet = Classes::Fleet($flotten_id);
+				if(!$fleet->getStatus()) $flotten_id = false;
+				$flotten_id = $fleet->getName();
+
+				if($flotten_id && ($fleet->getCurrentType() != 3 || $fleet->isFlyingBack() || array_search($me->getName(), $fleet->getUsersList()) !== 0))
+					$flotten_id = false;
+			}
+
+			if(!$flotten_id)
+			{
+?>
+<p class="error">Ungültigen Angriff ausgewählt.</p>
+<?php
+				login_gui::html_foot();
+				exit();
+			}
+
+			if(isset($_POST["fleet_passwd"]))
+			{
+				$passwd = $me->getFleetPasswd($flotten_id);
+				$_POST["fleet_passwd"] = trim($_POST["fleet_passwd"]);
+				if($_POST["fleet_passwd"] != $passwd && $me->resolveFleetPasswd($_POST["fleet_passwd"]) !== null)
+				{
+?>
+<p class="error">Dieses Passwort wurde schon für eine andere Flotte verwendet.</p>
+<?php
+				}
+				elseif(!$me->changeFleetPasswd($flotten_id, trim($_POST["fleet_passwd"])))
+				{
+?>
+<p class="error">Das Passwort konnte nicht geändert werden.</p>
+<?php
+				}
+			}
+			$passwd = $me->getFleetPasswd($flotten_id);
+?>
+<p class="buendnisangriff-beschreibung-1">Hier können Sie der ausgewählten Flotte ein Flottenpasswort zuweisen, welches es anderen Spielern ermöglicht, Ihrem Angriff eigene Flotten beizusteuern. Möchte ein anderer Spieler dem Flottenverbund beitreten, so muss er im Flottenmenü Ihren Benutzernamen in Verbindung mit dem hier festgelegten Passwort angeben. Übermitteln Sie ihm hierzu das Passwort selbst, zum Beispiel durch eine Nachricht.</p>
+<p class="buendnisangriff-beschreibung-2">Beachten Sie, dass ein Spieler dem Flottenverbund nicht mehr beitreten kann, wenn seine Flugzeit zum ausgewählten Ziel länger ist als die verbleibende Flugzeit der Flotte.</p>
+<p class="buendnisangriff-beschreibung-3">Wenn hier kein Passwort eingetragen ist, ist die Flottenverbundfunktion für diese Flotte deaktiviert.</p>
+<form action="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="buendnisangriff">
+	<dl>
+		<dt><label for="i-flottenpasswort">Flottenpasswort</label></dt>
+		<dd><input type="text" name="fleet_passwd"<?php if($passwd !== null){?> value="<?=htmlspecialchars($passwd)?>"<?php }?> /></dd>
+	</dl>
+	<div><button type="submit">Speichern</button></div>
+</form>
+<?php
+			break;
+		}
 		default:
+		{
 ?>
 <p class="error">Ungültige Aktion.</p>
 <?php
 			break;
+		}
 	}
 
 	login_gui::html_foot();
