@@ -356,6 +356,9 @@
 			if(isset($this->raw[1][$user][0][$id])) $this->raw[1][$user][0][$id] += $count;
 			else $this->raw[1][$user][0][$id] = $count;
 
+			if(!$first)
+				$this->raw[1][$user][2] = $this->calcTime($user, $this->raw[1][$user][1], $this->getCurrentTarget())/($this->getNextArrival()-time());
+
 			$this->changed = true;
 			return true;
 		}
@@ -366,20 +369,8 @@
 
 			if(isset($this->raw[1][$user])) return false;
 
-			if($this->started())
-			{
-				if(count($this->raw[1]) <= 0) return false;
-				$keys = array_keys($this->raw[1]);
-				$user2 = array_shift($keys);
-				$koords = array_keys($this->raw[0]);
-				$koords = array_shift($koords);
-				if(substr($koords, -1) == 'T') $koords = substr($koords, 0, -1);
-				$time = $this->calcTime($user2, $this->raw[1][$user2][1], $koords);
-				$time2 = $this->calcTime($user2, $from, $koords);
-				if($time2 > $time) return false;
-				$factor = $time2/$time;
-			}
-			elseif(count($this->raw[1]) > 0) $factor = 1;
+			if(count($this->raw[1]) > 0)
+				$factor = null;
 
 			if($factor <= 0) $factor = 0.01;
 
@@ -588,9 +579,14 @@
 		{
 			if(!$this->status || !isset($this->raw[1][$user]) || count($this->raw[1][$user]) <= 0) return false;
 
+			return self::calcFleetTime($user, $from, $to, $this->raw[1][$user][0], $use_min_time)/$this->raw[1][$user][2];
+		}
+
+		static function calcFleetTime($user, $from, $to, $fleet, $use_min_time=true)
+		{
 			$speeds = array();
 			$user_obj = Classes::User($user);
-			foreach($this->raw[1][$user][0] as $id=>$count)
+			foreach($fleet as $id=>$count)
 			{
 				$item_info = $user_obj->getItemInfo($id, 'schiffe');
 				$speeds[] = $item_info['speed'];
@@ -598,7 +594,6 @@
 			$speed = min($speeds)/1000000;
 
 			$time = sqrt(self::getDistance($from, $to)/$speed)*2;
-			$time /= $this->raw[1][$user][2];
 
 			$global_factors = get_global_factors();
 			$time *= $global_factors['time'];

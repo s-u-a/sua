@@ -137,12 +137,13 @@
 					$planet_name = $from_galaxy->getPlanetName($from_array[1], $from_array[2]);
 					$other_strings[] = 'einer <span class="beschreibung schiffe" title="'.makeFleetString($user, $fl->getFleetList($user)).'">Flotte</span> vom Planeten &bdquo;'.utf8_htmlentities($planet_name).'&ldquo; ('.$from_pos.', Eigentümer: '.utf8_htmlentities($user).')';
 				}
+				$string .= 'zusammen mit ';
 				if(count($other_strings) == 1)
 					$string .= $other_strings[0];
 				else
 				{
 					$last_string = array_pop($other_strings);
-					$string .= 'zusammen mit '.implode(', ', $other_strings).' und '.$last_string;
+					$string .= implode(', ', $other_strings).' und '.$last_string;
 				}
 			}
 
@@ -267,12 +268,15 @@
 			}
 
 			$user_list = $fl->getUsersList();
-			$first_user = Classes::User(array_shift($user_list));
-			if($first_user->getStatus())
+			if(in_array($me->getName(), $user_list))
 			{
-				$fleet_passwd = $first_user->getFleetPasswd($fl->getName());
-				if($fleet_passwd !== null)
-					$string .= " Das Verbundflottenpasswort lautet <span class=\"flottenpasswd\">".htmlspecialchars($fleet_passwd)."</span>.";
+				$first_user = Classes::User(array_shift($user_list));
+				if($first_user->getStatus())
+				{
+					$fleet_passwd = $first_user->getFleetPasswd($fl->getName());
+					if($fleet_passwd !== null)
+						$string .= " Das Verbundflottenpasswort lautet <span class=\"flottenpasswd\">".htmlspecialchars($fleet_passwd)."</span>.";
+				}
 			}
 ?>
 	<dt class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=utf8_htmlentities($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug">

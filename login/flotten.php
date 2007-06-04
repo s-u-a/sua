@@ -178,7 +178,7 @@
 				else
 				{
 					$buendnisflug_fleet = Classes::Fleet($buendnisflug_id);
-					if(!$buendnisflug_fleet->getStatus())
+					if(!$buendnisflug_fleet->getStatus() || in_array($me->getName(), $buendnisflug_fleet->getUsersList()))
 						$show_versenden = true;
 				}
 			}
@@ -260,6 +260,12 @@
 <p class="error">
 	Sie haben nicht die richtigen Schiffe ausgewählt, um diesen Planeten anzufliegen.
 </p>
+<?php
+				}
+				elseif($buendnisflug && time()+Fleet::calcFleetTime($me->getName(), $me->getPosString(), $buendnisflug_fleet->getCurrentTarget(), $_POST["flotte"]) > $buendnisflug_fleet->getNextArrival())
+				{
+?>
+<p class="error">Ihre Flotte kann nicht schnell genug fliegen um gleichzeitig mit dem Flottenverbund am Ziel anzukommen.</p>
 <?php
 				}
 				else
