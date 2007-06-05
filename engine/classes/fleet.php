@@ -1176,7 +1176,7 @@ EOF
 									}
 								}
 
-								foreach($trans as $user=>$cap)
+								foreach($trans as $username=>$cap)
 								{
 									$rtrans = array();
 									$p = $cap/$trans_total;
@@ -1186,11 +1186,11 @@ EOF
 									$rtrans[3] = floor($ress_max[3]*$p);
 									$rtrans[4] = floor($ress_max[4]*$p);
 
-									$this->raw[1][$user][3][0][0] += $rtrans[0];
-									$this->raw[1][$user][3][0][1] += $rtrans[1];
-									$this->raw[1][$user][3][0][2] += $rtrans[2];
-									$this->raw[1][$user][3][0][3] += $rtrans[3];
-									$this->raw[1][$user][3][0][4] += $rtrans[4];
+									$this->raw[1][$username][3][0][0] += $rtrans[0];
+									$this->raw[1][$username][3][0][1] += $rtrans[1];
+									$this->raw[1][$username][3][0][2] += $rtrans[2];
+									$this->raw[1][$username][3][0][3] += $rtrans[3];
+									$this->raw[1][$username][3][0][4] += $rtrans[4];
 
 									$messages[$username] .= "\n<p class=\"rohstoffe-erbeutet selbst\">Sie haben ".ths($rtrans[0])." Carbon, ".ths($rtrans[1])." Aluminium, ".ths($rtrans[2])." Wolfram, ".ths($rtrans[3])." Radium und ".ths($rtrans[4])." Tritium erbeutet.</p>\n";
 								}
