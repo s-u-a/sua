@@ -12,6 +12,8 @@ inline int pow2(int pot)
 
 int main(int argc,char** argv)
 {
+	std::cout << "This program is free software; you can redistribute it and/or modify it under the terms of the AFFERO GENERAL PUBLIC LICENSE as published by Affero Inc.; either version 1 of the License, or (at your option) any later version.\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the AFFERO GENERAL PUBLIC LICENSE for more details.\nYou should have received a copy of the AFFERO GENERAL PUBLIC LICENSE along with this program; if not, write to Affero Inc., 510 Third Street - Suite 225, San Francisco, CA 94107, USA or have a look at http://www.affero.org/oagpl.html.\n\n";
+
 	if(argc < 2)
 	{
 		std::cerr << "Usage: " << argv[0] << " <file>\n";
