@@ -3272,6 +3272,16 @@
 
 			if(!isset($this->raw["flotten_passwds"]) || ($idx = array_search($fleet_id, $this->raw["flotten_passwds"])) === false)
 				return null;
+
+			# Ueberpruefen, ob die Flotte noch die Kriterien erfuellt, ansonsten aus der Liste loeschen
+			$fleet = Classes::Fleet($fleet_id);
+			if($fleet->getCurrentType() != 3 || $fleet->isFlyingBack() || array_search($this->getName(), $fleet->getUsersList()) !== 0)
+			{
+				unset($this->raw["flotten_passwds"][$idx]);
+				$this->changed = true;
+				return null;
+			}
+
 			return $idx;
 		}
 
