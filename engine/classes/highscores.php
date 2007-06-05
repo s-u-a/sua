@@ -1,15 +1,20 @@
 <?php
 	class Highscores extends SQLite
 	{
-		protected $tables = array("highscores_users" => array("username", "alliance", "scores INT", "changed INT"), "highscores_alliances" => array("tag", "scores_average INT", "scores_total INT", "members_count INT", "changed INT"));
+		protected $tables = array("highscores_users" => array("username", "alliance", "scores_0 INT", "scores_1 INT", "scores_2 INT", "scores_3 INT", "scores_4 INT", "scores_5 INT", "scores_6 INT", "changed INT"), "highscores_alliances" => array("tag", "scores_average INT", "scores_total INT", "members_count INT", "changed INT"));
 
-		function updateUser($username, $alliance=false, $scores=false)
+		function updateUser($username, $alliance=false, $scores=null)
 		{
 			if(!$this->status) return false;
 
 			$exists = ($this->singleField("SELECT COUNT(*) FROM highscores_users WHERE username=".$this->escape($username)." LIMIT 1;") > 0);
 
-			if($scores !== false) $scores = (float) $scores;
+			if($scores === null)
+				$scores = array();
+			for($i=0; $i<=6; $i++)
+			{
+				if(!isset($scores[$i])) $scores[$i] = null;
+			}
 
 			if($exists)
 			{
@@ -18,19 +23,22 @@
 				$query = "UPDATE highscores_users SET ";
 				$set = array();
 				if($alliance !== false) $set[] = "alliance = ".$this->escape($alliance);
-				if($scores !== false)
+				$scores_changed = false;
+				for($i=0; $i<=6; $i++)
 				{
-					$set[] = "scores = ".$this->escape($scores);
-					$set[] = "changed = ".$this->escape(microtime(true));
+					if($scores[$i] !== null)
+					{
+						$set[] = "scores_".$i." = ".$this->escape($scores[$i]);
+						$scores_changed = true;
+					}
 				}
+				if($scores_changed)
+					$set[] = "changed = ".$this->escape(microtime(true));
 				$query .= implode(', ', $set);
 				$query .= " WHERE username = ".$this->escape($username).";";
 			}
 			else
-			{
-				$scores = (float) $scores;
-				$query = "INSERT INTO highscores_users ( username, alliance, scores, changed ) VALUES ( ".$this->escape($username).", ".$this->escape($alliance).", ".$this->escape($scores).", ".$this->escape(microtime(true))." );";
-			}
+				$query = "INSERT INTO highscores_users ( username, alliance, scores_0, scores_1, scores_2, scores_3, scores_4, scores_5, scores_6, changed ) VALUES ( ".$this->escape($username).", ".$this->escape($alliance).", ".$this->escape($scores[0]).", ".$this->escape($scores[1]).", ".$this->escape($scores[2]).", ".$this->escape($scores[3]).", ".$this->escape($scores[4]).", ".$this->escape($scores[5]).", ".$this->escape($scores[6]).", ".$this->escape(microtime(true))." );";
 
 			return $this->query($query);
 		}
@@ -82,25 +90,35 @@
 			return $this->query("DELETE FROM highscores_".$type." WHERE ".$index." = ".$this->escape($id).";");
 		}
 
-		function getList($type, $from, $to, $sort_field=false)
+		function getList($type, $from, $to, $sort_field=null, $score_fields=null)
 		{
 			if(!$this->status || ($type != 'users' && $type != 'alliances')) return false;
-
-			$allowed_sort_fields = array(
-				'alliances' => array('scores_average', 'scores_total'),
-				'users' => array('scores')
-			);
-
-			if($sort_field === false) $sort_field = array_shift($allowed_sort_fields[$type]);
-			elseif(!in_array($sort_field, $allowed_sort_fields[$type])) return false;
 
 			if($from > $to) list($from, $to) = array($to, $from);
 			$from--;
 
-			return $this->arrayQuery("SELECT * FROM highscores_".$type." ORDER BY ".$sort_field." DESC,changed ASC LIMIT ".$from.", ".($to-$from-1).";");
+			if($type == "users")
+			{
+				if(!is_array($score_fields))
+					$score_fields = array($score_fields);
+				foreach($score_fields as $k=>$v)
+				{
+					if($v === null)
+						$score_fields[$k] = "scores_0+scores_1+scores_2+scores_3+scores_4+scores_5+scores_6";
+				}
+				if($sort_field === null)
+					$sort_field = "scores_0+scores_1+scores_2+scores_3+scores_4+scores_5+scores_6";
+				return $this->arrayQuery("SELECT username, alliance, ".implode(", ", array_unique($score_fields))." FROM highscores_users ORDER BY ".$sort_field." DESC,changed ASC LIMIT ".$from.", ".($to-$from-1).";");
+			}
+			else
+			{
+				if($sort_field === null)
+					$sort_field = "scores_average";
+				return $this->arrayQuery("SELECT tag, scores_average, scores_total, members_count FROM highscores_".$type." ORDER BY ".$sort_field." DESC,changed ASC LIMIT ".$from.", ".($to-$from-1).";");
+			}
 		}
 
-		function getCount($type, $highscores_file=false)
+		function getCount($type)
 		{
 			if($type != 'users' && $type != 'alliances') return false;
 
@@ -116,7 +134,7 @@
 
 			$allowed_sort_fields = array(
 				'alliances' => array('scores_average', 'scores_total'),
-				'users' => array('scores')
+				'users' => array("scores_0+scores_1+scores_2+scores_3+scores_4+scores_5+scores_6", "scores_0", "scores_1", "scores_2", "scores_3", "scores_4", "scores_5", "scores_6")
 			);
 
 			if($sort_field === false) $sort_field = array_shift($allowed_sort_fields[$type]);

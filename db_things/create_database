@@ -8,7 +8,7 @@ BINDIR="$(dirname $0)"
 
 mkdir $1 || exit 1
 
-echo '8' > $1/.version
+echo '9' > $1/.version
 touch $1/locked
 echo 'Order Deny,Allow' > $1/.htaccess
 echo 'Deny from All' >> $1/.htaccess

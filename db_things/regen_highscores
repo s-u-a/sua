@@ -31,7 +31,8 @@
 		$this_user = new User(urldecode($fname));
 		if(!$this_user->getStatus()) continue;
 
-		$highscores_obj->updateUser($this_user->getName(), $this_user->allianceTag(), $this_user->getScores());
+		//$highscores_obj->updateUser($this_user->getName(), $this_user->allianceTag(), $this_user->getScores());
+		$this_user->doRecalcHighscores();
 
 		unset($this_user);
 	}

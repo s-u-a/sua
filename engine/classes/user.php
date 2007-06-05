@@ -3,7 +3,7 @@
 	{
 		protected $active_planet = false;
 		protected $datatype = 'user';
-		protected $recalc_highscores = array(false,false,false,false,false);
+		protected $recalc_highscores = array(false,false,false,false,false,false,false);
 		protected $last_eventhandler_run = array();
 
 		function __construct($name=false, $write=true)
@@ -408,6 +408,7 @@
 			else $this->raw['punkte'][$i] += $scores;
 
 			if(isset($this->cache['getScores'])) $this->cache['getScores'] += $scores;
+			$this->recalc_highscores[$i] = true;
 			$this->changed = true;
 			return true;
 		}
@@ -425,12 +426,15 @@
 			else return $this->getScores($i+7);
 		}
 
-		function getRank()
+		function getRank($i=null)
 		{
 			if(!$this->status) return false;
 
 			$highscores = Classes::Highscores();
-			return $highscores->getPosition('users', $this->getName());
+			if($i === null)
+				return $highscores->getPosition('users', $this->getName());
+			else
+				return $highscores->getPosition("users", $this->getName(), "scores_".$i);
 		}
 
 		function planetName($name=false)
@@ -1658,7 +1662,7 @@
 
 		protected function getRawFromData()
 		{
-			if($this->recalc_highscores[0] || $this->recalc_highscores[1] || $this->recalc_highscores[2] || $this->recalc_highscores[3] || $this->recalc_highscores[4])
+			if($this->recalc_highscores[0] || $this->recalc_highscores[1] || $this->recalc_highscores[2] || $this->recalc_highscores[3] || $this->recalc_highscores[4] || $this->recalc_highscores[5] || $this->recalc_highscores[6])
 				$this->doRecalcHighscores($this->recalc_highscores[0], $this->recalc_highscores[1], $this->recalc_highscores[2], $this->recalc_highscores[3], $this->recalc_highscores[4]);
 
 			foreach($this->settings as $setting=>$value)
@@ -2876,15 +2880,14 @@
 				if(isset($this->cache['getScores'])) unset($this->cache['getScores']);
 			}
 
-			$new_scores = $this->getScores();
 			$highscores = Classes::Highscores();
-			$highscores->updateUser($this->getName(), false, $new_scores);
+			$highscores->updateUser($this->getName(), false, $this->raw["punkte"]);
 
 			$my_alliance = $this->allianceTag();
 			if($my_alliance)
 			{
 				$alliance = Classes::Alliance($my_alliance);
-				$alliance->setUserScores($this->getName(), $new_scores);
+				$alliance->setUserScores($this->getName(), $this->getScores());
 			}
 
 			$this->changed = true;

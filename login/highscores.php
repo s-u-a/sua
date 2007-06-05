@@ -2,21 +2,38 @@
 	require('scripts/include.php');
 
 	login_gui::html_head();
-	
+
 	if(isset($_GET['alliances']) && $_GET['alliances'])
 	{
 		$mode = 'alliances';
 		$mode_prefix = 'alliances='.urlencode($_GET['alliances']).'&';
+		$sort = $_GET["alliances"];
 	}
 	else
 	{
 		$mode = 'users';
-		$mode_prefix = '';
+		if(isset($_GET["users"]) && in_array($_GET["users"], array("0", "1", "2", "3", "4", "5", "6")))
+		{
+			$mode_prefix = "users=".urlencode($_GET["users"]);
+			$sort = $_GET["users"];
+		}
+		else
+		{
+			$mode_prefix = '';
+			$sort = false;
+		}
 	}
 ?>
 <ul class="highscores-modi">
-	<li class="c-spieler<?=($mode=='users') ? ' active' :''?>"><a href="highscores.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>">Spieler</a></li>
+	<li class="c-spieler<?=($mode=='users' && $sort === false) ? ' active' :''?>"><a href="highscores.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>">Spieler</a></li>
 	<li class="c-allianzen<?=($mode=='alliances') ? ' active' : ''?>"><a href="highscores.php?alliances=1&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>">Allianzen</a></li>
+	<li class="c-spieler-gebaeude<?=($mode=='users' && $sort==="0") ? ' active' :''?>"><a href="highscores.php?users=0&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>">Spieler (Gebäude)</a></li>
+	<li class="c-spieler-forschung<?=($mode=='users' && $sort==="1") ? ' active' :''?>"><a href="highscores.php?users=1&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>">Spieler (Forschung)</a></li>
+	<li class="c-spieler-roboter<?=($mode=='users' && $sort==="2") ? ' active' :''?>"><a href="highscores.php?users=2&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>">Spieler (Roboter)</a></li>
+	<li class="c-spieler-schiffe<?=($mode=='users' && $sort==="3") ? ' active' :''?>"><a href="highscores.php?users=3&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>">Spieler (Flotte)</a></li>
+	<li class="c-spieler-verteidigung<?=($mode=='users' && $sort==="4") ? ' active' :''?>"><a href="highscores.php?users=4&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>">Spieler (Verteidigung)</a></li>
+	<li class="c-spieler-flugerfahrung<?=($mode=='users' && $sort==="5") ? ' active' :''?>"><a href="highscores.php?users=5&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>">Spieler (Flugerfahrung)</a></li>
+	<li class="c-spieler-kampferfahrung<?=($mode=='users' && $sort==="6") ? ' active' :''?>"><a href="highscores.php?users=6&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>">Spieler (Kampferfahrung)</a></li>
 </ul>
 <?php
 	$highscores = Classes::Highscores();
@@ -24,11 +41,14 @@
 	$start = 1;
 	if(isset($_GET['start']) && $_GET['start'] <= $count && $_GET['start'] >= 1)
 		$start = (int) $_GET['start'];
-	
-	$sort_field = false;
-	if(isset($_GET['alliances']) && $_GET['alliances'] == '2') $sort_field = 'scores_total';
-	$list = $highscores->getList($mode, $start, $start+100, $sort_field);
-	
+
+	$sort_field = null;
+	if($mode == "alliances" && $sort == '2') $sort_field = 'scores_total';
+	elseif($mode == "users" && $sort !== false) $sort_field = "scores_".$sort;
+	$score_field = null;
+	if($mode == "users" && $sort !== false) $score_field = "scores_".$sort;
+	$list = $highscores->getList($mode, $start, $start+100, $sort_field, $score_field);
+
 	if($count > 100)
 	{
 ?>
@@ -55,7 +75,7 @@
 </ul>
 <?php
 	}
-	
+
 	if($mode == 'users')
 	{
 ?>
@@ -65,7 +85,7 @@
 			<th class="c-platz">Platz</th>
 			<th class="c-spieler">Spieler</th>
 			<th class="c-allianz">Allianz</th>
-			<th class="c-punktzahl">Punktzahl</th>
+			<th class="c-punktzahl">Punktzahl<?php if($sort!==false){?> (<?=htmlspecialchars($score_names[$sort])?>)<?php }?></th>
 		</tr>
 	</thead>
 <?php
@@ -97,10 +117,15 @@
 				$class = 'eigen';
 			elseif($me->isVerbuendet($info['username']))
 				$class = 'verbuendet';
-			
+
 			$alliance_class = 'fremd';
 			if($info['alliance'] && $me->allianceTag() == $info['alliance'])
 				$alliance_class = 'verbuendet';
+
+			$info2 = $info;
+			unset($info2["username"]);
+			unset($info2["alliance"]);
+			$scores = array_shift($info2);
 ?>
 		<tr class="<?=$class?> allianz-<?=$alliance_class?>">
 			<th class="c-platz"><?=ths($start+$i)?></th>
@@ -119,7 +144,7 @@
 <?php
 			}
 ?>
-			<td class="c-punktzahl"><?=ths($info['scores'])?></td>
+			<td class="c-punktzahl"><?=ths($scores)?></td>
 		</tr>
 <?php
 		}
@@ -128,7 +153,7 @@
 			$class = 'fremd';
 			if($info['tag'] == $me->allianceTag())
 				$class = 'verbuendet';
-			
+
 ?>
 		<tr class="<?=$class?>">
 			<th class="c-platz"><?=ths($start+$i)?></th>

@@ -557,28 +557,28 @@
 <h2 id="punkte">Punkte</h2>
 <dl class="punkte">
 	<dt class="c-gebaeude">Gebäude</dt>
-	<dd class="c-gebaeude"><?=ths($me->getScores(0))?></dd>
+	<dd class="c-gebaeude"><?=ths($me->getScores(0))?> <span class="platz">(Platz <strong><?=ths($me->getRank(0))?></strong>)</span></dd>
 
 	<dt class="c-forschung">Forschung</dt>
-	<dd class="c-forschung"><?=ths($me->getScores(1))?></dd>
+	<dd class="c-forschung"><?=ths($me->getScores(1))?> <span class="platz">(Platz <strong><?=ths($me->getRank(1))?></strong>)</span></dd>
 
 	<dt class="c-roboter">Roboter</dt>
-	<dd class="c-roboter"><?=ths($me->getScores(2))?></dd>
+	<dd class="c-roboter"><?=ths($me->getScores(2))?> <span class="platz">(Platz <strong><?=ths($me->getRank(2))?></strong>)</span></dd>
 
 	<dt class="c-flotte">Flotte</dt>
-	<dd class="c-flotte"><?=ths($me->getScores(3))?></dd>
+	<dd class="c-flotte"><?=ths($me->getScores(3))?> <span class="platz">(Platz <strong><?=ths($me->getRank(3))?></strong>)</span></dd>
 
 	<dt class="c-verteidigung">Verteidigung</dt>
-	<dd class="c-verteidigung"><?=ths($me->getScores(4))?></dd>
+	<dd class="c-verteidigung"><?=ths($me->getScores(4))?> <span class="platz">(Platz <strong><?=ths($me->getRank(4))?></strong>)</span></dd>
 
 	<dt class="c-flugerfahrung">Flugerfahrung</dt>
-	<dd class="c-flugerfahrung"><?=ths($me->getScores(5))?></dd>
+	<dd class="c-flugerfahrung"><?=ths($me->getScores(5))?> <span class="platz">(Platz <strong><?=ths($me->getRank(5))?></strong>)</span></dd>
 
 	<dt class="c-kampferfahrung">Kampferfahrung</dt>
-	<dd class="c-kampferfahrung"><?=ths($me->getScores(6))?></dd>
+	<dd class="c-kampferfahrung"><?=ths($me->getScores(6))?> <span class="platz">(Platz <strong><?=ths($me->getRank(6))?></strong>)</span></dd>
 
 	<dt class="c-gesamt">Gesamt</dt>
-	<dd class="c-gesamt"><?=ths($me->getScores())?> <span class="gesamt-spieler">(Platz <?=ths($me->getRank())?> von <?=ths(getUsersCount())?>)</span></dd>
+	<dd class="c-gesamt"><?=ths($me->getScores())?> <span class="platz">(Platz <strong><?=ths($me->getRank())?></strong> von <strong class="gesamt-spieler"><?=ths(getUsersCount())?></strong>)</span></dd>
 </dl>
 <?php
 	login_gui::html_foot();

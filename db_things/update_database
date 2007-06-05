@@ -425,6 +425,20 @@
 
 			unset($db);
 		}
+
+		#######################
+		### Version 8 auf 9 ###
+		#######################
+
+		case 8:
+		{
+			# Die Benutzer-Highscores-Tabelle loeschen, diese muss neu erzeugt werden
+			$db = new PDO("sqlite:".global_setting("DB_SQLITE"));
+			$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$db->query("DROP TABLE highscores_users;");
+			fputs(STDERR, "Please run db_things/regen_highscores now.\n");
+			unset($db);
+		}
 	}
 
 	fputs(STDERR, "Database version is now ".$newest_version.".\n");

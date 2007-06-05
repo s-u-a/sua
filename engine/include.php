@@ -89,7 +89,7 @@
 	global_setting('PROTOCOL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http');
 	global_setting('USE_PROTOCOL', (isset($_SESSION['use_protocol']) ? $_SESSION['use_protocol'] : (((!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])) ? 'https' : 'http')));
 	global_setting('MIN_BUILDING_TIME', 12); # Minimale Bauzeit in Sekunden
-	global_setting('DATABASE_VERSION', 8); # Aktuelle Datenbankversion
+	global_setting('DATABASE_VERSION', 9); # Aktuelle Datenbankversion
 	global_setting('EVENTHANDLER_RUNTIME', 16200); # Sekunden seit Tagesbeginn, wann der Eventhandler laufen soll
 	global_setting('MARKET_MIN_AMOUNT', 10); # Das Wievielfache eines Angebotes muss insgesamt geboten worden sein, damit ein Auftrag angenommen wird?
 	global_setting('MARKET_MIN_USERS', 5); # Wieviele verschiedene Benutzer muessen den Rohstoff als Angebot auf dem Markt haben, damit ein Auftrag angenommen wird?
@@ -216,6 +216,8 @@
 		7 => 4,
 		8 => 2
 	);
+
+	$score_names = array("Gebäude", "Forschung", "Roboter", "Flotte", "Verteidigung", "Flugerfahrung", "Kampferfahrung");
 
 	$ress_names = array("Carbon", "Aluminium", "Wolfram", "Radium", "Tritium");
 
