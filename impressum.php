@@ -36,9 +36,6 @@
 	<dt><a href="mailto:soltari@s-u-a.net">Soltari</a></dt>
 	<dd>Moderation, <span xml:lang="en">Testing</span></dd>
 
-	<dt>Remosch</dt>
-	<dd>Stiftung der <span xml:lang="en">Board</span>-<span xml:lang="en">Software</span></dd>
-
 	<dt>Geki</dt>
 	<dd><span xml:lang="en">Design</span> der Hauptseite</dd>
 
