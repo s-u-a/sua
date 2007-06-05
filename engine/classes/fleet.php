@@ -1579,7 +1579,7 @@ EOF
 						$new_fleet->setRaw(array(
 							array($this->raw[1][$user][1] => array($type, true)),
 							array($user => $this->raw[1][$user]),
-							time(),
+							false,
 							array($next_target => array($type, false))
 						));
 						$new_fleet->start();
