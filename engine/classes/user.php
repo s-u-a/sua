@@ -31,7 +31,7 @@
 			);
 
 			$highscores = Classes::Highscores();
-			$highscores->updateUser($this->name, '', 0);
+			$highscores->updateUser($this->name, '');
 
 			$this->write(true, false);
 			$this->__construct($this->name);
