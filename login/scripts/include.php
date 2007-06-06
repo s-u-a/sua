@@ -132,11 +132,7 @@
 	if($resume && $last_request = $me->lastRequest())
 	{
 		$_SESSION['act_planet'] = $last_request[1];
-		$url = 'http://';
-		if($databases[$_SESSION['database']]['hostname']) $url .= $databases[$_SESSION['database']]['hostname'];
-		elseif($dhostname = get_default_hostname()) $url .= $dhostname;
-		else $url .= $_SERVER['HTTP_HOST'];
-		$url .= $last_request[0];
+		$url = 'http://'.$databases[$_SESSION["database"]]["hostname"].$last_request[0];
 
 		$url = explode('?', $url, 2);
 		if(isset($url[1]))

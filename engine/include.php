@@ -482,7 +482,7 @@
 					'directory' => $database['directory'],
 					'name' => (isset($database['name']) && strlen($database['name'] = trim($database['name'])) > 0) ? $database['name'] : $i,
 					'enabled' => (!isset($database['enabled']) || $database['enabled']),
-					'hostname' => (isset($database['hostname']) && strlen($database['hostname'] = trim($database['hostname'])) > 0) ? $database['hostname'] : false,
+					'hostname' => (isset($database['hostname']) && strlen($database['hostname'] = trim($database['hostname'])) > 0) ? $database['hostname'] : get_default_hostname(),
 					'dummy' => false
 				);
 
@@ -509,12 +509,9 @@
 	{
 		# Den Hostnamen herausfinden, der fuer die Startseite verwendet werden soll
 
-		if(!is_file(global_setting("DB_HOSTNAME")) || !is_readable(global_setting("DB_HOSTNAME")))
-			return false;
-
-		$hostname = trim(file_get_contents(global_setting("DB_HOSTNAME")));
-		if(strlen($hostname) > 0) return $hostname;
-		else return false;
+		if(is_file(global_setting("DB_HOSTNAME")) && !is_readable(global_setting("DB_HOSTNAME")) && strlen($hostname = trim(file_get_contents(global_setting("DB_HOSTNAME")))) > 0) return $hostname;
+		elseif(isset($_SERVER["HTTP_HOST"])) return $_SERVER["HTTP_HOST"];
+		else return null;
 	}
 
 	function check_hostname()
