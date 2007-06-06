@@ -93,6 +93,10 @@
 <?php
 		}
 	}
+
+	$orders = $market->getOrders($me->getName());
+	if(count($orders) > 0)
+	{
 ?>
 <table class="boerse-auftraege">
 	<thead>
@@ -107,12 +111,12 @@
 	</thead>
 	<tbody>
 <?php
-	$i = 0;
-	$countdowns = array();
-	$active_planet = $me->getActivePlanet();
-	foreach($market->getOrders($me->getName()) as $order)
-	{
-		$me->setActivePlanet($order['planet']);
+		$i = 0;
+		$countdowns = array();
+		$active_planet = $me->getActivePlanet();
+		foreach($orders as $order)
+		{
+			$me->setActivePlanet($order['planet']);
 ?>
 		<tr class="gebot-<?=htmlspecialchars($order['offered_resource'])?> ertrag-<?=htmlspecialchars($order['requested_resource'])?>">
 			<td class="c-planet"><a href="boerse.php?planet=<?=htmlspecialchars(urlencode($order['planet']))?>&amp;<?=htmlspecialchars(urlencode(session_name())."=".urlencode(session_id()))?>"><?=htmlspecialchars($me->planetName())?> <span class="koords">(<?=htmlspecialchars($me->getPosString())?>)</span></td>
@@ -120,42 +124,45 @@
 			<td class="c-mindestertrag"><span class="zahl"><?=ths($order['amount']*$order['min_price'])?></span> <?=htmlspecialchars($ress_names[$order['requested_resource']-1])?></td>
 			<td class="c-gueltigkeit" id="restbauzeit-boerse-<?=htmlspecialchars($i)?>"><?=date('H:i:s, Y-m-d', $order['expiration'])?> (Serverzeit)</td>
 <?php
-		$countdowns["boerse-".$i] = $order['expiration'];
+			$countdowns["boerse-".$i] = $order['expiration'];
 
-		if($order['finish'] == -1)
-		{
+			if($order['finish'] == -1)
+			{
 ?>
 			<td class="c-status waiting">Warte auf Händler</td>
 			<td class="c-zurueckziehen waiting"><a href="boerse.php?cancel=<?=htmlspecialchars(urlencode($order['id']))?>&amp;<?=htmlspecialchars(urlencode(session_name())."=".urlencode(session_id()))?>">Zurückziehen</a></td>
 <?php
-		}
-		else
-		{
+			}
+			else
+			{
 ?>
 			<td class="c-status" id="restbauzeit-boersew-<?=htmlspecialchars($i)?>"><?=date("H:i:s, Y-m-d", $order['finish'])?> (Serverzeit)</td>
 			<td class="c-zurueckziehen">&mdash;</td>
 <?php
-			$countdowns["boersew-".$i] = $order['finish'];
-		}
+				$countdowns["boersew-".$i] = $order['finish'];
+			}
 ?>
 		</tr>
 <?php
-		$i++;
-	}
-	$me->setActivePlanet($active_planet);
+			$i++;
+		}
+		$me->setActivePlanet($active_planet);
 ?>
 	</tbody>
 </table>
 <script type="text/javascript">
 <?php
-	foreach($countdowns as $i=>$exp)
-	{
+		foreach($countdowns as $i=>$exp)
+		{
 ?>
 	init_countdown('<?=$i?>', <?=$exp?>, false);
 <?php
-	}
+		}
 ?>
 </script>
+<?php
+	}
+?>
 <form action="boerse.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>#handelsauftraege" method="post" class="boerse-auftrag">
 	<fieldset>
 		<legend>Neuen Handelsauftrag anlegen</legend>
