@@ -3,7 +3,6 @@
 html { background-image:url(images/background.png); background-color:#4e4e4e; color:#bbb; font-size:12px; font-family:sans-serif; }
 body { min-height:100%; width:100%; }
 #main-container { padding-left:205px; }
-*:first-child+html body { display:none !important; }
 
 #logo { display:none; }
 

@@ -250,19 +250,15 @@
 		<link rel="stylesheet" href="<?=utf8_htmlentities($skin_path)?>" type="text/css" />
 <?php
 			}
-?>
-		<style type="text/css">
-<?php
+
 			if($me->checkSetting('schrift'))
 			{ # Schrift ueberschreiben
 ?>
+		<style type="text/css">
 			html { font-size:9pt; font-family:Arial,Tahoma,"Adobe Helvetica",sans-serif; }
-<?php
-			}
-?>
-			*:first-child+html body { display:none !important; }
 		</style>
 <?php
+			}
 
 			$class = 'planet-'.$me->getPlanetClass();
 			if(!$me->checkSetting('noads'))
