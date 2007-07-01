@@ -473,7 +473,7 @@
 <?php
 						break;
 				}
-				$countdowns[] = array('sc-'.$planet, $finishing_time, h_root."/login/schiffe.php?planet=".urlencode($planet)."&".urlencode(session_name())."=".urlencode(session_id()));
+				$countdowns[] = array('sc-'.$planet, $finishing_time, h_root."/login/schiffswerft.php?planet=".urlencode($planet)."&".urlencode(session_name())."=".urlencode(session_id()));
 			}
 			else
 			{
