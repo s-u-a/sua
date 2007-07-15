@@ -183,8 +183,7 @@
 					$this->transactionQuery("UPDATE messages SET ".implode(", ", $set)." WHERE message_id = ".$this->escape($message['message_id']).";");
 				}
 			}
-			foreach($bg_queries as $q)
-				$this->endTransaction($q);
+			$this->endTransaction();
 			
 			return true;
 		}
