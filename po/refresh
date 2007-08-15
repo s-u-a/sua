@@ -1,0 +1,2 @@
+#!/bin/bash
+find .. -name '*.php' | xgettext -f- -dsua -osua.pot -LPHP --from-code=UTF-8

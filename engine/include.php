@@ -33,6 +33,11 @@
 		$document_root = substr($document_root, 0, -1);
 	define('h_root', substr(s_root, strlen($document_root)));
 
+	# Locale eintragen
+	setlocale(LC_ALL, "de_DE");
+	bindtextdomain("sua", s_root."/locale");
+	textdomain("sua");
+
 	# SSL auf Wunsch abschalten
 	if(isset($_GET['nossl']))
 	{
@@ -1582,5 +1587,10 @@
 		foreach($list as $k=>$v)
 			$list[$k] = (float) $v;
 		return $list;
+	}
+
+	function __($message)
+	{
+		return str_replace(array("<", ">", "\""), array("&lt;", "&gt;", "&quot;"), gettext($message));
 	}
 ?>

@@ -1,0 +1,33 @@
+# translation of de.po to German
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Candid Dauth <cdauth@cdauth.de>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: de\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-08-15 23:43+0200\n"
+"PO-Revision-Date: 2007-08-16 00:00+0200\n"
+"Last-Translator: Candid Dauth <cdauth@cdauth.de>\n"
+"Language-Team: German\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11\n"
+
+#: ../include.php:17 ../include.php:23
+msgid "title_abbr_full"
+msgstr "S-U-A – Stars Under Attack"
+
+#: ../include.php:23
+#, php-format
+msgid ""
+"%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie "
+"sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit "
+"Hunderten anderer Spielern."
+msgstr ""
+"%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie "
+"sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit "
+"Hunderten anderer Spielern."
+
