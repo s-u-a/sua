@@ -1779,6 +1779,9 @@ EOF
 					}
 				}
 
+				if($owner && !isset($this->raw[1][$owner]))
+					$message_users[] = $owner;
+
 				if(count($message_users) > 0)
 				{
 					$message_obj = Classes::Message();
@@ -1789,7 +1792,11 @@ EOF
 							$message_obj->subject("Besiedelung von ".$next_target_nt);
 						else
 							$message_obj->subject("Stationierung auf ".$owner_obj->getPosString());
-						$message_obj->from($owner_obj->getName());
+
+						# Bei Fremdstationierung Nachrichtenabsender eintragen
+						if($owner && !isset($this->raw[1][$owner]))
+							$message_obj->from($first_user);
+
 						foreach($message_users as $username)
 							$message_obj->addUser($username, $types_message_types[$this->raw[0][$next_target][0]]);
 					}

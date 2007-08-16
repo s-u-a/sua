@@ -34,7 +34,7 @@
 	define('h_root', substr(s_root, strlen($document_root)));
 
 	# Locale eintragen
-	setlocale(LC_ALL, "de_DE");
+	setlocale(LC_MESSAGES, array("de_DE.UTF-8", "de_DE.utf8", "de_DE@UTF-8", "de_DE@utf8", "de_DE", "de"));
 	bindtextdomain("sua", s_root."/locale");
 	bind_textdomain_codeset("sua", "utf-8");
 	textdomain("sua");

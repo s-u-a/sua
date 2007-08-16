@@ -3080,8 +3080,11 @@
 				$user_obj->_addForeignCoordinates($this->getPosString());
 			}
 
-			$next_i = max(array_keys($this->planet_info["foreign_fleets"][$user]))+1;
-			$this->planet_info["foreign_fleets"][$next_i] = array($fleet, $from, $speed_factor);
+			if(count($this->planet_info["foreign_fleets"][$user]) > 0)
+				$next_i = max(array_keys($this->planet_info["foreign_fleets"][$user]))+1;
+			else
+				$next_i = 0;
+			$this->planet_info["foreign_fleets"][$user][$next_i] = array($fleet, $from, $speed_factor);
 
 			$this->changed = true;
 
@@ -3095,26 +3098,28 @@
 			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$user]) || !isset($this->planet_info["foreign_fleets"][$user][$i]))
 				return false;
 
-			unset($this->planet_info["foreign_fleets"][$user][$i]);
+			$message_obj = Classes::Message();
+			$message_obj->create();
+
+			if($message_obj->getStatus())
+			{
+				$message_obj->text(sprintf(_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf(_("%d:%d:%d"), $this->getPos()), makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0])));
+				$message_obj->subject(sprintf(_("Fremdstationierung zurückgezogen auf %s"), vsprintf(_("%d:%d:%d"), $this->getPos())));
+				$message_obj->from($user);
+				$message_obj->addUser($this->getName(), 3);
+			}
+
+                        unset($this->planet_info["foreign_fleets"][$user][$i]);
 
 			if(count($this->planet_info["foreign_fleets"][$user]) == 0)
 			{
 				unset($this->planet_info["foreign_fleets"][$user]);
 				$user_obj = Classes::User($user);
 				if(!$user_obj->getStatus()) return false;
-				$user_obj->_subForeignCoordinates($this->getPosString());
+					$user_obj->_subForeignCoordinates($this->getPosString());
 			}
 
-			$message_obj = Classes::Message();
-			$message_obj->create();
-
-			if($message_obj->getStatus())
-			{
-				$message_obj->text(sprintf(_("Der Benutzer %s eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s", $this->getName(), $user_obj->planetName(), vsprintf(_("%d:%d:%d"), $koords_a), makeItemsString($fleet[0]))));
-				$message_obj->subject(sprintf(_("Fremdstationierung zurückgezogen auf %s", vsprintf(_("%d:%d:%d"), $koords_a))));
-				$message_obj->from($this->getName());
-				$message_obj->addUser($user_obj->getName(), 3);
-			}
+			$this->changed = true;
 
 			return true;
 		}

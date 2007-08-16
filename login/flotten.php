@@ -974,12 +974,13 @@
 ?>
 				<tr>
 					<td class="c-planet"><?=h(sprintf(_("„%s“ (%s, Eigentümer: %s)"), $user_obj->planetName(), vsprintf(_("%d:%d:%d"), $coords_a), $user_obj->getName()))?></td>
-					<td class="c-flotte"><?=htmlspecialchars(makeItemsString($fi[0]))?></td>
+					<td class="c-flotte"><?=h(makeItemsString($fi[0]))?></td>
 					<td class="c-heimatplanet"><?=h(sprintf(_("„%s“ (%s)"), $user_obj->planetName(), vsprintf(_("%d:%d:%d"), $coords_a)))?></td>
 					<td class="c-rueckruf"><input type="submit" name="callback_foreign[<?=htmlspecialchars($coords)?>][<?=htmlspecialchars($i)?>]" value="<?=h(_("Zurück rufen"))?>" /></td>
 				</tr>
 <?php
 				}
+				$user_obj->restoreActivePlanet();
 			}
 ?>
 			</tbody>
