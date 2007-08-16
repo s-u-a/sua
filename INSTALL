@@ -3,7 +3,7 @@
 ---------------------
 
 - Subversion client (http://subversion.tigris.org/)
-- Webserver with HTTPS and PHP5 (including bzip2 and sqlite PDO) support
+- Webserver with HTTPS and PHP5 (including bzip2, PDO sqlite (version 3), and gettext support) support
 
 
 ---------------------

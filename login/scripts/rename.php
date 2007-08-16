@@ -101,6 +101,30 @@
 	</fieldset>
 </form>
 <?php
+		# Ueberpruefen, ob von diesem Planeten aus Flotten fremdstationiert sind
+		$foreign = 0;
+		foreach($me->getMyForeignFleets() as $koords)
+		{
+			$koords_a = explode(":", $koords);
+			$galaxy_obj = Classes::Galaxy($koords_a[0]);
+			$user_obj = Classes::User($galaxy_obj->getPlanetOwner($koords_a[1], $koords_a[2]));
+			if(!$user_obj->getStatus()) continue;
+			$user_obj->cacheActivePlanet();
+			$user_obj->setActivePlanet($user_obj->getPlanetByPos($koords));
+			foreach($user_obj->getForeignFleetsList($me->getName()) as $i=>$fleet)
+			{
+				if($fleet[1] == $me->getPosString())
+					$foreign++;
+			}
+			$user_obj->restoreActivePlanet();
+		}
+
+		if($foreign > 0)
+		{
+?>
+<p><strong><?=sprintf(h(ngettext("Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn Sie den Planeten auflösen, wird diese Flotte zerstört werden.", "Achtung! Von diesem Planeten sind noch %d Fremdstationierungen aktiv. Wenn Sie den Planeten auflösen, werden diese Flotten zerstört werden.", $foreign)), $foreign)?></strong></p>
+<?php
+		}
 	}
 
 	if(count($planets) > 1)

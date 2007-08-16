@@ -14,13 +14,13 @@
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
 	<head>
-		<title><?=__("title_abbr_full")?></title>
+		<title><?=h(_("title_abbr_full"))?></title>
 		<link rel="stylesheet" href="<?=h_root?>/style.css" type="text/css" />
 <?php
 			if(isset($SHOW_META_DESCRIPTION) && $SHOW_META_DESCRIPTION)
 			{
 ?>
-		<meta name="description" content="<?=sprintf(__("%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit Hunderten anderer Spielern."), __("title_abbr_full"))?>" />
+		<meta name="description" content="<?=sprintf(h(_("%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit Hunderten anderer Spielern."), __("title_abbr_full")))?>" />
 <?php
 			}
 			if($base)

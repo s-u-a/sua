@@ -1,33 +1,87 @@
-# translation of de.po to German
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-#
-# Candid Dauth <cdauth@cdauth.de>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: de\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-15 23:43+0200\n"
-"PO-Revision-Date: 2007-08-16 00:00+0200\n"
-"Last-Translator: Candid Dauth <cdauth@cdauth.de>\n"
-"Language-Team: German\n"
+"Project-Id-Version: sua\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2007-08-16 18:15+0100\n"
+"Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
+"Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11\n"
+"Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
-#: ../include.php:17 ../include.php:23
+#: ../login/scripts/rename.php:125
+#, php-format
+msgid "Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn Sie den Planeten auflösen, wird diese Flotte zerstört werden."
+msgid_plural "Achtung! Von diesem Planeten sind noch %d Fremdstationierungen aktiv. Wenn Sie den Planeten auflösen, werden diese Flotten zerstört werden."
+msgstr[0] "Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn Sie den Planeten auflösen, wird diese Flotte zerstört werden."
+msgstr[1] "Achtung! Von diesem Planeten sind noch %d Fremdstationierungen aktiv. Wenn Sie den Planeten auflösen, werden diese Flotten zerstört werden."
+
+#: ../login/flotten.php:948
+msgid "Fremdstationierungen"
+msgstr "Fremdstationierungen"
+
+#: ../login/flotten.php:954
+msgid "Planet"
+msgstr "Planet"
+
+#: ../login/flotten.php:955
+msgid "Flotte"
+msgstr "Flotte"
+
+#: ../login/flotten.php:956
+msgid "Heimatplanet"
+msgstr "Heimatplanet"
+
+#: ../login/flotten.php:957
+msgid "Rückruf"
+msgstr "Rückruf"
+
+#: ../login/flotten.php:976
+#, php-format
+msgid "„%s“ (%s, Eigentümer: %s)"
+msgstr "„%s“ (%s, Eigentümer: %s)"
+
+#: ../login/flotten.php:976
+#: ../login/flotten.php:978
+#: ../engine/classes/user.php:3113
+#: ../engine/classes/user.php:3114
+#, php-format
+msgid "%d:%d:%d"
+msgstr "%d:%d:%d"
+
+#: ../login/flotten.php:978
+#, php-format
+msgid "„%s“ (%s)"
+msgstr "„%s“ (%s)"
+
+#: ../login/flotten.php:979
+msgid "Zurück rufen"
+msgstr "Zurück rufen"
+
+#: ../engine/classes/user.php:3113
+#, php-format
+msgid ""
+"Der Benutzer %s eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
+"Die Flotte bestand aus folgenden Schiffen: %s"
+msgstr ""
+"Der Benutzer %s eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
+"Die Flotte bestand aus folgenden Schiffen: %s"
+
+#: ../engine/classes/user.php:3114
+#, php-format
+msgid "Fremdstationierung zurückgezogen auf %s"
+msgstr "Fremdstationierung zurückgezogen auf %s"
+
+#: ../include.php:17
 msgid "title_abbr_full"
-msgstr "S-U-A – Stars Under Attack"
+msgstr "title_abbr_full"
 
 #: ../include.php:23
 #, php-format
-msgid ""
-"%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie "
-"sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit "
-"Hunderten anderer Spielern."
-msgstr ""
-"%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie "
-"sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit "
-"Hunderten anderer Spielern."
+msgid "%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit Hunderten anderer Spielern."
+msgstr "%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit Hunderten anderer Spielern."
 

@@ -239,7 +239,7 @@
 				}
 				else
 				{ # Fremder Planet
-					if(isset($types[6])) # Stationieren noch nicht moeglich
+					if(!$me->isVerbuendet($planet_owner) && isset($types[6])) # Fremdstationierung nur bei Verbuendeten
 						unset($types[6]);
 					if($me->isVerbuendet($planet_owner) && isset($types[3])) # Verbuendet, Angriff nicht moeglich
 						unset($types[3]);
@@ -307,7 +307,7 @@
 							$that_user = Classes::User($planet_owner);
 
 							$noob = false;
-							if($planet_owner && ($auftrag == 3 || $auftrag == 5) && !$that_user->userLocked() && !file_exists(global_setting("DB_NONOOBS")))
+							if($planet_owner && (($auftrag == 3 || $auftrag == 5) && !$that_user->userLocked() || $auftrag == 6 && $planet_owner != $me->getName()) && !file_exists(global_setting("DB_NONOOBS")))
 							{
 								# Anfaengerschutz ueberpruefen
 								$that_punkte = $that_user->getScores();
@@ -929,6 +929,65 @@
 ?>
 </form>
 <?php
+		if(isset($_POST["callback_foreign"]) && is_array($_POST["callback_foreign"]))
+		{
+			foreach($_POST["callback_foreign"] as $coords=>$is)
+			{
+				if(is_array($is))
+				{
+					foreach(array_keys($is) as $i)
+						$me->callBackForeignFleet($coords, $i);
+				}
+			}
+		}
+
+		$foreign_coords = $me->getMyForeignFleets();
+		if(count($foreign_coords) > 0)
+		{
+?>
+<h3 id="fremdstationierungen"><?=h(_("Fremdstationierungen"))?></h3>
+<form action="flotten.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>#fremdstationierungen" method="post" class="fremdstationierungen">
+	<fieldset>
+		<table>
+			<thead>
+				<tr>
+					<th class="c-planet"><?=h(_("Planet"))?></th>
+					<th class="c-flotte"><?=h(_("Flotte"))?></th>
+					<th class="c-heimatplanet"><?=h(_("Heimatplanet"))?></th>
+					<th class="c-rueckruf"><?=h(_("Rückruf"))?></th>
+				</tr>
+			</thead>
+			<tbody>
+<?php
+			foreach($foreign_coords as $coords)
+			{
+				$coords_a = explode(":", $coords);
+				$galaxy_obj = Classes::Galaxy($coords_a[0]);
+				$user_obj = Classes::User($galaxy_obj->getPlanetOwner($coords_a[1], $coords_a[2]));
+				if(!$user_obj->getStatus()) continue;
+				$user_obj->cacheActivePlanet();
+				$user_obj->setActivePlanet($user_obj->getPlanetByPos($coords));
+
+				$fleet = $user_obj->getForeignFleetsList($me->getName());
+				foreach($fleet as $i=>$fi)
+				{
+?>
+				<tr>
+					<td class="c-planet"><?=h(sprintf(_("„%s“ (%s, Eigentümer: %s)"), $user_obj->planetName(), vsprintf(_("%d:%d:%d"), $coords_a), $user_obj->getName()))?></td>
+					<td class="c-flotte"><?=htmlspecialchars(makeItemsString($fi[0]))?></td>
+					<td class="c-heimatplanet"><?=h(sprintf(_("„%s“ (%s)"), $user_obj->planetName(), vsprintf(_("%d:%d:%d"), $coords_a)))?></td>
+					<td class="c-rueckruf"><input type="submit" name="callback_foreign[<?=htmlspecialchars($coords)?>][<?=htmlspecialchars($i)?>]" value="<?=h(_("Zurück rufen"))?>" /></td>
+				</tr>
+<?php
+				}
+			}
+?>
+			</tbody>
+		</table>
+	</fieldset>
+</form>
+<?php
+		}
 	}
 
 	login_gui::html_foot();

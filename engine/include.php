@@ -1589,8 +1589,8 @@
 		return $list;
 	}
 
-	function __($message)
+	function h($text)
 	{
-		return str_replace(array("<", ">", "\""), array("&lt;", "&gt;", "&quot;"), gettext($message));
+		return str_replace(array("<", ">", "\""), array("&lt;", "&gt;", "&quot;"), gettext($text));
 	}
 ?>

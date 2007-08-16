@@ -1,7 +1,8 @@
 <?php
 	class User extends Dataset
 	{
-		protected $active_planet = false;
+		protected $active_planet = null;
+		protected $active_planet_cache = array();
 		protected $datatype = 'user';
 		protected $recalc_highscores = array(false,false,false,false,false,false,false);
 		protected $last_eventhandler_run = array();
@@ -27,6 +28,7 @@
 				'description_parsed' => '',
 				'flotten' => array(),
 				'flotten_passwds' => array(),
+				'foreign_fleets' => array(), # Enthaelt eine Liste der Koordinaten, bei denen Flotte stationiert ist
 				'alliance' => false
 			);
 
@@ -94,6 +96,19 @@
 			return true;
 		}
 
+		function cacheActivePlanet()
+		{
+			if($this->active_planet === null) return null;
+			return $this->active_planet_cache[] = $this->getActivePlanet();
+		}
+
+		function restoreActivePlanet()
+		{
+			if(count($this->active_planet_cache) < 1) return null;
+			$this->setActivePlanet($p = array_pop($this->active_planet_cache));
+			return $p;
+		}
+
 		function getPlanetByPos($pos)
 		{
 			if(!$this->status) return false;
@@ -116,7 +131,7 @@
 
 		function getActivePlanet()
 		{
-			if(!$this->status) return false;
+			if(!$this->status || $this->active_planet === null) return false;
 
 			return $this->active_planet;
 		}
@@ -233,6 +248,31 @@
 				}
 			}
 
+			# Fremdstationierte Flotten auf diesem Planeten zurueckschicken
+			foreach($this->getForeignUsersList() as $user)
+			{
+				$user_obj = Classes::User($user);
+				foreach(array_keys($this->getForeignFleetsList($user)) as $i)
+					$user_obj->callBackForeignFleet($this->getPosString(), $i);
+			}
+
+			# Fremdstationierte Flotten, die hier ihren Heimatplaneten haben, aufloesen
+			foreach($this->getMyForeignFleets() as $koords)
+			{
+				$koords_a = explode(":", $koords);
+				$galaxy_obj = Classes::Galaxy($koords_a[0]);
+				$user_obj = Classes::User($galaxy_obj->getPlanetOwner($koords_a[1], $koords_a[2]));
+				if(!$user_obj->getStatus()) continue;
+				$user_obj->cacheActivePlanet();
+				$user_obj->setActivePlanet($user_obj->getPlanetByPos($koords));
+				foreach($user_obj->getForeignFleetsList($this->getName()) as $i=>$fleet)
+				{
+					if($fleet[1] == $this->getPosString())
+						$user_obj->subForeignFleet($this->getName(), $i);
+				}
+				$user_obj->restoreActivePlanet();
+			}
+
 			# Planeten aus der Karte loeschen
 			$this_pos = $this->getPos();
 			if(!$this_pos) return false;
@@ -314,7 +354,8 @@
 				'last_refresh' => time(),
 				'time' => $planet_name,
 				'prod' => array(),
-				'name' => $planet_name
+				'name' => $planet_name,
+				"foreign_fleets" => array() # Enthaelt ein Array aus Arrays, von wem welche Flotten stationiert sind
 			);
 
 			if(isset($this->cache['getPlanetsList'])) unset($this->cache['getPlanetsList']);
@@ -2154,6 +2195,27 @@
 					$message->addUser($user, 7);
 				}
 
+				# Fremdstationierte Flotten zurueckholen
+				$this->cacheActivePlanet();
+				$user_obj->cacheActivePlanet();
+
+				foreach($user_obj->getPlanetsList() as $planet)
+				{
+					$user_obj->setActivePlanet($planet);
+					if(count($user_obj->getForeignFleetsList($this->getName())) > 0)
+						$this->callBackForeignFleet($user_obj->getPosString());
+				}
+
+				foreach($this->getPlanetsList() as $planet)
+				{
+					$this->setActivePlanet($planet);
+					if(count($this->getForeignFleetsList($user)) > 0)
+						$user_obj->callBackForeignFleet($this->getPosString());
+				}
+
+				$this->restoreActivePlanet();
+				$user_obj->restoreActivePlanet();
+
 				$this->changed = true;
 
 				return true;
@@ -3003,24 +3065,186 @@
 			return $this->raw['last_mail'];
 		}
 
-		function addForeignFleet($user, $fleet)
+		function addForeignFleet($user, $fleet, $from, $speed_factor)
 		{
-			return true;
+			if(!$this->status || !isset($this->planet_info)) return false;
+
+			if(!isset($this->planet_info["foreign_fleets"]))
+				$this->planet_info["foreign_fleets"] = array();
+
+			if(!isset($this->planet_info["foreign_fleets"][$user]))
+			{
+				$this->planet_info["foreign_fleets"][$user] = array();
+				$user_obj = Classes::User($user);
+				if(!$user_obj->getStatus()) return false;
+				$user_obj->_addForeignCoordinates($this->getPosString());
+			}
+
+			$next_i = max(array_keys($this->planet_info["foreign_fleets"][$user]))+1;
+			$this->planet_info["foreign_fleets"][$next_i] = array($fleet, $from, $speed_factor);
+
+			$this->changed = true;
+
+			return $next_i;
 		}
 
-		function subForeignFleet($user, $id, $count)
+		function subForeignFleet($user, $i)
 		{
+			if(!$this->status || !isset($this->planet_info)) return false;
+
+			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$user]) || !isset($this->planet_info["foreign_fleets"][$user][$i]))
+				return false;
+
+			unset($this->planet_info["foreign_fleets"][$user][$i]);
+
+			if(count($this->planet_info["foreign_fleets"][$user]) == 0)
+			{
+				unset($this->planet_info["foreign_fleets"][$user]);
+				$user_obj = Classes::User($user);
+				if(!$user_obj->getStatus()) return false;
+				$user_obj->_subForeignCoordinates($this->getPosString());
+			}
+
+			$message_obj = Classes::Message();
+			$message_obj->create();
+
+			if($message_obj->getStatus())
+			{
+				$message_obj->text(sprintf(_("Der Benutzer %s eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s", $this->getName(), $user_obj->planetName(), vsprintf(_("%d:%d:%d"), $koords_a), makeItemsString($fleet[0]))));
+				$message_obj->subject(sprintf(_("Fremdstationierung zurückgezogen auf %s", vsprintf(_("%d:%d:%d"), $koords_a))));
+				$message_obj->from($this->getName());
+				$message_obj->addUser($user_obj->getName(), 3);
+			}
+
 			return true;
 		}
 
 		function getForeignUsersList()
 		{
-			return array();
+			if(!$this->status || !isset($this->planet_info)) return false;
+
+			if(!isset($this->planet_info["foreign_fleets"]))
+				$this->planet_info["foreign_fleets"] = array();
+
+			return array_keys($this->planet_info["foreign_fleets"]);
 		}
 
-		function getForeignFleetsList($user)
+		function getForeignFleetsList($user, $i=null)
 		{
-			return array();
+			if(!$this->status || !isset($this->planet_info)) return false;
+
+			if(!isset($this->planet_info["foreign_fleets"]))
+				$this->planet_info["foreign_fleets"] = array();
+
+			if($i === null)
+			{
+				if(!isset($this->planet_info["foreign_fleets"][$user]))
+					return array();
+				else
+					return $this->planet_info["foreign_fleets"][$user];
+			}
+			elseif(!isset($this->planet_info["foreign_fleets"][$i]))
+				return false;
+			else
+				return $this->planet_info["foreign_fleets"][$i];
+		}
+
+		/**
+		 * Speichert Koordinaten ab, unter denen der Benutzer Flotte
+		 * fremdstationiert hat. Wird von addForeignFleet auf den
+		 * stationierenden Benutzer aufgerufen.
+		*/
+
+		function _addForeignCoordinates($coords)
+		{
+			if(!$this->status) return false;
+
+			if(!isset($this->raw["foreign_fleets"]))
+				$this->raw["foreign_fleets"] = array();
+
+			if(in_array($coords, $this->raw["foreign_fleets"]))
+				return 2;
+
+			$this->raw["foreign_fleets"][] = $coords;
+
+			$this->changed = true;
+
+			return true;
+		}
+
+		/**
+		 * Loescht die Koordinaten von User::_addForeignCoordinates
+		 * wieder. Wird von subForeignFleet auf den zurueckziehenden
+		 * Benutzer ausgefuehrt.
+		*/
+
+		function _subForeignCoordinates($coords)
+		{
+			if(!$this->status) return false;
+
+			if(!isset($this->raw["foreign_fleets"]))
+				$this->raw["foreign_fleets"] = array();
+
+			$key = array_search($coords, $this->raw["foreign_fleets"]);
+			if($key === false) return 2;
+
+			unset($this->raw["foreign_fleets"][$key]);
+			$this->changed = true;
+
+			return true;
+		}
+
+		function getMyForeignFleets()
+		{
+			if(!$this->status) return false;
+
+			if(!isset($this->raw["foreign_fleets"]))
+				$this->raw["foreign_fleets"] = array();
+
+			return $this->raw["foreign_fleets"];
+		}
+
+		function callBackForeignFleet($koords, $i=null)
+		{
+			if(!$this->status) return false;
+
+			$koords_a = explode(":", $koords);
+			$galaxy = Classes::Galaxy($koords_a[0]);
+			$owner = $galaxy->getPlanetOwner($koords_a[1], $koords_a[2]);
+			if(!$owner) return false;
+
+			$user_obj = Classes::User($owner);
+			if(!$user_obj->getStatus()) return false;
+			$user_obj->cacheActivePlanet();
+			$user_obj->setActivePlanet($user_obj->getPlanetByPos($koords));
+
+			$fleets = $user_obj->getForeignFleetsList($this->getName());
+			if($i !== null && !isset($fleets[$i])) return false;
+			foreach($fleets as $i2=>$fleet)
+			{
+				if($i !== null && $i != $i2) continue;
+
+				$fleet_obj = Classes::Fleet();
+				$fleet_obj->create();
+
+				if(!$fleet_obj->getStatus()) return false;
+
+				$fleet_obj->addTarget($fleet[1], 6, true);
+				$fleet_obj->addUser($this->getName(), $koords, $fleet[2]);
+				foreach($fleet[0] as $id=>$c)
+					$fleet_obj->addFleet($id, $c, $this->getName());
+
+				if(!$user_obj->subForeignFleet($this->getName(), $i))
+					return false;
+
+				$fleet_obj->start();
+
+				$this->addFleet($fleet_obj->getName());
+			}
+
+			$user_obj->restoreActivePlanet();
+
+			return true;
 		}
 
 		function _printRaw()

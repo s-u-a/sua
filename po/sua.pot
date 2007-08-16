@@ -8,15 +8,80 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-16 00:51+0200\n"
+"POT-Creation-Date: 2007-08-16 17:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../include.php:17 ../include.php:23
+#: ../login/scripts/rename.php:125
+#, php-format
+msgid ""
+"Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn "
+"Sie den Planeten auflösen, wird diese Flotte zerstört werden."
+msgid_plural ""
+"Achtung! Von diesem Planeten sind noch %d Fremdstationierungen aktiv. Wenn "
+"Sie den Planeten auflösen, werden diese Flotten zerstört werden."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../login/flotten.php:948
+msgid "Fremdstationierungen"
+msgstr ""
+
+#: ../login/flotten.php:954
+msgid "Planet"
+msgstr ""
+
+#: ../login/flotten.php:955
+msgid "Flotte"
+msgstr ""
+
+#: ../login/flotten.php:956
+msgid "Heimatplanet"
+msgstr ""
+
+#: ../login/flotten.php:957
+msgid "Rückruf"
+msgstr ""
+
+#: ../login/flotten.php:976
+#, php-format
+msgid "„%s“ (%s, Eigentümer: %s)"
+msgstr ""
+
+#: ../login/flotten.php:976 ../login/flotten.php:978
+#: ../engine/classes/user.php:3113 ../engine/classes/user.php:3114
+#, php-format
+msgid "%d:%d:%d"
+msgstr ""
+
+#: ../login/flotten.php:978
+#, php-format
+msgid "„%s“ (%s)"
+msgstr ""
+
+#: ../login/flotten.php:979
+msgid "Zurück rufen"
+msgstr ""
+
+#: ../engine/classes/user.php:3113
+#, php-format
+msgid ""
+"Der Benutzer %s eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) "
+"zurückgezogen.\n"
+"Die Flotte bestand aus folgenden Schiffen: %s"
+msgstr ""
+
+#: ../engine/classes/user.php:3114
+#, php-format
+msgid "Fremdstationierung zurückgezogen auf %s"
+msgstr ""
+
+#: ../include.php:17
 msgid "title_abbr_full"
 msgstr ""
 

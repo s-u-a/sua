@@ -259,6 +259,7 @@
 			{
 				if(!$v[1]) $slots++;
 			}
+			if($slots < 1) $slots = 1;
 			return $slots;
 		}
 
@@ -1460,11 +1461,33 @@ EOF
 										$next = "\t<div id=\"spionage-schiffe\">\n";
 										$next .= "\t\t<h4>Schiffe</h4>\n";
 										$next .= "\t\t<ul>\n";
+										$schiffe = array();
 										foreach($target_user->getItemsList('schiffe') as $id)
 										{
-											if($target_user->getItemLevel($id, 'schiffe') <= 0) continue;
+											$count = $target_user->getItemLevel($id, 'schiffe');
+											if($count <= 0) continue;
+											$schiffe[$i] = $count;
+										}
+
+										# Fremdstationierte Flotten mit den eigenen zusammen anzeigen
+										foreach($target_user->getForeignUsersList() as $foreign_user)
+										{
+											foreach($target_user->getForeignFleetsList($foreign_user) as $foreign_i->$foreign_fleet)
+											{
+												foreach($foreign_fleet as $id=>$count)
+												{
+													if(isset($schiffe[$i]))
+														$schiffe[$i] += $count;
+													else
+														$schiffe[$i] = $count;
+												}
+											}
+										}
+
+										foreach($schiffe as $id=>$count)
+										{
 											$item_info = $target_user->getItemInfo($id, 'schiffe');
-											$next .= "\t\t\t<li>".$item_info['name']." <span class=\"anzahl\">(".ths($item_info['level']).")</span></li>\n";
+											$next .= "\t\t\t<li>".$item_info['name']." <span class=\"anzahl\">(".ths($count).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1726,7 +1749,7 @@ EOF
 					foreach($schiffe_other as $user=>$schiffe)
 					{
 						$message_text .= $user.": ".makeItemsString($schiffe, false)."\n";
-						$owner_obj->addForeignFleet($user, $schiffe);
+						$owner_obj->addForeignFleet($user, $schiffe, $move_info[1], $move_info[2]);
 					}
 				}
 
