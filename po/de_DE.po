@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-08-16 18:15+0100\n"
+"PO-Revision-Date: 2007-08-16 21:05+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -77,8 +77,9 @@ msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr "Fremdstationierung zurückgezogen auf %s"
 
 #: ../include.php:17
+#: ../include.php:23
 msgid "title_abbr_full"
-msgstr "title_abbr_full"
+msgstr "S-U-A – Stars Under Attack"
 
 #: ../include.php:23
 #, php-format

@@ -36,6 +36,7 @@
 	# Locale eintragen
 	setlocale(LC_ALL, "de_DE");
 	bindtextdomain("sua", s_root."/locale");
+	bind_textdomain_codeset("sua", "utf-8");
 	textdomain("sua");
 
 	# SSL auf Wunsch abschalten

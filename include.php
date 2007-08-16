@@ -20,7 +20,7 @@
 			if(isset($SHOW_META_DESCRIPTION) && $SHOW_META_DESCRIPTION)
 			{
 ?>
-		<meta name="description" content="<?=sprintf(h(_("%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit Hunderten anderer Spielern."), __("title_abbr_full")))?>" />
+		<meta name="description" content="<?=h(sprintf(_("%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit Hunderten anderer Spielern."), _("title_abbr_full")))?>" />
 <?php
 			}
 			if($base)
