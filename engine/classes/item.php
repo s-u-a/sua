@@ -325,18 +325,18 @@
 	{
 		$tabs_str = str_repeat("\t", $tabs);
 ?>
-<?=$tabs?><dl class="itemlist">
+<?=$tabs_str?><dl class="item-list">
 <?php
-		foreach($fleets as $id=>$count)
+		foreach($items as $id=>$count)
 		{
 			$item = Classes::Item($id);
 ?>
-<?=$tabs?>	<dt class="c-<?=htmlspecialchars($id)?>"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(urlencode(session_name())."=".urlencode(session_id()))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item->getInfo("name"))?></a></dt>
-<?=$tabs?>	<dd class="c-<?=htmlspecialchars($id)?>"><?=ths($count)?></dd>
+<?=$tabs_str?>	<dt class="c-<?=htmlspecialchars($id)?>"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(urlencode(session_name())."=".urlencode(session_id()))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item->getInfo("name"))?></a></dt>
+<?=$tabs_str?>	<dd class="c-<?=htmlspecialchars($id)?>"><?=ths($count)?></dd>
 <?php
 		}
 ?>
-<?=$tabs?></dl>
+<?=$tabs_str?></dl>
 <?php
 	}
 ?>

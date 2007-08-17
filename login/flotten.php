@@ -508,7 +508,7 @@
 		</dd>
 
 		<dt class="c-flugzeit"><?=h(_("Flugzeit"))?></dt>
-		<dd class="c-flugzeit" id="flugzeit" title="<?=h(sprintf(_("Ankunft: %s"), sprintf(_("%s (Serverzeit)"), date(_("H:i:s, Y-m-d", time()+$time)))))?>"><?=$time_string?></dd>
+		<dd class="c-flugzeit" id="flugzeit" title="<?=h(sprintf(_("Ankunft: %s"), sprintf(_("%s (Serverzeit)"), date(_("H:i:s, Y-m-d"), time()+$time))))?>"><?=$time_string?></dd>
 
 		<dt class="c-transportkapazitaet"><?=h(_("Transportkapazität"))?></dt>
 		<dd class="c-transportkapazitaet"><?=ths($transport[0])?>&thinsp;<abbr title="<?=h(ngettext("Tonne", "Tonnen", $transport[0]))?>">t</abbr>, <?=ths($transport[1])?>&nbsp;<?=h(ngettext("Roboter", "Roboter", $transport[1]))?></dd>
@@ -546,19 +546,19 @@
 								{
 ?>
 				<dt><label for="transport-carbon"><?=h(_("Carbo&n"))?></label></dt>
-				<dd><input type="text" name="transport[0]" id="transport-carbon" value="0" onchange="recalc_values();"<?=acceskey_attr(_("Carbo&n"))?> tabindex="3" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dd><input type="text" name="transport[0]" id="transport-carbon" value="0" onchange="recalc_values();"<?=accesskey_attr(_("Carbo&n"))?> tabindex="3" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
 				<dt><label for="transport-aluminium"><?=h(_("Aluminium&"))?></label></dt>
-				<dd><input type="text" name="transport[1]" id="transport-aluminium" value="0" onchange="recalc_values();"<?=acceskey_attr(_("Aluminium&"))?> tabindex="4" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dd><input type="text" name="transport[1]" id="transport-aluminium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("Aluminium&"))?> tabindex="4" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
 				<dt><label for="transport-wolfram"><?=h(_("Wolfram&"))?></label></dt>
-				<dd><input type="text" name="transport[2]" id="transport-wolfram" value="0" onchange="recalc_values();"<?=acceskey_attr(_("Wolfram&"))?> tabindex="5" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dd><input type="text" name="transport[2]" id="transport-wolfram" value="0" onchange="recalc_values();"<?=accesskey_attr(_("Wolfram&"))?> tabindex="5" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
 				<dt><label for="transport-radium"><?=h(_("Radium&"))?></label></dt>
-				<dd><input type="text" name="transport[3]" id="transport-radium" value="0" onchange="recalc_values();"<?=acceskey_attr(_("Radium&"))?> tabindex="6" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dd><input type="text" name="transport[3]" id="transport-radium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("Radium&"))?> tabindex="6" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
 				<dt><label for="transport-tritium"><?=h(_("Tritium&"))?></label></dt>
-				<dd><input type="text" name="transport[4]" id="transport-tritium" value="0" onchange="recalc_values();"<?=acceskey_attr(_("Tritium&"))?> tabindex="7" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dd><input type="text" name="transport[4]" id="transport-tritium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("Tritium&"))?> tabindex="7" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 <?php
 								}
 								if($transport[1] > 0)
@@ -951,17 +951,9 @@
 		{
 ?>
 <h3 id="ihre-fremdstationierungen"><?=h(_("Ihre Fremdstationierungen"))?></h3>
-<form action="flotten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>#fremdstationierungen" method="post" class="ihre-fremdstationierungen">
-	<fieldset>
-		<table>
-			<thead>
-				<tr>
-					<th class="c-planet"><?=h(_("Planet"))?></th>
-					<th class="c-flotte"><?=h(_("Flotte"))?></th>
-				</tr>
-			</thead>
-			<tbody>
+<fieldset>
 <?php
+			$me->cacheActivePlanet();
 			foreach($foreign_coords as $coords)
 			{
 				$coords_a = explode(":", $coords);
@@ -974,25 +966,19 @@
 				$fleet = $user_obj->getForeignFleetsList($me->getName());
 				foreach($fleet as $i=>$fi)
 				{
+					$me->setActivePlanet($me->getPlanetByPos($fi[1]));
 ?>
-				<tr>
-					<td class="c-planet"><?=h(sprintf(_("„%s“ (%s, Eigentümer: %s)"), $user_obj->planetName(), vsprintf(_("%d:%d:%d"), $coords_a), $user_obj->getName()))?></td>
-					<td class="c-flotte">
+	<legend><?=h(sprintf(_("„%s“ (%s, Eigentümer: %s)"), $user_obj->planetName(), vsprintf(_("%d:%d:%d"), $coords_a), $user_obj->getName()))?></legend>
 <?php
-					makeItemList($fi[0], 6);
+					makeItemList($fi[0], 1);
 ?>
-						<input type="submit" name="callback_foreign[<?=htmlspecialchars($coords)?>][<?=htmlspecialchars($i)?>]" value="<?=h(sprintf(_("Zurückrufen zum Planeten %s"), sprintf(_("„%s“ (%s)"), vsprintf(_("%s:%s:%s"), $coords_a))))?>" />
-					</td>
-				</tr>
+	<form action="flotten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>#fremdstationierungen" method="post" class="ihre-fremdstationierungen"><div><button type="submit" name="callback_foreign[<?=htmlspecialchars($coords)?>][<?=htmlspecialchars($i)?>]"><?=h(sprintf(_("Zurückrufen zum Planeten %s"), sprintf(_("„%s“ (%s)"), $me->planetName(), vsprintf(_("%s:%s:%s"), $coords_a))))?></button></div></form>
 <?php
 				}
 				$user_obj->restoreActivePlanet();
 			}
 ?>
-			</tbody>
-		</table>
-	</fieldset>
-</form>
+</fieldset>
 <?php
 		}
 	}
