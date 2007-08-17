@@ -14,7 +14,7 @@
 	if(!defined('ajax'))
 	{
 ?>
-<h2>Flotten</h2>
+<h2><?=h(_("Flotten"))?></h2>
 <?php
 	}
 
@@ -24,9 +24,9 @@
 		if($_GET['action'] == 'shortcut')
 		{
 			$result = $me->addPosShortcut($_GET['action_galaxy'].':'.$_GET['action_system'].':'.$_GET['action_planet']);
-			if($result === 2) $return = array('nothingtodo', 'Dieser Planet ist schon in Ihren Lesezeichen.');
-			elseif($result) $return = array('successful', 'Der Planet wurde zu den Lesezeichen hinzugefügt.');
-			else $return = array('error', 'Datenbankfehler.');
+			if($result === 2) $return = array('nothingtodo', _('Dieser Planet ist schon in Ihren Lesezeichen.'));
+			elseif($result) $return = array('successful', _('Der Planet wurde zu den Lesezeichen hinzugefügt.'));
+			else $return = array('error', _('Datenbankfehler.'));
 
 			if(defined('ajax')) return $return;
 			elseif($return[0] == 'error')
@@ -52,11 +52,9 @@
 		if($my_flotten >= $max_flotten)
 		{
 			if(defined('ajax'))
-				return array('error', 'Maximale Flottenzahl erreicht.');
+				return array('error', _('Maximale Flottenzahl erreicht.'));
 ?>
-<p class="error">
-	Maximale Flottenzahl erreicht.
-</p>
+<p class="error"><?=h(_("Maximale Flottenzahl erreicht."))?></p>
 <?php
 			login_gui::html_foot();
 			exit();
@@ -77,11 +75,9 @@
 					$_POST['flotte']['S5'] = $me->checkSetting('sonden');
 				if($me->getItemLevel('S5', 'schiffe') < 1)
 				{
-					if(defined('ajax')) return array('error', 'Keine Spionagesonden vorhanden.');
+					if(defined('ajax')) return array('error', _('Keine Spionagesonden vorhanden.'));
 ?>
-<p class="error">
-	Keine Spionagesonden vorhanden.
-</p>
+<p class="error"><?=h(_("Keine Spionagesonden vorhanden."))?></p>
 <?php
 					login_gui::html_foot();
 					exit();
@@ -93,11 +89,9 @@
 				$_POST['flotte'] = array('S6' => 1);
 				if($me->getItemLevel('S6', 'schiffe') < 1)
 				{
-					if(defined('ajax')) return array('error', 'Kein Besiedelungsschiff vorhanden.');
+					if(defined('ajax')) return array('error', _('Kein Besiedelungsschiff vorhanden.'));
 ?>
-<p class="error">
-	Kein Besiedelungsschiff vorhanden.
-</p>
+<p class="error"><?=h(_("Kein Besiedelungsschiff vorhanden."))?></p>
 <?php
 					login_gui::html_foot();
 					exit();
@@ -125,11 +119,9 @@
 
 				if($me->getItemLevel('S3', 'schiffe') < 1)
 				{
-					if(defined('ajax')) return array('error', 'Keine Sammler vorhanden.');
+					if(defined('ajax')) return array('error', _('Keine Sammler vorhanden.'));
 ?>
-<p class="error">
-	Keine Sammler vorhanden.
-</p>
+<p class="error"><?=h(_("Keine Sammler vorhanden."))?></p>
 <?php
 				}
 			}
@@ -255,17 +247,15 @@
 
 				if(count($types) <= 0)
 				{
-					if(defined('ajax')) return array('error', 'Diese Aktion ist auf diesen Planeten nicht möglich.');
+					if(defined('ajax')) return array('error', _('Diese Aktion ist auf diesen Planeten nicht möglich.'));
 ?>
-<p class="error">
-	Sie haben nicht die richtigen Schiffe ausgewählt, um diesen Planeten anzufliegen.
-</p>
+<p class="error"><?=h(_("Sie haben nicht die richtigen Schiffe ausgewählt, um diesen Planeten anzufliegen."))?></p>
 <?php
 				}
 				elseif($buendnisflug && time()+Fleet::calcFleetTime($me->getName(), $me->getPosString(), $buendnisflug_fleet->getCurrentTarget(), $_POST["flotte"]) > $buendnisflug_fleet->getNextArrival())
 				{
 ?>
-<p class="error">Ihre Flotte kann nicht schnell genug fliegen um gleichzeitig mit dem Flottenverbund am Ziel anzukommen.</p>
+<p class="error"><?=h(_("Ihre Flotte kann nicht schnell genug fliegen um gleichzeitig mit dem Flottenverbund am Ziel anzukommen."))?></p>
 <?php
 				}
 				else
@@ -315,21 +305,17 @@
 
 								if($that_punkte > $this_punkte && $that_punkte*0.05 > $this_punkte)
 								{
-									if(defined('ajax')) return array('error', 'Dieser Spieler ist zu stark für Sie.');
+									if(defined('ajax')) return array('error', _('Dieser Spieler ist zu stark für Sie.'));
 ?>
-<p class="error">
-	Das Imperium dieses Spielers ist so groß, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anfängerschutz.)
-</p>
+<p class="error"><?=h(_("Das Imperium dieses Spielers ist so groß, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (Aka Anfängerschutz.)"))?></p>
 <?php
 									$noob = true;
 								}
 								elseif($that_punkte < $this_punkte && $that_punkte < $this_punkte*0.05)
 								{
-									if(defined('ajax')) return array('error', 'Dieser Spieler ist zu schwach für Sie.');
+									if(defined('ajax')) return array('error', _('Dieser Spieler ist zu schwach für Sie.'));
 ?>
-<p class="error">
-	Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen können. (<abbr title="Also known as" xml:lang="en">Aka</abbr> Anfängerschutz.)
-</p>
+<p class="error"><?=h(_("Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen können. (Aka Anfängerschutz.)"))?></p>
 <?php
 									$noob = true;
 								}
@@ -397,11 +383,9 @@
 
 									if($ress[4]-$_POST['transport'][4] < $tritium)
 									{
-										if(defined('ajax')) return array('error', 'Nicht genug Tritium vorhanden.');
+										if(defined('ajax')) return array('error', _('Nicht genug Tritium vorhanden.'));
 ?>
-<p class="error">
-	Nicht genug Tritium vorhanden.
-</p>
+<p class="error"><?=h("Nicht genug Tritium vorhanden.")?></p>
 <?php
 									}
 									else
@@ -428,7 +412,7 @@
 
 										$fleet_obj->start();
 
-										if(defined('ajax')) return array('successful', 'Die Flotte wurde versandt.');
+										if(defined('ajax')) return array('successful', _('Die Flotte wurde versandt.'));
 										elseif($fast_action)
 										{
 											header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
@@ -439,18 +423,16 @@
 										{
 ?>
 <div class="flotte-versandt">
-	<p>
-		Die Flotte wurde versandt.
-	</p>
+	<p><?=h(_("Die Flotte wurde versandt."))?></p>
 	<dl>
-		<dt class="c-ziel">Ziel</dt>
-		<dd class="c-ziel"><?=utf8_htmlentities($fleet_obj->getCurrentTarget())?> &ndash; <?=$planet_owner ? utf8_htmlentities($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])).' <span class="playername">('.utf8_htmlentities($planet_owner).')</span>' : 'Unbesiedelt'?></dd>
+		<dt class="c-ziel"><?=h(_("Ziel"))?></dt>
+		<dd class="c-ziel"><?=h($planet_owner ? sprintf(_("„%s“ (%s, Eigentümer: %s)"), htmlspecialchars($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])), vsprintf(_("%s:%s:%s"), explode(":", $fleet_obj->getCurrentTarget())), htmlspecialchars($planet_owner)) : sprintf(_("Unbesiedelt (%s)"), vsprintf(_("%s:%s:%s"), explode(":", $fleet_obj->getCurrentTarget()))))?></dd>
 
-		<dt class="c-auftragsart">Auftragsart</dt>
-		<dd class="c-auftragsart"><?=isset($type_names[$auftrag]) ? htmlentities($type_names[$auftrag]) : utf8_htmlentities($auftrag)?></dt>
+		<dt class="c-auftragsart"><?=h(_("Auftragsart"))?></dt>
+		<dd class="c-auftragsart"><?=isset($type_names[$auftrag]) ? htmlspecialchars($type_names[$auftrag]) : htmlspecialchars($auftrag)?></dt>
 
-		<dt class="c-ankunft">Ankunft</dt>
-		<dd class="c-ankunft"><?=date('H:i:s, Y-m-d', $fleet_obj->getNextArrival())?> (Serverzeit)</dd>
+		<dt class="c-ankunft"><?=h(_("Ankunft"))?></dt>
+		<dd class="c-ankunft"><?=h(sprintf("%s (Serverzeit)", date(_("H:i:s, Y-m-d"), $fleet_obj->getNextArrival())))?></dd>
 	</dl>
 </div>
 <?php
@@ -463,7 +445,7 @@
 
 					if($show_form2)
 					{
-						if(defined('ajax')) return array('error', 'Ungültige Aktion.');
+						if(defined('ajax')) return array('error', _('Ungültige Aktion.'));
 						elseif($fast_action)
 						{
 							header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
@@ -484,7 +466,7 @@
 							$time_string = '';
 							if($time >= 86400)
 							{
-								$time_string .= floor($time/86400).'&thinsp;<abbr title="Tage">d</abbr>';
+								$time_string .= floor($time/86400).'&thinsp;<abbr title="'.h(_("Tage")).'">d</abbr>';
 								$time2 = $time%86400;
 							}
 							else
@@ -497,55 +479,55 @@
 							# Kein Robotertransport zu fremden Planeten
 							if($planet_owner != $_SESSION['username']) $transport[1] = 0;
 ?>
-<form action="flotten.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
+<form action="flotten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
 	<dl>
-		<dt class="c-ziel">Ziel</dt>
-		<dd class="c-ziel"><?=utf8_htmlentities($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'])?> &ndash; <?=$planet_owner ? utf8_htmlentities($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])).' <span class="playername">('.utf8_htmlentities($planet_owner).')</span>' : 'Unbesiedelt'?></dd>
+		<dt class="c-ziel"><?=h(_("Ziel"))?></dt>
+		<dd class="c-ziel"><?=htmlspecialchars($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'])?> &ndash; <?=$planet_owner ? htmlspecialchars($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])).' <span class="playername">('.htmlspecialchars($planet_owner).')</span>' : 'Unbesiedelt'?></dd>
 
-		<dt class="c-entfernung">Entfernung</dt>
-		<dd class="c-entfernung"><?=ths($distance)?>&thinsp;<abbr title="Orbits">Or</abbr></dd>
+		<dt class="c-entfernung"><?=h(_("Entfernung"))?></dt>
+		<dd class="c-entfernung"><?=ths($distance)?>&thinsp;<abbr title="<?=h(ngettext("Orbit", "Orbits", $distance))?>"><?=h(_("Or"))?></abbr></dd>
 
-		<dt class="c-antrieb">Antrieb</dt>
-		<dd class="c-antrieb"><?=ths($speed)?>&thinsp;<abbr title="Mikroorbits pro Quadratsekunde">µOr&frasl;s²</abbr></dd>
+		<dt class="c-antrieb"><?=h(_("Antrieb"))?></dt>
+		<dd class="c-antrieb"><?=ths($speed)?>&thinsp;<abbr title="<?=h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $speed))?>"><?=h(_("µOr⁄s²"))?></abbr></dd>
 
-		<dt class="c-tritiumverbrauch">Tritiumverbrauch</dt>
-		<dd class="c-tritiumverbrauch <?=($this_ress[4] >= $tritium) ? 'ja' : 'nein'?>" id="tritium-verbrauch"><?=ths($tritium)?>&thinsp;<abbr title="Tonnen">t</abbr></dd>
+		<dt class="c-tritiumverbrauch"><?=h(_("Tritiumverbrauch"))?></dt>
+		<dd class="c-tritiumverbrauch <?=($this_ress[4] >= $tritium) ? 'ja' : 'nein'?>" id="tritium-verbrauch"><?=ths($tritium)?>&thinsp;<abbr title="<?=h(ngettext("Tonne", "Tonnen", $tritium))?>">t</abbr></dd>
 
-		<dt class="c-geschwindigkeit"><label for="speed">Gesch<kbd>w</kbd>indigkeit</label></dt>
+		<dt class="c-geschwindigkeit"><label for="speed"><?=h(_("Gesch&windigkeit"))?></label></dt>
 		<dd class="c-geschwindigkeit">
-			<select name="speed" id="speed" accesskey="w" tabindex="1" onchange="recalc_values();" onkeyup="recalc_values();">
+			<select name="speed" id="speed"<?=accesskey_attr(_("Gesch&windigkeit"))?> tabindex="1" onchange="recalc_values();" onkeyup="recalc_values();">
 <?php
 							for($i=1,$pr=100; $i>0; $i-=.05,$pr-=5)
 							{
 ?>
-				<option value="<?=htmlentities($i)?>"><?=htmlentities($pr)?>&thinsp;%</option>
+				<option value="<?=htmlspecialchars($i)?>"><?=htmlspecialchars($pr)?>&thinsp;%</option>
 <?php
 							}
 ?>
 			</select>
 		</dd>
 
-		<dt class="c-flugzeit">Flugzeit</dt>
-		<dd class="c-flugzeit" id="flugzeit" title="Ankunft: <?=date('H:i:s, Y-m-d', time()+$time)?> (Serverzeit)"><?=$time_string?></dd>
+		<dt class="c-flugzeit"><?=h(_("Flugzeit"))?></dt>
+		<dd class="c-flugzeit" id="flugzeit" title="<?=h(sprintf(_("Ankunft: %s"), sprintf(_("%s (Serverzeit)"), date(_("H:i:s, Y-m-d", time()+$time)))))?>"><?=$time_string?></dd>
 
-		<dt class="c-transportkapazitaet">Transportkapazität</dt>
-		<dd class="c-transportkapazitaet"><?=ths($transport[0])?>&thinsp;<abbr title="Tonnen">t</abbr>, <?=ths($transport[1])?>&nbsp;Roboter</dd>
+		<dt class="c-transportkapazitaet"><?=h(_("Transportkapazität"))?></dt>
+		<dd class="c-transportkapazitaet"><?=ths($transport[0])?>&thinsp;<abbr title="<?=h(ngettext("Tonne", "Tonnen", $transport[0]))?>">t</abbr>, <?=ths($transport[1])?>&nbsp;<?=h(ngettext("Roboter", "Roboter", $transport[1]))?></dd>
 
 		<script type="text/javascript">
 			// <![CDATA[
-			document.write('<dt class="c-verbleibend" id="transport-verbleibend-dt">Verbleibend</dt>');
-			document.write('<dd class="c-verbleibend" id="transport-verbleibend-dd"><?=ths($transport[0])?>&thinsp;<abbr title="Tonnen">t</abbr>, <?=ths($transport[1])?>&nbsp;Roboter</dd>');
+			document.write('<dt class="c-verbleibend" id="transport-verbleibend-dt"><?=h(_("Verbleibend"))?></dt>');
+			document.write('<dd class="c-verbleibend" id="transport-verbleibend-dd"><?=ths($transport[0])?>&thinsp;<abbr title="<?=h(ngettext("Tonne", "Tonnen", $transport[0]))?>">t</abbr>, <?=ths($transport[1])?>&nbsp;<?=h(ngettext("Roboter", "Roboter", $transport[1]))?></dd>');
 			// ]]>
 		</script>
 
-		<dt class="c-auftrag"><label for="auftrag">A<kbd>u</kbd>ftrag</label></dt>
+		<dt class="c-auftrag"><label for="auftrag"><?=h(_("A&uftrag"))?></label></dt>
 		<dd class="c-auftrag">
-			<select name="auftrag" id="auftrag" accesskey="u" tabindex="2" onchange="recalc_values();" onkeyup="recalc_values();">
+			<select name="auftrag" id="auftrag"<?=accesskey_attr(_("A&uftrag"))?> tabindex="2" onchange="recalc_values();" onkeyup="recalc_values();">
 <?php
 							foreach($types as $type)
 							{
 ?>
-				<option value="<?=utf8_htmlentities($type)?>"><?=isset($type_names[$type]) ? htmlentities($type_names[$type]) : $type?></option>
+				<option value="<?=htmlspecialchars($type)?>"><?=isset($type_names[$type]) ? htmlspecialchars($type_names[$type]) : $type?></option>
 <?php
 							}
 ?>
@@ -556,27 +538,27 @@
 							{
 ?>
 
-		<dt class="c-transport" id="transport-dt">Tra<kbd>n</kbd>sport</dt>
+		<dt class="c-transport" id="transport-dt"><?=h(_("Transport"))?></dt>
 		<dd class="c-transport" id="transport-dd">
 			<dl>
 <?php
 								if($transport[0] > 0)
 								{
 ?>
-				<dt><label for="transport-carbon">Carbo<kbd>n</kbd></label></dt>
-				<dd><input type="text" name="transport[0]" id="transport-carbon" value="0" onchange="recalc_values();" accesskey="n" tabindex="3" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dt><label for="transport-carbon"><?=h(_("Carbo&n"))?></label></dt>
+				<dd><input type="text" name="transport[0]" id="transport-carbon" value="0" onchange="recalc_values();"<?=acceskey_attr(_("Carbo&n"))?> tabindex="3" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
-				<dt><label for="transport-aluminium">Aluminium</label></dt>
-				<dd><input type="text" name="transport[1]" id="transport-aluminium" value="0" onchange="recalc_values();" tabindex="4" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dt><label for="transport-aluminium"><?=h(_("Aluminium&"))?></label></dt>
+				<dd><input type="text" name="transport[1]" id="transport-aluminium" value="0" onchange="recalc_values();"<?=acceskey_attr(_("Aluminium&"))?> tabindex="4" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
-				<dt><label for="transport-wolfram">Wolfram</label></dt>
-				<dd><input type="text" name="transport[2]" id="transport-wolfram" value="0" onchange="recalc_values();" tabindex="5" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dt><label for="transport-wolfram"><?=h(_("Wolfram&"))?></label></dt>
+				<dd><input type="text" name="transport[2]" id="transport-wolfram" value="0" onchange="recalc_values();"<?=acceskey_attr(_("Wolfram&"))?> tabindex="5" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
-				<dt><label for="transport-radium">Radium</label></dt>
-				<dd><input type="text" name="transport[3]" id="transport-radium" value="0" onchange="recalc_values();" tabindex="6" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dt><label for="transport-radium"><?=h(_("Radium&"))?></label></dt>
+				<dd><input type="text" name="transport[3]" id="transport-radium" value="0" onchange="recalc_values();"<?=acceskey_attr(_("Radium&"))?> tabindex="6" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
-				<dt><label for="transport-tritium">Tritium</label></dt>
-				<dd><input type="text" name="transport[4]" id="transport-tritium" value="0" onchange="recalc_values();" tabindex="7" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dt><label for="transport-tritium"><?=h(_("Tritium&"))?></label></dt>
+				<dd><input type="text" name="transport[4]" id="transport-tritium" value="0" onchange="recalc_values();"<?=acceskey_attr(_("Tritium&"))?> tabindex="7" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 <?php
 								}
 								if($transport[1] > 0)
@@ -589,8 +571,8 @@
 									{
 										$item_info = $me->getItemInfo($rob, 'roboter');
 ?>
-				<dt><label for="rtransport-<?=utf8_htmlentities($rob)?>"><?=utf8_htmlentities($item_info['name'])?></label></dt>
-				<dd><input type="text" name="rtransport[<?=utf8_htmlentities($rob)?>]" id="rtransport-<?=utf8_htmlentities($rob)?>" value="0" onchange="recalc_values();" tabindex="<?=$tabindex++?>" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dt><label for="rtransport-<?=htmlspecialchars($rob)?>"><?=htmlspecialchars($item_info['name'])?></label></dt>
+				<dd><input type="text" name="rtransport[<?=htmlspecialchars($rob)?>]" id="rtransport-<?=htmlspecialchars($rob)?>" value="0" onchange="recalc_values();" tabindex="<?=$tabindex++?>" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 <?php
 									}
 								}
@@ -634,7 +616,7 @@
 				var tritium = <?=$tritium?>;
 				if(!isNaN(speed))
 					tritium = Math.floor(tritium*speed);
-				document.getElementById('tritium-verbrauch').innerHTML = ths(tritium)+'&thinsp;<abbr title="Tonnen">t</abbr>';
+				document.getElementById('tritium-verbrauch').innerHTML = ths(tritium)+'&thinsp;<abbr title="<?=h(_("Tonnen"))?>">t</abbr>';
 				document.getElementById('tritium-verbrauch').className = 'c-tritiumverbrauch '+((<?=$this_ress[4]?> >= tritium) ? 'ja' : 'nein');
 
 				// Flugzeit
@@ -648,7 +630,7 @@
 				var time_string = '';
 				if(time >= 86400)
 				{
-					time_string += Math.floor(time/86400)+'&thinsp;<abbr title="Tage">d</abbr> ';
+					time_string += Math.floor(time/86400)+'&thinsp;<abbr title="<?=h(_("Tage"))?>">d</abbr> ';
 					var time2 = time%86400;
 				}
 				else
@@ -665,7 +647,7 @@
 					attrName = 'titleAttribute';
 				else
 					attrName = 'title';
-				document.getElementById('flugzeit').setAttribute(attrName, 'Ankunft: '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+' (Lokalzeit); '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+' (Serverzeit)');
+				document.getElementById('flugzeit').setAttribute(attrName, '<?=sprintf(str_replace("'", "\\'", _("Ankunft: %s")), sprintf(str_replace("'", "\\'", _("%s (Lokalzeit)")), "'+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+' (Lokalzeit); '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+'"))?>');
 <?php
 							if($transport[0] > 0 || $transport[1] > 0)
 							{
@@ -717,7 +699,7 @@
 						remain_rob = "\u22120";
 					else
 						remain_rob = ths(remain_rob);
-					document.getElementById('transport-verbleibend-dd').innerHTML = remain_ress+'&thinsp;<abbr title="Tonnen">t</abbr>, '+remain_rob+'&nbsp;Roboter';
+					document.getElementById('transport-verbleibend-dd').innerHTML = remain_ress+'&thinsp;<abbr title="<?=h(_("Tonnen"))?>">t</abbr>, '+remain_rob+'&nbsp;<?=h(_("Roboter"))?>';
 				}
 <?php
 							}
@@ -732,14 +714,14 @@
 							foreach($_POST['flotte'] as $id=>$anzahl)
 							{
 ?>
-		<input type="hidden" name="flotte[<?=utf8_htmlentities($id)?>]" value="<?=utf8_htmlentities($anzahl)?>" />
+		<input type="hidden" name="flotte[<?=htmlspecialchars($id)?>]" value="<?=htmlspecialchars($anzahl)?>" />
 <?php
 							}
 ?>
-		<input type="hidden" name="galaxie" value="<?=utf8_htmlentities($_POST['galaxie'])?>" />
-		<input type="hidden" name="system" value="<?=utf8_htmlentities($_POST['system'])?>" />
-		<input type="hidden" name="planet" value="<?=utf8_htmlentities($_POST['planet'])?>" />
-		<button type="submit" accesskey="d">Absen<kbd>d</kbd>en</button>
+		<input type="hidden" name="galaxie" value="<?=htmlspecialchars($_POST['galaxie'])?>" />
+		<input type="hidden" name="system" value="<?=htmlspecialchars($_POST['system'])?>" />
+		<input type="hidden" name="planet" value="<?=htmlspecialchars($_POST['planet'])?>" />
+		<button type="submit"<?=accesskey_attr(_("Absen&den"))?>><?=h("Absen&den")?></button>
 	</div>
 </form>
 <?php
@@ -752,7 +734,7 @@
 
 	if($show_versenden)
 	{
-		if(defined('ajax')) return array('error', 'Ungültige Aktion.');
+		if(defined('ajax')) return array('error', _('Ungültige Aktion.'));
 		elseif($fast_action)
 		{
 			header($_SERVER['SERVER_PROTOCOL'].' 204 No Content');
@@ -760,10 +742,10 @@
 			die();
 		}
 ?>
-<h3>Flotte versenden</h3>
+<h3><?=h(_("Flotte versenden"))?></h3>
 <p class="flotte-anzahl<?=($my_flotten >= $max_flotten) ? ' voll' : ''?>">
-	Sie haben derzeit <?=ths($my_flotten)?> von <?=ths($max_flotten)?> <?=($max_flotten == 1) ? 'möglichen Flotte' : 'möglichen Flotten'?> unterwegs.<br />
-	Bauen Sie das Kontrollwesen aus, um die maximale Anzahl zu erhöhen.
+	<?=h(sprintf(ngettext("Sie haben derzeit %s von %s möglichen Flotte unterwegs.", "Sie haben derzeit %s von %s möglichen Flotten unterwegs.", $max_flotten), ths($my_flotten), ths($max_flotten)))?><br />
+	<?=h(sprintf(_("Bauen Sie %s aus, um die maximale Anzahl zu erhöhen."), _("item_F0_def_acc")))."\n"?>
 </p>
 <?php
 		$this_pos = $me->getPos();
@@ -771,7 +753,7 @@
 		if(isset($_GET['action_system'])) $this_pos[1] = $_GET['action_system'];
 		if(isset($_GET['action_planet'])) $this_pos[2] = $_GET['action_planet'];
 ?>
-<form action="flotten.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden">
+<form action="flotten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden">
 <?php
 		if($my_flotten < $max_flotten && $me->permissionToAct())
 		{
@@ -779,20 +761,20 @@
 	<fieldset class="flotte-koords">
 		<legend><input type="radio" name="buendnisflug" value="0"<?php if(!$buendnisflug){?> checked="checked"<?php }?> id="i-eigenes-ziel" /> <label for="i-eigenes-ziel">Eigenes Ziel</label></legend>
 		<dl>
-			<dt class="c-ziel"><label for="ziel-galaxie"><kbd>Z</kbd>iel</label></dt>
-			<dd class="c-ziel"><input type="text" id="ziel-galaxie" name="galaxie" value="<?=utf8_htmlentities($this_pos[0])?>" title="Ziel: Galaxie" accesskey="z" tabindex="1" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="<?=strlen(getGalaxiesCount())?>" />:<input type="text" id="ziel-system" name="system" value="<?=utf8_htmlentities($this_pos[1])?>" title="Ziel: System" tabindex="2" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="3" />:<input type="text" id="ziel-planet" name="planet" value="<?=utf8_htmlentities($this_pos[2])?>" title="Ziel: Planet" tabindex="3" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="2" /></dd>
+			<dt class="c-ziel"><label for="ziel-galaxie"><?=h(_("&Ziel"))?></label></dt>
+			<dd class="c-ziel"><input type="text" id="ziel-galaxie" name="galaxie" value="<?=htmlspecialchars($this_pos[0])?>" title="<?=h("Ziel: Galaxie")?>"<?=accesskey_attr(_("&Ziel"))?> tabindex="1" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="<?=strlen(getGalaxiesCount())?>" />:<input type="text" id="ziel-system" name="system" value="<?=htmlspecialchars($this_pos[1])?>" title="<?=h(_("Ziel: System&"), false)?>"<?=accesskey_attr(_("Ziel: System&"))?> tabindex="2" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="3" />:<input type="text" id="ziel-planet" name="planet" value="<?=htmlspecialchars($this_pos[2])?>" title="<?=h(_("Ziel: Planet&"), false)?>"<?=accesskey_attr(_("Ziel: Planet&"))?> tabindex="3" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="2" /></dd>
 			<script type="text/javascript">
 				// <![CDATA[
-					document.write('<dt class="c-planet"><label for="ziel-planet-wahl">Pla<kbd>n</kbd>et</label></dt>');
+					document.write('<dt class="c-planet"><label for="ziel-planet-wahl"><?=h(_("Pla&net"))?></label></dt>');
 					document.write('<dd class="c-planet">');
-					document.write('<select id="ziel-planet-wahl" accesskey="n" tabindex="4" onchange="syncronise(false);" onkeyup="syncronise(false);">');
-					document.write('<option value="">Benutzerdefiniert</option>');
+					document.write('<select id="ziel-planet-wahl"<?=accesskey_attr(_("Pla&net"))?> tabindex="4" onchange="syncronise(false);" onkeyup="syncronise(false);">');
+					document.write('<option value=""><?=h(_("Benutzerdefiniert"))?></option>');
 <?php
 				$shortcuts = $me->getPosShortcutsList();
 				if(count($shortcuts) > 0)
 				{
 ?>
-					document.write('<optgroup label="Lesezeichen">');
+					document.write('<optgroup label="<?=h(_("Lesezeichen"))?>">');
 <?php
 					foreach($shortcuts as $shortcut)
 					{
@@ -807,7 +789,7 @@
 							if($alliance) $s .= '['.$alliance.'] ';
 							$s .= $owner.')';
 						}
-						else $s .= '[unbesiedelt]';
+						else $s .= _('[unbesiedelt]');
 ?>
 					document.write('<option value="<?=htmlspecialchars($shortcut)?>"><?=preg_replace('/[\'\\\\]/', '\\\\\\0', htmlspecialchars($s))?></option>');
 <?php
@@ -817,7 +799,7 @@
 <?php
 				}
 ?>
-					document.write('<optgroup label="Eigene Planeten">');
+					document.write('<optgroup label="<?=h(_("Eigene Planeten"))?>">');
 <?php
 				$planets = $me->getPlanetsList();
 				$active_planet = $me->getActivePlanet();
@@ -825,7 +807,7 @@
 				{
 					$me->setActivePlanet($planet);
 ?>
-					document.write('<option value="<?=utf8_htmlentities($me->getPosString())?>"<?=($planet == $active_planet) ? ' selected="selected"' : ''?>><?=utf8_htmlentities($me->getPosString())?>: <?=preg_replace('/[\'\\\\]/', '\\\\\\0', utf8_htmlentities($me->planetName()))?></option>');
+					document.write('<option value="<?=htmlspecialchars($me->getPosString())?>"<?=($planet == $active_planet) ? ' selected="selected"' : ''?>><?=h(vsprintf(_("%s:%s:%s"), $me->getPos()))?>: <?=preg_replace('/[\'\\\\]/', '\\\\\\0', htmlspecialchars($me->planetName()))?></option>');
 <?php
 				}
 				$me->setActivePlanet($active_planet);
@@ -836,7 +818,7 @@
 				if(count($shortcuts) > 0)
 				{
 ?>
-					document.write('<a href="flotten_actions.php?action=shortcuts&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" class="lesezeichen-verwalten-link">[Lesezeichen verwalten]</a>');
+					document.write('<a href="flotten_actions.php?action=shortcuts&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" class="lesezeichen-verwalten-link"><?=h(_("[Lesezeichen verwalten]"))?></a>');
 <?php
 				}
 ?>
@@ -886,13 +868,13 @@
 		</dl>
 	</fieldset>
 	<fieldset class="buendnisflug">
-		<legend><input type="radio" name="buendnisflug" value="1"<?php if($buendnisflug){?> checked="checked"<?php }?> id="i-buendnisflug" /> <label for="i-buendnisflug">Bündnisflug</label></legend>
+		<legend><input type="radio" name="buendnisflug" value="1"<?php if($buendnisflug){?> checked="checked"<?php }?> id="i-buendnisflug" /> <label for="i-buendnisflug"><?=h(_("Bündnisflug"))?></label></legend>
 		<dl>
-			<dt class="c-benutzername"><label for="i-buendnis-benutzername">Benutzername</label></dt>
-			<dd class="c-benutzername"><input type="text" id="i-buendnis-benutzername" name="buendnis_benutzername"<?php if(isset($_POST["buendnis_benutzername"])){?> value="<?=htmlspecialchars($_POST["buendnis_benutzername"])?>"<?php }?> /></dd>
+			<dt class="c-benutzername"><label for="i-buendnis-benutzername"><?=h(_("Benutzername&"))?></label></dt>
+			<dd class="c-benutzername"><input type="text" id="i-buendnis-benutzername"<?=accesskey_attr(_("Benutzername&"))?> name="buendnis_benutzername"<?php if(isset($_POST["buendnis_benutzername"])){?> value="<?=htmlspecialchars($_POST["buendnis_benutzername"])?>"<?php }?> /></dd>
 
-			<dt class="c-passwort"><label for="i-buendnis-flottenpasswort">Flottenpasswort</label></dt>
-			<dd class="c-passwort"><input type="text" id="i-buendnis-flottenpasswort" name="buendnis_flottenpasswort"<?php if(isset($_POST["buendnis_flottenpasswort"])){?> value="<?=htmlspecialchars($_POST["buendnis_flottenpasswort"])?>"<?php }?> /></dd>
+			<dt class="c-passwort"><label for="i-buendnis-flottenpasswort"><?=h(_("Flottenpasswort&"))?></label></dt>
+			<dd class="c-passwort"><input type="text" id="i-buendnis-flottenpasswort"<?=accesskey_attr(_("Flottenpasswort&"))?> name="buendnis_flottenpasswort"<?php if(isset($_POST["buendnis_flottenpasswort"])){?> value="<?=htmlspecialchars($_POST["buendnis_flottenpasswort"])?>"<?php }?> /></dd>
 		</dl>
 	</fieldset>
 	<script type="text/javascript">
@@ -902,7 +884,7 @@
 		}
 ?>
 	<fieldset class="flotte-schiffe">
-		<legend>Schiffe</legend>
+		<legend><?=h(_("Schiffe"))?></legend>
 		<dl>
 <?php
 		$i = 5;
@@ -911,8 +893,8 @@
 			if($me->getItemLevel($id, 'schiffe') < 1) continue;
 			$item_info = $me->getItemInfo($id, 'schiffe');
 ?>
-			<dt><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a> <span class="vorhanden">(<?=ths($item_info['level'])?>&nbsp;vorhanden)</span></dt>
-			<dd><input type="text" name="flotte[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$i?>"<?=($my_flotten >= $max_flotten || !$me->permissionToAct()) ? ' readonly="readonly"' : ''?> /></dd>
+			<dt><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a> <span class="vorhanden">(<?=h(sprintf(_("%s vorhanden"), ths($item_info['level'])))?>)</span></dt>
+			<dd><input type="text" name="flotte[<?=htmlspecialchars($id)?>]" value="0" tabindex="<?=$i?>"<?=($my_flotten >= $max_flotten || !$me->permissionToAct()) ? ' readonly="readonly"' : ''?> /></dd>
 <?php
 			$i++;
 		}
@@ -923,7 +905,7 @@
 		if($i>5 && $my_flotten < $max_flotten && $me->permissionToAct())
 		{
 ?>
-	<div><button type="submit" accesskey="w" tabindex="<?=$i?>"><kbd>W</kbd>eiter</button></div>
+	<div><button type="submit"<?=accesskey_attr(_("&Weiter"))?> tabindex="<?=$i?>"><?=h(_("&Weiter"))?></button></div>
 <?php
 		}
 ?>
@@ -941,20 +923,41 @@
 			}
 		}
 
+		$foreign_users = $me->getForeignUsersList();
+		if(count($foreign_users) > 0)
+		{
+?>
+<h3 id="fremdstationierungen-auf-diesem-planeten"><?=h(_("Fremdstationierungen auf diesem Planeten"))?></h3>
+<?php
+			foreach($foreign_users as $user)
+			{
+				$fleets = array();
+				foreach($me->getForeignFleetsList($user) as $fi)
+					$fleets = iadd($fleets, $fi[0]);
+				isort($fleets);
+?>
+<fieldset>
+	<legend><?=htmlspecialchars($user)?></legend>
+<?php
+				makeItemList($fleets, 1);
+?>
+</fieldset>
+<?php
+			}
+		}
+
 		$foreign_coords = $me->getMyForeignFleets();
 		if(count($foreign_coords) > 0)
 		{
 ?>
-<h3 id="fremdstationierungen"><?=h(_("Fremdstationierungen"))?></h3>
-<form action="flotten.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>#fremdstationierungen" method="post" class="fremdstationierungen">
+<h3 id="ihre-fremdstationierungen"><?=h(_("Ihre Fremdstationierungen"))?></h3>
+<form action="flotten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>#fremdstationierungen" method="post" class="ihre-fremdstationierungen">
 	<fieldset>
 		<table>
 			<thead>
 				<tr>
 					<th class="c-planet"><?=h(_("Planet"))?></th>
 					<th class="c-flotte"><?=h(_("Flotte"))?></th>
-					<th class="c-heimatplanet"><?=h(_("Heimatplanet"))?></th>
-					<th class="c-rueckruf"><?=h(_("Rückruf"))?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -974,9 +977,12 @@
 ?>
 				<tr>
 					<td class="c-planet"><?=h(sprintf(_("„%s“ (%s, Eigentümer: %s)"), $user_obj->planetName(), vsprintf(_("%d:%d:%d"), $coords_a), $user_obj->getName()))?></td>
-					<td class="c-flotte"><?=h(makeItemsString($fi[0]))?></td>
-					<td class="c-heimatplanet"><?=h(sprintf(_("„%s“ (%s)"), $user_obj->planetName(), vsprintf(_("%d:%d:%d"), $coords_a)))?></td>
-					<td class="c-rueckruf"><input type="submit" name="callback_foreign[<?=htmlspecialchars($coords)?>][<?=htmlspecialchars($i)?>]" value="<?=h(_("Zurück rufen"))?>" /></td>
+					<td class="c-flotte">
+<?php
+					makeItemList($fi[0], 6);
+?>
+						<input type="submit" name="callback_foreign[<?=htmlspecialchars($coords)?>][<?=htmlspecialchars($i)?>]" value="<?=h(sprintf(_("Zurückrufen zum Planeten %s"), sprintf(_("„%s“ (%s)"), vsprintf(_("%s:%s:%s"), $coords_a))))?>" />
+					</td>
 				</tr>
 <?php
 				}

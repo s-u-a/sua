@@ -1098,7 +1098,13 @@ EOF
 							}
 							$foreign_users = $target_user->getForeignUsersList();
 							foreach($foreign_users as $username)
-								$verteidiger[$username] = $target_user->getForeignFleetsList($username);
+							{
+								$foreign_fleet = array();
+								foreach($target_user->getForeignFleetsList($username) as $foreign_fi)
+									$foreign_fleet = iadd($foreign_fleet, $foreign_fi[0]);
+								isort($foreign_fleet);
+								$verteidiger[$username] = $foreign_fleet;
+							}
 
 							list($winner, $angreifer2, $verteidiger2, $nachrichten_text, $verteidiger_ress, $truemmerfeld) = battle($angreifer, $verteidiger);
 
@@ -1272,7 +1278,7 @@ EOF
 								$this->raw[1][$username][3][0] = array(0,0,0,0,0);
 								if($target_owner == $username && array_sum($data[3][1]) > 0)
 								{
-									$items_string = makeItemsString($data[3][1]);
+									$items_string = makeItemsString($data[3][1], false);
 									if($write_this_username) $message_text[$username] .= "\n".$items_string;
 									$message_text[$target_owner] .= "; ".$items_string;
 									foreach($data[3][1] as $id=>$anzahl)
@@ -1306,7 +1312,7 @@ EOF
 									{
 										if($write_this_username) $message_text[$username] .= "\n";
 										$message_text[$target_owner] .= "; ";
-										$items_string = makeItemsString($h[1]);
+										$items_string = makeItemsString($h[1], false);
 										if($write_this_username) $message_text[$username] .= $items_string;
 										$message_text[$target_owner] .= $items_string;
 									}

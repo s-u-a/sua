@@ -1590,8 +1590,27 @@
 		return $list;
 	}
 
-	function h($text)
+	function h($text, $make_tags=true)
 	{
-		return str_replace(array("<", ">", "\""), array("&lt;", "&gt;", "&quot;"), gettext($text));
+		if($make_tags)
+			return preg_replace("/&amp;([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß])/", "<kbd>$1</kbd>", htmlspecialchars($text));
+		elseif(preg_match("/&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)/", $message, $m))
+			return $text." [".htmlspecialchars(str_replace(array("ä", "ö", "ü"), array("Ä", "Ö", "Ü"), strtoupper($m[1])))."]";
+		else
+			return $text;
+	}
+
+	function accesskey_attr($message)
+	{
+		if(!preg_match("/&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)/", $message, $m))
+			return "";
+		return " accesskey=\"".htmlspecialchars(str_replace(array("Ä", "Ö", "Ü"), array("ä", "ö", "ü"), strtolower($m[1])))."\"";
+	}
+
+	function accesskey_title($message)
+	{
+		if(!preg_match("/&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)/", $message, $m))
+			return "";
+		return " title=\"[".htmlspecialchars(str_replace(array("ä", "ö", "ü"), array("Ä", "Ö", "Ü"), strtoupper($m[1])))."]\"";
 	}
 ?>

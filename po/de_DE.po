@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-08-16 21:05+0100\n"
+"PO-Revision-Date: 2007-08-17 20:34+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -20,58 +20,382 @@ msgid_plural "Achtung! Von diesem Planeten sind noch %d Fremdstationierungen akt
 msgstr[0] "Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn Sie den Planeten auflösen, wird diese Flotte zerstört werden."
 msgstr[1] "Achtung! Von diesem Planeten sind noch %d Fremdstationierungen aktiv. Wenn Sie den Planeten auflösen, werden diese Flotten zerstört werden."
 
-#: ../login/flotten.php:948
-msgid "Fremdstationierungen"
-msgstr "Fremdstationierungen"
+#: ../login/flotten.php:17
+msgid "Flotten"
+msgstr "Flotten"
 
-#: ../login/flotten.php:954
-msgid "Planet"
-msgstr "Planet"
+#: ../login/flotten.php:27
+msgid "Dieser Planet ist schon in Ihren Lesezeichen."
+msgstr "Dieser Planet ist schon in Ihren Lesezeichen."
 
-#: ../login/flotten.php:955
-msgid "Flotte"
-msgstr "Flotte"
+#: ../login/flotten.php:28
+msgid "Der Planet wurde zu den Lesezeichen hinzugefügt."
+msgstr "Der Planet wurde zu den Lesezeichen hinzugefügt."
 
-#: ../login/flotten.php:956
-msgid "Heimatplanet"
-msgstr "Heimatplanet"
+#: ../login/flotten.php:29
+msgid "Datenbankfehler."
+msgstr "Datenbankfehler."
 
-#: ../login/flotten.php:957
-msgid "Rückruf"
-msgstr "Rückruf"
+#: ../login/flotten.php:55
+#: ../login/flotten.php:57
+msgid "Maximale Flottenzahl erreicht."
+msgstr "Maximale Flottenzahl erreicht."
 
-#: ../login/flotten.php:976
+#: ../login/flotten.php:78
+#: ../login/flotten.php:80
+msgid "Keine Spionagesonden vorhanden."
+msgstr "Keine Spionagesonden vorhanden."
+
+#: ../login/flotten.php:92
+#: ../login/flotten.php:94
+msgid "Kein Besiedelungsschiff vorhanden."
+msgstr "Kein Besiedelungsschiff vorhanden."
+
+#: ../login/flotten.php:122
+#: ../login/flotten.php:124
+msgid "Keine Sammler vorhanden."
+msgstr "Keine Sammler vorhanden."
+
+#: ../login/flotten.php:250
+msgid "Diese Aktion ist auf diesen Planeten nicht möglich."
+msgstr "Diese Aktion ist auf diesen Planeten nicht möglich."
+
+#: ../login/flotten.php:252
+msgid "Sie haben nicht die richtigen Schiffe ausgewählt, um diesen Planeten anzufliegen."
+msgstr "Sie haben nicht die richtigen Schiffe ausgewählt, um diesen Planeten anzufliegen."
+
+#: ../login/flotten.php:258
+msgid "Ihre Flotte kann nicht schnell genug fliegen um gleichzeitig mit dem Flottenverbund am Ziel anzukommen."
+msgstr "Ihre Flotte kann nicht schnell genug fliegen um gleichzeitig mit dem Flottenverbund am Ziel anzukommen."
+
+#: ../login/flotten.php:308
+msgid "Dieser Spieler ist zu stark für Sie."
+msgstr "Dieser Spieler ist zu stark für Sie."
+
+#: ../login/flotten.php:310
+msgid "Das Imperium dieses Spielers ist so groß, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (Aka Anfängerschutz.)"
+msgstr "Das Imperium dieses Spielers ist so groß, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (Aka Anfängerschutz.)"
+
+#: ../login/flotten.php:316
+msgid "Dieser Spieler ist zu schwach für Sie."
+msgstr "Dieser Spieler ist zu schwach für Sie."
+
+#: ../login/flotten.php:318
+msgid "Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen können. (Aka Anfängerschutz.)"
+msgstr "Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen können. (Aka Anfängerschutz.)"
+
+#: ../login/flotten.php:386
+msgid "Nicht genug Tritium vorhanden."
+msgstr "Nicht genug Tritium vorhanden."
+
+#: ../login/flotten.php:415
+#: ../login/flotten.php:426
+msgid "Die Flotte wurde versandt."
+msgstr "Die Flotte wurde versandt."
+
+#: ../login/flotten.php:428
+#: ../login/flotten.php:484
+msgid "Ziel"
+msgstr "Ziel"
+
+#: ../login/flotten.php:429
+#: ../login/flotten.php:979
 #, php-format
 msgid "„%s“ (%s, Eigentümer: %s)"
 msgstr "„%s“ (%s, Eigentümer: %s)"
 
-#: ../login/flotten.php:976
-#: ../login/flotten.php:978
-#: ../engine/classes/user.php:3113
-#: ../engine/classes/user.php:3114
+#: ../login/flotten.php:429
+#: ../login/flotten.php:810
+#: ../login/flotten.php:984
+#, php-format
+msgid "%s:%s:%s"
+msgstr "%s:%s:%s"
+
+#: ../login/flotten.php:429
+#, php-format
+msgid "Unbesiedelt (%s)"
+msgstr "Unbesiedelt (%s)"
+
+#: ../login/flotten.php:431
+msgid "Auftragsart"
+msgstr "Auftragsart"
+
+#: ../login/flotten.php:434
+msgid "Ankunft"
+msgstr "Ankunft"
+
+#: ../login/flotten.php:435
+#: ../login/flotten.php:511
+msgid "H:i:s, Y-m-d"
+msgstr "H:i:s, Y-m-d"
+
+#: ../login/flotten.php:448
+#: ../login/flotten.php:737
+msgid "Ungültige Aktion."
+msgstr "Ungültige Aktion."
+
+#: ../login/flotten.php:469
+#: ../login/flotten.php:633
+msgid "Tage"
+msgstr "Tage"
+
+#: ../login/flotten.php:487
+msgid "Entfernung"
+msgstr "Entfernung"
+
+#: ../login/flotten.php:488
+msgid "Orbit"
+msgid_plural "Orbits"
+msgstr[0] "Orbit"
+msgstr[1] "Orbits"
+
+#: ../login/flotten.php:488
+msgid "Or"
+msgstr "Or"
+
+#: ../login/flotten.php:490
+msgid "Antrieb"
+msgstr "Antrieb"
+
+#: ../login/flotten.php:491
+msgid "Mikroorbit pro Quadratsekunde"
+msgid_plural "Mikroorbits pro Quadratsekunde"
+msgstr[0] "Mikroorbit pro Quadratsekunde"
+msgstr[1] "Mikroorbits pro Quadratsekunde"
+
+#: ../login/flotten.php:491
+msgid "µOr⁄s²"
+msgstr "µOr⁄s²"
+
+#: ../login/flotten.php:493
+msgid "Tritiumverbrauch"
+msgstr "Tritiumverbrauch"
+
+#: ../login/flotten.php:494
+#: ../login/flotten.php:514
+#: ../login/flotten.php:519
+msgid "Tonne"
+msgid_plural "Tonnen"
+msgstr[0] "Tonne"
+msgstr[1] "Tonnen"
+
+#: ../login/flotten.php:496
+#: ../login/flotten.php:498
+msgid "Gesch&windigkeit"
+msgstr "Gesch&windigkeit"
+
+#: ../login/flotten.php:510
+msgid "Flugzeit"
+msgstr "Flugzeit"
+
+#: ../login/flotten.php:511
+#: ../login/flotten.php:650
+#, php-format
+msgid "Ankunft: %s"
+msgstr "Ankunft: %s"
+
+#: ../login/flotten.php:511
+#, php-format
+msgid "%s (Serverzeit)"
+msgstr "%s (Serverzeit)"
+
+#: ../login/flotten.php:513
+msgid "Transportkapazität"
+msgstr "Transportkapazität"
+
+#: ../login/flotten.php:514
+#: ../login/flotten.php:519
+#: ../login/flotten.php:702
+msgid "Roboter"
+msgid_plural "Roboter"
+msgstr[0] "Roboter"
+msgstr[1] "Roboter"
+
+#: ../login/flotten.php:518
+msgid "Verbleibend"
+msgstr "Verbleibend"
+
+#: ../login/flotten.php:523
+#: ../login/flotten.php:525
+msgid "A&uftrag"
+msgstr "A&uftrag"
+
+#: ../login/flotten.php:541
+msgid "Transport"
+msgstr "Transport"
+
+#: ../login/flotten.php:548
+#: ../login/flotten.php:549
+msgid "Carbo&n"
+msgstr "Carbo&n"
+
+#: ../login/flotten.php:551
+#: ../login/flotten.php:552
+msgid "Aluminium&"
+msgstr "Aluminium"
+
+#: ../login/flotten.php:554
+#: ../login/flotten.php:555
+msgid "Wolfram&"
+msgstr "Wolfram"
+
+#: ../login/flotten.php:557
+#: ../login/flotten.php:558
+msgid "Radium&"
+msgstr "Radium"
+
+#: ../login/flotten.php:560
+#: ../login/flotten.php:561
+msgid "Tritium&"
+msgstr "Tritium"
+
+#: ../login/flotten.php:619
+#: ../login/flotten.php:702
+msgid "Tonnen"
+msgstr "Tonnen"
+
+#: ../login/flotten.php:650
+#, php-format
+msgid "%s (Lokalzeit)"
+msgstr "%s (Lokalzeit)"
+
+#: ../login/flotten.php:724
+msgid "Absen&den"
+msgstr "Absen&den"
+
+#: ../login/flotten.php:745
+msgid "Flotte versenden"
+msgstr "Flotte versenden"
+
+#: ../login/flotten.php:747
+#, php-format
+msgid "Sie haben derzeit %s von %s möglichen Flotte unterwegs."
+msgid_plural "Sie haben derzeit %s von %s möglichen Flotten unterwegs."
+msgstr[0] "Sie haben derzeit %s von %s möglichen Flotte unterwegs."
+msgstr[1] "Sie haben derzeit %s von %s möglichen Flotten unterwegs."
+
+#: ../login/flotten.php:748
+#, php-format
+msgid "Bauen Sie %s aus, um die maximale Anzahl zu erhöhen."
+msgstr "Bauen Sie %s aus, um die maximale Anzahl zu erhöhen."
+
+#: ../login/flotten.php:748
+msgid "item_F0_def_acc"
+msgstr "das Kontrollwesen"
+
+#: ../login/flotten.php:764
+#: ../login/flotten.php:765
+msgid "&Ziel"
+msgstr "&Ziel"
+
+#: ../login/flotten.php:765
+msgid "Ziel: System&"
+msgstr "Ziel: System"
+
+#: ../login/flotten.php:765
+msgid "Ziel: Planet&"
+msgstr "Ziel: Planet"
+
+#: ../login/flotten.php:768
+#: ../login/flotten.php:770
+msgid "Pla&net"
+msgstr "Pla&net"
+
+#: ../login/flotten.php:771
+msgid "Benutzerdefiniert"
+msgstr "Benutzerdefiniert"
+
+#: ../login/flotten.php:777
+msgid "Lesezeichen"
+msgstr "Lesezeichen"
+
+#: ../login/flotten.php:792
+msgid "[unbesiedelt]"
+msgstr "[unbesiedelt]"
+
+#: ../login/flotten.php:802
+msgid "Eigene Planeten"
+msgstr "Eigene Planeten"
+
+#: ../login/flotten.php:821
+msgid "[Lesezeichen verwalten]"
+msgstr "[Lesezeichen verwalten]"
+
+#: ../login/flotten.php:871
+msgid "Bündnisflug"
+msgstr "Bündnisflug"
+
+#: ../login/flotten.php:873
+#: ../login/flotten.php:874
+msgid "Benutzername&"
+msgstr "Benutzername"
+
+#: ../login/flotten.php:876
+#: ../login/flotten.php:877
+msgid "Flottenpasswort&"
+msgstr "Flottenpasswort"
+
+#: ../login/flotten.php:887
+msgid "Schiffe"
+msgstr "Schiffe"
+
+#: ../login/flotten.php:896
+#: ../engine/classes/item.php:334
+msgid "Genauere Informationen anzeigen"
+msgstr "Genauere Informationen anzeigen"
+
+#: ../login/flotten.php:896
+#, php-format
+msgid "%s vorhanden"
+msgstr "%s vorhanden"
+
+#: ../login/flotten.php:908
+msgid "&Weiter"
+msgstr "&Weiter"
+
+#: ../login/flotten.php:930
+msgid "Fremdstationierungen auf diesem Planeten"
+msgstr "Fremdstationierungen auf diesem Planeten"
+
+#: ../login/flotten.php:953
+msgid "Ihre Fremdstationierungen"
+msgstr "Ihre Fremdstationierungen"
+
+#: ../login/flotten.php:959
+msgid "Planet"
+msgstr "Planet"
+
+#: ../login/flotten.php:960
+msgid "Flotte"
+msgstr "Flotte"
+
+#: ../login/flotten.php:979
+#: ../engine/classes/user.php:3119
+#: ../engine/classes/user.php:3120
 #, php-format
 msgid "%d:%d:%d"
 msgstr "%d:%d:%d"
 
-#: ../login/flotten.php:978
+#: ../login/flotten.php:984
+#, php-format
+msgid "Zurückrufen zum Planeten %s"
+msgstr "Zurückrufen zum Planeten %s"
+
+#: ../login/flotten.php:984
 #, php-format
 msgid "„%s“ (%s)"
 msgstr "„%s“ (%s)"
 
-#: ../login/flotten.php:979
-msgid "Zurück rufen"
-msgstr "Zurück rufen"
-
-#: ../engine/classes/user.php:3113
+#: ../engine/classes/user.php:3119
 #, php-format
 msgid ""
-"Der Benutzer %s eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
+"Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
 "Die Flotte bestand aus folgenden Schiffen: %s"
 msgstr ""
-"Der Benutzer %s eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
+"Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
 "Die Flotte bestand aus folgenden Schiffen: %s"
 
-#: ../engine/classes/user.php:3114
+#: ../engine/classes/user.php:3120
 #, php-format
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr "Fremdstationierung zurückgezogen auf %s"

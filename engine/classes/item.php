@@ -273,6 +273,7 @@
 
 	function makeItemsString($items, $html=true)
 	{
+		isort($items);
 		$array = array();
 		foreach($items as $id=>$count)
 		{
@@ -282,5 +283,60 @@
 			else $array[] = $item_obj->getInfo('name').': '.ths($count, true);
 		}
 		return implode(', ', $array);
+	}
+
+	function isort(&$items)
+	{
+		$copy = $items;
+		$items = array();
+		$items_obj = Classes::Items();
+		foreach($items_obj->getItemsList() as $id)
+		{
+			if(!isset($copy[$id])) continue;
+			$items[$id] = $copy[$id];
+			unset($copy[$id]);
+		}
+		$remaining = array_keys($copy);
+		natcasesort($remaining);
+		foreach($remaining as $id)
+			$items[$id] = $copy[$id];
+	}
+
+	function iadd($a, $b)
+	{
+		$ret = array();
+		foreach(func_get_args() as $arg)
+		{
+			foreach($arg as $id=>$count)
+			{
+				if(!isset($ret[$id])) $ret[$id] = 0;
+				$ret[$id] += $count;
+			}
+		}
+		foreach($ret as $id=>$count)
+		{
+			if($count == 0)
+				unset($ret[$id]);
+		}
+		return $ret;
+	}
+
+	function makeItemList($items, $tabs=0)
+	{
+		$tabs_str = str_repeat("\t", $tabs);
+?>
+<?=$tabs?><dl class="itemlist">
+<?php
+		foreach($fleets as $id=>$count)
+		{
+			$item = Classes::Item($id);
+?>
+<?=$tabs?>	<dt class="c-<?=htmlspecialchars($id)?>"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(urlencode(session_name())."=".urlencode(session_id()))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item->getInfo("name"))?></a></dt>
+<?=$tabs?>	<dd class="c-<?=htmlspecialchars($id)?>"><?=ths($count)?></dd>
+<?php
+		}
+?>
+<?=$tabs?></dl>
+<?php
 	}
 ?>

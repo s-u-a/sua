@@ -711,6 +711,19 @@
 					else $fleets += $fl->getNeededSlots();
 				}
 			}
+
+			# Fremdstationierte Flotten benoetigen einen Slot
+			foreach($this->getMyForeignFleets() as $coords)
+			{
+				$coords_a = explode(":", $coords);
+				$galaxy_obj = Classes::Galaxy($coords_a[0]);
+				$user_obj = Classes::User($galaxy_obj->getPlanetOwner($coords_a[1], $coords_a[2]));
+				if(!$user_obj->getStatus()) continue;
+				$user_obj->cacheActivePlanet();
+				$user_obj->setActivePlanet($user_obj->getPlanetByPos($coords));
+				$fleets += count($user_obj->getForeignFleetsList($this->getName()));
+				$user_obj->restoreActivePlanet();
+			}
 			return $fleets;
 		}
 
