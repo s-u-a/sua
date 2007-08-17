@@ -1631,7 +1631,7 @@ EOF
 
 				$owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
 
-				if($besiedeln || $owner == $first_user)
+				if(!$back && $owner == $first_user)
 				{
 					# Ueberschuessiges Tritium
 					$this->raw[1][$first_user][3][2] += $this->getTritium($first_user, $this->raw[1][$first_user][1], $next_target_nt);
