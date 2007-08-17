@@ -693,7 +693,7 @@
 			}
 			$this->setActivePlanet($active_planet);
 
-			return floor(pow($werft*$this->getItemLevel('F0', 'forschung'), .7));
+			return ceil(pow($werft*$this->getItemLevel('F0', 'forschung'), .7));
 		}
 
 		function getCurrentParallelFleets()
