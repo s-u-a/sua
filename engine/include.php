@@ -34,7 +34,7 @@
 	define('h_root', substr(s_root, strlen($document_root)));
 
 	# Locale eintragen
-	setlocale(LC_MESSAGES, array("de_DE.UTF-8", "de_DE.utf8", "de_DE@UTF-8", "de_DE@utf8", "de_DE", "de"));
+	define("LANG", strtolower(_("LANG")));
 	bindtextdomain("sua", s_root."/locale");
 	bind_textdomain_codeset("sua", "utf-8");
 	textdomain("sua");
@@ -85,8 +85,6 @@
 	global_setting('DB_HOSTNAME', $GDB_DIR.'/hostname');
 	global_setting('EVENTHANDLER_INTERVAL', 2);
 	global_setting('EVENTHANDLER_MARKETCACHE', 10); # Wieviele Eventhandler-Intervalle sollen aus der Boersendatenbank gecacht werden?
-	global_setting('THS_HTML', '&nbsp;');
-	global_setting('THS_UTF8', "\xc2\xa0");
 	global_setting('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
 	global_setting('EMAIL_FROM', 'webmaster@s-u-a.net');
 	global_setting('MAX_PLANETS', 15);
@@ -709,12 +707,11 @@
 		return $return;
 	}
 
-	function ths($count, $utf8=false, $round=0)
+	function ths($count, $utf8=null, $round=0)
 	{
 		# Fuegt Tausendertrennzeichen ein
 		# (Oben als THS_UTF8 und THS_HTML definiert)
-		# Wenn $utf8 gesetzt ist, wird ein UTF-8-String
-		# zurueckgeliefert, ansonsten ein HTML-String
+		# $utf8 hat keine Auswirkungen mehr
 		# $round gibt die Anzahl der Stellen an, auf die
 		# gerundet werden soll
 
@@ -735,18 +732,15 @@
 				$count = (double) substr($count, 1);
 		}
 
-		$ths = global_setting("THS_HTML");
-		if($utf8)
-			$ths = global_setting("THS_UTF8");
-		$count = str_replace('.', $ths, number_format($count, $round, ',', '.'));
+		$count = str_replace('.', _("thousand_separator"), number_format($count, $round, ',', '.'));
 
 		if($neg)
-			$count = '&minus;'.$count;
+			$count = _("minus_sign").$count;
 
 		return $count;
 	}
 
-	function utf8_htmlentities($string, $nospecialchars=false, $js=false)
+	function utf8_htmlentities($string, $nospecialchars=false, $js=false) # DEPRECATED
 	{
 		# Das gleiche wie htmlentities(), nur fuer einen
 		# UTF-8-String.
@@ -768,9 +762,14 @@
 		return $string;
 	}
 
-	function utf8_jsentities($string)
+	function utf8_jsentities($string) # DEPRECATED
 	{
 		return utf8_htmlentities($string, true, true);
+	}
+
+	function jsentities($string)
+	{
+		return preg_replace("/['\\\\]/", "\\\\\$1", $string);
 	}
 
 	if(!function_exists('array_product'))
@@ -1594,7 +1593,7 @@
 	{
 		if($make_tags)
 			return preg_replace("/&amp;([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß])/", "<kbd>$1</kbd>", htmlspecialchars($text));
-		elseif(preg_match("/&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)/", $message, $m))
+		elseif(preg_match("/&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)/", $text, $m))
 			return $text." [".htmlspecialchars(str_replace(array("ä", "ö", "ü"), array("Ä", "Ö", "Ü"), strtoupper($m[1])))."]";
 		else
 			return $text;

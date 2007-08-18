@@ -152,9 +152,9 @@
 	{
 		# Passwort aendern
 		if(!$me->checkPassword($_POST['old-password']))
-			$error = 'Das alte Passwort stimmt nicht.';
+			$error = _('Das alte Passwort stimmt nicht.');
 		elseif($_POST['new-password'] != $_POST['new-password2'])
-			$error = 'Die beiden neuen Passwörter stimmen nicht überein.';
+			$error = _('Die beiden neuen Passwörter stimmen nicht überein.');
 		else
 			$me->setPassword($_POST['new-password']);
 	}
@@ -190,24 +190,22 @@
 	$tabindex = 1;
 	$show_im = isset($messengers['jabber']);
 ?>
-<h2>Einstellungen</h2>
+<h2><?=h(_("Einstellungen"))?></h2>
 <?php
 	if(isset($error) && trim($error) != '')
 	{
 ?>
-<p class="error">
-	<?=htmlentities($error)."\n"?>
-</p>
+<p class="error"><?=htmlspecialchars($error)?></p>
 <?php
 	}
 ?>
-<form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/einstellungen.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/einstellungen.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular">
 	<fieldset class="aussehen">
-		<legend>Aussehen</legend>
+		<legend><?=h(_("Aussehen"))?></legend>
 		<dl>
-			<dt class="c-skin"><label for="skin-choice" xml:lang="en">Ski<kbd>n</kbd></label></dt>
+			<dt class="c-skin"><label for="skin-choice"><?=h(_("Skin&"))?></label></dt>
 			<dd class="c-skin">
-				<select name="skin-choice" id="skin-choice" accesskey="n" tabindex="<?=$tabindex++?>" onchange="recalc_skin();" onkeyup="recalc_skin();">
+				<select name="skin-choice" id="skin-choice"<?=accesskey_attr(_("Skin&"))?> tabindex="<?=$tabindex++?>" onchange="recalc_skin();" onkeyup="recalc_skin();">
 <?php
 	$my_skin = $me->checkSetting('skin');
 	foreach($skins as $skin=>$skin_info)
@@ -229,21 +227,21 @@
 	}
 	$custom_skin = ($my_skin && $my_skin[0] == 'custom');
 ?>
-					<option value="custom"<?=$custom_skin ? ' selected="selected"' : ''?>>Benutzerdefiniert</option>
+					<option value="custom"<?=$custom_skin ? ' selected="selected"' : ''?>><?=h(_("Benutzerdefiniert"))?></option>
 				</select>
-				<input type="text" name="skin" id="skin" value="<?=htmlentities($my_skin[1])?>" tabindex="<?=$tabindex++?>" />
+				<input type="text" name="skin" id="skin" value="<?=htmlspecialchars($my_skin[1])?>" tabindex="<?=$tabindex++?>" />
 			</dd>
 
-			<dt class="c-schrift"><label for="schrift-choice">Schrift</label></dt>
+			<dt class="c-schrift"><label for="schrift-choice"><?=h(_("Schrift&"))?></label></dt>
 			<dd class="c-schrift">
-				<select name="schrift" id="schrift-choice" tabindex="<?=$tabindex++?>">
-					<option value="1"<?=$me->checkSetting('schrift') ? ' selected="selected"' : ''?>>Lieblingsschrift des Admins</option>
-					<option value="0"<?=!$me->checkSetting('schrift') ? ' selected="selected"' : ''?>>Ihre Lieblingsschrift</option>
+				<select name="schrift" id="schrift-choice"<?=accesskey_attr(_("Schrift&"))?> tabindex="<?=$tabindex++?>">
+					<option value="1"<?=$me->checkSetting('schrift') ? ' selected="selected"' : ''?>><?=h(_("Lieblingsschrift des Admins"))?></option>
+					<option value="0"<?=!$me->checkSetting('schrift') ? ' selected="selected"' : ''?>><?=h(_("Ihre Lieblingsschrift"))?></option>
 				</select>
 			</dd>
 
-			<dt class="c-werbung-ausblenden"><label for="noads">Werbung ausblenden</label></dt>
-			<dd class="c-werbung-ausblenden"><input type="checkbox" name="noads" id="noads"<?=$me->checkSetting('noads') ? ' checked="checked"' : ''?> title="Wenn Sie die Werbung eingeblendet lassen, helfen Sie, die Finanzen des Spiels zu decken." tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-werbung-ausblenden"><label for="noads"><?=h(_("Werbung ausblenden&"))?></label></dt>
+			<dd class="c-werbung-ausblenden"><input type="checkbox" name="noads" id="noads"<?=accesskey_attr(_("Werbung ausblenden&"))?><?=$me->checkSetting('noads') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn Sie die Werbung eingeblendet lassen, helfen Sie, die Finanzen des Spiels zu decken."))?>" tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
 
 		<script type="text/javascript">
@@ -265,63 +263,63 @@
 	</fieldset>
 
 	<fieldset class="verhalten">
-		<legend>Verhalten</legend>
+		<legend><?=h(_("Verhalten"))?></legend>
 		<dl>
-			<dt class="c-spionagesonden"><label for="spionagesonden">Spionagesonden</label></dt>
-			<dd class="c-spionagesonden"><input type="text" name="spionagesonden" id="spionagesonden" value="<?=utf8_htmlentities($me->checkSetting('sonden'))?>" title="Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der Karte geschickt werden sollen [J]" accesskey="j" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-spionagesonden"><label for="spionagesonden"><?=h(_("Spionagesonden&"))?></label></dt>
+			<dd class="c-spionagesonden"><input type="text" name="spionagesonden" id="spionagesonden"<?=accesskey_attr(_("Spionagesonden&"))?> value="<?=htmlspecialchars($me->checkSetting('sonden'))?>" title="<?=h(_("Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der Karte geschickt werden sollen"))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-auto-schnellbau"><label for="fastbuild">Auto-Schnellbau</label></dt>
-			<dd class="c-auto-schnellbau"><input type="checkbox" name="fastbuild" id="fastbuild"<?=$me->checkSetting('fastbuild') ? ' checked="checked"' : ''?> title="Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten unbeschäftigten Planeten gewechselt [Q]" accesskey="q" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-auto-schnellbau"><label for="fastbuild"><?=h(_("Auto-Schnellbau&"))?></label></dt>
+			<dd class="c-auto-schnellbau"><input type="checkbox" name="fastbuild" id="fastbuild"<?=accesskey_attr(_("Auto-Schnellbau&"))?><?=$me->checkSetting('fastbuild') ? ' checked="checked"' : ''?> title="<?=h(_("Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten unbeschäftigten Planeten gewechselt."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-schnellbau-auf-ausgebaute"><label for="i-full">Schnellbau auf ausgebaute</label></dt>
-			<dd class="c-schnellbau-auf-ausgebaute"><input type="checkbox" name="fastbuild_full" id="i-full"<?=$me->checkSetting('fastbuild_full') ? ' checked="checked"' : ''?> title="Durch diese Option werden auch ausgebaute Planeten bei der Schnellbau-Funktion berücksichtigt." tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-schnellbau-auf-ausgebaute"><label for="i-full"><?=h(_("Schnellbau auf ausgebaute&"))?></label></dt>
+			<dd class="c-schnellbau-auf-ausgebaute"><input type="checkbox" name="fastbuild_full" id="i-full"<?=accesskey_attr(_("Schnellbau auf ausgebaute&"))?><?=$me->checkSetting('fastbuild_full') ? ' checked="checked"' : ''?> title="<?=h(_("Durch diese Option werden auch ausgebaute Planeten bei der Schnellbau-Funktion berücksichtigt."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-schnell-shortcuts"><label for="shortcuts">Schnell-Shortcuts</label></dt>
-			<dd class="c-schnell-shortcuts"><input type="checkbox" name="shortcuts" id="shortcuts"<?=$me->checkSetting('shortcuts') ? ' checked="checked"' : ''?> title="Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere Taste zu drücken [X]" accesskey="x" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-schnell-shortcuts"><label for="shortcuts"><?=h(_("Schnell-Shortcuts&"))?></label></dt>
+			<dd class="c-schnell-shortcuts"><input type="checkbox" name="shortcuts" id="shortcuts"<?=accesskey_attr(_("Schnell-Shortcuts&"))?><?=$me->checkSetting('shortcuts') ? ' checked="checked"' : ''?> title="<?=h(_("Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere Taste zu drücken."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-javascript-tooltips"><label for="tooltips">Javascript-Tooltips</label></dt>
-			<dd class="c-javascript-tooltips"><input type="checkbox" name="tooltips" id="tooltips"<?=$me->checkSetting('tooltips') ? ' checked="checked"' : ''?> title="Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden die normalen Tooltips durch hübsche JavaScript-Tooltips ersetzt. [Y]" accesskey="y" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-javascript-tooltips"><label for="tooltips"><?=h(_("Javascript-Tooltips&"))?></label></dt>
+			<dd class="c-javascript-tooltips"><input type="checkbox" name="tooltips" id="tooltips"<?=accesskey_attr(_("Javascript-Tooltips&"))?><?=$me->checkSetting('tooltips') ? ' checked="checked"' : ''?> title="<?=h(_("Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden die normalen Tooltips durch hübsche JavaScript-Tooltips ersetzt."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-auto-refresh"><label for="autorefresh">Auto-Refresh</label></dt>
-			<dd class="c-auto-refresh"><input type="text" name="autorefresh" id="autorefresh" value="<?=utf8_htmlentities($me->checkSetting('ress_refresh'))?>" title="Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion erzeugt keinen zusätzlichen Traffic)" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-auto-refresh"><label for="autorefresh"><?=h(_("Auto-Refresh&"))?></label></dt>
+			<dd class="c-auto-refresh"><input type="text" name="autorefresh" id="autorefresh"<?=accesskey_attr(_("Auto-Refresh&"))?> value="<?=htmlspecialchars($me->checkSetting('ress_refresh'))?>" title="<?=h(_("Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion erzeugt keinen zusätzlichen Traffic.)"))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-externe-navigationslinks"><label for="show-extern">Externe Navigationslinks</label></dt>
-			<dd class="c-externe-navigationslinks"><input type="checkbox" name="show_extern" id="show-extern"<?=$me->checkSetting('show_extern') ? ' checked="checked"' : ''?> title="Wenn diese Option aktiviert ist, werden in der Navigation Links auf spielexterne Seiten wie das Board angezeigt." tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-externe-navigationslinks"><label for="show-extern"><?=h(_("Externe Navigationslinks&"))?></label></dt>
+			<dd class="c-externe-navigationslinks"><input type="checkbox" name="show_extern" id="show-extern"<?=accesskey_attr(_("Externe Navigationslinks&"))?><?=$me->checkSetting('show_extern') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option aktiviert ist, werden in der Navigation Links auf spielexterne Seiten wie das Board angezeigt."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-javascript-performance"><label for="performance">JavaScript-Performance</label></dt>
+			<dt class="c-javascript-performance"><label for="performance"><?=h(_("JavaScript-Performance&"))?></label></dt>
 			<dd class="c-javascript-performance">
-				<select name="performance" tabindex="<?=$tabindex++?>">
-					<option value="0"<?=($me->checkSetting('performance')==0) ? ' selected="selected"' : ''?>>Keine Bildschirmänderungen</option>
-					<option value="1"<?=($me->checkSetting('performance')==1) ? ' selected="selected"' : ''?>>Ungenau, wenig CPU-Last</option>
-					<option value="2"<?=($me->checkSetting('performance')==2) ? ' selected="selected"' : ''?>>Praktisch, mittlere CPU-Last</option>
-					<option value="3"<?=($me->checkSetting('performance')==3) ? ' selected="selected"' : ''?>>Komfortabel und präzise, hohe CPU-Last</option>
+				<select name="performance"<?=accesskey_attr(_("JavaScript-Performance&"))?> tabindex="<?=$tabindex++?>">
+					<option value="0"<?=($me->checkSetting('performance')==0) ? ' selected="selected"' : ''?>><?=h(_("Keine Bildschirmänderungen"))?></option>
+					<option value="1"<?=($me->checkSetting('performance')==1) ? ' selected="selected"' : ''?>><?=h(_("Ungenau, wenig CPU-Last"))?></option>
+					<option value="2"<?=($me->checkSetting('performance')==2) ? ' selected="selected"' : ''?>><?=h(_("Praktisch, mittlere CPU-Last"))?></option>
+					<option value="3"<?=($me->checkSetting('performance')==3) ? ' selected="selected"' : ''?>><?=h(_("Komfortabel und präzise, hohe CPU-Last"))?></option>
 				</select>
 			</dd>
 		</dl>
 	</fieldset>
 
 	<fieldset class="benachrichtigung">
-		<legend>Benachrichtigung</legend>
+		<legend><?=h(_("Benachrichtigung"))?></legend>
 <?php
 	if($show_im)
 	{
 ?>
-		<p>Nach Änderung des Instant-Messaging-Accounts wird zunächst eine Bestätigungsnachricht versandt.</p>
+		<p><?=h(_("Nach Änderung des Instant-Messaging-Accounts wird zunächst eine Bestätigungsnachricht versandt."))?></p>
 <?php
 	}
 ?>
 		<dl>
-			<dt class="c-nachrichteninformierung"><label for="notify">Nachrichten auf jeder Seite</label></dt>
-			<dd class="c-nachrichteninformierung"><input type="checkbox" name="notify" id="notify"<?=$me->checkSetting('notify') ? ' checked="checked"' : ''?> title="Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angezeigt, dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten." tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-nachrichteninformierung"><label for="notify"><?=h(_("Nachrichten auf jeder Seite&"))?></label></dt>
+			<dd class="c-nachrichteninformierung"><input type="checkbox" name="notify" id="notify"<?=accesskey_attr(_("Nachrichten auf jeder Seite&"))?><?=$me->checkSetting('notify') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angezeigt, dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten."))?>" tabindex="<?=$tabindex++?>" /></dd>
 <?php
 	if($show_im)
 	{
 ?>
 
-			<dt class="c-im-account"><label for="i-im-protocol"><abbr title="Instant-Messaging">IM</abbr>-Account</label></dt>
+			<dt class="c-im-account"><label for="i-im-protocol"><?=h(_("IM-Account&"))?></label></dt>
 			<dd class="c-im-account">
-				<select name="im-protocol" id="i-im-protocol" onchange="document.getElementById('i-im-uin').disabled = !this.value;" onkeyup="this.onchange();" tabindex="<?=$tabindex++?>">
-					<option value="">Deaktiviert</option>
+				<select name="im-protocol" id="i-im-protocol"<?=accesskey_attr(_("IM-Account&"))?> onchange="document.getElementById('i-im-uin').disabled = !this.value;" onkeyup="this.onchange();" tabindex="<?=$tabindex++?>">
+					<option value=""><?=h(_("Deaktiviert"))?></option>
 <?php
 		foreach($messengers as $protocol=>$minfo)
 		{
@@ -332,7 +330,7 @@
 		}
 ?>
 				</select>
-				<input type="text" name="im-uin" id="i-im-uin" title="UIN"<?=$messenger_settings ? ' value="'.htmlspecialchars($messenger_settings[0]).'"' : ''?> tabindex="<?=$tabindex++?>" />
+				<input type="text" name="im-uin" id="i-im-uin" title="<?=h(_("UIN"))?>"<?=$messenger_settings ? ' value="'.htmlspecialchars($messenger_settings[0]).'"' : ''?> tabindex="<?=$tabindex++?>" />
 			</dd>
 <?php
 	}
@@ -349,18 +347,18 @@
 	}
 ?>
 		<fieldset class="benachrichtigungen-nachrichten">
-			<legend>Benachrichtigung bei Nachrichten</legend>
+			<legend><?=h(_("Benachrichtigung bei Nachrichten"))?></legend>
 			<table>
 				<thead>
 					<tr>
-						<th class="c-nachrichtentyp">Nachrichtentyp</th>
-						<th class="c-ankunft">Ankunft</th>
-						<th class="c-rueckkehr">Rückkehr</th>
+						<th class="c-nachrichtentyp"><?=h(_("Nachrichtentyp"))?></th>
+						<th class="c-ankunft"><?=h(_("Ankunft"))?></th>
+						<th class="c-rueckkehr"><?=h(_("Rückkehr"))?></th>
 <?php
 	if($show_im)
 	{
 ?>
-						<th class="c-im-benachrichtigung"><abbr title="Instant-Messaging">IM</abbr>-Benachrichtigung</th>
+						<th class="c-im-benachrichtigung"><?=h(_("IM-Benachrichtigung"))?></th>
 <?php
 	}
 ?>
@@ -368,9 +366,9 @@
 				</thead>
 				<tbody>
 					<tr class="r-kaempfe">
-						<th class="c-nachrichtentyp">Kämpfe</th>
+						<th class="c-nachrichtentyp"><?=h(_("Kämpfe&"))?></th>
 						<td class="c-ankunft leer"></td>
-						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[1][1]"<?=$receive_settings[1][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[1][1]"<?=accesskey_attr(_("Kämpfe&"))?><?=$receive_settings[1][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
 	{
@@ -381,9 +379,9 @@
 ?>
 					</tr>
 					<tr class="r-spionage">
-						<th class="c-nachrichtentyp">Spionage</th>
+						<th class="c-nachrichtentyp"><?=h(_("Spionage&"))?></th>
 						<td class="c-ankunft leer"></td>
-						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[2][1]"<?=$receive_settings[2][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[2][1]"<?=accesskey_attr(_("Spionage&"))?><?=$receive_settings[2][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
 	{
@@ -394,8 +392,8 @@
 ?>
 					</tr>
 					<tr class="r-transport">
-						<th class="c-nachrichtentyp">Transport</th>
-						<td class="c-ankunft"><input type="checkbox" name="nachrichten[3][0]"<?=$receive_settings[3][0] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<th class="c-nachrichtentyp"><?=h(_("Transport&"))?></th>
+						<td class="c-ankunft"><input type="checkbox" name="nachrichten[3][0]"<?=accesskey_attr(_("Transport&"))?><?=$receive_settings[3][0] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[3][1]"<?=$receive_settings[3][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
@@ -407,9 +405,9 @@
 ?>
 					</tr>
 					<tr class="r-sammeln">
-						<th class="c-nachrichtentyp">Sammeln</th>
+						<th class="c-nachrichtentyp"><?=h(_("Sammeln&"))?></th>
 						<td class="c-ankunft leer"></td>
-						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[4][1]"<?=$receive_settings[4][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[4][1]"<?=accesskey_attr(_("Sammeln&"))?><?=$receive_settings[4][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
 	{
@@ -420,8 +418,8 @@
 ?>
 					</tr>
 					<tr class="r-besiedelung">
-						<th class="c-nachrichtentyp">Besiedelung</th>
-						<td class="c-ankunft"><input type="checkbox" name="nachrichten[5][0]"<?=$receive_settings[5][0] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<th class="c-nachrichtentyp"><?=h(_("Besiedelung&"))?></th>
+						<td class="c-ankunft"><input type="checkbox" name="nachrichten[5][0]"<?=accesskey_attr(_("Besiedelung&"))?><?=$receive_settings[5][0] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[5][1]"<?=$receive_settings[5][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
@@ -437,16 +435,16 @@
 	{
 ?>
 					<tr class="r-benutzernachrichten">
-						<th class="c-nachrichtentyp">Benutzernachrichten</th>
+						<th class="c-nachrichtentyp"><?=h(_("Benutzernachrichten&"))?></th>
 						<td class="c-ankunft leer"></td>
 						<td class="c-rueckkehr leer"></td>
-						<td class="c-im-benachrichtigung"><input type="checkbox" name="im-receive[messages][6]"<?=$messenger_receive['messages'][6] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-im-benachrichtigung"><input type="checkbox" name="im-receive[messages][6]"<?=accesskey_attr(_("Benutzernachrichten&"))?><?=$messenger_receive['messages'][6] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 					</tr>
 					<tr class="r-verbuendete">
-						<th class="c-nachrichtentyp">Verbündete</th>
+						<th class="c-nachrichtentyp"><?=h(_("Verbündete&"))?></th>
 						<td class="c-ankunft leer"></td>
 						<td class="c-rueckkehr leer"></td>
-						<td class="c-im-benachrichtigung"><input type="checkbox" name="im-receive[messages][7]"<?=$messenger_receive['messages'][7] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-im-benachrichtigung"><input type="checkbox" name="im-receive[messages][7]"<?=accesskey_attr(_("Verbündete&"))?><?=$messenger_receive['messages'][7] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 					</tr>
 <?php
 	}
@@ -455,17 +453,17 @@
 			</table>
 		</fieldset>
 		<fieldset class="benachrichtigungen-fertigstellung">
-			<legend>Benachrichtigung bei Fertigstellung</legend>
+			<legend><?=h(_("Benachrichtigung bei Fertigstellung"))?></legend>
 			<table>
 				<thead>
 					<tr>
-						<th class="c-gegenstandsart">Gegenstandsart</th>
-						<th class="c-uebersicht"><abbr title="Verbleibende">Verbl.</abbr> Bauzeit in der Übersicht</th>
+						<th class="c-gegenstandsart"><?=h(_("Gegenstandsart"))?></th>
+						<th class="c-uebersicht"><?=h(_("Verbl. Bauzeit in der Übersicht"))?></th>
 <?php
 	if($show_im)
 	{
 ?>
-						<th class="c-im-benachrichtigung"><abbr title="Instant-Messaging">IM</abbr>-Benachichtigung</th>
+						<th class="c-im-benachrichtigung"><?=h(_("IM-Benachichtigung"))?></th>
 <?php
 	}
 ?>
@@ -473,11 +471,11 @@
 				</thead>
 				<tbody>
 					<tr class="r-gebaeude">
-						<th class="c-gegenstandsart">Gebäude</th>
+						<th class="c-gegenstandsart"><?=h(_("Gebäude&"))?></th>
 						<td class="c-uebersicht">
-							<select name="building[gebaeude]" tabindex="<?=$tabindex++?>">
-								<option value="0"<?=($show_building['gebaeude']==0) ? ' selected="selected"' : ''?>>Ausgeschaltet</option>
-								<option value="1"<?=($show_building['gebaeude']==1) ? ' selected="selected"' : ''?>>Jedes einzelne</option>
+							<select name="building[gebaeude]"<?=accesskey_attr(_("Gebäude&"))?> tabindex="<?=$tabindex++?>">
+								<option value="0"<?=($show_building['gebaeude']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
+								<option value="1"<?=($show_building['gebaeude']==1) ? ' selected="selected"' : ''?>><?=h(_("Jedes einzelne [Gebäude]"))?></option>
 							</select>
 						</td>
 <?php
@@ -486,8 +484,8 @@
 ?>
 						<td class="c-im-benachrichtigung">
 							<select name="im-receive[building][gebaeude]" tabindex="<?=$tabindex++?>">
-								<option value="0"<?=($messenger_receive['building']['gebaeude']==0) ? ' selected="selected"' : ''?>>Ausgeschaltet</option>
-								<option value="1"<?=($messenger_receive['building']['gebaeude']==1) ? ' selected="selected"' : ''?>>Jedes einzelne</option>
+								<option value="0"<?=($messenger_receive['building']['gebaeude']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
+								<option value="1"<?=($messenger_receive['building']['gebaeude']==1) ? ' selected="selected"' : ''?>><?=h(_("Jedes einzelne [Gebäude]"))?></option>
 							</select>
 						</td>
 <?php
@@ -495,11 +493,11 @@
 ?>
 					</tr>
 					<tr class="r-forschung">
-						<th class="c-gegenstandsart">Forschung</th>
+						<th class="c-gegenstandsart"><?=h(_("Forschung&"))?></th>
 						<td class="c-uebersicht">
-							<select name="building[forschung]" tabindex="<?=$tabindex++?>">
-								<option value="0"<?=($show_building['forschung']==0) ? ' selected="selected"' : ''?>>Ausgeschaltet</option>
-								<option value="1"<?=($show_building['forschung']==1) ? ' selected="selected"' : ''?>>Jede einzelne</option>
+							<select name="building[forschung]"<?=accesskey_attr(_("Forschung&"))?> tabindex="<?=$tabindex++?>">
+								<option value="0"<?=($show_building['forschung']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
+								<option value="1"<?=($show_building['forschung']==1) ? ' selected="selected"' : ''?>><?=h(_("Jede einzelne [Forschung]"))?></option>
 							</select>
 						</td>
 <?php
@@ -508,8 +506,8 @@
 ?>
 						<td class="c-im-benachrichtigung">
 							<select name="im-receive[building][forschung]" tabindex="<?=$tabindex++?>">
-								<option value="0"<?=($messenger_receive['building']['forschung']==0) ? ' selected="selected"' : ''?>>Ausgeschaltet</option>
-								<option value="1"<?=($messenger_receive['building']['forschung']==1) ? ' selected="selected"' : ''?>>Jede einzelne</option>
+								<option value="0"<?=($messenger_receive['building']['forschung']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
+								<option value="1"<?=($messenger_receive['building']['forschung']==1) ? ' selected="selected"' : ''?>><?=h(_("Jede einzelne [Forschung]"))?></option>
 							</select>
 						</td>
 <?php
@@ -517,13 +515,13 @@
 ?>
 					</tr>
 					<tr class="r-roboter">
-						<th class="c-gegenstandsart">Roboter</th>
+						<th class="c-gegenstandsart"><?=h(_("Roboter&"))?></th>
 						<td class="c-uebersicht">
-							<select name="building[roboter]" tabindex="<?=$tabindex++?>">
-								<option value="0"<?=($show_building['roboter']==0) ? ' selected="selected"' : ''?>>Ausgeschaltet</option>
-								<option value="1"<?=($show_building['roboter']==1) ? ' selected="selected"' : ''?>>Jeder einzelne</option>
-								<option value="2"<?=($show_building['roboter']==2) ? ' selected="selected"' : ''?>>Alle eines Typs</option>
-								<option value="3"<?=($show_building['roboter']==3) ? ' selected="selected"' : ''?>>Alle</option>
+							<select name="building[roboter]"<?=accesskey_attr(_("Roboter&"))?> tabindex="<?=$tabindex++?>">
+								<option value="0"<?=($show_building['roboter']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
+								<option value="1"<?=($show_building['roboter']==1) ? ' selected="selected"' : ''?>><?=h(_("Jeder einzelne [Roboter]"))?></option>
+								<option value="2"<?=($show_building['roboter']==2) ? ' selected="selected"' : ''?>><?=h(_("Alle [Roboter] eines Typs"))?></option>
+								<option value="3"<?=($show_building['roboter']==3) ? ' selected="selected"' : ''?>><?=h(_("Alle [Roboter]"))?></option>
 							</select>
 						</td>
 <?php
@@ -532,10 +530,10 @@
 ?>
 						<td class="c-im-benachrichtigung">
 							<select name="im-receive[building][roboter]" tabindex="<?=$tabindex++?>">
-								<option value="0"<?=($messenger_receive['building']['roboter']==0) ? ' selected="selected"' : ''?>>Ausgeschaltet</option>
-								<option value="1"<?=($messenger_receive['building']['roboter']==1) ? ' selected="selected"' : ''?>>Jeder einzelne</option>
-								<option value="2"<?=($messenger_receive['building']['roboter']==2) ? ' selected="selected"' : ''?>>Alle eines Typs</option>
-								<option value="3"<?=($messenger_receive['building']['roboter']==3) ? ' selected="selected"' : ''?>>Alle</option>
+								<option value="0"<?=($messenger_receive['building']['roboter']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
+								<option value="1"<?=($messenger_receive['building']['roboter']==1) ? ' selected="selected"' : ''?>><?=h(_("Jeder einzelne [Roboter]"))?></option>
+								<option value="2"<?=($messenger_receive['building']['roboter']==2) ? ' selected="selected"' : ''?>><?=h(_("Alle [Roboter] eines Typs"))?></option>
+								<option value="3"<?=($messenger_receive['building']['roboter']==3) ? ' selected="selected"' : ''?>><?=h(_("Alle [Roboter]"))?></option>
 							</select>
 						</td>
 <?php
@@ -543,13 +541,13 @@
 ?>
 					</tr>
 					<tr class="r-schiffe">
-						<th class="c-gegenstandsart">Schiffe</th>
+						<th class="c-gegenstandsart"><?=h(_("Schiffe&"))?></th>
 						<td class="c-uebersicht">
-							<select name="building[schiffe]" tabindex="<?=$tabindex++?>">
-								<option value="0"<?=($show_building['schiffe']==0) ? ' selected="selected"' : ''?>>Ausgeschaltet</option>
-								<option value="1"<?=($show_building['schiffe']==1) ? ' selected="selected"' : ''?>>Jedes einzelne</option>
-								<option value="2"<?=($show_building['schiffe']==2) ? ' selected="selected"' : ''?>>Alle eines Typs</option>
-								<option value="3"<?=($show_building['schiffe']==3) ? ' selected="selected"' : ''?>>Alle</option>
+							<select name="building[schiffe]"<?=accesskey_attr(_("Schiffe&"))?> tabindex="<?=$tabindex++?>">
+								<option value="0"<?=($show_building['schiffe']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
+								<option value="1"<?=($show_building['schiffe']==1) ? ' selected="selected"' : ''?>><?=h(_("Jedes einzelne [Schiff]"))?></option>
+								<option value="2"<?=($show_building['schiffe']==2) ? ' selected="selected"' : ''?>><?=h(_("Alle [Schiffe] eines Typs"))?></option>
+								<option value="3"<?=($show_building['schiffe']==3) ? ' selected="selected"' : ''?>><?=h(_("Alle [Schiffe]"))?></option>
 							</select>
 						</td>
 <?php
@@ -558,10 +556,10 @@
 ?>
 						<td class="c-im-benachrichtigung">
 							<select name="im-receive[building][schiffe]" tabindex="<?=$tabindex++?>">
-								<option value="0"<?=($messenger_receive['building']['schiffe']==0) ? ' selected="selected"' : ''?>>Ausgeschaltet</option>
-								<option value="1"<?=($messenger_receive['building']['schiffe']==1) ? ' selected="selected"' : ''?>>Jedes einzelne</option>
-								<option value="2"<?=($messenger_receive['building']['schiffe']==2) ? ' selected="selected"' : ''?>>Alle eines Typs</option>
-								<option value="3"<?=($messenger_receive['building']['schiffe']==3) ? ' selected="selected"' : ''?>>Alle</option>
+								<option value="0"<?=($messenger_receive['building']['schiffe']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
+								<option value="1"<?=($messenger_receive['building']['schiffe']==1) ? ' selected="selected"' : ''?>><?=h(_("Jedes einzelne [Schiff]"))?></option>
+								<option value="2"<?=($messenger_receive['building']['schiffe']==2) ? ' selected="selected"' : ''?>><?=h(_("Alle [Schiffe] eines Typs"))?></option>
+								<option value="3"<?=($messenger_receive['building']['schiffe']==3) ? ' selected="selected"' : ''?>><?=h(_("Alle [Schiffe]"))?>/option>
 							</select>
 						</td>
 <?php
@@ -569,13 +567,13 @@
 ?>
 					</tr>
 					<tr class="r-verteidigung">
-						<th class="c-gegenstandsart">Verteidigung</th>
+						<th class="c-gegenstandsart"><?=h(_("Verteidigung&"))?></th>
 						<td class="c-uebersicht">
-							<select name="building[verteidigung]" tabindex="<?=$tabindex++?>">
-								<option value="0"<?=($show_building['verteidigung']==0) ? ' selected="selected"' : ''?>>Ausgeschaltet</option>
-								<option value="1"<?=($show_building['verteidigung']==1) ? ' selected="selected"' : ''?>>Jede einzelne</option>
-								<option value="2"<?=($show_building['verteidigung']==2) ? ' selected="selected"' : ''?>>Alle eines Typs</option>
-								<option value="3"<?=($show_building['verteidigung']==3) ? ' selected="selected"' : ''?>>Alle</option>
+							<select name="building[verteidigung]"<?=accesskey_attr(_("Verteidigung&"))?> tabindex="<?=$tabindex++?>">
+								<option value="0"<?=($show_building['verteidigung']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
+								<option value="1"<?=($show_building['verteidigung']==1) ? ' selected="selected"' : ''?>><?=h(_("Jede einzelne [Verteidigungsanlage]"))?></option>
+								<option value="2"<?=($show_building['verteidigung']==2) ? ' selected="selected"' : ''?>><?=h(_("Alle [Verteidigungsanlagen] eines Typs"))?></option>
+								<option value="3"<?=($show_building['verteidigung']==3) ? ' selected="selected"' : ''?>><?=h(_("Alle [Verteidigungsanlagen]"))?></option>
 							</select>
 						</td>
 <?php
@@ -584,10 +582,10 @@
 ?>
 						<td class="c-im-benachrichtigung">
 							<select name="im-receive[building][verteidigung]" tabindex="<?=$tabindex++?>">
-								<option value="0"<?=($messenger_receive['building']['verteidigung']==0) ? ' selected="selected"' : ''?>>Ausgeschaltet</option>
-								<option value="1"<?=($messenger_receive['building']['verteidigung']==1) ? ' selected="selected"' : ''?>>Jede einzelne</option>
-								<option value="2"<?=($messenger_receive['building']['verteidigung']==2) ? ' selected="selected"' : ''?>>Alle eines Typs</option>
-								<option value="3"<?=($messenger_receive['building']['verteidigung']==3) ? ' selected="selected"' : ''?>>Alle</option>
+								<option value="0"<?=($messenger_receive['building']['verteidigung']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
+								<option value="1"<?=($messenger_receive['building']['verteidigung']==1) ? ' selected="selected"' : ''?>><?=h(_("Jede einzelne [Verteidigungsanlage]"))?></option>
+								<option value="2"<?=($messenger_receive['building']['verteidigung']==2) ? ' selected="selected"' : ''?>><?=h(_("Alle [Verteidigungsanlagen] eines Typs"))?></option>
+								<option value="3"<?=($messenger_receive['building']['verteidigung']==3) ? ' selected="selected"' : ''?>><?=h(_("Alle [Verteidigungsanlagen]"))?></option>
 							</select>
 						</td>
 <?php
@@ -599,7 +597,7 @@
 		</fieldset>
 	</fieldset>
 
-	<div class="einstellungen-speichern-1"><input type="submit" title="[W]" value="Speichern" tabindex="<?=$tabindex++?>" /></div>
+	<div class="einstellungen-speichern-1"><button tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Speicher&n"))?>><?=h(_("Speicher&n"))?></button></div>
 <?php
 	$save_tabindex = $tabindex++;
 
@@ -607,34 +605,34 @@
 	{
 ?>
 	<fieldset class="urlaubsmodus">
-		<legend>Urlaubsmodus</legend>
+		<legend><?=h(_("Urlaubsmodus"))?></legend>
 <?php
 		if(!$me->umode())
 		{
 			if($me->permissionToUmode() || isset($_SESSION['admin_username']))
 			{
 ?>
-		<div><input type="submit" name="umode" value="Urlaubsmodus" tabindex="<?=$tabindex++?>" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich betreten?');" /></div>
-		<p>Sie werden frühestens nach drei Tagen (<?=date('Y-m-d, H:i', $me->getUmodeReturnTime())?>, Serverzeit) aus dem Urlaubsmodus zurückkehren können.</p>
+		<div><input type="submit" name="umode" value="<?=h(_("Urlaubsmodus&"), false)?>"<?=accesskey_attr(_("Urlaubsmodus&"))?> tabindex="<?=$tabindex++?>" onclick="return confirm('<?=jsentities(_("Wollen Sie den Urlaubsmodus wirklich betreten?"))?>');" /></div>
+		<p><?=h(sprintf(_("Sie werden frühestens nach drei Tagen (%s) aus dem Urlaubsmodus zurückkehren können."), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i'), $me->getUmodeReturnTime()))))?></p>
 <?php
 			}
 			else
 			{
 ?>
-		<p>Sie können erst wieder ab dem <?=date('Y-m-d, H:i', $me->getUmodeReturnTime())?> (Serverzeit) in den Urlaubsmodus wechseln.</p>
+		<p><?=h(sprintf(_("Sie können erst wieder ab dem %s in den Urlaubsmodus wechseln."), sprintf(_("%s (Serverzeit)"), date('Y-m-d, H:i', $me->getUmodeReturnTime()))))?></p>
 <?php
 			}
 		}
 		elseif($me->permissionToUmode() || isset($_SESSION['admin_username']))
 		{
 ?>
-		<div><input type="submit" name="umode" value="Urlaubsmodus verlassen" tabindex="<?=$tabindex++?>" onclick="return confirm('Wollen Sie den Urlaubsmodus wirklich verlassen?');" /></div>
+		<div><input type="submit" name="umode" value="<?=h(_("Urlaubsmodus verlassen"))?>" tabindex="<?=$tabindex++?>" onclick="return confirm('<?=jsentities(_("Wollen Sie den Urlaubsmodus wirklich verlassen?"))?>');" /></div>
 <?php
 		}
 		else
 		{
 ?>
-		<p>Sie können den Urlaubsmodus spätestens am <?=date('Y-m-d, H:i', $me->getUmodeReturnTime())?> (Serverzeit) verlassen.</p>
+		<p><?=h(sprintf(_("Sie können den Urlaubsmodus spätestens am %s verlassen."), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i'), $me->getUmodeReturnTime()))))?></p>
 <?php
 		}
 ?>
@@ -643,32 +641,32 @@
 	}
 ?>
 	<fieldset class="benutzeraccount">
-		<legend>Benutzeraccount</legend>
+		<legend><?=h(_("Benutzeraccount"))?></legend>
 		<dl>
-			<dt class="c-ip-schutz"><label for="ipcheck">IP-Schutz</label></dt>
-			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=$me->checkSetting('ipcheck') ? ' checked="checked"' : ''?> title="Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-ip-schutz"><label for="ipcheck"><?=h(_("IP-Schutz&"))?></label></dt>
+			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=accesskey_attr(_("IP-Schutz&"))?><?=$me->checkSetting('ipcheck') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)"))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-email-adresse"><label for="email">E-Mail-Adresse</label></dt>
-			<dd class="c-email-adresse"><input type="text" name="email" id="email" value="<?=utf8_htmlentities($me->checkSetting('email'))?>" title="Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben. [Z]" tabindex="<?=$tabindex++?>" accesskey="z" /></dd>
+			<dt class="c-email-adresse"><label for="email"><?=h(_("E-Mail-Adresse&"))?></label></dt>
+			<dd class="c-email-adresse"><input type="text" name="email" id="email"<?=accesskey_attr(_("E-Mail-Adresse&"))?> value="<?=htmlspecialchars($me->checkSetting('email'))?>" title="<?=h(_("Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-benutzerbeschreibung"><label for="benutzerbeschreibung">Ben<kbd>u</kbd>tzerbeschreibung</label></dt>
-			<dd class="c-benutzerbeschreibung"><textarea name="benutzerbeschreibung" id="benutzerbeschreibung" cols="50" rows="10" accesskey="u" tabindex="<?=$tabindex++?>"><?=preg_replace("/[\r\n\t]/e", '\'&#\'.ord(\'$0\').\';\'', utf8_htmlentities($me->getUserDescription(false)))?></textarea></dd>
+			<dt class="c-benutzerbeschreibung"><label for="benutzerbeschreibung"><?=h(_("Ben&utzerbeschreibung"))?></label></dt>
+			<dd class="c-benutzerbeschreibung"><textarea name="benutzerbeschreibung" id="benutzerbeschreibung"<?=accesskey_attr(_("Ben&utzerbeschreibung"))?> cols="50" rows="10" accesskey="u" tabindex="<?=$tabindex++?>"><?=preg_replace("/[\r\n\t]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($me->getUserDescription(false)))?></textarea></dd>
 		</dl>
 		<fieldset class="passwort-aendern">
-			<legend>Passwort ändern</legend>
+			<legend><?=h(_("Passwort ändern"))?></legend>
 			<dl>
-				<dt class="c-altes-passwort"><label for="old-password">Altes Passw<kbd>o</kbd>rt</label></dt>
-				<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password" tabindex="<?=$tabindex++?>" accesskey="o" /></dd>
+				<dt class="c-altes-passwort"><label for="old-password"><?=h(_("Altes Passw&ort"))?></label></dt>
+				<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password"<?=accesskey_attr(_("Altes Passw&ort"))?> tabindex="<?=$tabindex++?>" /></dd>
 
-				<dt class="c-neues-passwort"><label for="new-password">Neues Passwort</label></dt>
-				<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password" tabindex="<?=$tabindex++?>" /></dd>
+				<dt class="c-neues-passwort"><label for="new-password"><?=h(_("Neues Passwort&"))?></label></dt>
+				<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password"<?=accesskey_attr(_("Neues Passwort&"))?> tabindex="<?=$tabindex++?>" /></dd>
 
-				<dt class="c-neues-passwort-wiederholen"><label for="new-password2">Neues Passwort wiederholen</label></dt>
-				<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2" tabindex="<?=$tabindex++?>" /></dd>
+				<dt class="c-neues-passwort-wiederholen"><label for="new-password2"><?=h(_("Neues Passwort wiederholen&"))?></label></dt>
+				<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2"<?=accesskey_attr(_("Neues Passwort wiederholen&"))?> tabindex="<?=$tabindex++?>" /></dd>
 			</dl>
 		</fieldset>
 	</fieldset>
-	<div class="einstellungen-speichern-2"><input type="hidden" name="change-checkboxes" value="1" /><button type="submit" tabindex="<?=$save_tabindex?>" accesskey="w" title="[W]">Speichern</button></div>
+	<div class="einstellungen-speichern-2"><input type="hidden" name="change-checkboxes" value="1" /><button type="submit" tabindex="<?=$save_tabindex?>"><?=h(_("Speicher&n"))?></button></div>
 </form>
 <?php
 	login_gui::html_foot();

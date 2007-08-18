@@ -419,7 +419,7 @@
 	<p><?=h(_("Die Flotte wurde versandt."))?></p>
 	<dl>
 		<dt class="c-ziel"><?=h(_("Ziel"))?></dt>
-		<dd class="c-ziel"><?=h($planet_owner ? sprintf(_("„%s“ (%s, Eigentümer: %s)"), htmlspecialchars($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])), vsprintf(_("%s:%s:%s"), explode(":", $fleet_obj->getCurrentTarget())), htmlspecialchars($planet_owner)) : sprintf(_("Unbesiedelt (%s)"), vsprintf(_("%s:%s:%s"), explode(":", $fleet_obj->getCurrentTarget()))))?></dd>
+		<dd class="c-ziel"><?=h($planet_owner ? sprintf(_("„%s“ (%s, Eigentümer: %s)"), htmlspecialchars($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])), vsprintf(_("%d:%d:%d"), explode(":", $fleet_obj->getCurrentTarget())), htmlspecialchars($planet_owner)) : sprintf(_("Unbesiedelt (%s)"), vsprintf(_("%d:%d:%d"), explode(":", $fleet_obj->getCurrentTarget()))))?></dd>
 
 		<dt class="c-auftragsart"><?=h(_("Auftragsart"))?></dt>
 		<dd class="c-auftragsart"><?=isset($type_names[$auftrag]) ? htmlspecialchars($type_names[$auftrag]) : htmlspecialchars($auftrag)?></dt>
@@ -459,7 +459,7 @@
 							$time_string = '';
 							if($time >= 86400)
 							{
-								$time_string .= floor($time/86400).'&thinsp;<abbr title="'.h(_("Tage")).'">d</abbr>';
+								$time_string .= floor($time/86400).h(_("unit_separator")).'<abbr title="'.h(_("Tage")).'">d</abbr>';
 								$time2 = $time%86400;
 							}
 							else
@@ -475,16 +475,16 @@
 <form action="flotten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
 	<dl>
 		<dt class="c-ziel"><?=h(_("Ziel"))?></dt>
-		<dd class="c-ziel"><?=htmlspecialchars($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'])?> &ndash; <?=$planet_owner ? htmlspecialchars($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])).' <span class="playername">('.htmlspecialchars($planet_owner).')</span>' : 'Unbesiedelt'?></dd>
+		<dd class="c-ziel"><?=sprintf(h(_("%d:%d:%d")), $_POST['galaxie'], $_POST['system'], $_POST['planet'])?> &ndash; <?=$planet_owner ? htmlspecialchars($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])).' <span class="playername">('.htmlspecialchars($planet_owner).')</span>' : 'Unbesiedelt'?></dd>
 
 		<dt class="c-entfernung"><?=h(_("Entfernung"))?></dt>
-		<dd class="c-entfernung"><?=ths($distance)?>&thinsp;<abbr title="<?=h(ngettext("Orbit", "Orbits", $distance))?>"><?=h(_("Or"))?></abbr></dd>
+		<dd class="c-entfernung"><?=ths($distance)?><?=h(_("unit_separator"))?><abbr title="<?=h(ngettext("Orbit", "Orbits", $distance))?>"><?=h(_("Or"))?></abbr></dd>
 
 		<dt class="c-antrieb"><?=h(_("Antrieb"))?></dt>
-		<dd class="c-antrieb"><?=ths($speed)?>&thinsp;<abbr title="<?=h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $speed))?>"><?=h(_("µOr⁄s²"))?></abbr></dd>
+		<dd class="c-antrieb"><?=ths($speed)?><?=h(_("unit_separator"))?><abbr title="<?=h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $speed))?>"><?=h(_("µOr⁄s²"))?></abbr></dd>
 
 		<dt class="c-tritiumverbrauch"><?=h(_("Tritiumverbrauch"))?></dt>
-		<dd class="c-tritiumverbrauch <?=($this_ress[4] >= $tritium) ? 'ja' : 'nein'?>" id="tritium-verbrauch"><?=ths($tritium)?>&thinsp;<abbr title="<?=h(ngettext("Tonne", "Tonnen", $tritium))?>">t</abbr></dd>
+		<dd class="c-tritiumverbrauch <?=($this_ress[4] >= $tritium) ? 'ja' : 'nein'?>" id="tritium-verbrauch"><?=ths($tritium)?><?=h(_("unit_separator"))?><abbr title="<?=h(ngettext("Tonne", "Tonnen", $tritium))?>">t</abbr></dd>
 
 		<dt class="c-geschwindigkeit"><label for="speed"><?=h(_("Gesch&windigkeit"))?></label></dt>
 		<dd class="c-geschwindigkeit">
@@ -493,7 +493,7 @@
 							for($i=1,$pr=100; $i>0; $i-=.05,$pr-=5)
 							{
 ?>
-				<option value="<?=htmlspecialchars($i)?>"><?=htmlspecialchars($pr)?>&thinsp;%</option>
+				<option value="<?=htmlspecialchars($i)?>"><?=htmlspecialchars($pr)?><?=h(_("unit_separator"))?>%</option>
 <?php
 							}
 ?>
@@ -504,12 +504,12 @@
 		<dd class="c-flugzeit" id="flugzeit" title="<?=h(sprintf(_("Ankunft: %s"), sprintf(_("%s (Serverzeit)"), date(_("H:i:s, Y-m-d"), time()+$time))))?>"><?=$time_string?></dd>
 
 		<dt class="c-transportkapazitaet"><?=h(_("Transportkapazität"))?></dt>
-		<dd class="c-transportkapazitaet"><?=ths($transport[0])?>&thinsp;<abbr title="<?=h(ngettext("Tonne", "Tonnen", $transport[0]))?>">t</abbr>, <?=ths($transport[1])?>&nbsp;<?=h(ngettext("Roboter", "Roboter", $transport[1]))?></dd>
+		<dd class="c-transportkapazitaet"><?=ths($transport[0])?><?=h(_("unit_separator"))?><abbr title="<?=h(ngettext("Tonne", "Tonnen", $transport[0]))?>">t</abbr>, <?=ths($transport[1])?>&nbsp;<?=h(ngettext("Roboter", "Roboter", $transport[1]))?></dd>
 
 		<script type="text/javascript">
 			// <![CDATA[
 			document.write('<dt class="c-verbleibend" id="transport-verbleibend-dt"><?=h(_("Verbleibend"))?></dt>');
-			document.write('<dd class="c-verbleibend" id="transport-verbleibend-dd"><?=ths($transport[0])?>&thinsp;<abbr title="<?=h(ngettext("Tonne", "Tonnen", $transport[0]))?>">t</abbr>, <?=ths($transport[1])?>&nbsp;<?=h(ngettext("Roboter", "Roboter", $transport[1]))?></dd>');
+			document.write('<dd class="c-verbleibend" id="transport-verbleibend-dd"><?=ths($transport[0])?><?=h(_("unit_separator"))?><abbr title="<?=h(ngettext("Tonne", "Tonnen", $transport[0]))?>">t</abbr>, <?=ths($transport[1])?>&nbsp;<?=h(ngettext("Roboter", "Roboter", $transport[1]))?></dd>');
 			// ]]>
 		</script>
 
@@ -609,7 +609,7 @@
 				var tritium = <?=$tritium?>;
 				if(!isNaN(speed))
 					tritium = Math.floor(tritium*speed);
-				document.getElementById('tritium-verbrauch').innerHTML = ths(tritium)+'&thinsp;<abbr title="<?=h(_("Tonnen"))?>">t</abbr>';
+				document.getElementById('tritium-verbrauch').innerHTML = ths(tritium)+'<?=h(_("unit_separator"))?><abbr title="<?=h(_("Tonnen"))?>">t</abbr>';
 				document.getElementById('tritium-verbrauch').className = 'c-tritiumverbrauch '+((<?=$this_ress[4]?> >= tritium) ? 'ja' : 'nein');
 
 				// Flugzeit
@@ -623,7 +623,7 @@
 				var time_string = '';
 				if(time >= 86400)
 				{
-					time_string += Math.floor(time/86400)+'&thinsp;<abbr title="<?=h(_("Tage"))?>">d</abbr> ';
+					time_string += Math.floor(time/86400)+'<?=h(_("unit_separator"))?><abbr title="<?=h(_("Tage"))?>">d</abbr> ';
 					var time2 = time%86400;
 				}
 				else
@@ -692,7 +692,7 @@
 						remain_rob = "\u22120";
 					else
 						remain_rob = ths(remain_rob);
-					document.getElementById('transport-verbleibend-dd').innerHTML = remain_ress+'&thinsp;<abbr title="<?=h(_("Tonnen"))?>">t</abbr>, '+remain_rob+'&nbsp;<?=h(_("Roboter"))?>';
+					document.getElementById('transport-verbleibend-dd').innerHTML = remain_ress+'<?=h(_("unit_separator"))?><abbr title="<?=h(_("Tonnen"))?>">t</abbr>, '+remain_rob+'&nbsp;<?=h(_("Roboter"))?>';
 				}
 <?php
 							}
@@ -800,7 +800,7 @@
 				{
 					$me->setActivePlanet($planet);
 ?>
-					document.write('<option value="<?=htmlspecialchars($me->getPosString())?>"<?=($planet == $active_planet) ? ' selected="selected"' : ''?>><?=h(vsprintf(_("%s:%s:%s"), $me->getPos()))?>: <?=preg_replace('/[\'\\\\]/', '\\\\\\0', htmlspecialchars($me->planetName()))?></option>');
+					document.write('<option value="<?=htmlspecialchars($me->getPosString())?>"<?=($planet == $active_planet) ? ' selected="selected"' : ''?>><?=h(vsprintf(_("%d:%d:%d"), $me->getPos()))?>: <?=preg_replace('/[\'\\\\]/', '\\\\\\0', htmlspecialchars($me->planetName()))?></option>');
 <?php
 				}
 				$me->setActivePlanet($active_planet);
@@ -965,7 +965,7 @@
 <?php
 					makeItemList($fi[0], 1);
 ?>
-	<form action="flotten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>#fremdstationierungen" method="post" class="ihre-fremdstationierungen"><div><button type="submit" name="callback_foreign[<?=htmlspecialchars($coords)?>][<?=htmlspecialchars($i)?>]"><?=h(sprintf(_("Zurückrufen zum Planeten %s"), sprintf(_("„%s“ (%s)"), $me->planetName(), vsprintf(_("%s:%s:%s"), $me->getPos()))))?></button></div></form>
+	<form action="flotten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>#fremdstationierungen" method="post" class="ihre-fremdstationierungen"><div><button type="submit" name="callback_foreign[<?=htmlspecialchars($coords)?>][<?=htmlspecialchars($i)?>]"><?=h(sprintf(_("Zurückrufen zum Planeten %s"), sprintf(_("„%s“ (%s)"), $me->planetName(), vsprintf(_("%d:%d:%d"), $me->getPos()))))?></button></div></form>
 <?php
 				}
 				$user_obj->restoreActivePlanet();

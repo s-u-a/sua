@@ -31,61 +31,6 @@
 	<li><a href="scripts/rename.php?<?=htmlentities(session_name().'='.urlencode(session_id()))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>
 </ul>
 <?php
-	if(!$me->checkSetting('notify'))
-	{
-		global $message_type_names;
-
-		$ncount = array(
-			1 => 0,
-			2 => 0,
-			3 => 0,
-			4 => 0,
-			5 => 0,
-			6 => 0,
-			7 => 0
-		);
-		$ges_ncount = 0;
-
-		$cats = $me->getMessageCategoriesList();
-		foreach($cats as $cat)
-		{
-			$message_ids = $me->getMessagesList($cat);
-			foreach($message_ids as $message)
-			{
-				$status = $me->checkMessageStatus($message, $cat);
-				if($status == 1 && $cat != 8)
-				{
-					$ncount[$cat]++;
-					$ges_ncount++;
-				}
-			}
-		}
-
-		if($ges_ncount > 0)
-		{
-			$title = array();
-			$link = 'nachrichten.php';
-			foreach($ncount as $type=>$count)
-			{
-				if($count > 0)
-					$title[] = utf8_htmlentities($message_type_names[$type]).':&nbsp;'.htmlentities($count);
-				if($count == $ges_ncount)
-					$link .= '?type='.urlencode($type);
-			}
-			$title = implode('; ', $title);
-			if(strpos($link, '?') === false)
-				$link .= '?';
-			else
-				$link .= '&';
-			$link .= urlencode(session_name()).'='.urlencode(session_id());
-?>
-<p class="neue-nachrichten">
-	<a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root.'/login/'.$link)?>" title="<?=$title?>">Sie haben <?=htmlentities($ges_ncount)?> neue <kbd>N</kbd>achricht<?=($ges_ncount != 1) ? 'en' : ''?>.</a>
-</p>
-<?php
-		}
-	}
-
 	$active_planet = $me->getActivePlanet();
 	if(count($flotten) > 0)
 	{

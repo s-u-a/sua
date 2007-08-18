@@ -1,2 +1,2 @@
 #!/bin/bash
-find .. -name '*.php' | xgettext -f- -dsua -osua.pot -LPHP --from-code=UTF-8
+find .. -name '*.php' | xgettext -f- -dsua -osua.pot -LPHP --from-code=UTF-8 --add-comments="I18N:"

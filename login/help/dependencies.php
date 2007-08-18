@@ -2,7 +2,7 @@
 	require('../scripts/include.php');
 
 	login_gui::html_head();
-	
+
 	$check_deps = array(
 		'gebaeude' => 'Gebäude',
 		'forschung' => 'Forschung',
@@ -10,7 +10,7 @@
 		'schiffe' => 'Schiff',
 		'verteidigung' => 'Verteidigungsanlage'
 	);
-	
+
 	foreach($check_deps as $type=>$heading)
 	{
 ?>
@@ -28,7 +28,7 @@
 		{
 			$item_info = $me->getItemInfo($item, $type);
 ?>
-		<tr id="deps-<?=htmlentities($item)?>">
+		<tr id="deps-<?=htmlentities($item)?>" title="test">
 			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($item))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a></td>
 <?php
 			if(!isset($item_info['deps']) || count($item_info['deps']) <= 0)
@@ -65,6 +65,6 @@
 </table>
 <?php
 	}
-	
+
 	login_gui::html_foot();
 ?>

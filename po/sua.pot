@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-17 20:29+0200\n"
+"POT-Creation-Date: 2007-08-18 22:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,284 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: ../login/scripts/include.php:53
+#, php-format
+msgid "Nicht angemeldet. Bitte %serneut anmelden%s."
+msgstr ""
+
+#: ../login/scripts/include.php:56
+#, php-format
+msgid ""
+"Anmeldung fehlgeschlagen. Haben Sie sich bereits registriert und Ihren "
+"Benutzernamen und Ihr Passwort korrekt in die zugehörigen Felder über dem "
+"Anmelden-Button eingetragen? Haben Sie Groß-Klein-Schreibung beim Passwort "
+"beachtet? %sProbieren Sie es noch einmal."
+msgstr ""
+
+#: ../login/scripts/include.php:74
+#, php-format
+msgid ""
+"Error: Database version is %s but should be %s. Please run db_things/"
+"update_database.\n"
+msgstr ""
+
+#: ../login/scripts/include.php:114 ../login/flotten.php:29
+msgid "Datenbankfehler."
+msgstr ""
+
+#: ../login/scripts/include.php:124
+#, php-format
+msgid ""
+"Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu "
+"anmelden%s."
+msgstr ""
+
+#: ../login/scripts/include.php:167 ../login/scripts/include.php:656
+#, php-format
+msgid "HTTP redirect: %s"
+msgstr ""
+
+#: ../login/scripts/include.php:197 ../include.php:19 ../include.php:25
+msgid "title_abbr_full"
+msgstr ""
+
+#: ../login/scripts/include.php:202 ../engine/include.php:735
+msgid "thousand_separator"
+msgstr ""
+
+#: ../login/scripts/include.php:270 ../login/scripts/include.php:466
+#: ../login/scripts/include.php:598
+msgid "Zum Inhalt"
+msgstr ""
+
+#: ../login/scripts/include.php:271
+msgid "Zur Navigation"
+msgstr ""
+
+#: ../login/scripts/include.php:272
+msgid "Zu den Spieldaten"
+msgstr ""
+
+#: ../login/scripts/include.php:280
+msgid "Carbon"
+msgstr ""
+
+#: ../login/scripts/include.php:283
+msgid "Aluminium"
+msgstr ""
+
+#: ../login/scripts/include.php:286
+msgid "Wolfram"
+msgstr ""
+
+#: ../login/scripts/include.php:289
+msgid "Radium"
+msgstr ""
+
+#: ../login/scripts/include.php:292
+msgid "Tritium"
+msgstr ""
+
+#: ../login/scripts/include.php:295
+msgid "Energie"
+msgstr ""
+
+#: ../login/scripts/include.php:306
+msgid "Das Spiel ist derzeit gesperrt."
+msgstr ""
+
+#: ../login/scripts/include.php:306 ../login/scripts/include.php:315
+#: ../login/scripts/include.php:330
+#, php-format
+msgid "bis %s"
+msgstr ""
+
+#: ../login/scripts/include.php:306 ../login/scripts/include.php:315
+#: ../login/scripts/include.php:330 ../login/flotten.php:504
+#: ../login/einstellungen.php:616 ../login/einstellungen.php:622
+#: ../login/einstellungen.php:635
+#, php-format
+msgid "%s (Serverzeit)"
+msgstr ""
+
+#: ../login/scripts/include.php:306 ../login/scripts/include.php:315
+#: ../login/scripts/include.php:330
+msgid "Y-m-d, H:i:s"
+msgstr ""
+
+#: ../login/scripts/include.php:315
+msgid "Ihr Benutzeraccount ist gesperrt."
+msgstr ""
+
+#: ../login/scripts/include.php:322
+msgid "Ihr Benutzeraccount befindet sich im Urlaubsmodus."
+msgstr ""
+
+#: ../login/scripts/include.php:330
+msgid "Es herrscht eine Flottensperre für feindliche Flüge."
+msgstr ""
+
+#: ../login/scripts/include.php:343 ../login/scripts/include.php:491
+#: ../login/flotten.php:968
+#, php-format
+msgid "„%s“ (%s)"
+msgstr ""
+
+#: ../login/scripts/include.php:343 ../login/scripts/include.php:491
+#: ../login/flotten.php:422 ../login/flotten.php:478 ../login/flotten.php:803
+#: ../login/flotten.php:964 ../login/flotten.php:968
+#: ../engine/classes/user.php:3119 ../engine/classes/user.php:3120
+#, php-format
+msgid "%d:%d:%d"
+msgstr ""
+
+#: ../login/scripts/include.php:394
+#, php-format
+msgid "Sie haben %s neue &Nachricht."
+msgid_plural "Sie haben %s neue &Nachrichten."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../login/scripts/include.php:465 ../login/scripts/include.php:597
+msgid "Zur Rohstoffanzeige"
+msgstr ""
+
+#: ../login/scripts/include.php:474
+msgid "Planeten wechseln"
+msgstr ""
+
+#: ../login/scripts/include.php:484
+msgid "Ihre &Planeten"
+msgstr ""
+
+#: ../login/scripts/include.php:497
+msgid "Wechseln"
+msgstr ""
+
+#: ../login/scripts/include.php:502
+msgid "&Übersicht"
+msgstr ""
+
+#: ../login/scripts/include.php:503
+msgid "&Rohstoffe"
+msgstr ""
+
+#: ../login/scripts/include.php:504
+msgid "&Gebäude"
+msgstr ""
+
+#: ../login/scripts/include.php:505
+msgid "&Forschung"
+msgstr ""
+
+#: ../login/scripts/include.php:506
+msgid "Ro&boter"
+msgstr ""
+
+#: ../login/scripts/include.php:507
+msgid "F&lotten"
+msgstr ""
+
+#: ../login/scripts/include.php:508
+msgid "&Schiffswerft"
+msgstr ""
+
+#: ../login/scripts/include.php:509
+msgid "&Verteidigung"
+msgstr ""
+
+#: ../login/scripts/include.php:510
+msgid "Han&delsbörse"
+msgstr ""
+
+#: ../login/scripts/include.php:511
+msgid "I&mperium"
+msgstr ""
+
+#: ../login/scripts/include.php:515
+msgid "&Karte"
+msgstr ""
+
+#: ../login/scripts/include.php:516
+msgid "All&ianz"
+msgstr ""
+
+#: ../login/scripts/include.php:517
+msgid "V&erbündete"
+msgstr ""
+
+#: ../login/scripts/include.php:518
+msgid "&Highscores"
+msgstr ""
+
+#: ../login/scripts/include.php:519
+msgid "Na&chrichten"
+msgstr ""
+
+#: ../login/scripts/include.php:520
+msgid "Forschungsb&aum"
+msgstr ""
+
+#: ../login/scripts/include.php:521
+msgid "Eins&tellungen"
+msgstr ""
+
+#: ../login/scripts/include.php:526 ../include.php:131
+msgid "Adminbereich&"
+msgstr ""
+
+#: ../login/scripts/include.php:532
+msgid "Abmelden&"
+msgstr ""
+
+#: ../login/scripts/include.php:543 ../include.php:124
+msgid "Board&"
+msgstr ""
+
+#: ../login/scripts/include.php:544 ../include.php:122
+msgid "FAQ&"
+msgstr ""
+
+#: ../login/scripts/include.php:545 ../include.php:123
+msgid "Chat&"
+msgstr ""
+
+#: ../login/scripts/include.php:546 ../include.php:125
+msgid "Entwicklerseite&"
+msgstr ""
+
+#: ../login/scripts/include.php:556
+msgid "Serverzeit"
+msgstr ""
+
+#: ../login/scripts/include.php:557
+msgid "H:i:s"
+msgstr ""
+
+#: ../login/scripts/include.php:566
+msgid ""
+"mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2"
+"(local_time_obj.getSeconds())"
+msgstr ""
+
+#: ../login/scripts/include.php:568
+msgid "Lokalzeit"
+msgstr ""
+
+#: ../login/scripts/include.php:583
+msgid "Changelog anzeigen"
+msgstr ""
+
+#: ../login/scripts/include.php:583
+#, php-format
+msgid "Version %s"
+msgstr ""
+
+#: ../login/scripts/include.php:588
+#, php-format
+msgid "Revision %s"
+msgstr ""
 
 #: ../login/scripts/rename.php:125
 #, php-format
@@ -38,10 +316,6 @@ msgstr ""
 
 #: ../login/flotten.php:28
 msgid "Der Planet wurde zu den Lesezeichen hinzugefügt."
-msgstr ""
-
-#: ../login/flotten.php:29
-msgid "Datenbankfehler."
 msgstr ""
 
 #: ../login/flotten.php:55 ../login/flotten.php:57
@@ -101,275 +375,650 @@ msgstr ""
 msgid "Nicht genug Tritium vorhanden."
 msgstr ""
 
-#: ../login/flotten.php:415 ../login/flotten.php:426
+#: ../login/flotten.php:408 ../login/flotten.php:419
 msgid "Die Flotte wurde versandt."
 msgstr ""
 
-#: ../login/flotten.php:428 ../login/flotten.php:484
+#: ../login/flotten.php:421 ../login/flotten.php:477
 msgid "Ziel"
 msgstr ""
 
-#: ../login/flotten.php:429 ../login/flotten.php:979
+#: ../login/flotten.php:422 ../login/flotten.php:964
 #, php-format
 msgid "„%s“ (%s, Eigentümer: %s)"
 msgstr ""
 
-#: ../login/flotten.php:429 ../login/flotten.php:810 ../login/flotten.php:984
-#, php-format
-msgid "%s:%s:%s"
-msgstr ""
-
-#: ../login/flotten.php:429
+#: ../login/flotten.php:422
 #, php-format
 msgid "Unbesiedelt (%s)"
 msgstr ""
 
-#: ../login/flotten.php:431
+#: ../login/flotten.php:424
 msgid "Auftragsart"
 msgstr ""
 
-#: ../login/flotten.php:434
+#: ../login/flotten.php:427 ../login/einstellungen.php:355
 msgid "Ankunft"
 msgstr ""
 
-#: ../login/flotten.php:435 ../login/flotten.php:511
+#: ../login/flotten.php:428 ../login/flotten.php:504
 msgid "H:i:s, Y-m-d"
 msgstr ""
 
-#: ../login/flotten.php:448 ../login/flotten.php:737
+#: ../login/flotten.php:441 ../login/flotten.php:730
 msgid "Ungültige Aktion."
 msgstr ""
 
-#: ../login/flotten.php:469 ../login/flotten.php:633
+#: ../login/flotten.php:462 ../login/flotten.php:481 ../login/flotten.php:484
+#: ../login/flotten.php:487 ../login/flotten.php:496 ../login/flotten.php:507
+#: ../login/flotten.php:512 ../login/flotten.php:612 ../login/flotten.php:626
+#: ../login/flotten.php:695
+msgid "unit_separator"
+msgstr ""
+
+#: ../login/flotten.php:462 ../login/flotten.php:626
 msgid "Tage"
 msgstr ""
 
-#: ../login/flotten.php:487
+#: ../login/flotten.php:480
 msgid "Entfernung"
 msgstr ""
 
-#: ../login/flotten.php:488
+#: ../login/flotten.php:481
 msgid "Orbit"
 msgid_plural "Orbits"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../login/flotten.php:488
+#: ../login/flotten.php:481
 msgid "Or"
 msgstr ""
 
-#: ../login/flotten.php:490
+#: ../login/flotten.php:483
 msgid "Antrieb"
 msgstr ""
 
-#: ../login/flotten.php:491
+#: ../login/flotten.php:484
 msgid "Mikroorbit pro Quadratsekunde"
 msgid_plural "Mikroorbits pro Quadratsekunde"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../login/flotten.php:491
+#: ../login/flotten.php:484
 msgid "µOr⁄s²"
 msgstr ""
 
-#: ../login/flotten.php:493
+#: ../login/flotten.php:486
 msgid "Tritiumverbrauch"
 msgstr ""
 
-#: ../login/flotten.php:494 ../login/flotten.php:514 ../login/flotten.php:519
+#: ../login/flotten.php:487 ../login/flotten.php:507 ../login/flotten.php:512
 msgid "Tonne"
 msgid_plural "Tonnen"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../login/flotten.php:496 ../login/flotten.php:498
+#: ../login/flotten.php:489 ../login/flotten.php:491
 msgid "Gesch&windigkeit"
 msgstr ""
 
-#: ../login/flotten.php:510
+#: ../login/flotten.php:503
 msgid "Flugzeit"
 msgstr ""
 
-#: ../login/flotten.php:511 ../login/flotten.php:650
+#: ../login/flotten.php:504 ../login/flotten.php:643
 #, php-format
 msgid "Ankunft: %s"
 msgstr ""
 
-#: ../login/flotten.php:511
-#, php-format
-msgid "%s (Serverzeit)"
-msgstr ""
-
-#: ../login/flotten.php:513
+#: ../login/flotten.php:506
 msgid "Transportkapazität"
 msgstr ""
 
-#: ../login/flotten.php:514 ../login/flotten.php:519 ../login/flotten.php:702
+#: ../login/flotten.php:507 ../login/flotten.php:512 ../login/flotten.php:695
 msgid "Roboter"
 msgid_plural "Roboter"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../login/flotten.php:518
+#: ../login/flotten.php:511
 msgid "Verbleibend"
 msgstr ""
 
-#: ../login/flotten.php:523 ../login/flotten.php:525
+#: ../login/flotten.php:516 ../login/flotten.php:518
 msgid "A&uftrag"
 msgstr ""
 
-#: ../login/flotten.php:541
+#: ../login/flotten.php:534
 msgid "Transport"
 msgstr ""
 
-#: ../login/flotten.php:548 ../login/flotten.php:549
+#: ../login/flotten.php:541 ../login/flotten.php:542
 msgid "Carbo&n"
 msgstr ""
 
-#: ../login/flotten.php:551 ../login/flotten.php:552
+#: ../login/flotten.php:544 ../login/flotten.php:545
 msgid "Aluminium&"
 msgstr ""
 
-#: ../login/flotten.php:554 ../login/flotten.php:555
+#: ../login/flotten.php:547 ../login/flotten.php:548
 msgid "Wolfram&"
 msgstr ""
 
-#: ../login/flotten.php:557 ../login/flotten.php:558
+#: ../login/flotten.php:550 ../login/flotten.php:551
 msgid "Radium&"
 msgstr ""
 
-#: ../login/flotten.php:560 ../login/flotten.php:561
+#: ../login/flotten.php:553 ../login/flotten.php:554
 msgid "Tritium&"
 msgstr ""
 
-#: ../login/flotten.php:619 ../login/flotten.php:702
+#: ../login/flotten.php:612 ../login/flotten.php:695
 msgid "Tonnen"
 msgstr ""
 
-#: ../login/flotten.php:650
+#: ../login/flotten.php:643
 #, php-format
 msgid "%s (Lokalzeit)"
 msgstr ""
 
-#: ../login/flotten.php:724
+#: ../login/flotten.php:717
 msgid "Absen&den"
 msgstr ""
 
-#: ../login/flotten.php:745
+#: ../login/flotten.php:738
 msgid "Flotte versenden"
 msgstr ""
 
-#: ../login/flotten.php:747
+#: ../login/flotten.php:740
 #, php-format
 msgid "Sie haben derzeit %s von %s möglichen Flotte unterwegs."
 msgid_plural "Sie haben derzeit %s von %s möglichen Flotten unterwegs."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../login/flotten.php:748
+#: ../login/flotten.php:741
 #, php-format
 msgid "Bauen Sie %s aus, um die maximale Anzahl zu erhöhen."
 msgstr ""
 
-#: ../login/flotten.php:748
+#: ../login/flotten.php:741
 msgid "item_F0_def_acc"
 msgstr ""
 
-#: ../login/flotten.php:764 ../login/flotten.php:765
+#: ../login/flotten.php:757 ../login/flotten.php:758
 msgid "&Ziel"
 msgstr ""
 
-#: ../login/flotten.php:765
+#: ../login/flotten.php:758
 msgid "Ziel: System&"
 msgstr ""
 
-#: ../login/flotten.php:765
+#: ../login/flotten.php:758
 msgid "Ziel: Planet&"
 msgstr ""
 
-#: ../login/flotten.php:768 ../login/flotten.php:770
+#: ../login/flotten.php:761 ../login/flotten.php:763
 msgid "Pla&net"
 msgstr ""
 
-#: ../login/flotten.php:771
+#: ../login/flotten.php:764 ../login/einstellungen.php:230
 msgid "Benutzerdefiniert"
 msgstr ""
 
-#: ../login/flotten.php:777
+#: ../login/flotten.php:770
 msgid "Lesezeichen"
 msgstr ""
 
-#: ../login/flotten.php:792
+#: ../login/flotten.php:785
 msgid "[unbesiedelt]"
 msgstr ""
 
-#: ../login/flotten.php:802
+#: ../login/flotten.php:795
 msgid "Eigene Planeten"
 msgstr ""
 
-#: ../login/flotten.php:821
+#: ../login/flotten.php:814
 msgid "[Lesezeichen verwalten]"
 msgstr ""
 
-#: ../login/flotten.php:871
+#: ../login/flotten.php:864
 msgid "Bündnisflug"
 msgstr ""
 
-#: ../login/flotten.php:873 ../login/flotten.php:874
+#: ../login/flotten.php:866 ../login/flotten.php:867
 msgid "Benutzername&"
 msgstr ""
 
-#: ../login/flotten.php:876 ../login/flotten.php:877
+#: ../login/flotten.php:869 ../login/flotten.php:870
 msgid "Flottenpasswort&"
 msgstr ""
 
-#: ../login/flotten.php:887
+#: ../login/flotten.php:880
 msgid "Schiffe"
 msgstr ""
 
-#: ../login/flotten.php:896 ../engine/classes/item.php:334
+#: ../login/flotten.php:889 ../engine/classes/item.php:334
 msgid "Genauere Informationen anzeigen"
 msgstr ""
 
-#: ../login/flotten.php:896
+#: ../login/flotten.php:889
 #, php-format
 msgid "%s vorhanden"
 msgstr ""
 
-#: ../login/flotten.php:908
+#: ../login/flotten.php:901
 msgid "&Weiter"
 msgstr ""
 
-#: ../login/flotten.php:930
+#: ../login/flotten.php:923
 msgid "Fremdstationierungen auf diesem Planeten"
 msgstr ""
 
-#: ../login/flotten.php:953
+#: ../login/flotten.php:946
 msgid "Ihre Fremdstationierungen"
 msgstr ""
 
-#: ../login/flotten.php:959
-msgid "Planet"
-msgstr ""
-
-#: ../login/flotten.php:960
-msgid "Flotte"
-msgstr ""
-
-#: ../login/flotten.php:979 ../engine/classes/user.php:3119
-#: ../engine/classes/user.php:3120
-#, php-format
-msgid "%d:%d:%d"
-msgstr ""
-
-#: ../login/flotten.php:984
+#: ../login/flotten.php:968
 #, php-format
 msgid "Zurückrufen zum Planeten %s"
 msgstr ""
 
-#: ../login/flotten.php:984
+#: ../login/einstellungen.php:155
+msgid "Das alte Passwort stimmt nicht."
+msgstr ""
+
+#: ../login/einstellungen.php:157
+msgid "Die beiden neuen Passwörter stimmen nicht überein."
+msgstr ""
+
+#: ../login/einstellungen.php:193
+msgid "Einstellungen"
+msgstr ""
+
+#: ../login/einstellungen.php:204
+msgid "Aussehen"
+msgstr ""
+
+#: ../login/einstellungen.php:206 ../login/einstellungen.php:208
+msgid "Skin&"
+msgstr ""
+
+#: ../login/einstellungen.php:235 ../login/einstellungen.php:237
+msgid "Schrift&"
+msgstr ""
+
+#: ../login/einstellungen.php:238
+msgid "Lieblingsschrift des Admins"
+msgstr ""
+
+#: ../login/einstellungen.php:239
+msgid "Ihre Lieblingsschrift"
+msgstr ""
+
+#: ../login/einstellungen.php:243 ../login/einstellungen.php:244
+msgid "Werbung ausblenden&"
+msgstr ""
+
+#: ../login/einstellungen.php:244
+msgid ""
+"Wenn Sie die Werbung eingeblendet lassen, helfen Sie, die Finanzen des "
+"Spiels zu decken."
+msgstr ""
+
+#: ../login/einstellungen.php:266
+msgid "Verhalten"
+msgstr ""
+
+#: ../login/einstellungen.php:268 ../login/einstellungen.php:269
+msgid "Spionagesonden&"
+msgstr ""
+
+#: ../login/einstellungen.php:269
+msgid ""
+"Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der "
+"Karte geschickt werden sollen"
+msgstr ""
+
+#: ../login/einstellungen.php:271 ../login/einstellungen.php:272
+msgid "Auto-Schnellbau&"
+msgstr ""
+
+#: ../login/einstellungen.php:272
+msgid ""
+"Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten "
+"unbeschäftigten Planeten gewechselt."
+msgstr ""
+
+#: ../login/einstellungen.php:274 ../login/einstellungen.php:275
+msgid "Schnellbau auf ausgebaute&"
+msgstr ""
+
+#: ../login/einstellungen.php:275
+msgid ""
+"Durch diese Option werden auch ausgebaute Planeten bei der Schnellbau-"
+"Funktion berücksichtigt."
+msgstr ""
+
+#: ../login/einstellungen.php:277 ../login/einstellungen.php:278
+msgid "Schnell-Shortcuts&"
+msgstr ""
+
+#: ../login/einstellungen.php:278
+msgid ""
+"Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere "
+"Taste zu drücken."
+msgstr ""
+
+#: ../login/einstellungen.php:280 ../login/einstellungen.php:281
+msgid "Javascript-Tooltips&"
+msgstr ""
+
+#: ../login/einstellungen.php:281
+msgid ""
+"Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden "
+"die normalen Tooltips durch hübsche JavaScript-Tooltips ersetzt."
+msgstr ""
+
+#: ../login/einstellungen.php:283 ../login/einstellungen.php:284
+msgid "Auto-Refresh&"
+msgstr ""
+
+#: ../login/einstellungen.php:284
+msgid ""
+"Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand "
+"die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion "
+"erzeugt keinen zusätzlichen Traffic.)"
+msgstr ""
+
+#: ../login/einstellungen.php:286 ../login/einstellungen.php:287
+msgid "Externe Navigationslinks&"
+msgstr ""
+
+#: ../login/einstellungen.php:287
+msgid ""
+"Wenn diese Option aktiviert ist, werden in der Navigation Links auf "
+"spielexterne Seiten wie das Board angezeigt."
+msgstr ""
+
+#: ../login/einstellungen.php:289 ../login/einstellungen.php:291
+msgid "JavaScript-Performance&"
+msgstr ""
+
+#: ../login/einstellungen.php:292
+msgid "Keine Bildschirmänderungen"
+msgstr ""
+
+#: ../login/einstellungen.php:293
+msgid "Ungenau, wenig CPU-Last"
+msgstr ""
+
+#: ../login/einstellungen.php:294
+msgid "Praktisch, mittlere CPU-Last"
+msgstr ""
+
+#: ../login/einstellungen.php:295
+msgid "Komfortabel und präzise, hohe CPU-Last"
+msgstr ""
+
+#: ../login/einstellungen.php:302
+msgid "Benachrichtigung"
+msgstr ""
+
+#: ../login/einstellungen.php:307
+msgid ""
+"Nach Änderung des Instant-Messaging-Accounts wird zunächst eine "
+"Bestätigungsnachricht versandt."
+msgstr ""
+
+#: ../login/einstellungen.php:312 ../login/einstellungen.php:313
+msgid "Nachrichten auf jeder Seite&"
+msgstr ""
+
+#: ../login/einstellungen.php:313
+msgid ""
+"Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angezeigt, "
+"dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten."
+msgstr ""
+
+#: ../login/einstellungen.php:319 ../login/einstellungen.php:321
+msgid "IM-Account&"
+msgstr ""
+
+#: ../login/einstellungen.php:322
+msgid "Deaktiviert"
+msgstr ""
+
+#: ../login/einstellungen.php:333
+msgid "UIN"
+msgstr ""
+
+#: ../login/einstellungen.php:350
+msgid "Benachrichtigung bei Nachrichten"
+msgstr ""
+
+#: ../login/einstellungen.php:354
+msgid "Nachrichtentyp"
+msgstr ""
+
+#: ../login/einstellungen.php:356
+msgid "Rückkehr"
+msgstr ""
+
+#: ../login/einstellungen.php:361
+msgid "IM-Benachrichtigung"
+msgstr ""
+
+#: ../login/einstellungen.php:369 ../login/einstellungen.php:371
+msgid "Kämpfe&"
+msgstr ""
+
+#: ../login/einstellungen.php:382 ../login/einstellungen.php:384
+msgid "Spionage&"
+msgstr ""
+
+#: ../login/einstellungen.php:395 ../login/einstellungen.php:396
+msgid "Transport&"
+msgstr ""
+
+#: ../login/einstellungen.php:408 ../login/einstellungen.php:410
+msgid "Sammeln&"
+msgstr ""
+
+#: ../login/einstellungen.php:421 ../login/einstellungen.php:422
+msgid "Besiedelung&"
+msgstr ""
+
+#: ../login/einstellungen.php:438 ../login/einstellungen.php:441
+msgid "Benutzernachrichten&"
+msgstr ""
+
+#: ../login/einstellungen.php:444 ../login/einstellungen.php:447
+msgid "Verbündete&"
+msgstr ""
+
+#: ../login/einstellungen.php:456
+msgid "Benachrichtigung bei Fertigstellung"
+msgstr ""
+
+#: ../login/einstellungen.php:460
+msgid "Gegenstandsart"
+msgstr ""
+
+#: ../login/einstellungen.php:461
+msgid "Verbl. Bauzeit in der Übersicht"
+msgstr ""
+
+#: ../login/einstellungen.php:466
+msgid "IM-Benachichtigung"
+msgstr ""
+
+#: ../login/einstellungen.php:474 ../login/einstellungen.php:476
+msgid "Gebäude&"
+msgstr ""
+
+#: ../login/einstellungen.php:477 ../login/einstellungen.php:487
+#: ../login/einstellungen.php:499 ../login/einstellungen.php:509
+#: ../login/einstellungen.php:521 ../login/einstellungen.php:533
+#: ../login/einstellungen.php:547 ../login/einstellungen.php:559
+#: ../login/einstellungen.php:573 ../login/einstellungen.php:585
+msgid "Ausgeschaltet"
+msgstr ""
+
+#: ../login/einstellungen.php:478 ../login/einstellungen.php:488
+msgid "Jedes einzelne [Gebäude]"
+msgstr ""
+
+#: ../login/einstellungen.php:496 ../login/einstellungen.php:498
+msgid "Forschung&"
+msgstr ""
+
+#: ../login/einstellungen.php:500 ../login/einstellungen.php:510
+msgid "Jede einzelne [Forschung]"
+msgstr ""
+
+#: ../login/einstellungen.php:518 ../login/einstellungen.php:520
+msgid "Roboter&"
+msgstr ""
+
+#: ../login/einstellungen.php:522 ../login/einstellungen.php:534
+msgid "Jeder einzelne [Roboter]"
+msgstr ""
+
+#: ../login/einstellungen.php:523 ../login/einstellungen.php:535
+msgid "Alle [Roboter] eines Typs"
+msgstr ""
+
+#: ../login/einstellungen.php:524 ../login/einstellungen.php:536
+msgid "Alle [Roboter]"
+msgstr ""
+
+#: ../login/einstellungen.php:544 ../login/einstellungen.php:546
+msgid "Schiffe&"
+msgstr ""
+
+#: ../login/einstellungen.php:548 ../login/einstellungen.php:560
+msgid "Jedes einzelne [Schiff]"
+msgstr ""
+
+#: ../login/einstellungen.php:549 ../login/einstellungen.php:561
+msgid "Alle [Schiffe] eines Typs"
+msgstr ""
+
+#: ../login/einstellungen.php:550 ../login/einstellungen.php:562
+msgid "Alle [Schiffe]"
+msgstr ""
+
+#: ../login/einstellungen.php:570 ../login/einstellungen.php:572
+msgid "Verteidigung&"
+msgstr ""
+
+#: ../login/einstellungen.php:574 ../login/einstellungen.php:586
+msgid "Jede einzelne [Verteidigungsanlage]"
+msgstr ""
+
+#: ../login/einstellungen.php:575 ../login/einstellungen.php:587
+msgid "Alle [Verteidigungsanlagen] eines Typs"
+msgstr ""
+
+#: ../login/einstellungen.php:576 ../login/einstellungen.php:588
+msgid "Alle [Verteidigungsanlagen]"
+msgstr ""
+
+#: ../login/einstellungen.php:600 ../login/einstellungen.php:669
+msgid "Speicher&n"
+msgstr ""
+
+#: ../login/einstellungen.php:608
+msgid "Urlaubsmodus"
+msgstr ""
+
+#: ../login/einstellungen.php:615
+msgid "Urlaubsmodus&"
+msgstr ""
+
+#: ../login/einstellungen.php:615
+msgid "Wollen Sie den Urlaubsmodus wirklich betreten?"
+msgstr ""
+
+#: ../login/einstellungen.php:616 ../login/einstellungen.php:635
+msgid "Y-m-d, H:i"
+msgstr ""
+
+#: ../login/einstellungen.php:616
 #, php-format
-msgid "„%s“ (%s)"
+msgid ""
+"Sie werden frühestens nach drei Tagen (%s) aus dem Urlaubsmodus zurückkehren "
+"können."
+msgstr ""
+
+#: ../login/einstellungen.php:622
+#, php-format
+msgid "Sie können erst wieder ab dem %s in den Urlaubsmodus wechseln."
+msgstr ""
+
+#: ../login/einstellungen.php:629
+msgid "Urlaubsmodus verlassen"
+msgstr ""
+
+#: ../login/einstellungen.php:629
+msgid "Wollen Sie den Urlaubsmodus wirklich verlassen?"
+msgstr ""
+
+#: ../login/einstellungen.php:635
+#, php-format
+msgid "Sie können den Urlaubsmodus spätestens am %s verlassen."
+msgstr ""
+
+#: ../login/einstellungen.php:644
+msgid "Benutzeraccount"
+msgstr ""
+
+#: ../login/einstellungen.php:646 ../login/einstellungen.php:647
+msgid "IP-Schutz&"
+msgstr ""
+
+#: ../login/einstellungen.php:647
+msgid ""
+"Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-"
+"Adressen gleichzeitig genutzt werden. (Unsicher!)"
+msgstr ""
+
+#: ../login/einstellungen.php:649 ../login/einstellungen.php:650
+msgid "E-Mail-Adresse&"
+msgstr ""
+
+#: ../login/einstellungen.php:650
+msgid ""
+"Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben."
+msgstr ""
+
+#: ../login/einstellungen.php:652 ../login/einstellungen.php:653
+msgid "Ben&utzerbeschreibung"
+msgstr ""
+
+#: ../login/einstellungen.php:656
+msgid "Passwort ändern"
+msgstr ""
+
+#: ../login/einstellungen.php:658 ../login/einstellungen.php:659
+msgid "Altes Passw&ort"
+msgstr ""
+
+#: ../login/einstellungen.php:661 ../login/einstellungen.php:662
+msgid "Neues Passwort&"
+msgstr ""
+
+#: ../login/einstellungen.php:664 ../login/einstellungen.php:665
+msgid "Neues Passwort wiederholen&"
+msgstr ""
+
+#: ../engine/include.php:37
+msgid "LANG"
+msgstr ""
+
+#: ../engine/include.php:738
+msgid "minus_sign"
 msgstr ""
 
 #: ../engine/classes/user.php:3119
@@ -385,14 +1034,232 @@ msgstr ""
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr ""
 
-#: ../include.php:17 ../include.php:23
-msgid "title_abbr_full"
+#: ../features.php:26
+msgid "Features"
 msgstr ""
 
-#: ../include.php:23
+#: ../features.php:28
+#, php-format
+msgid "%d Gebäudetyp"
+msgid_plural "%d Gebäudetypen"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../features.php:29
+#, php-format
+msgid "%d Forschungsmöglichkeit"
+msgid_plural "%d Forschungsmöglichkeiten"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../features.php:30
+#, php-format
+msgid "%d Roboter"
+msgid_plural "%d verschiedene Roboter"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../features.php:31
+#, php-format
+msgid "%d Raumschiffklasse"
+msgid_plural "%d Raumschiffklassen"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../features.php:32
+#, php-format
+msgid "%d Verteidigungsanlage"
+msgid_plural "%d Verteidigungsanlagen"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../features.php:33
+msgid ""
+"Das Spiel läuft in Echtzeit, es gibt keine lästigen Eventhandler-Wartezeiten."
+msgstr ""
+
+#: ../features.php:34
+msgid "Forschung lässt sich global oder lokal durchführen."
+msgstr ""
+
+#: ../features.php:35
+msgid "Ausgeklügeltes Allianzsystem"
+msgstr ""
+
+#: ../features.php:36
+msgid "Schließen Sie Bündnisse mit einzelnen Spielern."
+msgstr ""
+
+#: ../features.php:37
+msgid "Variabler Handelskurs, der sich den Zuständen im Universum anpasst"
+msgstr ""
+
+#: ../features.php:38
+msgid ""
+"Handelssystem: Geben Sie sich nähernden Transporten Rohstoffe mit auf den "
+"Rückweg."
+msgstr ""
+
+#: ../features.php:39
+msgid "Komfortable Einstellungsmöglichkeiten, die das Spielen erleichtern"
+msgstr ""
+
+#: ../features.php:44
+msgid "Lassen Sie sich per Instant Messenger über Ereignisse benachrichtigen."
+msgstr ""
+
+#: ../features.php:48
+msgid "Völlige Ummodellierbarkeit des Designs durch Skins"
+msgstr ""
+
+#: ../features.php:49
+msgid "Flug- und Kampferfahrungspunkte verschaffen Vorteil"
+msgstr ""
+
+#: ../features.php:50
+msgid "HTTPS schützt vertrauliche Daten"
+msgstr ""
+
+#: ../features.php:51
+#, php-format
+msgid "Geplant: %s"
+msgstr ""
+
+#: ../features.php:51
+msgid ""
+"Lassen Sie Flotten von einem Planeten zum nächsten und von dort zu einem "
+"weiteren fliegen."
+msgstr ""
+
+#: ../features.php:52
+msgid ""
+"Stationieren Sie Flotten bei Ihren Verbündeten, um diesen zu unterstützen."
+msgstr ""
+
+#: ../features.php:53
+msgid "Fliegen Sie gemeinsame Angriffe mit Ihren Verbündeten."
+msgstr ""
+
+#: ../features.php:54
+#, php-format
+msgid "derzeit %d Spieler"
+msgid_plural "derzeit %d Spieler"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../features.php:55
+#, php-format
+msgid "derzeit %d Allianz"
+msgid_plural "derzeit %d Allianzen"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../features.php:60
+#, php-format
+msgid "derzeit %d Runde"
+msgid_plural "derzeit %d verschiedene Runden"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../features.php:68
+msgid "Screenshots"
+msgstr ""
+
+#: ../features.php:70 ../features.php:71 ../features.php:72 ../features.php:73
+#: ../features.php:74 ../features.php:75 ../features.php:76 ../features.php:77
+#: ../features.php:78 ../features.php:79 ../features.php:80 ../features.php:81
+#, php-format
+msgid "Screenshot %d"
+msgstr ""
+
+#: ../include.php:25
 #, php-format
 msgid ""
 "%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie "
 "sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit "
 "Hunderten anderer Spielern."
+msgstr ""
+
+#: ../include.php:37
+msgid "Zurück zur Startseite"
+msgstr ""
+
+#: ../include.php:37
+msgid "title_full&"
+msgstr ""
+
+#: ../include.php:39 ../include.php:112 ../include.php:142
+msgid "Zum Inhalt&"
+msgstr ""
+
+#: ../include.php:40
+msgid "Zur Navigation&"
+msgstr ""
+
+#: ../include.php:49
+msgid "Anmelden"
+msgstr ""
+
+#: ../include.php:51 ../include.php:52
+msgid "Runde&"
+msgstr ""
+
+#: ../include.php:65 ../include.php:66
+msgid "Name&"
+msgstr ""
+
+#: ../include.php:68 ../include.php:69
+msgid "Passwort&"
+msgstr ""
+
+#: ../include.php:71
+msgid "Anmelden&"
+msgstr ""
+
+#: ../include.php:73 ../include.php:120
+msgid "Registrieren&"
+msgstr ""
+
+#: ../include.php:74
+msgid "Passwort vergessen?&"
+msgstr ""
+
+#: ../include.php:79
+msgid "SSL abschalten&"
+msgstr ""
+
+#: ../include.php:85
+msgid "SSL einschalten&"
+msgstr ""
+
+#: ../include.php:89
+msgid "SSL-Zertifikat installieren&"
+msgstr ""
+
+#: ../include.php:110 ../include.php:140
+msgid "Nach oben&"
+msgstr ""
+
+#: ../include.php:111 ../include.php:141
+msgid "Zur Anmeldung&"
+msgstr ""
+
+#: ../include.php:116
+msgid "Navigation"
+msgstr ""
+
+#: ../include.php:118
+msgid "Neuigkeiten&"
+msgstr ""
+
+#: ../include.php:119
+msgid "Features&"
+msgstr ""
+
+#: ../include.php:121
+msgid "Regeln&"
+msgstr ""
+
+#: ../include.php:126
+msgid "Impressum&"
 msgstr ""
