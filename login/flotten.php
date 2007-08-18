@@ -390,13 +390,6 @@
 									}
 									else
 									{
-										$me->addFleet($fleet_obj->getName());
-										if(!$buendnisflug && $_POST['auftrag'] != 1 && $_POST['auftrag'] != 2 && $planet_owner != $_SESSION['username'] && $planet_owner)
-										{
-											# Beim Zielbenutzer die Flottenbewegung eintragen
-											$that_user->addFleet($fleet_obj->getName());
-										}
-
 										$me->subtractRess(array(0, 0, 0, 0, $tritium));
 
 										# Flotten abziehen

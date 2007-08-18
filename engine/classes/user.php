@@ -3256,8 +3256,6 @@
 					return false;
 
 				$fleet_obj->start();
-
-				$this->addFleet($fleet_obj->getName());
 			}
 
 			$user_obj->restoreActivePlanet();

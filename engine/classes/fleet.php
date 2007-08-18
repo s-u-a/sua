@@ -273,6 +273,20 @@
 
 			$this->raw[0][$pos] = array($type, $back);
 
+			# Eintragen in die Flottenliste des Benutzers
+			if($this->started() && $pos[strlen($pos)-1] != 'T')
+			{
+				$pos_a = explode(":", $pos2);
+				$galaxy_obj = Classes::Galaxy($pos_a[0]);
+				$owner = $galaxy_obj->getPlanetOwner($pos_a[1], $pos_a[2]);
+				if($owner)
+				{
+					$user = Classes::User($owner);
+					if($user->getStatus())
+						$user->addFleet($this->getName());
+				}
+			}
+
 			$this->changed = true;
 			return true;
 		}
@@ -383,6 +397,14 @@
 				array(array(0, 0, 0, 0, 0), array()), # Handel
 				0 # Verbrauchtes Tritium
 			);
+
+			# Eintragen in die Flottenliste des Benutzers
+			if($this->started())
+			{
+				$user = Classes::User($user);
+				if($user->getStatus())
+					$user->addFleet($this->getName());
+			}
 
 			$this->changed = true;
 			return true;
@@ -809,6 +831,24 @@
 
 			# In Eventdatei eintragen
 			$this->createNextEvent();
+
+			# Bei den Benutzern eintragen
+			$users = array_keys($this->raw[1]);
+			foreach(array_keys($this->raw[0]) as $koords)
+			{
+				if($koords[strlen($koords)-1] == 'T') continue;
+				$koords_a = explode(":", $koords);
+				$galaxy_obj = Classes::Galaxy($koords_a[0]);
+				$owner = $galaxy_obj->getPlanetOwner($koords_a[1], $koords_a[2]);
+				if($owner)
+					$users[] = $owner;
+			}
+			foreach(array_unique($users) as $user)
+			{
+				$user_obj = Classes::User($user);
+				if(!$user_obj->getStatus()) continue;
+				$user_obj->addFleet($this->getName());
+			}
 
 			$this->changed = true;
 			return true;
