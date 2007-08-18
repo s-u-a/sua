@@ -22,14 +22,14 @@ int main(int argc,char** argv)
 
 	std::ofstream gfile(argv[1]);
 
-	std::srand(time(NULL));
+	std::srand((unsigned)time(NULL));
 
 	int planet_count,byte_pos,byte,tmp_part1,tmp_part2,length;
 	char bin[35];
 
 	for(int system = 1; system <= 999; system++)
 	{
-		planet_count = int(20.0 * std::rand() / (RAND_MAX+1.0)); // rand(0,20);
+		planet_count = round(20.0 / (RAND_MAX-1) * std::rand()); // rand(0,20);
 
 		byte_pos = 5;
 		byte = 0;
@@ -38,7 +38,7 @@ int main(int argc,char** argv)
 
 		for(int i=0; i<30; i++)
 		{
-			if(i<planet_count) length = int(400.0 * std::rand() / (RAND_MAX+1.0)); // rand(0,400);
+			if(i<planet_count) length = round(400.0 / (RAND_MAX-1) * std::rand()); // rand(0,400);
 			else length = 0;
 
 			tmp_part1 = length >> 1+byte_pos;

@@ -782,7 +782,7 @@
 			if(!isset($this->cache['getMessagesList'])) $this->cache['getMessagesList'] = array();
 			if(!isset($this->cache['getMessagesList'][$type]))
 			{
-				if(!isset($this->raw['messages']) || !isset($this->raw['messages'][$type])) $this->cache['getMessagesList'] = array();
+				if(!isset($this->raw['messages']) || !isset($this->raw['messages'][$type])) $this->cache['getMessagesList'][$type] = array();
 				else $this->cache['getMessagesList'][$type] = array_reverse(array_keys($this->raw['messages'][$type]));
 			}
 			return $this->cache['getMessagesList'][$type];
