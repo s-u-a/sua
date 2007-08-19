@@ -1,9 +1,9 @@
 <?php
-	setlocale(LC_MESSAGES, array("de_DE.UTF-8", "de_DE.utf8", "de_DE@UTF-8", "de_DE@utf8", "de_DE", "de", "german", "deu"));
-
 	$__FILE__ = str_replace("\\", "/", __FILE__);
 	$include_filename = dirname($__FILE__).'/engine/include.php';
 	require_once($include_filename);
+
+	language("de_DE", true);
 
 	class home_gui
 	{ # Kuemmert sich ums HTML-Grundgeruest der Hauptseite
@@ -14,7 +14,7 @@
 <?='<?xml version="1.0" encoding="UTF-8"?>'."\n"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=htmlspecialchars(LANG)?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=h(_("LANG"))?>">
 	<head>
 		<title><?=h(_("title_abbr_full"))?></title>
 		<link rel="stylesheet" href="<?=h_root?>/style.css" type="text/css" />

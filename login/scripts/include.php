@@ -1,10 +1,10 @@
 <?php
-	setlocale(LC_MESSAGES, array("de_DE.UTF-8", "de_DE.utf8", "de_DE@UTF-8", "de_DE@utf8", "de_DE", "de", "german", "deu"));
-
 	$__FILE__ = str_replace("\\", "/", __FILE__);
 	$include_filename = dirname($__FILE__).'/../../engine/include.php';
 	$LOGIN = true;
 	require_once($include_filename);
+
+	language("de_DE", true);
 
 	$resume = false;
 	$del_email_passwd = false;
@@ -191,7 +191,7 @@
 <?='<?xml version="1.0" encoding="UTF-8"?>'."\n"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=htmlspecialchars(LANG)?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=h(_("LANG"))?>">
 	<head>
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 		<title><?=h(_("title_abbr_full"))?></title>

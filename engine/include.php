@@ -34,7 +34,6 @@
 	define('h_root', substr(s_root, strlen($document_root)));
 
 	# Locale eintragen
-	define("LANG", strtolower(_("LANG")));
 	bindtextdomain("sua", s_root."/locale");
 	bind_textdomain_codeset("sua", "utf-8");
 	textdomain("sua");
@@ -1611,5 +1610,24 @@
 		if(!preg_match("/&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)/", $message, $m))
 			return "";
 		return " title=\"[".htmlspecialchars(str_replace(array("ä", "ö", "ü"), array("Ä", "Ö", "Ü"), strtoupper($m[1])))."]\"";
+	}
+
+	function language($lang=null, $die=false)
+	{
+		$languages = array (
+			"de_DE" => array("de_DE.utf8", "de_DE@utf8", "de_DE", "de", "german", "ger", "deutsch", "deu")
+		);
+
+		if($lang === null)
+			return getenv("LANGUAGE");
+
+		if(!isset($languages[$lang]) || !setlocale(LC_MESSAGES, $languages[$lang]))
+		{
+			if($die) die("Could not set language to ".$lang."!");
+			return false;
+		}
+		putenv("LANGUAGE=".$lang);
+		putenv("LANG=".$lang);
+		return true;
 	}
 ?>
