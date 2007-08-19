@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-18 22:47+0200\n"
+"POT-Creation-Date: 2007-08-19 06:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -412,7 +412,7 @@ msgstr ""
 #: ../login/flotten.php:462 ../login/flotten.php:481 ../login/flotten.php:484
 #: ../login/flotten.php:487 ../login/flotten.php:496 ../login/flotten.php:507
 #: ../login/flotten.php:512 ../login/flotten.php:612 ../login/flotten.php:626
-#: ../login/flotten.php:695
+#: ../login/flotten.php:695 ../faq.php:186 ../faq.php:187 ../faq.php:188
 msgid "unit_separator"
 msgstr ""
 
@@ -424,13 +424,15 @@ msgstr ""
 msgid "Entfernung"
 msgstr ""
 
-#: ../login/flotten.php:481
+#: ../login/flotten.php:481 ../faq.php:185 ../faq.php:186 ../faq.php:187
+#: ../faq.php:188
 msgid "Orbit"
 msgid_plural "Orbits"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../login/flotten.php:481
+#: ../login/flotten.php:481 ../faq.php:185 ../faq.php:186 ../faq.php:187
+#: ../faq.php:188
 msgid "Or"
 msgstr ""
 
@@ -941,15 +943,15 @@ msgstr ""
 msgid "Wollen Sie den Urlaubsmodus wirklich betreten?"
 msgstr ""
 
-#: ../login/einstellungen.php:616 ../login/einstellungen.php:635
-msgid "Y-m-d, H:i"
-msgstr ""
-
 #: ../login/einstellungen.php:616
 #, php-format
 msgid ""
 "Sie werden frühestens nach drei Tagen (%s) aus dem Urlaubsmodus zurückkehren "
 "können."
+msgstr ""
+
+#: ../login/einstellungen.php:616 ../login/einstellungen.php:635
+msgid "Y-m-d, H:i"
 msgstr ""
 
 #: ../login/einstellungen.php:622
@@ -1011,6 +1013,698 @@ msgstr ""
 
 #: ../login/einstellungen.php:664 ../login/einstellungen.php:665
 msgid "Neues Passwort wiederholen&"
+msgstr ""
+
+#: ../faq.php:6 ../chat.php:15 ../features.php:26
+#, php-format
+msgid "%s – %s [s-u-a.net heading]"
+msgstr ""
+
+#: ../faq.php:6 ../faq.php:9 ../faq.php:33 ../faq.php:102 ../faq.php:156
+#: ../faq.php:185 ../faq.php:187 ../faq.php:193 ../chat.php:15
+#: ../features.php:26
+msgid "title_abbr"
+msgstr ""
+
+#: ../faq.php:6
+msgid "FAQ"
+msgstr ""
+
+#: ../faq.php:7
+#, php-format
+msgid ""
+"Hier eine Liste häufig gestellter Fragen. Sollte die Frage, die Sie suchen, "
+"nicht dabei sein, schreiben Sie einfach ins %sBoard%s."
+msgstr ""
+
+#: ../faq.php:9 ../faq.php:33
+#, php-format
+msgid "Was brauche ich, um %s zu spielen?"
+msgstr ""
+
+#: ../faq.php:10 ../faq.php:48
+msgid "Wie kann ich mich anmelden?"
+msgstr ""
+
+#: ../faq.php:11 ../faq.php:54
+msgid "Warum bekomme ich immer eine Meldung „Ungültiges Zertifikat“?"
+msgstr ""
+
+#: ../faq.php:12 ../faq.php:64
+msgid "Wie bekomme ich Punkte?"
+msgstr ""
+
+#: ../faq.php:13 ../faq.php:71
+msgid "Gibt es einen Anfängerschutz?"
+msgstr ""
+
+#: ../faq.php:14 ../faq.php:76
+msgid "Kann man mehrere Planeten haben?"
+msgstr ""
+
+#: ../faq.php:15 ../faq.php:85
+msgid "Was bewirkt der Urlaubsmodus?"
+msgstr ""
+
+#: ../faq.php:16 ../faq.php:93
+msgid "Wie kann man die Bauzeiten verkürzen?"
+msgstr ""
+
+#: ../faq.php:17 ../faq.php:106
+msgid "Wie füge ich ein Bild in meine Allianz- oder Benutzerbeschreibung ein?"
+msgstr ""
+
+#: ../faq.php:18 ../faq.php:101
+msgid "Was bedeuten Server- und Lokalzeit?"
+msgstr ""
+
+#: ../faq.php:19
+msgid "Wo ist der Unterschied zwischen lokaler und globaler Forschung?"
+msgstr ""
+
+#: ../faq.php:20 ../faq.php:126
+msgid "Wie funktionieren die Roboter?"
+msgstr ""
+
+#: ../faq.php:21 ../faq.php:132
+msgid "Wieviele Flotten kann ich gleichzeitig verschicken?"
+msgstr ""
+
+#: ../faq.php:22 ../faq.php:138
+msgid "Was bringt mir ein Bündnis?"
+msgstr ""
+
+#: ../faq.php:23 ../faq.php:150
+msgid ""
+"Die Rohstoffanzeige passt nicht in mein Browserfenster und Querscrollen ist "
+"nicht möglich."
+msgstr ""
+
+#: ../faq.php:24 ../faq.php:155
+msgid "Wie kann ich die Administratoren erreichen?"
+msgstr ""
+
+#: ../faq.php:25 ../faq.php:161
+msgid "Kann ich meinen Namen ändern?"
+msgstr ""
+
+#: ../faq.php:26 ../faq.php:166
+msgid "Wie viele Universen gibt es?"
+msgstr ""
+
+#: ../faq.php:27 ../faq.php:171
+msgid ""
+"Bei einem Gebäude/Forschung fehlt der Ausbauknopf oder bei meinen Robotern/"
+"Schiffen/Verteidigungsanlagen fehlt das Ausbaufeld."
+msgstr ""
+
+#: ../faq.php:28 ../faq.php:184
+msgid "Wie berechnet sich die Entfernung zwischen zwei Planeten?"
+msgstr ""
+
+#: ../faq.php:29 ../faq.php:192
+msgid "Wie kann ich mir das Spiel herunterladen?"
+msgstr ""
+
+#: ../faq.php:34
+msgid ""
+"Um das Spiel zu spielen, benötigen Sie lediglich einen Internetbrowser, der "
+"HTML 4 unterstützt. Sie können also quasi jeden Browser verwenden, vom "
+"normalen Firefox über den Terminalbrowser bis hin zum Vorleseprogramm für "
+"Blinde."
+msgstr ""
+
+#: ../faq.php:35
+msgid ""
+"Um das Design in seinen vollen Zügen zu genießen, benötigen Sie einen "
+"Browser aus der folgenden Liste."
+msgstr ""
+
+#: ../faq.php:37
+msgid ""
+"Mozilla Firefox (oder gleichwertige Gecko-Browser, wie Netscape Navigator "
+"oder Mozilla Suite)"
+msgstr ""
+
+#: ../faq.php:38
+msgid "Konqueror (in einer neueren Version, bestenfalls 3.2 oder neuer)"
+msgstr ""
+
+#: ../faq.php:39
+msgid "Safari (siehe Konqueror)"
+msgstr ""
+
+#: ../faq.php:40
+msgid "Opera (ab Version 7)"
+msgstr ""
+
+#: ../faq.php:41
+msgid "Internet Explorer (Version 5.5 oder 6)"
+msgstr ""
+
+#: ../faq.php:43
+msgid ""
+"Für einige praktische Features können Sie außerdem JavaScript aktivieren."
+msgstr ""
+
+#: ../faq.php:44
+msgid ""
+"Wir möchten Sie wärmstens darum bitten, nicht den Internet Explorer zu "
+"verwenden, sofern Sie die Möglichkeit dazu haben, da dieser sich in zu "
+"geringem Maße an Internet-Standards hält und dadurch für ein unnötig hohes "
+"zusätzliches Arbeitsaufkommen bei uns sorgt."
+msgstr ""
+
+#: ../faq.php:49
+msgid ""
+"Bereits registrierte Benutzer müssen das Formular, das auf der rechten Seite "
+"zu sehen ist, einfach nur ausfüllen (mit Benutzernamen und Passwort) und auf "
+"„Anmelden“ klicken."
+msgstr ""
+
+#: ../faq.php:50
+#, php-format
+msgid ""
+"Noch nicht registrierte Benutzer wählen bitte in der Hauptnavigation „%"
+"sRegistrieren%s“ aus, füllen das dortige Formular aus und klicken auf "
+"„registrieren“. Danach können Sie sich, wie oben beschrieben, anmelden."
+msgstr ""
+
+#: ../faq.php:55
+#, php-format
+msgid ""
+"Diese Meldung ist nichts Schlimmes, Sie erhalten sie, weil das Zertifikat "
+"der sicheren HTTP-Verbindung nicht für teures Geld bei irgendeinem Anbieter "
+"signiert wurde, sondern nur von der %sCAcert%s-Organisation unterzeichnet "
+"ist, welche in vielen Browsern nicht in der Liste der vertrauenswürdigen "
+"Firmen aufgeführt ist. Sie können die Warnung jedenfalls getrost ignorieren."
+msgstr ""
+
+#: ../faq.php:56
+msgid ""
+"Falls Sie sich von der Meldung gestört fühlen, haben Sie folgende "
+"Möglichkeiten, sie zu vermeiden."
+msgstr ""
+
+#: ../faq.php:58
+msgid ""
+"Sie verzichten auf eine verschlüsselte Verbindung, indem Sie rechts auf der "
+"Seite SSL abschalten. Dies ist aber weniger sicher und ist deshalb nicht "
+"empfohlen."
+msgstr ""
+
+#: ../faq.php:59
+#, php-format
+msgid ""
+"Sie laden sich das Zertifikat herunter und installieren es bei sich. Keine "
+"Sorge, das Zertifikat ist nur eine kleine Textdatei, die auf Ihrem Computer "
+"unter den etlichen anderen Zertifikaten, die schon auf Ihrem Betriebssystem "
+"vorinstalliert sind, gespeichert wird. Es kann keinerlei Schaden anrichten. "
+"Um die Installation zu starten, %söffnen Sie das Zertifikat%s und folgen den "
+"Anweisungen. (In manchen Browsern müssen Sie zusätzlich noch auf „Öffnen“ "
+"klicken.)"
+msgstr ""
+
+#: ../faq.php:65
+msgid ""
+"Gebäude-, Forschungs-, Roboter-, Flotten- und Verteidigungspunkte berechnen "
+"sich aus den Rohstoffen, die die Gebäude/Forschungen/Robotern/Flotten/"
+"Verteidigungsanlagen an Rohstoffen gekostet haben, die Sie besitzen. Pro "
+"Tausend Rohstoffe bekommen Sie dabei einen Punkt in der entsprechenden "
+"Kategorie."
+msgstr ""
+
+#: ../faq.php:66
+msgid ""
+"Je mehr Tritium Sie im Flug verbrauchen, desto mehr Flugerfahrungspunkte "
+"erhalten Sie. Pro Tausend Tonnen Tritium, das Sie in einem erfolgreich am "
+"Ziel angelangten Flug verbraucht haben, bekommen Sie einen "
+"Flugerfahrungspunkt. Erfahrung im Flug lässt Ihre Schiffe schneller fliegen."
+msgstr ""
+
+#: ../faq.php:67
+msgid ""
+"Pro Tausend Punkte, das Sie im Kampf Ihren Gegner verlieren ließen, bekommen "
+"Sie einen Kampferfahrungspunkt. Mehr Kampferfahrung schafft Ihnen Vorteile "
+"im Kampf."
+msgstr ""
+
+#: ../faq.php:72
+#, php-format
+msgid ""
+"Ja, den gesamten Spielverlauf durch gilt eine Angriffssperre auf Spieler, "
+"die weniger als 5 % des eigenen Gesamtpunktestandes besitzen. Außerdem ist "
+"es Ihnen nicht möglich, Spieler anzugreifen, die aufgrund von "
+"Einschränkungen im Spiel (zum Beispiel dem Anfängerschutz) keine Angriffe "
+"auf Sie selbst fliegen können."
+msgstr ""
+
+#: ../faq.php:77
+#, php-format
+msgid "Ja, selbstverständlich. Derzeit können Sie maximal %d Planet haben."
+msgid_plural ""
+"Ja, selbstverständlich. Derzeit können Sie maximal %d Planeten haben."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../faq.php:78
+msgid ""
+"Wenn Sie mit der Spionagesonde einen leeren Planeten ausspionieren, können "
+"Sie nachsehen, wieviele Felder dieser hat. Die Felderzahl variiert dabei "
+"unabhängig von der Position des Planeten, die Felderzahl beträgt 100–"
+"500 Felder. Haben Sie einen Planeten gefunden, den Sie besiedeln möchten, "
+"können Sie einem Besiedelungsschiff den Auftrag dazu erteilen."
+msgstr ""
+
+#: ../faq.php:79
+msgid ""
+"Optional können Sie dem Besiedelungsschiff zusätzliche Flotte mitschicken, "
+"diese wird nach der Besiedelung rückkehren. (Anders als das "
+"Besiedelungsschiff, dieses wird bei der Besiedelung abgebaut, um ein "
+"Startkapital auf dem Planeten zur Verfügung zu stellen.) Auf diese Weise "
+"können Sie auf dem neuen Planeten sofort Rohstoffe und Roboter durch die "
+"Transportkapazität der Flotte bereitstellen."
+msgstr ""
+
+#: ../faq.php:80
+msgid ""
+"Überlegen Sie sich gut, wo Sie Ihre Planeten platzieren. Wenn Sie vorhaben, "
+"auf bestimmten Kolonien nur bestimmte Minen auszubauen, ist es "
+"möglicherweise sinnvoll für Sie, Ihre Planeten nah beieinander zu halten, um "
+"schnell Rohstoffe zwischen den Kolonien hin- und herzuschicken. Wenn Sie "
+"sich mehr auf den Handel spezialisieren möchten, ist es vielleicht "
+"geschickt, in jeder Galaxie mindestens einen Planeten zu besitzen, damit der "
+"Transport vom und zum Kunden nicht so lange dauert."
+msgstr ""
+
+#: ../faq.php:81
+#, php-format
+msgid ""
+"Einige Spieler bevorzugen es, ein oder zwei Kolonien des %d-Planet-Limits "
+"offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – "
+"solche Kolonien werden temporär besiedelt und auf Tritiumproduktion "
+"spezialisiert, damit in einem Krieg der Feind schneller und billiger "
+"angeflogen werden kann."
+msgid_plural ""
+"Einige Spieler bevorzugen es, ein oder zwei Kolonien des %d-Planeten-Limits "
+"offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – "
+"solche Kolonien werden temporär besiedelt und auf Tritiumproduktion "
+"spezialisiert, damit in einem Krieg der Feind schneller und billiger "
+"angeflogen werden kann."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../faq.php:86
+msgid ""
+"Mithilfe des Urlaubsmodus kann man seinen Account „einfrieren“, um während "
+"einer längeren Abwesenheit zu vermeiden, dass man angegriffen wird, ohne "
+"etwas dagegen tun zu können."
+msgstr ""
+
+#: ../faq.php:87
+msgid ""
+"Im Urlaubsmodus werden keine Rohstoffe mehr produziert, außerdem können "
+"keine Flotten mehr verschickt werden und kein Bau in Auftrag gegeben werden."
+msgstr ""
+
+#: ../faq.php:88
+#, php-format
+msgid ""
+"Im Urlaubsmodus erscheint in der Karte hinter dem Spielernamen ein „ (%s)“, "
+"daran können andere Spieler erkennen, dass der Benutzer sich im Urlaubsmodus "
+"befindet. Flüge zu Planeten, deren Besitzer sich im Urlaubsmodus befinden, "
+"sind nicht möglich, Trümmerfelder unterliegen dieser Einschränkung nicht."
+msgstr ""
+
+#: ../faq.php:88
+msgid "U[rlaubsmodus]"
+msgstr ""
+
+#: ../faq.php:89
+msgid "Der Urlaubsmodus wird manuell durch den Benutzer beendet."
+msgstr ""
+
+#: ../faq.php:94
+#, php-format
+msgid ""
+"Gebäudebauzeiten können Sie durch Roboter verkürzen. (→ %sWie funktionieren "
+"die Roboter?%s)"
+msgstr ""
+
+#: ../faq.php:95
+msgid ""
+"Die Zeiten der lokalen Forschung werden pro Ausbaulevel des Forschungslabors "
+"um 2,5 % verkürzt. Zusätzlich wirkt auf die globale Forschung jeder "
+"Ausbaulevel eines jeden Forschungslabors auf einem anderen Planeten um 1 %."
+msgstr ""
+
+#: ../faq.php:96
+msgid ""
+"Roboterbauzeiten verkürzen Sie durch den Ausbau der Roboterfabrik. Jede "
+"Ausbaustufe der Roboterfabrik verschnellert den Bau Ihrer Roboter um 5 %."
+msgstr ""
+
+#: ../faq.php:97
+msgid ""
+"Jeder Ausbaulevel Ihrer Werft verkürzt außerdem die Bauzeit von Schiffen und "
+"Verteidigungsanlangen um 2,5 %."
+msgstr ""
+
+#: ../faq.php:102
+#, php-format
+msgid ""
+"Die Serverzeit bezeichnet die Zeit, die auf dem Server eingestellt ist, auf "
+"dem %s läuft. Wenn Sie JavaScript aktiviert haben, rechnet das Spiel "
+"automatisch die meisten Angaben, die in der Serverzeit angegeben sind, "
+"zusätzlich in die Lokalzeit um. Die Lokalzeit entspricht dann Ihrer "
+"Systemuhr, also der Zeit, die Sie normalerweise unten rechts auf Ihrem "
+"Bildschirm sehen."
+msgstr ""
+
+#: ../faq.php:107
+msgid ""
+"Sie haben die Möglichkeit, XHTML-Code in Nachrichten, Allianzbeschreibungen "
+"und Spielerbeschreibungen einzugeben. Sofern der Code korrekt ist, wird er "
+"dann vom Browser interpretiert."
+msgstr ""
+
+#: ../faq.php:108
+#, php-format
+msgid ""
+"Ein Bild können Sie einfügen, indem Sie folgenden Code in Ihre "
+"Allianzbeschreibung einfügen: %s – als Pfad sollten Sie normalerweise eine "
+"Adresse angeben, die mit %s beginnt, das heißt, dass Sie das Bild auf einen "
+"öffentlich erreichbaren Webspace hinaufladen müssen. Denken Sie daran, wenn "
+"Sie ein Bild von Ihrer Festplatte einbinden (also als Pfad etwas wie %s oder "
+"%s angeben), wird die Datei auf der Festplatte eines Anderen "
+"höchstwahrscheinlich nicht vorhanden sein und deswegen nicht angezeigt "
+"werden. Ein Alternativtext muss aus Rücksicht auf Browser, die keine Bilder "
+"darstellen können/sollen, angegeben werden. Stellen Sie sich einfach vor, "
+"jemand sieht nichts davon, dass Sie versucht haben ein Bild einzubinden, "
+"sondern sieht den Alternativtext, den Sie angegeben haben, im normalen "
+"Fließtext stehen. Überlegen Sie nun, was für ein Text für einen solchen "
+"Benutzer am sinnvollsten wäre, mit Texten wie „Logo“, „Bild“ oder gar "
+"„Alternativtext“ wird niemand wirklich etwas anfangen können. Und lassen Sie "
+"sich bloß nicht durch die Tatsache verwirren, dass der Internet Explorer den "
+"Alternativtext teilweise auch anzeigt, obwohl das Bild geladen werden kann!"
+msgstr ""
+
+#: ../faq.php:108
+msgid "Pfad zum Bild"
+msgstr ""
+
+#: ../faq.php:108
+msgid "Alternativtext"
+msgstr ""
+
+#: ../faq.php:108
+msgid "…"
+msgstr ""
+
+#: ../faq.php:109
+msgid ""
+"Es stehen zusätzlich übrigens folgende XHTML-1.1-Elemente mit allen "
+"semantisch ausschlaggebenden Attributen zur Verfügung:"
+msgstr ""
+
+#: ../faq.php:120
+msgid "Wo ist der Unterschied zwischen globaler und lokaler Forschung?"
+msgstr ""
+
+#: ../faq.php:121
+msgid ""
+"Die globale Forschung vernetzt sämtliche Forschungslabore Ihres Imperiums "
+"miteinander, während die lokale Forschung nur in demjenigen Forschungslabor "
+"weiterentwickelt wird, in dem sie in Auftrag gegeben wurde. Beide "
+"Forschungsmethoden benötigen die gleiche Rohstoffmenge, bei beiden werden "
+"die Rohstoffe desjenigen Planeten benutzt, auf dem die Forschung in Auftrag "
+"gegeben wurde. Die globale Forschung ist schneller als die lokale, da bei "
+"ihr mehrere Forschungslabore zusammenarbeiten, dafür besitzt sie den "
+"Nachteil, dass während einer globalen Forschung eben alle Forschungslabore "
+"beschäftigt sind, während Sie mit lokaler Forschung auf mehreren Planeten "
+"gleichzeitig forschen können."
+msgstr ""
+
+#: ../faq.php:122
+msgid ""
+"Beachten Sie: Die Bauzeit der globalen Forschung ist nicht unabhängig davon, "
+"von welchem Planeten man aus sie ausbaut. Eine höhere Ausbaustufe des "
+"Planeten, auf dem man die Forschung in Auftrag gibt, verkürzt die Bauzeit "
+"mehr als Ausbaustufen von Forschungslaboren auf anderen Planeten."
+msgstr ""
+
+#: ../faq.php:127
+msgid ""
+"Die Roboter helfen, Gebäudebauzeiten zu verkürzen und die Rohstoffproduktion "
+"zu erhöhen. Der Auswirkungsgrad der Roboter hängt von der aktuellen Stufe "
+"der Roboterbautechnik ab. Jede Stufe der Roboterbautechnik erhöht dabei den "
+"Auswirkungsgrad Ihrer Bauroboter um ein Viertelprozent, den Ihrer "
+"Minenroboter um ein Sechzehntelprozent."
+msgstr ""
+
+#: ../faq.php:128
+msgid ""
+"Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur "
+"Verfügung steht. Für Bauroboter liegt die Grenze bei der Hälfte der "
+"ursprünglichen Felderzahl des Planeten (Ingenieurswissenschaft zeigt also "
+"keine Wirkung), für Minenroboter liegt sie bei der aktuellen Ausbaustufe der "
+"zugehörigen Mine (Ausnahme: Tritiumroboter, hier liegt die Grenze beim 2-"
+"Fachen der Ausbaustufe des Tritiumgenerators). Möglicherweise liegt eine "
+"zusätzliche Grenze für Minenroboter allerdings ebenfalls bei der Hälfte der "
+"Planetengröße. Übersteigt die Roboterzahl die Grenze, zeigen überschüssige "
+"Roboter keinerlei Wirkung mehr."
+msgstr ""
+
+#: ../faq.php:133
+msgid ""
+"Die Anzahl der gleichzeitig koordinierbaren Flotten berechnet sich aus der "
+"Entwicklungsstufe Ihres Kontrollwesens und der Anzahl der Werften in Ihrem "
+"Imperium. Potenzieren Sie einfach das Produkt der beiden Werte mit 0,7 und "
+"runden Sie das Ergebnis auf."
+msgstr ""
+
+#: ../faq.php:134
+msgid ""
+"Nocheinmal zum Mitschreiben: Anzahl gleichzeitig koordinierbarer Flotten = "
+"aufgerundet((Kontrollwesen*Werftenzahl)^0,7)."
+msgstr ""
+
+#: ../faq.php:139
+msgid ""
+"Wenn Sie sich mit einem Spieler verbünden, dient das nicht nur der "
+"Diplomatie, sondern hat auch praktische Auswirkungen im Spielverlauf."
+msgstr ""
+
+#: ../faq.php:141
+msgid ""
+"In der Karte werden verbündete Spieler farblich hervorgehoben, sodass Sie "
+"immer die Übersicht behalten."
+msgstr ""
+
+#: ../faq.php:142
+msgid "Sie können verbündete Spieler nicht angreifen."
+msgstr ""
+
+#: ../faq.php:143
+msgid ""
+"Wenn Sie Ihren Verbündeten ausspionieren, wird Ihre Spionage nicht abgewehrt "
+"und Sie sehen vollständige Informationen über den Planeten, unabhängig von "
+"Spionagetechnik und der Anzahl der Spionagesonden, die Sie geschickt haben."
+msgstr ""
+
+#: ../faq.php:144
+msgid ""
+"In der Spielerinformation sehen Sie die Koordinaten Ihrer Verbündeten und "
+"deren ausgegebene Rohstoffe."
+msgstr ""
+
+#: ../faq.php:145
+msgid ""
+"Bündnisrundschreiben machen es möglich, dass Sie all Ihren Verbündeten "
+"gleichzeitig eine Nachricht zukommen lassen."
+msgstr ""
+
+#: ../faq.php:151
+msgid ""
+"Dies ist eine kleine Einschränkung der derzeitigen "
+"Formatierungsmöglichkeiten, die einem Webdesigner zur Verfügung stehen. Ein "
+"Querscrollen ist nur in der „non-fixed ress“-Variante der Skins verfügbar, "
+"wählen Sie in den Einstellungen einfach diese aus."
+msgstr ""
+
+#: ../faq.php:156
+#, php-format
+msgid ""
+"Ab und zu treiben sich unsere Administratoren und Entwickler im %s#sua-dev-"
+"Channel auf irc.epd-me.net%s herum. Jener Kanal wird hauptsächlich für "
+"Entwicklergespräche zwischen den %s-Entwicklern verwendet."
+msgstr ""
+
+#: ../faq.php:157
+#, php-format
+msgid ""
+"Beachten Sie: Der Developer-Channel sollte nicht zum Klatsch und Tratsch "
+"verwendet werden, dazu ist der %sallgemeine Chat%s da. Sollten sich zu viele "
+"Leute nicht an diese Regel halten, kann es vorkommen, dass der Entwickler-"
+"Channel auf „moderated“ geschaltet wird, das heißt, dass ein Administrator "
+"Ihnen zuerst manuell erlauben muss, etwas zu schreiben, nachdem Sie den "
+"Kanal betreten haben."
+msgstr ""
+
+#: ../faq.php:162
+#, php-format
+msgid ""
+"Namensänderungen sind eher unerwünscht (Benutzer könnten sich auf diese "
+"Weise vor anderen „verstecken“ oder Verwirrung auslösen), weswegen das Spiel "
+"es Spielern nicht erlaubt, Ihren Benutzernamen zu ändern. Sollte es dennoch "
+"einen Grund geben, der für eine Namensänderung spricht (Accountübernahme, "
+"etc.), kann ein Administrator Ihren Namen ändern. (→ %sWie kann ich die "
+"Administratoren erreichen?%s)"
+msgstr ""
+
+#: ../faq.php:167
+msgid ""
+"Derzeit gibt es nur ein Universum, und das wird sich auch so schnell nicht "
+"ändern. Das Universum enthält aber mehrere Galaxien, die Anzahl letzterer "
+"wird je nach Anzahl besiedelter Planeten ständig erweitert."
+msgstr ""
+
+#: ../faq.php:172
+msgid ""
+"Ein solcher Fall kann viele Ursachen haben. Dies hier stellt eine kleine "
+"Auswahl dar."
+msgstr ""
+
+#: ../faq.php:174
+msgid ""
+"Der Planet ist ausgebaut. Ein Weiterbau der meisten Gebäude ist somit nicht "
+"möglich. Entwickeln Sie die Ingeneurswissenschaft oder bauen Sie Gebäude "
+"zurück, um wieder freie Felder zu erlangen."
+msgstr ""
+
+#: ../faq.php:175
+msgid ""
+"Das Gebäude, das Sie ausbauen wollen, ist derzeit in Benutzung. Warten Sie, "
+"bis alle laufenden Forschungen/Roboter/Raumschiffe/Verteidigungsanlagen "
+"fertiggestellt sind."
+msgstr ""
+
+#: ../faq.php:176
+msgid ""
+"Das Gebäude, in dem Sie etwas bauen möchten, wird gerade ausgebaut. Sie "
+"können deswegen nicht forschen oder keine Roboter/Raumschiffe/"
+"Verteidigungsanlangen in Auftrag geben."
+msgstr ""
+
+#: ../faq.php:177
+msgid ""
+"Sie haben nicht die nötigen Abhängigkeiten erfüllt. Die Forschung/Roboter/"
+"Raumschiffe/Verteidigungsanlagen werden nur angezeigt, weil Sie diese "
+"bereits entwickelt/auf dem Planeten stationiert haben. Sie können aber keine "
+"weiteren dieser Gegenstände bauen. Schauen Sie sich den Abhängigkeitenbaum "
+"an und erfüllen Sie alle Forderungen."
+msgstr ""
+
+#: ../faq.php:178
+msgid ""
+"Sie wollen global forschen, aber es können nicht alle Forschungslabore "
+"benutzt werden, da sich ein Forschungslabor im Ausbau befindet oder irgendwo "
+"geforscht wird."
+msgstr ""
+
+#: ../faq.php:179
+msgid ""
+"Es wird bereits gebaut/geforscht. Vermutlich haben Sie dies übersehen und "
+"müssen scrollen, um den entsprechenden Ausbau zu erreichen."
+msgstr ""
+
+#: ../faq.php:185
+#, php-format
+msgid ""
+"Entfernungen in %s werden in %s angegeben. Ein %s bezeichnet dabei die "
+"Entfernung zum eigenen Trümmerfeld."
+msgstr ""
+
+#: ../faq.php:185
+msgid "Orbits"
+msgstr ""
+
+#: ../faq.php:186
+#, php-format
+msgid ""
+"Planeten innerhalb des Sonnensystems sind in einer Reihe angeordnet. Die "
+"Distanz zum nächsten Planeten beträgt hierbei %s, die zum übernächsten %s, "
+"und so weiter."
+msgstr ""
+
+#: ../faq.php:187
+#, php-format
+msgid ""
+"Die Entfernung zu einem Planeten in derselben Galaxie, aber in einem anderen "
+"Sonnensystem gestaltet sich etwas schwieriger. Sie müssen sich eine Galaxie "
+"in %s als riesigen Quader vorstellen, der eine Seitenlänge von %s hat. "
+"Stellen Sie sich ein dreidimensionales Koordinatensystem vor, in welchem die "
+"Längeneinheiten der x-, der y- und der z-Achse jeweils %s sind. Die "
+"Koordinaten eines Sonnensystems sind nun einfach herausfinden, das "
+"Sonnensystem 123 hat zum Beispiel die Koordinaten (1|2|3), also (%s|%s|%s). "
+"Sollten Sie sich gut in der Mathematik und der Geometrie auskennen, werden "
+"Sie nun wissen, wie sich der Abstand zwischen zwei Sonnensystemen berechnet."
+msgstr ""
+
+#: ../faq.php:188
+#, php-format
+msgid ""
+"Wenn Sie mit einem Raumschiff in eine andere Galaxie fliegen wollen, müssen "
+"Sie größere Distanzen zurücklegen. Stellen Sie sich einen riesigen Kreis "
+"vor, auf dem die Galaxien gleichmäßig verteilt sind. Das Raumschiff nimmt in "
+"diesem Kreis den kürzesten Weg (&bdquo;Luftlinie&ldquo;) zur Zielgalaxie. "
+"Für die Mathematiker unter uns: Die Größe des Kreises wird so ausgelegt, "
+"dass der Abstand von einer Galaxie zur nächsten auf der Kreislinie entlang "
+"genau %s entspricht."
+msgstr ""
+
+#: ../faq.php:193
+#, php-format
+msgid ""
+"Besuchen Sie doch einmal die %s%s-Entwicklerseiten%s, dort finden Sie "
+"weitere Informationen, wie Sie das Spiel bekommen können."
+msgstr ""
+
+#: ../chat.php:5
+msgid "S-U-A player’s channel"
+msgstr ""
+
+#: ../chat.php:6
+msgid "S-U-A developer’s channel"
+msgstr ""
+
+#: ../chat.php:15
+msgid "Chat"
+msgstr ""
+
+#: ../chat.php:24 ../chat.php:25
+msgid "Kanal&"
+msgstr ""
+
+#: ../chat.php:36 ../chat.php:37
+msgid "Spitzname&"
+msgstr ""
+
+#: ../chat.php:39
+msgid "Verbinden&"
+msgstr ""
+
+#: ../chat.php:47
+msgid "Chat in neuem Fenster öffnen"
+msgstr ""
+
+#: ../chat.php:63
+msgid "Sie erreichen die Kanäle alternativ mit einem beliebigen IRC-Client."
+msgstr ""
+
+#: ../chat.php:71
+#, php-format
+msgid "%s auf %s, Port %d"
 msgstr ""
 
 #: ../engine/include.php:37

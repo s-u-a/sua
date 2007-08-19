@@ -2,8 +2,8 @@
 	require('include.php');
 
 	$channels = array(
-		'sua' => array('S-U-A player&rsquo;s channel', 'irc.gamesurge.net', '#sua'),
-		'sua-dev' => array('S-U-A developer&rsquo;s channel', 'irc.epd-me.net', '#sua-dev')
+		'sua' => array(_('S-U-A player’s channel'), 'irc.gamesurge.net', '#sua'),
+		'sua-dev' => array(_('S-U-A developer’s channel'), 'irc.epd-me.net', '#sua-dev')
 	);
 
 	$popup = (isset($_REQUEST['channel']) && isset($_REQUEST['nickname']) && isset($channels[$_REQUEST['channel']]) && isset($_GET['popup']) && $_GET['popup']);
@@ -12,31 +12,31 @@
 	{
 		home_gui::html_head('http://'.$_SERVER['HTTP_HOST'].h_root.'/chat/');
 ?>
-<h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; <span xml:lang="en">Chat</span></h2>
+<h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("title_abbr"), _("Chat")))?></h2>
 <?php
 	}
 
 	if(!isset($_REQUEST['channel']) || !isset($_REQUEST['nickname']) || !isset($channels[$_REQUEST['channel']]))
 	{
 ?>
-<form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/chat.php')?>" method="get" id="chat-form">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/chat.php')?>" method="get" id="chat-form">
 	<dl>
-		<dt class="c-kanal"><label for="i-kanal">Kanal</label></dt>
-		<dd class="c-kanal"><select name="channel" id="i-kanal">
+		<dt class="c-kanal"><label for="i-kanal"><?=h(_("Kanal&"))?></label></dt>
+		<dd class="c-kanal"><select name="channel" id="i-kanal"<?=accesskey_attr(_("Kanal&"))?>>
 <?php
 		foreach($channels as $id=>$info)
 		{
 ?>
-			<option value="<?=htmlspecialchars($id)?>"><?=$info[0]?></option>
+			<option value="<?=htmlspecialchars($id)?>"><?=h($info[0])?></option>
 <?php
 		}
 ?>
 		</select></dd>
 
-		<dt class="c-spitzname"><label for="i-spitzname">Spitzname</label></dt>
-		<dd class="c-spitzname"><input type="text" name="nickname" id="i-spitzname" /></dd>
+		<dt class="c-spitzname"><label for="i-spitzname"><?=h(_("Spitzname&"))?></label></dt>
+		<dd class="c-spitzname"><input type="text" name="nickname" id="i-spitzname"<?=accesskey_attr(_("Spitzname&"))?> /></dd>
 	</dl>
-	<div><button type="submit">Verbinden</button></div>
+	<div><button type="submit"<?=accesskey_attr(_("Verbinden&"))?>><?=h(_("Verbinden&"))?></button></div>
 </form>
 <script type="text/javascript">
 // <![CDATA[
@@ -44,7 +44,7 @@
 	dt_el.className = 'c-neues-fenster';
 	dt_el.appendChild(label_el = document.createElement('label'));
 	label_el.setAttribute('for', 'i-neues-fenster');
-	label_el.appendChild(document.createTextNode('Chat in neuem Fenster öffnen'));
+	label_el.appendChild(document.createTextNode('<?=jsentities(_("Chat in neuem Fenster öffnen"))?>'));
 	dt_el.parentNode.appendChild(dd_el = document.createElement('dd'));
 	input_el = document.createElement('input');
 	input_el.type = 'checkbox';
@@ -60,7 +60,7 @@
 	}
 // ]]>
 </script>
-<p id="chat-hinweis">Sie erreichen die Kanäle alternativ mit einem beliebigen <abbr title="Internet Relay Chat" xml:lang="en"><span xml:lang="de">IRC</span></abbr>-<span xml:lang="en">Client</span>.</p>
+<p id="chat-hinweis"><?=h(_("Sie erreichen die Kanäle alternativ mit einem beliebigen IRC-Client."))?></p>
 <dl id="chat-irc-liste">
 <?php
 		foreach($channels as $id=>$info)
@@ -68,7 +68,7 @@
 			if(!isset($info[3])) $info[3] = 6667;
 ?>
 	<dt><?=$info[0]?></dt>
-	<dd><a href="irc://<?=htmlentities($info[1])?>:<?=htmlentities($info[3])?>/<?=htmlentities($info[2])?>"><?=htmlentities($info[2])?> auf <?=htmlentities($info[1])?>, Port <?=htmlentities($info[3])?></a></dd>
+	<dd><a href="irc://<?=htmlspecialchars($info[1])?>:<?=htmlspecialchars($info[3])?>/<?=htmlspecialchars($info[2])?>"><?=sprintf(h(_("%s auf %s, Port %d")), htmlspecialchars($info[2]), htmlspecialchars($info[1]), htmlspecialchars($info[3]))?></a></dd>
 <?php
 		}
 ?>
@@ -83,9 +83,9 @@
 <?='<?xml version="1.0" encoding="UTF-8"?>'."\n"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=htmlspecialchars(LANG)?>">
 	<head>
-		<title><?=$channels[$_REQUEST['channel']][0]?></title>
+		<title><?=h($channels[$_REQUEST['channel']][0])?></title>
 		<base href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/chat/')?>" />
 		<style type="text/css">
 			html,body,#chat-applet { width:100%; height:100%; margin:0; padding:0; border-style:none; }
@@ -97,7 +97,7 @@
 		else
 		{
 ?>
-<h3><?=$channels[$_REQUEST['channel']][0]?></h3>
+<h3><?=h($channels[$_REQUEST['channel']][0])?></h3>
 <?php
 		}
 ?>
@@ -105,14 +105,14 @@
 	<param name="CABINETS" value="irc.cab,securedirc.cab,pixx.cab" />
 	<param name="nick" value="<?=$_REQUEST['nickname']?>" />
 	<param name="fullname" value="S-U-A Java User" />
-	<param name="host" value="<?=htmlentities($channels[$_REQUEST['channel']][1])?>" />
-	<param name="command1" value="/join <?=htmlentities($channels[$_REQUEST['channel']][2])?>" />
+	<param name="host" value="<?=htmlspecialchars($channels[$_REQUEST['channel']][1])?>" />
+	<param name="command1" value="/join <?=htmlspecialchars($channels[$_REQUEST['channel']][2])?>" />
 	<param name="gui" value="pixx" />
 <?php
 		if(isset($channels[$_REQUEST['channel']][3]))
 		{
 ?>
-	<param name="port" value="<?=htmlentities($channels[$_REQUEST['channel']][3])?>" />
+	<param name="port" value="<?=htmlspecialchars($channels[$_REQUEST['channel']][3])?>" />
 <?php
 		}
 ?>
