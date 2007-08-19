@@ -4,6 +4,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the AFFERO GENERAL PUBLIC LICENSE along with this program; if not, write to Affero Inc., 510 Third Street - Suite 225, San Francisco, CA 94107, USA or have a look at http://www.affero.org/oagpl.html.
 
 <?php
+	chdir(dirname(__FILE__));
 	$USE_OB = false;
 	require('../engine/include.php');
 
