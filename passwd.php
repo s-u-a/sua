@@ -31,7 +31,7 @@
 
 	home_gui::html_head();
 ?>
-<h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Passwort vergessen</h2>
+<h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Passwort vergessen?")))?></h2>
 <?php
 	if(isset($_GET['name']) && isset($_GET['id']) && isset($_GET['database']) && isset($databases[$_GET['database']]) && $databases[$_GET['database']]['enabled'])
 	{
@@ -40,7 +40,7 @@
 		if(!User::userExists($_GET['name']))
 		{
 ?>
-<p class="error">Sie haben einen falschen Benutzernamen angegeben.</p>
+<p class="error"><?=h(_("Sie haben einen falschen Benutzernamen angegeben."))?></p>
 <?php
 		}
 		else
@@ -49,13 +49,13 @@
 			if(!$that_user->getStatus())
 			{
 ?>
-<p class="error">Datenbankfehler.</p>
+<p class="error"><?=h(_("Datenbankfehler."))?></p>
 <?php
 			}
 			elseif(!$that_user->checkPasswordSendID($_GET['id']))
 			{
 ?>
-<p class="error">Falsche <abbr title="Identificator" xml:lang="en">ID</abbr>.</p>
+<p class="error"><?=h(_("Falsche ID."))?></p>
 <?php
 			}
 			else
@@ -66,7 +66,7 @@
 					if($_POST['new_password'] != $_POST['new_password2'])
 					{
 ?>
-<p class="error">Die beiden Passwörter stimmen nicht überein.</p>
+<p class="error"><?=h(_("Die beiden Passwörter stimmen nicht überein."))?></p>
 <?php
 					}
 					else
@@ -74,13 +74,13 @@
 						if(!$that_user->setPassword($_POST['new_password']))
 						{
 ?>
-<p class="error">Datenbankfehler.</p>
+<p class="error"><?=h(_("Datenbankfehler."))?></p>
 <?php
 						}
 						else
 						{
 ?>
-<p class="successful">Das Passwort wurde erfolgreich geändert. Sie können sich nun mit Ihrem neuen Passwort anmelden.</p>
+<p class="successful"><?=h(_("Das Passwort wurde erfolgreich geändert. Sie können sich nun mit Ihrem neuen Passwort anmelden."))?></p>
 <?php
 							$continue = false;
 						}
@@ -92,13 +92,13 @@
 ?>
 <form action="passwd.php?name=<?=htmlspecialchars(urlencode($_GET['name']).'&id='.urlencode($_GET['id']).'&database='.urlencode($_GET['database']))?>" method="post">
 	<dl>
-		<dt><label for="neues-passwort-input">Neues Passwort</label></dt>
-		<dd><input type="password" name="new_password" id="neues-passwort-input" /></dd>
+		<dt><label for="neues-passwort-input"><?=h(_("Neues Passwort&[passwd.php|1]"))?></label></dt>
+		<dd><input type="password" name="new_password" id="neues-passwort-input"<?=accesskey_attr(_("Neues Passwort&[passwd.php|1]"))?> /></dd>
 
-		<dt><label for="neues-passwort-wiederholen-input">Neues Passwort wiederholen</label></dt>
-		<dd><input type="password" name="new_password2" id="neues-passwort-wiederholen-input" /></dd>
+		<dt><label for="neues-passwort-wiederholen-input"><?=h(_("Neues Passwort wiederholen&[passwd.php|1]"))?></label></dt>
+		<dd><input type="password" name="new_password2" id="neues-passwort-wiederholen-input"<?=accesskey_attr(_("Neues Passwort wiederholen&[passwd.php|1]"))?> /></dd>
 	</dl>
-	<div><button type="submit">Passwort ändern</button></div>
+	<div><button type="submit"<?=accesskey_attr(_("Passwort ändern&[passwd.php|1]"))?>><?=h(_("Passwort ändern&[passwd.php|1]"))?></button></div>
 </form>
 <?php
 				}
@@ -118,20 +118,20 @@
 			else
 			{
 ?>
-<p class="successful">Falls Sie die richtige <span xml:lang="en">E-Mail</span>-Adresse eingegeben haben, wurde die <span xml:lang="en">E-Mail</span>-Nachricht erfolgreich versandt. Überprüfen Sie nun bitte Ihr Postfach.</p>
+<p class="successful"><?=h(_("Falls Sie die richtige E-Mail-Adresse eingegeben haben, wurde die E-Mail-Nachricht erfolgreich versandt. Überprüfen Sie nun bitte Ihr Postfach."))?></p>
 <?php
 			}
 		}
 ?>
-<p>Hier haben Sie die Möglichkeit, Ihr Passwort zu ändern, falls Sie es vergessen haben.</p>
-<p>Ihnen wird eine Bestätigungs-<span xml:lang="en">E-Mail</span>-Nachricht zu der <span xml:lang="en">E-Mail</span>-Adresse geschickt werden, die Sie im Spiel in den Einstellungen angegeben haben.</p>
-<p>Sollten Sie im Spiel keine gültige <span xml:lang="en">E-Mail</span>-Adresse angegeben haben, <a href="faq.php#administrators" title="FAQ: Wie kann ich die Administratoren erreichen?">wenden Sie sich bitte an einen der Administratoren</a>.</p>
+<p><?=h(_("Hier haben Sie die Möglichkeit, Ihr Passwort zu ändern, falls Sie es vergessen haben."))?></p>
+<p><?=h(_("Ihnen wird eine Bestätigungs-E-Mail-Nachricht zu der E-Mail-Adresse geschickt werden, die Sie im Spiel in den Einstellungen angegeben haben."))?></p>
+<p><?=sprintf(h(_("Sollten Sie im Spiel keine gültige E-Mail-Adresse angegeben haben, %swenden Sie sich bitte an einen der Administratoren%s.")), "<a href=\"faq.php#administrators\" title=\"".h(sprintf(_("FAQ: %s"), _("Wie kann ich die Administratoren erreichen?")))."\">", "</a>")?></p>
 <hr />
-<p>Um Ihr Passwort ändern zu können, füllen Sie bitte in das folgende Formular Ihren Benutzernamen und diejenige <span xml:lang="en">E-Mail</span>-Adresse an, die Sie im Spiel in Ihren Einstellungen gespeichert haben.</p>
+<p><?=h(_("Um Ihr Passwort ändern zu können, füllen Sie bitte in das folgende Formular Ihren Benutzernamen und diejenige E-Mail-Adresse an, die Sie im Spiel in Ihren Einstellungen gespeichert haben."))?></p>
 <form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/passwd.php')?>" method="post">
 	<dl>
-		<dt><label for="runde-select">Runde</label></dt>
-		<dd><select name="database" id="runde-select">
+		<dt><label for="runde-select"><?=h(_("Runde&[passwd.php|2]"))?></label></dt>
+		<dd><select name="database" id="runde-select"<?=accesskey_attr(_("Runde&[passwd.php|2]"))?>>
 <?php
 		foreach($databases as $id=>$info)
 		{
@@ -143,13 +143,13 @@
 ?>
 		</select></dd>
 
-		<dt><label for="benutzername-input">Benutzername</label></dt>
-		<dd><input type="text" name="benutzername" id="benutzername-input" /></dd>
+		<dt><label for="benutzername-input"><?=h(_("Benutzername&[passwd.php|2]"))?></label></dt>
+		<dd><input type="text" name="benutzername" id="benutzername-input"<?=accesskey_attr(_("Benutzername&[passwd.php|2]"))?> /></dd>
 
-		<dt><label for="email-input"><span xml:lang="en">E-Mail</span>-Adresse</label></dt>
-		<dd><input type="text" name="email" id="email-input" /></dd>
+		<dt><label for="email-input"><?=h(_("E-Mail-Adresse&[passwd.php|2]"))?></label></dt>
+		<dd><input type="text" name="email" id="email-input"<?=accesskey_attr(_("E-Mail-Adresse&[passwd.php|2]"))?> /></dd>
 	</dl>
-	<div><button type="submit">Absenden</button></div>
+	<div><button type="submit"<?=accesskey_attr(_("Absenden&[passwd.php|2]"))?>><?=h(_("Absenden&[passwd.php|2]"))?></button></div>
 </form>
 <?php
 	}

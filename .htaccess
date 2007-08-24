@@ -1,14 +1,3 @@
-Order Deny,Allow
-
-# Uncomment the following line for Wartungsarbeiten
-#Deny from All
-
-ErrorDocument 403 /wartungsarbeiten.html
-
-<Files "wartungsarbeiten.html">
-	Deny from None
-</Files>
-
 Options +Indexes
 
 php_flag session.use_cookies off
@@ -18,3 +7,5 @@ php_flag register_globals off
 
 AddOutputFilter DEFLATE css html js
 AddCharset UTF-8 html css js
+
+ErrorDocument 503 /503.html

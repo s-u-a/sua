@@ -154,7 +154,7 @@
 		if(!$me->checkPassword($_POST['old-password']))
 			$error = _('Das alte Passwort stimmt nicht.');
 		elseif($_POST['new-password'] != $_POST['new-password2'])
-			$error = _('Die beiden neuen Passwörter stimmen nicht überein.');
+			$error = _('Die beiden neuen Passworte stimmen nicht überein.');
 		else
 			$me->setPassword($_POST['new-password']);
 	}
@@ -203,9 +203,9 @@
 	<fieldset class="aussehen">
 		<legend><?=h(_("Aussehen"))?></legend>
 		<dl>
-			<dt class="c-skin"><label for="skin-choice"><?=h(_("Skin&"))?></label></dt>
+			<dt class="c-skin"><label for="skin-choice"><?=h(_("Skin&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-skin">
-				<select name="skin-choice" id="skin-choice"<?=accesskey_attr(_("Skin&"))?> tabindex="<?=$tabindex++?>" onchange="recalc_skin();" onkeyup="recalc_skin();">
+				<select name="skin-choice" id="skin-choice"<?=accesskey_attr(_("Skin&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" onchange="recalc_skin();" onkeyup="recalc_skin();">
 <?php
 	$my_skin = $me->checkSetting('skin');
 	foreach($skins as $skin=>$skin_info)
@@ -232,16 +232,16 @@
 				<input type="text" name="skin" id="skin" value="<?=htmlspecialchars($my_skin[1])?>" tabindex="<?=$tabindex++?>" />
 			</dd>
 
-			<dt class="c-schrift"><label for="schrift-choice"><?=h(_("Schrift&"))?></label></dt>
+			<dt class="c-schrift"><label for="schrift-choice"><?=h(_("Schrift&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-schrift">
-				<select name="schrift" id="schrift-choice"<?=accesskey_attr(_("Schrift&"))?> tabindex="<?=$tabindex++?>">
+				<select name="schrift" id="schrift-choice"<?=accesskey_attr(_("Schrift&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>">
 					<option value="1"<?=$me->checkSetting('schrift') ? ' selected="selected"' : ''?>><?=h(_("Lieblingsschrift des Admins"))?></option>
 					<option value="0"<?=!$me->checkSetting('schrift') ? ' selected="selected"' : ''?>><?=h(_("Ihre Lieblingsschrift"))?></option>
 				</select>
 			</dd>
 
-			<dt class="c-werbung-ausblenden"><label for="noads"><?=h(_("Werbung ausblenden&"))?></label></dt>
-			<dd class="c-werbung-ausblenden"><input type="checkbox" name="noads" id="noads"<?=accesskey_attr(_("Werbung ausblenden&"))?><?=$me->checkSetting('noads') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn Sie die Werbung eingeblendet lassen, helfen Sie, die Finanzen des Spiels zu decken."))?>" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-werbung-ausblenden"><label for="noads"><?=h(_("Werbung ausblenden&[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-werbung-ausblenden"><input type="checkbox" name="noads" id="noads"<?=accesskey_attr(_("Werbung ausblenden&[login/einstellungen.php|1]"))?><?=$me->checkSetting('noads') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn Sie die Werbung eingeblendet lassen, helfen Sie, die Finanzen des Spiels zu decken."))?>" tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
 
 		<script type="text/javascript">
@@ -265,30 +265,30 @@
 	<fieldset class="verhalten">
 		<legend><?=h(_("Verhalten"))?></legend>
 		<dl>
-			<dt class="c-spionagesonden"><label for="spionagesonden"><?=h(_("Spionagesonden&"))?></label></dt>
-			<dd class="c-spionagesonden"><input type="text" name="spionagesonden" id="spionagesonden"<?=accesskey_attr(_("Spionagesonden&"))?> value="<?=htmlspecialchars($me->checkSetting('sonden'))?>" title="<?=h(_("Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der Karte geschickt werden sollen"))?>" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-spionagesonden"><label for="spionagesonden"><?=h(_("Spionagesonden&[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-spionagesonden"><input type="text" name="spionagesonden" id="spionagesonden"<?=accesskey_attr(_("Spionagesonden&[login/einstellungen.php|1]"))?> value="<?=htmlspecialchars($me->checkSetting('sonden'))?>" title="<?=h(_("Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der Karte geschickt werden sollen"))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-auto-schnellbau"><label for="fastbuild"><?=h(_("Auto-Schnellbau&"))?></label></dt>
-			<dd class="c-auto-schnellbau"><input type="checkbox" name="fastbuild" id="fastbuild"<?=accesskey_attr(_("Auto-Schnellbau&"))?><?=$me->checkSetting('fastbuild') ? ' checked="checked"' : ''?> title="<?=h(_("Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten unbeschäftigten Planeten gewechselt."))?>" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-auto-schnellbau"><label for="fastbuild"><?=h(_("Auto-Schnellbau&[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-auto-schnellbau"><input type="checkbox" name="fastbuild" id="fastbuild"<?=accesskey_attr(_("Auto-Schnellbau&[login/einstellungen.php|1]"))?><?=$me->checkSetting('fastbuild') ? ' checked="checked"' : ''?> title="<?=h(_("Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten unbeschäftigten Planeten gewechselt."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-schnellbau-auf-ausgebaute"><label for="i-full"><?=h(_("Schnellbau auf ausgebaute&"))?></label></dt>
-			<dd class="c-schnellbau-auf-ausgebaute"><input type="checkbox" name="fastbuild_full" id="i-full"<?=accesskey_attr(_("Schnellbau auf ausgebaute&"))?><?=$me->checkSetting('fastbuild_full') ? ' checked="checked"' : ''?> title="<?=h(_("Durch diese Option werden auch ausgebaute Planeten bei der Schnellbau-Funktion berücksichtigt."))?>" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-schnellbau-auf-ausgebaute"><label for="i-full"><?=h(_("Schnellbau auf ausgebaute&[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-schnellbau-auf-ausgebaute"><input type="checkbox" name="fastbuild_full" id="i-full"<?=accesskey_attr(_("Schnellbau auf ausgebaute&[login/einstellungen.php|1]"))?><?=$me->checkSetting('fastbuild_full') ? ' checked="checked"' : ''?> title="<?=h(_("Durch diese Option werden auch ausgebaute Planeten bei der Schnellbau-Funktion berücksichtigt."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-schnell-shortcuts"><label for="shortcuts"><?=h(_("Schnell-Shortcuts&"))?></label></dt>
-			<dd class="c-schnell-shortcuts"><input type="checkbox" name="shortcuts" id="shortcuts"<?=accesskey_attr(_("Schnell-Shortcuts&"))?><?=$me->checkSetting('shortcuts') ? ' checked="checked"' : ''?> title="<?=h(_("Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere Taste zu drücken."))?>" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-schnell-shortcuts"><label for="shortcuts"><?=h(_("Schnell-Shortcuts&[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-schnell-shortcuts"><input type="checkbox" name="shortcuts" id="shortcuts"<?=accesskey_attr(_("Schnell-Shortcuts&[login/einstellungen.php|1]"))?><?=$me->checkSetting('shortcuts') ? ' checked="checked"' : ''?> title="<?=h(_("Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere Taste zu drücken."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-javascript-tooltips"><label for="tooltips"><?=h(_("Javascript-Tooltips&"))?></label></dt>
-			<dd class="c-javascript-tooltips"><input type="checkbox" name="tooltips" id="tooltips"<?=accesskey_attr(_("Javascript-Tooltips&"))?><?=$me->checkSetting('tooltips') ? ' checked="checked"' : ''?> title="<?=h(_("Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden die normalen Tooltips durch hübsche JavaScript-Tooltips ersetzt."))?>" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-javascript-tooltips"><label for="tooltips"><?=h(_("Javascript-Tooltips&[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-javascript-tooltips"><input type="checkbox" name="tooltips" id="tooltips"<?=accesskey_attr(_("Javascript-Tooltips&[login/einstellungen.php|1]"))?><?=$me->checkSetting('tooltips') ? ' checked="checked"' : ''?> title="<?=h(_("Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden die normalen Tooltips durch hübsche JavaScript-Tooltips ersetzt."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-auto-refresh"><label for="autorefresh"><?=h(_("Auto-Refresh&"))?></label></dt>
-			<dd class="c-auto-refresh"><input type="text" name="autorefresh" id="autorefresh"<?=accesskey_attr(_("Auto-Refresh&"))?> value="<?=htmlspecialchars($me->checkSetting('ress_refresh'))?>" title="<?=h(_("Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion erzeugt keinen zusätzlichen Traffic.)"))?>" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-auto-refresh"><label for="autorefresh"><?=h(_("Auto-Refresh&[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-auto-refresh"><input type="text" name="autorefresh" id="autorefresh"<?=accesskey_attr(_("Auto-Refresh&[login/einstellungen.php|1]"))?> value="<?=htmlspecialchars($me->checkSetting('ress_refresh'))?>" title="<?=h(_("Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion erzeugt keinen zusätzlichen Traffic.)"))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-externe-navigationslinks"><label for="show-extern"><?=h(_("Externe Navigationslinks&"))?></label></dt>
-			<dd class="c-externe-navigationslinks"><input type="checkbox" name="show_extern" id="show-extern"<?=accesskey_attr(_("Externe Navigationslinks&"))?><?=$me->checkSetting('show_extern') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option aktiviert ist, werden in der Navigation Links auf spielexterne Seiten wie das Board angezeigt."))?>" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-externe-navigationslinks"><label for="show-extern"><?=h(_("Externe Navigationslinks&[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-externe-navigationslinks"><input type="checkbox" name="show_extern" id="show-extern"<?=accesskey_attr(_("Externe Navigationslinks&[login/einstellungen.php|1]"))?><?=$me->checkSetting('show_extern') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option aktiviert ist, werden in der Navigation Links auf spielexterne Seiten wie das Board angezeigt."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-javascript-performance"><label for="performance"><?=h(_("JavaScript-Performance&"))?></label></dt>
+			<dt class="c-javascript-performance"><label for="performance"><?=h(_("JavaScript-Performance&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-javascript-performance">
-				<select name="performance"<?=accesskey_attr(_("JavaScript-Performance&"))?> tabindex="<?=$tabindex++?>">
+				<select name="performance"<?=accesskey_attr(_("JavaScript-Performance&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>">
 					<option value="0"<?=($me->checkSetting('performance')==0) ? ' selected="selected"' : ''?>><?=h(_("Keine Bildschirmänderungen"))?></option>
 					<option value="1"<?=($me->checkSetting('performance')==1) ? ' selected="selected"' : ''?>><?=h(_("Ungenau, wenig CPU-Last"))?></option>
 					<option value="2"<?=($me->checkSetting('performance')==2) ? ' selected="selected"' : ''?>><?=h(_("Praktisch, mittlere CPU-Last"))?></option>
@@ -309,16 +309,16 @@
 	}
 ?>
 		<dl>
-			<dt class="c-nachrichteninformierung"><label for="notify"><?=h(_("Nachrichten auf jeder Seite&"))?></label></dt>
-			<dd class="c-nachrichteninformierung"><input type="checkbox" name="notify" id="notify"<?=accesskey_attr(_("Nachrichten auf jeder Seite&"))?><?=$me->checkSetting('notify') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angezeigt, dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten."))?>" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-nachrichteninformierung"><label for="notify"><?=h(_("Nachrichten auf jeder Seite&[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-nachrichteninformierung"><input type="checkbox" name="notify" id="notify"<?=accesskey_attr(_("Nachrichten auf jeder Seite&[login/einstellungen.php|1]"))?><?=$me->checkSetting('notify') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angezeigt, dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten."))?>" tabindex="<?=$tabindex++?>" /></dd>
 <?php
 	if($show_im)
 	{
 ?>
 
-			<dt class="c-im-account"><label for="i-im-protocol"><?=h(_("IM-Account&"))?></label></dt>
+			<dt class="c-im-account"><label for="i-im-protocol"><?=h(_("IM-Account&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-im-account">
-				<select name="im-protocol" id="i-im-protocol"<?=accesskey_attr(_("IM-Account&"))?> onchange="document.getElementById('i-im-uin').disabled = !this.value;" onkeyup="this.onchange();" tabindex="<?=$tabindex++?>">
+				<select name="im-protocol" id="i-im-protocol"<?=accesskey_attr(_("IM-Account&[login/einstellungen.php|1]"))?> onchange="document.getElementById('i-im-uin').disabled = !this.value;" onkeyup="this.onchange();" tabindex="<?=$tabindex++?>">
 					<option value=""><?=h(_("Deaktiviert"))?></option>
 <?php
 		foreach($messengers as $protocol=>$minfo)
@@ -366,9 +366,9 @@
 				</thead>
 				<tbody>
 					<tr class="r-kaempfe">
-						<th class="c-nachrichtentyp"><?=h(_("Kämpfe&"))?></th>
+						<th class="c-nachrichtentyp"><?=h(_("Kämpfe&[login/einstellungen.php|1]"))?></th>
 						<td class="c-ankunft leer"></td>
-						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[1][1]"<?=accesskey_attr(_("Kämpfe&"))?><?=$receive_settings[1][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[1][1]"<?=accesskey_attr(_("Kämpfe&[login/einstellungen.php|1]"))?><?=$receive_settings[1][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
 	{
@@ -379,9 +379,9 @@
 ?>
 					</tr>
 					<tr class="r-spionage">
-						<th class="c-nachrichtentyp"><?=h(_("Spionage&"))?></th>
+						<th class="c-nachrichtentyp"><?=h(_("Spionage&[login/einstellungen.php|1]"))?></th>
 						<td class="c-ankunft leer"></td>
-						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[2][1]"<?=accesskey_attr(_("Spionage&"))?><?=$receive_settings[2][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[2][1]"<?=accesskey_attr(_("Spionage&[login/einstellungen.php|1]"))?><?=$receive_settings[2][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
 	{
@@ -392,8 +392,8 @@
 ?>
 					</tr>
 					<tr class="r-transport">
-						<th class="c-nachrichtentyp"><?=h(_("Transport&"))?></th>
-						<td class="c-ankunft"><input type="checkbox" name="nachrichten[3][0]"<?=accesskey_attr(_("Transport&"))?><?=$receive_settings[3][0] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<th class="c-nachrichtentyp"><?=h(_("Transport&[login/einstellungen.php|1]"))?></th>
+						<td class="c-ankunft"><input type="checkbox" name="nachrichten[3][0]"<?=accesskey_attr(_("Transport&[login/einstellungen.php|1]"))?><?=$receive_settings[3][0] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[3][1]"<?=$receive_settings[3][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
@@ -405,9 +405,9 @@
 ?>
 					</tr>
 					<tr class="r-sammeln">
-						<th class="c-nachrichtentyp"><?=h(_("Sammeln&"))?></th>
+						<th class="c-nachrichtentyp"><?=h(_("Sammeln&[login/einstellungen.php|1]"))?></th>
 						<td class="c-ankunft leer"></td>
-						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[4][1]"<?=accesskey_attr(_("Sammeln&"))?><?=$receive_settings[4][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[4][1]"<?=accesskey_attr(_("Sammeln&[login/einstellungen.php|1]"))?><?=$receive_settings[4][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
 	{
@@ -418,8 +418,8 @@
 ?>
 					</tr>
 					<tr class="r-besiedelung">
-						<th class="c-nachrichtentyp"><?=h(_("Besiedelung&"))?></th>
-						<td class="c-ankunft"><input type="checkbox" name="nachrichten[5][0]"<?=accesskey_attr(_("Besiedelung&"))?><?=$receive_settings[5][0] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<th class="c-nachrichtentyp"><?=h(_("Besiedelung&[login/einstellungen.php|1]"))?></th>
+						<td class="c-ankunft"><input type="checkbox" name="nachrichten[5][0]"<?=accesskey_attr(_("Besiedelung&[login/einstellungen.php|1]"))?><?=$receive_settings[5][0] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[5][1]"<?=$receive_settings[5][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
@@ -435,16 +435,16 @@
 	{
 ?>
 					<tr class="r-benutzernachrichten">
-						<th class="c-nachrichtentyp"><?=h(_("Benutzernachrichten&"))?></th>
+						<th class="c-nachrichtentyp"><?=h(_("Benutzernachrichten&[login/einstellungen.php|1]"))?></th>
 						<td class="c-ankunft leer"></td>
 						<td class="c-rueckkehr leer"></td>
-						<td class="c-im-benachrichtigung"><input type="checkbox" name="im-receive[messages][6]"<?=accesskey_attr(_("Benutzernachrichten&"))?><?=$messenger_receive['messages'][6] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-im-benachrichtigung"><input type="checkbox" name="im-receive[messages][6]"<?=accesskey_attr(_("Benutzernachrichten&[login/einstellungen.php|1]"))?><?=$messenger_receive['messages'][6] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 					</tr>
 					<tr class="r-verbuendete">
-						<th class="c-nachrichtentyp"><?=h(_("Verbündete&"))?></th>
+						<th class="c-nachrichtentyp"><?=h(_("Verbündete&[login/einstellungen.php|1]"))?></th>
 						<td class="c-ankunft leer"></td>
 						<td class="c-rueckkehr leer"></td>
-						<td class="c-im-benachrichtigung"><input type="checkbox" name="im-receive[messages][7]"<?=accesskey_attr(_("Verbündete&"))?><?=$messenger_receive['messages'][7] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-im-benachrichtigung"><input type="checkbox" name="im-receive[messages][7]"<?=accesskey_attr(_("Verbündete&[login/einstellungen.php|1]"))?><?=$messenger_receive['messages'][7] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 					</tr>
 <?php
 	}
@@ -471,9 +471,9 @@
 				</thead>
 				<tbody>
 					<tr class="r-gebaeude">
-						<th class="c-gegenstandsart"><?=h(_("Gebäude&"))?></th>
+						<th class="c-gegenstandsart"><?=h(_("Gebäude&[login/einstellungen.php|1]"))?></th>
 						<td class="c-uebersicht">
-							<select name="building[gebaeude]"<?=accesskey_attr(_("Gebäude&"))?> tabindex="<?=$tabindex++?>">
+							<select name="building[gebaeude]"<?=accesskey_attr(_("Gebäude&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>">
 								<option value="0"<?=($show_building['gebaeude']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
 								<option value="1"<?=($show_building['gebaeude']==1) ? ' selected="selected"' : ''?>><?=h(_("Jedes einzelne [Gebäude]"))?></option>
 							</select>
@@ -493,9 +493,9 @@
 ?>
 					</tr>
 					<tr class="r-forschung">
-						<th class="c-gegenstandsart"><?=h(_("Forschung&"))?></th>
+						<th class="c-gegenstandsart"><?=h(_("Forschung&[login/einstellungen.php|1]"))?></th>
 						<td class="c-uebersicht">
-							<select name="building[forschung]"<?=accesskey_attr(_("Forschung&"))?> tabindex="<?=$tabindex++?>">
+							<select name="building[forschung]"<?=accesskey_attr(_("Forschung&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>">
 								<option value="0"<?=($show_building['forschung']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
 								<option value="1"<?=($show_building['forschung']==1) ? ' selected="selected"' : ''?>><?=h(_("Jede einzelne [Forschung]"))?></option>
 							</select>
@@ -515,9 +515,9 @@
 ?>
 					</tr>
 					<tr class="r-roboter">
-						<th class="c-gegenstandsart"><?=h(_("Roboter&"))?></th>
+						<th class="c-gegenstandsart"><?=h(_("Roboter&[login/einstellungen.php|1]"))?></th>
 						<td class="c-uebersicht">
-							<select name="building[roboter]"<?=accesskey_attr(_("Roboter&"))?> tabindex="<?=$tabindex++?>">
+							<select name="building[roboter]"<?=accesskey_attr(_("Roboter&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>">
 								<option value="0"<?=($show_building['roboter']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
 								<option value="1"<?=($show_building['roboter']==1) ? ' selected="selected"' : ''?>><?=h(_("Jeder einzelne [Roboter]"))?></option>
 								<option value="2"<?=($show_building['roboter']==2) ? ' selected="selected"' : ''?>><?=h(_("Alle [Roboter] eines Typs"))?></option>
@@ -541,9 +541,9 @@
 ?>
 					</tr>
 					<tr class="r-schiffe">
-						<th class="c-gegenstandsart"><?=h(_("Schiffe&"))?></th>
+						<th class="c-gegenstandsart"><?=h(_("Schiffe&[login/einstellungen.php|1]"))?></th>
 						<td class="c-uebersicht">
-							<select name="building[schiffe]"<?=accesskey_attr(_("Schiffe&"))?> tabindex="<?=$tabindex++?>">
+							<select name="building[schiffe]"<?=accesskey_attr(_("Schiffe&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>">
 								<option value="0"<?=($show_building['schiffe']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
 								<option value="1"<?=($show_building['schiffe']==1) ? ' selected="selected"' : ''?>><?=h(_("Jedes einzelne [Schiff]"))?></option>
 								<option value="2"<?=($show_building['schiffe']==2) ? ' selected="selected"' : ''?>><?=h(_("Alle [Schiffe] eines Typs"))?></option>
@@ -567,9 +567,9 @@
 ?>
 					</tr>
 					<tr class="r-verteidigung">
-						<th class="c-gegenstandsart"><?=h(_("Verteidigung&"))?></th>
+						<th class="c-gegenstandsart"><?=h(_("Verteidigung&[login/einstellungen.php|1]"))?></th>
 						<td class="c-uebersicht">
-							<select name="building[verteidigung]"<?=accesskey_attr(_("Verteidigung&"))?> tabindex="<?=$tabindex++?>">
+							<select name="building[verteidigung]"<?=accesskey_attr(_("Verteidigung&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>">
 								<option value="0"<?=($show_building['verteidigung']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
 								<option value="1"<?=($show_building['verteidigung']==1) ? ' selected="selected"' : ''?>><?=h(_("Jede einzelne [Verteidigungsanlage]"))?></option>
 								<option value="2"<?=($show_building['verteidigung']==2) ? ' selected="selected"' : ''?>><?=h(_("Alle [Verteidigungsanlagen] eines Typs"))?></option>
@@ -597,7 +597,7 @@
 		</fieldset>
 	</fieldset>
 
-	<div class="einstellungen-speichern-1"><button tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Speicher&n"))?>><?=h(_("Speicher&n"))?></button></div>
+	<div class="einstellungen-speichern-1"><button tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Speicher&n[login/einstellungen.php|1]"))?>><?=h(_("Speicher&n[login/einstellungen.php|1]"))?></button></div>
 <?php
 	$save_tabindex = $tabindex++;
 
@@ -612,7 +612,7 @@
 			if($me->permissionToUmode() || isset($_SESSION['admin_username']))
 			{
 ?>
-		<div><input type="submit" name="umode" value="<?=h(_("Urlaubsmodus&"), false)?>"<?=accesskey_attr(_("Urlaubsmodus&"))?> tabindex="<?=$tabindex++?>" onclick="return confirm('<?=jsentities(_("Wollen Sie den Urlaubsmodus wirklich betreten?"))?>');" /></div>
+		<div><input type="submit" name="umode" value="<?=h(_("Urlaubsmodus&[login/einstellungen.php|1]"), false)?>"<?=accesskey_attr(_("Urlaubsmodus&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" onclick="return confirm('<?=jsentities(_("Wollen Sie den Urlaubsmodus wirklich betreten?"))?>');" /></div>
 		<p><?=h(sprintf(_("Sie werden frühestens nach drei Tagen (%s) aus dem Urlaubsmodus zurückkehren können."), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i'), $me->getUmodeReturnTime()))))?></p>
 <?php
 			}
@@ -643,26 +643,26 @@
 	<fieldset class="benutzeraccount">
 		<legend><?=h(_("Benutzeraccount"))?></legend>
 		<dl>
-			<dt class="c-ip-schutz"><label for="ipcheck"><?=h(_("IP-Schutz&"))?></label></dt>
-			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=accesskey_attr(_("IP-Schutz&"))?><?=$me->checkSetting('ipcheck') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)"))?>" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-ip-schutz"><label for="ipcheck"><?=h(_("IP-Schutz&[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=accesskey_attr(_("IP-Schutz&[login/einstellungen.php|1]"))?><?=$me->checkSetting('ipcheck') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)"))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-email-adresse"><label for="email"><?=h(_("E-Mail-Adresse&"))?></label></dt>
-			<dd class="c-email-adresse"><input type="text" name="email" id="email"<?=accesskey_attr(_("E-Mail-Adresse&"))?> value="<?=htmlspecialchars($me->checkSetting('email'))?>" title="<?=h(_("Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben."))?>" tabindex="<?=$tabindex++?>" /></dd>
+			<dt class="c-email-adresse"><label for="email"><?=h(_("E-Mail-Adresse&[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-email-adresse"><input type="text" name="email" id="email"<?=accesskey_attr(_("E-Mail-Adresse&[login/einstellungen.php|1]"))?> value="<?=htmlspecialchars($me->checkSetting('email'))?>" title="<?=h(_("Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-benutzerbeschreibung"><label for="benutzerbeschreibung"><?=h(_("Ben&utzerbeschreibung"))?></label></dt>
-			<dd class="c-benutzerbeschreibung"><textarea name="benutzerbeschreibung" id="benutzerbeschreibung"<?=accesskey_attr(_("Ben&utzerbeschreibung"))?> cols="50" rows="10" accesskey="u" tabindex="<?=$tabindex++?>"><?=preg_replace("/[\r\n\t]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($me->getUserDescription(false)))?></textarea></dd>
+			<dt class="c-benutzerbeschreibung"><label for="benutzerbeschreibung"><?=h(_("Ben&utzerbeschreibung[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-benutzerbeschreibung"><textarea name="benutzerbeschreibung" id="benutzerbeschreibung"<?=accesskey_attr(_("Ben&utzerbeschreibung[login/einstellungen.php|1]"))?> cols="50" rows="10" accesskey="u" tabindex="<?=$tabindex++?>"><?=preg_replace("/[\r\n\t]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($me->getUserDescription(false)))?></textarea></dd>
 		</dl>
 		<fieldset class="passwort-aendern">
 			<legend><?=h(_("Passwort ändern"))?></legend>
 			<dl>
-				<dt class="c-altes-passwort"><label for="old-password"><?=h(_("Altes Passw&ort"))?></label></dt>
-				<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password"<?=accesskey_attr(_("Altes Passw&ort"))?> tabindex="<?=$tabindex++?>" /></dd>
+				<dt class="c-altes-passwort"><label for="old-password"><?=h(_("Altes Passw&ort[login/einstellungen.php|1]"))?></label></dt>
+				<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password"<?=accesskey_attr(_("Altes Passw&ort[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
 
-				<dt class="c-neues-passwort"><label for="new-password"><?=h(_("Neues Passwort&"))?></label></dt>
-				<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password"<?=accesskey_attr(_("Neues Passwort&"))?> tabindex="<?=$tabindex++?>" /></dd>
+				<dt class="c-neues-passwort"><label for="new-password"><?=h(_("Neues Passwort&[login/einstellungen.php|1]"))?></label></dt>
+				<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password"<?=accesskey_attr(_("Neues Passwort&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
 
-				<dt class="c-neues-passwort-wiederholen"><label for="new-password2"><?=h(_("Neues Passwort wiederholen&"))?></label></dt>
-				<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2"<?=accesskey_attr(_("Neues Passwort wiederholen&"))?> tabindex="<?=$tabindex++?>" /></dd>
+				<dt class="c-neues-passwort-wiederholen"><label for="new-password2"><?=h(_("Neues Passwort wiederholen&[login/einstellungen.php|1]"))?></label></dt>
+				<dd class="c-neues-passwort-wiederholen"><input type="password" name="new-password2" id="new-password2"<?=accesskey_attr(_("Neues Passwort wiederholen&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
 			</dl>
 		</fieldset>
 	</fieldset>

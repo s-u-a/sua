@@ -12,7 +12,7 @@
 	{
 		home_gui::html_head('http://'.$_SERVER['HTTP_HOST'].h_root.'/chat/');
 ?>
-<h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("title_abbr"), _("Chat")))?></h2>
+<h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Chat")))?></h2>
 <?php
 	}
 
@@ -21,8 +21,8 @@
 ?>
 <form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/chat.php')?>" method="get" id="chat-form">
 	<dl>
-		<dt class="c-kanal"><label for="i-kanal"><?=h(_("Kanal&"))?></label></dt>
-		<dd class="c-kanal"><select name="channel" id="i-kanal"<?=accesskey_attr(_("Kanal&"))?>>
+		<dt class="c-kanal"><label for="i-kanal"><?=h(_("Kanal&[chat.php|1]"))?></label></dt>
+		<dd class="c-kanal"><select name="channel" id="i-kanal"<?=accesskey_attr(_("Kanal&[chat.php|1]"))?>>
 <?php
 		foreach($channels as $id=>$info)
 		{
@@ -33,10 +33,10 @@
 ?>
 		</select></dd>
 
-		<dt class="c-spitzname"><label for="i-spitzname"><?=h(_("Spitzname&"))?></label></dt>
-		<dd class="c-spitzname"><input type="text" name="nickname" id="i-spitzname"<?=accesskey_attr(_("Spitzname&"))?> /></dd>
+		<dt class="c-spitzname"><label for="i-spitzname"><?=h(_("Spitzname&[chat.php|1]"))?></label></dt>
+		<dd class="c-spitzname"><input type="text" name="nickname" id="i-spitzname"<?=accesskey_attr(_("Spitzname&[chat.php|1]"))?> /></dd>
 	</dl>
-	<div><button type="submit"<?=accesskey_attr(_("Verbinden&"))?>><?=h(_("Verbinden&"))?></button></div>
+	<div><button type="submit"<?=accesskey_attr(_("Verbinden&[chat.php|1]"))?>><?=h(_("Verbinden&[chat.php|1]"))?></button></div>
 </form>
 <script type="text/javascript">
 // <![CDATA[
@@ -83,7 +83,7 @@
 <?='<?xml version="1.0" encoding="UTF-8"?>'."\n"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=h(_("LANG"))?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=h(_("[LANG]"))?>">
 	<head>
 		<title><?=h($channels[$_REQUEST['channel']][0])?></title>
 		<base href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/chat/')?>" />

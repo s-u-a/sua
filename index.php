@@ -15,7 +15,7 @@
 	$SHOW_META_DESCRIPTION = true;
 	home_gui::html_head();
 ?>
-<h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Neuigkeiten</h2>
+<h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Neuigkeiten")))?></h2>
 <?php
 	$news_array = array();
 	if(is_file(global_setting("DB_NEWS")) && filesize(global_setting("DB_NEWS")) > 0 && is_readable(global_setting("DB_NEWS")))
@@ -40,7 +40,7 @@
 		if(isset($news['time']))
 		{
 ?>
-	<div class="time"><?=date('Y-m-d, H:i:s', $news['time'])?></div>
+	<div class="time"><?=date(_('Y-m-d, H:i:s'), $news['time'])?></div>
 <?php
 		}
 

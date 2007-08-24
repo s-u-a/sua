@@ -731,10 +731,10 @@
 				$count = (double) substr($count, 1);
 		}
 
-		$count = str_replace('.', _("thousand_separator"), number_format($count, $round, ',', '.'));
+		$count = str_replace('.', _("[thousand_separator]"), number_format($count, $round, ',', '.'));
 
 		if($neg)
-			$count = _("minus_sign").$count;
+			$count = _("[minus_sign]").$count;
 
 		return $count;
 	}

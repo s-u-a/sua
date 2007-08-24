@@ -23,7 +23,7 @@
 
 	home_gui::html_head();
 ?>
-<h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("title_abbr"), _("Features")))?></h2>
+<h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Features")))?></h2>
 <ul>
 	<li><?=h(sprintf(ngettext("%d Gebäudetyp", "%d Gebäudetypen", count($items->getItemsList('gebaeude'))), count($items->getItemsList('gebaeude'))))?></li>
 	<li><?=h(sprintf(ngettext("%d Forschungsmöglichkeit", "%d Forschungsmöglichkeiten", count($items->getItemsList('forschung'))), count($items->getItemsList('forschung'))))?></li>

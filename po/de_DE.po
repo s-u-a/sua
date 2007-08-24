@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-08-19 06:42+0100\n"
+"PO-Revision-Date: 2007-08-25 00:00+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -30,6 +30,8 @@ msgstr "Error: Database version is %s but should be %s. Please run db_things/upd
 
 #: ../login/scripts/include.php:114
 #: ../login/flotten.php:29
+#: ../passwd.php:52
+#: ../passwd.php:77
 msgid "Datenbankfehler."
 msgstr "Datenbankfehler."
 
@@ -44,29 +46,37 @@ msgstr "Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %
 msgid "HTTP redirect: %s"
 msgstr "HTTP redirect: %s"
 
+#: ../login/scripts/include.php:194
+#: ../chat.php:86
+#: ../include.php:17
+#: ../public_message.php:7
+msgid "[LANG]"
+msgstr "de"
+
 #: ../login/scripts/include.php:197
 #: ../include.php:19
 #: ../include.php:25
-msgid "title_abbr_full"
+#: ../public_message.php:10
+msgid "[title_abbr_full]"
 msgstr "S-U-A – Stars Under Attack"
 
 #: ../login/scripts/include.php:202
-#: ../engine/include.php:735
-msgid "thousand_separator"
+#: ../engine/include.php:734
+msgid "[thousand_separator]"
 msgstr " "
 
 #: ../login/scripts/include.php:270
 #: ../login/scripts/include.php:466
 #: ../login/scripts/include.php:598
-msgid "Zum Inhalt"
+msgid "Zum Inhalt&[login/scripts/include.php|1]"
 msgstr "Zum Inhalt"
 
 #: ../login/scripts/include.php:271
-msgid "Zur Navigation"
+msgid "Zur Navigation&[login/scripts/include.php|1]"
 msgstr "Zur Navigation"
 
 #: ../login/scripts/include.php:272
-msgid "Zu den Spieldaten"
+msgid "Zu den Spieldaten&[login/scripts/include.php|1]"
 msgstr "Zu den Spieldaten"
 
 #: ../login/scripts/include.php:280
@@ -86,6 +96,8 @@ msgid "Radium"
 msgstr "Radium"
 
 #: ../login/scripts/include.php:292
+#: ../faq.php:66
+#: ../faq.php:81
 msgid "Tritium"
 msgstr "Tritium"
 
@@ -118,6 +130,7 @@ msgstr "%s (Serverzeit)"
 #: ../login/scripts/include.php:306
 #: ../login/scripts/include.php:315
 #: ../login/scripts/include.php:330
+#: ../index.php:43
 msgid "Y-m-d, H:i:s"
 msgstr "Y-m-d, H:i:s"
 
@@ -149,20 +162,21 @@ msgstr "„%s“ (%s)"
 #: ../login/flotten.php:968
 #: ../engine/classes/user.php:3119
 #: ../engine/classes/user.php:3120
+#: ../register.php:106
 #, php-format
 msgid "%d:%d:%d"
 msgstr "%d:%d:%d"
 
 #: ../login/scripts/include.php:394
 #, php-format
-msgid "Sie haben %s neue &Nachricht."
-msgid_plural "Sie haben %s neue &Nachrichten."
+msgid "Sie haben %s neue &Nachricht.[login/scripts/include.php|2]"
+msgid_plural "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]"
 msgstr[0] "Sie haben %s neue &Nachricht."
 msgstr[1] "Sie haben %s neue &Nachrichten."
 
 #: ../login/scripts/include.php:465
 #: ../login/scripts/include.php:597
-msgid "Zur Rohstoffanzeige"
+msgid "Zur Rohstoffanzeige&[login/scripts/include.php|1]"
 msgstr "Zur Rohstoffanzeige"
 
 #: ../login/scripts/include.php:474
@@ -170,7 +184,7 @@ msgid "Planeten wechseln"
 msgstr "Planeten wechseln"
 
 #: ../login/scripts/include.php:484
-msgid "Ihre &Planeten"
+msgid "Ihre &Planeten[login/scripts/include.php|3]"
 msgstr "Ihre &Planeten"
 
 #: ../login/scripts/include.php:497
@@ -178,100 +192,95 @@ msgid "Wechseln"
 msgstr "Wechseln"
 
 #: ../login/scripts/include.php:502
-msgid "&Übersicht"
+msgid "&Übersicht[login/scripts/include.php|3]"
 msgstr "&Übersicht"
 
 #: ../login/scripts/include.php:503
-msgid "&Rohstoffe"
+msgid "&Rohstoffe[login/scripts/include.php|3]"
 msgstr "&Rohstoffe"
 
 #: ../login/scripts/include.php:504
-msgid "&Gebäude"
+msgid "&Gebäude[login/scripts/include.php|3]"
 msgstr "&Gebäude"
 
 #: ../login/scripts/include.php:505
-msgid "&Forschung"
+msgid "&Forschung[login/scripts/include.php|3]"
 msgstr "&Forschung"
 
 #: ../login/scripts/include.php:506
-msgid "Ro&boter"
+msgid "Ro&boter[login/scripts/include.php|3]"
 msgstr "Ro&boter"
 
 #: ../login/scripts/include.php:507
-msgid "F&lotten"
+msgid "F&lotten[login/scripts/include.php|3]"
 msgstr "F&lotten"
 
 #: ../login/scripts/include.php:508
-msgid "&Schiffswerft"
+msgid "&Schiffswerft[login/scripts/include.php|3]"
 msgstr "&Schiffswerft"
 
 #: ../login/scripts/include.php:509
-msgid "&Verteidigung"
+msgid "&Verteidigung[login/scripts/include.php|3]"
 msgstr "&Verteidigung"
 
 #: ../login/scripts/include.php:510
-msgid "Han&delsbörse"
+msgid "Han&delsbörse[login/scripts/include.php|3]"
 msgstr "Han&delsbörse"
 
 #: ../login/scripts/include.php:511
-msgid "I&mperium"
+msgid "I&mperium[login/scripts/include.php|3]"
 msgstr "I&mperium"
 
 #: ../login/scripts/include.php:515
-msgid "&Karte"
+msgid "&Karte[login/scripts/include.php|3]"
 msgstr "&Karte"
 
 #: ../login/scripts/include.php:516
-msgid "All&ianz"
+msgid "All&ianz[login/scripts/include.php|3]"
 msgstr "All&ianz"
 
 #: ../login/scripts/include.php:517
-msgid "V&erbündete"
+msgid "V&erbündete[login/scripts/include.php|3]"
 msgstr "V&erbündete"
 
 #: ../login/scripts/include.php:518
-msgid "&Highscores"
+msgid "&Highscores[login/scripts/include.php|3]"
 msgstr "&Highscores"
 
 #: ../login/scripts/include.php:519
-msgid "Na&chrichten"
+msgid "Na&chrichten[login/scripts/include.php|3]"
 msgstr "Na&chrichten"
 
 #: ../login/scripts/include.php:520
-msgid "Forschungsb&aum"
+msgid "Forschungsb&aum[login/scripts/include.php|3]"
 msgstr "Forschungsb&aum"
 
 #: ../login/scripts/include.php:521
-msgid "Eins&tellungen"
+msgid "Eins&tellungen[login/scripts/include.php|3]"
 msgstr "Eins&tellungen"
 
 #: ../login/scripts/include.php:526
-#: ../include.php:131
-msgid "Adminbereich&"
+msgid "Adminbereich&[login/scripts/include.php|3]"
 msgstr "Adminbereich"
 
 #: ../login/scripts/include.php:532
-msgid "Abmelden&"
+msgid "Abmelden&[login/scripts/include.php|3]"
 msgstr "Abmelden"
 
 #: ../login/scripts/include.php:543
-#: ../include.php:124
-msgid "Board&"
+msgid "Board&[login/scripts/include.php|3]"
 msgstr "Board"
 
 #: ../login/scripts/include.php:544
-#: ../include.php:122
-msgid "FAQ&"
+msgid "FAQ&[login/scripts/include.php|3]"
 msgstr "FAQ"
 
 #: ../login/scripts/include.php:545
-#: ../include.php:123
-msgid "Chat&"
+msgid "Chat&[login/scripts/include.php|3]"
 msgstr "Chat"
 
 #: ../login/scripts/include.php:546
-#: ../include.php:125
-msgid "Entwicklerseite&"
+msgid "Entwicklerseite&[login/scripts/include.php|3]"
 msgstr "Entwicklerseite"
 
 #: ../login/scripts/include.php:556
@@ -291,7 +300,7 @@ msgid "Lokalzeit"
 msgstr "Lokalzeit"
 
 #: ../login/scripts/include.php:583
-msgid "Changelog anzeigen"
+msgid "Changelog anzeigen&[login/scripts/include.php|4]"
 msgstr "Changelog anzeigen"
 
 #: ../login/scripts/include.php:583
@@ -407,6 +416,7 @@ msgstr "Ankunft"
 
 #: ../login/flotten.php:428
 #: ../login/flotten.php:504
+#: ../public_message.php:56
 msgid "H:i:s, Y-m-d"
 msgstr "H:i:s, Y-m-d"
 
@@ -428,7 +438,7 @@ msgstr "Ungültige Aktion."
 #: ../faq.php:186
 #: ../faq.php:187
 #: ../faq.php:188
-msgid "unit_separator"
+msgid "[unit_separator]"
 msgstr " "
 
 #: ../login/flotten.php:462
@@ -486,7 +496,7 @@ msgstr[1] "Tonnen"
 
 #: ../login/flotten.php:489
 #: ../login/flotten.php:491
-msgid "Gesch&windigkeit"
+msgid "Gesch&windigkeit[login/flotten.php|1]"
 msgstr "Gesch&windigkeit"
 
 #: ../login/flotten.php:503
@@ -517,7 +527,7 @@ msgstr "Verbleibend"
 
 #: ../login/flotten.php:516
 #: ../login/flotten.php:518
-msgid "A&uftrag"
+msgid "A&uftrag[login/flotten.php|1]"
 msgstr "A&uftrag"
 
 #: ../login/flotten.php:534
@@ -526,27 +536,27 @@ msgstr "Transport"
 
 #: ../login/flotten.php:541
 #: ../login/flotten.php:542
-msgid "Carbo&n"
+msgid "Carbo&n[login/flotten.php|1]"
 msgstr "Carbo&n"
 
 #: ../login/flotten.php:544
 #: ../login/flotten.php:545
-msgid "Aluminium&"
+msgid "Aluminium&[login/flotten.php|1]"
 msgstr "Aluminium"
 
 #: ../login/flotten.php:547
 #: ../login/flotten.php:548
-msgid "Wolfram&"
+msgid "Wolfram&[login/flotten.php|1]"
 msgstr "Wolfram"
 
 #: ../login/flotten.php:550
 #: ../login/flotten.php:551
-msgid "Radium&"
+msgid "Radium&[login/flotten.php|1]"
 msgstr "Radium"
 
 #: ../login/flotten.php:553
 #: ../login/flotten.php:554
-msgid "Tritium&"
+msgid "Tritium&[login/flotten.php|1]"
 msgstr "Tritium"
 
 #: ../login/flotten.php:612
@@ -560,7 +570,7 @@ msgid "%s (Lokalzeit)"
 msgstr "%s (Lokalzeit)"
 
 #: ../login/flotten.php:717
-msgid "Absen&den"
+msgid "Absen&den[login/flotten.php|1]"
 msgstr "Absen&den"
 
 #: ../login/flotten.php:738
@@ -580,25 +590,25 @@ msgid "Bauen Sie %s aus, um die maximale Anzahl zu erhöhen."
 msgstr "Bauen Sie %s aus, um die maximale Anzahl zu erhöhen."
 
 #: ../login/flotten.php:741
-msgid "item_F0_def_acc"
+msgid "[item_F0_def_acc]"
 msgstr "das Kontrollwesen"
 
 #: ../login/flotten.php:757
 #: ../login/flotten.php:758
-msgid "&Ziel"
+msgid "&Ziel[login/flotten.php|2]"
 msgstr "&Ziel"
 
 #: ../login/flotten.php:758
-msgid "Ziel: System&"
+msgid "Ziel: System&[login/flotten.php|2]"
 msgstr "Ziel: System"
 
 #: ../login/flotten.php:758
-msgid "Ziel: Planet&"
+msgid "Ziel: Planet&[login/flotten.php|2]"
 msgstr "Ziel: Planet"
 
 #: ../login/flotten.php:761
 #: ../login/flotten.php:763
-msgid "Pla&net"
+msgid "Pla&net[login/flotten.php|2]"
 msgstr "Pla&net"
 
 #: ../login/flotten.php:764
@@ -611,16 +621,16 @@ msgid "Lesezeichen"
 msgstr "Lesezeichen"
 
 #: ../login/flotten.php:785
-msgid "[unbesiedelt]"
-msgstr "[unbesiedelt]"
+msgid "unbesiedelt"
+msgstr "unbesiedelt"
 
 #: ../login/flotten.php:795
 msgid "Eigene Planeten"
 msgstr "Eigene Planeten"
 
 #: ../login/flotten.php:814
-msgid "[Lesezeichen verwalten]"
-msgstr "[Lesezeichen verwalten]"
+msgid "Lesezeichen verwalten&[login/flotten.php|2]"
+msgstr "Lesezeichen verwalten"
 
 #: ../login/flotten.php:864
 msgid "Bündnisflug"
@@ -628,12 +638,12 @@ msgstr "Bündnisflug"
 
 #: ../login/flotten.php:866
 #: ../login/flotten.php:867
-msgid "Benutzername&"
+msgid "Benutzername&[login/flotten.php|2]"
 msgstr "Benutzername"
 
 #: ../login/flotten.php:869
 #: ../login/flotten.php:870
-msgid "Flottenpasswort&"
+msgid "Flottenpasswort&[login/flotten.php|2]"
 msgstr "Flottenpasswort"
 
 #: ../login/flotten.php:880
@@ -651,7 +661,7 @@ msgid "%s vorhanden"
 msgstr "%s vorhanden"
 
 #: ../login/flotten.php:901
-msgid "&Weiter"
+msgid "&Weiter[login/flotten.php|2]"
 msgstr "&Weiter"
 
 #: ../login/flotten.php:923
@@ -672,8 +682,8 @@ msgid "Das alte Passwort stimmt nicht."
 msgstr "Das alte Passwort stimmt nicht."
 
 #: ../login/einstellungen.php:157
-msgid "Die beiden neuen Passwörter stimmen nicht überein."
-msgstr "Die beiden neuen Passwörter stimmen nicht überein."
+msgid "Die beiden neuen Passworte stimmen nicht überein."
+msgstr "Die beiden neuen Passworte stimmen nicht überein."
 
 #: ../login/einstellungen.php:193
 msgid "Einstellungen"
@@ -685,12 +695,12 @@ msgstr "Aussehen"
 
 #: ../login/einstellungen.php:206
 #: ../login/einstellungen.php:208
-msgid "Skin&"
+msgid "Skin&[login/einstellungen.php|1]"
 msgstr "Skin"
 
 #: ../login/einstellungen.php:235
 #: ../login/einstellungen.php:237
-msgid "Schrift&"
+msgid "Schrift&[login/einstellungen.php|1]"
 msgstr "Schrift"
 
 #: ../login/einstellungen.php:238
@@ -703,7 +713,7 @@ msgstr "Ihre Lieblingsschrift"
 
 #: ../login/einstellungen.php:243
 #: ../login/einstellungen.php:244
-msgid "Werbung ausblenden&"
+msgid "Werbung ausblenden&[login/einstellungen.php|1]"
 msgstr "Werbung ausblenden"
 
 #: ../login/einstellungen.php:244
@@ -716,7 +726,7 @@ msgstr "Verhalten"
 
 #: ../login/einstellungen.php:268
 #: ../login/einstellungen.php:269
-msgid "Spionagesonden&"
+msgid "Spionagesonden&[login/einstellungen.php|1]"
 msgstr "Spionagesonden"
 
 #: ../login/einstellungen.php:269
@@ -725,7 +735,7 @@ msgstr "Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus d
 
 #: ../login/einstellungen.php:271
 #: ../login/einstellungen.php:272
-msgid "Auto-Schnellbau&"
+msgid "Auto-Schnellbau&[login/einstellungen.php|1]"
 msgstr "Auto-Schnellbau"
 
 #: ../login/einstellungen.php:272
@@ -734,7 +744,7 @@ msgstr "Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten unb
 
 #: ../login/einstellungen.php:274
 #: ../login/einstellungen.php:275
-msgid "Schnellbau auf ausgebaute&"
+msgid "Schnellbau auf ausgebaute&[login/einstellungen.php|1]"
 msgstr "Schnellbau auf ausgebaute"
 
 #: ../login/einstellungen.php:275
@@ -743,7 +753,7 @@ msgstr "Durch diese Option werden auch ausgebaute Planeten bei der Schnellbau-Fu
 
 #: ../login/einstellungen.php:277
 #: ../login/einstellungen.php:278
-msgid "Schnell-Shortcuts&"
+msgid "Schnell-Shortcuts&[login/einstellungen.php|1]"
 msgstr "Schnell-Shortcuts"
 
 #: ../login/einstellungen.php:278
@@ -752,7 +762,7 @@ msgstr "Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weit
 
 #: ../login/einstellungen.php:280
 #: ../login/einstellungen.php:281
-msgid "Javascript-Tooltips&"
+msgid "Javascript-Tooltips&[login/einstellungen.php|1]"
 msgstr "Javascript-Tooltips"
 
 #: ../login/einstellungen.php:281
@@ -761,7 +771,7 @@ msgstr "Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, wer
 
 #: ../login/einstellungen.php:283
 #: ../login/einstellungen.php:284
-msgid "Auto-Refresh&"
+msgid "Auto-Refresh&[login/einstellungen.php|1]"
 msgstr "Auto-Refresh"
 
 #: ../login/einstellungen.php:284
@@ -770,7 +780,7 @@ msgstr "Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenab
 
 #: ../login/einstellungen.php:286
 #: ../login/einstellungen.php:287
-msgid "Externe Navigationslinks&"
+msgid "Externe Navigationslinks&[login/einstellungen.php|1]"
 msgstr "Externe Navigationslinks"
 
 #: ../login/einstellungen.php:287
@@ -779,7 +789,7 @@ msgstr "Wenn diese Option aktiviert ist, werden in der Navigation Links auf spie
 
 #: ../login/einstellungen.php:289
 #: ../login/einstellungen.php:291
-msgid "JavaScript-Performance&"
+msgid "JavaScript-Performance&[login/einstellungen.php|1]"
 msgstr "JavaScript-Performance"
 
 #: ../login/einstellungen.php:292
@@ -808,7 +818,7 @@ msgstr "Nach Änderung des Instant-Messaging-Accounts wird zunächst eine Bestä
 
 #: ../login/einstellungen.php:312
 #: ../login/einstellungen.php:313
-msgid "Nachrichten auf jeder Seite&"
+msgid "Nachrichten auf jeder Seite&[login/einstellungen.php|1]"
 msgstr "Nachrichten auf jeder Seite"
 
 #: ../login/einstellungen.php:313
@@ -817,7 +827,7 @@ msgstr "Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angeze
 
 #: ../login/einstellungen.php:319
 #: ../login/einstellungen.php:321
-msgid "IM-Account&"
+msgid "IM-Account&[login/einstellungen.php|1]"
 msgstr "IM-Account"
 
 #: ../login/einstellungen.php:322
@@ -846,37 +856,37 @@ msgstr "IM-Benachrichtigung"
 
 #: ../login/einstellungen.php:369
 #: ../login/einstellungen.php:371
-msgid "Kämpfe&"
+msgid "Kämpfe&[login/einstellungen.php|1]"
 msgstr "Kämpfe"
 
 #: ../login/einstellungen.php:382
 #: ../login/einstellungen.php:384
-msgid "Spionage&"
+msgid "Spionage&[login/einstellungen.php|1]"
 msgstr "Spionage"
 
 #: ../login/einstellungen.php:395
 #: ../login/einstellungen.php:396
-msgid "Transport&"
+msgid "Transport&[login/einstellungen.php|1]"
 msgstr "Transport"
 
 #: ../login/einstellungen.php:408
 #: ../login/einstellungen.php:410
-msgid "Sammeln&"
+msgid "Sammeln&[login/einstellungen.php|1]"
 msgstr "Sammeln"
 
 #: ../login/einstellungen.php:421
 #: ../login/einstellungen.php:422
-msgid "Besiedelung&"
+msgid "Besiedelung&[login/einstellungen.php|1]"
 msgstr "Besiedelung"
 
 #: ../login/einstellungen.php:438
 #: ../login/einstellungen.php:441
-msgid "Benutzernachrichten&"
+msgid "Benutzernachrichten&[login/einstellungen.php|1]"
 msgstr "Benutzernachrichten"
 
 #: ../login/einstellungen.php:444
 #: ../login/einstellungen.php:447
-msgid "Verbündete&"
+msgid "Verbündete&[login/einstellungen.php|1]"
 msgstr "Verbündete"
 
 #: ../login/einstellungen.php:456
@@ -897,7 +907,7 @@ msgstr "IM-Benachichtigung"
 
 #: ../login/einstellungen.php:474
 #: ../login/einstellungen.php:476
-msgid "Gebäude&"
+msgid "Gebäude&[login/einstellungen.php|1]"
 msgstr "Gebäude"
 
 #: ../login/einstellungen.php:477
@@ -920,7 +930,7 @@ msgstr "Jedes einzelne"
 
 #: ../login/einstellungen.php:496
 #: ../login/einstellungen.php:498
-msgid "Forschung&"
+msgid "Forschung&[login/einstellungen.php|1]"
 msgstr "Forschung"
 
 #: ../login/einstellungen.php:500
@@ -930,7 +940,7 @@ msgstr "Jede einzelne"
 
 #: ../login/einstellungen.php:518
 #: ../login/einstellungen.php:520
-msgid "Roboter&"
+msgid "Roboter&[login/einstellungen.php|1]"
 msgstr "Roboter"
 
 #: ../login/einstellungen.php:522
@@ -950,7 +960,7 @@ msgstr "Alle"
 
 #: ../login/einstellungen.php:544
 #: ../login/einstellungen.php:546
-msgid "Schiffe&"
+msgid "Schiffe&[login/einstellungen.php|1]"
 msgstr "Schiffe"
 
 #: ../login/einstellungen.php:548
@@ -970,7 +980,7 @@ msgstr "Alle"
 
 #: ../login/einstellungen.php:570
 #: ../login/einstellungen.php:572
-msgid "Verteidigung&"
+msgid "Verteidigung&[login/einstellungen.php|1]"
 msgstr "Verteidigung"
 
 #: ../login/einstellungen.php:574
@@ -989,8 +999,7 @@ msgid "Alle [Verteidigungsanlagen]"
 msgstr "Alle"
 
 #: ../login/einstellungen.php:600
-#: ../login/einstellungen.php:669
-msgid "Speicher&n"
+msgid "Speicher&n[login/einstellungen.php|1]"
 msgstr "Speicher&n"
 
 #: ../login/einstellungen.php:608
@@ -998,7 +1007,7 @@ msgid "Urlaubsmodus"
 msgstr "Urlaubsmodus"
 
 #: ../login/einstellungen.php:615
-msgid "Urlaubsmodus&"
+msgid "Urlaubsmodus&[login/einstellungen.php|1]"
 msgstr "Urlaubsmodus"
 
 #: ../login/einstellungen.php:615
@@ -1039,7 +1048,7 @@ msgstr "Benutzeraccount"
 
 #: ../login/einstellungen.php:646
 #: ../login/einstellungen.php:647
-msgid "IP-Schutz&"
+msgid "IP-Schutz&[login/einstellungen.php|1]"
 msgstr "IP-Schutz"
 
 #: ../login/einstellungen.php:647
@@ -1048,7 +1057,7 @@ msgstr "Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adr
 
 #: ../login/einstellungen.php:649
 #: ../login/einstellungen.php:650
-msgid "E-Mail-Adresse&"
+msgid "E-Mail-Adresse&[login/einstellungen.php|1]"
 msgstr "E-Mail-Adresse"
 
 #: ../login/einstellungen.php:650
@@ -1057,7 +1066,7 @@ msgstr "Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen habe
 
 #: ../login/einstellungen.php:652
 #: ../login/einstellungen.php:653
-msgid "Ben&utzerbeschreibung"
+msgid "Ben&utzerbeschreibung[login/einstellungen.php|1]"
 msgstr "Ben&utzerbeschreibung"
 
 #: ../login/einstellungen.php:656
@@ -1066,38 +1075,206 @@ msgstr "Passwort ändern"
 
 #: ../login/einstellungen.php:658
 #: ../login/einstellungen.php:659
-msgid "Altes Passw&ort"
+msgid "Altes Passw&ort[login/einstellungen.php|1]"
 msgstr "Altes Passw&ort"
 
 #: ../login/einstellungen.php:661
 #: ../login/einstellungen.php:662
-msgid "Neues Passwort&"
+msgid "Neues Passwort&[login/einstellungen.php|1]"
 msgstr "Neues Passwort"
 
 #: ../login/einstellungen.php:664
 #: ../login/einstellungen.php:665
-msgid "Neues Passwort wiederholen&"
+msgid "Neues Passwort wiederholen&[login/einstellungen.php|1]"
 msgstr "Neues Passwort wiederholen"
 
+#: ../login/einstellungen.php:669
+msgid "Speicher&n"
+msgstr "Speicher&n"
+
+#: ../rules.php:6
 #: ../faq.php:6
 #: ../chat.php:15
+#: ../index.php:18
 #: ../features.php:26
+#: ../register.php:8
+#: ../impressum.php:6
+#: ../passwd.php:34
 #, php-format
 msgid "%s – %s [s-u-a.net heading]"
 msgstr "%s – %s"
 
+#: ../rules.php:6
+#: ../rules.php:8
+#: ../rules.php:9
+#: ../rules.php:12
+#: ../rules.php:13
+#: ../rules.php:14
+#: ../rules.php:17
+#: ../rules.php:27
+#: ../rules.php:28
+#: ../rules.php:29
+#: ../rules.php:32
+#: ../rules.php:33
+#: ../rules.php:36
+#: ../rules.php:39
 #: ../faq.php:6
-#: ../faq.php:9
-#: ../faq.php:33
-#: ../faq.php:102
-#: ../faq.php:156
-#: ../faq.php:185
-#: ../faq.php:187
-#: ../faq.php:193
 #: ../chat.php:15
+#: ../index.php:18
 #: ../features.php:26
-msgid "title_abbr"
+#: ../register.php:8
+#: ../impressum.php:6
+#: ../passwd.php:34
+msgid "[title_abbr]"
 msgstr "S-U-A"
+
+#: ../rules.php:6
+msgid "Regeln"
+msgstr "Regeln"
+
+#: ../rules.php:7
+#: ../rules.php:11
+#: ../rules.php:16
+#: ../rules.php:31
+#: ../rules.php:35
+#: ../rules.php:38
+#, php-format
+msgid "§ %d: %s"
+msgstr "§ %d: %s"
+
+#: ../rules.php:7
+msgid "Allgemeine Nutzungsbedingungen"
+msgstr "Allgemeine Nutzungsbedingungen"
+
+#: ../rules.php:8
+#: ../rules.php:9
+#: ../rules.php:12
+#: ../rules.php:13
+#: ../rules.php:14
+#: ../rules.php:17
+#: ../rules.php:27
+#: ../rules.php:28
+#: ../rules.php:29
+#: ../rules.php:32
+#: ../rules.php:33
+#: ../rules.php:36
+#: ../rules.php:39
+#, php-format
+msgid "(%2$d) %3$s"
+msgstr "(%2$d) %3$s"
+
+#: ../rules.php:8
+#, php-format
+msgid "Um an %s teilzunehmen, ist es notwendig, den folgenden Nutzungsbedingungen zuzustimmen. Diese Nutzungsbedingungen gelten für das gesamte Angebot von %1$s, einschließlich dem Spiel selbst und dem Forum."
+msgstr "Um an %s teilzunehmen, ist es notwendig, den folgenden Nutzungsbedingungen zuzustimmen. Diese Nutzungsbedingungen gelten für das gesamte Angebot von %1$s, einschließlich dem Spiel selbst und dem Forum."
+
+#: ../rules.php:9
+#, php-format
+msgid "%s ist ein kostenloses Spiel. Es besteht kein Anspruch auf Verfügbarkeit, Funktionalität oder Schadensersatz. Zu jedem Zeitpunkt sind sämtliche Accounts inklusive der virtuellen Ressourcen und Schiffe Eigentum des Betreibers von %1$s."
+msgstr "%s ist ein kostenloses Spiel. Es besteht kein Anspruch auf Verfügbarkeit, Funktionalität oder Schadensersatz. Zu jedem Zeitpunkt sind sämtliche Accounts inklusive der virtuellen Ressourcen und Schiffe Eigentum des Betreibers von %1$s."
+
+#: ../rules.php:11
+msgid "Mitgliedschaft"
+msgstr "Mitgliedschaft"
+
+#: ../rules.php:12
+#, php-format
+msgid "Die Mitgliedschaft bei %s beginnt mit der Registrierung im Spiel."
+msgstr "Die Mitgliedschaft bei %s beginnt mit der Registrierung im Spiel."
+
+#: ../rules.php:13
+#, php-format
+msgid "Die Mitgliedschaft kann zu jeder Zeit von Seiten des Mitglieds beendet werden. Die Löschung der Daten kann nach der Beendigung der Mitgliedschaft aus technischen Gründen verzögert werden. Um die Löschung zu beschleunigen, hat das Mitglied die Möglichkeit, sich an einen der Administratoren zu wenden."
+msgstr "Die Mitgliedschaft kann zu jeder Zeit von Seiten des Mitglieds beendet werden. Die Löschung der Daten kann nach der Beendigung der Mitgliedschaft aus technischen Gründen verzögert werden. Um die Löschung zu beschleunigen, hat das Mitglied die Möglichkeit, sich an einen der Administratoren zu wenden."
+
+#: ../rules.php:14
+#, php-format
+msgid "Der Betreiber von %s behält sich das Recht vor, die Mitgliedschaft eines Benutzers seinerseits zu kündigen. Der Nutzer hat weder Einfluss auf die Entscheidung des Administrators hierzu, noch jedweden Rechtsanspruch auf eine Mitgliedschaft bei %1$s."
+msgstr "Der Betreiber von %s behält sich das Recht vor, die Mitgliedschaft eines Benutzers seinerseits zu kündigen. Der Nutzer hat weder Einfluss auf die Entscheidung des Administrators hierzu, noch jedweden Rechtsanspruch auf eine Mitgliedschaft bei %1$s."
+
+#: ../rules.php:16
+msgid "Nutzungsbeschränkungen"
+msgstr "Nutzungsbeschränkungen"
+
+#: ../rules.php:17
+#, php-format
+msgid "Es ist dem Benutzer nicht gestattet:"
+msgstr "Es ist dem Benutzer nicht gestattet:"
+
+#: ../rules.php:19
+msgid "Programme oder andere Personen ohne sein gleichzeitiges Zutun Aktionen im Spiel durchführen zu lassen"
+msgstr "Programme oder andere Personen ohne sein gleichzeitiges Zutun Aktionen im Spiel durchführen zu lassen"
+
+#: ../rules.php:20
+msgid "Sich mehrere Benutzeraccounts zu registrieren, um sich damit einen Vorteil vor anderen Spielern, zum Beispiel durch Versammlung der Rohstoffe verschiedener Accounts, zu verschaffen (so genannte „Multiaccounts“)"
+msgstr "Sich mehrere Benutzeraccounts zu registrieren, um sich damit einen Vorteil vor anderen Spielern, zum Beispiel durch Versammlung der Rohstoffe verschiedener Accounts, zu verschaffen (so genannte „Multiaccounts“)"
+
+#: ../rules.php:21
+msgid "Etwaige Sicherheitslücken zu seinem eigenen Vorteil auszunutzen. Er sollte solche Sicherheitslücken, wenn möglich, unmittelbar nach der Entdeckung einem Administrator melden."
+msgstr "Etwaige Sicherheitslücken zu seinem eigenen Vorteil auszunutzen. Er sollte solche Sicherheitslücken, wenn möglich, unmittelbar nach der Entdeckung einem Administrator melden."
+
+#: ../rules.php:22
+msgid "Seinen Account ohne die ausdrückliche Genehmigung des Betreibers an andere Personen weiterzugeben"
+msgstr "Seinen Account ohne die ausdrückliche Genehmigung des Betreibers an andere Personen weiterzugeben"
+
+#: ../rules.php:23
+msgid "Gegenstände des Spiels (wie zum Beispiel Rohstoffe) gegen Gegenstände oder Arbeitsleistungen außerhalb des Spiels (wie zum Beispiel Geld) einzutauschen"
+msgstr "Gegenstände des Spiels (wie zum Beispiel Rohstoffe) gegen Gegenstände oder Arbeitsleistungen außerhalb des Spiels (wie zum Beispiel Geld) einzutauschen"
+
+#: ../rules.php:24
+msgid "Seinen Account mit anderen Spielern zu teilen"
+msgstr "Seinen Account mit anderen Spielern zu teilen"
+
+#: ../rules.php:25
+msgid "Gegen jegliches deutsches Recht zu verstoßen, hierauf folgt eine sofortige Sperrung."
+msgstr "Gegen jegliches deutsches Recht zu verstoßen, hierauf folgt eine sofortige Sperrung."
+
+#: ../rules.php:27
+#, php-format
+msgid "Der Spieler wird ersucht, sich „fair“ gegenüber seinen Mitspielern zu verhalten, und diesen die Möglichkeit, sich im Spiel aufzubauen, nicht zu nehmen. Sollte ein Spieler sich auffällig oft nicht an diese Selbstverständlichkeit halten, so behält es sich der Betreiber vor, dem Spieler die Teilnahme an %s zu untersagen."
+msgstr "Der Spieler wird ersucht, sich „fair“ gegenüber seinen Mitspielern zu verhalten, und diesen die Möglichkeit, sich im Spiel aufzubauen, nicht zu nehmen. Sollte ein Spieler sich auffällig oft nicht an diese Selbstverständlichkeit halten, so behält es sich der Betreiber vor, dem Spieler die Teilnahme an %s zu untersagen."
+
+#: ../rules.php:28
+#, php-format
+msgid "Greift der Spieler einen anderen Spieler mehr als fünfmal in 24 Stunden an, so muss er mit Benachteiligungen im Spielverlauf rechnen."
+msgstr "Greift der Spieler einen anderen Spieler mehr als fünfmal in 24 Stunden an, so muss er mit Benachteiligungen im Spielverlauf rechnen."
+
+#: ../rules.php:29
+#, php-format
+msgid "Der Betreiber behält sich aus Gründen der Fairness das Recht vor, Allianzen aufzuteilen beziehungsweise aufzulösen und Bündnisse zu kündigen."
+msgstr "Der Betreiber behält sich aus Gründen der Fairness das Recht vor, Allianzen aufzuteilen beziehungsweise aufzulösen und Bündnisse zu kündigen."
+
+#: ../rules.php:31
+msgid "Datenschutz"
+msgstr "Datenschutz"
+
+#: ../rules.php:32
+#, php-format
+msgid "Während der Mitgliedschaft speichert der Betreiber den vom Benutzer angegebenen Namen sowie die von ihm angegebenen freiwilligen Angaben (wie zum Beispiel E-Mail-Adresse) in einer für Dritte uneinsehbaren Form. Auf Wunsch des Benutzers werden diese Daten inklusive seinem Account aus dem Spiel entfernt."
+msgstr "Während der Mitgliedschaft speichert der Betreiber den vom Benutzer angegebenen Namen sowie die von ihm angegebenen freiwilligen Angaben (wie zum Beispiel E-Mail-Adresse) in einer für Dritte uneinsehbaren Form. Auf Wunsch des Benutzers werden diese Daten inklusive seinem Account aus dem Spiel entfernt."
+
+#: ../rules.php:33
+#, php-format
+msgid "Aus Sicherheitsgründen werden sämtliche Aktionen innerhalb des Spiels zusammen mit deren aufrufender IP-Adresse und Benutzernamen protokolliert. Diese Daten werden nicht an Dritte weitergegeben und dienen ausschließlich der Aufspürung von Regelverstößen. Aus technischen Gründen ist es den Administratoren im Spiel nicht möglich, jene Protokolldateien zu modifizieren."
+msgstr "Aus Sicherheitsgründen werden sämtliche Aktionen innerhalb des Spiels zusammen mit deren aufrufender IP-Adresse und Benutzernamen protokolliert. Diese Daten werden nicht an Dritte weitergegeben und dienen ausschließlich der Aufspürung von Regelverstößen. Aus technischen Gründen ist es den Administratoren im Spiel nicht möglich, jene Protokolldateien zu modifizieren."
+
+#: ../rules.php:35
+msgid "Haftung"
+msgstr "Haftung"
+
+#: ../rules.php:36
+#, php-format
+msgid "Der Betreiber von %s haftet in keinem Fall für eventuelle Schäden, die das Spiel beim Benutzer verursacht. Solche Schäden sind nicht im Sinne des Betreibers."
+msgstr "Der Betreiber von %s haftet in keinem Fall für eventuelle Schäden, die das Spiel beim Benutzer verursacht. Solche Schäden sind nicht im Sinne des Betreibers."
+
+#: ../rules.php:38
+msgid "Änderung der Nutzungsbedingungen"
+msgstr "Änderung der Nutzungsbedingungen"
+
+#: ../rules.php:39
+#, php-format
+msgid "Der Betreiber von %s behält sich das Recht vor, diese Nutzungsbedingungen jederzeit zu ändern. Er verpflichtet sich jedoch, dies spätestens zwei Wochen vor Inkrafttreten der Änderungen auf der Startseite anzukündigen."
+msgstr "Der Betreiber von %s behält sich das Recht vor, diese Nutzungsbedingungen jederzeit zu ändern. Er verpflichtet sich jedoch, dies spätestens zwei Wochen vor Inkrafttreten der Änderungen auf der Startseite anzukündigen."
 
 #: ../faq.php:6
 msgid "FAQ"
@@ -1113,6 +1290,16 @@ msgstr "Hier eine Liste häufig gestellter Fragen. Sollte die Frage, die Sie suc
 #, php-format
 msgid "Was brauche ich, um %s zu spielen?"
 msgstr "Was brauche ich, um %s zu spielen?"
+
+#: ../faq.php:9
+#: ../faq.php:33
+#: ../faq.php:102
+#: ../faq.php:156
+#: ../faq.php:185
+#: ../faq.php:187
+#: ../faq.php:193
+msgid "title_abbr"
+msgstr "S-U-A"
 
 #: ../faq.php:10
 #: ../faq.php:48
@@ -1185,6 +1372,7 @@ msgstr "Die Rohstoffanzeige passt nicht in mein Browserfenster und Querscrollen 
 
 #: ../faq.php:24
 #: ../faq.php:155
+#: ../passwd.php:128
 msgid "Wie kann ich die Administratoren erreichen?"
 msgstr "Wie kann ich die Administratoren erreichen?"
 
@@ -1281,8 +1469,9 @@ msgid "Gebäude-, Forschungs-, Roboter-, Flotten- und Verteidigungspunkte berech
 msgstr "Gebäude-, Forschungs-, Roboter-, Flotten- und Verteidigungspunkte berechnen sich aus den Rohstoffen, die die Gebäude/Forschungen/Robotern/Flotten/Verteidigungsanlagen an Rohstoffen gekostet haben, die Sie besitzen. Pro Tausend Rohstoffe bekommen Sie dabei einen Punkt in der entsprechenden Kategorie."
 
 #: ../faq.php:66
-msgid "Je mehr Tritium Sie im Flug verbrauchen, desto mehr Flugerfahrungspunkte erhalten Sie. Pro Tausend Tonnen Tritium, das Sie in einem erfolgreich am Ziel angelangten Flug verbraucht haben, bekommen Sie einen Flugerfahrungspunkt. Erfahrung im Flug lässt Ihre Schiffe schneller fliegen."
-msgstr "Je mehr Tritium Sie im Flug verbrauchen, desto mehr Flugerfahrungspunkte erhalten Sie. Pro Tausend Tonnen Tritium, das Sie in einem erfolgreich am Ziel angelangten Flug verbraucht haben, bekommen Sie einen Flugerfahrungspunkt. Erfahrung im Flug lässt Ihre Schiffe schneller fliegen."
+#, php-format
+msgid "Je mehr %s Sie im Flug verbrauchen, desto mehr Flugerfahrungspunkte erhalten Sie. Pro Tausend Tonnen %1$s, das Sie in einem erfolgreich am Ziel angelangten Flug verbraucht haben, bekommen Sie einen Flugerfahrungspunkt. Erfahrung im Flug lässt Ihre Schiffe schneller fliegen."
+msgstr "Je mehr %s Sie im Flug verbrauchen, desto mehr Flugerfahrungspunkte erhalten Sie. Pro Tausend Tonnen %1$s, das Sie in einem erfolgreich am Ziel angelangten Flug verbraucht haben, bekommen Sie einen Flugerfahrungspunkt. Erfahrung im Flug lässt Ihre Schiffe schneller fliegen."
 
 #: ../faq.php:67
 msgid "Pro Tausend Punkte, das Sie im Kampf Ihren Gegner verlieren ließen, bekommen Sie einen Kampferfahrungspunkt. Mehr Kampferfahrung schafft Ihnen Vorteile im Kampf."
@@ -1290,8 +1479,8 @@ msgstr "Pro Tausend Punkte, das Sie im Kampf Ihren Gegner verlieren ließen, bek
 
 #: ../faq.php:72
 #, php-format
-msgid "Ja, den gesamten Spielverlauf durch gilt eine Angriffssperre auf Spieler, die weniger als 5 % des eigenen Gesamtpunktestandes besitzen. Außerdem ist es Ihnen nicht möglich, Spieler anzugreifen, die aufgrund von Einschränkungen im Spiel (zum Beispiel dem Anfängerschutz) keine Angriffe auf Sie selbst fliegen können."
-msgstr "Ja, den gesamten Spielverlauf durch gilt eine Angriffssperre auf Spieler, die weniger als 5 % des eigenen Gesamtpunktestandes besitzen. Außerdem ist es Ihnen nicht möglich, Spieler anzugreifen, die aufgrund von Einschränkungen im Spiel (zum Beispiel dem Anfängerschutz) keine Angriffe auf Sie selbst fliegen können."
+msgid "Ja, den gesamten Spielverlauf durch gilt eine Angriffssperre auf Spieler, die weniger als %s %% des eigenen Gesamtpunktestandes besitzen. Außerdem ist es Ihnen nicht möglich, Spieler anzugreifen, die aufgrund von Einschränkungen im Spiel (zum Beispiel dem Anfängerschutz) keine Angriffe auf Sie selbst fliegen können."
+msgstr "Ja, den gesamten Spielverlauf durch gilt eine Angriffssperre auf Spieler, die weniger als %s %% des eigenen Gesamtpunktestandes besitzen. Außerdem ist es Ihnen nicht möglich, Spieler anzugreifen, die aufgrund von Einschränkungen im Spiel (zum Beispiel dem Anfängerschutz) keine Angriffe auf Sie selbst fliegen können."
 
 #: ../faq.php:77
 #, php-format
@@ -1301,8 +1490,9 @@ msgstr[0] "Ja, selbstverständlich. Derzeit können Sie maximal %d Planet haben
 msgstr[1] "Ja, selbstverständlich. Derzeit können Sie maximal %d Planeten haben."
 
 #: ../faq.php:78
-msgid "Wenn Sie mit der Spionagesonde einen leeren Planeten ausspionieren, können Sie nachsehen, wieviele Felder dieser hat. Die Felderzahl variiert dabei unabhängig von der Position des Planeten, die Felderzahl beträgt 100–500 Felder. Haben Sie einen Planeten gefunden, den Sie besiedeln möchten, können Sie einem Besiedelungsschiff den Auftrag dazu erteilen."
-msgstr "Wenn Sie mit der Spionagesonde einen leeren Planeten ausspionieren, können Sie nachsehen, wieviele Felder dieser hat. Die Felderzahl variiert dabei unabhängig von der Position des Planeten, die Felderzahl beträgt 100–500 Felder. Haben Sie einen Planeten gefunden, den Sie besiedeln möchten, können Sie einem Besiedelungsschiff den Auftrag dazu erteilen."
+#, php-format
+msgid "Wenn Sie mit der Spionagesonde einen leeren Planeten ausspionieren, können Sie nachsehen, wieviele Felder dieser hat. Die Felderzahl variiert dabei unabhängig von der Position des Planeten, die Felderzahl beträgt %d–%d Felder. Haben Sie einen Planeten gefunden, den Sie besiedeln möchten, können Sie einem Besiedelungsschiff den Auftrag dazu erteilen."
+msgstr "Wenn Sie mit der Spionagesonde einen leeren Planeten ausspionieren, können Sie nachsehen, wieviele Felder dieser hat. Die Felderzahl variiert dabei unabhängig von der Position des Planeten, die Felderzahl beträgt %d–%d Felder. Haben Sie einen Planeten gefunden, den Sie besiedeln möchten, können Sie einem Besiedelungsschiff den Auftrag dazu erteilen."
 
 #: ../faq.php:79
 msgid "Optional können Sie dem Besiedelungsschiff zusätzliche Flotte mitschicken, diese wird nach der Besiedelung rückkehren. (Anders als das Besiedelungsschiff, dieses wird bei der Besiedelung abgebaut, um ein Startkapital auf dem Planeten zur Verfügung zu stellen.) Auf diese Weise können Sie auf dem neuen Planeten sofort Rohstoffe und Roboter durch die Transportkapazität der Flotte bereitstellen."
@@ -1314,10 +1504,10 @@ msgstr "Überlegen Sie sich gut, wo Sie Ihre Planeten platzieren. Wenn Sie vorha
 
 #: ../faq.php:81
 #, php-format
-msgid "Einige Spieler bevorzugen es, ein oder zwei Kolonien des %d-Planet-Limits offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – solche Kolonien werden temporär besiedelt und auf Tritiumproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann."
-msgid_plural "Einige Spieler bevorzugen es, ein oder zwei Kolonien des %d-Planeten-Limits offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – solche Kolonien werden temporär besiedelt und auf Tritiumproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann."
-msgstr[0] "Einige Spieler bevorzugen es, ein oder zwei Kolonien des %d-Planet-Limits offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – solche Kolonien werden temporär besiedelt und auf Tritiumproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann."
-msgstr[1] "Einige Spieler bevorzugen es, ein oder zwei Kolonien des %d-Planeten-Limits offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – solche Kolonien werden temporär besiedelt und auf Tritiumproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann."
+msgid "Einige Spieler bevorzugen es, ein oder zwei Kolonien des %d-Planet-Limits offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – solche Kolonien werden temporär besiedelt und auf %sproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann."
+msgid_plural "Einige Spieler bevorzugen es, ein oder zwei Kolonien des %d-Planeten-Limits offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – solche Kolonien werden temporär besiedelt und auf %sproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann."
+msgstr[0] "Einige Spieler bevorzugen es, ein oder zwei Kolonien des %d-Planet-Limits offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – solche Kolonien werden temporär besiedelt und auf %sproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann."
+msgstr[1] "Einige Spieler bevorzugen es, ein oder zwei Kolonien des %d-Planeten-Limits offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – solche Kolonien werden temporär besiedelt und auf %sproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann."
 
 #: ../faq.php:86
 msgid "Mithilfe des Urlaubsmodus kann man seinen Account „einfrieren“, um während einer längeren Abwesenheit zu vermeiden, dass man angegriffen wird, ohne etwas dagegen tun zu können."
@@ -1400,20 +1590,56 @@ msgid "Beachten Sie: Die Bauzeit der globalen Forschung ist nicht unabhängig da
 msgstr "Beachten Sie: Die Bauzeit der globalen Forschung ist nicht unabhängig davon, von welchem Planeten man aus sie ausbaut. Eine höhere Ausbaustufe des Planeten, auf dem man die Forschung in Auftrag gibt, verkürzt die Bauzeit mehr als Ausbaustufen von Forschungslaboren auf anderen Planeten."
 
 #: ../faq.php:127
-msgid "Die Roboter helfen, Gebäudebauzeiten zu verkürzen und die Rohstoffproduktion zu erhöhen. Der Auswirkungsgrad der Roboter hängt von der aktuellen Stufe der Roboterbautechnik ab. Jede Stufe der Roboterbautechnik erhöht dabei den Auswirkungsgrad Ihrer Bauroboter um ein Viertelprozent, den Ihrer Minenroboter um ein Sechzehntelprozent."
-msgstr "Die Roboter helfen, Gebäudebauzeiten zu verkürzen und die Rohstoffproduktion zu erhöhen. Der Auswirkungsgrad der Roboter hängt von der aktuellen Stufe der Roboterbautechnik ab. Jede Stufe der Roboterbautechnik erhöht dabei den Auswirkungsgrad Ihrer Bauroboter um ein Viertelprozent, den Ihrer Minenroboter um ein Sechzehntelprozent."
+#, php-format
+msgid "Die Roboter helfen, Gebäudebauzeiten zu verkürzen und die Rohstoffproduktion zu erhöhen. Der Auswirkungsgrad der Roboter hängt von der aktuellen Stufe %s ab. Jede Stufe %1$s erhöht dabei den Auswirkungsgrad %s um ein Viertelprozent, den Ihrer Minenroboter um ein Sechzehntelprozent."
+msgstr "Die Roboter helfen, Gebäudebauzeiten zu verkürzen und die Rohstoffproduktion zu erhöhen. Der Auswirkungsgrad der Roboter hängt von der aktuellen Stufe %s ab. Jede Stufe %1$s erhöht dabei den Auswirkungsgrad %s um ein Viertelprozent, den Ihrer Minenroboter um ein Sechzehntelprozent."
+
+#: ../faq.php:127
+msgid "[item_B9_gen_def]"
+msgstr "der Roboterfabrik"
+
+#: ../faq.php:127
+msgid "[item_R01_pl_gen_poss_2]"
+msgstr "Ihre Bauroboter"
 
 #: ../faq.php:128
-msgid "Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur Verfügung steht. Für Bauroboter liegt die Grenze bei der Hälfte der ursprünglichen Felderzahl des Planeten (Ingenieurswissenschaft zeigt also keine Wirkung), für Minenroboter liegt sie bei der aktuellen Ausbaustufe der zugehörigen Mine (Ausnahme: Tritiumroboter, hier liegt die Grenze beim 2-Fachen der Ausbaustufe des Tritiumgenerators). Möglicherweise liegt eine zusätzliche Grenze für Minenroboter allerdings ebenfalls bei der Hälfte der Planetengröße. Übersteigt die Roboterzahl die Grenze, zeigen überschüssige Roboter keinerlei Wirkung mehr."
-msgstr "Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur Verfügung steht. Für Bauroboter liegt die Grenze bei der Hälfte der ursprünglichen Felderzahl des Planeten (Ingenieurswissenschaft zeigt also keine Wirkung), für Minenroboter liegt sie bei der aktuellen Ausbaustufe der zugehörigen Mine (Ausnahme: Tritiumroboter, hier liegt die Grenze beim 2-Fachen der Ausbaustufe des Tritiumgenerators). Möglicherweise liegt eine zusätzliche Grenze für Minenroboter allerdings ebenfalls bei der Hälfte der Planetengröße. Übersteigt die Roboterzahl die Grenze, zeigen überschüssige Roboter keinerlei Wirkung mehr."
+#, php-format
+msgid "Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur Verfügung steht. %s liegt die Grenze bei der Hälfte der ursprünglichen Felderzahl des Planeten (%s zeigt also keine Wirkung), für Minenroboter liegt sie bei der aktuellen Ausbaustufe der zugehörigen Mine (Ausnahme: %s, hier liegt die Grenze beim 2-Fachen der Ausbaustufe %s). Möglicherweise liegt eine zusätzliche Grenze für Minenroboter allerdings ebenfalls bei der Hälfte der Planetengröße. Übersteigt die Roboterzahl die Grenze, zeigen überschüssige Roboter keinerlei Wirkung mehr."
+msgstr "Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur Verfügung steht. %s liegt die Grenze bei der Hälfte der ursprünglichen Felderzahl des Planeten (%s zeigt also keine Wirkung), für Minenroboter liegt sie bei der aktuellen Ausbaustufe der zugehörigen Mine (Ausnahme: %s, hier liegt die Grenze beim 2-Fachen der Ausbaustufe %s). Möglicherweise liegt eine zusätzliche Grenze für Minenroboter allerdings ebenfalls bei der Hälfte der Planetengröße. Übersteigt die Roboterzahl die Grenze, zeigen überschüssige Roboter keinerlei Wirkung mehr."
+
+#: ../faq.php:128
+msgid "[item_R01_pl_conj_for]"
+msgstr "für Bauroboter"
+
+#: ../faq.php:128
+msgid "[item_F9_nom]"
+msgstr "Ingenieurswissenschaft"
+
+#: ../faq.php:128
+msgid "[item_R06_pl_nom]"
+msgstr "Tritiumroboter"
+
+#: ../faq.php:128
+msgid "[item_B4_gen_def]"
+msgstr "des Tritiumgenerators"
 
 #: ../faq.php:133
-msgid "Die Anzahl der gleichzeitig koordinierbaren Flotten berechnet sich aus der Entwicklungsstufe Ihres Kontrollwesens und der Anzahl der Werften in Ihrem Imperium. Potenzieren Sie einfach das Produkt der beiden Werte mit 0,7 und runden Sie das Ergebnis auf."
-msgstr "Die Anzahl der gleichzeitig koordinierbaren Flotten berechnet sich aus der Entwicklungsstufe Ihres Kontrollwesens und der Anzahl der Werften in Ihrem Imperium. Potenzieren Sie einfach das Produkt der beiden Werte mit 0,7 und runden Sie das Ergebnis auf."
+#, php-format
+msgid "Die Anzahl der gleichzeitig koordinierbaren Flotten berechnet sich aus der Entwicklungsstufe %s und der Anzahl der Werften in Ihrem Imperium. Potenzieren Sie einfach das Produkt der beiden Werte mit 0,7 und runden Sie das Ergebnis auf."
+msgstr "Die Anzahl der gleichzeitig koordinierbaren Flotten berechnet sich aus der Entwicklungsstufe %s und der Anzahl der Werften in Ihrem Imperium. Potenzieren Sie einfach das Produkt der beiden Werte mit 0,7 und runden Sie das Ergebnis auf."
+
+#: ../faq.php:133
+msgid "[item_F0_gen_def]"
+msgstr "des Kontrollwesens"
 
 #: ../faq.php:134
-msgid "Nocheinmal zum Mitschreiben: Anzahl gleichzeitig koordinierbarer Flotten = aufgerundet((Kontrollwesen*Werftenzahl)^0,7)."
-msgstr "Nocheinmal zum Mitschreiben: Anzahl gleichzeitig koordinierbarer Flotten = aufgerundet((Kontrollwesen*Werftenzahl)^0,7)."
+#, php-format
+msgid "Nocheinmal zum Mitschreiben: Anzahl gleichzeitig koordinierbarer Flotten = aufgerundet((%s*Werftenzahl)^0,7)."
+msgstr "Nocheinmal zum Mitschreiben: Anzahl gleichzeitig koordinierbarer Flotten = aufgerundet((%s*Werftenzahl)^0,7)."
+
+#: ../faq.php:134
+msgid "[item_F0]"
+msgstr "Kontrollwesen"
 
 #: ../faq.php:139
 msgid "Wenn Sie sich mit einem Spieler verbünden, dient das nicht nur der Diplomatie, sondern hat auch praktische Auswirkungen im Spielverlauf."
@@ -1467,8 +1693,13 @@ msgid "Ein solcher Fall kann viele Ursachen haben. Dies hier stellt eine kleine 
 msgstr "Ein solcher Fall kann viele Ursachen haben. Dies hier stellt eine kleine Auswahl dar."
 
 #: ../faq.php:174
-msgid "Der Planet ist ausgebaut. Ein Weiterbau der meisten Gebäude ist somit nicht möglich. Entwickeln Sie die Ingeneurswissenschaft oder bauen Sie Gebäude zurück, um wieder freie Felder zu erlangen."
-msgstr "Der Planet ist ausgebaut. Ein Weiterbau der meisten Gebäude ist somit nicht möglich. Entwickeln Sie die Ingeneurswissenschaft oder bauen Sie Gebäude zurück, um wieder freie Felder zu erlangen."
+#, php-format
+msgid "Der Planet ist ausgebaut. Ein Weiterbau der meisten Gebäude ist somit nicht möglich. Entwickeln Sie %s oder bauen Sie Gebäude zurück, um wieder freie Felder zu erlangen."
+msgstr "Der Planet ist ausgebaut. Ein Weiterbau der meisten Gebäude ist somit nicht möglich. Entwickeln Sie %s oder bauen Sie Gebäude zurück, um wieder freie Felder zu erlangen."
+
+#: ../faq.php:174
+msgid "[item_F9_acc_def]"
+msgstr "die Ingenieurswissenschaft"
 
 #: ../faq.php:175
 msgid "Das Gebäude, das Sie ausbauen wollen, ist derzeit in Benutzung. Warten Sie, bis alle laufenden Forschungen/Roboter/Raumschiffe/Verteidigungsanlagen fertiggestellt sind."
@@ -1479,8 +1710,8 @@ msgid "Das Gebäude, in dem Sie etwas bauen möchten, wird gerade ausgebaut. Sie
 msgstr "Das Gebäude, in dem Sie etwas bauen möchten, wird gerade ausgebaut. Sie können deswegen nicht forschen oder keine Roboter/Raumschiffe/Verteidigungsanlangen in Auftrag geben."
 
 #: ../faq.php:177
-msgid "Sie haben nicht die nötigen Abhängigkeiten erfüllt. Die Forschung/Roboter/Raumschiffe/Verteidigungsanlagen werden nur angezeigt, weil Sie diese bereits entwickelt/auf dem Planeten stationiert haben. Sie können aber keine weiteren dieser Gegenstände bauen. Schauen Sie sich den Abhängigkeitenbaum an und erfüllen Sie alle Forderungen."
-msgstr "Sie haben nicht die nötigen Abhängigkeiten erfüllt. Die Forschung/Roboter/Raumschiffe/Verteidigungsanlagen werden nur angezeigt, weil Sie diese bereits entwickelt/auf dem Planeten stationiert haben. Sie können aber keine weiteren dieser Gegenstände bauen. Schauen Sie sich den Abhängigkeitenbaum an und erfüllen Sie alle Forderungen."
+msgid "Sie haben nicht die nötigen Abhängigkeiten erfüllt. Die Forschung/Roboter/Raumschiffe/Verteidigungsanlagen werden nur angezeigt, weil Sie diese bereits entwickelt/auf dem Planeten stationiert haben. Sie können aber keine weiteren dieser Gegenstände bauen. Schauen Sie sich den Forschungsbaum an und erfüllen Sie alle Forderungen."
+msgstr "Sie haben nicht die nötigen Abhängigkeiten erfüllt. Die Forschung/Roboter/Raumschiffe/Verteidigungsanlagen werden nur angezeigt, weil Sie diese bereits entwickelt/auf dem Planeten stationiert haben. Sie können aber keine weiteren dieser Gegenstände bauen. Schauen Sie sich den Forschungsbaum an und erfüllen Sie alle Forderungen."
 
 #: ../faq.php:178
 msgid "Sie wollen global forschen, aber es können nicht alle Forschungslabore benutzt werden, da sich ein Forschungslabor im Ausbau befindet oder irgendwo geforscht wird."
@@ -1533,16 +1764,16 @@ msgstr "Chat"
 
 #: ../chat.php:24
 #: ../chat.php:25
-msgid "Kanal&"
+msgid "Kanal&[chat.php|1]"
 msgstr "Kanal"
 
 #: ../chat.php:36
 #: ../chat.php:37
-msgid "Spitzname&"
+msgid "Spitzname&[chat.php|1]"
 msgstr "Spitzname"
 
 #: ../chat.php:39
-msgid "Verbinden&"
+msgid "Verbinden&[chat.php|1]"
 msgstr "Verbinden"
 
 #: ../chat.php:47
@@ -1558,12 +1789,8 @@ msgstr "Sie erreichen die Kanäle alternativ mit einem beliebigen IRC-Client."
 msgid "%s auf %s, Port %d"
 msgstr "%s auf %s, Port %d"
 
-#: ../engine/include.php:37
-msgid "LANG"
-msgstr "de"
-
-#: ../engine/include.php:738
-msgid "minus_sign"
+#: ../engine/include.php:737
+msgid "[minus_sign]"
 msgstr "−"
 
 #: ../engine/classes/user.php:3119
@@ -1579,6 +1806,10 @@ msgstr ""
 #, php-format
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr "Fremdstationierung zurückgezogen auf %s"
+
+#: ../index.php:18
+msgid "Neuigkeiten"
+msgstr "Neuigkeiten"
 
 #: ../features.php:26
 msgid "Features"
@@ -1721,6 +1952,103 @@ msgstr "Screenshots"
 msgid "Screenshot %d"
 msgstr "Screenshot %d"
 
+#: ../register.php:8
+#: ../register.php:128
+msgid "Registrieren"
+msgstr "Registrieren"
+
+#: ../register.php:17
+msgid "Sie müssen die Nutzungsbedingungen lesen und akzeptieren, um am Spiel teilnehmen zu können."
+msgstr "Sie müssen die Nutzungsbedingungen lesen und akzeptieren, um am Spiel teilnehmen zu können."
+
+#: ../register.php:19
+msgid "Der Benutzername darf maximal 24 Bytes groß sein."
+msgstr "Der Benutzername darf maximal 24 Bytes groß sein."
+
+#: ../register.php:21
+msgid "Der Name des Hauptplanets darf maximal 24 Bytes groß sein."
+msgstr "Der Name des Hauptplanets darf maximal 24 Bytes groß sein."
+
+#: ../register.php:23
+msgid "Der Benutzername enthält ungültige Zeichen."
+msgstr "Der Benutzername enthält ungültige Zeichen."
+
+#: ../register.php:25
+msgid "Die beiden Passworte stimmen nicht überein."
+msgstr "Die beiden Passworte stimmen nicht überein."
+
+#: ../register.php:32
+msgid "Dieser Spieler existiert bereits. Bitte wählen Sie einen anderen Namen."
+msgstr "Dieser Spieler existiert bereits. Bitte wählen Sie einen anderen Namen."
+
+#: ../register.php:34
+msgid "Der Benutzername darf nicht auf (U) enden."
+msgstr "Der Benutzername darf nicht auf (U) enden."
+
+#: ../register.php:36
+msgid "Der Benutzername darf nicht auf (g) enden."
+msgstr "Der Benutzername darf nicht auf (g) enden."
+
+#: ../register.php:41
+msgid "Datenbankfehler beim Anlegen des Benutzeraccounts."
+msgstr "Datenbankfehler beim Anlegen des Benutzeraccounts."
+
+#: ../register.php:81
+msgid "Es gibt keine freien Planeten mehr."
+msgstr "Es gibt keine freien Planeten mehr."
+
+#: ../register.php:89
+msgid "Der Hauptplanet konnte nicht besiedelt werden."
+msgstr "Der Hauptplanet konnte nicht besiedelt werden."
+
+#: ../register.php:106
+#, php-format
+msgid "Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten %s."
+msgstr "Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten %s."
+
+#: ../register.php:109
+msgid "Zurück zur Startseite&[register.php|1]"
+msgstr "Zurück zur Startseite"
+
+#: ../register.php:130
+#: ../register.php:131
+msgid "Runde&[register.php|2]"
+msgstr "Runde"
+
+#: ../register.php:143
+#: ../register.php:144
+msgid "Benutzername&[register.php|2]"
+msgstr "Benutzername"
+
+#: ../register.php:146
+#: ../register.php:147
+msgid "Passwort&[register.php|2]"
+msgstr "Passwort"
+
+#: ../register.php:149
+#: ../register.php:150
+msgid "Passwort wiederholen&[register.php|2]"
+msgstr "Passwort wiederholen"
+
+#: ../register.php:152
+#: ../register.php:153
+msgid "E-Mail-Adresse&[register.php|2]"
+msgstr "E-Mail-Adresse"
+
+#: ../register.php:155
+#: ../register.php:156
+msgid "Gewünschter Name des Hauptplaneten&[register.php|2]"
+msgstr "Gewünschter Name des Hauptplaneten"
+
+#: ../register.php:158
+#, php-format
+msgid "Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]"
+msgstr "Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie."
+
+#: ../register.php:160
+msgid "Registrieren&[register.php|2]"
+msgstr "Registrieren"
+
 #: ../include.php:25
 #, php-format
 msgid "%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit Hunderten anderer Spielern."
@@ -1731,17 +2059,16 @@ msgid "Zurück zur Startseite"
 msgstr "Zurück zur Startseite"
 
 #: ../include.php:37
-msgid "title_full&"
+msgid "[title_full]&[include.php|1]"
 msgstr "Stars Under Attack"
 
 #: ../include.php:39
-#: ../include.php:112
 #: ../include.php:142
-msgid "Zum Inhalt&"
+msgid "Zum Inhalt&[include.php|1]"
 msgstr "Zum Inhalt"
 
 #: ../include.php:40
-msgid "Zur Navigation&"
+msgid "Zur Navigation&[include.php|1]"
 msgstr "Zur Navigation"
 
 #: ../include.php:49
@@ -1750,71 +2077,304 @@ msgstr "Anmelden"
 
 #: ../include.php:51
 #: ../include.php:52
-msgid "Runde&"
-msgstr "Universum"
+msgid "Runde&[include.php|2]"
+msgstr "Runde"
 
 #: ../include.php:65
 #: ../include.php:66
-msgid "Name&"
+msgid "Name&[include.php|2]"
 msgstr "Name"
 
 #: ../include.php:68
 #: ../include.php:69
-msgid "Passwort&"
+msgid "Passwort&[include.php|2]"
 msgstr "Passwort"
 
 #: ../include.php:71
-msgid "Anmelden&"
+msgid "Anmelden&[include.php|2]"
 msgstr "Anmelden"
 
 #: ../include.php:73
-#: ../include.php:120
-msgid "Registrieren&"
+msgid "Registrieren&[include.php|2]"
 msgstr "Registrieren"
 
 #: ../include.php:74
-msgid "Passwort vergessen?&"
+msgid "Passwort vergessen?&[include.php|2]"
 msgstr "Passwort vergessen?"
 
 #: ../include.php:79
-msgid "SSL abschalten&"
+msgid "SSL abschalten&[include.php|3]"
 msgstr "SSL abschalten"
 
 #: ../include.php:85
-msgid "SSL einschalten&"
+msgid "SSL einschalten&[include.php|3]"
 msgstr "SSL einschalten"
 
 #: ../include.php:89
-msgid "SSL-Zertifikat installieren&"
+msgid "SSL-Zertifikat installieren&[include.php|3]"
 msgstr "SSL-Zertifikat installieren"
 
 #: ../include.php:110
-#: ../include.php:140
-msgid "Nach oben&"
+msgid "Nach oben&[include.php|4]"
 msgstr "Nach oben"
 
 #: ../include.php:111
-#: ../include.php:141
-msgid "Zur Anmeldung&"
+msgid "Zur Anmeldung&[include.php|4]"
 msgstr "Zur Anmeldung"
+
+#: ../include.php:112
+msgid "Zum Inhalt&[include.php|4]"
+msgstr "Zum Inhalt"
 
 #: ../include.php:116
 msgid "Navigation"
 msgstr "Navigation"
 
 #: ../include.php:118
-msgid "Neuigkeiten&"
+msgid "Neuigkeiten&[include.php|6]"
 msgstr "Neuigkeiten"
 
 #: ../include.php:119
-msgid "Features&"
+msgid "Features&[include.php|6]"
 msgstr "Features"
 
+#: ../include.php:120
+msgid "Registrieren&[include.php|6]"
+msgstr "Registrieren"
+
 #: ../include.php:121
-msgid "Regeln&"
+msgid "Regeln&[include.php|6]"
 msgstr "Regeln"
 
+#: ../include.php:122
+msgid "FAQ&[include.php|6]"
+msgstr "FAQ"
+
+#: ../include.php:123
+msgid "Chat&[include.php|6]"
+msgstr "Chat"
+
+#: ../include.php:124
+msgid "Board&[include.php|6]"
+msgstr "Board"
+
+#: ../include.php:125
+msgid "Entwicklerseite&"
+msgstr "Entwicklerseite"
+
+#: ../include.php:125
+msgid "Entwicklerseite&[include.php|6]"
+msgstr "Entwicklerseite"
+
 #: ../include.php:126
-msgid "Impressum&"
+msgid "Impressum&[include.php|6]"
 msgstr "Impressum"
+
+#: ../include.php:131
+msgid "Adminbereich&[include.php|6]"
+msgstr "Adminbereich"
+
+#: ../include.php:140
+msgid "Nach oben&[include.php|1]"
+msgstr "Nach oben"
+
+#: ../include.php:141
+msgid "Zur Anmeldung&[include.php|1]"
+msgstr "Zur Anmeldung"
+
+#: ../impressum.php:6
+msgid "Impressum"
+msgstr "Impressum"
+
+#: ../impressum.php:7
+msgid "Verantwortlicher"
+msgstr "Verantwortlicher"
+
+#: ../impressum.php:12
+msgid "Deutschland"
+msgstr "Deutschland"
+
+#: ../impressum.php:15
+#, php-format
+msgid "%s ist ein privates Projekt, das keinerlei kommerzielle Absichten verfolgt."
+msgstr "%s ist ein privates Projekt, das keinerlei kommerzielle Absichten verfolgt."
+
+#: ../impressum.php:15
+msgid "[title_full]"
+msgstr "Stars Under Attack"
+
+#: ../impressum.php:17
+msgid "Support"
+msgstr "Support"
+
+#: ../impressum.php:18
+msgid "Sollten Sie eine Frage oder Anmerkung bezüglich des Spiels haben, haben Sie folgende Möglichkeiten:"
+msgstr "Sollten Sie eine Frage oder Anmerkung bezüglich des Spiels haben, haben Sie folgende Möglichkeiten:"
+
+#: ../impressum.php:20
+#, php-format
+msgid "Setzen Sie sich per %sE-Mail%3$s mit Candid Dauth in Verbindung."
+msgstr "Setzen Sie sich per %sE-Mail%3$s mit Candid Dauth in Verbindung."
+
+#: ../impressum.php:21
+#, php-format
+msgid "Stellen Sie ihre Frage öffentlich im %sBoard%s."
+msgstr "Stellen Sie ihre Frage öffentlich im %sBoard%s."
+
+#: ../impressum.php:22
+#, php-format
+msgid "Fragen Sie im Entwickler-Kanal des %sChats%s nach."
+msgstr "Fragen Sie im Entwickler-Kanal des %sChats%s nach."
+
+#: ../impressum.php:23
+#, php-format
+msgid "Melden Sie Fehler im %sBugtracker%s."
+msgstr "Melden Sie Fehler im %sBugtracker%s."
+
+#: ../impressum.php:25
+msgid "Es besteht selbstverständlich keine Garantie auf eine Antwort, normalerweise erfolgt eine solche aber innerhalb eines Tages."
+msgstr "Es besteht selbstverständlich keine Garantie auf eine Antwort, normalerweise erfolgt eine solche aber innerhalb eines Tages."
+
+#: ../impressum.php:26
+msgid "Fragen zum Spiel über andere Wege als die hier angegebenen, wie zum Beispiel über die private ICQ-Nummer des Betreibers, werden als unverschämt erachtet und höchstwahrscheinlich ignoriert."
+msgstr "Fragen zum Spiel über andere Wege als die hier angegebenen, wie zum Beispiel über die private ICQ-Nummer des Betreibers, werden als unverschämt erachtet und höchstwahrscheinlich ignoriert."
+
+#: ../impressum.php:31
+msgid "Idee, Programmierung, Projektleitung und -verwaltung"
+msgstr "Idee, Programmierung, Projektleitung und -verwaltung"
+
+#: ../impressum.php:34
+msgid "Finanzen, Design, Hauptseite, Items"
+msgstr "Finanzen, Design, Hauptseite, Items"
+
+#: ../impressum.php:37
+msgid "Moderation, Testing"
+msgstr "Moderation, Testing"
+
+#: ../impressum.php:40
+msgid "Design der Hauptseite"
+msgstr "Design der Hauptseite"
+
+#: ../impressum.php:43
+msgid "Diverse Schiffsbeschreibungen"
+msgstr "Diverse Schiffsbeschreibungen"
+
+#: ../impressum.php:45
+msgid "[translator_email]"
+msgstr "webmaster@s-u-a.net"
+
+#: ../impressum.php:45
+msgid "[translator_name]"
+msgstr "Candid Dauth"
+
+#: ../impressum.php:46
+msgid "[language] translation"
+msgstr "Deutsche Übersetzung"
+
+#: ../public_message.php:24
+msgid "Öffentliche Nachricht"
+msgstr "Öffentliche Nachricht"
+
+#: ../public_message.php:32
+msgid "Die gewünschte Nachricht existiert nicht."
+msgstr "Die gewünschte Nachricht existiert nicht."
+
+#: ../public_message.php:44
+msgid "Absender"
+msgstr "Absender"
+
+#: ../public_message.php:49
+msgid "Empfänger"
+msgstr "Empfänger"
+
+#: ../public_message.php:52
+msgid "Betreff"
+msgstr "Betreff"
+
+#: ../public_message.php:55
+msgid "Zeit"
+msgstr "Zeit"
+
+#: ../public_message.php:58
+msgid "Nachricht"
+msgstr "Nachricht"
+
+#: ../passwd.php:34
+msgid "Passwort vergessen?"
+msgstr "Passwort vergessen?"
+
+#: ../passwd.php:43
+msgid "Sie haben einen falschen Benutzernamen angegeben."
+msgstr "Sie haben einen falschen Benutzernamen angegeben."
+
+#: ../passwd.php:58
+msgid "Falsche ID."
+msgstr "Falsche ID."
+
+#: ../passwd.php:69
+msgid "Die beiden Passwörter stimmen nicht überein."
+msgstr "Die beiden Passwörter stimmen nicht überein."
+
+#: ../passwd.php:83
+msgid "Das Passwort wurde erfolgreich geändert. Sie können sich nun mit Ihrem neuen Passwort anmelden."
+msgstr "Das Passwort wurde erfolgreich geändert. Sie können sich nun mit Ihrem neuen Passwort anmelden."
+
+#: ../passwd.php:95
+#: ../passwd.php:96
+msgid "Neues Passwort&[passwd.php|1]"
+msgstr "Neues Passwort"
+
+#: ../passwd.php:98
+#: ../passwd.php:99
+msgid "Neues Passwort wiederholen&[passwd.php|1]"
+msgstr "Neues Passwort wiederholen"
+
+#: ../passwd.php:101
+msgid "Passwort ändern&[passwd.php|1]"
+msgstr "Passwort ändern"
+
+#: ../passwd.php:121
+msgid "Falls Sie die richtige E-Mail-Adresse eingegeben haben, wurde die E-Mail-Nachricht erfolgreich versandt. Überprüfen Sie nun bitte Ihr Postfach."
+msgstr "Falls Sie die richtige E-Mail-Adresse eingegeben haben, wurde die E-Mail-Nachricht erfolgreich versandt. Überprüfen Sie nun bitte Ihr Postfach."
+
+#: ../passwd.php:126
+msgid "Hier haben Sie die Möglichkeit, Ihr Passwort zu ändern, falls Sie es vergessen haben."
+msgstr "Hier haben Sie die Möglichkeit, Ihr Passwort zu ändern, falls Sie es vergessen haben."
+
+#: ../passwd.php:127
+msgid "Ihnen wird eine Bestätigungs-E-Mail-Nachricht zu der E-Mail-Adresse geschickt werden, die Sie im Spiel in den Einstellungen angegeben haben."
+msgstr "Ihnen wird eine Bestätigungs-E-Mail-Nachricht zu der E-Mail-Adresse geschickt werden, die Sie im Spiel in den Einstellungen angegeben haben."
+
+#: ../passwd.php:128
+#, php-format
+msgid "Sollten Sie im Spiel keine gültige E-Mail-Adresse angegeben haben, %swenden Sie sich bitte an einen der Administratoren%s."
+msgstr "Sollten Sie im Spiel keine gültige E-Mail-Adresse angegeben haben, %swenden Sie sich bitte an einen der Administratoren%s."
+
+#: ../passwd.php:128
+#, php-format
+msgid "FAQ: %s"
+msgstr "FAQ: %s"
+
+#: ../passwd.php:130
+msgid "Um Ihr Passwort ändern zu können, füllen Sie bitte in das folgende Formular Ihren Benutzernamen und diejenige E-Mail-Adresse an, die Sie im Spiel in Ihren Einstellungen gespeichert haben."
+msgstr "Um Ihr Passwort ändern zu können, füllen Sie bitte in das folgende Formular Ihren Benutzernamen und diejenige E-Mail-Adresse an, die Sie im Spiel in Ihren Einstellungen gespeichert haben."
+
+#: ../passwd.php:133
+#: ../passwd.php:134
+msgid "Runde&[passwd.php|2]"
+msgstr "Runde"
+
+#: ../passwd.php:146
+#: ../passwd.php:147
+msgid "Benutzername&[passwd.php|2]"
+msgstr "Benutzername"
+
+#: ../passwd.php:149
+#: ../passwd.php:150
+msgid "E-Mail-Adresse&[passwd.php|2]"
+msgstr "E-Mail-Adresse"
+
+#: ../passwd.php:152
+msgid "Absenden&[passwd.php|2]"
+msgstr "Absenden"
 

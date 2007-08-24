@@ -128,7 +128,7 @@
 			{
 				($fh = fopen('../.htaccess', 'a')) && (protocol("12.1"));
 				flock($fh, LOCK_EX);
-				fwrite($fh, "\nDeny from All\n");
+				fwrite($fh, "\nRedirectMatch 503 ^/(?!(admin/)|(503.html))\n");
 				flock($fh, LOCK_UN);
 				fclose($fh);
 			}

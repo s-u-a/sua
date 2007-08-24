@@ -5,7 +5,7 @@
 
 	home_gui::html_head();
 ?>
-<h2><abbr title="Stars Under Attack" xml:lang="en">S-U-A</abbr> &ndash; Registrieren</h2>
+<h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Registrieren")))?></h2>
 <?php
 	if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['password2']) && isset($_POST['database']) && isset($databases[$_POST['database']]) && $databases[$_POST['database']]['enabled'])
 	{
@@ -14,31 +14,31 @@
 		$error = '';
 
 		if(!isset($_POST['nutzungsbedingungen']) || !$_POST['nutzungsbedingungen'])
-			$error = 'Sie müssen die Nutzungsbedingungen lesen und akzeptieren, um am Spiel teilnehmen zu können.';
+			$error = _('Sie müssen die Nutzungsbedingungen lesen und akzeptieren, um am Spiel teilnehmen zu können.');
 		elseif(strlen(trim($_POST['username'])) > 24)
-			$error = 'Der Benutzername darf maximal 24 Bytes groß sein.';
+			$error = _('Der Benutzername darf maximal 24 Bytes groß sein.');
 		elseif(strlen(trim($_POST['hauptplanet'])) > 24)
-			$error = 'Der Name des Hauptplanets darf maximal 24 Bytes groß sein.';
+			$error = _('Der Name des Hauptplanets darf maximal 24 Bytes groß sein.');
 		elseif(preg_match('/[\xf8-\xff\x00-\x1f\x7f]/', $_POST['username'])) # Steuerzeichen
-			$error = 'Der Benutzername enthält ungültige Zeichen.';
+			$error = _('Der Benutzername enthält ungültige Zeichen.');
 		elseif($_POST['password'] != $_POST['password2'])
-			$error = 'Die beiden Passworte stimmen nicht überein.';
+			$error = _('Die beiden Passworte stimmen nicht überein.');
 		else
 		{
 			$_POST['username'] = str_replace("\x0a", ' ', trim($_POST['username'])); # nbsp
 
 			__autoload('User');
 			if(User::UserExists($_POST['username']))
-				$error = 'Dieser Spieler existiert bereits. Bitte wählen Sie einen anderen Namen.';
+				$error = _('Dieser Spieler existiert bereits. Bitte wählen Sie einen anderen Namen.');
 			elseif(substr($_POST['username'], -4) == ' (U)')
-				$error = 'Der Benutzername darf nicht auf (U) enden.';
+				$error = _('Der Benutzername darf nicht auf (U) enden.');
 			elseif(substr($_POST['username'], -4) == ' (g)')
-				$error = 'Der Benutzername darf nicht auf (g) enden.';
+				$error = _('Der Benutzername darf nicht auf (g) enden.');
 			else
 			{
 				$user_obj = Classes::User($_POST['username']);
 				if(!$user_obj->create())
-					$error = 'Datenbankfehler beim Anlegen des Benutzeraccounts.';
+					$error = _('Datenbankfehler beim Anlegen des Benutzeraccounts.');
 
 				# Koordinaten des Hauptplaneten bestimmen
 
@@ -78,7 +78,7 @@
 
 				if(!$koords)
 				{
-					$error = 'Es gibt keine freien Planeten mehr.';
+					$error = _('Es gibt keine freien Planeten mehr.');
 					$user_obj->destroy();
 				}
 				else
@@ -86,7 +86,7 @@
 					$index = $user_obj->registerPlanet($koords);
 					if($index === false)
 					{
-						$error = 'Der Hauptplanet konnte nicht besiedelt werden.';
+						$error = _('Der Hauptplanet konnte nicht besiedelt werden.');
 						$user_obj->destroy();
 					}
 
@@ -103,11 +103,10 @@
 						$user_obj->planetName('Hauptplanet');
 					else $user_obj->planetName($_POST['hauptplanet']);
 ?>
-<p class="successful">
-	Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten <?=htmlentities($koords)?>.
+<p class="successful"><?=h(sprintf(_("Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten %s."), vsprintf(_("%d:%d:%d"), explode(":", $koords))))?></p>
 </p>
 <ul>
-	<li><a href="./">Zurück zur Startseite</a></li>
+	<li><a href="index.php"<?=accesskey_attr(_("Zurück zur Startseite&[register.php|1]"))?>><?=h(_("Zurück zur Startseite&[register.php|1]"))?></a></li>
 </ul>
 <?php
 					home_gui::html_foot();
@@ -118,9 +117,7 @@
 		if($error != '')
 		{
 ?>
-<p class="error">
-	<?=utf8_htmlentities($error)."\n"?>
-</p>
+<p class="error"><?=htmlspecialchars($error)?></p>
 <?php
 		}
 	}
@@ -128,10 +125,10 @@
 ?>
 <form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/register.php')?>" method="post" id="register-form">
 	<fieldset>
-		<legend>Registrieren</legend>
+		<legend><?=h(_("Registrieren"))?></legend>
 		<dl>
-			<dt><label for="runde">Runde</label></dt>
-			<dd><select name="database" id="runde">
+			<dt><label for="runde"><?=h(_("Runde&[register.php|2]"))?></label></dt>
+			<dd><select name="database" id="runde"<?=accesskey_attr(_("Runde&[register.php|2]"))?>>
 <?php
 	foreach($databases as $id=>$info)
 	{
@@ -143,24 +140,24 @@
 ?>
 			</select></dd>
 
-			<dt><label for="username">Benutzername</label></dt>
-			<dd><input type="text" id="username" name="username"<?=isset($_POST['username']) ? ' value="'.utf8_htmlentities($_POST['username']).'"' : ''?> maxlength="24" /></dd>
+			<dt><label for="username"><?=h(_("Benutzername&[register.php|2]"))?></label></dt>
+			<dd><input type="text" id="username" name="username"<?=accesskey_attr(_("Benutzername&[register.php|2]"))?><?=isset($_POST['username']) ? ' value="'.utf8_htmlentities($_POST['username']).'"' : ''?> maxlength="24" /></dd>
 
-			<dt><label for="password">Passwort</label></dt>
-			<dd><input type="password" id="password" name="password" /></dd>
+			<dt><label for="password"><?=h(_("Passwort&[register.php|2]"))?></label></dt>
+			<dd><input type="password" id="password" name="password"<?=accesskey_attr(_("Passwort&[register.php|2]"))?> /></dd>
 
-			<dt><label for="password2">Passwort wiederholen</label></dt>
-			<dd><input type="password" id="password2" name="password2" /></dd>
+			<dt><label for="password2"><?=h(_("Passwort wiederholen&[register.php|2]"))?></label></dt>
+			<dd><input type="password" id="password2" name="password2"<?=accesskey_attr(_("Passwort wiederholen&[register.php|2]"))?> /></dd>
 
-			<dt><label for="email"><span xml:lang="en">E-Mail</span>-Adresse</label></dt>
-			<dd><input type="text" name="email" id="email"<?=isset($_POST['email']) ? ' value="'.utf8_htmlentities($_POST['email']).'"' : ''?> /></dd>
+			<dt><label for="email"><?=h(_("E-Mail-Adresse&[register.php|2]"))?></label></dt>
+			<dd><input type="text" name="email" id="email"<?=accesskey_attr(_("E-Mail-Adresse&[register.php|2]"))?><?=isset($_POST['email']) ? ' value="'.utf8_htmlentities($_POST['email']).'"' : ''?> /></dd>
 
-			<dt><label for="hauptplanet">Gewünschter Name des Hauptplaneten</label></dt>
-			<dd><input type="text" id="hauptplanet" name="hauptplanet"<?=isset($_POST['hauptplanet']) ? ' value="'.utf8_htmlentities($_POST['hauptplanet']).'"' : ''?> maxlength="24" /></dd>
+			<dt><label for="hauptplanet"><?=h(_("Gewünschter Name des Hauptplaneten&[register.php|2]"))?></label></dt>
+			<dd><input type="text" id="hauptplanet" name="hauptplanet"<?=accesskey_attr(_("Gewünschter Name des Hauptplaneten&[register.php|2]"))?><?=isset($_POST['hauptplanet']) ? ' value="'.utf8_htmlentities($_POST['hauptplanet']).'"' : ''?> maxlength="24" /></dd>
 		</dl>
-		<div><input type="checkbox" class="checkbox" name="nutzungsbedingungen" id="nutzungsbedingungen" /> <label for="nutzungsbedingungen">Ich habe die <a href="rules.php">Nutzungsbedingungen</a> gelesen und akzeptiere sie.</label></div>
+		<div><input type="checkbox" class="checkbox" name="nutzungsbedingungen" id="nutzungsbedingungen"<?=accesskey_attr(_("Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]"))?> /> <label for="nutzungsbedingungen"><?=sprintf(h(_("Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]")), "<a href=\"rules.php\">", "</a>")?></label></div>
 		<ul>
-			<li><button type="submit">Registrieren</button></li>
+			<li><button type="submit"<?=accesskey_attr(_("Registrieren&[register.php|2]"))?>><?=h(_("Registrieren&[register.php|2]"))?></button></li>
 		</ul>
 	</fieldset>
 </form>
