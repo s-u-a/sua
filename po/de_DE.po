@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-08-25 03:23+0100\n"
+"PO-Revision-Date: 2007-08-25 15:56+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -516,6 +516,816 @@ msgstr "Spionieren"
 msgid "[fleet_6]"
 msgstr "Stationieren"
 
+#: ../admin/edit_changelog.php:5
+#: ../admin/userlist.php:5
+#: ../admin/usermanagement.php:5
+#: ../admin/news.php:5
+msgid "No access."
+msgstr "Kein Zugriff."
+
+#: ../admin/edit_changelog.php:105
+msgid "Version"
+msgstr "Version"
+
+#: ../admin/edit_changelog.php:107
+msgid "Speichern&[admin/edit_changelog.php|1]"
+msgstr "Speichern"
+
+#: ../admin/edit_changelog.php:112
+msgid "Hinzufügen&[admin/edit_changelog.php|1]"
+msgstr "Hinzufügen"
+
+#: ../admin/edit_changelog.php:130
+msgid "Löschen&[admin/edit_changelog.php|1]"
+msgstr "Löschen"
+
+#: ../admin/userlist.php:11
+#, php-format
+msgid "Benutzerliste – %s"
+msgstr "Benutzerliste – %s"
+
+#: ../admin/userlist.php:11
+msgid "sortiert"
+msgstr "sortiert"
+
+#: ../admin/userlist.php:11
+msgid "unsortiert"
+msgstr "unsortiert"
+
+#: ../admin/usermanagement.php:50
+#: ../admin/usermanagement.php:160
+msgid "Name des Administrators"
+msgstr "Name des Administrators"
+
+#: ../admin/usermanagement.php:50
+#: ../admin/usermanagement.php:160
+msgid "Name"
+msgstr "Name"
+
+#: ../admin/usermanagement.php:51
+#: ../admin/usermanagement.php:66
+#: ../admin/usermanagement.php:161
+#: ../admin/usermanagement.php:176
+msgid "Passwort"
+msgstr "Passwort"
+
+#: ../admin/usermanagement.php:52
+#: ../admin/usermanagement.php:162
+msgid "Benutzeraktionen"
+msgstr "Benutzeraktionen"
+
+#: ../admin/usermanagement.php:53
+#: ../admin/usermanagement.php:163
+#: ../admin/index.php:467
+msgid "Anfängerschutz ein-/ausschalten"
+msgstr "Anfängerschutz ein-/ausschalten"
+
+#: ../admin/usermanagement.php:53
+#: ../admin/usermanagement.php:163
+msgid "Anfängerschutz"
+msgstr "Anfängerschutz"
+
+#: ../admin/usermanagement.php:54
+#: ../admin/usermanagement.php:164
+msgid "Changelog bearbeiten"
+msgstr "Changelog bearbeiten"
+
+#: ../admin/usermanagement.php:54
+#: ../admin/usermanagement.php:164
+msgid "Changelog"
+msgstr "Changelog"
+
+#: ../admin/usermanagement.php:55
+#: ../admin/usermanagement.php:165
+#: ../admin/index.php:499
+msgid "Nachricht versenden"
+msgstr "Nachricht versenden"
+
+#: ../admin/usermanagement.php:55
+#: ../admin/usermanagement.php:165
+#: ../public_message.php:58
+msgid "Nachricht"
+msgstr "Nachricht"
+
+#: ../admin/usermanagement.php:56
+#: ../admin/usermanagement.php:166
+msgid "Log-Dateien ansehen"
+msgstr "Log-Dateien ansehen"
+
+#: ../admin/usermanagement.php:56
+#: ../admin/usermanagement.php:166
+msgid "Logs"
+msgstr "Logs"
+
+#: ../admin/usermanagement.php:57
+#: ../admin/usermanagement.php:167
+msgid "Adminstratoren verwalten"
+msgstr "Adminstratoren verwalten"
+
+#: ../admin/usermanagement.php:57
+#: ../admin/usermanagement.php:167
+msgid "Admins"
+msgstr "Admins"
+
+#: ../admin/usermanagement.php:58
+#: ../admin/usermanagement.php:168
+msgid "Wartungsarbeiten ein-/ausschalten"
+msgstr "Wartungsarbeiten ein-/ausschalten"
+
+#: ../admin/usermanagement.php:58
+#: ../admin/usermanagement.php:168
+msgid "Wartung"
+msgstr "Wartung"
+
+#: ../admin/usermanagement.php:59
+#: ../admin/usermanagement.php:169
+msgid "Spiel sperren/entsperren"
+msgstr "Spiel sperren/entsperren"
+
+#: ../admin/usermanagement.php:59
+#: ../admin/usermanagement.php:169
+#: ../admin/index.php:582
+msgid "Spiel sperren"
+msgstr "Spiel sperren"
+
+#: ../admin/usermanagement.php:60
+#: ../admin/usermanagement.php:170
+#: ../admin/index.php:602
+#: ../admin/index.php:612
+msgid "Flottensperre"
+msgstr "Flottensperre"
+
+#: ../admin/usermanagement.php:61
+#: ../admin/usermanagement.php:171
+msgid "News bearbeiten"
+msgstr "News bearbeiten"
+
+#: ../admin/usermanagement.php:61
+#: ../admin/usermanagement.php:171
+msgid "News"
+msgstr "News"
+
+#: ../admin/usermanagement.php:64
+#: ../admin/usermanagement.php:174
+msgid "Die Benutzerliste einsehen"
+msgstr "Die Benutzerliste einsehen"
+
+#: ../admin/usermanagement.php:64
+#: ../admin/usermanagement.php:174
+msgid "Liste"
+msgstr "Liste"
+
+#: ../admin/usermanagement.php:65
+#: ../admin/usermanagement.php:175
+#: ../admin/index.php:319
+msgid "Als Geist als ein Benutzer anmelden"
+msgstr "Als Geist als ein Benutzer anmelden"
+
+#: ../admin/usermanagement.php:65
+#: ../admin/usermanagement.php:175
+msgid "Geist"
+msgstr "Geist"
+
+#: ../admin/usermanagement.php:66
+#: ../admin/usermanagement.php:176
+#: ../admin/index.php:338
+msgid "Das Passwort eines Benutzers ändern"
+msgstr "Das Passwort eines Benutzers ändern"
+
+#: ../admin/usermanagement.php:67
+#: ../admin/usermanagement.php:177
+msgid "Die Passwörter zweier Benutzer vergleichen"
+msgstr "Die Passwörter zweier Benutzer vergleichen"
+
+#: ../admin/usermanagement.php:67
+#: ../admin/usermanagement.php:177
+msgid "Pwd.-Vergl."
+msgstr "Pwd.-Vergl."
+
+#: ../admin/usermanagement.php:68
+#: ../admin/usermanagement.php:178
+#: ../admin/index.php:403
+msgid "Einen Benutzer löschen"
+msgstr "Einen Benutzer löschen"
+
+#: ../admin/usermanagement.php:68
+#: ../admin/usermanagement.php:178
+#: ../admin/usermanagement.php:204
+#: ../admin/usermanagement.php:210
+msgid "Löschen"
+msgstr "Löschen"
+
+#: ../admin/usermanagement.php:69
+#: ../admin/usermanagement.php:179
+msgid "Einen Benutzer sperren/entsperren"
+msgstr "Einen Benutzer sperren/entsperren"
+
+#: ../admin/usermanagement.php:69
+#: ../admin/usermanagement.php:179
+msgid "Sperren"
+msgstr "Sperren"
+
+#: ../admin/usermanagement.php:70
+#: ../admin/usermanagement.php:180
+#: ../admin/index.php:445
+msgid "Einen Benutzer umbenennen"
+msgstr "Einen Benutzer umbenennen"
+
+#: ../admin/usermanagement.php:70
+#: ../admin/usermanagement.php:180
+msgid "Umbenennen"
+msgstr "Umbenennen"
+
+#: ../admin/usermanagement.php:91
+msgid "Hinzufügen&[admin/usermanagement.php|1]"
+msgstr "Hinzufügen"
+
+#: ../admin/usermanagement.php:222
+msgid "Speichern"
+msgstr "Speichern"
+
+#: ../admin/index.php:238
+msgid "Willkommen im Adminbereich. Wählen Sie aus der Liste eine der Funktionen, die Ihnen zur Verfügung stehen."
+msgstr "Willkommen im Adminbereich. Wählen Sie aus der Liste eine der Funktionen, die Ihnen zur Verfügung stehen."
+
+#: ../admin/index.php:239
+#, php-format
+msgid "Denken Sie immer daran: %sBenutzen Sie niemals Dinge aus dem Adminbereich zu Ihrem eigenen Vorteil im Spiel und geben Sie keine Informationen an Personen weiter, die sich diese Informationen nicht selbst beschaffen könnten.%s"
+msgstr "Denken Sie immer daran: %sBenutzen Sie niemals Dinge aus dem Adminbereich zu Ihrem eigenen Vorteil im Spiel und geben Sie keine Informationen an Personen weiter, die sich diese Informationen nicht selbst beschaffen könnten.%s"
+
+#: ../admin/index.php:242
+msgid "Adminpasswort ändern&[admin/index.php|1]"
+msgstr "Adminpasswort ändern"
+
+#: ../admin/index.php:243
+msgid "Benutzerliste einsehen&[admin/index.php|1]"
+msgstr "Benutzerliste einsehen&[admin"
+
+#: ../admin/index.php:244
+msgid "Als Geist als ein Benutzer anmelden&[admin/index.php|1]"
+msgstr "Als Geist als ein Benutzer anmelden"
+
+#: ../admin/index.php:245
+msgid "Das Passwort eines Benutzers ändern&[admin/index.php|1]"
+msgstr "Das Passwort eines Benutzers ändern"
+
+#: ../admin/index.php:246
+msgid "Die Passwörter zweier Benutzer vergleichen&[admin/index.php|1]"
+msgstr "Die Passwörter zweier Benutzer vergleichen"
+
+#: ../admin/index.php:247
+msgid "Einen Benutzer löschen&[admin/index.php|1]"
+msgstr "Einen Benutzer löschen"
+
+#: ../admin/index.php:248
+msgid "Einen Benutzer sperren / entsperren&[admin/index.php|1]"
+msgstr "Einen Benutzer sperren / entsperren"
+
+#: ../admin/index.php:249
+msgid "Einen Benutzer umbenennen&[admin/index.php|1]"
+msgstr "Einen Benutzer umbenennen"
+
+#: ../admin/index.php:250
+msgid "Anfängerschutz ein-/ausschalten&[admin/index.php|1]"
+msgstr "Anfängerschutz ein-/ausschalten"
+
+#: ../admin/index.php:251
+#: ../admin/index.php:491
+msgid "Changelog bearbeiten&[admin/index.php|1]"
+msgstr "Changelog bearbeite"
+
+#: ../admin/index.php:252
+msgid "Nachricht versenden&[admin/index.php|1]"
+msgstr "Nachricht versenden"
+
+#: ../admin/index.php:253
+#: ../admin/index.php:526
+msgid "Admin-Logdateien einsehen&[admin/index.php|1]"
+msgstr "Admin-Logdateien einsehen"
+
+#: ../admin/index.php:254
+msgid "Benutzerverwaltung&[admin/index.php|1]"
+msgstr "Benutzerverwaltung"
+
+#: ../admin/index.php:255
+msgid "Wartungsarbeiten&[admin/index.php|1]"
+msgstr "Wartungsarbeiten"
+
+#: ../admin/index.php:256
+msgid "Spiel sperren&[admin/index.php|1]"
+msgstr "Spiel sperren"
+
+#: ../admin/index.php:257
+msgid "Flottensperre&[admin/index.php|1]"
+msgstr "Flottensperre"
+
+#: ../admin/index.php:258
+msgid "News bearbeiten&[admin/index.php|1]"
+msgstr "News bearbeiten"
+
+#: ../admin/index.php:261
+msgid "Adminpasswort ändern"
+msgstr "Adminpasswort ändern"
+
+#: ../admin/index.php:268
+msgid "Sie haben das falsche alte Passwort eingegeben."
+msgstr "Sie haben das falsche alte Passwort eingegeben."
+
+#: ../admin/index.php:274
+#: ../login/einstellungen.php:157
+msgid "Die beiden neuen Passworte stimmen nicht überein."
+msgstr "Die beiden neuen Passworte stimmen nicht überein."
+
+#: ../admin/index.php:282
+msgid "Das Passwort wurde erfolgreich geändert."
+msgstr "Das Passwort wurde erfolgreich geändert."
+
+#: ../admin/index.php:289
+#: ../admin/index.php:290
+msgid "Altes Passwort&[admin/index.php|2]"
+msgstr "Altes Passwort"
+
+#: ../admin/index.php:292
+#: ../admin/index.php:293
+msgid "Neues Passwort&[admin/index.php|2]"
+msgstr "Neues Passwort"
+
+#: ../admin/index.php:295
+#: ../admin/index.php:296
+msgid "Neues Passwort wiederholen&[admin/index.php|2]"
+msgstr "Neues Passwort wiederholen"
+
+#: ../admin/index.php:298
+msgid "Passwort ändern&[admin/index.php|2]"
+msgstr "Passwort ändern"
+
+#: ../admin/index.php:305
+msgid "Benutzerliste einsehen"
+msgstr "Benutzerliste einsehen"
+
+#: ../admin/index.php:308
+msgid "Unsortiert&[admin/index.php|3]"
+msgstr "Unsortiert"
+
+#: ../admin/index.php:309
+msgid "Sortiert&[admin/index.php|3]"
+msgstr "Sortiert"
+
+#: ../admin/index.php:322
+#: ../admin/index.php:323
+msgid "Benutzername&[admin/index.php|4]"
+msgstr "Benutzername"
+
+#: ../admin/index.php:325
+msgid "Anmelden&[admin/index.php|4]"
+msgstr "Anmelden"
+
+#: ../admin/index.php:341
+#: ../admin/index.php:342
+msgid "Benutzername&[admin/index.php|5]"
+msgstr "Benutzername"
+
+#: ../admin/index.php:344
+#: ../admin/index.php:345
+msgid "Passwort&[admin/index.php|5]"
+msgstr "Passwort"
+
+#: ../admin/index.php:347
+msgid "Passwort ändern&[admin/index.php|5]"
+msgstr "Passwort ändern"
+
+#: ../admin/index.php:360
+#: ../admin/index.php:386
+msgid "Die Passwörter zweier Benutzer vergleichen&[admin/index.php|6]"
+msgstr "Die Passwörter zweier Benutzer vergleichen"
+
+#: ../admin/index.php:372
+#, php-format
+msgid "Die Passwörter der Benutzer „%s“ und „%s“ stimmen überein."
+msgstr "Die Passwörter der Benutzer „%s“ und „%s“ stimmen überein."
+
+#: ../admin/index.php:379
+#, php-format
+msgid "Die Passwörter der Benutzer „%s“ und „%s“ unterscheiden sich."
+msgstr "Die Passwörter der Benutzer „%s“ und „%s“ unterscheiden sich."
+
+#: ../admin/index.php:389
+msgid "Vergleichen&[admin/index.php|6]"
+msgstr "Vergleichen"
+
+#: ../admin/index.php:404
+msgid "Bitte nicht wegen Regelverstoßes durchführen (dann Benutzer sperren), nur bei fehlerhaften Registrierungen oder Ähnlichem."
+msgstr "Bitte nicht wegen Regelverstoßes durchführen (dann Benutzer sperren), nur bei fehlerhaften Registrierungen oder Ähnlichem."
+
+#: ../admin/index.php:407
+#: ../admin/index.php:408
+msgid "Benutzername&[admin/index.php|7]"
+msgstr "Benutzername"
+
+#: ../admin/index.php:410
+msgid "Löschen&[admin/index.php|7]"
+msgstr "Löschen"
+
+#: ../admin/index.php:423
+msgid "Einen Benutzer sperren / entsperren"
+msgstr "Einen Benutzer sperren / entsperren"
+
+#: ../admin/index.php:426
+#: ../admin/index.php:427
+msgid "Benutzername&[admin/index.php|8]"
+msgstr "Benutzername"
+
+#: ../admin/index.php:429
+#: ../admin/index.php:430
+msgid "Dauer der Sperre&[admin/index.php|8]"
+msgstr "Dauer der Sperre"
+
+#: ../admin/index.php:430
+#: ../admin/index.php:586
+#: ../admin/index.php:616
+msgid "Minuten"
+msgstr "Minuten"
+
+#: ../admin/index.php:430
+#: ../admin/index.php:586
+#: ../admin/index.php:616
+msgid "Stunden"
+msgstr "Stunden"
+
+#: ../admin/index.php:430
+#: ../admin/index.php:586
+#: ../admin/index.php:616
+#: ../login/flotten.php:462
+#: ../login/flotten.php:626
+msgid "Tage"
+msgstr "Tage"
+
+#: ../admin/index.php:432
+msgid "Sperren / Entsperren&[admin/index.php|8]"
+msgstr "Sperren / Entsperren"
+
+#: ../admin/index.php:448
+#: ../admin/index.php:449
+msgid "Alter Name&[admin/index.php|9]"
+msgstr "Alter Name"
+
+#: ../admin/index.php:451
+#: ../admin/index.php:452
+msgid "Neuer Name&[admin/index.php|9]"
+msgstr "Neuer Name"
+
+#: ../admin/index.php:454
+msgid "Umbenennen&[admin/index.php|9]"
+msgstr "Umbenennen"
+
+#: ../admin/index.php:473
+msgid "Anfängerschutz einschalten&[admin/index.php|10]"
+msgstr "Anfängerschutz einschalten"
+
+#: ../admin/index.php:481
+msgid "Anfängerschutz ausschalten&[admin/index.php|10]"
+msgstr "Anfängerschutz ausschalten"
+
+#: ../admin/index.php:502
+#: ../admin/index.php:503
+msgid "Absender&[admin/index.php|11]"
+msgstr "Absender"
+
+#: ../admin/index.php:505
+#: ../admin/index.php:506
+msgid "Empfänger&[admin/index.php|11]"
+msgstr "Empfänger"
+
+#: ../admin/index.php:508
+#: ../admin/index.php:509
+msgid "Betreff&[admin/index.php|11]"
+msgstr "Betreff"
+
+#: ../admin/index.php:511
+#: ../admin/index.php:512
+msgid "HTML?&[admin/index.php|11]"
+msgstr "HTML?"
+
+#: ../admin/index.php:514
+#: ../admin/index.php:515
+msgid "Text&[admin/index.php|11]"
+msgstr "Text"
+
+#: ../admin/index.php:517
+msgid "Absenden&[admin/index.php|11]"
+msgstr "Absenden"
+
+#: ../admin/index.php:534
+msgid "Benutzerverwaltung"
+msgstr "Benutzerverwaltung"
+
+#: ../admin/index.php:536
+msgid "Bestehende Benutzer bearbeiten&[admin/index.php|12]"
+msgstr "Bestehende Benutzer bearbeiten"
+
+#: ../admin/index.php:537
+msgid "Neuen Benutzer anlegen&[admin/index.php|12]"
+msgstr "Neuen Benutzer anlegen"
+
+#: ../admin/index.php:546
+msgid "Wartungsarbeiten"
+msgstr "Wartungsarbeiten"
+
+#: ../admin/index.php:552
+msgid "Wartungsarbeiten deaktivieren&[admin/index.php|13]"
+msgstr "Wartungsarbeiten deaktivieren"
+
+#: ../admin/index.php:560
+msgid "Wartungsarbeiten aktivieren&[admin/index.php|13]"
+msgstr "Wartungsarbeiten aktivieren"
+
+#: ../admin/index.php:572
+msgid "Spiel entsperren"
+msgstr "Spiel entsperren"
+
+#: ../admin/index.php:574
+msgid "Entsperren&[admin/index.php|14]"
+msgstr "Entsperren"
+
+#: ../admin/index.php:585
+#: ../admin/index.php:586
+msgid "Dauer der Sperre&[admin/index.php|14]"
+msgstr "Dauer der Sperre"
+
+#: ../admin/index.php:588
+msgid "Sperren&[admin/index.php|14]"
+msgstr "Sperren"
+
+#: ../admin/index.php:604
+msgid "Aufheben&[admin/index.php|15]"
+msgstr "Aufheben"
+
+#: ../admin/index.php:615
+#: ../admin/index.php:616
+msgid "Dauer der Flottensperre&[admin/index.php|15]"
+msgstr "Dauer der Flottensperre"
+
+#: ../admin/index.php:618
+msgid "Setzen&[admin/index.php|15]"
+msgstr "Setzen"
+
+#: ../admin/index.php:630
+msgid "News bearbeiten&[admin/index.php|16]"
+msgstr "News bearbeiten"
+
+#: ../admin/news.php:53
+msgid "Neuigkeit hinzufügen"
+msgstr "Neuigkeit hinzufügen"
+
+#: ../admin/news.php:55
+#: ../admin/news.php:56
+msgid "Überschrift&[admin/news.php|1]"
+msgstr "Überschrift"
+
+#: ../admin/news.php:58
+#: ../admin/news.php:59
+msgid "Text&[admin/news.php|1]"
+msgstr "Text"
+
+#: ../admin/news.php:62
+msgid "Speichern&[admin/news.php|1]"
+msgstr "Speichern"
+
+#: ../admin/logs.php:31
+#: ../admin/logs.php:88
+#: ../login/scripts/include.php:306
+#: ../login/scripts/include.php:315
+#: ../login/scripts/include.php:330
+#: ../index.php:43
+msgid "Y-m-d, H:i:s"
+msgstr "Y-m-d, H:i:s"
+
+#: ../admin/logs.php:52
+#: ../public_message.php:55
+msgid "Zeit"
+msgstr "Zeit"
+
+#: ../admin/logs.php:53
+msgid "Benutzername"
+msgstr "Benutzername"
+
+#: ../admin/logs.php:54
+msgid "Aktion"
+msgstr "Aktion"
+
+#: ../admin/include.php:5
+#, php-format
+msgid "%s hat sich angemeldet."
+msgstr "%s hat sich angemeldet."
+
+#: ../admin/include.php:6
+#, php-format
+msgid "%s hat sich als Geist unter dem Benutzer %s angemeldet."
+msgstr "%s hat sich als Geist unter dem Benutzer %s angemeldet."
+
+#: ../admin/include.php:7
+#, php-format
+msgid "%s hat das Passwort des Benutzers %s geändert."
+msgstr "%s hat das Passwort des Benutzers %s geändert."
+
+#: ../admin/include.php:8
+#, php-format
+msgid "%s hat die Passwörter von %s und %s verglichen."
+msgstr "%s hat die Passwörter von %s und %s verglichen."
+
+#: ../admin/include.php:9
+#, php-format
+msgid "%s hat den Benutzer %s gelöscht."
+msgstr "%s hat den Benutzer %s gelöscht."
+
+#: ../admin/include.php:10
+#, php-format
+msgid "%s hat den Benutzer %s gesperrt."
+msgstr "%s hat den Benutzer %s gesperrt."
+
+#: ../admin/include.php:11
+#, php-format
+msgid "%s hat den Benutzer %s entsperrt."
+msgstr "%s hat den Benutzer %s entsperrt."
+
+#: ../admin/include.php:12
+#, php-format
+msgid "%s hat den Benutzer %s nach %s umbenannt."
+msgstr "%s hat den Benutzer %s nach %s umbenannt."
+
+#: ../admin/include.php:13
+#, php-format
+msgid "%s hat den Anfängerschutz ausgeschaltet."
+msgstr "%s hat den Anfängerschutz ausgeschaltet."
+
+#: ../admin/include.php:14
+#, php-format
+msgid "%s hat den Anfängerschutz eingeschaltet."
+msgstr "%s hat den Anfängerschutz eingeschaltet."
+
+#: ../admin/include.php:15
+#, php-format
+msgid "%s hat einen Eintrag zum Changelog hinzugefügt: %s"
+msgstr "%s hat einen Eintrag zum Changelog hinzugefügt: %s"
+
+#: ../admin/include.php:16
+#, php-format
+msgid "%s hat einen Eintrag aus dem Changelog gelöscht: %s"
+msgstr "%s hat einen Eintrag aus dem Changelog gelöscht: %s"
+
+#: ../admin/include.php:17
+#, php-format
+msgid "%s hat einen Eintrag eine Nachricht mit dem Betreff %s an %s versandt."
+msgstr "%s hat einen Eintrag eine Nachricht mit dem Betreff %s an %s versandt."
+
+#: ../admin/include.php:18
+#, php-format
+msgid "%s hat den Logeintrag %s angeschaut."
+msgstr "%s hat den Logeintrag %s angeschaut."
+
+#: ../admin/include.php:19
+#, php-format
+msgid "%s hat den Administrator %s hinzugefügt."
+msgstr "%s hat den Administrator %s hinzugefügt."
+
+#: ../admin/include.php:20
+#, php-format
+msgid "%s hat die Rechte des Administrators %s verändert."
+msgstr "%s hat die Rechte des Administrators %s verändert."
+
+#: ../admin/include.php:21
+#, php-format
+msgid "%s hat den Administrator %s nach %s umbenannt."
+msgstr "%s hat den Administrator %s nach %s umbenannt."
+
+#: ../admin/include.php:22
+#, php-format
+msgid "%s hat den Administrator %s entfernt."
+msgstr "%s hat den Administrator %s entfernt."
+
+#: ../admin/include.php:23
+#, php-format
+msgid "%s hat die Wartungsarbeiten eingeschaltet."
+msgstr "%s hat die Wartungsarbeiten eingeschaltet."
+
+#: ../admin/include.php:24
+#, php-format
+msgid "%s hat die Wartungsarbeiten ausgeschaltet."
+msgstr "%s hat die Wartungsarbeiten ausgeschaltet."
+
+#: ../admin/include.php:25
+#, php-format
+msgid "%s hat das Spiel gesperrt."
+msgstr "%s hat das Spiel gesperrt."
+
+#: ../admin/include.php:26
+#, php-format
+msgid "%s hat das Spiel entsperrt."
+msgstr "%s hat das Spiel entsperrt."
+
+#: ../admin/include.php:27
+#, php-format
+msgid "%s hat einen Newseintrag mit dem Titel %s hinzugefügt."
+msgstr "%s hat einen Newseintrag mit dem Titel %s hinzugefügt."
+
+#: ../admin/include.php:28
+#, php-format
+msgid "%s hat den Newseintrag mit dem Titel %s verändert."
+msgstr "%s hat den Newseintrag mit dem Titel %s verändert."
+
+#: ../admin/include.php:29
+#, php-format
+msgid "%s hat den Newseintrag mit dem Titel %s gelöscht."
+msgstr "%s hat den Newseintrag mit dem Titel %s gelöscht."
+
+#: ../admin/include.php:36
+#, php-format
+msgid "Please use SSL: %s"
+msgstr "Bitte SSL benutzen: %s"
+
+#: ../admin/include.php:101
+#: ../admin/include.php:102
+msgid "Runde&[admin/include.php|1]"
+msgstr "Runde"
+
+#: ../admin/include.php:114
+#: ../admin/include.php:115
+msgid "Benutzername&[admin/include.php|1]"
+msgstr "Benutzername"
+
+#: ../admin/include.php:117
+#: ../admin/include.php:118
+msgid "Passwort&[admin/include.php|1]"
+msgstr "Passwort"
+
+#: ../admin/include.php:120
+msgid "Anmelden&[admin/include.php|1]"
+msgstr "Anmelden"
+
+#: ../admin/include.php:123
+msgid "Zurück zum Spiel&[admin/include.php|1]"
+msgstr "Zurück zum Spiel"
+
+#: ../admin/include.php:142
+#: ../login/scripts/include.php:194
+#: ../chat.php:86
+#: ../include.php:17
+#: ../public_message.php:7
+msgid "[LANG]"
+msgstr "de"
+
+#: ../admin/include.php:145
+#: ../admin/include.php:166
+#: ../rules.php:6
+#: ../faq.php:6
+#: ../chat.php:15
+#: ../index.php:18
+#: ../features.php:26
+#: ../register.php:8
+#: ../impressum.php:6
+#: ../passwd.php:34
+#, php-format
+msgid "%s – %s [s-u-a.net heading]"
+msgstr "%s – %s"
+
+#: ../admin/include.php:145
+#: ../admin/include.php:166
+#: ../rules.php:6
+#: ../rules.php:8
+#: ../rules.php:9
+#: ../rules.php:12
+#: ../rules.php:13
+#: ../rules.php:14
+#: ../rules.php:17
+#: ../rules.php:27
+#: ../rules.php:28
+#: ../rules.php:29
+#: ../rules.php:32
+#: ../rules.php:33
+#: ../rules.php:36
+#: ../rules.php:39
+#: ../faq.php:6
+#: ../chat.php:15
+#: ../index.php:18
+#: ../features.php:26
+#: ../register.php:8
+#: ../impressum.php:6
+#: ../passwd.php:34
+msgid "[title_abbr]"
+msgstr "S-U-A"
+
+#: ../admin/include.php:145
+msgid "Adminbereich"
+msgstr "Adminbereich"
+
+#: ../admin/include.php:166
+msgid "Adminbereich&[admin/include.php|2]"
+msgstr "Adminbereich"
+
+#: ../admin/include.php:166
+msgid "Abmelden nicht vergessen&[admin/include.php|2]"
+msgstr "Abmelden nicht vergessen"
+
 #: ../login/help/description.php:254
 #: ../login/index.php:181
 #: ../login/flotten.php:425
@@ -555,13 +1365,6 @@ msgstr "Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %
 #, php-format
 msgid "HTTP redirect: %s"
 msgstr "HTTP redirect: %s"
-
-#: ../login/scripts/include.php:194
-#: ../chat.php:86
-#: ../include.php:17
-#: ../public_message.php:7
-msgid "[LANG]"
-msgstr "de"
 
 #: ../login/scripts/include.php:197
 #: ../include.php:19
@@ -634,13 +1437,6 @@ msgstr "bis %s"
 #, php-format
 msgid "%s (Serverzeit)"
 msgstr "%s (Serverzeit)"
-
-#: ../login/scripts/include.php:306
-#: ../login/scripts/include.php:315
-#: ../login/scripts/include.php:330
-#: ../index.php:43
-msgid "Y-m-d, H:i:s"
-msgstr "Y-m-d, H:i:s"
 
 #: ../login/scripts/include.php:315
 msgid "Ihr Benutzeraccount ist gesperrt."
@@ -998,11 +1794,6 @@ msgstr "Ungültige Aktion."
 msgid "[unit_separator]"
 msgstr " "
 
-#: ../login/flotten.php:462
-#: ../login/flotten.php:626
-msgid "Tage"
-msgstr "Tage"
-
 #: ../login/flotten.php:480
 msgid "Entfernung"
 msgstr "Entfernung"
@@ -1208,7 +1999,7 @@ msgid "Schiffe"
 msgstr "Schiffe"
 
 #: ../login/flotten.php:889
-#: ../engine/classes/item.php:331
+#: ../engine/classes/item.php:314
 msgid "Genauere Informationen anzeigen"
 msgstr "Genauere Informationen anzeigen"
 
@@ -1237,10 +2028,6 @@ msgstr "Zurückrufen zum Planeten %s"
 #: ../login/einstellungen.php:155
 msgid "Das alte Passwort stimmt nicht."
 msgstr "Das alte Passwort stimmt nicht."
-
-#: ../login/einstellungen.php:157
-msgid "Die beiden neuen Passworte stimmen nicht überein."
-msgstr "Die beiden neuen Passworte stimmen nicht überein."
 
 #: ../login/einstellungen.php:193
 msgid "Einstellungen"
@@ -1648,42 +2435,6 @@ msgstr "Neues Passwort wiederholen"
 #: ../login/einstellungen.php:669
 msgid "Speicher&n"
 msgstr "Speicher&n"
-
-#: ../rules.php:6
-#: ../faq.php:6
-#: ../chat.php:15
-#: ../index.php:18
-#: ../features.php:26
-#: ../register.php:8
-#: ../impressum.php:6
-#: ../passwd.php:34
-#, php-format
-msgid "%s – %s [s-u-a.net heading]"
-msgstr "%s – %s"
-
-#: ../rules.php:6
-#: ../rules.php:8
-#: ../rules.php:9
-#: ../rules.php:12
-#: ../rules.php:13
-#: ../rules.php:14
-#: ../rules.php:17
-#: ../rules.php:27
-#: ../rules.php:28
-#: ../rules.php:29
-#: ../rules.php:32
-#: ../rules.php:33
-#: ../rules.php:36
-#: ../rules.php:39
-#: ../faq.php:6
-#: ../chat.php:15
-#: ../index.php:18
-#: ../features.php:26
-#: ../register.php:8
-#: ../impressum.php:6
-#: ../passwd.php:34
-msgid "[title_abbr]"
-msgstr "S-U-A"
 
 #: ../rules.php:6
 msgid "Regeln"
@@ -2355,6 +3106,10 @@ msgstr "−"
 msgid "[item_"
 msgstr "XXX"
 
+#: ../engine/classes/item.php:106
+msgid "[itemdesc_"
+msgstr "XXX"
+
 #: ../engine/classes/user.php:3119
 #, php-format
 msgid ""
@@ -2852,14 +3607,6 @@ msgstr "Empfänger"
 #: ../public_message.php:52
 msgid "Betreff"
 msgstr "Betreff"
-
-#: ../public_message.php:55
-msgid "Zeit"
-msgstr "Zeit"
-
-#: ../public_message.php:58
-msgid "Nachricht"
-msgstr "Nachricht"
 
 #: ../passwd.php:34
 msgid "Passwort vergessen?"

@@ -2,7 +2,7 @@
 	require('include.php');
 
 	if(!$admin_array['permissions'][14])
-		die('No access.');
+		die(h(_('No access.')));
 
 	$news_array = array();
 	if(is_file(global_setting("DB_NEWS")) && filesize(global_setting("DB_NEWS")) > 0 && is_readable(global_setting("DB_NEWS")))
@@ -50,16 +50,16 @@
 ?>
 <form action="news.php" method="post">
 	<fieldset>
-		<legend>Neuigkeit hinzufügen</legend>
+		<legend><?=h(_("Neuigkeit hinzufügen"))?></legend>
 		<dl>
-			<dt><label for="heading-<?=count($news_array)?>-input">Überschrift</label></dt>
-			<dd><input type="text" name="news[<?=count($news_array)?>][0]" id="heading-<?=count($news_array)?>-input" /></dd>
+			<dt><label for="heading-<?=count($news_array)?>-input"><?=h(_("Überschrift&[admin/news.php|1]"))?></label></dt>
+			<dd><input type="text" name="news[<?=count($news_array)?>][0]" id="heading-<?=count($news_array)?>-input"<?=accesskey_attr(_("Überschrift&[admin/news.php|1]"))?> /></dd>
 
-			<dt><label for="text-<?=count($news_array)?>-textarea">Text</label></dt>
-			<dd><textarea name="news[<?=count($news_array)?>][1]" id="text-<?=count($news_array)?>-textarea" rows="15" cols="50"></textarea></dd>
+			<dt><label for="text-<?=count($news_array)?>-textarea"><?=h(_("Text&[admin/news.php|1]"))?></label></dt>
+			<dd><textarea name="news[<?=count($news_array)?>][1]" id="text-<?=count($news_array)?>-textarea" rows="15" cols="50"<?=accesskey_attr(_("Text&[admin/news.php|1]"))?>></textarea></dd>
 		</dl>
 		<ul>
-			<li><button type="submit">Speichern</button></li>
+			<li><button type="submit"<?=accesskey_attr(_("Speichern&[admin/news.php|1]"))?>><?=h(_("Speichern&[admin/news.php|1]"))?></button></li>
 		</ul>
 	</fieldset>
 </form>

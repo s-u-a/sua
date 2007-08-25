@@ -2,13 +2,13 @@
 	require('include.php');
 
 	if(!$admin_array['permissions'][11])
-		die('No access.');
+		die(h(_('No access.')));
 
 	if(!isset($_GET['action']))
 	{
 		$url = global_setting("PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/admin/index.php';
 		header('Location: '.$url, true, 303);
-		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
+		die('HTTP redirect: <a href="'.htmlspecialchars($url).'">'.htmlspecialchars($url).'</a>');
 	}
 
 	admin_gui::html_head();
@@ -47,27 +47,27 @@
 	<table border="1">
 		<thead>
 			<tr>
-				<th rowspan="2" title="Name des Administrators">Name</th>
-				<th rowspan="2">Passwort</th>
-				<th colspan="7">Benutzeraktionen</th>
-				<th rowspan="2" xml:lang="en" title="Anfängerschutz ein-/ausschalten">Anfängerschutz</th>
-				<th rowspan="2" xml:lang="en" title="Changelog bearbeiten">Changelog</th>
-				<th rowspan="2" title="Nachricht versenden">Nachricht</th>
-				<th rowspan="2" title="Log-Dateien ansehen"><span xml:lang="en">Logs</span></th>
-				<th rowspan="2" title="Adminstratoren verwalten"><span xml:lang="en">Admins</span></th>
-				<th rowspan="2" title="Wartungsarbeiten ein-/ausschalten">Wartung</th>
-				<th rowspan="2" title="Spiel sperren/entsperren">Spiel sperren</th>
-				<th rowspan="2">Flottensperre</th>
-				<th rowspan="2" title="News bearbeiten"><span xml:lang="en">News</span></th>
+				<th rowspan="2" title="<?=h(_("Name des Administrators"))?>"><?=h(_("Name"))?></th>
+				<th rowspan="2"><?=h(_("Passwort"))?></th>
+				<th colspan="7"><?=h(_("Benutzeraktionen"))?></th>
+				<th rowspan="2" xml:lang="en" title="<?=h(_("Anfängerschutz ein-/ausschalten"))?>"><?=h(_("Anfängerschutz"))?></th>
+				<th rowspan="2" xml:lang="en" title="<?=h(_("Changelog bearbeiten"))?>"><?=h(_("Changelog"))?></th>
+				<th rowspan="2" title="<?=h(_("Nachricht versenden"))?>"><?=h(_("Nachricht"))?></th>
+				<th rowspan="2" title="<?=h(_("Log-Dateien ansehen"))?>"><?=h(_("Logs"))?></th>
+				<th rowspan="2" title="<?=h(_("Adminstratoren verwalten"))?>"><?=h(_("Admins"))?></th>
+				<th rowspan="2" title="<?=h(_("Wartungsarbeiten ein-/ausschalten"))?>"><?=h(_("Wartung"))?></th>
+				<th rowspan="2" title="<?=h(_("Spiel sperren/entsperren"))?>"><?=h(_("Spiel sperren"))?></th>
+				<th rowspan="2"><?=h(_("Flottensperre"))?></th>
+				<th rowspan="2" title="<?=h(_("News bearbeiten"))?>"><?=h(_("News"))?></th>
 			</tr>
 			<tr>
-				<th title="Die Benutzerliste einsehen">Liste</th>
-				<th title="Als Geist als ein Benutzer anmelden">Geist</th>
-				<th title="Das Passwort eines Benutzers ändern">Passwort</th>
-				<th title="Die Passwörter zweier Benutzer vergleichen"><abbr title="Passwort">Pwd.</abbr>-<abbr title="Vergleich">Vergl.</abbr></th>
-				<th title="Einen Benutzer löschen">Löschen</th>
-				<th title="Einen Benutzer sperren/entsperren">Sperren</th>
-				<th title="Einen Benutzer umbenennen">Umbenennen</th>
+				<th title="<?=h(_("Die Benutzerliste einsehen"))?>"><?=h(_("Liste"))?></th>
+				<th title="<?=h(_("Als Geist als ein Benutzer anmelden"))?>"><?=h(_("Geist"))?></th>
+				<th title="<?=h(_("Das Passwort eines Benutzers ändern"))?>"><?=h(_("Passwort"))?></th>
+				<th title="<?=h(_("Die Passwörter zweier Benutzer vergleichen"))?>"><?=h(_("Pwd.-Vergl."))?></th>
+				<th title="<?=h(_("Einen Benutzer löschen"))?>"><?=h(_("Löschen"))?></th>
+				<th title="<?=h(_("Einen Benutzer sperren/entsperren"))?>"><?=h(_("Sperren"))?></th>
+				<th title="<?=h(_("Einen Benutzer umbenennen"))?>"><?=h(_("Umbenennen"))?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -79,7 +79,7 @@
 				{
 					if($j == 15) $j = 14; elseif($j == 14) $j = 15;
 ?>
-				<td><input type="checkbox" name="new_admin[<?=htmlentities($j+2)?>]" value="1" /></td>
+				<td><input type="checkbox" name="new_admin[<?=htmlspecialchars($j+2)?>]" value="1" /></td>
 <?php
 					if($j == 15) $j = 14; elseif($j == 14) $j = 15;
 				}
@@ -88,7 +88,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="16"><button type="submit">Hinzufügen</button></td>
+				<td colspan="16"><button type="submit"<?=accesskey_attr(_("Hinzufügen&[admin/usermanagement.php|1]"))?>><?=h(_("Hinzufügen&[admin/usermanagement.php|1]"))?></button></td>
 			</tr>
 		</tfoot>
 	</table>
@@ -157,27 +157,27 @@
 	<table border="1">
 		<thead>
 			<tr>
-				<th rowspan="2" title="Name des Administrators">Name</th>
-				<th colspan="7">Benutzeraktionen</th>
-				<th rowspan="2" xml:lang="en" title="Anfängerschutz ein-/ausschalten">Anfängerschutz</th>
-				<th rowspan="2" xml:lang="en" title="Changelog bearbeiten">Changelog</th>
-				<th rowspan="2" title="Nachricht versenden">Nachricht</th>
-				<th rowspan="2" title="Admin-og-Dateien ansehen"><span xml:lang="en">Admin</span>-<span xml:lang="en">Logs</span></th>
-				<th rowspan="2" title="Adminstratoren verwalten"><span xml:lang="en">Admins</span></th>
-				<th rowspan="2" title="Wartungsarbeiten ein-/ausschalten">Wartung</th>
-				<th rowspan="2" title="Spiel sperren/entsperren">Spiel sperren</th>
-				<th rowspan="2">Flottensperre</th>
-				<th rowspan="2" title="News bearbeiten"><span xml:lang="en">News</span></th>
-				<th rowspan="2">Löschen</th>
+				<th rowspan="2" title="<?=h(_("Name des Administrators"))?>"><?=h(_("Name"))?></th>
+				<th rowspan="2"><?=h(_("Passwort"))?></th>
+				<th colspan="7"><?=h(_("Benutzeraktionen"))?></th>
+				<th rowspan="2" xml:lang="en" title="<?=h(_("Anfängerschutz ein-/ausschalten"))?>"><?=h(_("Anfängerschutz"))?></th>
+				<th rowspan="2" xml:lang="en" title="<?=h(_("Changelog bearbeiten"))?>"><?=h(_("Changelog"))?></th>
+				<th rowspan="2" title="<?=h(_("Nachricht versenden"))?>"><?=h(_("Nachricht"))?></th>
+				<th rowspan="2" title="<?=h(_("Log-Dateien ansehen"))?>"><?=h(_("Logs"))?></th>
+				<th rowspan="2" title="<?=h(_("Adminstratoren verwalten"))?>"><?=h(_("Admins"))?></th>
+				<th rowspan="2" title="<?=h(_("Wartungsarbeiten ein-/ausschalten"))?>"><?=h(_("Wartung"))?></th>
+				<th rowspan="2" title="<?=h(_("Spiel sperren/entsperren"))?>"><?=h(_("Spiel sperren"))?></th>
+				<th rowspan="2"><?=h(_("Flottensperre"))?></th>
+				<th rowspan="2" title="<?=h(_("News bearbeiten"))?>"><?=h(_("News"))?></th>
 			</tr>
 			<tr>
-				<th title="Die Benutzerliste einsehen">Liste</th>
-				<th title="Als Geist als ein Benutzer anmelden">Geist</th>
-				<th title="Das Passwort eines Benutzers ändern">Passwort</th>
-				<th title="Die Passwörter zweier Benutzer vergleichen"><abbr title="Passwort">Pwd.</abbr>-<abbr title="Vergleich">Vergl.</abbr></th>
-				<th title="Einen Benutzer löschen">Löschen</th>
-				<th title="Einen Benutzer sperren/entsperren">Sperren</th>
-				<th title="Einen Benutzer umbenennen">Umbenennen</th>
+				<th title="<?=h(_("Die Benutzerliste einsehen"))?>"><?=h(_("Liste"))?></th>
+				<th title="<?=h(_("Als Geist als ein Benutzer anmelden"))?>"><?=h(_("Geist"))?></th>
+				<th title="<?=h(_("Das Passwort eines Benutzers ändern"))?>"><?=h(_("Passwort"))?></th>
+				<th title="<?=h(_("Die Passwörter zweier Benutzer vergleichen"))?>"><?=h(_("Pwd.-Vergl."))?></th>
+				<th title="<?=h(_("Einen Benutzer löschen"))?>"><?=h(_("Löschen"))?></th>
+				<th title="<?=h(_("Einen Benutzer sperren/entsperren"))?>"><?=h(_("Sperren"))?></th>
+				<th title="<?=h(_("Einen Benutzer umbenennen"))?>"><?=h(_("Umbenennen"))?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -187,13 +187,13 @@
 			{
 ?>
 			<tr>
-				<td><input type="text" name="admin_array[<?=htmlentities($i)?>][0]" value="<?=utf8_htmlentities($name)?>" /></td>
+				<td><input type="text" name="admin_array[<?=htmlspecialchars($i)?>][0]" value="<?=htmlspecialchars($name)?>" /></td>
 <?php
 				for($j=0; $j<=15; $j++)
 				{
 					if($j == 14) $j = 15; elseif($j == 15) $j = 14;
 ?>
-				<td><input type="checkbox" name="admin_array[<?=htmlentities($i)?>][<?=htmlentities($j+1)?>]" value="1"<?=$settings['permissions'][$j] ? ' checked="checked"' : ''?><?=($j==11 && $name==$_SESSION['admin_username'])? ' disabled="disabled"' : ''?> /></td>
+				<td><input type="checkbox" name="admin_array[<?=htmlspecialchars($i)?>][<?=htmlspecialchars($j+1)?>]" value="1"<?=$settings['permissions'][$j] ? ' checked="checked"' : ''?><?=($j==11 && $name==$_SESSION['admin_username'])? ' disabled="disabled"' : ''?> /></td>
 <?php
 					if($j == 14) $j = 15; elseif($j == 15) $j = 14;
 				}
@@ -201,13 +201,13 @@
 				if($name == $_SESSION['admin_username'])
 				{
 ?>
-				<td>[Löschen]</td>
+				<td>[<?=h(_("Löschen"))?>]</td>
 <?php
 				}
 				else
 				{
 ?>
-				<td><a href="?action=delete&amp;delete=<?=htmlentities(urlencode($i))?>">[Löschen]</a></td>
+				<td><a href="?action=delete&amp;delete=<?=htmlspecialchars(urlencode($i))?>">[<?=h(_("Löschen"))?>]</a></td>
 <?php
 				}
 ?>
@@ -219,7 +219,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="15"><button type="submit">Speichern</button></td>
+				<td colspan="15"><button type="submit"><?=h(_("Speichern"))?></button></td>
 			</tr>
 		</tfoot>
 	</table>

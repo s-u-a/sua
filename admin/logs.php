@@ -28,7 +28,7 @@
 <?php
 		foreach($sessions as $sid=>$sess)
 		{
-			$string = $sid.": ".$sess[0].", ".date('Y-m-d, H:i:s', $sess[1]);
+			$string = $sid.": ".$sess[0].", ".date(_('Y-m-d, H:i:s'), $sess[1]);
 ?>
 	<li><a href="logs.php?<?=htmlspecialchars('session='.urlencode($sid).'&start='.urlencode($sess[2]).'&end='.urlencode($sess[3]))?>"><?=htmlspecialchars($string)?></a></li>
 <?php
@@ -49,9 +49,9 @@
 <table border="1">
 	<thead>
 		<tr>
-			<th>Zeit</th>
-			<th>Benutzername</th>
-			<th>Aktion</th>
+			<th><?=h(_("Zeit"))?></th>
+			<th><?=h(_("Benutzername"))?></th>
+			<th><?=h(_("Aktion"))?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -85,7 +85,7 @@
 			}
 ?>
 		<tr>
-			<td><?=date('Y-m-d, H:i:s', $expl[1])?></td>
+			<td><?=date(_('Y-m-d, H:i:s'), $expl[1])?></td>
 			<td><?=htmlspecialchars($expl[2])?></td>
 			<td><?=htmlspecialchars($action_string)?></td>
 		</tr>

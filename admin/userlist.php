@@ -2,13 +2,13 @@
 	require('include.php');
 
 	if(!$admin_array['permissions'][0])
-		die('No access.');
+		die(h(_('No access.')));
 
 	admin_gui::html_head();
 
 	$sort = (isset($_GET['sort']) && $_GET['sort']);
 ?>
-<h2>Benutzerliste &ndash; <?=$sort ? 'sortiert' : 'unsortiert'?></h2>
+<h2><?=h(sprintf(_("Benutzerliste – %s"), ($sort ? _("sortiert") : _("unsortiert"))))?></h2>
 <?php
 	if($sort)
 	{
@@ -29,7 +29,7 @@
 		foreach($unames as $uname)
 		{
 ?>
-	<li><?=utf8_htmlentities($uname)?></li>
+	<li><?=htmlspecialchars($uname)?></li>
 <?php
 			flush();
 		}
@@ -48,7 +48,7 @@
 			if(!is_file(global_setting("DB_PLAYERS").'/'.$uname) || !is_readable(global_setting("DB_PLAYERS").'/'.$uname))
 				continue;
 ?>
-	<li><?=utf8_htmlentities(urldecode($uname))?></li>
+	<li><?=htmlspecialchars(urldecode($uname))?></li>
 <?php
 			flush();
 		}
