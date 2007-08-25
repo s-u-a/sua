@@ -18,7 +18,7 @@
 	$__FILE__ = str_replace('\\', '/', __FILE__);
 	if(substr($__FILE__, -strlen($this_filename)) !== $this_filename)
 	{
-		echo 'Der absolute Pfad der Datenbank konnte nicht ermittelt werden. Bitte gib ihn in der Datei /engine/include.php an.';
+		echo "The absolute path could not be detected. Please modify \$this_filename in ".__FILE__.", line ".(__LINE__-4)."\n";
 		exit(1);
 	}
 	define('s_root', substr($__FILE__, 0, -strlen($this_filename)));
@@ -187,28 +187,6 @@
 	if(!isset($_SESSION))
 		$GLOBALS['_SESSION'] = array();
 
-	# Namen der Nachrichtensorten
-	$message_type_names = array (
-		1 => 'Kämpfe',
-		2 => 'Spionage',
-		3 => 'Transport',
-		4 => 'Sammeln',
-		5 => 'Besiedelung',
-		6 => 'Benutzernachrichten',
-		7 => 'Verbündete',
-		8 => 'Postausgang'
-	);
-
-	# Namen der Flottenauftragsarten
-	$type_names = array (
-		1 => 'Besiedeln',
-		2 => 'Sammeln',
-		3 => 'Angriff',
-		4 => 'Transport',
-		5 => 'Spionieren',
-		6 => 'Stationieren'
-	);
-
 	# Maximales Alter in Tagen der Nachrichtensorten
 	$message_type_times = array (
 		1 => 3,
@@ -220,10 +198,6 @@
 		7 => 4,
 		8 => 2
 	);
-
-	$score_names = array("Gebäude", "Forschung", "Roboter", "Flotte", "Verteidigung", "Flugerfahrung", "Kampferfahrung");
-
-	$ress_names = array("Carbon", "Aluminium", "Wolfram", "Radium", "Tritium");
 
 	# Fuer veroeffentlichte Nachrichten
 	$public_messages_time = 30;

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-08-25 00:00+0200\n"
+"POT-Creation-Date: 2007-08-25 03:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,483 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: ../po/refresh_tmp.php:2
+msgid "[item_B0]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:3
+msgid "[itemdesc_B0]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:4
+msgid "[item_B1]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:5
+msgid "[itemdesc_B1]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:6
+msgid "[item_B2]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:7
+msgid "[itemdesc_B2]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:8
+msgid "[item_B3]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:9
+msgid "[itemdesc_B3]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:10
+msgid "[item_B4]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:11
+msgid "[itemdesc_B4]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:12
+msgid "[item_B5]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:13
+msgid "[itemdesc_B5]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:14
+msgid "[item_B6]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:15
+msgid "[itemdesc_B6]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:16
+msgid "[item_B7]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:17
+msgid "[itemdesc_B7]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:18
+msgid "[item_B8]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:19
+msgid "[itemdesc_B8]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:20
+msgid "[item_B9]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:21
+msgid "[itemdesc_B9]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:22
+msgid "[item_B10]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:23
+msgid "[itemdesc_B10]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:24 ../faq.php:134
+msgid "[item_F0]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:25
+msgid "[itemdesc_F0]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:26
+msgid "[item_F1]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:27
+msgid "[itemdesc_F1]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:28
+msgid "[item_F2]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:29
+msgid "[itemdesc_F2]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:30
+msgid "[item_F3]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:31
+msgid "[itemdesc_F3]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:32
+msgid "[item_F4]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:33
+msgid "[itemdesc_F4]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:34
+msgid "[item_F5]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:35
+msgid "[itemdesc_F5]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:36
+msgid "[item_F10]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:37
+msgid "[itemdesc_F10]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:38
+msgid "[item_F6]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:39
+msgid "[itemdesc_F6]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:40
+msgid "[item_F7]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:41
+msgid "[itemdesc_F7]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:42
+msgid "[item_F8]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:43
+msgid "[itemdesc_F8]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:44
+msgid "[item_F9]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:45
+msgid "[itemdesc_F9]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:46
+msgid "[item_F11]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:47
+msgid "[itemdesc_F11]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:48
+msgid "[item_R01]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:49
+msgid "[itemdesc_R01]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:50
+msgid "[item_R02]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:51
+msgid "[itemdesc_R02]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:52
+msgid "[item_R03]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:53
+msgid "[itemdesc_R03]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:54
+msgid "[item_R04]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:55
+msgid "[itemdesc_R04]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:56
+msgid "[item_R05]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:57
+msgid "[itemdesc_R05]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:58
+msgid "[item_R06]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:59
+msgid "[itemdesc_R06]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:60
+msgid "[item_S0]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:61
+msgid "[itemdesc_S0]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:62
+msgid "[item_S1]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:63
+msgid "[itemdesc_S1]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:64
+msgid "[item_S2]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:65
+msgid "[itemdesc_S2]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:66
+msgid "[item_S3]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:67
+msgid "[itemdesc_S3]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:68
+msgid "[item_S5]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:69
+msgid "[itemdesc_S5]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:70
+msgid "[item_S6]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:71
+msgid "[itemdesc_S6]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:72
+msgid "[item_S7]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:73
+msgid "[itemdesc_S7]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:74
+msgid "[item_S8]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:75
+msgid "[itemdesc_S8]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:76
+msgid "[item_S9]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:77
+msgid "[itemdesc_S9]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:78
+msgid "[item_S10]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:79
+msgid "[itemdesc_S10]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:80
+msgid "[item_S11]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:81
+msgid "[itemdesc_S11]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:82
+msgid "[item_S12]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:83
+msgid "[itemdesc_S12]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:84
+msgid "[item_S13]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:85
+msgid "[itemdesc_S13]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:86
+msgid "[item_S14]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:87
+msgid "[itemdesc_S14]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:88
+msgid "[item_S15]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:89
+msgid "[itemdesc_S15]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:90
+msgid "[item_S16]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:91
+msgid "[itemdesc_S16]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:92
+msgid "[item_V0]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:93
+msgid "[itemdesc_V0]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:94
+msgid "[item_V1]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:95
+msgid "[itemdesc_V1]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:96
+msgid "[item_V2]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:97
+msgid "[itemdesc_V2]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:98
+msgid "[item_V6]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:99
+msgid "[itemdesc_V6]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:100
+msgid "[item_V3]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:101
+msgid "[itemdesc_V3]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:102
+msgid "[item_V4]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:103
+msgid "[itemdesc_V4]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:104
+msgid "[item_V5]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:105
+msgid "[itemdesc_V5]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:106
+msgid "[message_1]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:107
+msgid "[message_2]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:108
+msgid "[message_3]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:109
+msgid "[message_4]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:110
+msgid "[message_5]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:111
+msgid "[message_6]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:112
+msgid "[message_7]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:113
+msgid "[message_8]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:114
+msgid "[fleet_1]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:115
+msgid "[fleet_2]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:116
+msgid "[fleet_3]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:117
+msgid "[fleet_4]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:118
+msgid "[fleet_5]"
+msgstr ""
+
+#: ../po/refresh_tmp.php:119
+msgid "[fleet_6]"
+msgstr ""
+
+#: ../login/help/description.php:254 ../login/index.php:181
+#: ../login/flotten.php:425 ../login/flotten.php:523
+msgid "[fleet_"
+msgstr ""
 
 #: ../login/scripts/include.php:53
 #, php-format
@@ -50,7 +527,7 @@ msgid ""
 "anmelden%s."
 msgstr ""
 
-#: ../login/scripts/include.php:167 ../login/scripts/include.php:656
+#: ../login/scripts/include.php:167 ../login/scripts/include.php:654
 #, php-format
 msgid "HTTP redirect: %s"
 msgstr ""
@@ -65,12 +542,12 @@ msgstr ""
 msgid "[title_abbr_full]"
 msgstr ""
 
-#: ../login/scripts/include.php:202 ../engine/include.php:734
+#: ../login/scripts/include.php:202 ../engine/include.php:708
 msgid "[thousand_separator]"
 msgstr ""
 
-#: ../login/scripts/include.php:270 ../login/scripts/include.php:466
-#: ../login/scripts/include.php:598
+#: ../login/scripts/include.php:270 ../login/scripts/include.php:464
+#: ../login/scripts/include.php:596
 msgid "Zum Inhalt&[login/scripts/include.php|1]"
 msgstr ""
 
@@ -83,27 +560,27 @@ msgid "Zu den Spieldaten&[login/scripts/include.php|1]"
 msgstr ""
 
 #: ../login/scripts/include.php:280
-msgid "Carbon"
+msgid "[ress_0]"
 msgstr ""
 
 #: ../login/scripts/include.php:283
-msgid "Aluminium"
+msgid "[ress_1]"
 msgstr ""
 
 #: ../login/scripts/include.php:286
-msgid "Wolfram"
+msgid "[ress_2]"
 msgstr ""
 
 #: ../login/scripts/include.php:289
-msgid "Radium"
+msgid "[ress_3]"
 msgstr ""
 
-#: ../login/scripts/include.php:292 ../faq.php:66 ../faq.php:81
-msgid "Tritium"
+#: ../login/scripts/include.php:292
+msgid "[ress_4]"
 msgstr ""
 
 #: ../login/scripts/include.php:295
-msgid "Energie"
+msgid "[ress_5]"
 msgstr ""
 
 #: ../login/scripts/include.php:306
@@ -141,13 +618,13 @@ msgstr ""
 msgid "Es herrscht eine Flottensperre für feindliche Flüge."
 msgstr ""
 
-#: ../login/scripts/include.php:343 ../login/scripts/include.php:491
+#: ../login/scripts/include.php:343 ../login/scripts/include.php:489
 #: ../login/flotten.php:968
 #, php-format
 msgid "„%s“ (%s)"
 msgstr ""
 
-#: ../login/scripts/include.php:343 ../login/scripts/include.php:491
+#: ../login/scripts/include.php:343 ../login/scripts/include.php:489
 #: ../login/flotten.php:422 ../login/flotten.php:478 ../login/flotten.php:803
 #: ../login/flotten.php:964 ../login/flotten.php:968
 #: ../engine/classes/user.php:3119 ../engine/classes/user.php:3120
@@ -156,149 +633,159 @@ msgstr ""
 msgid "%d:%d:%d"
 msgstr ""
 
-#: ../login/scripts/include.php:394
+#: ../login/scripts/include.php:380
+#, php-format
+msgid "%s: %d"
+msgstr ""
+
+#: ../login/scripts/include.php:380 ../login/nachrichten.php:108
+#: ../login/nachrichten.php:390 ../engine/classes/message.php:369
+msgid "[message_"
+msgstr ""
+
+#: ../login/scripts/include.php:392
 #, php-format
 msgid "Sie haben %s neue &Nachricht.[login/scripts/include.php|2]"
 msgid_plural "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../login/scripts/include.php:465 ../login/scripts/include.php:597
+#: ../login/scripts/include.php:463 ../login/scripts/include.php:595
 msgid "Zur Rohstoffanzeige&[login/scripts/include.php|1]"
 msgstr ""
 
-#: ../login/scripts/include.php:474
+#: ../login/scripts/include.php:472
 msgid "Planeten wechseln"
 msgstr ""
 
-#: ../login/scripts/include.php:484
+#: ../login/scripts/include.php:482
 msgid "Ihre &Planeten[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:497
+#: ../login/scripts/include.php:495
 msgid "Wechseln"
 msgstr ""
 
-#: ../login/scripts/include.php:502
+#: ../login/scripts/include.php:500
 msgid "&Übersicht[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:503
+#: ../login/scripts/include.php:501
 msgid "&Rohstoffe[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:504
+#: ../login/scripts/include.php:502
 msgid "&Gebäude[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:505
+#: ../login/scripts/include.php:503
 msgid "&Forschung[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:506
+#: ../login/scripts/include.php:504
 msgid "Ro&boter[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:507
+#: ../login/scripts/include.php:505
 msgid "F&lotten[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:508
+#: ../login/scripts/include.php:506
 msgid "&Schiffswerft[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:509
+#: ../login/scripts/include.php:507
 msgid "&Verteidigung[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:510
+#: ../login/scripts/include.php:508
 msgid "Han&delsbörse[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:511
+#: ../login/scripts/include.php:509
 msgid "I&mperium[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:515
+#: ../login/scripts/include.php:513
 msgid "&Karte[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:516
+#: ../login/scripts/include.php:514
 msgid "All&ianz[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:517
+#: ../login/scripts/include.php:515
 msgid "V&erbündete[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:518
+#: ../login/scripts/include.php:516
 msgid "&Highscores[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:519
+#: ../login/scripts/include.php:517
 msgid "Na&chrichten[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:520
+#: ../login/scripts/include.php:518
 msgid "Forschungsb&aum[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:521
+#: ../login/scripts/include.php:519
 msgid "Eins&tellungen[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:526
+#: ../login/scripts/include.php:524
 msgid "Adminbereich&[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:532
+#: ../login/scripts/include.php:530
 msgid "Abmelden&[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:543
+#: ../login/scripts/include.php:541
 msgid "Board&[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:544
+#: ../login/scripts/include.php:542
 msgid "FAQ&[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:545
+#: ../login/scripts/include.php:543
 msgid "Chat&[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:546
+#: ../login/scripts/include.php:544
 msgid "Entwicklerseite&[login/scripts/include.php|3]"
 msgstr ""
 
-#: ../login/scripts/include.php:556
+#: ../login/scripts/include.php:554
 msgid "Serverzeit"
 msgstr ""
 
-#: ../login/scripts/include.php:557
+#: ../login/scripts/include.php:555
 msgid "H:i:s"
 msgstr ""
 
-#: ../login/scripts/include.php:566
+#: ../login/scripts/include.php:564
 msgid ""
 "mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2"
 "(local_time_obj.getSeconds())"
 msgstr ""
 
-#: ../login/scripts/include.php:568
+#: ../login/scripts/include.php:566
 msgid "Lokalzeit"
 msgstr ""
 
-#: ../login/scripts/include.php:583
+#: ../login/scripts/include.php:581
 msgid "Changelog anzeigen&[login/scripts/include.php|4]"
 msgstr ""
 
-#: ../login/scripts/include.php:583
+#: ../login/scripts/include.php:581
 #, php-format
 msgid "Version %s"
 msgstr ""
 
-#: ../login/scripts/include.php:588
+#: ../login/scripts/include.php:586
 #, php-format
 msgid "Revision %s"
 msgstr ""
@@ -313,6 +800,42 @@ msgid_plural ""
 "Sie den Planeten auflösen, werden diese Flotten zerstört werden."
 msgstr[0] ""
 msgstr[1] ""
+
+#: ../login/index.php:497
+msgid "[scores_0]"
+msgstr ""
+
+#: ../login/index.php:500
+msgid "[scores_1]"
+msgstr ""
+
+#: ../login/index.php:503
+msgid "[scores_2]"
+msgstr ""
+
+#: ../login/index.php:506
+msgid "[scores_3]"
+msgstr ""
+
+#: ../login/index.php:509
+msgid "[scores_4]"
+msgstr ""
+
+#: ../login/index.php:512
+msgid "[scores_5]"
+msgstr ""
+
+#: ../login/index.php:515
+msgid "[scores_6]"
+msgstr ""
+
+#: ../login/highscores.php:88
+msgid "[scores_"
+msgstr ""
+
+#: ../login/boerse.php:123 ../login/boerse.php:124
+msgid "[ress_"
+msgstr ""
 
 #: ../login/flotten.php:17
 msgid "Flotten"
@@ -504,23 +1027,23 @@ msgid "Transport"
 msgstr ""
 
 #: ../login/flotten.php:541 ../login/flotten.php:542
-msgid "Carbo&n[login/flotten.php|1]"
+msgid "[ress_0]&[login/flotten.php|1]"
 msgstr ""
 
 #: ../login/flotten.php:544 ../login/flotten.php:545
-msgid "Aluminium&[login/flotten.php|1]"
+msgid "[ress_1]&[login/flotten.php|1]"
 msgstr ""
 
 #: ../login/flotten.php:547 ../login/flotten.php:548
-msgid "Wolfram&[login/flotten.php|1]"
+msgid "[ress_2]&[login/flotten.php|1]"
 msgstr ""
 
 #: ../login/flotten.php:550 ../login/flotten.php:551
-msgid "Radium&[login/flotten.php|1]"
+msgid "[ress_3]&[login/flotten.php|1]"
 msgstr ""
 
 #: ../login/flotten.php:553 ../login/flotten.php:554
-msgid "Tritium&[login/flotten.php|1]"
+msgid "[ress_4]&[login/flotten.php|1]"
 msgstr ""
 
 #: ../login/flotten.php:612 ../login/flotten.php:695
@@ -608,7 +1131,7 @@ msgstr ""
 msgid "Schiffe"
 msgstr ""
 
-#: ../login/flotten.php:889 ../engine/classes/item.php:334
+#: ../login/flotten.php:889 ../engine/classes/item.php:331
 msgid "Genauere Informationen anzeigen"
 msgstr ""
 
@@ -820,31 +1343,31 @@ msgid "IM-Benachrichtigung"
 msgstr ""
 
 #: ../login/einstellungen.php:369 ../login/einstellungen.php:371
-msgid "Kämpfe&[login/einstellungen.php|1]"
+msgid "[message_1]&[login/einstellungen.php|1]"
 msgstr ""
 
 #: ../login/einstellungen.php:382 ../login/einstellungen.php:384
-msgid "Spionage&[login/einstellungen.php|1]"
+msgid "[message_2]&[login/einstellungen.php|1]"
 msgstr ""
 
 #: ../login/einstellungen.php:395 ../login/einstellungen.php:396
-msgid "Transport&[login/einstellungen.php|1]"
+msgid "[message_3]&[login/einstellungen.php|1]"
 msgstr ""
 
 #: ../login/einstellungen.php:408 ../login/einstellungen.php:410
-msgid "Sammeln&[login/einstellungen.php|1]"
+msgid "[message_4]&[login/einstellungen.php|1]"
 msgstr ""
 
 #: ../login/einstellungen.php:421 ../login/einstellungen.php:422
-msgid "Besiedelung&[login/einstellungen.php|1]"
+msgid "[message_5]&[login/einstellungen.php|1]"
 msgstr ""
 
 #: ../login/einstellungen.php:438 ../login/einstellungen.php:441
-msgid "Benutzernachrichten&[login/einstellungen.php|1]"
+msgid "[message_6]&[login/einstellungen.php|1]"
 msgstr ""
 
 #: ../login/einstellungen.php:444 ../login/einstellungen.php:447
-msgid "Verbündete&[login/einstellungen.php|1]"
+msgid "[message_7]&[login/einstellungen.php|1]"
 msgstr ""
 
 #: ../login/einstellungen.php:456
@@ -1454,6 +1977,10 @@ msgid ""
 "Erfahrung im Flug lässt Ihre Schiffe schneller fliegen."
 msgstr ""
 
+#: ../faq.php:66 ../faq.php:81
+msgid "Tritium"
+msgstr ""
+
 #: ../faq.php:67
 msgid ""
 "Pro Tausend Punkte, das Sie im Kampf Ihren Gegner verlieren ließen, bekommen "
@@ -1732,10 +2259,6 @@ msgid ""
 "aufgerundet((%s*Werftenzahl)^0,7)."
 msgstr ""
 
-#: ../faq.php:134
-msgid "[item_F0]"
-msgstr ""
-
 #: ../faq.php:139
 msgid ""
 "Wenn Sie sich mit einem Spieler verbünden, dient das nicht nur der "
@@ -1959,8 +2482,12 @@ msgstr ""
 msgid "%s auf %s, Port %d"
 msgstr ""
 
-#: ../engine/include.php:737
+#: ../engine/include.php:711
 msgid "[minus_sign]"
+msgstr ""
+
+#: ../engine/classes/item.php:105
+msgid "[item_"
 msgstr ""
 
 #: ../engine/classes/user.php:3119

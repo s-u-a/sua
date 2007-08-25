@@ -422,7 +422,7 @@
 		<dd class="c-ziel"><?=h($planet_owner ? sprintf(_("„%s“ (%s, Eigentümer: %s)"), htmlspecialchars($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])), vsprintf(_("%d:%d:%d"), explode(":", $fleet_obj->getCurrentTarget())), htmlspecialchars($planet_owner)) : sprintf(_("Unbesiedelt (%s)"), vsprintf(_("%d:%d:%d"), explode(":", $fleet_obj->getCurrentTarget()))))?></dd>
 
 		<dt class="c-auftragsart"><?=h(_("Auftragsart"))?></dt>
-		<dd class="c-auftragsart"><?=isset($type_names[$auftrag]) ? htmlspecialchars($type_names[$auftrag]) : htmlspecialchars($auftrag)?></dt>
+		<dd class="c-auftragsart"><?=h(_("[fleet_".$auftrag."]"))?></dt>
 
 		<dt class="c-ankunft"><?=h(_("Ankunft"))?></dt>
 		<dd class="c-ankunft"><?=h(sprintf("%s (Serverzeit)", date(_("H:i:s, Y-m-d"), $fleet_obj->getNextArrival())))?></dd>
@@ -520,7 +520,7 @@
 							foreach($types as $type)
 							{
 ?>
-				<option value="<?=htmlspecialchars($type)?>"><?=isset($type_names[$type]) ? htmlspecialchars($type_names[$type]) : $type?></option>
+				<option value="<?=htmlspecialchars($type)?>"><?=h(_("[fleet_".$type."]"))?></option>
 <?php
 							}
 ?>
@@ -538,20 +538,20 @@
 								if($transport[0] > 0)
 								{
 ?>
-				<dt><label for="transport-carbon"><?=h(_("Carbo&n[login/flotten.php|1]"))?></label></dt>
-				<dd><input type="text" name="transport[0]" id="transport-carbon" value="0" onchange="recalc_values();"<?=accesskey_attr(_("Carbo&n[login/flotten.php|1]"))?> tabindex="3" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dt><label for="transport-carbon"><?=h(_("[ress_0]&[login/flotten.php|1]"))?></label></dt>
+				<dd><input type="text" name="transport[0]" id="transport-carbon" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_0]&[login/flotten.php|1]"))?> tabindex="3" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
-				<dt><label for="transport-aluminium"><?=h(_("Aluminium&[login/flotten.php|1]"))?></label></dt>
-				<dd><input type="text" name="transport[1]" id="transport-aluminium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("Aluminium&[login/flotten.php|1]"))?> tabindex="4" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dt><label for="transport-aluminium"><?=h(_("[ress_1]&[login/flotten.php|1]"))?></label></dt>
+				<dd><input type="text" name="transport[1]" id="transport-aluminium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_1]&[login/flotten.php|1]"))?> tabindex="4" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
-				<dt><label for="transport-wolfram"><?=h(_("Wolfram&[login/flotten.php|1]"))?></label></dt>
-				<dd><input type="text" name="transport[2]" id="transport-wolfram" value="0" onchange="recalc_values();"<?=accesskey_attr(_("Wolfram&[login/flotten.php|1]"))?> tabindex="5" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dt><label for="transport-wolfram"><?=h(_("[ress_2]&[login/flotten.php|1]"))?></label></dt>
+				<dd><input type="text" name="transport[2]" id="transport-wolfram" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_2]&[login/flotten.php|1]"))?> tabindex="5" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
-				<dt><label for="transport-radium"><?=h(_("Radium&[login/flotten.php|1]"))?></label></dt>
-				<dd><input type="text" name="transport[3]" id="transport-radium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("Radium&[login/flotten.php|1]"))?> tabindex="6" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dt><label for="transport-radium"><?=h(_("[ress_3]&[login/flotten.php|1]"))?></label></dt>
+				<dd><input type="text" name="transport[3]" id="transport-radium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_3]&[login/flotten.php|1]"))?> tabindex="6" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 
-				<dt><label for="transport-tritium"><?=h(_("Tritium&[login/flotten.php|1]"))?></label></dt>
-				<dd><input type="text" name="transport[4]" id="transport-tritium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("Tritium&[login/flotten.php|1]"))?> tabindex="7" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
+				<dt><label for="transport-tritium"><?=h(_("[ress_4]&[login/flotten.php|1]"))?></label></dt>
+				<dd><input type="text" name="transport[4]" id="transport-tritium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_4]&[login/flotten.php|1]"))?> tabindex="7" onkeyup="recalc_values();" onclick="recalc_values();" /></dd>
 <?php
 								}
 								if($transport[1] > 0)

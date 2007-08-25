@@ -184,7 +184,7 @@
 				}
 			}
 			$this->endTransaction();
-			
+
 			return true;
 		}
 	}
@@ -207,7 +207,7 @@
 
 			return self::$database->messagesCount();
 		}
-		
+
 		function __construct($name=false)
 		{
 			self::databaseInstance();
@@ -357,7 +357,6 @@
 		{
 			if(count($this->im_check_notify) > 0)
 			{
-				global $message_type_names;
 				$imfile = Classes::IMFile();
 				foreach($this->im_check_notify as $user=>$type)
 				{
@@ -367,7 +366,7 @@
 					{
 						$im_receive = $user_obj->checkSetting('messenger_receive');
 						if($im_receive['messages'][$type])
-							$imfile->addMessage($im_settings[0], $im_settings[1], $user, "Sie haben eine neue Nachricht der Sorte ".$message_type_names[$type].($this->from() ? " von ".$this->from() : '')." erhalten. Der Betreff lautet: ".$this->subject());
+							$imfile->addMessage($im_settings[0], $im_settings[1], $user, "Sie haben eine neue Nachricht der Sorte "._("[message_".$type."]").($this->from() ? " von ".$this->from() : '')." erhalten. Der Betreff lautet: ".$this->subject());
 					}
 					unset($this->im_check_notify[$user]);
 				}

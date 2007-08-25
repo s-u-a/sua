@@ -366,9 +366,9 @@
 				</thead>
 				<tbody>
 					<tr class="r-kaempfe">
-						<th class="c-nachrichtentyp"><?=h(_("Kämpfe&[login/einstellungen.php|1]"))?></th>
+						<th class="c-nachrichtentyp"><?=h(_("[message_1]&[login/einstellungen.php|1]"))?></th>
 						<td class="c-ankunft leer"></td>
-						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[1][1]"<?=accesskey_attr(_("Kämpfe&[login/einstellungen.php|1]"))?><?=$receive_settings[1][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[1][1]"<?=accesskey_attr(_("[message_1]&[login/einstellungen.php|1]"))?><?=$receive_settings[1][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
 	{
@@ -379,9 +379,9 @@
 ?>
 					</tr>
 					<tr class="r-spionage">
-						<th class="c-nachrichtentyp"><?=h(_("Spionage&[login/einstellungen.php|1]"))?></th>
+						<th class="c-nachrichtentyp"><?=h(_("[message_2]&[login/einstellungen.php|1]"))?></th>
 						<td class="c-ankunft leer"></td>
-						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[2][1]"<?=accesskey_attr(_("Spionage&[login/einstellungen.php|1]"))?><?=$receive_settings[2][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[2][1]"<?=accesskey_attr(_("[message_2]&[login/einstellungen.php|1]"))?><?=$receive_settings[2][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
 	{
@@ -392,8 +392,8 @@
 ?>
 					</tr>
 					<tr class="r-transport">
-						<th class="c-nachrichtentyp"><?=h(_("Transport&[login/einstellungen.php|1]"))?></th>
-						<td class="c-ankunft"><input type="checkbox" name="nachrichten[3][0]"<?=accesskey_attr(_("Transport&[login/einstellungen.php|1]"))?><?=$receive_settings[3][0] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<th class="c-nachrichtentyp"><?=h(_("[message_3]&[login/einstellungen.php|1]"))?></th>
+						<td class="c-ankunft"><input type="checkbox" name="nachrichten[3][0]"<?=accesskey_attr(_("[message_3]&[login/einstellungen.php|1]"))?><?=$receive_settings[3][0] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[3][1]"<?=$receive_settings[3][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
@@ -405,9 +405,9 @@
 ?>
 					</tr>
 					<tr class="r-sammeln">
-						<th class="c-nachrichtentyp"><?=h(_("Sammeln&[login/einstellungen.php|1]"))?></th>
+						<th class="c-nachrichtentyp"><?=h(_("[message_4]&[login/einstellungen.php|1]"))?></th>
 						<td class="c-ankunft leer"></td>
-						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[4][1]"<?=accesskey_attr(_("Sammeln&[login/einstellungen.php|1]"))?><?=$receive_settings[4][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[4][1]"<?=accesskey_attr(_("[message_4]&[login/einstellungen.php|1]"))?><?=$receive_settings[4][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
 	{
@@ -418,8 +418,8 @@
 ?>
 					</tr>
 					<tr class="r-besiedelung">
-						<th class="c-nachrichtentyp"><?=h(_("Besiedelung&[login/einstellungen.php|1]"))?></th>
-						<td class="c-ankunft"><input type="checkbox" name="nachrichten[5][0]"<?=accesskey_attr(_("Besiedelung&[login/einstellungen.php|1]"))?><?=$receive_settings[5][0] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<th class="c-nachrichtentyp"><?=h(_("[message_5]&[login/einstellungen.php|1]"))?></th>
+						<td class="c-ankunft"><input type="checkbox" name="nachrichten[5][0]"<?=accesskey_attr(_("[message_5]&[login/einstellungen.php|1]"))?><?=$receive_settings[5][0] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 						<td class="c-rueckkehr"><input type="checkbox" name="nachrichten[5][1]"<?=$receive_settings[5][1] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 <?php
 	if($show_im)
@@ -435,16 +435,16 @@
 	{
 ?>
 					<tr class="r-benutzernachrichten">
-						<th class="c-nachrichtentyp"><?=h(_("Benutzernachrichten&[login/einstellungen.php|1]"))?></th>
+						<th class="c-nachrichtentyp"><?=h(_("[message_6]&[login/einstellungen.php|1]"))?></th>
 						<td class="c-ankunft leer"></td>
 						<td class="c-rueckkehr leer"></td>
-						<td class="c-im-benachrichtigung"><input type="checkbox" name="im-receive[messages][6]"<?=accesskey_attr(_("Benutzernachrichten&[login/einstellungen.php|1]"))?><?=$messenger_receive['messages'][6] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-im-benachrichtigung"><input type="checkbox" name="im-receive[messages][6]"<?=accesskey_attr(_("[message_6]&[login/einstellungen.php|1]"))?><?=$messenger_receive['messages'][6] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 					</tr>
 					<tr class="r-verbuendete">
-						<th class="c-nachrichtentyp"><?=h(_("Verbündete&[login/einstellungen.php|1]"))?></th>
+						<th class="c-nachrichtentyp"><?=h(_("[message_7]&[login/einstellungen.php|1]"))?></th>
 						<td class="c-ankunft leer"></td>
 						<td class="c-rueckkehr leer"></td>
-						<td class="c-im-benachrichtigung"><input type="checkbox" name="im-receive[messages][7]"<?=accesskey_attr(_("Verbündete&[login/einstellungen.php|1]"))?><?=$messenger_receive['messages'][7] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
+						<td class="c-im-benachrichtigung"><input type="checkbox" name="im-receive[messages][7]"<?=accesskey_attr(_("[message_7]&[login/einstellungen.php|1]"))?><?=$messenger_receive['messages'][7] ? ' checked="checked"' : ''?> tabindex="<?=$tabindex++?>" /></td>
 					</tr>
 <?php
 	}

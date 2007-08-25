@@ -85,7 +85,7 @@
 			<th class="c-platz">Platz</th>
 			<th class="c-spieler">Spieler</th>
 			<th class="c-allianz">Allianz</th>
-			<th class="c-punktzahl">Punktzahl<?php if($sort!==false){?> (<?=htmlspecialchars($score_names[$sort])?>)<?php }?></th>
+			<th class="c-punktzahl">Punktzahl<?php if($sort!==false){?> (<?=h(_("[scores_".$sort."]"))?>)<?php }?></th>
 		</tr>
 	</thead>
 <?php

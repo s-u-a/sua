@@ -97,7 +97,7 @@
 <?php
 		}
 	}
-	elseif(isset($_GET['type']) && isset($message_type_names[$_GET['type']]))
+	elseif(isset($_GET['type']))
 	{
 		# Nachrichtentyp wurde bereits ausgewaehlt, Nachricht oder Nachrichtenliste anzeigen
 
@@ -105,7 +105,7 @@
 		{
 			# Nachricht anzeigen
 ?>
-<h2><a href="nachrichten.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" tabindex="6" accesskey="w">Nachrichten</a>: <a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;<?=htmlentities(session_name().'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenübersicht: <?=utf8_htmlentities($message_type_names[$_GET['type']])?> [O]" tabindex="5" accesskey="o"><?=utf8_htmlentities($message_type_names[$_GET['type']])?></a></h2>
+<h2><a href="nachrichten.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" tabindex="6" accesskey="w">Nachrichten</a>: <a href="nachrichten.php?type=<?=htmlentities(urlencode($_GET['type']))?>&amp;<?=htmlentities(session_name().'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenübersicht: <?=h(_("[message_".$_GET["type"]."]"))?> [O]" tabindex="5" accesskey="o"><?=h(_("[message_".$_GET['type']."]"))?></a></h2>
 <?php
 			if(!$me->checkMessage($_GET['message'], $_GET['type']))
 			{
@@ -387,7 +387,7 @@
 		{
 			# Nachrichtenuebersicht einer Kategorie anzeigen
 ?>
-<h2><a href="nachrichten.php?<?=htmlentities(session_name().'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" accesskey="w" tabindex="4">Nachrichten</a>: <?=utf8_htmlentities($message_type_names[$_GET['type']])?></h2>
+<h2><a href="nachrichten.php?<?=htmlentities(session_name().'='.urlencode(session_id()))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" accesskey="w" tabindex="4">Nachrichten</a>: <?=h(_("[message_".$_GET['type']."]"))?></h2>
 <?php
 			if(isset($_POST['message']) && is_array($_POST['message']))
 			{

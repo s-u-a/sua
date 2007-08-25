@@ -277,22 +277,22 @@
 ?>
 		<div id="content-9">
 			<dl id="ress" class="ress">
-				<dt class="ress-carbon"><?=h(_("Carbon"))?></dt>
+				<dt class="ress-carbon"><?=h(_("[ress_0]"))?></dt>
 				<dd class="ress-carbon<?=($cur_ress[0]<0) ? " negativ" : ""?>" id="ress-carbon"><?=ths($cur_ress[0])?></dd>
 
-				<dt class="ress-aluminium"><?=h(_("Aluminium"))?></dt>
+				<dt class="ress-aluminium"><?=h(_("[ress_1]"))?></dt>
 				<dd class="ress-aluminium<?=($cur_ress[1]<0) ? " negativ" : ""?>" id="ress-aluminium"><?=ths($cur_ress[1])?></dd>
 
-				<dt class="ress-wolfram"><?=h(_("Wolfram"))?></dt>
+				<dt class="ress-wolfram"><?=h(_("[ress_2]"))?></dt>
 				<dd class="ress-wolfram<?=($cur_ress[2]<0) ? " negativ" : ""?>" id="ress-wolfram"><?=ths($cur_ress[2])?></dd>
 
-				<dt class="ress-radium"><?=h(_("Radium"))?></dt>
+				<dt class="ress-radium"><?=h(_("[ress_3]"))?></dt>
 				<dd class="ress-radium<?=($cur_ress[3]<0) ? " negativ" : ""?>" id="ress-radium"><?=ths($cur_ress[3])?></dd>
 
-				<dt class="ress-tritium"><?=h(_("Tritium"))?></dt>
+				<dt class="ress-tritium"><?=h(_("[ress_4]"))?></dt>
 				<dd class="ress-tritium<?=($cur_ress[4]<0) ? " negativ" : ""?>" id="ress-tritium"><?=ths($cur_ress[4])?></dd>
 
-				<dt class="ress-energie"><?=h(_("Energie"))?></dt>
+				<dt class="ress-energie"><?=h(_("[ress_5]"))?></dt>
 				<dd class="ress-energie<?=($cur_ress[5]<0) ? " negativ" : ""?>" id="ress-energie"><?=ths($cur_ress[5])?></dd>
 			</dl>
 			<div id="content-10"><div id="content-11"><div id="content-12"><div id="content-13">
@@ -344,8 +344,6 @@
 <?php
 			if($me->checkSetting('notify') || $_SERVER['PHP_SELF'] == h_root."/login/index.php")
 			{
-				global $message_type_names;
-
 				$ncount = array(
 					1 => 0,
 					2 => 0,
@@ -379,7 +377,7 @@
 					foreach($ncount as $type=>$count)
 					{
 						if($count > 0)
-							$title[] = htmlspecialchars($message_type_names[$type]).':&nbsp;'.htmlspecialchars($count);
+							$title[] = sprintf(h(_("%s: %d")), h(_("[message_".$type)), ths($count));
 						if($count == $ges_ncount)
 							$link .= '?type='.urlencode($type);
 					}
@@ -563,7 +561,7 @@
 		<script type="text/javascript">
 			var dd_element = document.createElement('dd');
 			dd_element.setAttribute('id', 'time-local');
-			dd_element.appendChild(document.createTextNode(<?=_("mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2(local_time_obj.getSeconds())")?>)));
+			dd_element.appendChild(document.createTextNode(<?=_("mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2(local_time_obj.getSeconds())")?>));
 			var dt_element = document.createElement('dt');
 			dt_element.appendChild(document.createTextNode('<?=jsentities(_("Lokalzeit"))?>'));
 			var time_element = document.getElementById('time');

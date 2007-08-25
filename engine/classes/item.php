@@ -101,7 +101,10 @@
 
 			if(!isset($this->elements[$type]) || !isset($this->elements[$type][$id]))
 				return false;
-			return $this->elements[$type][$id];
+			$ret = $this->elements[$type][$id];
+			$ret["name"] = _("[item_".$id."]");
+			$ret["caption"] = _("[itemdesc_".$id."]");
+			return $ret;
 		}
 
 		function getItemType($id)
@@ -134,17 +137,15 @@
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
-					if(count($item) < 8) continue;
+					if(count($item) < 6) continue;
 					$items['gebaeude'][$item[0]] = array (
-						'name' => $item[1],
-						'ress' => explode('.', $item[2]),
-						'time' => $item[3],
-						'deps' => explode(' ', $item[4]),
-						'prod' => explode('.', $item[5]),
-						'fields' => $item[6],
-						'caption' => parseItemDescription($item[7])
+						'ress' => explode('.', $item[1]),
+						'time' => $item[2],
+						'deps' => explode(' ', $item[3]),
+						'prod' => explode('.', $item[4]),
+						'fields' => $item[5]
 					);
-					if(trim($item[4]) == '')
+					if(trim($item[3]) == '')
 						$items['gebaeude'][$item[0]]['deps'] = array();
 				}
 				flock($fh, LOCK_UN);
@@ -158,15 +159,13 @@
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
-					if(count($item) < 6) continue;
+					if(count($item) < 4) continue;
 					$items['forschung'][$item[0]] = array (
-						'name' => $item[1],
-						'ress' => explode('.', $item[2]),
-						'time' => $item[3],
-						'deps' => explode(' ', trim($item[4])),
-						'caption' => parseItemDescription($item[5])
+						'ress' => explode('.', $item[1]),
+						'time' => $item[2],
+						'deps' => explode(' ', trim($item[3]))
 					);
-					if(trim($item[4]) == '')
+					if(trim($item[3]) == '')
 						$items['forschung'][$item[0]]['deps'] = array();
 				}
 				flock($fh, LOCK_UN);
@@ -180,15 +179,13 @@
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
-					if(count($item) < 6) continue;
+					if(count($item) < 4) continue;
 					$items['roboter'][$item[0]] = array (
-						'name' => $item[1],
-						'ress' => explode('.', $item[2]),
-						'time' => $item[3],
-						'deps' => explode(' ', trim($item[4])),
-						'caption' => parseItemDescription($item[5])
+						'ress' => explode('.', $item[1]),
+						'time' => $item[2],
+						'deps' => explode(' ', trim($item[3]))
 					);
-					if(trim($item[4]) == '')
+					if(trim($item[3]) == '')
 						$items['roboter'][$item[0]]['deps'] = array();
 				}
 				flock($fh, LOCK_UN);
@@ -202,21 +199,19 @@
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
-					if(count($item) < 11) continue;
+					if(count($item) < 9) continue;
 					$items['schiffe'][$item[0]] = array (
-						'name' => $item[1],
-						'ress' => explode('.', $item[2]),
-						'time' => $item[3],
-						'deps' => explode(' ', $item[4]),
-						'trans' => explode('.', $item[5]),
-						'att' => $item[6],
-						'def' => $item[7],
-						'speed' => $item[8],
-						'types' => explode(' ', $item[9]),
-						'caption' => parseItemDescription($item[10])
+						'ress' => explode('.', $item[1]),
+						'time' => $item[2],
+						'deps' => explode(' ', $item[3]),
+						'trans' => explode('.', $item[4]),
+						'att' => $item[5],
+						'def' => $item[6],
+						'speed' => $item[7],
+						'types' => explode(' ', $item[8])
 					);
 					$items['schiffe'][$item[0]]['mass'] = round(array_sum($items['schiffe'][$item[0]]['ress'])*.8);
-					if(trim($item[4]) == '')
+					if(trim($item[3]) == '')
 						$items['schiffe'][$item[0]]['deps'] = array();
 				}
 			}
@@ -228,17 +223,15 @@
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
-					if(count($item) < 8) continue;
+					if(count($item) < 6) continue;
 					$items['verteidigung'][$item[0]] = array (
-						'name' => $item[1],
-						'ress' => explode('.', $item[2]),
-						'time' => $item[3],
-						'deps' => explode(' ', $item[4]),
-						'att' => $item[5],
-						'def' => $item[6],
-						'caption' => parseItemDescription($item[7])
+						'ress' => explode('.', $item[1]),
+						'time' => $item[2],
+						'deps' => explode(' ', $item[3]),
+						'att' => $item[4],
+						'def' => $item[5]
 					);
-					if(trim($item[4]) == '')
+					if(trim($item[3]) == '')
 						$items['verteidigung'][$item[0]]['deps'] = array();
 				}
 				flock($fh, LOCK_UN);
@@ -256,19 +249,6 @@
 			flock($fh, LOCK_UN);
 			fclose($fh);
 		}
-	}
-
-	function parseItemDescription($description)
-	{
-		$description = preg_replace("/\\\\[\\\\n]/e", "parseItemDescriptionChar('$0')", $description);
-		return $description;
-	}
-
-	function parseItemDescriptionChar($char)
-	{
-		if($char == '\\n') return "\n";
-		if($char == '\\\\') return '\\';
-		return $char;
 	}
 
 	function makeItemsString($items, $html=true)

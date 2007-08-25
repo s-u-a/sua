@@ -178,14 +178,7 @@
 
 			$string .= '<span class="beschreibung transport"';
 			if(strlen($ress_string) > 0) $string .= ' title="'.$ress_string.'"';
-			$string .= '>';
-
-			$type = $fl->getCurrentType();
-			if(isset($type_names[$type]))
-				$string .= htmlentities($type_names[$type]);
-			else
-				$string .= utf8_htmlentities($type);
-			$string .= '</span>.';
+			$string .= '>'.h(_("[fleet_".$fl->getCurrentType()."]"))."</span>";
 
 			$handel = array(array(0, 0, 0, 0, 0), array());
 			foreach($users as $user)
@@ -501,25 +494,25 @@
 ?>
 <h2 id="punkte">Punkte</h2>
 <dl class="punkte">
-	<dt class="c-gebaeude">Gebäude</dt>
+	<dt class="c-gebaeude"><?=h(_("[scores_0]"))?></dt>
 	<dd class="c-gebaeude"><?=ths($me->getScores(0))?> <span class="platz">(Platz <strong><?=ths($me->getRank(0))?></strong>)</span></dd>
 
-	<dt class="c-forschung">Forschung</dt>
+	<dt class="c-forschung"><?=h(_("[scores_1]"))?></dt>
 	<dd class="c-forschung"><?=ths($me->getScores(1))?> <span class="platz">(Platz <strong><?=ths($me->getRank(1))?></strong>)</span></dd>
 
-	<dt class="c-roboter">Roboter</dt>
+	<dt class="c-roboter"><?=h(_("[scores_2]"))?></dt>
 	<dd class="c-roboter"><?=ths($me->getScores(2))?> <span class="platz">(Platz <strong><?=ths($me->getRank(2))?></strong>)</span></dd>
 
-	<dt class="c-flotte">Flotte</dt>
+	<dt class="c-flotte"><?=h(_("[scores_3]"))?></dt>
 	<dd class="c-flotte"><?=ths($me->getScores(3))?> <span class="platz">(Platz <strong><?=ths($me->getRank(3))?></strong>)</span></dd>
 
-	<dt class="c-verteidigung">Verteidigung</dt>
+	<dt class="c-verteidigung"><?=h(_("[scores_4]"))?></dt>
 	<dd class="c-verteidigung"><?=ths($me->getScores(4))?> <span class="platz">(Platz <strong><?=ths($me->getRank(4))?></strong>)</span></dd>
 
-	<dt class="c-flugerfahrung">Flugerfahrung</dt>
+	<dt class="c-flugerfahrung"><?=h(_("[scores_5]"))?></dt>
 	<dd class="c-flugerfahrung"><?=ths($me->getScores(5))?> <span class="platz">(Platz <strong><?=ths($me->getRank(5))?></strong>)</span></dd>
 
-	<dt class="c-kampferfahrung">Kampferfahrung</dt>
+	<dt class="c-kampferfahrung"><?=h(_("[scores_6]"))?></dt>
 	<dd class="c-kampferfahrung"><?=ths($me->getScores(6))?> <span class="platz">(Platz <strong><?=ths($me->getRank(6))?></strong>)</span></dd>
 
 	<dt class="c-gesamt">Gesamt</dt>

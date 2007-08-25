@@ -250,10 +250,8 @@
 <?php
 			foreach($item->getInfo('types') as $t)
 			{
-				if(isset($type_names[$t]))
-					$t = $type_names[$t];
 ?>
-							<li><?=utf8_htmlentities($t)?></li>
+							<li><?=h(_("[fleet_".$t."]"))?></li>
 <?php
 			}
 ?>

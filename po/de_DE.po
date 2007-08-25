@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-08-25 00:00+0100\n"
+"PO-Revision-Date: 2007-08-25 03:23+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -12,6 +12,516 @@ msgstr ""
 "X-Poedit-Language: German\n"
 "X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
+
+#: ../po/refresh_tmp.php:2
+msgid "[item_B0]"
+msgstr "Carbonfabrik"
+
+#: ../po/refresh_tmp.php:3
+msgid "[itemdesc_B0]"
+msgstr ""
+"Als Carbon bezeichnet man besondere Kohlenstoffkristalle, ähnlich wie Diamant, die durch ihre außergewöhnliche Struktur leichter als Aluminium aber härter als Stahl sind. Carbon eignet sich deshalb vorzüglich zum Bau von Raumschiffen, wird aber auch in allen anderen Gebieten viel verwendet. Für Gebäude ist Carbon der wichtigste Baustoff.\n"
+"\n"
+"Kohlenstoff sammelt sich schichtartig im Untergrund. An manchen Stellen liegen diese Schichten sehr nahe an der Planetenoberfläche und treten teilweise sogar heraus. Dort werden Carbonminen errichtet, welche die Kohle bergen und sie durch komplizierte Kristallisierungsvorgänge zu Carbon umwandeln. "
+
+#: ../po/refresh_tmp.php:4
+msgid "[item_B1]"
+msgstr "Aluminiumgießerei"
+
+#: ../po/refresh_tmp.php:5
+msgid "[itemdesc_B1]"
+msgstr ""
+"Aluminium ist ein leichter Stoff, das in sämtlichen Bereichen Verwendung findet. Zwar ist es leicht schwerer als Carbon, aber als Metall bietet es viele Vorteile in Sachen Biegsamkeit und Flexibilität und Wärme- und Elektrizitätsleitung. Besonders für Roboter ist Aluminium ein wichtiger Stoff, aber auch in der Forschung findet es oft gute Verwendung.\n"
+"\n"
+"In der Aluminiumgießerei wird Aluminium aus Gestein aus dem Boden eingeschmolzen und zu Barren geformt, die in allen Bereichen weiterverwertet werden können."
+
+#: ../po/refresh_tmp.php:6
+msgid "[item_B2]"
+msgstr "Wolframextraktor"
+
+#: ../po/refresh_tmp.php:7
+msgid "[itemdesc_B2]"
+msgstr ""
+"Wolfram ist ein extrem hitzebeständiges aber schweres Metall. Es wird vor allem in Bereichen verwendet, wo unter sehr hohen Temperaturen gearbeitet werden muss, unter anderem bei Forschungen, bei denen mit Kernfusion oder -reaktion gearbeitet wird. Für Raumschiffe und Verteidigungsanlagen spielt Wolfram eine sehr wichtige Rolle, da in Antrieben und beim Eintritt in die Planetenatmosphäre sehr große Hitze entstehen kann.\n"
+"\n"
+"Wolfram wird durch komplizierte Reaktionen und Filtrierungen aus Wolfram-Erzen extrahiert. Wie Aluminium wird es zu Barren geschmolzen, die allgemeine Verwendung finden. "
+
+#: ../po/refresh_tmp.php:8
+msgid "[item_B3]"
+msgstr "Radiumgrube"
+
+#: ../po/refresh_tmp.php:9
+msgid "[itemdesc_B3]"
+msgstr "Radium eignet sich besonders gut für Kernreaktionen und wird deshalb vor allem in der Forschung und bei der Produktion von Raumschiffen und Verteidigungsanlagen verwendet. Leider kommt Radium sehr spärlich auf den meisten Planeten vor, es bedarf riesiger Produktionsstätten, in denen zu einem minimalen Ausbeutungsanteil das Radium aus dem Boden geholt wird."
+
+#: ../po/refresh_tmp.php:10
+msgid "[item_B4]"
+msgstr "Tritiumgenerator"
+
+#: ../po/refresh_tmp.php:11
+msgid "[itemdesc_B4]"
+msgstr "Bei Tritium handelt es sich um ein radioaktives Wasserstoff-Isotop, das sich gut zur Kernfusion eignet. Die riesigen Generatoren filtern das Tritium, je nach Planeten, aus Wasservorkommen oder aus der Atmosphäre, wo es durch winzige Kernreaktionen entsteht, die durch kosmische Strahlung hervorgerufen werden. Tritium eignet sich ideal als Treibstoff für Fusionsantriebe. Solche Antriebe erfordern zudem viel Wolfram, da bei der Kernfusion sehr hohe Temperaturen entstehen können."
+
+#: ../po/refresh_tmp.php:12
+msgid "[item_B5]"
+msgstr "Solarkraftwerk"
+
+#: ../po/refresh_tmp.php:13
+msgid "[itemdesc_B5]"
+msgstr "Im Solarkraftwerk werden verschiedene elektromagnetische Strahlungen von nahegelegenen Sternen gebündelt und beim Auftreffen auf Solarzellen in elektrischen Strom umgewandelt. Das Solarkraftwerk stellt so eine kostengünstige Energiequelle für andere wichtige Gebäude dar."
+
+#: ../po/refresh_tmp.php:14
+msgid "[item_B6]"
+msgstr "Sonnenwindkraftwerk"
+
+#: ../po/refresh_tmp.php:15
+msgid "[itemdesc_B6]"
+msgstr "Sonnenwindkraftwerke werden in der Umlaufbahn der Planeten stationiert, was zwar mehr Kosten verursacht als die Aufstellung eines Solarkraftwerks, dafür aber deutlich produktiver und platzsparender ist. Die Kraftwerke machen sich von Sternen kommende Alpha- und Betastrahlung zunutze und senden frei werdende Energie in Form von elektromagnetischen Strahlen zum Planeten, wo sie als Lieferant für viele wichtige Gebäude dient."
+
+#: ../po/refresh_tmp.php:16
+msgid "[item_B7]"
+msgstr "Wärmekraftwerk"
+
+#: ../po/refresh_tmp.php:17
+msgid "[itemdesc_B7]"
+msgstr ""
+"Das Wärmekraftwerk ist die Krönung unter den Gebäuden. Die Ingenieurswissenschaft ermöglicht es, tief unter der Planetenoberfläche Gebäude zu errichten, wo es sich die Wärme aus dem Planeteninnern zunutze macht. Bei den tiefen Bohrungen, die für eine ertragreiche Energieproduktion nötig sind, werden gleichzeitig die elementaren Stoffe Aluminium, Wolfram und Radium gewonnen.\n"
+"\n"
+"Das Wärmekraftwerk ist eine riesige Anlage, die deswegen auch nicht sehr kostengünstig aufzubauen ist. Es erfordert großes Geschick und sehr fortgeschrittene Technologie, ein solches Gebäude aufstellen zu können."
+
+#: ../po/refresh_tmp.php:18
+msgid "[item_B8]"
+msgstr "Forschungslabor"
+
+#: ../po/refresh_tmp.php:19
+msgid "[itemdesc_B8]"
+msgstr "Durch Forschung können nötige Technologien für Raumschiffe, Verteidigungsanlagen, Roboter, Gebäude oder andere Forschungen entwickelt werden. Je weiter das Forschungslabor ausgebaut ist, desto schneller können darin Forschungen entwickelt werden. Jede Stufe des Forschungslabors verkürzt dabei die Forschungszeit auf dem jeweiligen Planeten um fünf Prozent und verkürzt die globale Forschungszeit auf anderen Planeten um 2,5 Prozent. Beachten Sie, dass Sie in einem sich im Ausbau befindlichen Forschungslabor nicht forschen können."
+
+#: ../po/refresh_tmp.php:20
+msgid "[item_B9]"
+msgstr "Roboterfabrik"
+
+#: ../po/refresh_tmp.php:21
+msgid "[itemdesc_B9]"
+msgstr "Roboter verhelfen größeren Spielern, bei denen Bauzeiten ins Unerträgliche angestiegen sind oder die auf ihren Planeten keinen Platz mehr für neue Minen haben, sich trotzdem weiterzuentwickeln. In gemeinsamer Wirkung mit der Roboterbautechnik stellen Roboter einen auf keinen Fall zu unterschätzenden technologischen Vorteil dar."
+
+#: ../po/refresh_tmp.php:22
+msgid "[item_B10]"
+msgstr "Werft"
+
+#: ../po/refresh_tmp.php:23
+msgid "[itemdesc_B10]"
+msgstr "In der Werft werden Raumschiffe und Verteidigungsanlagen produziert. Je größer die Werft ist, desto größere Geräte kann sie produzieren, gleichzeitig verringert sich die benötigte Bauzeit. Jede Stufe der Werft verringert die Bauzeit Ihrer Raumschiffe und Verteidigungsanlagen um fünf Prozent."
+
+#: ../po/refresh_tmp.php:24
+#: ../faq.php:134
+msgid "[item_F0]"
+msgstr "Kontrollwesen"
+
+#: ../po/refresh_tmp.php:25
+msgid "[itemdesc_F0]"
+msgstr "Je höher das Kontrollwesen entwickelt ist, desto mehr Flotten können gleichzeitig von einer Werft koordiniert werden. Jede Stufe des Kontrollwesens erhöht somit die Anzahl der Flotten, die gleichzeitig kontrolliert werden können."
+
+#: ../po/refresh_tmp.php:26
+msgid "[item_F1]"
+msgstr "Spionagetechnik"
+
+#: ../po/refresh_tmp.php:27
+msgid "[itemdesc_F1]"
+msgstr "Die Spionagetechnik verbessert die Sensoren Ihres Planeten, die sich nähernde Flotten entdecken, und die Ihrer Spionagesonden. Werden Sie von einem Gegner ausspioniert, entscheidet Ihre Überlegenheit in der Spionagetechnik, wie viele Details Ihres Planeten Sie vor der feindlichen Spionagesonde verstecken können. Sind Sie einem Angreifer in Spionagetechnik überlegen, ist es Ihnen möglich, die angreifende Flotte sehr früh zu erspähen und so im Kampf den Erstschlag auszuüben."
+
+#: ../po/refresh_tmp.php:28
+msgid "[item_F2]"
+msgstr "Roboterbautechnik"
+
+#: ../po/refresh_tmp.php:29
+msgid "[itemdesc_F2]"
+msgstr "Die Roboterbautechnik verbessert Ihre Roboter und erforscht neue Roboterarten. Jede Stufe der Roboterbautechnik erhöht den Auswirkungsgrad Ihrer Bauroboter um einen Viertelprozentpunkt und den Ihrer Rohstoffroboter um einen Sechzehntelprozentpunkt."
+
+#: ../po/refresh_tmp.php:30
+msgid "[item_F3]"
+msgstr "Energietechnik"
+
+#: ../po/refresh_tmp.php:31
+msgid "[itemdesc_F3]"
+msgstr "Eine hohe Energietechnik ermöglicht den Betrieb von Hochspannungsanlagen und macht die Energiegewinnung effizienter. Jede Stufe der Energietechnik erhöht somit die Energielieferung Ihrer Kraftwerke um fünf Prozent."
+
+#: ../po/refresh_tmp.php:32
+msgid "[item_F4]"
+msgstr "Waffentechnik"
+
+#: ../po/refresh_tmp.php:33
+msgid "[itemdesc_F4]"
+msgstr "Die Waffentechnik macht die Waffen Ihrer Raumschiffe und Verteidiungsanlangen stärker und erforscht stärkere Waffen, die für schwerere Raumschiffe benötigt werden. Jede Stufe erhöht den Angriffswert Ihrer Schiffe und Verteidiungsanlagen um fünf Prozent."
+
+#: ../po/refresh_tmp.php:34
+msgid "[item_F5]"
+msgstr "Verteidigungsstrategie"
+
+#: ../po/refresh_tmp.php:35
+msgid "[itemdesc_F5]"
+msgstr "Eine bessere Verteidigungsstrategie sorgt für bessere Schilde der Verteidigungsanlagen und Raumschiffe. Größere Verteidigungsanlangen können nur mit guten Verteidigungsstrategien betrieben werden. Jede Stufe der Verteidigungsstrategie erhöht den Schildwert Ihrer Verteidigungsanlangen und Flotten um fünf Prozent."
+
+#: ../po/refresh_tmp.php:36
+msgid "[item_F10]"
+msgstr "Schildtechnik"
+
+#: ../po/refresh_tmp.php:37
+msgid "[itemdesc_F10]"
+msgstr "Die Schildtechnik ermöglicht, beschädigte Schilde im Kampf zu regenerieren, um so länger zu überleben. Jede Stufe der Schildtechnik regeneriert am Ende einer jeden Runde den Schild aller aktuell beschädigten Raumschiffe um 2,5 %."
+
+#: ../po/refresh_tmp.php:38
+msgid "[item_F6]"
+msgstr "Rückstoßantrieb"
+
+#: ../po/refresh_tmp.php:39
+msgid "[itemdesc_F6]"
+msgstr "Dieser einfache Antrieb erhöht die Geschwindigkeit aller Raumschiffe um 2,5 %."
+
+#: ../po/refresh_tmp.php:40
+msgid "[item_F7]"
+msgstr "Ionenantrieb"
+
+#: ../po/refresh_tmp.php:41
+msgid "[itemdesc_F7]"
+msgstr "Der Ionenantrieb erhöht die Geschwindigkeit aller Raumschiffe um fünf Prozent."
+
+#: ../po/refresh_tmp.php:42
+msgid "[item_F8]"
+msgstr "Kernantrieb"
+
+#: ../po/refresh_tmp.php:43
+msgid "[itemdesc_F8]"
+msgstr "Der Kernantrieb erhöht die Geschwindigkeit aller Raumschiffe drastisch, um 50 % pro Entwicklungsstufe."
+
+#: ../po/refresh_tmp.php:44
+msgid "[item_F9]"
+msgstr "Ingenieurswissenschaft"
+
+#: ../po/refresh_tmp.php:45
+msgid "[itemdesc_F9]"
+msgstr "Erforscht neue Wege des Tief- und Hochbaus. Jede Stufe vergrößert die Größe Ihrer Planeten um die Hälfte eines weiteren Faktors. (Stufe 1: 150 % der Ursprungsgröße, Stufe 2: 200 % der Ursprungsgröße, Stufe 3: 250 % der Ursprungsgröße, …)"
+
+#: ../po/refresh_tmp.php:46
+msgid "[item_F11]"
+msgstr "Laderaumerweiterung"
+
+#: ../po/refresh_tmp.php:47
+msgid "[itemdesc_F11]"
+msgstr "Die Laderaumerweiterung ermöglicht einen besseren Ausbau des Laderaums bei Raumschiffen und Kompression der Waren. Jede Stufe der Laderaumerweiterung vergrößert den Laderaum aller Schiffe um 20 %."
+
+#: ../po/refresh_tmp.php:48
+msgid "[item_R01]"
+msgstr "Bauroboter"
+
+#: ../po/refresh_tmp.php:49
+msgid "[itemdesc_R01]"
+msgstr "Bauroboter helfen beim Aufbau von Gebäuden. Durch Entwicklung der Roboterbautechnik lernen die Roboter dazu und ihre Auswirkung verstärkt sich. Ein Planet bietet nur beschränkten Platz für Bauroboter, die Grenze liegt bei der Hälfte der Anzahl seiner ursprünglichen Felder (Ingenieurswissenschaft zeigt keine Auswirkung)."
+
+#: ../po/refresh_tmp.php:50
+msgid "[item_R02]"
+msgstr "Carbonroboter"
+
+#: ../po/refresh_tmp.php:51
+msgid "[itemdesc_R02]"
+msgstr "Carbonroboter wurden speziell für die Arbeit in Carbonfabriken konzipiert und erhöhen dort die Carbonproduktion. Ihr Auswirkungsgrad ist abhängig von der Entwicklungsstufe der Roboterbautechnik. In der Carbonfabrik finden nur begrenzt Carbonroboter Platz. Jede Stufe der Carbonfabrik bietet Platz für einen Carbonroboter."
+
+#: ../po/refresh_tmp.php:52
+msgid "[item_R03]"
+msgstr "Aluminiumroboter"
+
+#: ../po/refresh_tmp.php:53
+msgid "[itemdesc_R03]"
+msgstr "Aluminiumroboter arbeiten in Aluminiumgießereien und Wärmekraftwerken und erhöhen deren Produktion um einen Wirkungsgrad, der abhängig von der Roboterbautechnik ist. Da nur begrenzt Platz für Aluminiumroboter vorhanden ist, wirkt sich maximal eine Anzahl an Aluminiumrobotern, die der Ausbaustufe der Aluminiumgießerei enspricht, auf die Produktion aus."
+
+#: ../po/refresh_tmp.php:54
+msgid "[item_R04]"
+msgstr "Wolframroboter"
+
+#: ../po/refresh_tmp.php:55
+msgid "[itemdesc_R04]"
+msgstr "Wolframroboter erhöhen die Wolframproduktion des Wolframextraktors und des Wärmekraftwerks. Da Wolframroboter sehr viel Platz einnehmen, ist ihre Anzahl auf die Ausbaustufe des Wolframextraktors begrenzt. Durch die Entwicklung der Roboterbautechnik wird der Wirkungsgrad der Wolframroboter erhöht."
+
+#: ../po/refresh_tmp.php:56
+msgid "[item_R05]"
+msgstr "Radiumroboter"
+
+#: ../po/refresh_tmp.php:57
+msgid "[itemdesc_R05]"
+msgstr "Radiumroboter helfen der Radiumgrube und dem Wärmekraftwerk bei der Produktion von Radium. Je höher die Roboterbautechnik entwickelt ist, umso mehr steigern sie die Radiumproduktion. Jedes Gebäude beherbergt nur eine bestimmte Anzahl an Arbeitsplätzen für Roboter. Jede Ausbaustufe der Radiumgrube stellt einen davon für Radiumroboter zur Verfügung."
+
+#: ../po/refresh_tmp.php:58
+msgid "[item_R06]"
+msgstr "Tritiumroboter"
+
+#: ../po/refresh_tmp.php:59
+msgid "[itemdesc_R06]"
+msgstr "Tritiumroboter sind die Krönung der Roboterwissenschaft. Lange glaubte man, der Einsatz von Robotern in Tritiumgeneratoren sei zu gefährlich bis hin zur Unmöglichkeit. Doch je weiter die Roboterbautechnik entwickelt wird, desto sicherer und produktiver wird der Einsatz von Robotern, wodurch der Einsatz von Tritiumrobotern ermöglicht wird. Durch die immense Größe der Tritiumextraktoren bietet jede ihrer Ausbaustufen zwei Arbeitsplätze für Tritiumroboter an."
+
+#: ../po/refresh_tmp.php:60
+msgid "[item_S0]"
+msgstr "Transporter „Hopper“"
+
+#: ../po/refresh_tmp.php:61
+msgid "[itemdesc_S0]"
+msgstr "Der Transporter „Hopper“ war das erste ernstzunehmende Raumschiff, das von der Menschheit entwickelt wurde. Es wurde erstmals im Jahre 2146 zum Testflug zwischen Mars und Erde gebraucht und dient seither als kostengünstiger und leicht herzustellender Transporter."
+
+#: ../po/refresh_tmp.php:62
+msgid "[item_S1]"
+msgstr "Transporter „Castor“"
+
+#: ../po/refresh_tmp.php:63
+msgid "[itemdesc_S1]"
+msgstr "Als die Menschheit begann, Transporter zwischen Planeten zu ernsthaften geschäftlichen Zwecken einzusetzen, war es unabsehbar, dass die Kapazität der „Hopper“ irgendwann nicht mehr ausreichen würde. Auch weil die „Hopper“ im Krieg viel zu schnell zerstört wurden, wurde eine neue Generation der Transporter entwickelt, welche einen weitaus höheren Laderaum besitzt und mit einem bessseren Schild ausgestattet ist. Castoren ermöglichen deshalb einen sichereren Transport von Rohstoffen durchs Universum."
+
+#: ../po/refresh_tmp.php:64
+msgid "[item_S2]"
+msgstr "Transporter „Arche Noah“"
+
+#: ../po/refresh_tmp.php:65
+msgid "[itemdesc_S2]"
+msgstr ""
+"Als George Halliwell im Jahre 2516 nach einem Erdbeben plötzlich eine seltsame Metallspitze vor seinem Haus aus dem Boden ragen sah, konnte er noch nicht ahnen, was für eine gigantische Entdeckung er gemacht hatte. Schnell stellte sich heraus, dass es sich um ein eingegrabenes Raumschiff handelte, jedoch konnte sich niemand erklären, wie es dort hingelangt war. Je weiter das Schiff ausgegraben wurde, desto größer wurde die Verblüffung der Forscher – das Schiff war größer als jedes bisher gebaute Schiff. Untersuchungen zeigten, dass es schon über 3000 Jahre alt war. Bis heute weiß keiner, wo es herkommt und wer es gebaut hat. Der einzige Hinweis ist ein in die Schiffswand eingeritztes „Noah“.\n"
+"\n"
+"Man baute eine Kopie der „Arche Noah“ und orientierte sich dabei an den bisher unbekannten Antriebs- und Lagerungstechniken. Es wurde damit zum ersten Mal in der Geschichte möglich, auch Roboter zu fremden Planeten zu transportieren."
+
+#: ../po/refresh_tmp.php:66
+msgid "[item_S3]"
+msgstr "Sammler „Hoover“"
+
+#: ../po/refresh_tmp.php:67
+msgid "[itemdesc_S3]"
+msgstr "Der Sammler stellt eine robustere Form des Transporters „Castor“ dar. Zusätzliche Maschinerie verringert zwar die Ladekapazität des Sammlers im Vergleich zum Castor, aber sie ermöglicht ihm, auch den gefährlichen Flug in Trümmerfelder durchzuführen und dort Rohstoffe zu sammeln."
+
+#: ../po/refresh_tmp.php:68
+msgid "[item_S5]"
+msgstr "Spionagesonde „Oculus Aquilæ“"
+
+#: ../po/refresh_tmp.php:69
+msgid "[itemdesc_S5]"
+msgstr "Die Spionagesonde ist ein kleines und schnelles Schiff, das fast nur aus Antrieb und Sensoren besteht. Sie ermöglicht, schnell Informationen über einen Planeten und – falls vorhanden – dessen Bewohner zu erlangen."
+
+#: ../po/refresh_tmp.php:70
+msgid "[item_S6]"
+msgstr "Besiedelungsschiff „Mayflower“"
+
+#: ../po/refresh_tmp.php:71
+msgid "[itemdesc_S6]"
+msgstr "Die „Mayflower“ war eines der ersten Schiffe, das Menschen zum Mars transportierte. Später wurden Nachbildungen dieses Schiffes erbaut, die die Besiedelung unbesiedelter Planeten ermöglichten. Ein Teil der in das Besiedelungsschiff verbauten Rohstoffe lässt sich bei der Besiedelung regenerieren, sodass auf der neuen Kolonie sofort Rohstoffe zum Bau zur Verfügung stehen."
+
+#: ../po/refresh_tmp.php:72
+msgid "[item_S7]"
+msgstr "Buster-Korvette"
+
+#: ../po/refresh_tmp.php:73
+msgid "[itemdesc_S7]"
+msgstr "Als im Jahre 2276 die ersten Kriege zwischen den einzelnen Kolonien ausbrachen, brachte eine Rüstungsfirma die Buster-Korvette auf den Markt. Sie war ein kleines schnelles Ein-Mann-Schiff und einfach zu fliegen. Heute wird sie meist nur noch für Spähflüge genutzt oder als erste Angriffswelle in einer Schlacht benutzt, um die feindlichen Linien zu durchbrechen. Sie war das erste militärische Schiff und brachte vielen den Tod. Der berühmteste Einsatz der Buster-Korvette war die Rebellion des Orion-Paktes, als die Vereinten Kolonien die Versorgungskette des Paktes durchbrachen und somit die Rebellion niederschlugen."
+
+#: ../po/refresh_tmp.php:74
+msgid "[item_S8]"
+msgstr "Octopus-Korvette"
+
+#: ../po/refresh_tmp.php:75
+msgid "[itemdesc_S8]"
+msgstr "56 Jahre nach der Erfindung der \"Buster-Korvette\" entwickelten Wissenschaftler einen Prototypen einer verbesserten Version der Buster-Korvette, der sich als Erfolg erwies. Er war zwar kein so wendiges Schiff wie die Buster-Korvette, aber wesentlich stärker und widerstandsfähiger. Er war mit zwei kleinen Raketengeschützen ausgerüstet, sowie einer Laser-Gatlin. Anfangs wurde er nur von der National- oder auch Octopus-Garde verwendet, woraus auch sein späterer Name entstand, da er genau wie die Garde für schnelle Angriffe gedacht war. Später wurde er aber beim gesamten Militär eingesetzt."
+
+#: ../po/refresh_tmp.php:76
+msgid "[item_S9]"
+msgstr "Python-Korvette"
+
+#: ../po/refresh_tmp.php:77
+msgid "[itemdesc_S9]"
+msgstr "2350 wurde schließlich die beste der heutigen Korvetten entwickelt, die Python-Korvette. Sie war eine Mischung aus ihren beiden Vorgängern, wendig aber auch stark und für bis zu sechs Piloten gebaut. Sie verfügte über Präzisionsgeschütze sowie ein durchschlagendes Gatlin-Geschütz, welches die anderen Korvetten in den Schatten stellte. Ihre wahre Stärke zeigte sich bei der Schlacht um die Minenkolonien, als eine Armada von Buster- und Octopus-Korvetten einer terroristischen Allianz gegen eine wesentlich kleinere Flotte von Python-Korvetten der Sternenförderation und der Garde verlor."
+
+#: ../po/refresh_tmp.php:78
+msgid "[item_S10]"
+msgstr "Jotka-Fregatte"
+
+#: ../po/refresh_tmp.php:79
+msgid "[itemdesc_S10]"
+msgstr "."
+
+#: ../po/refresh_tmp.php:80
+msgid "[item_S11]"
+msgstr "Kleib-Fregatte"
+
+#: ../po/refresh_tmp.php:81
+msgid "[itemdesc_S11]"
+msgstr "."
+
+#: ../po/refresh_tmp.php:82
+msgid "[item_S12]"
+msgstr "Amann-Fregatte"
+
+#: ../po/refresh_tmp.php:83
+msgid "[itemdesc_S12]"
+msgstr "."
+
+#: ../po/refresh_tmp.php:84
+msgid "[item_S13]"
+msgstr "Sheliak-Kreuzer"
+
+#: ../po/refresh_tmp.php:85
+msgid "[itemdesc_S13]"
+msgstr "."
+
+#: ../po/refresh_tmp.php:86
+msgid "[item_S14]"
+msgstr "Vega-Kreuzer"
+
+#: ../po/refresh_tmp.php:87
+msgid "[itemdesc_S14]"
+msgstr "."
+
+#: ../po/refresh_tmp.php:88
+msgid "[item_S15]"
+msgstr "Nemesis-Kreuzer"
+
+#: ../po/refresh_tmp.php:89
+msgid "[itemdesc_S15]"
+msgstr "."
+
+#: ../po/refresh_tmp.php:90
+msgid "[item_S16]"
+msgstr "Torvalds-Schlachtschiff"
+
+#: ../po/refresh_tmp.php:91
+msgid "[itemdesc_S16]"
+msgstr "."
+
+#: ../po/refresh_tmp.php:92
+msgid "[item_V0]"
+msgstr "Einfaches Lasergeschütz"
+
+#: ../po/refresh_tmp.php:93
+msgid "[itemdesc_V0]"
+msgstr "Das einfache Lasergeschütz wurde aus Angst vor Piraten und fremden Zivilisationen zur Verteidigung von Planeten im Jahre 2150 von der Menschheit entwickelt. Es ist eine sehr kostengünstige und nicht zu unterschätzende Anlage zum Schutz eines Planeten."
+
+#: ../po/refresh_tmp.php:94
+msgid "[item_V1]"
+msgstr "Gatlin"
+
+#: ../po/refresh_tmp.php:95
+msgid "[itemdesc_V1]"
+msgstr ""
+"Als jedoch mit der Zeit immer größere und stärkere Schiffe entwickelt wurden, merkte die Menschheit, dass die bisherigen Verteidigungsanlagen nicht mehr ausreichten und entwickelten aus diesem Grund im Jahre 2263 das Gatlin.\n"
+"\n"
+"Das Gatlin ist ein Geschütz, welches mehrere hundert glühende Aluminiumgeschosse pro Sekunde mit einer Geschwindigkeit von etwa dreißigtausend Metern pro Sekunde auf feindliche Schiffe schießt."
+
+#: ../po/refresh_tmp.php:96
+msgid "[item_V2]"
+msgstr "Mehrfachraketenwerfer"
+
+#: ../po/refresh_tmp.php:97
+msgid "[itemdesc_V2]"
+msgstr ""
+"Mit Entwicklung von immer besseren Antrieben wurden im Jahre 2387 der Mehrfachraketenwerfer, welcher eine Salve bestehend aus 15 Raketen abfeuert, entwickelt.\n"
+"\n"
+"Die Raketen steuern das Ziel mit etwa zehntausend Metern pro Sekunde an und entwickeln beim Aufschlag eine enorme Sprengkraft, die nicht selten riesige Löcher in die feindlichen Raumschiffe reißt."
+
+#: ../po/refresh_tmp.php:98
+msgid "[item_V6]"
+msgstr "Schweres Lasergeschütz"
+
+#: ../po/refresh_tmp.php:99
+msgid "[itemdesc_V6]"
+msgstr "Diese Anlage ist eine Weiterentwicklung des einfachen Lasergeschützes, die durch die Erforschung neuartiger Laserarten möglich wurde. So wird nun viel mehr Energie genutzt, um den Laserstrahl zu bündeln, was zur Folge hat, das Schiffe, die von diesem neuartigem Laser getroffen werden, nahezu sofort explodieren, was unter Umständen auch andere Schiffe in der Nähe beschädigt."
+
+#: ../po/refresh_tmp.php:100
+msgid "[item_V3]"
+msgstr "EMP"
+
+#: ../po/refresh_tmp.php:101
+msgid "[itemdesc_V3]"
+msgstr ""
+"Dieses System wurde erst durch starke Antriebe und neuartigen Technologien im Bereich Waffentechnik möglich. Es feuert eine Rakete auf das Ziel ab, welche in kurzer Entfernung zum Ziel detoniert und dabei einen elektromagnetischen Impuls mit einer Leistung von mehreren Milliarden Watt aussendet, dies hat zur Folge, dass sofort sämtliche elektronische Geräte in der der Nähe zerstört werden.\n"
+"\n"
+"Nachdem dies geschehen ist, wird noch eine zweite Rakete mit einem konventionellen Sprengkopf abgefeuert, die das Ziel völlig zerstört."
+
+#: ../po/refresh_tmp.php:102
+msgid "[item_V4]"
+msgstr "Ionenkanone"
+
+#: ../po/refresh_tmp.php:103
+msgid "[itemdesc_V4]"
+msgstr ""
+"Im Jahre 2521, als die Bedrohung durch feindlich gesinnte Zivilisationen immer mehr zunahm, wurde eine neuartige Waffe, welche große Fortschritte bei der Ionenforschung voraussetzte, entwickelt.\n"
+"\n"
+"Ein Strahl, ähnlich einem Laserstrahl, allerdings nicht aus Licht, sondern aus Ionen bestehend, wird auf das Ziel abgefeurt, beim Auftrweffen entsteht so viel Energie, die das Schiff sofort vedampfen lässt."
+
+#: ../po/refresh_tmp.php:104
+msgid "[item_V5]"
+msgstr "Radonkanone"
+
+#: ../po/refresh_tmp.php:105
+msgid "[itemdesc_V5]"
+msgstr ""
+"Diese neuartige Anlage ist die effektivste Möglichkeit, sich gegen Angriffe zu verteidigen, die die Menschheit je Entwickelt hat, die aber auch sehr teuer und schwer zu bauen ist.\n"
+"\n"
+"Es wird auf zwei Kelvin heruntergekühltes Radon auf ein gegnerisches Raumschiff gefeuert, welches aufgrund seiner Temperatur durch die Hülle eindringt und sich dort durch die Erwärmung explosionsartig ausdehnt. Durch den entstehenden Druck wird das Raumschiff von innen heraus gesprengt."
+
+#: ../po/refresh_tmp.php:106
+msgid "[message_1]"
+msgstr "Kämpfe"
+
+#: ../po/refresh_tmp.php:107
+msgid "[message_2]"
+msgstr "Spionage"
+
+#: ../po/refresh_tmp.php:108
+msgid "[message_3]"
+msgstr "Transport"
+
+#: ../po/refresh_tmp.php:109
+msgid "[message_4]"
+msgstr "Sammeln"
+
+#: ../po/refresh_tmp.php:110
+msgid "[message_5]"
+msgstr "Besiedelung"
+
+#: ../po/refresh_tmp.php:111
+msgid "[message_6]"
+msgstr "Benutzernachrichten"
+
+#: ../po/refresh_tmp.php:112
+msgid "[message_7]"
+msgstr "Verbündete"
+
+#: ../po/refresh_tmp.php:113
+msgid "[message_8]"
+msgstr "Postausgang"
+
+#: ../po/refresh_tmp.php:114
+msgid "[fleet_1]"
+msgstr "Besiedeln"
+
+#: ../po/refresh_tmp.php:115
+msgid "[fleet_2]"
+msgstr "Sammeln"
+
+#: ../po/refresh_tmp.php:116
+msgid "[fleet_3]"
+msgstr "Angriff"
+
+#: ../po/refresh_tmp.php:117
+msgid "[fleet_4]"
+msgstr "Transport"
+
+#: ../po/refresh_tmp.php:118
+msgid "[fleet_5]"
+msgstr "Spionieren"
+
+#: ../po/refresh_tmp.php:119
+msgid "[fleet_6]"
+msgstr "Stationieren"
+
+#: ../login/help/description.php:254
+#: ../login/index.php:181
+#: ../login/flotten.php:425
+#: ../login/flotten.php:523
+msgid "[fleet_"
+msgstr "XXX"
 
 #: ../login/scripts/include.php:53
 #, php-format
@@ -41,7 +551,7 @@ msgid "Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %s
 msgstr "Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s."
 
 #: ../login/scripts/include.php:167
-#: ../login/scripts/include.php:656
+#: ../login/scripts/include.php:654
 #, php-format
 msgid "HTTP redirect: %s"
 msgstr "HTTP redirect: %s"
@@ -61,13 +571,13 @@ msgid "[title_abbr_full]"
 msgstr "S-U-A – Stars Under Attack"
 
 #: ../login/scripts/include.php:202
-#: ../engine/include.php:734
+#: ../engine/include.php:708
 msgid "[thousand_separator]"
 msgstr " "
 
 #: ../login/scripts/include.php:270
-#: ../login/scripts/include.php:466
-#: ../login/scripts/include.php:598
+#: ../login/scripts/include.php:464
+#: ../login/scripts/include.php:596
 msgid "Zum Inhalt&[login/scripts/include.php|1]"
 msgstr "Zum Inhalt"
 
@@ -80,29 +590,27 @@ msgid "Zu den Spieldaten&[login/scripts/include.php|1]"
 msgstr "Zu den Spieldaten"
 
 #: ../login/scripts/include.php:280
-msgid "Carbon"
+msgid "[ress_0]"
 msgstr "Carbon"
 
 #: ../login/scripts/include.php:283
-msgid "Aluminium"
+msgid "[ress_1]"
 msgstr "Aluminium"
 
 #: ../login/scripts/include.php:286
-msgid "Wolfram"
+msgid "[ress_2]"
 msgstr "Wolfram"
 
 #: ../login/scripts/include.php:289
-msgid "Radium"
+msgid "[ress_3]"
 msgstr "Radium"
 
 #: ../login/scripts/include.php:292
-#: ../faq.php:66
-#: ../faq.php:81
-msgid "Tritium"
+msgid "[ress_4]"
 msgstr "Tritium"
 
 #: ../login/scripts/include.php:295
-msgid "Energie"
+msgid "[ress_5]"
 msgstr "Energie"
 
 #: ../login/scripts/include.php:306
@@ -147,14 +655,14 @@ msgid "Es herrscht eine Flottensperre für feindliche Flüge."
 msgstr "Es herrscht eine Flottensperre für feindliche Flüge."
 
 #: ../login/scripts/include.php:343
-#: ../login/scripts/include.php:491
+#: ../login/scripts/include.php:489
 #: ../login/flotten.php:968
 #, php-format
 msgid "„%s“ (%s)"
 msgstr "„%s“ (%s)"
 
 #: ../login/scripts/include.php:343
-#: ../login/scripts/include.php:491
+#: ../login/scripts/include.php:489
 #: ../login/flotten.php:422
 #: ../login/flotten.php:478
 #: ../login/flotten.php:803
@@ -167,148 +675,160 @@ msgstr "„%s“ (%s)"
 msgid "%d:%d:%d"
 msgstr "%d:%d:%d"
 
-#: ../login/scripts/include.php:394
+#: ../login/scripts/include.php:380
+#, php-format
+msgid "%s: %d"
+msgstr "%s: %d"
+
+#: ../login/scripts/include.php:380
+#: ../login/nachrichten.php:108
+#: ../login/nachrichten.php:390
+#: ../engine/classes/message.php:369
+msgid "[message_"
+msgstr "XXX"
+
+#: ../login/scripts/include.php:392
 #, php-format
 msgid "Sie haben %s neue &Nachricht.[login/scripts/include.php|2]"
 msgid_plural "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]"
 msgstr[0] "Sie haben %s neue &Nachricht."
 msgstr[1] "Sie haben %s neue &Nachrichten."
 
-#: ../login/scripts/include.php:465
-#: ../login/scripts/include.php:597
+#: ../login/scripts/include.php:463
+#: ../login/scripts/include.php:595
 msgid "Zur Rohstoffanzeige&[login/scripts/include.php|1]"
 msgstr "Zur Rohstoffanzeige"
 
-#: ../login/scripts/include.php:474
+#: ../login/scripts/include.php:472
 msgid "Planeten wechseln"
 msgstr "Planeten wechseln"
 
-#: ../login/scripts/include.php:484
+#: ../login/scripts/include.php:482
 msgid "Ihre &Planeten[login/scripts/include.php|3]"
 msgstr "Ihre &Planeten"
 
-#: ../login/scripts/include.php:497
+#: ../login/scripts/include.php:495
 msgid "Wechseln"
 msgstr "Wechseln"
 
-#: ../login/scripts/include.php:502
+#: ../login/scripts/include.php:500
 msgid "&Übersicht[login/scripts/include.php|3]"
 msgstr "&Übersicht"
 
-#: ../login/scripts/include.php:503
+#: ../login/scripts/include.php:501
 msgid "&Rohstoffe[login/scripts/include.php|3]"
 msgstr "&Rohstoffe"
 
-#: ../login/scripts/include.php:504
+#: ../login/scripts/include.php:502
 msgid "&Gebäude[login/scripts/include.php|3]"
 msgstr "&Gebäude"
 
-#: ../login/scripts/include.php:505
+#: ../login/scripts/include.php:503
 msgid "&Forschung[login/scripts/include.php|3]"
 msgstr "&Forschung"
 
-#: ../login/scripts/include.php:506
+#: ../login/scripts/include.php:504
 msgid "Ro&boter[login/scripts/include.php|3]"
 msgstr "Ro&boter"
 
-#: ../login/scripts/include.php:507
+#: ../login/scripts/include.php:505
 msgid "F&lotten[login/scripts/include.php|3]"
 msgstr "F&lotten"
 
-#: ../login/scripts/include.php:508
+#: ../login/scripts/include.php:506
 msgid "&Schiffswerft[login/scripts/include.php|3]"
 msgstr "&Schiffswerft"
 
-#: ../login/scripts/include.php:509
+#: ../login/scripts/include.php:507
 msgid "&Verteidigung[login/scripts/include.php|3]"
 msgstr "&Verteidigung"
 
-#: ../login/scripts/include.php:510
+#: ../login/scripts/include.php:508
 msgid "Han&delsbörse[login/scripts/include.php|3]"
 msgstr "Han&delsbörse"
 
-#: ../login/scripts/include.php:511
+#: ../login/scripts/include.php:509
 msgid "I&mperium[login/scripts/include.php|3]"
 msgstr "I&mperium"
 
-#: ../login/scripts/include.php:515
+#: ../login/scripts/include.php:513
 msgid "&Karte[login/scripts/include.php|3]"
 msgstr "&Karte"
 
-#: ../login/scripts/include.php:516
+#: ../login/scripts/include.php:514
 msgid "All&ianz[login/scripts/include.php|3]"
 msgstr "All&ianz"
 
-#: ../login/scripts/include.php:517
+#: ../login/scripts/include.php:515
 msgid "V&erbündete[login/scripts/include.php|3]"
 msgstr "V&erbündete"
 
-#: ../login/scripts/include.php:518
+#: ../login/scripts/include.php:516
 msgid "&Highscores[login/scripts/include.php|3]"
 msgstr "&Highscores"
 
-#: ../login/scripts/include.php:519
+#: ../login/scripts/include.php:517
 msgid "Na&chrichten[login/scripts/include.php|3]"
 msgstr "Na&chrichten"
 
-#: ../login/scripts/include.php:520
+#: ../login/scripts/include.php:518
 msgid "Forschungsb&aum[login/scripts/include.php|3]"
 msgstr "Forschungsb&aum"
 
-#: ../login/scripts/include.php:521
+#: ../login/scripts/include.php:519
 msgid "Eins&tellungen[login/scripts/include.php|3]"
 msgstr "Eins&tellungen"
 
-#: ../login/scripts/include.php:526
+#: ../login/scripts/include.php:524
 msgid "Adminbereich&[login/scripts/include.php|3]"
 msgstr "Adminbereich"
 
-#: ../login/scripts/include.php:532
+#: ../login/scripts/include.php:530
 msgid "Abmelden&[login/scripts/include.php|3]"
 msgstr "Abmelden"
 
-#: ../login/scripts/include.php:543
+#: ../login/scripts/include.php:541
 msgid "Board&[login/scripts/include.php|3]"
 msgstr "Board"
 
-#: ../login/scripts/include.php:544
+#: ../login/scripts/include.php:542
 msgid "FAQ&[login/scripts/include.php|3]"
 msgstr "FAQ"
 
-#: ../login/scripts/include.php:545
+#: ../login/scripts/include.php:543
 msgid "Chat&[login/scripts/include.php|3]"
 msgstr "Chat"
 
-#: ../login/scripts/include.php:546
+#: ../login/scripts/include.php:544
 msgid "Entwicklerseite&[login/scripts/include.php|3]"
 msgstr "Entwicklerseite"
 
-#: ../login/scripts/include.php:556
+#: ../login/scripts/include.php:554
 msgid "Serverzeit"
 msgstr "Serverzeit"
 
-#: ../login/scripts/include.php:557
+#: ../login/scripts/include.php:555
 msgid "H:i:s"
 msgstr "H:i:s"
 
-#: ../login/scripts/include.php:566
+#: ../login/scripts/include.php:564
 msgid "mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2(local_time_obj.getSeconds())"
 msgstr "mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2(local_time_obj.getSeconds())"
 
-#: ../login/scripts/include.php:568
+#: ../login/scripts/include.php:566
 msgid "Lokalzeit"
 msgstr "Lokalzeit"
 
-#: ../login/scripts/include.php:583
+#: ../login/scripts/include.php:581
 msgid "Changelog anzeigen&[login/scripts/include.php|4]"
 msgstr "Changelog anzeigen"
 
-#: ../login/scripts/include.php:583
+#: ../login/scripts/include.php:581
 #, php-format
 msgid "Version %s"
 msgstr "Version %s"
 
-#: ../login/scripts/include.php:588
+#: ../login/scripts/include.php:586
 #, php-format
 msgid "Revision %s"
 msgstr "Revision %s"
@@ -319,6 +839,43 @@ msgid "Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn
 msgid_plural "Achtung! Von diesem Planeten sind noch %d Fremdstationierungen aktiv. Wenn Sie den Planeten auflösen, werden diese Flotten zerstört werden."
 msgstr[0] "Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn Sie den Planeten auflösen, wird diese Flotte zerstört werden."
 msgstr[1] "Achtung! Von diesem Planeten sind noch %d Fremdstationierungen aktiv. Wenn Sie den Planeten auflösen, werden diese Flotten zerstört werden."
+
+#: ../login/index.php:497
+msgid "[scores_0]"
+msgstr "Gebäude"
+
+#: ../login/index.php:500
+msgid "[scores_1]"
+msgstr "Forschung"
+
+#: ../login/index.php:503
+msgid "[scores_2]"
+msgstr "Roboter"
+
+#: ../login/index.php:506
+msgid "[scores_3]"
+msgstr "Flotte"
+
+#: ../login/index.php:509
+msgid "[scores_4]"
+msgstr "Verteidigung"
+
+#: ../login/index.php:512
+msgid "[scores_5]"
+msgstr "Flugerfahrung"
+
+#: ../login/index.php:515
+msgid "[scores_6]"
+msgstr "Kampferfahrung"
+
+#: ../login/highscores.php:88
+msgid "[scores_"
+msgstr "XXX"
+
+#: ../login/boerse.php:123
+#: ../login/boerse.php:124
+msgid "[ress_"
+msgstr "XXX"
 
 #: ../login/flotten.php:17
 msgid "Flotten"
@@ -536,27 +1093,27 @@ msgstr "Transport"
 
 #: ../login/flotten.php:541
 #: ../login/flotten.php:542
-msgid "Carbo&n[login/flotten.php|1]"
+msgid "[ress_0]&[login/flotten.php|1]"
 msgstr "Carbo&n"
 
 #: ../login/flotten.php:544
 #: ../login/flotten.php:545
-msgid "Aluminium&[login/flotten.php|1]"
+msgid "[ress_1]&[login/flotten.php|1]"
 msgstr "Aluminium"
 
 #: ../login/flotten.php:547
 #: ../login/flotten.php:548
-msgid "Wolfram&[login/flotten.php|1]"
+msgid "[ress_2]&[login/flotten.php|1]"
 msgstr "Wolfram"
 
 #: ../login/flotten.php:550
 #: ../login/flotten.php:551
-msgid "Radium&[login/flotten.php|1]"
+msgid "[ress_3]&[login/flotten.php|1]"
 msgstr "Radium"
 
 #: ../login/flotten.php:553
 #: ../login/flotten.php:554
-msgid "Tritium&[login/flotten.php|1]"
+msgid "[ress_4]&[login/flotten.php|1]"
 msgstr "Tritium"
 
 #: ../login/flotten.php:612
@@ -651,7 +1208,7 @@ msgid "Schiffe"
 msgstr "Schiffe"
 
 #: ../login/flotten.php:889
-#: ../engine/classes/item.php:334
+#: ../engine/classes/item.php:331
 msgid "Genauere Informationen anzeigen"
 msgstr "Genauere Informationen anzeigen"
 
@@ -856,37 +1413,37 @@ msgstr "IM-Benachrichtigung"
 
 #: ../login/einstellungen.php:369
 #: ../login/einstellungen.php:371
-msgid "Kämpfe&[login/einstellungen.php|1]"
+msgid "[message_1]&[login/einstellungen.php|1]"
 msgstr "Kämpfe"
 
 #: ../login/einstellungen.php:382
 #: ../login/einstellungen.php:384
-msgid "Spionage&[login/einstellungen.php|1]"
+msgid "[message_2]&[login/einstellungen.php|1]"
 msgstr "Spionage"
 
 #: ../login/einstellungen.php:395
 #: ../login/einstellungen.php:396
-msgid "Transport&[login/einstellungen.php|1]"
+msgid "[message_3]&[login/einstellungen.php|1]"
 msgstr "Transport"
 
 #: ../login/einstellungen.php:408
 #: ../login/einstellungen.php:410
-msgid "Sammeln&[login/einstellungen.php|1]"
+msgid "[message_4]&[login/einstellungen.php|1]"
 msgstr "Sammeln"
 
 #: ../login/einstellungen.php:421
 #: ../login/einstellungen.php:422
-msgid "Besiedelung&[login/einstellungen.php|1]"
+msgid "[message_5]&[login/einstellungen.php|1]"
 msgstr "Besiedelung"
 
 #: ../login/einstellungen.php:438
 #: ../login/einstellungen.php:441
-msgid "Benutzernachrichten&[login/einstellungen.php|1]"
+msgid "[message_6]&[login/einstellungen.php|1]"
 msgstr "Benutzernachrichten"
 
 #: ../login/einstellungen.php:444
 #: ../login/einstellungen.php:447
-msgid "Verbündete&[login/einstellungen.php|1]"
+msgid "[message_7]&[login/einstellungen.php|1]"
 msgstr "Verbündete"
 
 #: ../login/einstellungen.php:456
@@ -1473,6 +2030,11 @@ msgstr "Gebäude-, Forschungs-, Roboter-, Flotten- und Verteidigungspunkte berec
 msgid "Je mehr %s Sie im Flug verbrauchen, desto mehr Flugerfahrungspunkte erhalten Sie. Pro Tausend Tonnen %1$s, das Sie in einem erfolgreich am Ziel angelangten Flug verbraucht haben, bekommen Sie einen Flugerfahrungspunkt. Erfahrung im Flug lässt Ihre Schiffe schneller fliegen."
 msgstr "Je mehr %s Sie im Flug verbrauchen, desto mehr Flugerfahrungspunkte erhalten Sie. Pro Tausend Tonnen %1$s, das Sie in einem erfolgreich am Ziel angelangten Flug verbraucht haben, bekommen Sie einen Flugerfahrungspunkt. Erfahrung im Flug lässt Ihre Schiffe schneller fliegen."
 
+#: ../faq.php:66
+#: ../faq.php:81
+msgid "Tritium"
+msgstr "Tritium"
+
 #: ../faq.php:67
 msgid "Pro Tausend Punkte, das Sie im Kampf Ihren Gegner verlieren ließen, bekommen Sie einen Kampferfahrungspunkt. Mehr Kampferfahrung schafft Ihnen Vorteile im Kampf."
 msgstr "Pro Tausend Punkte, das Sie im Kampf Ihren Gegner verlieren ließen, bekommen Sie einen Kampferfahrungspunkt. Mehr Kampferfahrung schafft Ihnen Vorteile im Kampf."
@@ -1637,10 +2199,6 @@ msgstr "des Kontrollwesens"
 msgid "Nocheinmal zum Mitschreiben: Anzahl gleichzeitig koordinierbarer Flotten = aufgerundet((%s*Werftenzahl)^0,7)."
 msgstr "Nocheinmal zum Mitschreiben: Anzahl gleichzeitig koordinierbarer Flotten = aufgerundet((%s*Werftenzahl)^0,7)."
 
-#: ../faq.php:134
-msgid "[item_F0]"
-msgstr "Kontrollwesen"
-
 #: ../faq.php:139
 msgid "Wenn Sie sich mit einem Spieler verbünden, dient das nicht nur der Diplomatie, sondern hat auch praktische Auswirkungen im Spielverlauf."
 msgstr "Wenn Sie sich mit einem Spieler verbünden, dient das nicht nur der Diplomatie, sondern hat auch praktische Auswirkungen im Spielverlauf."
@@ -1789,9 +2347,13 @@ msgstr "Sie erreichen die Kanäle alternativ mit einem beliebigen IRC-Client."
 msgid "%s auf %s, Port %d"
 msgstr "%s auf %s, Port %d"
 
-#: ../engine/include.php:737
+#: ../engine/include.php:711
 msgid "[minus_sign]"
 msgstr "−"
+
+#: ../engine/classes/item.php:105
+msgid "[item_"
+msgstr "XXX"
 
 #: ../engine/classes/user.php:3119
 #, php-format
