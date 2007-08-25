@@ -6,6 +6,7 @@
 		protected $datatype = 'user';
 		protected $recalc_highscores = array(false,false,false,false,false,false,false);
 		protected $last_eventhandler_run = array();
+		protected $language_cache = null;
 
 		function __construct($name=false, $write=true)
 		{
@@ -29,7 +30,8 @@
 				'flotten' => array(),
 				'flotten_passwds' => array(),
 				'foreign_fleets' => array(), # Enthaelt eine Liste der Koordinaten, bei denen Flotte stationiert ist
-				'alliance' => false
+				'alliance' => false,
+				'lang' => language()
 			);
 
 			$highscores = Classes::Highscores();
@@ -996,6 +998,31 @@
 			return $items_instance->getItemsList($type);
 		}
 
+		function getItemDeps($id, $deps=null)
+		{
+			if(!$this->status) return false;
+
+			if(!$deps) $deps = array();
+
+			$item_info = $this->getItemInfo($id);
+			if(!$item_info) return false;
+
+			foreach($item_info["deps"] as $dep)
+			{
+				$dep = explode("-", $dep, 2);
+				$dep_info = $this->getItemInfo($dep[0]);
+				if(!$dep_info) continue;
+				if(!isset($deps[$dep[0]]) || $deps[$dep[0]] < $dep[1])
+				{
+					$deps = $this->getItemDeps($dep[0]);
+					if(!isset($deps[$dep[0]]) || $deps[$dep[0]] < $dep[1])
+						$deps[$dep[0]] = $dep[1];
+				}
+			}
+
+			return $deps;
+		}
+
 		function getItemInfo($id, $type=false, $run_eventhandler=true, $calc_scores=false)
 		{
 			if(!$this->status) return false;
@@ -1691,7 +1718,8 @@
 				'messenger_receive' => array(
 					'messages' => array(1=>true, 2=>true, 3=>true, 4=>true, 5=>true, 6=>true, 7=>true),
 					'building' => array('gebaeude' => 1, 'forschung' => 1, 'roboter' => 3, 'schiffe' => 3, 'verteidigung' => 3)
-				)
+				),
+				'lang' => 'de_DE'
 			);
 
 			$this->settings = array();
@@ -3544,6 +3572,47 @@
 
 			$this->changed = true;
 			return true;
+		}
+
+		function setLanguage()
+		{
+			if(!$this->status) return false;
+
+			$lang = $me->checkSetting("lang");
+			if($lang && $lang != -1)
+			{
+				$this->language_cache = language();
+				language($lang);
+				return 1;
+			}
+			return 2;
+		}
+
+		function restoreLanguage()
+		{
+			if($this->language_cache)
+			{
+				language($this->language_cache);
+				$this->language_cache = null;
+				return 1;
+			}
+			return 2;
+		}
+
+		function _($message)
+		{
+			$this->setLanguage();
+			$ret = _($message);
+			$this->restoreLanguage();
+			return $ret;
+		}
+
+		function ngettext($msgid1, $msgid2, $n)
+		{
+			$this->setLanguage();
+			$ret = ngettext($msgid1, $msgid2, $n);
+			$this->restoreLanguage();
+			return $ret;
 		}
 	}
 

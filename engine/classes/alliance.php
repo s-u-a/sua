@@ -37,15 +37,15 @@
 			if($this->getMembersCount() > 0)
 			{
 				$members = $this->getUsersList();
-				$message = Classes::Message();
-				if($message->create())
+				foreach($members as $member)
 				{
-					$message->subject("Allianz aufgel\xc3\xb6st");
-					$message->text('Die Allianz '.$this->getName()." wurde aufgel\xc3\xb6st.");
-					if($by_whom) $message->from($by_whom);
-					foreach($members as $member)
+					$user = Classes::User($member);
+					$message = Classes::Message();
+					if($user->getStatus() && $message->create())
 					{
-						if($member == $by_whom) continue;
+						$message->subject($user->_("Allianz aufgelöst"));
+						$message->text(sprintf($user->_("Die Allianz %s wurde aufgelöst."), $this->getName()));
+						if($by_whom) $message->from($by_whom);
 						$message->addUser($member, 7);
 					}
 				}
@@ -53,13 +53,16 @@
 				$applicants = $this->getApplicationsList();
 				if(count($applicants) > 0)
 				{
-					$message = Classes::Message();
-					if($message->create())
+					foreach($applicants as $applicant)
 					{
-						$message->subject("Allianz aufgel\xc3\xb6st");
-						$message->text("Die Allianz ".$this->getName()." wurde aufgelöst. Ihre Bewerbung wurde deshalb zurückgewiesen.");
-						foreach($applicants as $applicant)
+						$user = Classes::User($applicant);
+						$message = Classes::Message();
+						if($user->getStatus() && $message->create())
+						{
+							$message->subject($user->_("Allianz aufgelöst"));
+							$message->text(sprintf($user->_("Die Allianz %s wurde aufgelöst. Ihre Bewerbung wurde deshalb zurückgewiesen."), $this->getName()));
 							$message->addUser($applicant, 7);
+						}
 					}
 				}
 
@@ -282,9 +285,11 @@
 
 			if(isset($this->raw['members'][$user])) return false;
 
+			$user_obj = Classes::User($user);
+
 			$this->raw['members'][$user] = array (
 				'punkte' => $punkte,
-				'rang' => 'Neuling',
+				'rang' => $user_obj->_("Neuling"),
 				'time' => time(),
 				'permissions' => array(false, false, false, false, false, false, false, false, false)
 			);
@@ -380,23 +385,25 @@
 			$message = Classes::Message();
 			if($message->create())
 			{
-				$message->subject("Allianzmitgliedschaft gek\xc3\xbcndigt");
-				$message->text("Sie wurden aus der Allianz ".$this->getName()." geworfen.");
+				$message->subject($user_obj->_("Allianzmitgliedschaft gekündigt"));
+				$message->text(sprintf($user_obj->_("Sie wurden aus der Allianz %s geworfen."), $this->getName()));
 				$message->addUser($user, 7);
 			}
 
-			$message = Classes::Message();
-			if($message->create())
+			$members = $this->getUsersWithPermission(5);
+			foreach($members as $member)
 			{
-				$message->subject("Spieler aus Allianz geworfen");
-				$message->text("Der Spieler ".$user." wurde aus Ihrer Allianz geworfen.");
-				if($by_whom) $message->from($by_whom);
+				if($member == $by_whom) continue;
 
-				$members = $this->getUsersWithPermission(5);
-				foreach($members as $member)
+				$user_obj = Classes::User($member);
+				$message = Classes::Message();
+				if($user_obj->getStatus() && $message->create())
 				{
-					if($member == $by_whom) continue;
-					$message->addUser($member);
+					$message->subject($user_obj->_("Spieler aus Allianz geworfen"));
+					$message->text(sprintf($user_obj->_("Der Spieler %s wurde aus Ihrer Allianz geworfen."), $user));
+					if($by_whom) $message->from($by_whom);
+
+					$message->addUser($member, 7);
 				}
 			}
 			return true;
@@ -479,23 +486,25 @@
 			$message = Classes::Message();
 			if($message->create())
 			{
-				$message->subject('Neues Allianzmitglied');
-				$message->text('Ein neues Mitglied wurde in Ihre Allianz aufgenommen: '.$user);
-				if($by_whom) $message->from($by_whom);
-				foreach($members as $member)
-				{
-					if($member == $by_whom) continue;
-					$message->addUser($member, 7);
-				}
-			}
-
-			$message = Classes::Message();
-			if($message->create())
-			{
-				$message->subject('Allianzbewerbung angenommen');
-				$message->text('Ihre Bewerbung bei der Allianz '.$this->getName().' wurde angenommen.');
+				$message->subject($user_obj->_('Allianzbewerbung angenommen'));
+				$message->text(sprintf($user_obj->_('Ihre Bewerbung bei der Allianz %s wurde angenommen.'), $this->getName()));
 				if($by_whom) $message->from($by_whom);
 				$message->addUser($user, 7);
+			}
+
+			foreach($members as $member)
+			{
+				if($member == $by_whom) continue;
+
+				$user_obj = Classes::User($user);
+				$message = Classes::Message();
+				if($user_obj->getStatus() && $message->create())
+				{
+					$message->subject($user_obj->_('Neues Allianzmitglied'));
+					$message->text(sprintf($user_obj->_("Ein neues Mitglied wurde in Ihre Allianz aufgenommen: %s"), $user));
+					if($by_whom) $message->from($by_whom);
+					$message->addUser($member, 7);
+				}
 			}
 
 			return true;
@@ -513,23 +522,24 @@
 			$message = Classes::Message();
 			if($message->create())
 			{
-				$message->subject('Allianzbewerbung abgelehnt');
-				$message->text('Die Bewerbung von '.$user.' an Ihre Allianz wurde abgelehnt.');
-				if($by_whom) $message->from($by_whom);
-				$members = $this->getUsersWithPermission(4);
-				foreach($members as $member)
-				{
-					if($member == $by_whom) continue;
-					$message->addUser($member, 7);
-				}
+				$message->subject($user_obj->_('Allianzbewerbung abgelehnt'));
+				$message->text(sprintf($user_obj->_('Ihre Bewerbung bei der Allianz %s wurde abgelehnt.'), $this->getName()));
+				$message->addUser($user, 7);
 			}
 
-			$message = Classes::Message();
-			if($message->create())
+			$members = $this->getUsersWithPermission(4);
+			foreach($members as $member)
 			{
-				$message->subject('Allianzbewerbung abgelehnt');
-				$message->text('Ihre Bewerbung bei der Allianz '.$this->getName().' wurde abgelehnt.');
-				$message->addUser($user, 7);
+				if($member == $by_whom) continue;
+				$user_obj = Classes::User($member);
+				$message = Classes::Message();
+				if($user_obj->getStatus() && $message->create())
+				{
+					$message->subject($user_obj->_('Allianzbewerbung abgelehnt'));
+					$message->text(sprintf($user_obj->_('Die Bewerbung von %s an Ihre Allianz wurde abgelehnt.'), $user));
+					if($by_whom) $message->from($by_whom);
+					$message->addUser($member, 7);
+				}
 			}
 
 			return true;

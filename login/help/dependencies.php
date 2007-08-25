@@ -28,7 +28,7 @@
 		{
 			$item_info = $me->getItemInfo($item, $type);
 ?>
-		<tr id="deps-<?=htmlentities($item)?>" title="test">
+		<tr id="deps-<?=htmlentities($item)?>">
 			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($item))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a></td>
 <?php
 			if(!isset($item_info['deps']) || count($item_info['deps']) <= 0)
@@ -41,8 +41,9 @@
 			{
 ?>
 			<td class="c-deps">
-				<ul>
+				<ul class="deps">
 <?php
+				$needed_deps = array();
 				foreach($item_info['deps'] as $dep)
 				{
 					$dep = explode('-', $dep, 2);

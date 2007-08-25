@@ -618,37 +618,14 @@
 
 		$return = array();
 		if($time2 >= 86400)
-		{
-			if($days == 1)
-				$days .= '&nbsp;Tag';
-			else
-				$days .= '&nbsp;Tage';
-			$return[] = $days;
-		}
+			$return[] = sprintf(ngettext("%d Tag", "%d Tage", $days), $days);
 		if($time2 >= 3600)
-		{
-			if($hours == 1)
-				$hours .= '&nbsp;Stunde';
-			else
-				$hours .= '&nbsp;Stunden';
-			$return[] = $hours;
-		}
+			$return[] = sprintf(ngettext("%d Stunde", "%d Stunden", $hours), $hours);
 		if($time2 >= 60)
-		{
-			if($minutes == 1)
-				$minutes .= '&nbsp;Minute';
-			else
-				$minutes .= '&nbsp;Minuten';
-			$return[] = $minutes;
-		}
+			$return[] = sprintf(ngettext("%d Minute", "%d Minuten", $minutes), $minutes);
+		$return[] = sprintf(ngettext("%d Sekunde", "%d Sekunden", $seconds), $seconds);
 
-		if($seconds == 1)
-			$seconds .= '&nbsp;Sekunde';
-		else
-			$seconds .= '&nbsp;Sekunden';
-		$return[] = $seconds;
-
-		$return = implode(' ', $return);
+		$return = h(implode(' ', $return));
 		return $return;
 	}
 
@@ -663,17 +640,17 @@
 			$tabs = str_repeat("\t", $tabs_count);
 
 		$return = "<dl class=\"ress\">\n";
-		$return .= $tabs."\t<dt class=\"ress-carbon\">Carbon</dt>\n";
+		$return .= $tabs."\t<dt class=\"ress-carbon\">".h(_("[ress_0]"))."</dt>\n";
 		$return .= $tabs."\t<dd class=\"ress-carbon\">".ths($ress[0])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-aluminium\">Aluminium</dt>\n";
+		$return .= $tabs."\t<dt class=\"ress-aluminium\">".h(_("[ress_1]"))."</dt>\n";
 		$return .= $tabs."\t<dd class=\"ress-aluminium\">".ths($ress[1])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-wolfram\">Wolfram</dt>\n";
+		$return .= $tabs."\t<dt class=\"ress-wolfram\">".h(_("[ress_2]"))."</dt>\n";
 		$return .= $tabs."\t<dd class=\"ress-wolfram\">".ths($ress[2])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-radium\">Radium</dt>\n";
+		$return .= $tabs."\t<dt class=\"ress-radium\">".h(_("[ress_3]"))."</dt>\n";
 		$return .= $tabs."\t<dd class=\"ress-radium\">".ths($ress[3])."</dd>\n";
 		if($tritium)
 		{
-			$return .= $tabs."\t<dt class=\"ress-tritium\">Tritium</dt>\n";
+			$return .= $tabs."\t<dt class=\"ress-tritium\">".h(_("[ress_4]"))."</dt>\n";
 			$return .= $tabs."\t<dd class=\"ress-tritium\">".ths($ress[4])."</dd>\n";
 		}
 		$return .= $tabs."</dl>\n";

@@ -239,7 +239,7 @@
 <p><?=sprintf(h(_("Denken Sie immer daran: %sBenutzen Sie niemals Dinge aus dem Adminbereich zu Ihrem eigenen Vorteil im Spiel und geben Sie keine Informationen an Personen weiter, die sich diese Informationen nicht selbst beschaffen könnten.%s")), "<strong>", "</strong>")?></p>
 <hr />
 <ol>
-	<li><a href="#passwort-aendern"<?=accesskey_attr_("Adminpasswort ändern&[admin/index.php|1]"))?>><?=h(_("Adminpasswort ändern&[admin/index.php|1]"))?></a></li>
+	<li><a href="#passwort-aendern"<?=accesskey_attr(_("Adminpasswort ändern&[admin/index.php|1]"))?>><?=h(_("Adminpasswort ändern&[admin/index.php|1]"))?></a></li>
 <?php if($admin_array['permissions'][0]){?>	<li><a href="#action-0"<?=accesskey_attr(_("Benutzerliste einsehen&[admin/index.php|1]"))?>><?=h(_("Benutzerliste einsehen&[admin/index.php|1]"))?></a></li>
 <?php }if($admin_array['permissions'][1]){?>	<li><a href="#action-1"<?=accesskey_attr(_("Als Geist als ein Benutzer anmelden&[admin/index.php|1]"))?>><?=h(_("Als Geist als ein Benutzer anmelden&[admin/index.php|1]"))?></a></li>
 <?php }if($admin_array['permissions'][2]){?>	<li><a href="#action-2"<?=accesskey_attr(_("Das Passwort eines Benutzers ändern&[admin/index.php|1]"))?>><?=h(_("Das Passwort eines Benutzers ändern&[admin/index.php|1]"))?></a></li>

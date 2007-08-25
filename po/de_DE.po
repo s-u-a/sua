@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-08-25 15:56+0100\n"
+"PO-Revision-Date: 2007-08-25 21:52+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -759,7 +759,7 @@ msgstr "Adminpasswort ändern"
 
 #: ../admin/index.php:243
 msgid "Benutzerliste einsehen&[admin/index.php|1]"
-msgstr "Benutzerliste einsehen&[admin"
+msgstr "Benutzerliste einsehen"
 
 #: ../admin/index.php:244
 msgid "Als Geist als ein Benutzer anmelden&[admin/index.php|1]"
@@ -1374,7 +1374,7 @@ msgid "[title_abbr_full]"
 msgstr "S-U-A – Stars Under Attack"
 
 #: ../login/scripts/include.php:202
-#: ../engine/include.php:708
+#: ../engine/include.php:685
 msgid "[thousand_separator]"
 msgstr " "
 
@@ -1393,22 +1393,27 @@ msgid "Zu den Spieldaten&[login/scripts/include.php|1]"
 msgstr "Zu den Spieldaten"
 
 #: ../login/scripts/include.php:280
+#: ../engine/include.php:643
 msgid "[ress_0]"
 msgstr "Carbon"
 
 #: ../login/scripts/include.php:283
+#: ../engine/include.php:645
 msgid "[ress_1]"
 msgstr "Aluminium"
 
 #: ../login/scripts/include.php:286
+#: ../engine/include.php:647
 msgid "[ress_2]"
 msgstr "Wolfram"
 
 #: ../login/scripts/include.php:289
+#: ../engine/include.php:649
 msgid "[ress_3]"
 msgstr "Radium"
 
 #: ../login/scripts/include.php:292
+#: ../engine/include.php:653
 msgid "[ress_4]"
 msgstr "Tritium"
 
@@ -1464,8 +1469,8 @@ msgstr "„%s“ (%s)"
 #: ../login/flotten.php:803
 #: ../login/flotten.php:964
 #: ../login/flotten.php:968
-#: ../engine/classes/user.php:3119
-#: ../engine/classes/user.php:3120
+#: ../engine/classes/user.php:3122
+#: ../engine/classes/user.php:3123
 #: ../register.php:106
 #, php-format
 msgid "%d:%d:%d"
@@ -3098,9 +3103,101 @@ msgstr "Sie erreichen die Kanäle alternativ mit einem beliebigen IRC-Client."
 msgid "%s auf %s, Port %d"
 msgstr "%s auf %s, Port %d"
 
-#: ../engine/include.php:711
+#: ../engine/include.php:621
+#, php-format
+msgid "%d Tag"
+msgid_plural "%d Tage"
+msgstr[0] "%d Tag"
+msgstr[1] "%d Tage"
+
+#: ../engine/include.php:623
+#, php-format
+msgid "%d Stunde"
+msgid_plural "%d Stunden"
+msgstr[0] "%d Stunde"
+msgstr[1] "%d Stunden"
+
+#: ../engine/include.php:625
+#, php-format
+msgid "%d Minute"
+msgid_plural "%d Minuten"
+msgstr[0] "%d Minute"
+msgstr[1] "%d Minuten"
+
+#: ../engine/include.php:626
+#, php-format
+msgid "%d Sekunde"
+msgid_plural "%d Sekunden"
+msgstr[0] "%d Sekunde"
+msgstr[1] "%d Sekunden"
+
+#: ../engine/include.php:688
 msgid "[minus_sign]"
 msgstr "−"
+
+#: ../engine/classes/alliance.php:46
+#: ../engine/classes/alliance.php:62
+msgid "Allianz aufgelöst"
+msgstr "Allianz aufgelöst"
+
+#: ../engine/classes/alliance.php:47
+#, php-format
+msgid "Die Allianz %s wurde aufgelöst."
+msgstr "Die Allianz %s wurde aufgelöst."
+
+#: ../engine/classes/alliance.php:63
+#, php-format
+msgid "Die Allianz %s wurde aufgelöst. Ihre Bewerbung wurde deshalb zurückgewiesen."
+msgstr "Die Allianz %s wurde aufgelöst. Ihre Bewerbung wurde deshalb zurückgewiesen."
+
+#: ../engine/classes/alliance.php:292
+msgid "Neuling"
+msgstr "Neuling"
+
+#: ../engine/classes/alliance.php:388
+msgid "Allianzmitgliedschaft gekündigt"
+msgstr "Allianzmitgliedschaft gekündigt"
+
+#: ../engine/classes/alliance.php:389
+#, php-format
+msgid "Sie wurden aus der Allianz %s geworfen."
+msgstr "Sie wurden aus der Allianz %s geworfen."
+
+#: ../engine/classes/alliance.php:402
+msgid "Spieler aus Allianz geworfen"
+msgstr "Spieler aus Allianz geworfen"
+
+#: ../engine/classes/alliance.php:403
+#, php-format
+msgid "Der Spieler %s wurde aus Ihrer Allianz geworfen."
+msgstr "Der Spieler %s wurde aus Ihrer Allianz geworfen."
+
+#: ../engine/classes/alliance.php:489
+msgid "Allianzbewerbung angenommen"
+msgstr "Allianzbewerbung angenommen"
+
+#: ../engine/classes/alliance.php:490
+#, php-format
+msgid "Ihre Bewerbung bei der Allianz %s wurde angenommen."
+msgstr "Ihre Bewerbung bei der Allianz %s wurde angenommen."
+
+#: ../engine/classes/alliance.php:503
+msgid "Neues Allianzmitglied"
+msgstr "Neues Allianzmitglied"
+
+#: ../engine/classes/alliance.php:504
+#, php-format
+msgid "Ein neues Mitglied wurde in Ihre Allianz aufgenommen: %s"
+msgstr "Ein neues Mitglied wurde in Ihre Allianz aufgenommen: %s"
+
+#: ../engine/classes/alliance.php:525
+msgid "Allianzbewerbung abgelehnt"
+msgstr "Allianzbewerbung abgelehnt"
+
+#: ../engine/classes/alliance.php:526
+#, php-format
+msgid "Ihre Bewerbung bei der Allianz %s wurde abgelehnt."
+msgstr "Ihre Bewerbung bei der Allianz %s wurde abgelehnt."
 
 #: ../engine/classes/item.php:105
 msgid "[item_"
@@ -3110,7 +3207,7 @@ msgstr "XXX"
 msgid "[itemdesc_"
 msgstr "XXX"
 
-#: ../engine/classes/user.php:3119
+#: ../engine/classes/user.php:3122
 #, php-format
 msgid ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
@@ -3119,7 +3216,7 @@ msgstr ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
 "Die Flotte bestand aus folgenden Schiffen: %s"
 
-#: ../engine/classes/user.php:3120
+#: ../engine/classes/user.php:3123
 #, php-format
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr "Fremdstationierung zurückgezogen auf %s"
