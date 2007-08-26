@@ -1,6 +1,8 @@
 <?php
 	require('../engine/include.php');
 
+	language("de_DE", true);
+
 	$actions = array(
 		"0" => _("%s hat sich angemeldet."),
 		"1" => _("%s hat sich als Geist unter dem Benutzer %s angemeldet."),

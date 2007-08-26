@@ -4,21 +4,21 @@
 	login_gui::html_head();
 
 	$check_deps = array(
-		'gebaeude' => 'Gebäude',
-		'forschung' => 'Forschung',
-		'roboter' => 'Roboter',
-		'schiffe' => 'Schiff',
-		'verteidigung' => 'Verteidigungsanlage'
+		'gebaeude' => ngettext("Gebäude", "Gebäude", 1),
+		'forschung' => ngettext("Forschung", "Forschungen", 1),
+		'roboter' => ngettext("Roboter", "Roboter", 1),
+		'schiffe' => ngettext("Schiff", "Schiffe", 1),
+		'verteidigung' => ngettext("Verteidigungsanlage", "Verteidigungsanlagen", 1)
 	);
 
 	foreach($check_deps as $type=>$heading)
 	{
 ?>
-<table class="deps" id="deps-<?=htmlentities($type)?>">
+<table class="deps" id="deps-<?=htmlspecialchars($type)?>">
 	<thead>
 		<tr>
-			<th class="c-item"><?=utf8_htmlentities($heading)?></th>
-			<th class="c-deps">Abhängigkeiten</th>
+			<th class="c-item"><?=h($heading)?></th>
+			<th class="c-deps"><?=h(_("Abhängigkeiten"))?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -28,8 +28,8 @@
 		{
 			$item_info = $me->getItemInfo($item, $type);
 ?>
-		<tr id="deps-<?=htmlentities($item)?>">
-			<td class="c-item"><a href="description.php?id=<?=htmlentities(urlencode($item))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a></td>
+		<tr id="deps-<?=htmlspecialchars($item)?>">
+			<td class="c-item"><a href="description.php?id=<?=htmlspecialchars(urlencode($item))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=h(_("[item_".$item."]"))?></a></td>
 <?php
 			if(!isset($item_info['deps']) || count($item_info['deps']) <= 0)
 			{
@@ -47,9 +47,8 @@
 				foreach($item_info['deps'] as $dep)
 				{
 					$dep = explode('-', $dep, 2);
-					$this_info = $me->getItemInfo($dep[0]);
 ?>
-					<li class="deps-<?=($this_info['level'] >= $dep[1]) ? 'ja' : 'nein'?>"><a href="#deps-<?=htmlentities($dep[0])?>" title="Zu diesem Gegenstand scrollen."><?=utf8_htmlentities($this_info['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=ths($dep[1])?>)</span></li>
+					<li class="deps-<?=($this->getItemLevel($dep[0]) >= $dep[1]) ? 'ja' : 'nein'?>"><?=sprintf(h(_("%s (Stufe %s)")), "<a href=\"#deps-".htmlspecialchars($dep[0])."\" title=\"".h(_("Zu diesem Gegenstand scrollen"))."\">".h(_("[item_".$dep[0]."]"))."</a>", ths($dep[1]))?></li>
 <?php
 				}
 ?>

@@ -86,7 +86,7 @@
 			foreach($deps as $id=>$level)
 			{
 ?>
-			<li class="deps-<?=htmlspecialchars($id)?> deps-<?=($me->getItemLevel($id) >= $level) ? "ja" : "nein"?>"><?=sprintf(h(_("%s (Stufe %d)")), "<a href=\"description.php?id=".htmlspecialchars(urlencode($id)."&".session_name()."=".session_id())."\" title=\"".h(_("Genauere Informationen anzeigen"))."\">".h(_("[item_".$id."]"))."</a>", $level)?></li>
+			<li class="deps-<?=htmlspecialchars($id)?> deps-<?=($me->getItemLevel($id) >= $level) ? "ja" : "nein"?>"><?=sprintf(h(_("%s (Stufe %s)")), "<a href=\"description.php?id=".htmlspecialchars(urlencode($id)."&".session_name()."=".session_id())."\" title=\"".h(_("Genauere Informationen anzeigen"))."\">".h(_("[item_".$id."]"))."</a>", ths($level))?></li>
 <?php
 			}
 ?>
