@@ -618,12 +618,12 @@
 
 		$return = array();
 		if($time2 >= 86400)
-			$return[] = sprintf(ngettext("%d Tag", "%d Tage", $days), $days);
+			$return[] = sprintf(ngettext("%d Tag", "%d Tage", $days), $days);
 		if($time2 >= 3600)
-			$return[] = sprintf(ngettext("%d Stunde", "%d Stunden", $hours), $hours);
+			$return[] = sprintf(ngettext("%d Stunde", "%d Stunden", $hours), $hours);
 		if($time2 >= 60)
-			$return[] = sprintf(ngettext("%d Minute", "%d Minuten", $minutes), $minutes);
-		$return[] = sprintf(ngettext("%d Sekunde", "%d Sekunden", $seconds), $seconds);
+			$return[] = sprintf(ngettext("%d Minute", "%d Minuten", $minutes), $minutes);
+		$return[] = sprintf(ngettext("%d Sekunde", "%d Sekunden", $seconds), $seconds);
 
 		$return = h(implode(' ', $return));
 		return $return;

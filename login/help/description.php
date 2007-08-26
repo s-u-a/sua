@@ -9,23 +9,21 @@
 	if(!$item || !$item->getInfo())
 	{
 ?>
-<p class="error">Dieser Gegenstand existiert nicht.</p>
+<p class="error"><?=h(_("Dieser Gegenstand existiert nicht."))?></p>
 <?php
 	}
 	else
 	{
 		$type = $item->getType();
 		if($type == 'gebaeude' || $type == 'forschung')
-			$lvl = $me->getItemLevel($_GET['id']);
+			$lvl = _("%s (Stufe %s)");
 		else
-			$lvl = -1;
+			$lvl = "%s";
 ?>
 <div class="desc desc-<?=htmlspecialchars($_GET['id'])?> desc-<?=htmlspecialchars($type)?>">
 	<div class="desc-desc">
-		<h2><?=utf8_htmlentities($item->getInfo('name'))?><?php if($lvl >= 0){?> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($lvl)?>)</span><?php }?></h2>
+		<h2><?=h(sprintf($lvl, _("[item_".$_GET["id"]."]"), ths($me->getItemLevel($_GET["id"]))))?></h2>
 <?php
-		$desc = $item->getInfo('caption');
-
 		function repl_nl($nls)
 		{
 			$len = strlen($nls);
@@ -37,7 +35,7 @@
 				return "\n\t\t</p>\n\t\t".str_repeat('<br />', $len-2)."\n\t\t<p>\n\t\t\t";
 		}
 
-		$desc = "\t\t<p>\n\t\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', utf8_htmlentities($desc))."\n\t\t</p>\n";
+		$desc = "\t\t<p>\n\t\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', h(_("[itemdesc_".$_GET["id"]."]")))."\n\t\t</p>\n";
 
 		print($desc);
 ?>
@@ -48,7 +46,7 @@
 		{
 ?>
 	<dl class="item-info">
-		<dt class="item-kosten">Kosten</dt>
+		<dt class="item-kosten"><?=h(_("Kosten"))?></dt>
 		<dd class="item-kosten">
 			<?=format_ress($item_info['ress'], 3)?>
 		</dd>
@@ -57,17 +55,17 @@
 			if($type == 'forschung')
 			{
 ?>
-		<dt class="item-bauzeit-lokal">Bauzeit lokal</dt>
+		<dt class="item-bauzeit-lokal"><?=h(_("Bauzeit lokal"))?></dt>
 		<dd class="item-bauzeit-lokal"><?=format_btime($item_info['time_local'])?></dd>
 
-		<dt class="item-bauzeit-global">Bauzeit global</dt>
+		<dt class="item-bauzeit-global"><?=h(_("Bauzeit global"))?></dt>
 		<dd class="item-bauzeit-global"><?=format_btime($item_info['time_global'])?></dd>
 <?php
 			}
 			else
 			{
 ?>
-		<dt class="item-bauzeit">Bauzeit</dt>
+		<dt class="item-bauzeit"><?=h(_("Bauzeit"))?></dt>
 		<dd class="item-bauzeit"><?=format_btime($item_info['time'])?></dd>
 	</dl>
 <?php
@@ -80,13 +78,13 @@
 			isort($deps);
 ?>
 	<div class="desc-deps">
-		<h3>Abhängigkeiten</h3>
+		<h3><?=h(_("Abhängigkeiten"))?></h3>
 		<ul class="deps">
 <?php
 			foreach($deps as $id=>$level)
 			{
 ?>
-			<li class="deps-<?=htmlspecialchars($id)?> deps-<?=($me->getItemLevel($id) >= $level) ? "ja" : "nein"?>"><?=sprintf(h(_("%s (Stufe %s)")), "<a href=\"description.php?id=".htmlspecialchars(urlencode($id)."&".session_name()."=".session_id())."\" title=\"".h(_("Genauere Informationen anzeigen"))."\">".h(_("[item_".$id."]"))."</a>", ths($level))?></li>
+			<li class="deps-<?=htmlspecialchars($id)?> deps-<?=($me->getItemLevel($id) >= $level) ? "ja" : "nein"?>"><?=sprintf(h(_("%s (Stufe %s)")), "<a href=\"description.php?id=".htmlspecialchars(urlencode($id)."&".session_name()."=".session_id())."\" title=\"".h(_("Genauere Informationen anzeigen"))."\">".h(_("[item_".$id."]"))."</a>", ths($level))?></li>
 <?php
 			}
 ?>
@@ -99,18 +97,18 @@
 		{
 ?>
 	<div class="desc-values">
-		<h3>Eigenschaften</h3>
+		<h3><?=h(_("Eigenschaften"))?></h3>
 		<table>
 			<thead>
 				<tr>
-					<th>Eigenschaft</th>
-					<th>Wert</th>
+					<th><?=h(_("Eigenschaft"))?></th>
+					<th><?=h(_("Wert"))?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<th>Benötigte Felderzahl</th>
-					<td><?=utf8_htmlentities($item->getInfo('fields'))?></td>
+					<th><?=h(_("Benötigte Felderzahl"))?></th>
+					<td><?=ths($item->getInfo('fields'))?></td>
 				</tr>
 			</tbody>
 		</table>
@@ -121,46 +119,46 @@
 			{
 ?>
 	<div class="desc-prod">
-		<h3>Produktion pro Stunde</h3>
+		<h3><?=h(_("Produktion pro Stunde"))?></h3>
 		<table>
 			<thead>
 				<tr>
-					<th class="c-stufe">Stufe</th>
+					<th class="c-stufe"><?=h(_("Stufe"))?></th>
 <?php
 				if($prod[0] != 0)
 				{
 ?>
-					<th class="c-carbon">Carbon</th>
+					<th class="c-carbon"><?=h(_("[ress_0]"))?></th>
 <?php
 				}
 				if($prod[1] != 0)
 				{
 ?>
-					<th class="c-aluminium">Aluminium</th>
+					<th class="c-aluminium"><?=h(_("[ress_1]"))?></th>
 <?php
 				}
 				if($prod[2] != 0)
 				{
 ?>
-					<th class="c-wolfram">Wolfram</th>
+					<th class="c-wolfram"><?=h(_("[ress_2]"))?></th>
 <?php
 				}
 				if($prod[3] != 0)
 				{
 ?>
-					<th class="c-radium">Radium</th>
+					<th class="c-radium"><?=h(_("[ress_3]"))?></th>
 <?php
 				}
 				if($prod[4] != 0)
 				{
 ?>
-					<th class="c-tritium">Tritium</th>
+					<th class="c-tritium"><?=h(_("[ress_4]"))?></th>
 <?php
 				}
 				if($prod[5] != 0)
 				{
 ?>
-					<th class="c-energie">Energie</th>
+					<th class="c-energie"><?=h(_("[ress_5]"))?></th>
 <?php
 				}
 ?>
@@ -239,33 +237,33 @@
 			$trans = $item->getInfo('trans');
 ?>
 	<div class="desc-values">
-		<h3>Eigenschaften</h3>
+		<h3><?=h(_("Eigenschaften"))?></h3>
 		<table>
 			<thead>
 				<tr>
-					<th>Eigenschaft</th>
-					<th>Wert</th>
+					<th><?=h(_("Eigenschaft"))?></th>
+					<th><?=h(_("Wert"))?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<th>Transportkapazität</th>
-					<td><?=ths($trans[0])?>&nbsp;Tonnen, <?=ths($trans[1])?>&nbsp;Roboter</td>
+					<th><?=h(_("Transportkapazität"))?></th>
+					<td><?=h(sprintf(_("%s Tonnen, %s Roboter"), ths($trans[0]), ths($trans[1])))?></td>
 				</tr>
 				<tr>
-					<th>Angriffsstärke</th>
+					<th><?=h(_("Angriffsstärke"))?></th>
 					<td><?=ths($item->getInfo('att'))?></td>
 				</tr>
 				<tr>
-					<th>Schild</th>
+					<th><?=h(_("Schild"))?></th>
 					<td><?=ths($item->getInfo('def'))?></td>
 				</tr>
 				<tr>
-					<th>Antriebsstärke</th>
-					<td><?=ths($item->getInfo('speed'))?>&thinsp;<abbr title="Mikroorbits pro Quadratsekunde">µOr&frasl;s²</abbr></td>
+					<th><?=h(_("Antriebsstärke"))?></th>
+					<td><?=ths($item->getInfo('speed'))?><?=h(_("[unit_separator]"))?><abbr title="<?=h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $item->getInfo("speed")))?>"><?=h(_("µOr⁄s²"))?></abbr></td>
 				</tr>
 				<tr>
-					<th>Unterstützte Auftragsarten</th>
+					<th><?=h(_("Unterstützte Auftragsarten"))?></th>
 					<td>
 						<ul>
 <?php
@@ -289,21 +287,21 @@
 		{
 ?>
 	<div class="desc-values">
-		<h3>Eigenschaften</h3>
+		<h3><?=h(_("Eigenschaften"))?></h3>
 		<table>
 			<thead>
 				<tr>
-					<th>Eigenschaft</th>
-					<th>Wert</th>
+					<th><?=h(_("Eigenschaft"))?></th>
+					<th><?=h(_("Wert"))?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<th>Angriffsstärke</th>
+					<th><?=h(_("Angriffsstärke"))?></th>
 					<td><?=ths($item->getInfo('att'))?></td>
 				</tr>
 				<tr>
-					<th>Schild</th>
+					<th><?=h(_("Schild"))?></th>
 					<td><?=ths($item->getInfo('def'))?></td>
 				</tr>
 			</tbody>

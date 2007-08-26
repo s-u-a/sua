@@ -377,7 +377,7 @@
 					foreach($ncount as $type=>$count)
 					{
 						if($count > 0)
-							$title[] = sprintf(h(_("%s: %d")), h(_("[message_".$type."]")), ths($count));
+							$title[] = sprintf(h(_("%s: %s")), h(_("[message_".$type."]")), ths($count));
 						if($count == $ges_ncount)
 							$link .= '?type='.urlencode($type);
 					}
