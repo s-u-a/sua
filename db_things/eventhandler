@@ -91,6 +91,9 @@ EOF
 		$USE_OB = false;
 		require('engine/include.php');
 
+		# TODO: Rausnehmen
+		language("de_DE");
+
 		set_time_limit(0);
 
 		if(!touch(global_setting("DB_EVENTHANDLER_PIDFILE")) || !($fh_pid = fopen(global_setting("DB_EVENTHANDLER_PIDFILE"), 'r+')))
@@ -612,7 +615,7 @@ EOF
 		exit(0);
 	}
 
-	
+
 	#################
 	### Durchlauf ###
 	#################

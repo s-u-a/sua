@@ -1543,8 +1543,8 @@
 	{
 		if($make_tags)
 			return preg_replace("/&amp;([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß])/", "<kbd>$1</kbd>", htmlspecialchars($text));
-		elseif(preg_match("/&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)/", $text, $m))
-			return $text." [".htmlspecialchars(str_replace(array("ä", "ö", "ü"), array("Ä", "Ö", "Ü"), strtoupper($m[1])))."]";
+		elseif(preg_match("/^(.*?)&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)(.*)\$/", $text, $m))
+			return htmlspecialchars($m[1].$m[2].$m[3])." [".htmlspecialchars(str_replace(array("ä", "ö", "ü"), array("Ä", "Ö", "Ü"), strtoupper($m[2])))."]";
 		else
 			return $text;
 	}
