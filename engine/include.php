@@ -38,6 +38,10 @@
 	bind_textdomain_codeset("sua", "utf-8");
 	textdomain("sua");
 
+	# PEAR einbinden
+	if(is_dir(s_root."/pear"))
+		set_include_path(".:".s_root."/pear/:".get_include_path());
+
 	# SSL auf Wunsch abschalten
 	if(isset($_GET['nossl']))
 	{
@@ -82,6 +86,7 @@
 	global_setting('DB_EVENTHANDLER_PIDFILE', $GDB_DIR.'/eventhandler.pid');
 	global_setting('DB_DATABASES', $GDB_DIR.'/databases');
 	global_setting('DB_HOSTNAME', $GDB_DIR.'/hostname');
+	global_setting('DB_GPG', $GDB_DIR.'/gpg');
 	global_setting('EVENTHANDLER_INTERVAL', 2);
 	global_setting('EVENTHANDLER_MARKETCACHE', 10); # Wieviele Eventhandler-Intervalle sollen aus der Boersendatenbank gecacht werden?
 	global_setting('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
@@ -1580,5 +1585,24 @@
 		putenv("LANGUAGE=".$lang);
 		putenv("LANG=".$lang);
 		return true;
+	}
+
+	function gpg_sign($text)
+	{
+		static $gpg,$config;
+
+		if(!isset($config))
+		{
+			if(!is_file(global_setting("DB_GPG"))) return $text;
+			$config = parse_ini_file(global_setting("DB_GPG"));
+		}
+		if(!$config || !isset($config["fingerprint"]) || !isset($config["password"]))
+			return $text;
+		
+		if(!isset($gpg)) $gpg = new gnupg();
+		$gpg->seterrormode(gnupg::ERROR_WARNING);
+		if(!$gpg->addsignkey($config["fingerprint"], $config["password"]))
+			return $text;
+		return $gpg->sign($text);
 	}
 ?>

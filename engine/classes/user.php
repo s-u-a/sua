@@ -3578,7 +3578,7 @@
 		{
 			if(!$this->status) return false;
 
-			$lang = $me->checkSetting("lang");
+			$lang = $this->checkSetting("lang");
 			if($lang && $lang != -1)
 			{
 				$this->language_cache = language();
@@ -3613,6 +3613,30 @@
 			$ret = ngettext($msgid1, $msgid2, $n);
 			$this->restoreLanguage();
 			return $ret;
+		}
+
+		function sendMail($subject, $text, $last_mail_sent=null)
+		{
+			if(!$this->checkSetting("email")) return 2;
+			$er = error_reporting();
+			error_reporting(3);
+			if(!(include_once("Mail.php")) || !(include_once("Mail/mime.php")))
+			{
+				error_reporting($er);
+				return false;
+			}
+			$mime = new Mail_mime("\n");
+			$mime->setTXTBody(gpg_sign($text));
+
+			$body = $mime->get(array("text_charset" => "utf-8", "html_charset" => "utf-8", "head_charset" => "utf-8"));
+			$hdrs = $mime->headers(array("From" => "\"".$this->_("[title_full]")."\" <".global_setting("EMAIL_FROM").">", "Subject" => $subject));
+
+			$mail = Mail::factory('mail');
+			$return = $mail->send($this->checkSetting("email"), $hdrs, $body);
+			if($return && $last_mail_sent !== null)
+				$this->lastMailSent($last_mail_sent);
+			error_reporting($er);
+			return $return;
 		}
 	}
 

@@ -10,21 +10,21 @@
 		$_POST['benutzername'] = trim($_POST['benutzername']);
 		$_POST['email'] = trim($_POST['email']);
 		if(!User::userExists($_POST['benutzername']))
-			$error = 'Sie haben einen falschen Benutzernamen eingegeben.';
+			$error = _('Sie haben einen falschen Benutzernamen eingegeben.');
 		else
 		{
 			$that_user = Classes::User($_POST['benutzername']);
 			if(!$that_user->getStatus())
-				$error = 'Datenbankfehler.';
+				$error = _('Datenbankfehler.');
 			elseif(!preg_match('/^[-._=a-z0-9]+@([-_=a-z0-9ßáàâäéèêíìîóòôöúùûü]+\.)*[-_=a-z0-9ßáàâäéèêíìîóòôöúùûü]+$/i', trim($that_user->checkSetting('email'))))
-				$error = 'In diesem Account wurde keine gültige E-Mail-Adresse gespeichert.';
+				$error = _('In diesem Account wurde keine gültige E-Mail-Adresse gespeichert.');
 			elseif($_POST['email'] == trim($that_user->checkSetting('email')))
 			{
 				$send_id = $that_user->getPasswordSendID();
 
 				# ID schreiben
-				if(!mail(trim($that_user->checkSetting('email')), '=?utf-8?q?Passwort=C3=A4nderung_in?= S-U-A', "Jemand (vermutlich Sie) hat in S-U-A die „Passwort vergessen“-Funktion mit Ihrem Account benutzt. Diese Nachricht ist deshalb an jene E-Mail-Adresse adressiert, die Sie in Ihren Einstellungen in S-U-A eingetragen haben.\nSollten Sie eine Änderung Ihres Passworts nicht erwünschen, ignorieren – oder besser löschen – Sie diese Nachricht einfach.\n\nUm Ihr Passwort zu ändern, rufen Sie bitte die folgende Adresse in Ihrem Browser auf und folgen Sie den Anweisungen:\nhttps://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."&database=".urlencode($_POST['database'])."\n(Ohne SSL: http://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."&database=".urlencode($_POST['database'])." )", "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM")))
-					$error = 'Fehler beim Versand der E-Mail-Nachricht.';
+				if(!$that_user->sendMail(sprintf($that_user->_("Passwortänderung in %s"), $that_user->_("[title_abbr]")), sprintf($that_user->_("Jemand (vermutlich Sie) hat in %2\$s die „Passwort vergessen“-Funktion mit Ihrem Account benutzt. Diese Nachricht ist deshalb an jene E-Mail-Adresse adressiert, die Sie in Ihren Einstellungen in %2\$s eingetragen haben.\nSollten Sie eine Änderung Ihres Passworts nicht erwünschen, ignorieren – oder besser löschen – Sie diese Nachricht einfach.\n\nUm Ihr Passwort zu ändern, rufen Sie bitte die folgende Adresse in Ihrem Browser auf und folgen Sie den Anweisungen:\n%3\$s\n(Ohne SSL: %4\$s.)"), $that_user->_("[title_full]"), $that_user->_("[title_abbr]"), "https://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."&database=".urlencode($_POST['database']), "http://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."&database=".urlencode($_POST['database']))))
+					$error = _('Fehler beim Versand der E-Mail-Nachricht.');
 			}
 		}
 	}

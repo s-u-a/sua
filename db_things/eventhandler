@@ -18,19 +18,11 @@ You should have received a copy of the AFFERO GENERAL PUBLIC LICENSE along with 
 		$verbose = 0;
 		$handelskurs_only = false;
 
-		$getopt_exists = false;
-		foreach(explode(':', get_include_path()) as $path)
-		{
-			if(is_file($path.'/Console/Getopt.php') && is_readable($path.'/Console/Getopt.php'))
-			{
-				$getopt_exists = true;
-				break;
-			}
-		}
+		if(is_dir("pear"))
+			set_include_path(".:pear/:".get_include_path());
 
-		if($getopt_exists)
+		if(include_once("Console/Getopt.php"))
 		{
-			require_once('Console/Getopt.php'); # PEAR
 			$options = Console_Getopt::getopt($_SERVER['argv'], 'hdDvqe', array('help', 'daemon', 'no-daemon', 'verbose', 'quiet', 'handelskurs'));
 			if($options instanceof PEAR_Error)
 			{
@@ -372,13 +364,13 @@ EOF
 						if($days == 175 && $user->lastMailSent() != $today) # 25 Wochen: Nachricht
 						{
 							if($verbose) fputs($errlog, time_prefix()."  User is inactive. ");
-							if($send_mails && $user->checkSetting('email'))
+							if($send_mails)
 							{
-								mail($user->checkSetting('email'), "=?utf-8?q?Accountinaktivit=C3=A4t_in?= S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben zwei Wochen Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
-								$user->lastMailSent($today);
-								if($verbose) fputs($errlog, "Sent mail.\n");
+								if(!$user->sendMail("Accountinaktivität in ".$user->_("[title_abbr]"), "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben zwei Wochen Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), $today))
+									fputs($errlog, "  Could not send mail to user ".$user->getName().".\n");
+								elseif($verbose) fputs($errlog, "  Sent mail.\n");
 							}
-							elseif($verbose) fputs($errlog, "Didn't send mail.\n");
+							elseif($verbose) fputs($errlog, "  Didn't send mail.\n");
 						}
 						elseif($days >= 189) # 27 Wochen: Loeschung
 						{
@@ -394,13 +386,13 @@ EOF
 						if(($days == 21 || $days == 34) && $user->lastMailSent() != $today)
 						{
 							if($verbose) fputs($errlog, time_prefix()."  User is inactive. ");
-							if($send_mails && $user->checkSetting('email'))
+							if($send_mails)
 							{
-								mail($user->checkSetting('email'), "=?utf-8?q?Accountinaktivit=C3=A4t_in?= S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben ".(($days == 34) ? 'einen Tag' : 'zwei Wochen')." Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
-								$user->lastMailSent($today);
-								if($verbose) fputs($errlog, "Sent mail.\n");
+								if(!$user->sendMail("Accountinaktivität in ".$user->_("[title_abbr]"), "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben ".(($days == 34) ? 'einen Tag' : 'zwei Wochen')." Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), $today))
+									fputs($errlog, "  Could not send mail to user ".$user->getName().".\n");
+								elseif($verbose) fputs($errlog, "  Sent mail.\n");
 							}
-							elseif($verbose) fputs($errlog, "Didn't send mail.\n");
+							elseif($verbose) fputs($errlog, "  Didn't send mail.\n");
 						}
 						elseif($days >= 35)
 						{
@@ -417,10 +409,11 @@ EOF
 					if($verbose) fputs($errlog, time_prefix()."  User is inactive. ");
 					if($send_mails && $user->checkSetting('email'))
 					{
-						mail($user->checkSetting('email'), "=?utf-8?q?Accountinaktivit=C3=A4t_in?= S-U-A", "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben eine Woche Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), "Content-Type: text/plain;\r\n  charset=\"utf-8\"\r\nFrom: ".global_setting("EMAIL_FROM")."\r\nReply-To: ".global_setting("EMAIL_FROM"));
-						if($verbose) fputs($errlog, "Sent mail.\n");
+						if(!$user->sendMail("Accountinaktivität in ".$user->_("[title_abbr]"), "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben eine Woche Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), $today))
+							fputs($errlog, "  Could not send mail to user ".$user->getName().".\n");
+						elseif($verbose) fputs($errlog, "  Sent mail.\n");
 					}
-					else fputs($errlog, "Didn't send mail.\n");
+					else fputs($errlog, "  Didn't send mail.\n");
 				}
 				elseif($days >= 14)
 				{
