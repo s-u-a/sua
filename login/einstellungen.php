@@ -10,6 +10,8 @@
 	$messenger_settings = $me->getNotificationType();
 	$messenger_receive = $me->checkSetting('messenger_receive');
 
+	$error = array();
+
 	if(isset($_POST['skin-choice']))
 	{
 		if($_POST['skin-choice'] == 'custom')
@@ -64,6 +66,7 @@
 		$me->setSetting('show_extern', isset($_POST['show_extern']));
 		$me->setSetting('notify', isset($_POST['notify']));
 		$me->setSetting('fastbuild_full', isset($_POST['fastbuild_full']));
+		$me->setSetting("gpg_im", isset($_POST["gpg_im"]));
 
 		if(!isset($_POST['im-receive']) || !isset($_POST['im-receive']['messages']))
 			$messenger_receive['messages'] = array(1=>false, 2=>false, 3=>false, 4=>false, 5=>false, 6=>false, 7=>false);
@@ -148,13 +151,32 @@
 	if(isset($_POST['email']))
 		$me->setSetting('email', $_POST['email']);
 
+	if(isset($_POST["remove_fingerprint"]))
+	{
+		$me->setSetting("fingerprint", false);
+		$imfile = Classes::IMFile();
+		$imfile->changeFingerprint($me->getName(), "");
+	}
+
+	if(isset($_FILES["gpg"]) && !$_FILES["gpg"]["error"] && ($gpg = gpg_init()))
+	{
+		$info = $gpg->import(file_get_contents($_FILES["gpg"]["tmp_name"]));
+		if(isset($info["fingerprint"]))
+			$me->setSetting("fingerprint", $info["fingerprint"]);
+		else
+			$error[] = _("Das war kein gültiger GPG-Schlüssel.");
+		unlink($_FILES["gpg"]["tmp_name"]);
+		$imfile = Classes::IMFile();
+		$imfile->changeFingerprint($me->getName(), $info["fingerprint"]);
+	}
+
 	if(isset($_POST['old-password']) && isset($_POST['new-password']) && isset($_POST['new-password2']) && ($_POST['old-password'] != $_POST['new-password'] || $_POST['new-password'] != $_POST['new-password2']))
 	{
 		# Passwort aendern
 		if(!$me->checkPassword($_POST['old-password']))
-			$error = _('Das alte Passwort stimmt nicht.');
+			$error[] = _('Das alte Passwort stimmt nicht.');
 		elseif($_POST['new-password'] != $_POST['new-password2'])
-			$error = _('Die beiden neuen Passworte stimmen nicht überein.');
+			$error[] = _('Die beiden neuen Passworte stimmen nicht überein.');
 		else
 			$me->setPassword($_POST['new-password']);
 	}
@@ -192,14 +214,14 @@
 ?>
 <h2><?=h(_("Einstellungen"))?></h2>
 <?php
-	if(isset($error) && trim($error) != '')
+	foreach($error as $m)
 	{
 ?>
-<p class="error"><?=htmlspecialchars($error)?></p>
+<p class="error"><?=htmlspecialchars($m)?></p>
 <?php
 	}
 ?>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/einstellungen.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/einstellungen.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular" enctype="multipart/form-data">
 	<fieldset class="aussehen">
 		<legend><?=h(_("Aussehen"))?></legend>
 		<dl>
@@ -559,7 +581,7 @@
 								<option value="0"<?=($messenger_receive['building']['schiffe']==0) ? ' selected="selected"' : ''?>><?=h(_("Ausgeschaltet"))?></option>
 								<option value="1"<?=($messenger_receive['building']['schiffe']==1) ? ' selected="selected"' : ''?>><?=h(_("Jedes einzelne [Schiff]"))?></option>
 								<option value="2"<?=($messenger_receive['building']['schiffe']==2) ? ' selected="selected"' : ''?>><?=h(_("Alle [Schiffe] eines Typs"))?></option>
-								<option value="3"<?=($messenger_receive['building']['schiffe']==3) ? ' selected="selected"' : ''?>><?=h(_("Alle [Schiffe]"))?>/option>
+								<option value="3"<?=($messenger_receive['building']['schiffe']==3) ? ' selected="selected"' : ''?>><?=h(_("Alle [Schiffe]"))?></option>
 							</select>
 						</td>
 <?php
@@ -648,9 +670,30 @@
 
 			<dt class="c-email-adresse"><label for="email"><?=h(_("E-Mail-Adresse&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-email-adresse"><input type="text" name="email" id="email"<?=accesskey_attr(_("E-Mail-Adresse&[login/einstellungen.php|1]"))?> value="<?=htmlspecialchars($me->checkSetting('email'))?>" title="<?=h(_("Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben."))?>" tabindex="<?=$tabindex++?>" /></dd>
+<?php
+	if(gpg_init())
+	{
+?>
+
+			<dt class="c-gpg-key"><?=h(_("GPG-Key&[login/einstellungen.php|1]"))?></dt>
+<?php
+		$fingerprint = $me->checkSetting("fingerprint");
+		if($fingerprint)
+		{
+?>
+			<dd class="c-gpg-key"><?=htmlspecialchars($fingerprint)?></dd>
+			<dd class="c-gpg-key"><input type="checkbox" name="remove_fingerprint" id="i-remove-fingerprint"<?=accesskey_attr(_("Schlüssel löschen&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /><label for="i-remove-fingerprint"> Schlüssel löschen</label></dd>
+<?php
+		}
+?>
+			<dd class="c-gpg-key"><input type="file" name="gpg" id="i-gpg"<?=accesskey_attr(_("GPG-Key&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
+			<dd class="c-gpg-key"><input type="checkbox" name="gpg_im" id="i-gpg-im"<?=$me->checkSetting("gpg_im") ? " checked=\"checked\"" : ""?><?=accesskey_attr(_("Für Instant Messaging verwenden&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /><label for="i-gpg-im"> <?=h(_("Für Instant Messaging verwenden&[login/einstellungen.php|1]"))?></dd>
+<?php
+	}
+?>
 
 			<dt class="c-benutzerbeschreibung"><label for="benutzerbeschreibung"><?=h(_("Ben&utzerbeschreibung[login/einstellungen.php|1]"))?></label></dt>
-			<dd class="c-benutzerbeschreibung"><textarea name="benutzerbeschreibung" id="benutzerbeschreibung"<?=accesskey_attr(_("Ben&utzerbeschreibung[login/einstellungen.php|1]"))?> cols="50" rows="10" accesskey="u" tabindex="<?=$tabindex++?>"><?=preg_replace("/[\r\n\t]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($me->getUserDescription(false)))?></textarea></dd>
+			<dd class="c-benutzerbeschreibung"><textarea name="benutzerbeschreibung" id="benutzerbeschreibung"<?=accesskey_attr(_("Ben&utzerbeschreibung[login/einstellungen.php|1]"))?> cols="50" rows="10" tabindex="<?=$tabindex++?>"><?=preg_replace("/[\r\n\t]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($me->getUserDescription(false)))?></textarea></dd>
 		</dl>
 		<fieldset class="passwort-aendern">
 			<legend><?=h(_("Passwort ändern"))?></legend>

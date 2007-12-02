@@ -1719,7 +1719,9 @@
 					'messages' => array(1=>true, 2=>true, 3=>true, 4=>true, 5=>true, 6=>true, 7=>true),
 					'building' => array('gebaeude' => 1, 'forschung' => 1, 'roboter' => 3, 'schiffe' => 3, 'verteidigung' => 3)
 				),
-				'lang' => 'de_DE'
+				'lang' => 'de_DE',
+				'fingerprint' => false,
+				'gpg_im' => false
 			);
 
 			$this->settings = array();
@@ -3626,7 +3628,10 @@
 				return false;
 			}
 			$mime = new Mail_mime("\n");
-			$mime->setTXTBody(gpg_sign($text));
+			if($this->checkSetting("fingerprint"))
+				$mime->setTXTBody(gpg_encrypt($text, $this->checkSetting("fingerprint")));
+			else
+				$mime->setTXTBody(gpg_sign($text));
 
 			$body = $mime->get(array("text_charset" => "utf-8", "html_charset" => "utf-8", "head_charset" => "utf-8"));
 			$hdrs = $mime->headers(array("From" => "\"".$this->_("[title_full]")."\" <".global_setting("EMAIL_FROM").">", "Subject" => $subject));

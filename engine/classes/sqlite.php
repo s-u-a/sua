@@ -40,6 +40,42 @@
 				{
 					if($this->singleField("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=".$this->escape($table).";") < 1)
 						$this->query("CREATE TABLE ".$table." ( ".implode(", ", $cols)." );");
+					try
+					{
+						$q = "SELECT ";
+						foreach(array_values($cols) as $i=>$c)
+						{
+							list($c) = explode(" ", $c, 2);
+							if($i != 0) $q .= ",";
+							$q .= $c;
+						}
+						$q .= " FROM ".$table." LIMIT 1;";
+						$this->query($q);
+					}
+					catch(PDOException $e)
+					{
+						if(strpos($e, "no such column") === false) throw $e;
+
+						$add_cols = array();
+						foreach($cols as $c)
+						{
+							list($cf) = explode(" ", $c, 2);
+							try
+							{
+								$this->query("SELECT ".$cf." FROM ".$table." LIMIT 1;");
+							}
+							catch(PDOException $e)
+							{
+								if(strpos($e, "no such column") === false) throw $e;
+								$add_cols[] = $c;
+							}
+						}
+						foreach($add_cols as $c)
+						{
+							$this->query("ALTER TABLE ".$table." ADD COLUMN ".$c.";");
+							$this->query("VACUUM");
+						}
+					}
 				}
 			}
 

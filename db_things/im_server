@@ -117,6 +117,9 @@
 				$message = "Automatische Benachrichtigung von http://".get_default_hostname()."/, ".$databases[$next_notification['database']]['name'].", ".$next_notification['username'].":\n";
 				$message .= $next_notification['message'];
 
+				if($next_notification["fingerprint"])
+					$message = gpg_encrypt($message, $next_notification["fingerprint"]);
+
 				$jabber->message($to, "normal", null, $message);
 			}
 		}

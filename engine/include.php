@@ -1587,22 +1587,46 @@
 		return true;
 	}
 
-	function gpg_sign($text)
+	function gpg_init()
 	{
 		static $gpg,$config;
 
 		if(!isset($config))
 		{
-			if(!is_file(global_setting("DB_GPG"))) return $text;
+			if(!is_file(global_setting("DB_GPG"))) return null;
 			$config = parse_ini_file(global_setting("DB_GPG"));
 		}
 		if(!$config || !isset($config["fingerprint"]) || !isset($config["password"]))
-			return $text;
-		
-		if(!isset($gpg)) $gpg = new gnupg();
-		$gpg->seterrormode(gnupg::ERROR_WARNING);
-		if(!$gpg->addsignkey($config["fingerprint"], $config["password"]))
+			return null;
+
+		if(!isset($gpg))
+		{
+			if(!class_exists("gnupg"))
+				return null;
+			$gpg = new gnupg();
+			$gpg->seterrormode(gnupg::ERROR_WARNING);
+			if(!$gpg->addsignkey($config["fingerprint"], $config["password"]))
+				return null;
+		}
+		return $gpg;
+	}
+
+	function gpg_sign($text)
+	{
+		$gpg = gpg_init();
+		if(!$gpg)
 			return $text;
 		return $gpg->sign($text);
+	}
+
+	function gpg_encrypt($text, $fingerprint)
+	{
+		$gpg = gpg_init();
+		if(!$gpg)
+			return $text;
+		$gpg->addencryptkey($fingerprint);
+		$encrypted = $gpg->encryptsign($text);
+		$gpg->clearencryptkeys();
+		return $encrypted;
 	}
 ?>

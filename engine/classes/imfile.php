@@ -1,7 +1,7 @@
 <?php
 	class IMFile extends SQLite
 	{
-		protected $tables = array("to_check" => array("uin", "protocol", "username", "database", "checksum"), "notifications" => array("time INT", "uin", "protocol", "username", "message", "database", "special_id"));
+		protected $tables = array("to_check" => array("uin", "protocol", "username", "database", "checksum"), "notifications" => array("time INT", "uin", "protocol", "username", "message", "database", "special_id", "fingerprint"));
 		protected $custom_filename = true;
 
 		function __construct()
@@ -82,7 +82,14 @@
 		{
 			if(!$this->status) return false;
 
-			return $this->query("UPDATE notifications set uin = ".$this->escape($uin).", protocol = ".$this->escape($protocol)." WHERE username = ".$this->escape($username)." AND database = ".$this->escape(global_setting("DB")).";");
+			return $this->query("UPDATE notifications SET uin = ".$this->escape($uin).", protocol = ".$this->escape($protocol)." WHERE username = ".$this->escape($username)." AND database = ".$this->escape(global_setting("DB")).";");
+		}
+
+		function changeFingerprint($username, $fingerprint)
+		{
+			if(!$this->status) return false;
+
+			return $this->query("UPDATE notifications SET fingerprint = ".$this->escape($fingerprint)." WHERE username = ".$this->escape($username).";");
 		}
 	}
 ?>
