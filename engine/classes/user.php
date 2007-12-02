@@ -3627,6 +3627,9 @@
 				error_reporting($er);
 				return false;
 			}
+
+			$text = "Automatisch generierte Nachricht vom ".date("Y-m-d")."T".date("H:i:s")."\n\n".$text;
+
 			$mime = new Mail_mime("\n");
 			if($this->checkSetting("fingerprint"))
 				$mime->setTXTBody(gpg_encrypt($text, $this->checkSetting("fingerprint")));
