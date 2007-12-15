@@ -149,7 +149,7 @@
 		$me->umode(!$me->umode());
 
 	if(isset($_POST['email']))
-		$me->setSetting('email', $_POST['email']);
+		$me->setEMailAddress($_POST['email']);
 
 	if(isset($_POST["remove_fingerprint"]))
 	{
@@ -669,13 +669,20 @@
 			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=accesskey_attr(_("IP-Schutz&[login/einstellungen.php|1]"))?><?=$me->checkSetting('ipcheck') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)"))?>" tabindex="<?=$tabindex++?>" /></dd>
 
 			<dt class="c-email-adresse"><label for="email"><?=h(_("E-Mail-Adresse&[login/einstellungen.php|1]"))?></label></dt>
-			<dd class="c-email-adresse"><input type="text" name="email" id="email"<?=accesskey_attr(_("E-Mail-Adresse&[login/einstellungen.php|1]"))?> value="<?=htmlspecialchars($me->checkSetting('email'))?>" title="<?=h(_("Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben."))?>" tabindex="<?=$tabindex++?>" /></dd>
+			<dd class="c-email-adresse"><input type="text" name="email" id="email"<?=accesskey_attr(_("E-Mail-Adresse&[login/einstellungen.php|1]"))?> value="<?=htmlspecialchars($me->getTemporaryEMailAddress() !== null ? $me->getTemporaryEMailAddress() : $me->getEMailAddress())?>" title="<?=h(_("Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben."))?>" tabindex="<?=$tabindex++?>" /> <?=h(sprintf(_("Eine Änderung wird aus Sicherheitsgründen nicht sofort übernommen. Die Verzögerungsdauer beträgt %s."), format_btime(global_setting("EMAIL_CHANGE_DELAY"), true)))?></dd>
 <?php
+	if($me->getTemporaryEMailAddress() !== null)
+	{
+?>
+			<dd class="c-email-adresse temporary"><?=sprintf(h(_("Vorläufig ist noch Ihre alte E-Mail-Adresse %s aktiv.")), "<strong>".htmlspecialchars($me->getEMailAddress())."</strong>")?></dd>
+<?php
+	}
+
 	if(gpg_init())
 	{
 ?>
 
-			<dt class="c-gpg-key"><?=h(_("GPG-Key&[login/einstellungen.php|1]"))?></dt>
+			<dt class="c-gpg-key"><?=h(_("OpenPGP-Key&[login/einstellungen.php|1]"))?></dt>
 <?php
 		$fingerprint = $me->checkSetting("fingerprint");
 		if($fingerprint)
@@ -686,8 +693,9 @@
 <?php
 		}
 ?>
-			<dd class="c-gpg-key"><input type="file" name="gpg" id="i-gpg"<?=accesskey_attr(_("GPG-Key&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
-			<dd class="c-gpg-key"><input type="checkbox" name="gpg_im" id="i-gpg-im"<?=$me->checkSetting("gpg_im") ? " checked=\"checked\"" : ""?><?=accesskey_attr(_("Für Instant Messaging verwenden&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /><label for="i-gpg-im"> <?=h(_("Für Instant Messaging verwenden&[login/einstellungen.php|1]"))?></dd>
+			<dd class="c-gpg-key"><input type="file" name="gpg" id="i-gpg"<?=accesskey_attr(_("OpenPGP-Key&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
+<?php /*			<dd class="c-gpg-key"><input type="checkbox" name="gpg_im" id="i-gpg-im"<?=$me->checkSetting("gpg_im") ? " checked=\"checked\"" : ""?><?=accesskey_attr(_("Für Instant Messaging verwenden&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /><label for="i-gpg-im"> <?=h(_("Für Instant Messaging verwenden&[login/einstellungen.php|1]"))?></dd>*/?>
+			<dd class="c-gpg-key"><a href="<?=htmlspecialchars(h_root."/gpg.asc.php")?>"><?=h(_("Den OpenPGP-Key des Spiels herunterladen"))?></a></dd>
 <?php
 	}
 ?>

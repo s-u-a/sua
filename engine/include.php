@@ -102,6 +102,7 @@
 	global_setting('MARKET_MIN_AMOUNT', 10); # Das Wievielfache eines Angebotes muss insgesamt geboten worden sein, damit ein Auftrag angenommen wird?
 	global_setting('MARKET_MIN_USERS', 5); # Wieviele verschiedene Benutzer muessen den Rohstoff als Angebot auf dem Markt haben, damit ein Auftrag angenommen wird?
 	global_setting('MARKET_DELAY', 7200); # Wieviele Sekunden soll es von der Annahme bis zur Fertigstellung eines Angebotes dauern?
+	global_setting('EMAIL_CHANGE_DELAY', 604800); # Nach wie vielen Sekunden soll eine Aenderung der E-Mail-Adresse gueltig werden?
 
 	function define_globals($DB)
 	{ # Setzt diverse Spielkonstanten zu einer bestimmten Datenbank
@@ -592,7 +593,7 @@
 
 	########################################
 
-	function format_btime($time2)
+	function format_btime($time2, $short=false)
 	{
 		# Formatiert eine in Punkten angegebene Bauzeitangabe,
 		# sodass diese auf den Seiten angezeigt werden kann
@@ -622,13 +623,14 @@
 		$seconds = $time;
 
 		$return = array();
-		if($time2 >= 86400)
+		if($time2 >= 86400 && (!$short || $days != 0))
 			$return[] = sprintf(ngettext("%d Tag", "%d Tage", $days), $days);
-		if($time2 >= 3600)
+		if($time2 >= 3600 && (!$short || $hours != 0))
 			$return[] = sprintf(ngettext("%d Stunde", "%d Stunden", $hours), $hours);
-		if($time2 >= 60)
+		if($time2 >= 60 && (!$short || $minutes != 0))
 			$return[] = sprintf(ngettext("%d Minute", "%d Minuten", $minutes), $minutes);
-		$return[] = sprintf(ngettext("%d Sekunde", "%d Sekunden", $seconds), $seconds);
+		if(!$short || $seconds != 0)
+			$return[] = sprintf(ngettext("%d Sekunde", "%d Sekunden", $seconds), $seconds);
 
 		$return = h(implode(' ', $return));
 		return $return;
@@ -1587,7 +1589,7 @@
 		return true;
 	}
 
-	function gpg_init()
+	function gpg_init($return_public_key=false)
 	{
 		static $gpg,$config;
 
@@ -1608,7 +1610,10 @@
 			if(!$gpg->addsignkey($config["fingerprint"], $config["password"]))
 				return null;
 		}
-		return $gpg;
+		if($return_public_key)
+			return $gpg->export($config["fingerprint"]);
+		else
+			return $gpg;
 	}
 
 	function gpg_sign($text)

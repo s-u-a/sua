@@ -1698,7 +1698,7 @@
 				'fastbuild' => false, 'shortcuts' => false,
 				'tooltips' => false, 'ipcheck' => true,
 				'noads' => false, 'show_extern' => false,
-				'notify' => false, 'email' => false,
+				'notify' => false,
 				'performance' => 2, 'fastbuild_full' => false,
 				'receive' => array(
 					1 => array(true, true),
@@ -3617,9 +3617,53 @@
 			return $ret;
 		}
 
+		function getEMailAddress()
+		{
+			if(!$this->status) return false;
+
+			if(isset($this->raw["email_new"]) && $this->raw["email_new"][1] <= time())
+			{
+				$this->raw["email"] = $this->raw["email_new"][0];
+				unset($this->raw["email_new"]);
+			}
+			if(!isset($this->raw["email"]) || !$this->raw["email"])
+				return null;
+			return $this->raw["email"];
+		}
+
+		function getTemporaryEMailAddress($array=false)
+		{
+			if(!$this->status) return false;
+
+			if(!isset($this->raw["email_new"]))
+				return null;
+			if($array)
+				return $this->raw["email_new"];
+			else
+				return $this->raw["email_new"][0];
+		}
+
+		function setEMailAddress($address, $do_delay=true)
+		{
+			if($this->status != 1) return false;
+
+			if($address === $this->getTemporaryEMailAddress())
+				return true;
+			elseif($do_delay && $this->getEMailAddress() != $this->getTemporaryEMailAddress() && $this->getEMailAddress() != $address)
+				$this->raw["email_new"] = array($address, time()+global_setting("EMAIL_CHANGE_DELAY"));
+			else
+			{
+				$this->raw["email"] = $address;
+				if(isset($this->raw["email_new"]))
+					unset($this->raw["email_new"]);
+			}
+			$this->changed = true;
+			return true;
+		}
+
 		function sendMail($subject, $text, $last_mail_sent=null)
 		{
-			if(!$this->checkSetting("email")) return 2;
+			if(!$this->getEMailAddress()) return 2;
 			$er = error_reporting();
 			error_reporting(3);
 			if(!(include_once("Mail.php")) || !(include_once("Mail/mime.php")))
@@ -3640,7 +3684,7 @@
 			$hdrs = $mime->headers(array("From" => "\"".$this->_("[title_full]")."\" <".global_setting("EMAIL_FROM").">", "Subject" => $subject));
 
 			$mail = Mail::factory('mail');
-			$return = $mail->send($this->checkSetting("email"), $hdrs, $body);
+			$return = $mail->send($this->getEMailAddress(), $hdrs, $body);
 			if($return && $last_mail_sent !== null)
 				$this->lastMailSent($last_mail_sent);
 			error_reporting($er);

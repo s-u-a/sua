@@ -96,7 +96,7 @@
 					$user_obj->setPassword($_POST['password']);
 
 					if(isset($_POST['email']))
-						$user_obj->setSetting('email', $_POST['email']);
+						$user_obj->setEMailAddress($_POST['email']);
 
 					# Planetenname
 					if(trim($_POST['hauptplanet']) == '')
