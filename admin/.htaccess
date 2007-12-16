@@ -1,5 +1,7 @@
-php_flag session.use_cookies on
-php_flag session.use_only_cookies on
-php_value session.cookie_path /admin/
+<IfModule mod_php.c>
+	php_flag session.use_cookies on
+	php_flag session.use_only_cookies on
+	php_value session.cookie_path /admin/
+</IfModule>
 
 Deny from None
