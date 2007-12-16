@@ -79,7 +79,7 @@
 				if($id == "jabber") continue;
 
 				if(!isset($messenger["username_field"]) || !isset($messenger["password_field"]))
-					$jabber->query_service_fields($messenger["server"]);
+					var_dump($jabber->query_service_fields($messenger["server"]));
 				/* Hier muesste der Transport hinzugefuegt werden. */
 			}
 		}

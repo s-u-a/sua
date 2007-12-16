@@ -21,16 +21,18 @@
 		echo 'Der absolute Pfad der Datenbank konnte nicht ermittelt werden. Bitte gib ihn in der Datei /engine/include.php an.';
 		exit(1);
 	}
-	define('s_root', substr($__FILE__, 0, -strlen($this_filename)));
+	define('s_root', realpath(substr($__FILE__, 0, -strlen($this_filename))));
+
 	if(isset($_SERVER['SCRIPT_FILENAME']) && isset($_SERVER['PHP_SELF']) && substr($_SERVER['SCRIPT_FILENAME'], -strlen($_SERVER['PHP_SELF'])) == $_SERVER['PHP_SELF'])
-		$document_root = substr(realpath($_SERVER['SCRIPT_FILENAME']), 0, -strlen($_SERVER['PHP_SELF']));
-	elseif(isset($_SERVER['DOCUMENT_ROOT']))
+		$document_root = substr($_SERVER['SCRIPT_FILENAME'], 0, -strlen($_SERVER['PHP_SELF']));
+	elseif(isset($_SERVER['DOCUMENT_ROOT']) && substr(s_root, strlen($tmp = realpath($_SERVER["DOCUMENT_ROOT"]))) == $tmp)
 		$document_root = $_SERVER['DOCUMENT_ROOT'];
 	else $document_root = '/';
 
 	# h_root ermitteln: Absoluter Pfad zum Spielverzeichnis vom Webserver-Document-Root aus gesehen
 	if(substr($document_root, -1) == '/')
 		$document_root = substr($document_root, 0, -1);
+	$document_root = realpath($document_root);
 	define('h_root', substr(s_root, strlen($document_root)));
 
 	# SSL auf Wunsch abschalten
