@@ -638,7 +638,7 @@
 		return $return;
 	}
 
-	function format_ress($ress, $tabs_count=0, $tritium=false)
+	function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false)
 	{
 		# Erstellt eine Definitionsliste aus der uebergebenen
 		# Rohstoffanzahl, beispielsweise fuer die Rohstoffkosten
@@ -655,12 +655,17 @@
 		$return .= $tabs."\t<dd class=\"ress-aluminium\">".ths($ress[1])."</dd>\n";
 		$return .= $tabs."\t<dt class=\"ress-wolfram\">".h(_("[ress_2]"))."</dt>\n";
 		$return .= $tabs."\t<dd class=\"ress-wolfram\">".ths($ress[2])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-radium\">".h(_("[ress_3]"))."</dt>\n";
-		$return .= $tabs."\t<dd class=\"ress-radium\">".ths($ress[3])."</dd>\n";
+		$return .= $tabs."\t<dt class=\"ress-radium".($tritium ? "" : " ress-last")."\">".h(_("[ress_3]"))."</dt>\n";
+		$return .= $tabs."\t<dd class=\"ress-radium".($tritium ? "" : " ress-last")."\">".ths($ress[3])."</dd>\n";
 		if($tritium)
 		{
-			$return .= $tabs."\t<dt class=\"ress-tritium\">".h(_("[ress_4]"))."</dt>\n";
-			$return .= $tabs."\t<dd class=\"ress-tritium\">".ths($ress[4])."</dd>\n";
+			$return .= $tabs."\t<dt class=\"ress-tritium".($energy ? "" : " ress-last")."\">".h(_("[ress_4]"))."</dt>\n";
+			$return .= $tabs."\t<dd class=\"ress-tritium".($energy ? "" : " ress-last")."\">".ths($ress[4])."</dd>\n";
+		}
+		if($energy)
+		{
+			$return .= $tabs."\t<dt class=\"ress-energie ress-last\">".h(_("[ress_5]"))."</dt>\n";
+			$return .= $tabs."\t<dd class=\"ress-energie ress-last\">".h(_($ress[5]))."</dd>\n";
 		}
 		$return .= $tabs."</dl>\n";
 		return $return;

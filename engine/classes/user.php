@@ -1699,6 +1699,7 @@
 				'tooltips' => false, 'ipcheck' => true,
 				'noads' => false, 'show_extern' => false,
 				'notify' => false,
+				"extended_buildings" => false,
 				'performance' => 2, 'fastbuild_full' => false,
 				'receive' => array(
 					1 => array(true, true),

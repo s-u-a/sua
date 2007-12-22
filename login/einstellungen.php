@@ -67,6 +67,7 @@
 		$me->setSetting('notify', isset($_POST['notify']));
 		$me->setSetting('fastbuild_full', isset($_POST['fastbuild_full']));
 		$me->setSetting("gpg_im", isset($_POST["gpg_im"]));
+		$me->setSetting("extended_buildings", isset($_POST["extended_buildings"]));
 
 		if(!isset($_POST['im-receive']) || !isset($_POST['im-receive']['messages']))
 			$messenger_receive['messages'] = array(1=>false, 2=>false, 3=>false, 4=>false, 5=>false, 6=>false, 7=>false);
@@ -317,6 +318,9 @@
 					<option value="3"<?=($me->checkSetting('performance')==3) ? ' selected="selected"' : ''?>><?=h(_("Komfortabel und präzise, hohe CPU-Last"))?></option>
 				</select>
 			</dd>
+
+			<dt class="c-erweiterte-gebaeudeansicht"><label for="i-erweiterte-gebaeudeansicht"><?=h(_("Erweiterte Gebäudeansicht&[login/einstellungen.php|1]"))?></label></dt>
+			<dd class="c-erweiterte-gebaeudeansicht"><input type="checkbox" name="extended_buildings" id="i-erweiterte-gebaeudeansicht"<?=accesskey_attr(_("Erweiterte Gebäudeansicht&[login/einstellungen.php|1]"))?><?=$me->checkSetting("extended_buildings") ? " checked=\"checked\"" : ""?> title="<?=h(_("In der Gebäudeansicht wird zusätzlich der Produktionsunterschied zur nächsten Stufe angezeigt."))?>" tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
 	</fieldset>
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-02 17:26+0100\n"
+"POT-Creation-Date: 2007-12-22 19:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -769,7 +769,7 @@ msgstr ""
 msgid "Sie haben das falsche alte Passwort eingegeben."
 msgstr ""
 
-#: ../admin/index.php:274 ../login/einstellungen.php:179
+#: ../admin/index.php:274 ../login/einstellungen.php:180
 msgid "Die beiden neuen Passworte stimmen nicht überein."
 msgstr ""
 
@@ -1321,27 +1321,27 @@ msgid "Ausgegebene Rohstoffe"
 msgstr ""
 
 #: ../login/help/playerinfo.php:62 ../login/help/description.php:131
-#: ../login/scripts/include.php:280 ../engine/include.php:648
+#: ../login/scripts/include.php:280 ../engine/include.php:652
 msgid "[ress_0]"
 msgstr ""
 
 #: ../login/help/playerinfo.php:65 ../login/help/description.php:137
-#: ../login/scripts/include.php:283 ../engine/include.php:650
+#: ../login/scripts/include.php:283 ../engine/include.php:654
 msgid "[ress_1]"
 msgstr ""
 
 #: ../login/help/playerinfo.php:68 ../login/help/description.php:143
-#: ../login/scripts/include.php:286 ../engine/include.php:652
+#: ../login/scripts/include.php:286 ../engine/include.php:656
 msgid "[ress_2]"
 msgstr ""
 
 #: ../login/help/playerinfo.php:71 ../login/help/description.php:149
-#: ../login/scripts/include.php:289 ../engine/include.php:654
+#: ../login/scripts/include.php:289 ../engine/include.php:658
 msgid "[ress_3]"
 msgstr ""
 
 #: ../login/help/playerinfo.php:74 ../login/help/description.php:155
-#: ../login/scripts/include.php:292 ../engine/include.php:658
+#: ../login/scripts/include.php:292 ../engine/include.php:662
 msgid "[ress_4]"
 msgstr ""
 
@@ -1372,8 +1372,8 @@ msgstr ""
 #: ../login/help/playerinfo.php:122 ../login/help/playerinfo.php:139
 #: ../login/scripts/include.php:306 ../login/scripts/include.php:315
 #: ../login/scripts/include.php:330 ../login/flotten.php:504
-#: ../login/einstellungen.php:638 ../login/einstellungen.php:644
-#: ../login/einstellungen.php:657
+#: ../login/einstellungen.php:642 ../login/einstellungen.php:648
+#: ../login/einstellungen.php:661
 #, php-format
 msgid "%s (Serverzeit)"
 msgstr ""
@@ -1412,8 +1412,8 @@ msgstr ""
 #: ../login/help/playerinfo.php:164 ../login/scripts/include.php:343
 #: ../login/scripts/include.php:489 ../login/flotten.php:422
 #: ../login/flotten.php:478 ../login/flotten.php:803 ../login/flotten.php:964
-#: ../login/flotten.php:968 ../engine/classes/user.php:3149
-#: ../engine/classes/user.php:3150 ../engine/classes/fleet.php:953
+#: ../login/flotten.php:968 ../engine/classes/user.php:3150
+#: ../engine/classes/user.php:3151 ../engine/classes/fleet.php:953
 #: ../engine/classes/fleet.php:954 ../engine/classes/fleet.php:967
 #: ../engine/classes/fleet.php:968 ../engine/classes/fleet.php:1005
 #: ../engine/classes/fleet.php:1006 ../register.php:106
@@ -1548,6 +1548,7 @@ msgid "Stufe"
 msgstr ""
 
 #: ../login/help/description.php:161 ../login/scripts/include.php:295
+#: ../engine/include.php:667
 msgid "[ress_5]"
 msgstr ""
 
@@ -1637,7 +1638,7 @@ msgstr ""
 msgid "[title_abbr_full]"
 msgstr ""
 
-#: ../login/scripts/include.php:202 ../engine/include.php:690
+#: ../login/scripts/include.php:202 ../engine/include.php:699
 msgid "[thousand_separator]"
 msgstr ""
 
@@ -1943,7 +1944,7 @@ msgstr ""
 msgid "Auftragsart"
 msgstr ""
 
-#: ../login/flotten.php:427 ../login/einstellungen.php:377
+#: ../login/flotten.php:427 ../login/einstellungen.php:381
 msgid "Ankunft"
 msgstr ""
 
@@ -2075,7 +2076,7 @@ msgstr ""
 msgid "Pla&net[login/flotten.php|2]"
 msgstr ""
 
-#: ../login/flotten.php:764 ../login/einstellungen.php:252
+#: ../login/flotten.php:764 ../login/einstellungen.php:253
 msgid "Benutzerdefiniert"
 msgstr ""
 
@@ -2133,408 +2134,430 @@ msgstr ""
 msgid "Zurückrufen zum Planeten %s"
 msgstr ""
 
-#: ../login/einstellungen.php:167
+#: ../login/einstellungen.php:168
 msgid "Das war kein gültiger GPG-Schlüssel."
 msgstr ""
 
-#: ../login/einstellungen.php:177
+#: ../login/einstellungen.php:178
 msgid "Das alte Passwort stimmt nicht."
 msgstr ""
 
-#: ../login/einstellungen.php:215
+#: ../login/einstellungen.php:216
 msgid "Einstellungen"
 msgstr ""
 
-#: ../login/einstellungen.php:226
+#: ../login/einstellungen.php:227
 msgid "Aussehen"
 msgstr ""
 
-#: ../login/einstellungen.php:228 ../login/einstellungen.php:230
+#: ../login/einstellungen.php:229 ../login/einstellungen.php:231
 msgid "Skin&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:257 ../login/einstellungen.php:259
+#: ../login/einstellungen.php:258 ../login/einstellungen.php:260
 msgid "Schrift&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:260
+#: ../login/einstellungen.php:261
 msgid "Lieblingsschrift des Admins"
 msgstr ""
 
-#: ../login/einstellungen.php:261
+#: ../login/einstellungen.php:262
 msgid "Ihre Lieblingsschrift"
 msgstr ""
 
-#: ../login/einstellungen.php:265 ../login/einstellungen.php:266
+#: ../login/einstellungen.php:266 ../login/einstellungen.php:267
 msgid "Werbung ausblenden&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:266
+#: ../login/einstellungen.php:267
 msgid ""
 "Wenn Sie die Werbung eingeblendet lassen, helfen Sie, die Finanzen des "
 "Spiels zu decken."
 msgstr ""
 
-#: ../login/einstellungen.php:288
+#: ../login/einstellungen.php:289
 msgid "Verhalten"
 msgstr ""
 
-#: ../login/einstellungen.php:290 ../login/einstellungen.php:291
+#: ../login/einstellungen.php:291 ../login/einstellungen.php:292
 msgid "Spionagesonden&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:291
+#: ../login/einstellungen.php:292
 msgid ""
 "Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der "
 "Karte geschickt werden sollen"
 msgstr ""
 
-#: ../login/einstellungen.php:293 ../login/einstellungen.php:294
+#: ../login/einstellungen.php:294 ../login/einstellungen.php:295
 msgid "Auto-Schnellbau&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:294
+#: ../login/einstellungen.php:295
 msgid ""
 "Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten "
 "unbeschäftigten Planeten gewechselt."
 msgstr ""
 
-#: ../login/einstellungen.php:296 ../login/einstellungen.php:297
+#: ../login/einstellungen.php:297 ../login/einstellungen.php:298
 msgid "Schnellbau auf ausgebaute&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:297
+#: ../login/einstellungen.php:298
 msgid ""
 "Durch diese Option werden auch ausgebaute Planeten bei der Schnellbau-"
 "Funktion berücksichtigt."
 msgstr ""
 
-#: ../login/einstellungen.php:299 ../login/einstellungen.php:300
+#: ../login/einstellungen.php:300 ../login/einstellungen.php:301
 msgid "Schnell-Shortcuts&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:300
+#: ../login/einstellungen.php:301
 msgid ""
 "Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere "
 "Taste zu drücken."
 msgstr ""
 
-#: ../login/einstellungen.php:302 ../login/einstellungen.php:303
+#: ../login/einstellungen.php:303 ../login/einstellungen.php:304
 msgid "Javascript-Tooltips&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:303
+#: ../login/einstellungen.php:304
 msgid ""
 "Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden "
 "die normalen Tooltips durch hübsche JavaScript-Tooltips ersetzt."
 msgstr ""
 
-#: ../login/einstellungen.php:305 ../login/einstellungen.php:306
+#: ../login/einstellungen.php:306 ../login/einstellungen.php:307
 msgid "Auto-Refresh&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:306
+#: ../login/einstellungen.php:307
 msgid ""
 "Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand "
 "die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion "
 "erzeugt keinen zusätzlichen Traffic.)"
 msgstr ""
 
-#: ../login/einstellungen.php:308 ../login/einstellungen.php:309
+#: ../login/einstellungen.php:309 ../login/einstellungen.php:310
 msgid "Externe Navigationslinks&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:309
+#: ../login/einstellungen.php:310
 msgid ""
 "Wenn diese Option aktiviert ist, werden in der Navigation Links auf "
 "spielexterne Seiten wie das Board angezeigt."
 msgstr ""
 
-#: ../login/einstellungen.php:311 ../login/einstellungen.php:313
+#: ../login/einstellungen.php:312 ../login/einstellungen.php:314
 msgid "JavaScript-Performance&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:314
+#: ../login/einstellungen.php:315
 msgid "Keine Bildschirmänderungen"
 msgstr ""
 
-#: ../login/einstellungen.php:315
+#: ../login/einstellungen.php:316
 msgid "Ungenau, wenig CPU-Last"
 msgstr ""
 
-#: ../login/einstellungen.php:316
+#: ../login/einstellungen.php:317
 msgid "Praktisch, mittlere CPU-Last"
 msgstr ""
 
-#: ../login/einstellungen.php:317
+#: ../login/einstellungen.php:318
 msgid "Komfortabel und präzise, hohe CPU-Last"
 msgstr ""
 
-#: ../login/einstellungen.php:324
+#: ../login/einstellungen.php:322 ../login/einstellungen.php:323
+msgid "Erweiterte Gebäudeansicht&[login/einstellungen.php|1]"
+msgstr ""
+
+#: ../login/einstellungen.php:323
+msgid ""
+"In der Gebäudeansicht wird zusätzlich der Produktionsunterschied zur "
+"nächsten Stufe angezeigt."
+msgstr ""
+
+#: ../login/einstellungen.php:328
 msgid "Benachrichtigung"
 msgstr ""
 
-#: ../login/einstellungen.php:329
+#: ../login/einstellungen.php:333
 msgid ""
 "Nach Änderung des Instant-Messaging-Accounts wird zunächst eine "
 "Bestätigungsnachricht versandt."
 msgstr ""
 
-#: ../login/einstellungen.php:334 ../login/einstellungen.php:335
+#: ../login/einstellungen.php:338 ../login/einstellungen.php:339
 msgid "Nachrichten auf jeder Seite&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:335
+#: ../login/einstellungen.php:339
 msgid ""
 "Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angezeigt, "
 "dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten."
 msgstr ""
 
-#: ../login/einstellungen.php:341 ../login/einstellungen.php:343
+#: ../login/einstellungen.php:345 ../login/einstellungen.php:347
 msgid "IM-Account&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:344
+#: ../login/einstellungen.php:348
 msgid "Deaktiviert"
 msgstr ""
 
-#: ../login/einstellungen.php:355
+#: ../login/einstellungen.php:359
 msgid "UIN"
 msgstr ""
 
-#: ../login/einstellungen.php:372
+#: ../login/einstellungen.php:376
 msgid "Benachrichtigung bei Nachrichten"
 msgstr ""
 
-#: ../login/einstellungen.php:376
+#: ../login/einstellungen.php:380
 msgid "Nachrichtentyp"
 msgstr ""
 
-#: ../login/einstellungen.php:378
+#: ../login/einstellungen.php:382
 msgid "Rückkehr"
 msgstr ""
 
-#: ../login/einstellungen.php:383
+#: ../login/einstellungen.php:387
 msgid "IM-Benachrichtigung"
 msgstr ""
 
-#: ../login/einstellungen.php:391 ../login/einstellungen.php:393
+#: ../login/einstellungen.php:395 ../login/einstellungen.php:397
 msgid "[message_1]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:404 ../login/einstellungen.php:406
+#: ../login/einstellungen.php:408 ../login/einstellungen.php:410
 msgid "[message_2]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:417 ../login/einstellungen.php:418
+#: ../login/einstellungen.php:421 ../login/einstellungen.php:422
 msgid "[message_3]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:430 ../login/einstellungen.php:432
+#: ../login/einstellungen.php:434 ../login/einstellungen.php:436
 msgid "[message_4]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:443 ../login/einstellungen.php:444
+#: ../login/einstellungen.php:447 ../login/einstellungen.php:448
 msgid "[message_5]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:460 ../login/einstellungen.php:463
+#: ../login/einstellungen.php:464 ../login/einstellungen.php:467
 msgid "[message_6]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:466 ../login/einstellungen.php:469
+#: ../login/einstellungen.php:470 ../login/einstellungen.php:473
 msgid "[message_7]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:478
+#: ../login/einstellungen.php:482
 msgid "Benachrichtigung bei Fertigstellung"
 msgstr ""
 
-#: ../login/einstellungen.php:482
+#: ../login/einstellungen.php:486
 msgid "Gegenstandsart"
 msgstr ""
 
-#: ../login/einstellungen.php:483
+#: ../login/einstellungen.php:487
 msgid "Verbl. Bauzeit in der Übersicht"
 msgstr ""
 
-#: ../login/einstellungen.php:488
+#: ../login/einstellungen.php:492
 msgid "IM-Benachichtigung"
 msgstr ""
 
-#: ../login/einstellungen.php:496 ../login/einstellungen.php:498
+#: ../login/einstellungen.php:500 ../login/einstellungen.php:502
 msgid "Gebäude&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:499 ../login/einstellungen.php:509
-#: ../login/einstellungen.php:521 ../login/einstellungen.php:531
-#: ../login/einstellungen.php:543 ../login/einstellungen.php:555
-#: ../login/einstellungen.php:569 ../login/einstellungen.php:581
-#: ../login/einstellungen.php:595 ../login/einstellungen.php:607
+#: ../login/einstellungen.php:503 ../login/einstellungen.php:513
+#: ../login/einstellungen.php:525 ../login/einstellungen.php:535
+#: ../login/einstellungen.php:547 ../login/einstellungen.php:559
+#: ../login/einstellungen.php:573 ../login/einstellungen.php:585
+#: ../login/einstellungen.php:599 ../login/einstellungen.php:611
 msgid "Ausgeschaltet"
 msgstr ""
 
-#: ../login/einstellungen.php:500 ../login/einstellungen.php:510
+#: ../login/einstellungen.php:504 ../login/einstellungen.php:514
 msgid "Jedes einzelne [Gebäude]"
 msgstr ""
 
-#: ../login/einstellungen.php:518 ../login/einstellungen.php:520
+#: ../login/einstellungen.php:522 ../login/einstellungen.php:524
 msgid "Forschung&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:522 ../login/einstellungen.php:532
+#: ../login/einstellungen.php:526 ../login/einstellungen.php:536
 msgid "Jede einzelne [Forschung]"
 msgstr ""
 
-#: ../login/einstellungen.php:540 ../login/einstellungen.php:542
+#: ../login/einstellungen.php:544 ../login/einstellungen.php:546
 msgid "Roboter&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:544 ../login/einstellungen.php:556
+#: ../login/einstellungen.php:548 ../login/einstellungen.php:560
 msgid "Jeder einzelne [Roboter]"
 msgstr ""
 
-#: ../login/einstellungen.php:545 ../login/einstellungen.php:557
+#: ../login/einstellungen.php:549 ../login/einstellungen.php:561
 msgid "Alle [Roboter] eines Typs"
 msgstr ""
 
-#: ../login/einstellungen.php:546 ../login/einstellungen.php:558
+#: ../login/einstellungen.php:550 ../login/einstellungen.php:562
 msgid "Alle [Roboter]"
 msgstr ""
 
-#: ../login/einstellungen.php:566 ../login/einstellungen.php:568
+#: ../login/einstellungen.php:570 ../login/einstellungen.php:572
 msgid "Schiffe&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:570 ../login/einstellungen.php:582
+#: ../login/einstellungen.php:574 ../login/einstellungen.php:586
 msgid "Jedes einzelne [Schiff]"
 msgstr ""
 
-#: ../login/einstellungen.php:571 ../login/einstellungen.php:583
+#: ../login/einstellungen.php:575 ../login/einstellungen.php:587
 msgid "Alle [Schiffe] eines Typs"
 msgstr ""
 
-#: ../login/einstellungen.php:572 ../login/einstellungen.php:584
+#: ../login/einstellungen.php:576 ../login/einstellungen.php:588
 msgid "Alle [Schiffe]"
 msgstr ""
 
-#: ../login/einstellungen.php:592 ../login/einstellungen.php:594
+#: ../login/einstellungen.php:596 ../login/einstellungen.php:598
 msgid "Verteidigung&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:596 ../login/einstellungen.php:608
+#: ../login/einstellungen.php:600 ../login/einstellungen.php:612
 msgid "Jede einzelne [Verteidigungsanlage]"
 msgstr ""
 
-#: ../login/einstellungen.php:597 ../login/einstellungen.php:609
+#: ../login/einstellungen.php:601 ../login/einstellungen.php:613
 msgid "Alle [Verteidigungsanlagen] eines Typs"
 msgstr ""
 
-#: ../login/einstellungen.php:598 ../login/einstellungen.php:610
+#: ../login/einstellungen.php:602 ../login/einstellungen.php:614
 msgid "Alle [Verteidigungsanlagen]"
 msgstr ""
 
-#: ../login/einstellungen.php:622
+#: ../login/einstellungen.php:626
 msgid "Speicher&n[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:630
+#: ../login/einstellungen.php:634
 msgid "Urlaubsmodus"
 msgstr ""
 
-#: ../login/einstellungen.php:637
+#: ../login/einstellungen.php:641
 msgid "Urlaubsmodus&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:637
+#: ../login/einstellungen.php:641
 msgid "Wollen Sie den Urlaubsmodus wirklich betreten?"
 msgstr ""
 
-#: ../login/einstellungen.php:638
+#: ../login/einstellungen.php:642
 #, php-format
 msgid ""
 "Sie werden frühestens nach drei Tagen (%s) aus dem Urlaubsmodus zurückkehren "
 "können."
 msgstr ""
 
-#: ../login/einstellungen.php:638 ../login/einstellungen.php:657
+#: ../login/einstellungen.php:642 ../login/einstellungen.php:661
 msgid "Y-m-d, H:i"
 msgstr ""
 
-#: ../login/einstellungen.php:644
+#: ../login/einstellungen.php:648
 #, php-format
 msgid "Sie können erst wieder ab dem %s in den Urlaubsmodus wechseln."
 msgstr ""
 
-#: ../login/einstellungen.php:651
+#: ../login/einstellungen.php:655
 msgid "Urlaubsmodus verlassen"
 msgstr ""
 
-#: ../login/einstellungen.php:651
+#: ../login/einstellungen.php:655
 msgid "Wollen Sie den Urlaubsmodus wirklich verlassen?"
 msgstr ""
 
-#: ../login/einstellungen.php:657
+#: ../login/einstellungen.php:661
 #, php-format
 msgid "Sie können den Urlaubsmodus spätestens am %s verlassen."
 msgstr ""
 
-#: ../login/einstellungen.php:666
+#: ../login/einstellungen.php:670
 msgid "Benutzeraccount"
 msgstr ""
 
-#: ../login/einstellungen.php:668 ../login/einstellungen.php:669
+#: ../login/einstellungen.php:672 ../login/einstellungen.php:673
 msgid "IP-Schutz&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:669
+#: ../login/einstellungen.php:673
 msgid ""
 "Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-"
 "Adressen gleichzeitig genutzt werden. (Unsicher!)"
 msgstr ""
 
-#: ../login/einstellungen.php:671 ../login/einstellungen.php:672
+#: ../login/einstellungen.php:675 ../login/einstellungen.php:676
 msgid "E-Mail-Adresse&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:672
+#: ../login/einstellungen.php:676
 msgid ""
 "Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben."
 msgstr ""
 
-#: ../login/einstellungen.php:678 ../login/einstellungen.php:689
-msgid "GPG-Key&[login/einstellungen.php|1]"
+#: ../login/einstellungen.php:676
+#, php-format
+msgid ""
+"Eine Änderung wird aus Sicherheitsgründen nicht sofort übernommen. Die "
+"Verzögerungsdauer beträgt %s."
 msgstr ""
 
-#: ../login/einstellungen.php:685
+#: ../login/einstellungen.php:681
+#, php-format
+msgid "Vorläufig ist noch Ihre alte E-Mail-Adresse %s aktiv."
+msgstr ""
+
+#: ../login/einstellungen.php:689 ../login/einstellungen.php:700
+msgid "OpenPGP-Key&[login/einstellungen.php|1]"
+msgstr ""
+
+#: ../login/einstellungen.php:696
 msgid "Schlüssel löschen&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:690
-msgid "Für Instant Messaging verwenden&[login/einstellungen.php|1]"
-msgstr ""
-
-#: ../login/einstellungen.php:695 ../login/einstellungen.php:696
-msgid "Ben&utzerbeschreibung[login/einstellungen.php|1]"
-msgstr ""
-
-#: ../login/einstellungen.php:699
-msgid "Passwort ändern"
-msgstr ""
-
-#: ../login/einstellungen.php:701 ../login/einstellungen.php:702
-msgid "Altes Passw&ort[login/einstellungen.php|1]"
-msgstr ""
-
-#: ../login/einstellungen.php:704 ../login/einstellungen.php:705
-msgid "Neues Passwort&[login/einstellungen.php|1]"
+#: ../login/einstellungen.php:702
+msgid "Den OpenPGP-Key des Spiels herunterladen"
 msgstr ""
 
 #: ../login/einstellungen.php:707 ../login/einstellungen.php:708
+msgid "Ben&utzerbeschreibung[login/einstellungen.php|1]"
+msgstr ""
+
+#: ../login/einstellungen.php:711
+msgid "Passwort ändern"
+msgstr ""
+
+#: ../login/einstellungen.php:713 ../login/einstellungen.php:714
+msgid "Altes Passw&ort[login/einstellungen.php|1]"
+msgstr ""
+
+#: ../login/einstellungen.php:716 ../login/einstellungen.php:717
+msgid "Neues Passwort&[login/einstellungen.php|1]"
+msgstr ""
+
+#: ../login/einstellungen.php:719 ../login/einstellungen.php:720
 msgid "Neues Passwort wiederholen&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:712
+#: ../login/einstellungen.php:724
 msgid "Speicher&n"
 msgstr ""
 
@@ -3456,35 +3479,35 @@ msgstr ""
 msgid "%s auf %s, Port %d"
 msgstr ""
 
-#: ../engine/include.php:626
+#: ../engine/include.php:629
 #, php-format
 msgid "%d Tag"
 msgid_plural "%d Tage"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/include.php:628
+#: ../engine/include.php:631
 #, php-format
 msgid "%d Stunde"
 msgid_plural "%d Stunden"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/include.php:630
+#: ../engine/include.php:633
 #, php-format
 msgid "%d Minute"
 msgid_plural "%d Minuten"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/include.php:631
+#: ../engine/include.php:635
 #, php-format
 msgid "%d Sekunde"
 msgid_plural "%d Sekunden"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/include.php:693
+#: ../engine/include.php:702
 msgid "[minus_sign]"
 msgstr ""
 
@@ -3557,7 +3580,7 @@ msgstr ""
 msgid "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 msgstr ""
 
-#: ../engine/classes/user.php:3149
+#: ../engine/classes/user.php:3150
 #, php-format
 msgid ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%"
@@ -3565,12 +3588,12 @@ msgid ""
 "Die Flotte bestand aus folgenden Schiffen: %s"
 msgstr ""
 
-#: ../engine/classes/user.php:3150
+#: ../engine/classes/user.php:3151
 #, php-format
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr ""
 
-#: ../engine/classes/user.php:3637 ../impressum.php:15 ../passwd.php:26
+#: ../engine/classes/user.php:3685 ../impressum.php:15 ../passwd.php:26
 msgid "[title_full]"
 msgstr ""
 
