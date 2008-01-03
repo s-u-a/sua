@@ -1722,7 +1722,8 @@
 				),
 				'lang' => 'de_DE',
 				'fingerprint' => false,
-				'gpg_im' => false
+				'gpg_im' => false,
+				'timezone' => date_default_timezone_get()
 			);
 
 			$this->settings = array();
@@ -3621,6 +3622,7 @@
 		function date($format, $timestamp=null)
 		{
 			$timezone = date_default_timezone_get();
+			date_default_timezone_set($this->checkSetting("timezone"));
 			if($timestamp !== null) $r = date($format, $timestamp);
 			else $r = date($format);
 			date_default_timezone_set($timezone);

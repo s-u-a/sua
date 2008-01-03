@@ -7,9 +7,7 @@
 	# 10 Minuten sollten wohl auch bei hoher Serverlast genuegen
 	set_time_limit(600);
 
-	# Vorlaeufiger Workaround fuer E_STRICT-Fehlermeldungen aufgrund der Zeitzone
-	if(function_exists("date_default_timezone_get"))
-		date_default_timezone_set(@date_default_timezone_get());
+	date_default_timezone_set(@date_default_timezone_get());
 
 	class IOException extends Exception {};
 
