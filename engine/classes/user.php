@@ -3618,6 +3618,15 @@
 			return $ret;
 		}
 
+		function date($format, $timestamp=null)
+		{
+			$timezone = date_default_timezone_get();
+			if($timestamp !== null) $r = date($format, $timestamp);
+			else $r = date($format);
+			date_default_timezone_set($timezone);
+			return $r;
+		}
+
 		function getEMailAddress()
 		{
 			if(!$this->status) return false;
