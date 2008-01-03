@@ -1720,7 +1720,7 @@
 					'messages' => array(1=>true, 2=>true, 3=>true, 4=>true, 5=>true, 6=>true, 7=>true),
 					'building' => array('gebaeude' => 1, 'forschung' => 1, 'roboter' => 3, 'schiffe' => 3, 'verteidigung' => 3)
 				),
-				'lang' => 'de_DE',
+				'lang' => language(),
 				'fingerprint' => false,
 				'gpg_im' => false,
 				'timezone' => date_default_timezone_get()
@@ -3684,7 +3684,7 @@
 				return false;
 			}
 
-			$text = "Automatisch generierte Nachricht vom ".date("Y-m-d")."T".date("H:i:s")."\n\n".$text;
+			$text = "Automatisch generierte Nachricht vom ".$this->date("Y-m-d\\TH:i:s")."\n\n".$text;
 
 			$mime = new Mail_mime("\n");
 			if($this->checkSetting("fingerprint"))

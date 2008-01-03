@@ -4,8 +4,6 @@
 	$LOGIN = true;
 	require_once($include_filename);
 
-	language("de_DE", true);
-
 	$resume = false;
 	$del_email_passwd = false;
 	session_start();
@@ -106,6 +104,8 @@
 
 	$me = Classes::User($_SESSION['username']);
 	$_SESSION['username'] = $me->getName();
+	language($me->checkSetting("lang"));
+	date_default_timezone_set($me->checkSetting("timezone"));
 
 	if(!$me->getStatus())
 	{

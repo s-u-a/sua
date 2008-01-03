@@ -8,6 +8,7 @@
 	set_time_limit(600);
 
 	date_default_timezone_set(@date_default_timezone_get());
+	language("de_DE");
 
 	class IOException extends Exception {};
 
