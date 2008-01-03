@@ -48,6 +48,30 @@ You should have received a copy of the AFFERO GENERAL PUBLIC LICENSE along with 
 		exit(0);
 	}
 
+	/**
+	  * Loescht ein Verzeichnis mit allen Dateien und Unterverzeichnissen.
+	*/
+
+	function rm_r($fname)
+	{
+		if(is_file($fname))
+		{
+			if(!unlink($fname))
+				throw new IOException("Could not delete ".$fname.".", 1);
+		}
+		else
+		{
+			if(!($dh = opendir($fname)))
+				throw new IOException("Could not open directory ".$fname.".", 2);
+			while(($f = readdir($dh)) !== false)
+			{
+				if($f == "." || $f == "..") continue;
+				rm_r($fname."/".$f);
+			}
+			closedir($dh);
+		}
+	}
+
 	class version3
 	{ # Alte Funktionen wiederherstellen, die benoetigt werden, um auf Version 3 zu updaten
 		static function decodeUserHighscoresString($string)

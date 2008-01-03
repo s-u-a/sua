@@ -59,7 +59,12 @@
 		}
 	}
 
-	# Spielkonstanten
+	/**
+	  * Liest oder setzt eine globale Einstellung.
+	  * @param $key Name der Einstellung
+	  * @param $value Wenn angegeben, setzt die Einstellung auf den gegebenen Wert
+	*/
+
 	function global_setting($key, $value=null)
 	{
 		static $settings;
@@ -105,6 +110,13 @@
 	global_setting('MARKET_MIN_USERS', 5); # Wieviele verschiedene Benutzer muessen den Rohstoff als Angebot auf dem Markt haben, damit ein Auftrag angenommen wird?
 	global_setting('MARKET_DELAY', 7200); # Wieviele Sekunden soll es von der Annahme bis zur Fertigstellung eines Angebotes dauern?
 	global_setting('EMAIL_CHANGE_DELAY', 604800); # Nach wie vielen Sekunden soll eine Aenderung der E-Mail-Adresse gueltig werden?
+
+	/**
+	  * Initialisiert die Standardwerte fuer die globalen Einstellungen.
+	  * Kann mehrmals aufgerufen werden, zum Beispiel, um auf eine andere
+	  * Datenbank umzustellen.
+	  * @param $DB Datenbank-ID, auf die die Pfade eingestellt werden sollen
+	*/
 
 	function define_globals($DB)
 	{ # Setzt diverse Spielkonstanten zu einer bestimmten Datenbank
@@ -233,12 +245,17 @@
 	}
 
 
-	########################################
-	### Hier beginnen die Klassen
-	########################################
+	/**
+	  * Statische Funktionen zum Auslesen und Bearbeiten von Truemmerfeldern.
+	*/
 
 	class truemmerfeld
-	{ # Bearbeitet Truemmerfelder
+	{
+		/**
+		  * Liest das Truemmerfeld an den gegebenen Koordinaten aus.
+		  * @return Array mit den Rohstoffen
+		*/
+
 		static function get($galaxy, $system, $planet)
 		{
 			# Bekommt die Groesse eines Truemmerfelds
@@ -273,6 +290,10 @@
 			}
 		}
 
+		/**
+		  * Fuegt dem Truemmerfeld Rohstoffe hinzu.
+		*/
+
 		static function add($galaxy, $system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
 		{
 			# Fuegt einem Truemmerfeld Rohstoffe hinzu
@@ -286,6 +307,10 @@
 
 			return truemmerfeld::set($galaxy, $system, $planet, $old[0], $old[1], $old[2], $old[3]);
 		}
+
+		/**
+		  * Zieht dem Truemmerfeld Rohstoffe ab.
+		*/
 
 		static function sub($galaxy, $system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
 		{
@@ -309,6 +334,10 @@
 
 			return truemmerfeld::set($galaxy, $system, $planet, $old[0], $old[1], $old[2], $old[3]);
 		}
+
+		/**
+		  * Setzt die Rohstoffe des Truemmerfelds neu.
+		*/
 
 		static function set($galaxy, $system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
 		{
@@ -364,6 +393,12 @@
 	### Hier beginnen die Funktionen
 	########################################
 
+	/**
+	  * Sucht nach installierten Skins und liefert ein Array des folgenden
+	  * Formats zurueck:
+	  * [ID] => ( Name, ( ID => ( Titel, ( Dateiname der einzubindenden CSS-Datei vom Skin-Verzeichnis aus gesehen ) ) ) )
+	*/
+
 	function get_skins()
 	{
 		# Vorgegebene Skins-Liste bekommen
@@ -394,14 +429,22 @@
 		return $skins;
 	}
 
+	/**
+	  * Liefert die Spielversion zurueck.
+	*/
+
 	function get_version()
 	{
-		# Aktuell installierte Version herausfinden
 		$version = '';
 		if(is_file(global_setting("DB_VERSION")) && is_readable(global_setting("DB_VERSION")))
 			$version = trim(file_get_contents(global_setting("DB_VERSION")));
 		return $version;
 	}
+
+	/**
+	  * Liefert die aktuell geladene SVN-Revision des Spielverzeichnisses zurueck.
+	  * @return false, wenn keine Revision ermittelt werden kann
+	*/
 
 	function get_revision()
 	{
@@ -441,6 +484,11 @@
 
 		return floor(file_get_contents($revision_file));
 	}
+
+	/**
+	  * Liest die Liste der Datenbanken aus und liefert diese in einem Array zurueck:
+	  * ID => ( 'directory' => Datenbankverzeichnis; 'name' => Anzeigename der Datenbank; 'enabled' => fuer Benutzer sichtbar?; 'hostname' => Hostname, unter dem die Datenbank laeuft; 'dummy' => Ist dieser Eintrag nur ein Alias? )
+	*/
 
 	function get_databases($force_reload=false, &$aliases=null)
 	{
@@ -490,18 +538,25 @@
 		return $databases;
 	}
 
+	/**
+	  * Liefert den Hostname zurueck, auf dem die Hauptseite laeuft.
+	  * @return (string)
+	  * @return null bei Fehlschlag
+	*/
+
 	function get_default_hostname()
 	{
-		# Den Hostnamen herausfinden, der fuer die Startseite verwendet werden soll
-
 		if(is_file(global_setting("DB_HOSTNAME")) && !is_readable(global_setting("DB_HOSTNAME")) && strlen($hostname = trim(file_get_contents(global_setting("DB_HOSTNAME")))) > 0) return $hostname;
 		elseif(isset($_SERVER["HTTP_HOST"])) return $_SERVER["HTTP_HOST"];
 		else return null;
 	}
 
+	/**
+	  * Ueberprueft, ob der richtige Hostname aufgerufen wurde und leitet sonst um.
+	*/
+
 	function check_hostname()
 	{
-		# Leitet weiter, wenn der Hostname nicht dem Hostnamen entspricht, der verwendet werden soll
 		if(isset($_SERVER['HTTP_HOST']))
 		{
 			$hostname = $_SERVER['HTTP_HOST'];
@@ -542,9 +597,15 @@
 		}
 	}
 
+	/**
+	  * Gibt ein Array aller Administratoren zurueck:
+	  * Benutzername => ( 'password' => md5(Passwort), 'permissions' => ( Nummer => Erlaubnis? ) )
+	  * @return (array)
+	  * @return false bei Fehlschlag
+	*/
+
 	function get_admin_list()
 	{
-		# Gibt eine Liste aller Administratoren zurueck
 		$admins = array();
 		if(!is_file(global_setting("DB_ADMINS")) || !is_readable(global_setting("DB_ADMINS")))
 			return false;
@@ -566,9 +627,13 @@
 		return $admins;
 	}
 
+	/**
+	  * Speichert eine mit get_admin_list() geholte Liste wieder ab.
+	  * @return (boolean)
+	*/
+
 	function write_admin_list($admins)
 	{
-		# Speichert eine mit get_admin_list() geholte Liste wieder ab
 		$admin_file = array();
 		foreach($admins as $name=>$settings)
 		{
@@ -594,6 +659,14 @@
 	}
 
 	########################################
+
+	/**
+	  * Formatiert eine Bauzeitangabe zu einem menschlich lesbaren Format.
+	  * Beispiel: 650 wird zu 10 Minuten, 50 Sekunden
+	  * @param $time2 Bauzeit in Sekunden
+	  * @param $short Sollen Werte, die 0 sind, weggelassen werden (Beispiel: 5 Minuten, 0 Sekunden)
+	  * @return (string)
+	*/
 
 	function format_btime($time2, $short=false)
 	{
@@ -638,6 +711,15 @@
 		return $return;
 	}
 
+	/**
+	  * Formatiert die angegeben Rohstoffmenge zu einem menschlich lesbaren Format.
+	  * @param $ress Ein Array mit den Rohstoffmengen als Werte
+	  * @param $tabs_count Die Anzahl der einzurueckenden Tabs des HTML-Codes
+	  * @param $tritium Soll der Array-Wert 4 beachtet werden (Tritium)
+	  * @param $energy Soll der Array-Wert 5 beachtet werden (Energie)
+	  * @return (string) Eine den HTML-Code einer dl-Liste mit den formatierten Rohstoffangaben
+	*/
+
 	function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false)
 	{
 		# Erstellt eine Definitionsliste aus der uebergebenen
@@ -671,13 +753,17 @@
 		return $return;
 	}
 
+	/**
+	  * Formatiert eine Zahl in ein lesbares Format.
+	  * @param $count Die zu formatierende Zahl
+	  * @param $utf8 Ohne Auswirkungen, Kompatiblitaetsparameter
+	  * @param $round Anzahl der zu rundenden Stellen, standardmaessig 0
+	*/
+
 	function ths($count, $utf8=null, $round=0)
 	{
 		# Fuegt Tausendertrennzeichen ein
 		# (Oben als THS_UTF8 und THS_HTML definiert)
-		# $utf8 hat keine Auswirkungen mehr
-		# $round gibt die Anzahl der Stellen an, auf die
-		# gerundet werden soll
 
 		if(!isset($count))
 			$count = 0;
@@ -704,13 +790,15 @@
 		return $count;
 	}
 
-	function utf8_htmlentities($string, $nospecialchars=false, $js=false) # DEPRECATED
-	{
-		# Das gleiche wie htmlentities(), nur fuer einen
-		# UTF-8-String.
-		# Ist $js gesetzt, wird ein JavaScript-String zurueckgeliefert
-		# (mit \uXXXX)
+	/**
+	  * Funktioniert wie htmlentities(), jedoch mit einem UTF-8-String.
+	  * @param $nospecialchars <, >, & und " werden nicht ersetzt
+	  * @param $js Sollen keine HTML-Entities, sondern JavaScript-Entities (\uXXXX) erzeugt werden?
+	  * @deprecated
+	*/
 
+	function utf8_htmlentities($string, $nospecialchars=false, $js=false)
+	{
 		if($js)
 			$rep = array("'\\\\u'.add_nulls(dechex(", "), 4)");
 		else
@@ -726,10 +814,19 @@
 		return $string;
 	}
 
-	function utf8_jsentities($string) # DEPRECATED
+	/**
+	  * Ersetzt alle Nicht-ASCII-Zeichen durch JavaScript-Entities (\uXXXX).
+	  * @deprecated
+	*/
+
+	function utf8_jsentities($string)
 	{
 		return utf8_htmlentities($string, true, true);
 	}
+
+	/**
+	  * Escapt alle ' und \ mit einem Backslash, sodass der String in JavaScript innerhalb von einfachen Anfuehrungszeichen verwendet werden kann.
+	*/
 
 	function jsentities($string)
 	{
@@ -747,6 +844,10 @@
 		}
 	}
 
+	/**
+	  * Fuegt soviele Nullen vorne an $count, dass diese mindestens $len Stellen hat.
+	*/
+
 	function add_nulls($count, $len)
 	{
 		while(strlen($count) < $len)
@@ -754,6 +855,11 @@
 
 		return $count;
 	}
+
+	/**
+	  * Liefert einen String aus Einsen und Nullen zurueck, in dem jeweils 8 Ziffern den ASCII-Code eines Zeichens darstellen.
+	  * @deprecated
+	*/
 
 	function string2bin($string)
 	{
@@ -765,6 +871,11 @@
 
 		return $return;
 	}
+
+	/**
+	  * Konvertiert einen string2bin()-String zurueck zu einem String.
+	  * @deprecated
+	*/
 
 	function bin2string($bin)
 	{
@@ -780,12 +891,21 @@
 		return $return;
 	}
 
+	/**
+	  * Liefert die Differenz zwischen $ao und $bo zurueck (immer positiv).
+	*/
+
 	function diff($ao, $bo)
 	{
-		$diff = max($ao, $bo)-min($ao, $bo);
-
-		return $diff;
+		return abs($ao-$bo);
 	}
+
+	/**
+	  * Callback-Funktion fuer usort() zum Sortieren von Koordinaten nach Galaxie, System und Planet.
+	  * @return 1 wenn $a > $b
+	  * @return -1 wenn $a < $b
+	  * @return 0 wenn $a == $b
+	*/
 
 	function sort_koords($a, $b)
 	{
@@ -813,6 +933,12 @@
 			}
 		}
 	}
+
+	/**
+	  * Entfernt ungueltiges HTML aus dem uebergebenen Code.
+	  * Auf diese Weise kann sichergestellt werden, dass zum Beispiel in der Benutzerbeschreibung nur sauberes HTML ausgegeben wird.
+	  * Ungueltige Elemente werden entfernt.
+	*/
 
 	function parse_html($string)
 	{
@@ -1012,6 +1138,11 @@
 		return $string;
 	}
 
+	/**
+	  * Hilfsfunktion fuer parse_html(). Liefert ein Array mit Informationen zu einem HTML-Element zurueck:
+	  * ( ( Erlaubtes Kind-Element ); ( Erlaubtes Attribut => Attribut erforderlich? ) )
+	*/
+
 	function parse_html_get_element_information($element)
 	{
 		$elements = array(
@@ -1071,12 +1202,20 @@
 		return $return;
 	}
 
+	/**
+	  * Hilfsfunktion fuer parse_html(). Ersetzt Zeilenumbrueche je nach Anzahl durch HTML-Absaetze oder -Zeilenumbrueche.
+	*/
+
 	function parse_html_nls($string, $minus1)
 	{
 		$string2 = $string;
 		$string = preg_replace('/[\n]+/e', 'repl_nl(strlen(\'$0\')-$minus1);', utf8_htmlentities($player_info['description']));
 		return $string;
 	}
+
+	/**
+	  * Hilfsfunktion fuer parse_html_nls(). Ersetzt einen String aus Zeilenumbruechen je nach deren Anzahl durch &lt;br /&gt; oder &lt;/p&gt;(&lt;br /&gt;)*&lt;p&gt;.
+	*/
 
 	function parse_html_repl_nl($len)
 	{
@@ -1088,14 +1227,22 @@
 			return "</p>\n".str_repeat('<br />', $len-2)."\n<p>";
 	}
 
+	/**
+	  * Hilfsfunktion fuer parse_html(). Wie trim(), entfernt jedoch nur Leerzeichen.
+	*/
+
 	function parse_html_trim($string)
 	{
-		while(strlen($string) > 0 && $string[0] == ' ')
+		while(strlen($string) > 0 && $string[0] === ' ')
 			$string = substr($string, 1);
-		while(strlen($string) > 0 && substr($string, -1) == ' ')
+		while(substr($string, -1) === ' ')
 			$string = substr($string, 0, -1);
 		return $string;
 	}
+
+	/**
+	  * Hilfsfunktion zum Parsen von Nachrichten. Ersetzt einen String aus Zeilenumbruechen je nach deren Anzahl durch &lt;br /&gt; oder &lt;/p&gt;(&lt;br /&gt;)*&lt;p&gt;.
+	*/
 
 	function message_repl_nl($nls)
 	{
@@ -1107,6 +1254,14 @@
 		elseif($len > 2)
 			return "\n</p>\n".str_repeat('<br />', $len-2)."\n<p>\n\t";
 	}
+
+	/**
+	  * Hilfsfunktion zum Ersetzen von Links beim Parsen von Nachrichten. Haengt bei Bedarf einen Parameter mit der Session-ID an die URL in $b an.
+	  * @param $a Praefix, zum Beispiel &lt;a href=&quot;
+	  * @param $b Die URL, die ersetzt werden soll
+	  * @param $c Suffix, zum Beispiel &quot;>
+	  * @return (string) $a.$b.$c
+	*/
 
 	function message_repl_links($a, $b, $c)
 	{
@@ -1140,6 +1295,11 @@
 		return $a.htmlentities($url2).$c;
 	}
 
+	/**
+	  * Rundet $a (call by reference) auf $d Stellen nach dem Komma. $d kann auch negativ sein.
+	  * @return $a
+	*/
+
 	function stdround(&$a, $d=0)
 	{
 		$f = pow(10, $d);
@@ -1149,12 +1309,17 @@
 		return $a;
 	}
 
+	/**
+	  * Wrapper fuer flock(), jedoch mit einem Timeout (1 Sekunde fuer LOCK_SH, sonst 5).
+	  * @return (booolean) War das Sperren erfolreich?
+	*/
+
 	function fancy_flock($file, $lock_flag)
 	{
 		if($lock_flag == LOCK_SH) $timeout = 1;
 		else $timeout = 5;
 
-		$flag = $lock_flag+LOCK_NB;
+		$flag = $lock_flag|LOCK_NB;
 
 		$steps = $timeout*10000;
 		for($i=0; $i<100; $i++)
@@ -1164,6 +1329,10 @@
 		}
 		return false;
 	}
+
+	/**
+	  * Verkleinert das Rohstoffarray $array gleichmaessig so, dass dessen Summe den Wert $max nicht uebersteigt.
+	*/
 
 	function fit_to_max($array, $max)
 	{
@@ -1206,6 +1375,10 @@
 		return $array;
 	}
 
+	/**
+	  * Hilfsfunktion fuer fit_to_max().
+	*/
+
 	function _fit_to_max_usort($a, $b)
 	{
 		global $_fit_to_max_usort;
@@ -1216,6 +1389,12 @@
 		elseif($a < $b) return -1;
 		else return 0;
 	}
+
+	/**
+	  * Parst die Messenger-Konfigurationsdatei und schmeisst ungueltige Eintraege hinaus.
+	  * @param $type Liefert nur die Konfiguration zum gegebenen Protokoll zurueck
+	  * @param $force_reload Soll die Konfigurationsdatei unbedingt neu eingelesen werden?
+	*/
 
 	function get_messenger_info($type=false, $force_reload=false)
 	{
@@ -1244,6 +1423,12 @@
 		}
 		else return $messenger_parsed_file;
 	}
+
+	/**
+	  * Liefert ein Array der eingestellten globalen Faktoren der Datenbank zurueck:
+	  * ( 'time' => Zeit; 'prod' => Produktion; 'cost' => Kosten )
+	  * @param $force_reload Sollen die Konfigurationsdateien unbedingt neu eingelesen werden?
+	*/
 
 	function get_global_factors($force_reload=false)
 	{
@@ -1275,6 +1460,10 @@
 		return $factors;
 	}
 
+	/**
+	  * Gibt zurueck, ob eine Handlungssperre in der Datenbank vorliegt.
+	*/
+
 	function database_locked()
 	{
 		if(!file_exists(global_setting("DB_LOCKED"))) return false;
@@ -1289,6 +1478,10 @@
 		}
 		return ($until ? $until : true);
 	}
+
+	/**
+	  * Gibt zurueck, ob eine Flottensperre in der Datenbank vorliegt.
+	*/
 
 	function fleets_locked()
 	{
@@ -1305,25 +1498,11 @@
 		return ($until ? $until : true);
 	}
 
-	function rm_r($fname)
-	{
-		if(is_file($fname))
-		{
-			if(!unlink($fname))
-				throw new IOException("Could not delete ".$fname.".", 1);
-		}
-		else
-		{
-			if(!($dh = opendir($fname)))
-				throw new IOException("Could not open directory ".$fname.".", 2);
-			while(($f = readdir($dh)) !== false)
-			{
-				if($f == "." || $f == "..") continue;
-				rm_r($fname."/".$f);
-			}
-			closedir($dh);
-		}
-	}
+	/**
+	  * Fuegt an der Zeigerposition im Dateizeiger $fh den String $string ein. Der nachfolgende Inhalt wird nach hinten verschoben.
+	  * @param $bs Groesse der Bloecke, in denen der Inhalt verschoben wird, in Bytes.
+	  * @return (boolean) Erfolg
+	*/
 
 	function finsert($fh, $string, $bs=1024)
 	{
@@ -1355,6 +1534,12 @@
 		return fwrite($fh, $string);
 	}
 
+	/**
+	  * Loescht an der Zeigerposition im Dateizeiger $fh die $len Bytes. Der Nachfolgende Inhalt wird vorgezogen.
+	  * @param $bs Groesse der Bloecke, in denen der Inhalt verschoben wird, in Bytes.
+	  * @return (boolean) Erfolg
+	*/
+
 	function fdelete($fh, $len, $bs=1024)
 	{
 		if($bs <= 0) return false;
@@ -1373,6 +1558,10 @@
 		return $ret;
 	}
 
+	/**
+	  * Liefert einen zufaelligen Index des Arrays $array zurueck. Die Wahrscheinlichkeitenverteilung entspricht den Werten von $array.
+	*/
+
 	function irrand($array)
 	{
 		$sum = array_sum($array);
@@ -1386,6 +1575,10 @@
 		}
 		return null;
 	}
+
+	/**
+	  * Liefert den GGT von $i und $j zurueck.
+	*/
 
 	function gcd2($i,$j)
 	{
@@ -1401,6 +1594,10 @@
 		}
 		return $j;
 	}
+
+	/**
+	  * Liefert den GGT aller Werte des Arrays $a zurueck.
+	*/
 
 	function gcd($a)
 	{
@@ -1421,6 +1618,10 @@
 		if(count($a) == 1) return array_shift($a);
 		else return false;
 	}
+
+	/**
+	  * Manuelle Portierung der Tabellen einer SQLite2- in eine SQLite3-Datenbank.
+	*/
 
 	function sqlite2sqlite3($old_fname, $new_fname)
 	{
@@ -1452,6 +1653,10 @@
 		}
 	}
 
+	/**
+	  * Liefert die im Datenbankverzeichnis eingetragene Version zurueck.
+	*/
+
 	function get_database_version()
 	{
 		if(is_file(global_setting("DB_DIR").'/.version'))
@@ -1471,8 +1676,12 @@
 		return $current_version;
 	}
 
+	/**
+	  * Debug-Funktion zum Ausgeben der Ausfuehrungsdauer. Ist $set auf true, wird die aktuelle Zeit unter dem Namen $name abgespeichert und $name ausgegeben. Ist $set false, werden die Dauer seit dem letzten Setzen der unter $name gespeicherten Zeit und $name ausgegeben.
+	*/
+
 	function mtime($name, $set=false)
-	{ # Zu Debug-Zwecken
+	{
 		static $mtimes;
 		if(!isset($mtimes)) $mtimes = array();
 
@@ -1484,6 +1693,10 @@
 		elseif(isset($mtimes[$name])) echo $name.": ".(microtime(true)-$mtimes[$name])."\n";
 		else return false;
 	}
+
+	/**
+	  * Liefert den Index zurueck, unter dem in $arr der groesste Wert gespeichert ist.
+	*/
 
 	function max_index($arr)
 	{
@@ -1504,6 +1717,10 @@
 		return $index;
 	}
 
+	/**
+	  * Liefert den Index zurueck, unter dem in $arr der kleinste Wert gespeichert ist.
+	*/
+
 	function min_index($arr)
 	{
 		$min = null;
@@ -1523,6 +1740,10 @@
 		return $index;
 	}
 
+	/**
+	  * Konvertiert eine Array, das Items eine Anzahl zuweist, in einen String. Format: (Item-ID ' ' Anzahl ( ' ' Item-ID ' ' Anzahl)* )?
+	*/
+
 	function encode_item_list($list)
 	{
 		$ret = array();
@@ -1530,6 +1751,10 @@
 			$ret[] = $k." ".$v;
 		return implode(" ", $ret);
 	}
+
+	/**
+	  * Konvertiert einen mit encode_item_list() kodierten String zurueck einem Array ( Item-ID => Anzahl ).
+	*/
 
 	function decode_item_list($encoded)
 	{
@@ -1540,10 +1765,18 @@
 		return $list;
 	}
 
+	/**
+	  * Kodiert ein Rohstoff-Array zu einem String. Format: Menge1 ' ' Menge 2 ' ' ...
+	*/
+
 	function encode_ress_list($list)
 	{
 		return implode(" ", $list);
 	}
+
+	/**
+	  * Konvertiert einen mit encode_ress_list() kodierten String zurueck zu einem Rohstoff-Array.
+	*/
 
 	function decode_ress_list($encoded)
 	{
@@ -1553,6 +1786,11 @@
 		return $list;
 	}
 
+	/**
+	  * Hebt in einem String $text Tastenkuerzel, welche durch ein voranstehendes &amp; gekennzeichnet sind, hervor, und Kodiert HTML-Steuerzeichen mit htmlspecialchars().
+	  * @param $make_text Wenn true, wird das Kuerzel durch ein kbd-HTML-Tag hervorgehoben. Wenn false, wird es als ' [' Kuerzel ']' angehaengt.
+	*/
+
 	function h($text, $make_tags=true)
 	{
 		if($make_tags)
@@ -1560,8 +1798,13 @@
 		elseif(preg_match("/^(.*?)&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)(.*)\$/", $text, $m))
 			return htmlspecialchars($m[1].$m[2].$m[3])." [".htmlspecialchars(str_replace(array("ä", "ö", "ü"), array("Ä", "Ö", "Ü"), strtoupper($m[2])))."]";
 		else
-			return $text;
+			return htmlspecialchars($text);
 	}
+
+	/**
+	  * Liefert den HTML-Code des Attributs fuer das in $message angegebene Tastenkuerzel (durch ein voranstehende &amp; gekennzeichnet) zurueck.
+	  * @return Zum Beispiel ' accesskey="a"'. Wenn kein Tastenkuerzel existiert, ''.
+	*/
 
 	function accesskey_attr($message)
 	{
@@ -1570,12 +1813,21 @@
 		return " accesskey=\"".htmlspecialchars(str_replace(array("Ä", "Ö", "Ü"), array("ä", "ö", "ü"), strtolower($m[1])))."\"";
 	}
 
+	/**
+	  * Liefert das Titel-HTML-Attribut zur Darstellung eines Tastenkuerzels (in $message durch ein voranstehendes &amp; markiert) zurueck.
+	  * @return Zum Beispiel ' title="[A]"'. Wenn kein Tastenkuerzel existiert, ''.
+	*/
+
 	function accesskey_title($message)
 	{
 		if(!preg_match("/&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)/", $message, $m))
 			return "";
 		return " title=\"[".htmlspecialchars(str_replace(array("ä", "ö", "ü"), array("Ä", "Ö", "Ü"), strtoupper($m[1])))."]\"";
 	}
+
+	/**
+	  * Setzt die Sprach-Locale fuer die uebergebene Sprache. Dadurch liefert gettext die Nachrichten in der neuen Sprache zurueck.
+	*/
 
 	function language($lang=null, $die=false)
 	{
@@ -1595,6 +1847,12 @@
 		putenv("LANG=".$lang);
 		return true;
 	}
+
+	/**
+	  * Oeffnet den GPG-Schluessel entsprechend der Konfiguration und liefert bei Erfolg ein gnupg-Object zurueck.
+	  * @return null, wenn keine Konfiguration vorliegt oder der Schluessel nicht geoeffnet werden kann.
+	  * @return (gnupg)
+	*/
 
 	function gpg_init($return_public_key=false)
 	{
@@ -1623,6 +1881,10 @@
 			return $gpg;
 	}
 
+	/**
+	  * Signiert den gegebenen Text wenn moeglich per GPG.
+	*/
+
 	function gpg_sign($text)
 	{
 		$gpg = gpg_init();
@@ -1630,6 +1892,10 @@
 			return $text;
 		return $gpg->sign($text);
 	}
+
+	/**
+	  * Signiert und verschluesselt den gegebenen Text wenn moeglich per GPG.
+	*/
 
 	function gpg_encrypt($text, $fingerprint)
 	{
