@@ -716,10 +716,11 @@
 	  * @param $tabs_count Die Anzahl der einzurueckenden Tabs des HTML-Codes
 	  * @param $tritium Soll der Array-Wert 4 beachtet werden (Tritium)
 	  * @param $energy Soll der Array-Wert 5 beachtet werden (Energie)
+	  * @param $i_ Die Ausgabe wird so formatiert, dass sie nachtraeglich durch i_() gejagt werden kann
 	  * @return (string) Eine den HTML-Code einer dl-Liste mit den formatierten Rohstoffangaben
 	*/
 
-	function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false)
+	function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false, $i_=false)
 	{
 		# Erstellt eine Definitionsliste aus der uebergebenen
 		# Rohstoffanzahl, beispielsweise fuer die Rohstoffkosten
@@ -730,22 +731,22 @@
 			$tabs = str_repeat("\t", $tabs_count);
 
 		$return = "<dl class=\"ress\">\n";
-		$return .= $tabs."\t<dt class=\"ress-carbon\">".h(_("[ress_0]"))."</dt>\n";
+		$return .= $tabs."\t<dt class=\"ress-carbon\">".($i_ ? "[ress_0]" : h(_("[ress_0]")))."</dt>\n";
 		$return .= $tabs."\t<dd class=\"ress-carbon\">".ths($ress[0])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-aluminium\">".h(_("[ress_1]"))."</dt>\n";
+		$return .= $tabs."\t<dt class=\"ress-aluminium\">".($i_ ? "[ress_1]" : h(_("[ress_1]")))."</dt>\n";
 		$return .= $tabs."\t<dd class=\"ress-aluminium\">".ths($ress[1])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-wolfram\">".h(_("[ress_2]"))."</dt>\n";
+		$return .= $tabs."\t<dt class=\"ress-wolfram\">".($i_ ? "[ress_2]" : h(_("[ress_2]")))."</dt>\n";
 		$return .= $tabs."\t<dd class=\"ress-wolfram\">".ths($ress[2])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-radium".($tritium ? "" : " ress-last")."\">".h(_("[ress_3]"))."</dt>\n";
+		$return .= $tabs."\t<dt class=\"ress-radium".($tritium ? "" : " ress-last")."\">".($i_ ? "[ress_3]" : h(_("[ress_3]")))."</dt>\n";
 		$return .= $tabs."\t<dd class=\"ress-radium".($tritium ? "" : " ress-last")."\">".ths($ress[3])."</dd>\n";
 		if($tritium)
 		{
-			$return .= $tabs."\t<dt class=\"ress-tritium".($energy ? "" : " ress-last")."\">".h(_("[ress_4]"))."</dt>\n";
+			$return .= $tabs."\t<dt class=\"ress-tritium".($energy ? "" : " ress-last")."\">".($i_ ? "[ress_4]" : h(_("[ress_4]")))."</dt>\n";
 			$return .= $tabs."\t<dd class=\"ress-tritium".($energy ? "" : " ress-last")."\">".ths($ress[4])."</dd>\n";
 		}
 		if($energy)
 		{
-			$return .= $tabs."\t<dt class=\"ress-energie ress-last\">".h(_("[ress_5]"))."</dt>\n";
+			$return .= $tabs."\t<dt class=\"ress-energie ress-last\">".($i_ ? "[ress_5]" : h(_("[ress_5]")))."</dt>\n";
 			$return .= $tabs."\t<dd class=\"ress-energie ress-last\">".h(_($ress[5]))."</dd>\n";
 		}
 		$return .= $tabs."</dl>\n";
@@ -1906,4 +1907,12 @@
 		$gpg->clearencryptkeys();
 		return $encrypted;
 	}
-?>
+
+	/**
+	  * Ersetzt Dinge wie [item_B0] durch den entsprechenden gettext-String.
+	*/
+
+	function _i($string)
+	{
+		return preg_replace("/\\[(item|ress)_[a-zA-Z0-9]\\]/e", "_('\$0')", $string);
+	}

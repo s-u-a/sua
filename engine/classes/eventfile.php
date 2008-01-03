@@ -39,4 +39,3 @@
 			return $this->query("DELETE FROM events;");
 		}
 	}
-?>

@@ -946,11 +946,12 @@
 				if($target_owner)
 				{
 					# Planet ist bereits besiedelt
+					$target_owner_obj = Classes::User($target_owner);
 					$message = Classes::Message();
-					if($message->create())
+					if($target_owner_obj->getStatus() && $message->create())
 					{
-						$message->text('Ihre Flotte erreicht den Planeten '.$next_target_nt.' und will mit der Besiedelung anfangen. Jedoch ist der Planet bereits vom Spieler '.$target_owner." besetzt, und Ihre Flotte macht sich auf den R\xc3\xbcckweg.");
-						$message->subject('Besiedelung von '.$next_target_nt.' fehlgeschlagen');
+						$message->text(sprintf($target_owner_obj->_("Ihre Flotte erreicht den Planeten %s und will mit der Besiedelung anfangen. Jedoch ist der Planet bereits vom Spieler %s besetzt, und Ihre Flotte macht sich auf den Rückweg."), vsprintf($target_owner_obj->_("%d:%d:%d"), explode(":", $next_target_nt)), $target_owner));
+						$message->subject(sprintf($target_owner_obj->_("Besiedelung von %s fehlgeschlagen"), vsprintf($target_owner_obj->_("%d:%d:%d"), explode(":", $next_target_nt))));
 						$message->addUser($first_user, 5);
 					}
 				}
@@ -963,8 +964,8 @@
 						$message = Classes::Message();
 						if($message->create())
 						{
-							$message->subject('Besiedelung von '.$next_target_nt.' fehlgeschlagen');
-							$message->text("Ihre Flotte erreicht den Planeten ".$next_target_nt." und will mit der Besiedelung anfangen. Als Sie jedoch Ihren Zentralcomputer um Bestätigung für die Besiedelung bittet, kommt dieser durcheinander, da Sie schon so viele Planeten haben und er nicht so viele gleichzeitig kontrollieren kann, und schickt in Panik Ihrer Flotte das Signal zum Rückflug.");
+							$message->subject(sprintf($start_user->_('Besiedelung von %s fehlgeschlagen'), vsprintf($start_user->_("%d:%d:%d"), explode(":", $next_target_nt))));
+							$message->text(sprintf($start_user->_("Ihre Flotte erreicht den Planeten %s und will mit der Besiedelung anfangen. Als Sie jedoch Ihren Zentralcomputer um Bestätigung für die Besiedelung bittet, kommt dieser durcheinander, da Sie schon so viele Planeten haben und er nicht so viele gleichzeitig kontrollieren kann, und schickt in Panik Ihrer Flotte das Signal zum Rückflug."), vsprintf($start_user->_("%d:%d:%d"), explode(":", $next_target_nt))));
 							$message->addUser($first_user, 5);
 						}
 					}
@@ -995,13 +996,16 @@
 					# Angriff und Transport nur bei besiedelten Planeten
 					# moeglich.
 
-					$message_obj = Classes::Message();
-					if($message_obj->create())
+					foreach(array_keys($this->raw[1]) as $username)
 					{
-						$message_obj->subject($next_target_nt.' unbesiedelt');
-						$message_obj->text("Ihre Flotte erreicht den Planeten ".$next_target_nt." und will ihren Auftrag ausf\xc3\xbchren. Jedoch wurde der Planet zwischenzeitlich verlassen und Ihre Flotte macht sich auf den weiteren Weg.");
-						foreach(array_keys($this->raw[1]) as $username)
+						$username_obj = Classes::User($username);
+						$message_obj = Classes::Message();
+						if($username_obj->getStatus() && $message_obj->create())
+						{
+							$message_obj->subject(sprintf($username_obj->_("%s unbesiedelt"), vsprintf($username_obj->_("%d:%d:%d"), explode(":", $next_target_nt))));
+							$message_obj->text(sprintf($username_obj->_("Ihre Flotte erreicht den Planeten %s und will ihren Auftrag ausführen. Jedoch wurde der Planet zwischenzeitlich verlassen und Ihre Flotte macht sich auf den weiteren Weg."), vsprintf($username_obj->_("%d:%d:%d"), explode(":", $next_target_nt))));
 							$message_obj->addUser($username, $types_message_types[$type]);
+						}
 					}
 				}
 				else
@@ -1089,29 +1093,27 @@
 							# Nachrichten versenden
 							foreach($got_ress as $username=>$rtrans)
 							{
+								$user_obj = Classes::User($username);
 								$message = Classes::Message();
 								if(!$message->create()) continue;
-								$message->subject('Abbau auf '.$next_target_nt);
-								$message->text(sprintf(<<<EOF
-<div class="nachricht-sammeln">
-	<p>Ihre Flotte erreicht das Trümmerfeld auf {$next_target_nt} und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s Carbon, %s Aluminium, %s Wolfram und %s Radium.</p>
-	<h3>Verbleibende Rohstoffe im Trümmerfeld</h3>
-	<dl class="ress truemmerfeld-verbleibend">
-		<dt class="c-carbon">Carbon</dt>
-		<dd class="c-carbon">%s</dd>
+								$message->subject(sprintf($user_obj->_("Abbau auf %s"), $next_target_nt));
+								$message->text(sprintf("<div class=\"nachricht-sammeln\">
+	<p>".sprintf(h($user_obj->_("Ihre Flotte erreicht das Trümmerfeld auf %s und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s.")), htmlspecialchars($next_target_nt), ths($trans_total), h(sprintf($user_obj->_("%1\$s %5\$s, %2\$s %6\$s, %3\$s %7\$s und %4s %8\$s"), ths($rtrans[0]), ths($rtrans[1]), ths($rtrans[2]), ths($rtrans[3]), $user_obj->_("[ress_0]"), $user_obj->_("[ress_1]"), $user_obj->_("[ress_2]"), $user_obj->_("[ress_3]"))))."</p>
+	<h3>".h(_("Verbleibende Rohstoffe im Trümmerfeld"))."</h3>
+	<dl class=\"ress truemmerfeld-verbleibend\">
+		<dt class=\"c-carbon\">".h($user_obj->_("[ress_0]"))."</dt>
+		<dd class=\"c-carbon\">".ths($tr_verbl[0])."</dd>
 
-		<dt class="c-aluminium">Aluminium</dt>
-		<dd class="c-aluminium">%s</dd>
+		<dt class=\"c-aluminium\">".h($user_obj->_("[ress_1]"))."</dt>
+		<dd class=\"c-aluminium\">".ths($tr_verbl[1])."</dd>
 
-		<dt class="c-wolfram">Wolfram</dt>
-		<dd class="c-wolfram">%s</dd>
+		<dt class=\"c-wolfram\">".h($user_obj->_("[ress_2]"))."</dt>
+		<dd class=\"c-wolfram\">".ths($tr_verbl[2])."</dd>
 
-		<dt class="c-radium">Radium</dt>
-		<dd class="c-radium">%s</dd>
+		<dt class=\"c-radium\">".h($user_obj->_("[ress_3]"))."</dt>
+		<dd class=\"c-radium\">".ths($tr_verbl[3])."</dd>
 	</dl>
-</div>
-EOF
-									, ths($trans_total), ths($rtrans[0]), ths($rtrans[1]), ths($rtrans[2]), ths($rtrans[3]), ths($tr_verbl[0]), ths($tr_verbl[1]), ths($tr_verbl[2]), ths($tr_verbl[3])));
+</div>"));
 								$message->addUser($username, 4);
 								$message->html(true);
 							}
@@ -1122,150 +1124,11 @@ EOF
 							$angreifer = array();
 							$verteidiger = array();
 							foreach($this->raw[1] as $username=>$info)
-								$angreifer[$username] = $info[0];
-							$verteidiger[$target_owner] = array();
-							foreach($target_user->getItemsList('schiffe') as $item)
-							{
-								$level = $target_user->getItemLevel($item, 'schiffe');
-								if($level <= 0) continue;
-								$verteidiger[$target_owner][$item] = $level;
-							}
-							foreach($target_user->getItemsList('verteidigung') as $item)
-							{
-								$level = $target_user->getItemLevel($item, 'verteidigung');
-								if($level <= 0) continue;
-								$verteidiger[$target_owner][$item] = $level;
-							}
-							$foreign_users = $target_user->getForeignUsersList();
-							foreach($foreign_users as $username)
-							{
-								$foreign_fleet = array();
-								foreach($target_user->getForeignFleetsList($username) as $foreign_fi)
-									$foreign_fleet = iadd($foreign_fleet, $foreign_fi[0]);
-								isort($foreign_fleet);
-								$verteidiger[$username] = $foreign_fleet;
-							}
+								$angreifer[$username] = array($info[0], $info[3][0]);
 
-							list($winner, $angreifer2, $verteidiger2, $nachrichten_text, $verteidiger_ress, $truemmerfeld) = battle($angreifer, $verteidiger);
+							$angreifer2 = battle($next_target_nt, $angreifer);
 
-							if(array_sum($truemmerfeld) > 0)
-							{
-								truemmerfeld::add($target[0], $target[1], $target[2], $truemmerfeld[0], $truemmerfeld[1], $truemmerfeld[2], $truemmerfeld[3]);
-
-								$nachrichten_text .= "<p>\n";
-								$nachrichten_text .= "\tFolgende Tr\xc3\xbcmmer zerst\xc3\xb6rter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: ".ths($truemmerfeld[0])."&nbsp;Carbon, ".ths($truemmerfeld[1])."&nbsp;Aluminium, ".ths($truemmerfeld[2])."&nbsp;Wolfram und ".ths($truemmerfeld[3])."&nbsp;Radium.\n";
-								$nachrichten_text .= "</p>\n";
-							}
-
-							# Nachrichten aufteilen
-							$angreifer_keys = array_keys($angreifer);
-							$verteidiger_keys = array_keys($verteidiger);
-							$users_keys = array_merge($angreifer_keys, $verteidiger_keys);
-							$messages = array();
-							foreach($users_keys as $username)
-								$messages[$username] = $nachrichten_text;
-
-
-							# Rohstoffe stehlen
-							if($winner == 1)
-							{
-								# Angreifer haben gewonnen
-
-								# Maximal die Haelfte der vorhandenen Rohstoffe
-								$ress_max = $target_user->getRess();
-								$ress_max[0] = floor($ress_max[0]*.5);
-								$ress_max[1] = floor($ress_max[1]*.5);
-								$ress_max[2] = floor($ress_max[2]*.5);
-								$ress_max[3] = floor($ress_max[3]*.5);
-								$ress_max[4] = floor($ress_max[4]*.5);
-								unset($ress_max[5]);
-								$ress_max_total = array_sum($ress_max);
-
-								# Transportkapazitaeten der Angreifer
-								$trans = array();
-								$trans_total = 0;
-								foreach($angreifer2 as $username=>$fleet)
-								{
-									$trans[$username] = -array_sum($this->raw[1][$username][3][0]);
-									$this_user = Classes::User($username);
-									foreach($fleet as $id=>$count)
-									{
-										$item_info = $this_user->getItemInfo($id, 'schiffe');
-										$this_trans = $item_info['trans'][0]*$count;
-										$trans[$username] += $this_trans;
-										$trans_total += $this_trans;
-									}
-								}
-
-								if($trans_total < $ress_max_total)
-								{
-									$f = $trans_total/$ress_max_total;
-									$ress_max[0] = floor($ress_max[0]*$f);
-									$ress_max[1] = floor($ress_max[1]*$f);
-									$ress_max[2] = floor($ress_max[2]*$f);
-									$ress_max[3] = floor($ress_max[3]*$f);
-									$ress_max[4] = floor($ress_max[4]*$f);
-									$ress_max_total = array_sum($ress_max);
-									$diff = $trans_total-$ress_max_total;
-									$diff2 = $diff%5;
-									$each = $diff-$diff2;
-									$ress_max[0] += $each;
-									$ress_max[1] += $each;
-									$ress_max[2] += $each;
-									$ress_max[3] += $each;
-									$ress_max[4] += $each;
-									switch($diff)
-									{
-										case 4: $ress_max[3]++;
-										case 3: $ress_max[2]++;
-										case 2: $ress_max[1]++;
-										case 1: $ress_max[0]++;
-									}
-								}
-
-								foreach($trans as $username=>$cap)
-								{
-									$rtrans = array();
-									$p = $cap/$trans_total;
-									$rtrans[0] = floor($ress_max[0]*$p);
-									$rtrans[1] = floor($ress_max[1]*$p);
-									$rtrans[2] = floor($ress_max[2]*$p);
-									$rtrans[3] = floor($ress_max[3]*$p);
-									$rtrans[4] = floor($ress_max[4]*$p);
-
-									$this->raw[1][$username][3][0][0] += $rtrans[0];
-									$this->raw[1][$username][3][0][1] += $rtrans[1];
-									$this->raw[1][$username][3][0][2] += $rtrans[2];
-									$this->raw[1][$username][3][0][3] += $rtrans[3];
-									$this->raw[1][$username][3][0][4] += $rtrans[4];
-
-									$messages[$username] .= "\n<p class=\"rohstoffe-erbeutet selbst\">Sie haben ".ths($rtrans[0])." Carbon, ".ths($rtrans[1])." Aluminium, ".ths($rtrans[2])." Wolfram, ".ths($rtrans[3])." Radium und ".ths($rtrans[4])." Tritium erbeutet.</p>\n";
-								}
-
-								$target_user->subtractRess($ress_max, false);
-
-								foreach($users_keys as $username)
-								{
-									if(isset($angreifer2[$username])) continue;
-									$messages[$username] .= "\n<p class=\"rohstoffe-erbeutet andere\">Die überlebenden Angreifer haben ".ths($ress_max[0])." Carbon, ".ths($ress_max[1])." Aluminium, ".ths($ress_max[2])." Wolfram, ".ths($ress_max[3])." Radium und ".ths($ress_max[4])." Tritium erbeutet.</p>\n";
-								}
-							}
-
-							if(isset($verteidiger_ress[$target_owner]))
-								$messages[$target_owner] .= "\n<p class=\"verteidigung-wiederverwertung\">Durch Wiederverwertung konnten folgende Rohstoffe aus den Trümmern der zerstörten Verteidigungsanlagen wiederhergestellt werden: ".ths($verteidiger_ress[$target_owner][0])." Carbon, ".ths($verteidiger_ress[$target_owner][1])." Aluminium, ".ths($verteidiger_ress[$target_owner][2])." Wolfram und ".ths($verteidiger_ress[$target_owner][3])." Radium.</p>\n";
-
-							# Nachrichten zustellen
-							foreach($messages as $username=>$text)
-							{
-								$message = Classes::Message();
-								if(!$message->create()) continue;
-								$message->text($text);
-								$message->subject("Kampf auf ".$next_target_nt);
-								$message->html(true);
-								$message->addUser($username, 1);
-							}
-
-							foreach($angreifer_keys as $username)
+							foreach($angreifer as $username=>$fl)
 							{
 								if(!isset($angreifer2[$username]))
 								{
@@ -1273,27 +1136,13 @@ EOF
 									if($username == $first_user) $further = false;
 									else unset($this->raw[1][$username]);
 								}
-								else $this->raw[1][$username][0] = $angreifer2[$username];
-								$user_obj = Classes::User($username);
-								$user_obj->recalcHighscores(false, false, false, true, false);
-							}
-
-							foreach($verteidiger_keys as $username)
-							{
-								foreach($verteidiger[$username] as $id=>$count)
+								else
 								{
-									$count2 = 0;
-									if(isset($verteidiger2[$username]) && isset($verteidiger2[$username][$id]))
-										$count2 = $verteidiger2[$username][$id];
-									if($count2 != $count)
-									{
-										if($username == $target_owner)
-											$target_user->changeItemLevel($id, $count2-$count);
-										else $target_user->subForeignFleet($username, $id, $count-$count2);
-									}
+									$this->raw[1][$username][0] = $angreifer2[$username][0];
+									$this->raw[1][$username][3][0] = $angreifer2[$username][1];
 								}
 								$user_obj = Classes::User($username);
-								$user_obj->recalcHighscores(false, false, false, true, true);
+								$user_obj->recalcHighscores(false, false, false, true, false);
 							}
 
 							break;
@@ -1301,7 +1150,7 @@ EOF
 						case 4: # Transport
 						{
 							$message_text = array(
-								$target_owner => "Ein Transport erreicht Ihren Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target_nt."). Folgende Spieler liefern Güter ab:\n"
+								$target_owner => sprintf($target_user->_("Ein Transport erreicht Ihren Planeten %s. Folgende Spieler liefern Güter ab:"), sprintf($target_user->_("„%s“ (%s)"), $target_user->planetName(), $next_target_nt))."\n"
 							);
 
 							# Rohstoffe abliefern, Handel
@@ -1309,18 +1158,21 @@ EOF
 							$make_handel_message = false;
 							foreach($this->raw[1] as $username=>$data)
 							{
+								$user_obj = Classes::User($username);
 								$write_this_username = ($username != $target_owner);
-								if($write_this_username) $message_text[$username] = "Ihre Flotte erreicht den Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target_nt.", Eigent\xc3\xbcmer: ".$target_owner.") und liefert folgende Güter ab:\n";
+								if($write_this_username) $message_text[$username] = sprintf($user_obj->_("Ihre Flotte erreicht den Planeten %s und liefert folgende Güter ab:"), sprintf($target_user->_("„%s“ (%s, Eigentümer: %s)"), $target_user->planetName(), $next_target_nt, $target_owner))."\n";
 								$message_text[$target_owner] .= $username.": ";
-								if($write_this_username) $message_text[$username] .= "Carbon: ".ths($data[3][0][0], true).", Aluminium: ".ths($data[3][0][1], true).", Wolfram: ".ths($data[3][0][2], true).", Radium: ".ths($data[3][0][3], true).", Tritium: ".ths($data[3][0][4], true);
-								$message_text[$target_owner] .= "Carbon: ".ths($data[3][0][0], true).", Aluminium: ".ths($data[3][0][1], true).", Wolfram: ".ths($data[3][0][2], true).", Radium: ".ths($data[3][0][3], true).", Tritium: ".ths($data[3][0][4], true);
+								if($write_this_username) $message_text[$username] .= sprintf($user_obj->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $user_obj->_("[ress_0]"), ths($data[3][0][0], true), $user_obj->_("[ress_1]"), ths($data[3][0][1], true), $user_obj->_("[ress_2]"), ths($data[3][0][2], true), $user_obj->_("[ress_3]"), ths($data[3][0][3], true), $user_obj->_("[ress_4]"), ths($data[3][0][4], true));
+								$message_text[$target_owner] .= sprintf($target_user->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $target_user->_("[ress_0]"), ths($data[3][0][0], true), $target_user->_("[ress_1]"), ths($data[3][0][1], true), $target_user->_("[ress_2]"), ths($data[3][0][2], true), $target_user->_("[ress_3]"), ths($data[3][0][3], true), $target_user->_("[ress_4]"), ths($data[3][0][4], true));
 								$target_user->addRess($data[3][0]);
 								$this->raw[1][$username][3][0] = array(0,0,0,0,0);
 								if($target_owner == $username && array_sum($data[3][1]) > 0)
 								{
+									$target_user->setLanguage();
 									$items_string = makeItemsString($data[3][1], false);
+									$target_user->restoreLanguage();
 									if($write_this_username) $message_text[$username] .= "\n".$items_string;
-									$message_text[$target_owner] .= "; ".$items_string;
+									$message_text[$target_owner] .= $target_user->_("; ").$items_string;
 									foreach($data[3][1] as $id=>$anzahl)
 										$target_user->changeItemLevel($id, $anzahl, 'roboter');
 									$this->raw[1][$username][3][1] = array();
@@ -1338,20 +1190,21 @@ EOF
 							}
 							if($make_handel_message)
 							{
-								$message_text[$target_owner] .= "\nFolgender Handel wird durchgef\xc3\xbchrt:\n";
+								$message_text[$target_owner] .= "\n".$target_user->_("Folgender Handel wird durchgeführt:")."\n";
 								foreach($handel as $username=>$h)
 								{
+									$user_obj = Classes::User($username);
 									$write_this_username = ($username != $target_owner);
 									if($write_this_username)
 									{
-										$message_text[$username] .= "\nFolgender Handel wird durchgef\xc3\xbchrt:\n";
-										$message_text[$username] .= "Carbon: ".ths($h[0][0], true).", Aluminium: ".ths($h[0][1], true).", Wolfram: ".ths($h[0][2], true).", Radium: ".ths($h[0][3], true).", Tritium: ".ths($h[0][4], true);
+										$message_text[$username] .= "\n".$user_obj->_("Folgender Handel wird durchgeführt:")."\n";
+										$message_text[$username] .= sprintf($user_obj->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $user_obj->_("[ress_0]"), ths($h[0][0], true), $user_obj->_("[ress_1]"), ths($h[0][1], true), $user_obj->_("[ress_2]"), ths($h[0][2], true), $user_obj->_("[ress_3]"), ths($h[0][3], true), $user_obj->_("[ress_4]"), ths($h[0][4], true));
 									}
-									$message_text[$target_owner] .= $username.": Carbon: ".ths($h[0][0], true).", Aluminium: ".ths($h[0][1], true).", Wolfram: ".ths($h[0][2], true).", Radium: ".ths($h[0][3], true).", Tritium: ".ths($h[0][4], true);
+									$message_text[$target_owner] .= sprintf($target_user->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $target_user->_("[ress_0]"), ths($h[0][0], true), $target_user->_("[ress_1]"), ths($h[0][1], true), $target_user->_("[ress_2]"), ths($h[0][2], true), $target_user->_("[ress_3]"), ths($h[0][3], true), $target_user->_("[ress_4]"), ths($h[0][4], true));
 									if(array_sum($h[1]) > 0)
 									{
 										if($write_this_username) $message_text[$username] .= "\n";
-										$message_text[$target_owner] .= "; ";
+										$message_text[$target_owner] .= $target_user->_("; ");
 										$items_string = makeItemsString($h[1], false);
 										if($write_this_username) $message_text[$username] .= $items_string;
 										$message_text[$target_owner] .= $items_string;
@@ -1362,18 +1215,19 @@ EOF
 							}
 							foreach($message_text as $username=>$text)
 							{
+								$user_obj = Classes::User($username);
 								$message_obj = Classes::Message();
 								if($message_obj->create())
 								{
 									if($username == $target_owner && !isset($this->raw[1][$username]))
 									{
-										$message_obj->subject('Ankunft eines fremden Transportes auf '.$next_target_nt);
+										$message_obj->subject(sprintf($user_obj->_("Ankunft eines fremden Transportes auf %s"), $next_target_nt));
 										$users = array_keys($this->raw[1]);
 										$message_obj->from(array_shift($users));
 									}
 									else
 									{
-										$message_obj->subject('Ankunft Ihres Transportes auf '.$next_target_nt);
+										$message_obj->subject(sprintf($user_obj->_("Ankunft Ihres Transportes auf %s"), $next_target_nt));
 										$message_obj->from($target_owner);
 									}
 									$message_obj->text($text);
@@ -1391,30 +1245,19 @@ EOF
 							{
 								# Zielplanet ist nicht besiedelt
 								$message_text = "<div class=\"nachricht-spionage\">\n";
-								$message_text .= "\t<h3>Spionagebericht des Planeten ".utf8_htmlentities($next_target_nt)."</h3>\n";
+								$message_text .= "\t<h3>%1\$s</h3>\n";
 								$message_text .= "\t<div id=\"spionage-planet\">\n";
-								$message_text .= "\t\t<h4>Planet</h4>\n";
+								$message_text .= "\t\t<h4>%2\$s</h4>\n";
 								$message_text .= "\t\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
-								$message_text .= "\t\t\t<dt class=\"c-felder\">Felder</dt>\n";
+								$message_text .= "\t\t\t<dt class=\"c-felder\">%3\$s</dt>\n";
 								$message_text .= "\t\t\t<dd class=\"c-felder\">".ths($target_galaxy->getPlanetSize($target[1], $target[2]))."</dd>\n";
 								$message_text .= "\t\t</dl>\n";
 								$message_text .= "\t</div>\n";
 
 								$message_text .= "\t<p class=\"besiedeln\">\n";
-								$message_text .= "\t\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlentities(urlencode($target[0]))."&amp;action_system=".htmlentities(urlencode($target[1]))."&amp;action_planet=".htmlentities(urlencode($target[2]))."\" title=\"Schicken Sie ein Besiedelungsschiff zu diesem Planeten\">Besiedeln</a>\n";
+								$message_text .= "\t\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlentities(urlencode($target[0]))."&amp;action_system=".htmlentities(urlencode($target[1]))."&amp;action_planet=".htmlentities(urlencode($target[2]))."\" title=\"%4\$s\">%5\$s</a>\n";
 								$message_text .= "\t</p>\n";
 								$message_text .= "</div>";
-
-								$message = Classes::Message();
-
-								if($message->create())
-								{
-									$message->text($message_text);
-									$message->subject('Spionage des Planeten '.$next_target_nt);
-									foreach(array_keys($this->raw[1]) as $username)
-										$message->addUser($username, $types_message_types[$type]);
-									$message->html(true);
-								}
 							}
 							else
 							{
@@ -1462,12 +1305,12 @@ EOF
 									$diff = 5;
 
 								$message_text = "<div class=\"nachricht-spionage\">\n";
-								$message_text .= "\t<h3>Spionagebericht des Planeten \xe2\x80\x9e".utf8_htmlentities($target_galaxy->getPlanetName($target[1], $target[2]))."\xe2\x80\x9c (".utf8_htmlentities($next_target_nt).", Eigent\xc3\xbcmer: ".utf8_htmlentities($target_owner).")</h3>\n";
+								$message_text .= "\t<h3>%6\$s</h3>\n";
 								$message_text .= "\t<div id=\"spionage-planet\">\n";
-								$message_text .= "\t\t<h4>Planet</h4>\n";
+								$message_text .= "\t\t<h4>%2\$s</h4>\n";
 								$message_text .= "\t\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
-								$message_text .= "\t\t\t<dt class=\"c-felder\">Felder</dt>\n";
-								$message_text .= "\t\t\t<dd class=\"c-felder\">".$target_user->getTotalFields()."</dd>\n";
+								$message_text .= "\t\t\t<dt class=\"c-felder\">%3\$s</dt>\n";
+								$message_text .= "\t\t\t<dd class=\"c-felder\">".ths($target_user->getTotalFields())."</dd>\n";
 								$message_text .= "\t\t</dl>\n";
 								$message_text .= "\t</div>\n";
 
@@ -1477,13 +1320,13 @@ EOF
 									case 5: # Roboter zeigen
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-roboter\">\n";
-										$next .= "\t\t<h4>Roboter</h4>\n";
+										$next .= "\t\t<h4>%7\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
 										foreach($target_user->getItemsList('roboter') as $id)
 										{
 											if($target_user->getItemLevel($id, 'roboter') <= 0) continue;
 											$item_info = $target_user->getItemInfo($id, 'roboter');
-											$next .= "\t\t\t<li>".$item_info['name']." <span class=\"anzahl\">(".ths($item_info['level']).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".ths($item_info['level']).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1491,13 +1334,13 @@ EOF
 									case 4: # Forschung zeigen
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-forschung\">\n";
-										$next .= "\t\t<h4>Forschung</h4>\n";
+										$next .= "\t\t<h4>%8\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
 										foreach($target_user->getItemsList('forschung') as $id)
 										{
 											if($target_user->getItemLevel($id, 'forschung') <= 0) continue;
 											$item_info = $target_user->getItemInfo($id, 'forschung');
-											$next .= "\t\t\t<li>".$item_info['name']." <span class=\"stufe\">(Level&nbsp;".ths($item_info['level']).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"stufe\">(Level&nbsp;".ths($item_info['level']).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1505,7 +1348,7 @@ EOF
 									case 3: # Schiffe und Verteidigungsanlagen anzeigen
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-schiffe\">\n";
-										$next .= "\t\t<h4>Schiffe</h4>\n";
+										$next .= "\t\t<h4>%9\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
 										$schiffe = array();
 										foreach($target_user->getItemsList('schiffe') as $id)
@@ -1533,18 +1376,18 @@ EOF
 										foreach($schiffe as $id=>$count)
 										{
 											$item_info = $target_user->getItemInfo($id, 'schiffe');
-											$next .= "\t\t\t<li>".$item_info['name']." <span class=\"anzahl\">(".ths($count).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".ths($count).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
 										$next .= "\t<div id=\"spionage-verteidigung\">\n";
-										$next .= "\t\t<h4>Verteidigung</h4>\n";
+										$next .= "\t\t<h4>%10\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
 										foreach($target_user->getItemsList('verteidigung') as $id)
 										{
 											if($target_user->getItemLevel($id, 'verteidigung') <= 0) continue;
 											$item_info = $target_user->getItemInfo($id, 'verteidigung');
-											$next .= "\t\t\t<li>".$item_info['name']." <span class=\"anzahl\">(".ths($item_info['level']).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".ths($item_info['level']).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1552,13 +1395,13 @@ EOF
 									case 2: # Gebaeude anzeigen
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-gebaeude\">\n";
-										$next .= "\t\t<h4>Geb\xc3\xa4ude</h4>\n";
+										$next .= "\t\t<h4>%11\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
 										foreach($target_user->getItemsList('gebaeude') as $id)
 										{
 											if($target_user->getItemLevel($id, 'gebaeude') <= 0) continue;
 											$item_info = $target_user->getItemInfo($id, 'gebaeude');
-											$next .= "\t\t\t<li>".$item_info['name']." <span class=\"stufe\">(Stufe&nbsp;".ths($item_info['level']).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"stufe\">(Stufe&nbsp;".ths($item_info['level']).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1566,36 +1409,55 @@ EOF
 									case 1: # Rohstoffe anzeigen
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-rohstoffe\">\n";
-										$next .= "\t\t<h4>Rohstoffe</h4>\n";
-										$next .= "\t\t".format_ress($target_user->getRess(), 2, true);
+										$next .= "\t\t<h4>%12\$s</h4>\n";
+										$next .= "\t\t".format_ress($target_user->getRess(), 2, true, false, true);
 										$next .= "\t</div>\n";
 										unset($next);
 								}
 								$message_text .= implode('', array_reverse($message_text2));
 								$message_text .= "</div>\n";
 
+								# Benachrichtigung an den Planetenbesitzer
 								$message = Classes::Message();
 								if($message->create())
 								{
-									$message->subject('Spionage des Planeten '.$next_target_nt);
-									$message->text($message_text);
-									$message->html(true);
-									$message->from($target_owner);
-									foreach($users as $username)
-										$message->addUser($username, $types_message_types[$type]);
-								}
-
-								$message = Classes::Message();
-								if($message->create())
-								{
-									$message->subject('Fremde Flotte auf dem Planeten '.$next_target_nt);
+									$message->subject(sprintf($target_user->_('Fremde Flotte auf dem Planeten %s'), $next_target_nt));
 									$first_user = array_shift($users);
 									$from_pos_str = $this->raw[1][$first_user][1];
 									$from_pos = explode(':', $from_pos_str);
 									$from_galaxy = Classes::Galaxy($from_pos[0]);
-									$message->text("Eine fremde Flotte vom Planeten \xe2\x80\x9e".$from_galaxy->getPlanetName($from_pos[1], $from_pos[2])."\xe2\x80\x9c (".$from_pos_str.", Eigent\xc3\xbcmer: ".$first_user.") wurde von Ihrem Planeten \xe2\x80\x9e".$target_user->planetName()."\xe2\x80\x9c (".$next_target_nt.") aus bei der Spionage gesichtet.");
+									$message->text(sprintf($target_user->_("Eine fremde Flotte vom Planeten %s wurde von Ihrem Planeten %s aus bei der Spionage gesichtet."), sprintf($target_user->_("„%s“ (%s, Eigentümer: %s)"), $from_galaxy->getPlanetName($from_pos[1], $from_pos[2]), $from_pos_str, $first_user), sprintf($target_user->_("„%s“ (%s)"), $target_user->planetName(), $next_target_nt)));
 									$message->from($first_user);
 									$message->addUser($target_owner, $types_message_types[$type]);
+								}
+							}
+
+							foreach(array_keys($this->raw[1]) as $username)
+							{
+								$u = Classes::User($username);
+								$message = Classes::Message();
+								if($message->create())
+								{
+									$message->text($u->_i(sprintf($message_text,
+										h(sprintf($u->_("Spionagebericht des Planeten %s", $next_target_nt))),
+										h($u->_("Planet")),
+										h($u->_("Felder")),
+										h($u->_("Schicken Sie ein Besiedelungsschiff zu diesem Planeten")),
+										h($u->_("Besiedeln")),
+										sprintf(h($u->_("Spionagebericht des Planeten %s")), sprintf(h($u->_("„%s“ (%s, Eigentümer: %s)")), htmlspecialchars($target_galaxy->getPlanetName($target[1], $target[2])), htmlspecialchars($next_target_nt), htmlspecialchars($target_owner))),
+										h($u->_("Roboter")),
+										h($u->_("Forschung")),
+										h($u->_("Schiffe")),
+										h($u->_("Verteidigung")),
+										h($u->_("Gebäude")),
+										h($u->_("Rohstoffe"))
+									)));
+;
+									$message->subject(sprintf($u->_("Spionage des Planeten %s"), $next_target_nt));
+									if($target_owner)
+										$message->from($target_owner);
+									$message->addUser($username, $types_message_types[$type]);
+									$message->html(true);
 								}
 							}
 						}
@@ -1774,43 +1636,14 @@ EOF
 					$user_obj->addScores(5, $this->raw[1][$username][5]/1000);
 				}
 
-				if($besiedeln)
-				{
-					$message_text = "Ihre Flotte erreicht den Planeten ".$next_target_nt." und beginnt mit seiner Besiedelung.";
-					if(isset($besiedelung_ress))
-						$message_text .= " Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe wiederhergestellt werden: ".ths($besiedelung_ress[0], true)." Carbon, ".ths($besiedelung_ress[1], true)." Aluminium, ".ths($besiedelung_ress[2], true)." Wolfram, ".ths($besiedelung_ress[3], true)." Radium.";
-					$message_text .= "\n";
-				}
-				else
-					$message_text = "Eine Flotte erreicht den Planeten \xe2\x80\x9e".$owner_obj->planetName()."\xe2\x80\x9c (".$owner_obj->getPosString().", Eigent\xc3\xbcmer: ".$owner_obj->getName().").\n";
-				if(array_sum($schiffe_own) > 0)
-				{
-					$message_text .= "Die Flotte besteht aus folgenden Schiffen: ".makeItemsString($schiffe_own, false)."\n";
-					foreach($schiffe_own as $id=>$anzahl)
-						$owner_obj->changeItemLevel($id, $anzahl);
-				}
-				if(array_sum_r($schiffe_other) > 0)
-				{
-					$message_text .= "Folgende Schiffe werden fremdstationiert:\n";
-					foreach($schiffe_other as $user=>$schiffe)
-					{
-						$message_text .= $user.": ".makeItemsString($schiffe, false)."\n";
-						$owner_obj->addForeignFleet($user, $schiffe, $move_info[1], $move_info[2]);
-					}
-				}
-
-				$message_text .= "\nFolgende G\xc3\xbcter werden abgeliefert:\n";
-				$message_text .= ths($ress[0], true).' Carbon, '.ths($ress[1], true).' Aluminium, '.ths($ress[2], true).' Wolfram, '.ths($ress[3], true).' Radium, '.ths($ress[4], true)." Tritium.";
-				if(array_sum($robs) > 0)
-					$message_text .= "\n".makeItemsString($robs, false)."\n";
+				foreach($schiffe_own as $id=>$anzahl)
+					$owner_obj->changeItemLevel($id, $anzahl);
+				foreach($schiffe_other as $user=>$schiffe)
+					$owner_obj->addForeignFleet($user, $schiffe, $move_info[1], $move_info[2]);
 				foreach($robs as $id=>$anzahl)
 					$owner_obj->changeItemLevel($id, $anzahl, 'roboter');
 
-				if($this->raw[1][$first_user][3][2] > 0)
-				{
-					$message_text .= "\n\nFolgender \xc3\xbcbersch\xc3\xbcssiger Treibstoff wird abgeliefert: ".ths($this->raw[1][$first_user][3][2], true)." Tritium.";
-					$ress[4] += $this->raw[1][$first_user][3][2];
-				}
+				$ress[4] += $this->raw[1][$first_user][3][2];
 				$owner_obj->addRess($ress);
 
 				$message_users = array();
@@ -1828,23 +1661,64 @@ EOF
 				if($owner && !isset($this->raw[1][$owner]))
 					$message_users[] = $owner;
 
-				if(count($message_users) > 0)
+				foreach($message_users as $name)
 				{
+					$user_obj = Classes::User($name);
+					$message_text = "";
+					if($besiedeln)
+					{
+						$message_text .= sprintf($user_obj->_("Ihre Flotte erreicht den Planeten %s und beginnt mit seiner Besiedelung."), $next_target_nt);
+						if(isset($besiedelung_ress))
+							$message_text .= " ".sprintf($user_obj->_(" Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe wiederhergestellt werden: %s."), sprintf($user_obj->_("%s %s, %s %s, %s %s, %s %s"), ths($besiedelung_ress[0], true), $user_obj->_("[ress_0]"), ths($besiedelung_ress[1], true), $user_obj->_("[ress_1]"), ths($besiedelung_ress[2], true), $user_obj->_("[ress_2]"), ths($besiedelung_ress[3], true), $user_obj->_("[ress_3]")));
+						$message_text .= "\n";
+					}
+					else
+						$message_text .= sprintf($user_obj->_("Eine Flotte erreicht den Planeten %s."), sprintf($user_obj->_("„%s“ (%s, Eigentümer: %s)"), $owner_obj->planetName(), $owner_obj->getPosString(), $owner_obj->getName()))."\n";
+
+					if(array_sum($schiffe_own) > 0)
+					{
+						$user_obj->setLanguage();
+						$message_text .= sprintf($user_obj->_("Die Flotte besteht aus folgenden Schiffen: %s"), makeItemsString($schiffe_own, false))."\n";
+						$user_obj->restoreLanguage();
+					}
+
+					if(array_sum_r($schiffe_other) > 0)
+					{
+						$message_text .= $user_obj->_("Folgende Schiffe werden fremdstationiert:")."\n";
+						foreach($schiffe_other as $user=>$schiffe)
+						{
+							$user_obj->setLanguage();
+							$message_text .= sprintf($user_obj->_("%s: %s"), $user, makeItemsString($schiffe, false))."\n";
+							$user_obj->restoreLanguage();
+						}
+					}
+
+					$message_text .= "\n".$user_obj->_("Folgende Güter werden abgeliefert:")."\n";
+					$message_text .= sprintf($user_obj->_("%s %s, %s %s, %s %s, %s %s, %s %s."), ths($ress[0], true), $user_obj->_("[ress_0]"), ths($ress[1], true), $user_obj->_("[ress_1]"), ths($ress[2], true), $user_obj->_("[ress_2]"), ths($ress[3], true), $user_obj->_("[ress_3]"), ths($ress[4], true), $user_obj->_("[ress_4]"));
+					if(array_sum($robs) > 0)
+					{
+						$user_obj->setLanguage();
+						$message_text .= "\n".makeItemsString($robs, false)."\n";
+						$user_obj->restoreLanguage();
+					}
+
+					if($this->raw[1][$first_user][3][2] > 0)
+						$message_text .= "\n\n".sprintf($user_obj->_("Folgender überschüssiger Treibstoff wird abgeliefert: %s."), sprintf($user_obj->_("%s %s"), ths($this->raw[1][$first_user][3][2], true), $user_obj->_("[ress_4]")));
+
 					$message_obj = Classes::Message();
 					if($message_obj->create())
 					{
 						$message_obj->text($message_text);
 						if($besiedeln)
-							$message_obj->subject("Besiedelung von ".$next_target_nt);
+							$message_obj->subject(sprintf($user_obj->_("Besiedelung von %s"), $next_target_nt));
 						else
-							$message_obj->subject("Stationierung auf ".$owner_obj->getPosString());
+							$message_obj->subject(sprintf($user_obj->_("Stationierung auf %s"), $owner_obj->getPosString()));
 
 						# Bei Fremdstationierung Nachrichtenabsender eintragen
 						if($owner && !isset($this->raw[1][$owner]))
 							$message_obj->from($first_user);
 
-						foreach($message_users as $username)
-							$message_obj->addUser($username, $types_message_types[$this->raw[0][$next_target][0]]);
+						$message_obj->addUser($name, $types_message_types[$this->raw[0][$next_target][0]]);
 					}
 				}
 
@@ -1863,9 +1737,51 @@ EOF
 		}
 	}
 
-	function battle($angreifer, $verteidiger)
+	/**
+	  * Laesst auf dem Planeten $planet die Flotten $angreifer angreifen.
+	  * @param $planet (string) Galaxie ':' System ':' Planet
+	  * @param $angreifer_param ( Benutzername => [ ( Item-ID => Anzahl ), ( Rohstoff-Index => Rohstoff-Anzahl ) ] )
+	  * @return $angreifer_param hinterher
+	  * @return false bei Fehlschlag
+	*/
+
+	function battle($planet, $angreifer_param)
 	{
-		if(count($angreifer) < 0 || count($verteidiger) < 0) return false;
+		$angreifer = array();
+		foreach($angreifer_param as $username=>$info)
+			$angreifer[$username] = $info[0];
+
+		$target = explode(":", $planet);
+		$target_galaxy = Classes::Galaxy($target[0]);
+		$target_owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
+		if(!$target_owner) return false;
+		$target_user = Classes::User($target_owner);
+		if(!$target_user->getStatus()) return false;
+		$target_user->setActivePlanet($target_user->getPlanetByPos($planet));
+
+		$verteidiger = array();
+		$verteidiger[$target_owner] = array();
+		foreach($target_user->getItemsList('schiffe') as $item)
+		{
+			$level = $target_user->getItemLevel($item, 'schiffe');
+			if($level <= 0) continue;
+			$verteidiger[$target_owner][$item] = $level;
+		}
+		foreach($target_user->getItemsList('verteidigung') as $item)
+		{
+			$level = $target_user->getItemLevel($item, 'verteidigung');
+			if($level <= 0) continue;
+			$verteidiger[$target_owner][$item] = $level;
+		}
+		$foreign_users = $target_user->getForeignUsersList();
+		foreach($foreign_users as $username)
+		{
+			$foreign_fleet = array();
+			foreach($target_user->getForeignFleetsList($username) as $foreign_fi)
+				$foreign_fleet = iadd($foreign_fleet, $foreign_fi[0]);
+			isort($foreign_fleet);
+			$verteidiger[$username] = $foreign_fleet;
+		}
 
 		$angreifer_anfang = $angreifer;
 		$verteidiger_anfang = $verteidiger;
@@ -1876,6 +1792,7 @@ EOF
 			$users_angreifer[$username] = Classes::User($username);
 		foreach($verteidiger as $username=>$i)
 			$users_verteidiger[$username] = Classes::User($username);
+		$users_all = $users_angreifer + $users_verteidiger;
 
 		# Spionagetechnik fuer Erstschlag
 		$angreifer_spiotech = 0;
@@ -1900,18 +1817,15 @@ EOF
 
 		# Nachrichtentext
 		$nachrichten_text = "<div class=\"nachricht-kampf\">\n";
-		if(count($angreifer) > 1)
-			$nachrichten_text .= "\t<h3>Flotten der Angreifer</h3>\n";
-		else
-			$nachrichten_text .= "\t<h3>Flotten des Angreifers</h3>\n";
+		$nachrichten_text .= "\t<h3>%1\$s</h3>\n";
 
 		$nachrichten_text .= "\t<table>\n";
 		$nachrichten_text .= "\t\t<thead>\n";
 		$nachrichten_text .= "\t\t\t<tr>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-schiffstyp\">%2\$s</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-anzahl\">%3\$s</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtstaerke\">%4\$s</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtschild\">%5\$s</th>\n";
 		$nachrichten_text .= "\t\t\t</tr>\n";
 		$nachrichten_text .= "\t\t</thead>\n";
 		$nachrichten_text .= "\t\t<tbody>\n";
@@ -1920,7 +1834,7 @@ EOF
 		foreach($angreifer as $name=>$flotten)
 		{
 			$nachrichten_text .= "\t\t\t<tr class=\"benutzername\">\n";
-			$nachrichten_text .= "\t\t\t\t<th colspan=\"4\"><span class=\"angreifer-name\">".utf8_htmlentities($name)."</span></th>\n";
+			$nachrichten_text .= "\t\t\t\t<th colspan=\"4\"><span class=\"angreifer-name\">".htmlspecialchars($name)."</span></th>\n";
 			$nachrichten_text .= "\t\t\t</tr>\n";
 
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
@@ -1932,7 +1846,7 @@ EOF
 				$schild = $item_info['def']*$anzahl;
 
 				$nachrichten_text .= "\t\t\t<tr>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
@@ -1944,7 +1858,7 @@ EOF
 			}
 
 			$nachrichten_text .= "\t\t\t<tr class=\"gesamt\">\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
@@ -1961,7 +1875,7 @@ EOF
 		{
 			$nachrichten_text .= "\t\t<tfoot>\n";
 			$nachrichten_text .= "\t\t\t<tr>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
@@ -1970,18 +1884,15 @@ EOF
 		}
 		$nachrichten_text .= "\t</table>\n";
 
-		if(count($verteidiger) > 1)
-			$nachrichten_text .= "\t<h3>Flotten der Verteidigers</h3>\n";
-		else
-			$nachrichten_text .= "\t<h3>Flotten des Verteidigers</h3>\n";
+		$nachrichten_text .= "\t<h3>%8\$s</h3>\n";
 
 		$nachrichten_text .= "\t<table>\n";
 		$nachrichten_text .= "\t\t<thead>\n";
 		$nachrichten_text .= "\t\t\t<tr>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-schiffstyp\">%2\$s</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-anzahl\">%3\$s</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtstaerke\">%4\$s</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtschild\">%5\$s</th>\n";
 		$nachrichten_text .= "\t\t\t</tr>\n";
 		$nachrichten_text .= "\t\t</thead>\n";
 		$nachrichten_text .= "\t\t<tbody>\n";
@@ -1990,7 +1901,7 @@ EOF
 		foreach($verteidiger as $name=>$flotten)
 		{
 			$nachrichten_text .= "\t\t\t<tr class=\"benutzername\">\n";
-			$nachrichten_text .= "\t\t\t\t<th colspan=\"4\"><span class=\"verteidiger-name\">".utf8_htmlentities($name)."</span></th>\n";
+			$nachrichten_text .= "\t\t\t\t<th colspan=\"4\"><span class=\"verteidiger-name\">".htmlspecialchars($name)."</span></th>\n";
 			$nachrichten_text .= "\t\t\t</tr>\n";
 
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
@@ -2005,7 +1916,7 @@ EOF
 				if($anzahl > 0)
 				{
 					$nachrichten_text .= "\t\t\t<tr>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
@@ -2021,13 +1932,13 @@ EOF
 			if(!$one)
 			{
 				$nachrichten_text .= "\t\t\t<tr class=\"keine\">\n";
-				$nachrichten_text .= "\t\t\t\t<td colspan=\"4\">Keine.</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td colspan=\"4\">%9\$s</td>\n";
 				$nachrichten_text .= "\t\t\t</tr>\n";
 			}
 			else
 			{
 				$nachrichten_text .= "\t\t\t<tr class=\"gesamt\">\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
@@ -2045,7 +1956,7 @@ EOF
 		{
 			$nachrichten_text .= "\t\t<tfoot>\n";
 			$nachrichten_text .= "\t\t\t<tr>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
@@ -2095,7 +2006,7 @@ EOF
 			$runde_anderer = 'verteidiger';
 
 			$nachrichten_text .= "\t<p class=\"erstschlag angreifer\">\n";
-			$nachrichten_text .= "\t\tDie Sensoren ".$angreifer_genitiv." sind st\xc3\xa4rker ausgebildet als die ".$verteidiger_genitiv." und erm\xc3\xb6glichen es ".$angreifer_dativ.", den Erstschlag auszuf\xc3\xbchren.\n";
+			$nachrichten_text .= "\t\t%10\$s\n";
 			$nachrichten_text .= "\t</p>\n";
 		}
 		else
@@ -2104,7 +2015,7 @@ EOF
 			$runde_anderer = 'angreifer';
 
 			$nachrichten_text .= "\t<p class=\"erstschlag verteidiger\">\n";
-			$nachrichten_text .= "\t\tDie Sensoren ".$angreifer_genitiv." sind denen ".$verteidiger_genitiv." nicht \xc3\xbcberlegen, weshalb ".$verteidiger_nominativ_letzt." den Erstschlag ausf\xc3\xbchrt.\n";
+			$nachrichten_text .= "\t\t%11\$s\n";
 			$nachrichten_text .= "\t</p>\n";
 		}
 
@@ -2143,6 +2054,11 @@ EOF
 			else $verteidiger[$name] = $ids;
 		}
 
+		$nachrichten_runden = array();
+
+		foreach($users_all as $name=>$user_obj)
+			$nachrichten_runden[$name] = array();
+
 		# Einzelne Runden
 		for($runde = 1; $runde <= 20; $runde++)
 		{
@@ -2152,12 +2068,6 @@ EOF
 			$d = & ${$runde_anderer};
 			$a_objs = & ${'users_'.$runde_starter};
 			$d_objs = & ${'users_'.$runde_anderer};
-
-			if($runde%2)
-			{
-				$nachrichten_text .= "\t<div class=\"runde\">\n";
-				$nachrichten_text .= "\t\t<h3>Runde ".(($runde+1)/2)."</h3>\n";
-			}
 
 			# Flottengesamtstaerke
 			$staerke = 0;
@@ -2171,8 +2081,18 @@ EOF
 				}
 			}
 
-			$nachrichten_text .= "\t\t<h4>".ucfirst(${$runde_starter.'_nominativ'})." ".${$runde_starter.'_praedikat'}." am Zug (Gesamtst\xc3\xa4rke ".round($staerke).")</h4>\n";
-			$nachrichten_text .= "\t\t<ol>\n";
+			foreach($users_all as $name=>$user_obj)
+			{
+				$nachrichten_runden[$name][$runde] = "";
+				if($runde%2)
+				{
+					$nachrichten_runden[$name][$runde] .= "\t<div class=\"runde\">\n";
+					$nachrichten_runden[$name][$runde] .= "\t\t<h3>".h(sprintf($user_obj->_("Runde %s"), ($runde+1)/2))."</h3>\n";
+				}
+
+				$nachrichten_runden[$name][$runde] .= "\t\t<h4>".h(sprintf($user_obj->ngettext("Der Angreifer ist am Zug (Gesamtstärke %s)", "Die Angreifer sind am Zug (Gesamtstärke %s)", count($angreifer)), round($staerke_init))).")</h4>\n";
+				$nachrichten_runden[$name][$runde] .= "\t\t<ol>\n";
+			}
 
 			while($staerke > 0)
 			{
@@ -2191,20 +2111,22 @@ EOF
 					$before = $d[$att_user][$att_id];
 					$d[$att_user][$att_id] = $this_shield/$item_info['def'];
 					$floor_diff = ceil($before)-ceil($d[$att_user][$att_id]);
-					$nachrichten_text .= "\t\t\t<li>";
-					if($floor_diff <= 0)
-						$nachrichten_text .= "Eine Einheit des Typs ".utf8_htmlentities($item_info['name'])." (<span class=\"".$runde_anderer."-name\">".utf8_htmlentities($att_user)."</span>) wird angeschossen.</li>\n";
-					else
+
+					foreach($users_all as $name=>$user_obj)
 					{
-						$nachrichten_text .= ths($floor_diff)."&nbsp;Einheit";
-						if($floor_diff != 1) $nachrichten_text .= "en";
-						$nachrichten_text .= " des Typs ".utf8_htmlentities($item_info['name'])." (<span class=\"".$runde_anderer."-name\">".utf8_htmlentities($att_user)."</span>) werden zerst\xc3\xb6rt. ".ths(ceil($d[$att_user][$att_id]))." verbleiben.</li>\n";
+						$nachrichten_runden[$name][$runde] .= "\t\t\t<li>";
+						if($floor_diff <= 0)
+							$nachrichten_runden[$name][$runde] .= sprintf(h($user_obj->_("Eine Einheit des Typs %s (%s) wird angeschossen.")), h($user_obj->_("[item_".$att_id."]")), "<span class=\"".$runde_anderer."-name\">".htmlspecialchars($att_user)."</span>")."</li>\n";
+						else
+							$nachrichten_runden[$name][$runde] .= sprintf(h($user_obj->ngettext("%s Einheit des Typs %s (%s) wird zerstört.", "%s Einheiten des Typs %s (%s) werden zerstört.", $floor_diff)), ths($floor_diff), htmlspecialchars($item_info["name"]), "<span class=\"".$runde_anderer."-name\">".htmlspecialchars($att_user)."</span>")." ".h(sprintf($user_obj->ngettext("%s verbleibt.", "%s verbleiben.", ceil($d[$att_user][$att_id])), ths(ceil($d[$att_user][$att_id]))))."</li>\n";
 					}
+
 					$staerke = 0;
 				}
 				else
 				{
-					$nachrichten_text .= "\t\t\t<li>Alle Einheiten des Typs ".utf8_htmlentities($item_info['name'])." (".ths(ceil($d[$att_user][$att_id])).") (<span class=\"".$runde_anderer."-name\">".utf8_htmlentities($att_user)."</span>) werden zerst\xc3\xb6rt.</li>\n";
+					foreach($users_all as $name=>$user_obj)
+						$nachrichten_runden[$name][$runde] .= "\t\t\t<li>".sprintf(h($user_obj->_("Alle Einheiten des Typs %s (%s) (%s) werden zerstört.")), $user_obj->_("[item_".$att_id."]"), ths(ceil($d[$att_user][$att_id])), "<span class=\"".$runde_anderer."-name\">".htmlspecialchars($att_user)."</span>")."</li>\n";
 					$aff_staerke = $this_shield;
 					unset($d[$att_user][$att_id]);
 					if(count($d[$att_user]) <= 0) unset($d[$att_user]);
@@ -2214,9 +2136,12 @@ EOF
 				if(count($angreifer) <= 0 || count($verteidiger) <= 0) break;
 			}
 
-			$nachrichten_text .= "\t\t</ol>\n";
-			if(!$runde%2)
-				$nachrichten_text .= "\t</div>\n";
+			foreach($users_all as $name=>$user_obj)
+			{
+				$nachrichten_runden[$name][$runde] .= "\t\t</ol>\n";
+				if(!$runde%2)
+					$nachrichten_runden[$name][$runde] .= "\t</div>\n";
+			}
 
 			# Vertauschen
 			list($runde_starter, $runde_anderer) = array($runde_anderer, $runde_starter);
@@ -2227,23 +2152,21 @@ EOF
 		}
 
 		$nachrichten_text .= "\t<p>\n";
-		$nachrichten_text .= "\t\tDer Kampf ist vor\xc3\xbcber. ";
 		if(count($angreifer) == 0)
 		{
-			$nachrichten_text .= "Gewinner ".$verteidiger_praedikat." ".$verteidiger_nominativ.".";
+			$nachrichten_text .= "\t\t%13\$s\n";
 			$winner = -1;
 		}
 		elseif(count($verteidiger) == 0)
 		{
-			$nachrichten_text .= "Gewinner ".$angreifer_praedikat." ".$angreifer_nominativ.".";
+			$nachrichten_text .= "\t\t%14\$s\n";
 			$winner = 1;
 		}
 		else
 		{
-			$nachrichten_text .= "Er endet unentschieden.";
+			$nachrichten_text .= "\t\t%15\$s\n";
 			$winner = 0;
 		}
-		$nachrichten_text .= "\n";
 		$nachrichten_text .= "\t</p>\n";
 
 		# Flottenbestaende aufrunden
@@ -2263,18 +2186,15 @@ EOF
 		$angreifer_punkte = array();
 		$verteidiger_punkte = array();
 
-		if(count($angreifer_anfang) > 1)
-			$nachrichten_text .= "\t<h3>Flotten der Angreifer</h3>\n";
-		else
-			$nachrichten_text .= "\t<h3>Flotten des Angreifers</h3>\n";
+		$nachrichten_text .= "\t<h3>%1\$s</h3>\n";
 
 		$nachrichten_text .= "\t<table>\n";
 		$nachrichten_text .= "\t\t<thead>\n";
 		$nachrichten_text .= "\t\t\t<tr>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-schiffstyp\">%2\$s</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-anzahl\">%3\$s</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtstaerke\">%4\$s</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtschild\">%5\$s</th>\n";
 		$nachrichten_text .= "\t\t\t</tr>\n";
 		$nachrichten_text .= "\t\t</thead>\n";
 		$nachrichten_text .= "\t\t<tbody>\n";
@@ -2283,7 +2203,7 @@ EOF
 		foreach($angreifer_anfang as $name=>$flotten)
 		{
 			$nachrichten_text .= "\t\t\t<tr class=\"benutzername\">\n";
-			$nachrichten_text .= "\t\t\t\t<th colspan=\"4\"><span class=\"angreifer-name\">".utf8_htmlentities($name)."</span></th>\n";
+			$nachrichten_text .= "\t\t\t\t<th colspan=\"4\"><span class=\"angreifer-name\">".htmlspecialchars($name)."</span></th>\n";
 			$nachrichten_text .= "\t\t\t</tr>\n";
 
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
@@ -2311,7 +2231,7 @@ EOF
 				if($anzahl > 0)
 				{
 					$nachrichten_text .= "\t\t\t<tr>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
@@ -2326,13 +2246,13 @@ EOF
 			if(!$one)
 			{
 				$nachrichten_text .= "\t\t\t<tr class=\"keine\">\n";
-				$nachrichten_text .= "\t\t\t\t<td colspan=\"4\">Keine.</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td colspan=\"4\">%9\$s</td>\n";
 				$nachrichten_text .= "\t\t\t</tr>\n";
 			}
 			else
 			{
 				$nachrichten_text .= "\t\t\t<tr class=\"gesamt\">\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
@@ -2350,7 +2270,7 @@ EOF
 		{
 			$nachrichten_text .= "\t\t<tfoot>\n";
 			$nachrichten_text .= "\t\t\t<tr>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
@@ -2359,19 +2279,15 @@ EOF
 		}
 		$nachrichten_text .= "\t</table>\n";
 
-
-		if(count($verteidiger_anfang) > 1)
-			$nachrichten_text .= "\t<h3>Flotten der Verteidigers</h3>\n";
-		else
-			$nachrichten_text .= "\t<h3>Flotten des Verteidigers</h3>\n";
+		$nachrichten_text .= "\t<h3>%8\$s</h3>\n";
 
 		$nachrichten_text .= "\t<table>\n";
 		$nachrichten_text .= "\t\t<thead>\n";
 		$nachrichten_text .= "\t\t\t<tr>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-schiffstyp\">Schiffstyp</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-anzahl\">Anzahl</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtstaerke\">Gesamtst\xc3\xa4rke</th>\n";
-		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtschild\">Gesamtschild</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-schiffstyp\">%2\$s</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-anzahl\">%3\$s</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtstaerke\">%4\$s</th>\n";
+		$nachrichten_text .= "\t\t\t\t<th class=\"c-gesamtschild\">%5\$s</th>\n";
 		$nachrichten_text .= "\t\t\t</tr>\n";
 		$nachrichten_text .= "\t\t</thead>\n";
 		$nachrichten_text .= "\t\t<tbody>\n";
@@ -2380,7 +2296,7 @@ EOF
 		foreach($verteidiger_anfang as $name=>$flotten)
 		{
 			$nachrichten_text .= "\t\t\t<tr class=\"benutzername\">\n";
-			$nachrichten_text .= "\t\t\t\t<th colspan=\"4\"><span class=\"verteidiger-name\">".utf8_htmlentities($name)."</span></th>\n";
+			$nachrichten_text .= "\t\t\t\t<th colspan=\"4\"><span class=\"verteidiger-name\">".htmlspecialchars($name)."</span></th>\n";
 			$nachrichten_text .= "\t\t\t</tr>\n";
 
 			$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
@@ -2419,7 +2335,7 @@ EOF
 				if($anzahl > 0)
 				{
 					$nachrichten_text .= "\t\t\t<tr>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"Genauere Informationen anzeigen\">".utf8_htmlentities($item_info['name'])."</a></td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
@@ -2435,13 +2351,13 @@ EOF
 			if(!$one)
 			{
 				$nachrichten_text .= "\t\t\t<tr class=\"keine\">\n";
-				$nachrichten_text .= "\t\t\t\t<td colspan=\"4\">Keine.</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td colspan=\"4\">%9\$s</td>\n";
 				$nachrichten_text .= "\t\t\t</tr>\n";
 			}
 			else
 			{
 				$nachrichten_text .= "\t\t\t<tr class=\"gesamt\">\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
@@ -2459,7 +2375,7 @@ EOF
 		{
 			$nachrichten_text .= "\t\t<tfoot>\n";
 			$nachrichten_text .= "\t\t\t<tr>\n";
-			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">Gesamt</td>\n";
+			$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
 			$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
@@ -2467,23 +2383,6 @@ EOF
 			$nachrichten_text .= "\t\t</tfoot>\n";
 		}
 		$nachrichten_text .= "\t</table>\n";
-
-		$nachrichten_text .= "\t<ul class=\"angreifer-punkte\">\n";
-		foreach($angreifer_anfang as $a=>$i)
-		{
-			$p = 0;
-			if(isset($angreifer_punkte[$a])) $p = $angreifer_punkte[$a];
-			$nachrichten_text .= "\t\t<li>Der Angreifer <span class=\"koords\">".utf8_htmlentities($a)."</span> hat ".ths($p)."&nbsp;Punkte verloren.</li>\n";
-		}
-		$nachrichten_text .= "\t</ul>\n";
-		$nachrichten_text .= "\t<ul class=\"verteidiger-punkte\">\n";
-		foreach($verteidiger_anfang as $v=>$i)
-		{
-			$p = 0;
-			if(isset($verteidiger_punkte[$v])) $p = $verteidiger_punkte[$v];
-			$nachrichten_text .= "\t\t<li>Der Verteidiger <span class=\"koords\">".utf8_htmlentities($v)."</span> hat ".ths($p)."&nbsp;Punkte verloren.</li>\n";
-		}
-		$nachrichten_text .= "\t</ul>\n";
 
 		if(array_sum($truemmerfeld) > 0)
 		{
@@ -2499,32 +2398,180 @@ EOF
 		$angreifer_new_erfahrung = array_sum($verteidiger_punkte)/1000;
 		$verteidiger_new_erfahrung = array_sum($angreifer_punkte)/1000;
 		$nachrichten_text .= "\t<ul class=\"kampferfahrung\">\n";
-		$nachrichten_text .= "\t\t<li class=\"c-angreifer\">".ucfirst($angreifer_nominativ)." ".$angreifer_praedikat2." ".ths($angreifer_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
-		$nachrichten_text .= "\t\t<li class=\"c-verteidiger\">".ucfirst($verteidiger_nominativ)." ".$verteidiger_praedikat2." ".ths($verteidiger_new_erfahrung)."&nbsp;Kampferfahrungspunkte gesammelt.</li>\n";
+		$nachrichten_text .= "\t\t<li class=\"c-angreifer\">%16\$s</li>\n";
+		$nachrichten_text .= "\t\t<li class=\"c-verteidiger\">%17\$s</li>\n";
 		$nachrichten_text .= "\t</ul>\n";
 		foreach($users_angreifer as $user)
 			$user->addScores(6, $angreifer_new_erfahrung);
 		foreach($users_verteidiger as $user)
 			$user->addScores(6, $verteidiger_new_erfahrung);
 
-		$nachrichten_text .= "</div>\n";
+		$nachrichten = array();
+		foreach($users_angreifer as $n=>$u)
+		{
+			$nachrichten[$n] = $uu->_i(sprintf($nachrichten_text,
+				h($u->ngettext("Flotten des Angreifers", "Flotten der Angreifer", count($angreifer_anfang))),
+				h($u->_("Schiffstyp")),
+				h($u->_("Anzahl")),
+				h($u->_("Gesamtstärke")),
+				h($u->_("Gesamtschild")),
+				h($u->_("Genauere Informationen anzeigen")),
+				h($u->_("Gesamt")),
+				h($u->ngettext("Flotten des Verteidigers", "Flotten der Verteidiger", count($verteidiger_anfang))),
+				h($u->_("Keine.")),
+				h(sprintf($u->_("%s sind stärker ausgebildet als %s und %s."), $u->ngettext("Die Sensoren des Angreifers", "Die Sensoren der Angreifer", count($angreifer_anfang)), $u->ngettext("die des Verteidigers", "die der Verteidiger", count($verteidiger_anfang)), $u->ngettext("ermöglichen es ihm, den Erstschlag auszuführen", "ermöglichen es ihnen, den Erstschlag auszuführen", count($angreifer_anfang)))),
+				h(sprintf($u->_("%s sind %s nicht überlegen, weshalb %s."), $u->ngettext("Die Sensoren des Angreifers", "Die Sensoren der Angreifer", count($angreifer_anfang)), $u->ngettext("denen des Verteidigers", "denen der Verteidiger", count($verteidiger_anfang)), $u->ngettext("letzterer den Erstschlag ausführt", "letztere den Erstschlag ausführen", count($verteidiger_anfang)))),
+				implode("", $nachrichten_runden[$n]),
+				h($u->ngettext("Der Kampf ist vorüber. Gewinner ist der Angreifer.", "Der Kampf ist vorüber. Gewinner sind die Angreifer.", count($angreifer_anfang))),
+				h($u->ngettext("Der Kampf ist vorüber. Gewinner ist der Verteidiger.", "Der Kampf ist vorüber. Gewinner sind die Verteidiger.", count($verteidiger_anfang))),
+				h($u->_("Der Kampf ist vorüber. Er endet unentschieden.")),
+				h(sprintf($u->ngettext("Der Angreifer hat %s Kampferfahrungspunkte gesammelt.", "Die Angreifer haben %s Kampferfahrungspunkte gesammelt.", count($angreifer_anfang)), ths($angreifer_new_erfahrung))),
+				h(sprintf($u->ngettext("Der Verteidiger hat %s Kampferfahrungspunkte gesammelt.", "Die Verteidiger haben %s Kampferfahrungspunkte gesammelt.", count($verteidiger_anfang)), ths($verteidiger_new_erfahrung)))
+			));
 
+			$nachrichten[$n] .= "\t<ul class=\"angreifer-punkte\">\n";
+			foreach($angreifer_anfang as $a=>$i)
+			{
+				$p = 0;
+				if(isset($angreifer_punkte[$a])) $p = $angreifer_punkte[$a];
+				$nachrichten[$n] .= "\t\t<li>".sprintf(h($u->_("Der Angreifer %s hat %s Punkte verloren.")), "<span class=\"koords\">".htmlspecialchars($a)."</span>", ths($p))."</li>\n";
+			}
+			$nachrichten[$n] .= "\t</ul>\n";
+			$nachrichten[$n] .= "\t<ul class=\"verteidiger-punkte\">\n";
+			foreach($verteidiger_anfang as $v=>$i)
+			{
+				$p = 0;
+				if(isset($verteidiger_punkte[$v])) $p = $verteidiger_punkte[$v];
+				$nachrichten[$n] .= "\t\t<li>".sprintf(h($u->_("Der Verteidiger %s hat %s Punkte verloren.")), "<span class=\"koords\">".htmlspecialchars($v)."</span>", ths($p))."</li>\n";
+			}
+			$nachrichten[$n] .= "\t</ul>\n";
 
-		# $winner:  1: Angreifer gewinnt
-		#           0: Unentschieden
-		#          -1: Verteidiger gewinnt
-		#
-		# $angreifer: Wie uebergeben, Flotten nach der Schlacht
-		# $verteidiger: Wie uebergeben, Flotten nach der Schlacht
-		#
-		# $nachrichten_text: Kampfbericht, es muessen noch fuer jeden Benutzer die regenerierten
-		#                    Verteidigungsrohstoffe aus $verteidiger_ress angehaengt werden.
-		#
-		# $truemmerfeld: Das Truemmerfeld, das entstehen wird
-		#
-		# Rohstoffe muessen noch gestohlen werden
+			if(array_sum($truemmerfeld) > 0)
+			{
+				$nachrichten_text .= "\t<p>\n";
+				$nachrichten_text .= "\t\t".h($u->_("Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: %s."), sprintf($u->_("%s %s, %s %s, %s %s und %s %s"), ths($truemmerfeld[0]), $u->_("[ress_0]"), ths($truemmerfeld[1]), $u->_("[ress_1]"), ths($truemmerfeld[2]), $u->_("[ress_2]"), ths($truemmerfeld[3]), $u->_("[ress_3]")))."\n";
+				$nachrichten_text .= "\t</p>\n";
+			}
+		}
 
-		return array($winner, $angreifer, $verteidiger, $nachrichten_text, $verteidiger_ress, $truemmerfeld);
+		if(array_sum($truemmerfeld) > 0)
+			truemmerfeld::add($target[0], $target[1], $target[2], $truemmerfeld[0], $truemmerfeld[1], $truemmerfeld[2], $truemmerfeld[3]);
+
+		$angreifer_return = array();
+		foreach($angreifer as $username=>$fleet)
+			$angreifer_return[$username] = array($fleet, $angreifer_param[$username][1]);
+
+		# Rohstoffe stehlen
+		if($winner == 1)
+		{
+			# Angreifer haben gewonnen
+
+			# Maximal die Haelfte der vorhandenen Rohstoffe
+			$ress_max = $target_user->getRess();
+			$ress_max[0] = floor($ress_max[0]*.5);
+			$ress_max[1] = floor($ress_max[1]*.5);
+			$ress_max[2] = floor($ress_max[2]*.5);
+			$ress_max[3] = floor($ress_max[3]*.5);
+			$ress_max[4] = floor($ress_max[4]*.5);
+			unset($ress_max[5]);
+			$ress_max_total = array_sum($ress_max);
+
+			# Transportkapazitaeten der Angreifer
+			$trans = array();
+			$trans_total = 0;
+			foreach($angreifer as $username=>$fleet)
+			{
+				$trans[$username] = -array_sum($angreifer_return[$username][1]);
+				$this_user = Classes::User($username);
+				foreach($fleet as $id=>$count)
+				{
+					$item_info = $this_user->getItemInfo($id, 'schiffe');
+					$this_trans = $item_info['trans'][0]*$count;
+					$trans[$username] += $this_trans;
+					$trans_total += $this_trans;
+				}
+			}
+
+			if($trans_total < $ress_max_total)
+			{
+				$f = $trans_total/$ress_max_total;
+				$ress_max[0] = floor($ress_max[0]*$f);
+				$ress_max[1] = floor($ress_max[1]*$f);
+				$ress_max[2] = floor($ress_max[2]*$f);
+				$ress_max[3] = floor($ress_max[3]*$f);
+				$ress_max[4] = floor($ress_max[4]*$f);
+				$ress_max_total = array_sum($ress_max);
+				$diff = $trans_total-$ress_max_total;
+				$diff2 = $diff%5;
+				$each = $diff-$diff2;
+				$ress_max[0] += $each;
+				$ress_max[1] += $each;
+				$ress_max[2] += $each;
+				$ress_max[3] += $each;
+				$ress_max[4] += $each;
+				switch($diff)
+				{
+					case 4: $ress_max[3]++;
+					case 3: $ress_max[2]++;
+					case 2: $ress_max[1]++;
+					case 1: $ress_max[0]++;
+				}
+			}
+
+			foreach($trans as $username=>$cap)
+			{
+				$rtrans = array();
+				$p = $cap/$trans_total;
+				$angreifer_return[$username][0] += ($rtrans[0] = floor($ress_max[0]*$p));
+				$angreifer_return[$username][1] += ($rtrans[1] = floor($ress_max[1]*$p));
+				$angreifer_return[$username][2] += ($rtrans[2] = floor($ress_max[2]*$p));
+				$angreifer_return[$username][3] += ($rtrans[3] = floor($ress_max[3]*$p));
+				$angreifer_return[$username][4] += ($rtrans[4] = floor($ress_max[4]*$p));
+
+				$nachrichten[$username] .= "\n\t<p class=\"rohstoffe-erbeutet selbst\">".h(sprintf($users_all[$username]->_("Sie haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."), ths($rtrans[0]), $users_all[$username]->_("[ress_0]"), ths($rtrans[1]), $users_all[$username]->_("[ress_1]"), ths($rtrans[2]), $users_all[$username]->_("[ress_2]"), ths($rtrans[3]), $users_all[$username]->_("[ress_3]"), ths($rtrans[4]), $users_all[$username]->_("[ress_4]")))."</p>\n";
+			}
+
+			$target_user->subtractRess($ress_max, false);
+
+			foreach($users_all as $username=>$u)
+			{
+				if(isset($angreifer2[$username])) continue;
+				$nachrichten[$username] .= "\n\t<p class=\"rohstoffe-erbeutet andere\">".h(sprintf($u->_("Die überlebenden Angreifer haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."), ths($ress_max[0]), $u->_("[ress_0]"), ths($ress_max[1]), $u->_("[ress_1]"), ths($ress_max[2]), $u->_("[ress_2]"), ths($ress_max[3]), $u->_("[ress_3]"), ths($ress_max[4]), $u->_("[ress_4]")))."</p>\n";
+			}
+		}
+
+		if(isset($verteidiger_ress[$target_owner]))
+			$nachrichten[$target_owner] .= "\n\t<p class=\"verteidigung-wiederverwertung\">".h(sprintf($target_user->_("Durch Wiederverwertung konnten folgende Rohstoffe aus den Trümmern der zerstörten Verteidigungsanlagen wiederhergestellt werden: %s"), sprintf($target_user->_("%s %s, %s %s, %s %s und %s %s"), ths($verteidiger_ress[$target_owner][0]), $target_user->_("[ress_0]"), ths($verteidiger_ress[$target_owner][1]), $target_user->_("[ress_1]"), ths($verteidiger_ress[$target_owner][2]), $target_user->_("[ress_2]"), ths($verteidiger_ress[$target_owner][3]), $target_user->_("[ress_3]"))))."</p>\n";
+
+		# Nachrichten zustellen
+		foreach($nachrichten as $username=>$text)
+		{
+			$message = Classes::Message();
+			if(!$message->create()) continue;
+			$message->text($text);
+			$message->subject(sprintf($users_all[$username]->_("Kampf auf %s"), $planet));
+			$message->html(true);
+			$message->addUser($username, 1);
+		}
+
+		foreach($users_verteidiger as $username=>$user_obj)
+		{
+			foreach($verteidiger_anfang[$username] as $id=>$count)
+			{
+				$count2 = 0;
+				if(isset($verteidiger[$username]) && isset($verteidiger[$username][$id]))
+					$count2 = $verteidiger[$username][$id];
+				if($count2 != $count)
+				{
+					if($username == $target_owner)
+						$target_user->changeItemLevel($id, $count2-$count);
+					else $target_user->subForeignFleet($username, $id, $count-$count2);
+				}
+			}
+			$user_obj->recalcHighscores(false, false, false, true, true);
+		}
+
+		return $angreifer_return;
 	}
 
 	function array_sum_r($array)
@@ -2534,4 +2581,3 @@ EOF
 			$sum += array_sum($val);
 		return $sum;
 	}
-?>

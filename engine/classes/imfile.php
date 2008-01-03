@@ -92,4 +92,3 @@
 			return $this->query("UPDATE notifications SET fingerprint = ".$this->escape($fingerprint)." WHERE username = ".$this->escape($username).";");
 		}
 	}
-?>

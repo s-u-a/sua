@@ -378,4 +378,3 @@
 			return self::$database->messageExists($this->name);
 		}
 	}
-?>

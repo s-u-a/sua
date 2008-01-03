@@ -161,4 +161,3 @@
 			return ($this->query("DELETE FROM highscores_users;") && $this->query("DELETE FROM highscores_alliances;"));
 		}
 	}
-?>

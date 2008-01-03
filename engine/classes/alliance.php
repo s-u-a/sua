@@ -1,4 +1,8 @@
 <?php
+	/**
+	  * Repraesentiert eine Allianz im Spiel.
+	*/
+
 	class Alliance extends Dataset
 	{
 		protected $datatype = 'alliance';
@@ -96,11 +100,20 @@
 			else return false;
 		}
 
+		/**
+		  * Prueft, ob die Allianz mit dem Tag $alliance existiert.
+		*/
+
 		static function allianceExists($alliance)
 		{
 			$filename = global_setting("DB_ALLIANCES").'/'.strtolower(urlencode($alliance));
 			return (is_file($filename) && is_readable($filename));
 		}
+
+		/**
+		  * Gibt den Punkteschnitt der Mitglieder zurueck.
+		  * @return false bei Fehlschlag
+		*/
 
 		function getAverageScores()
 		{
@@ -109,12 +122,22 @@
 			return floor($this->getTotalScores()/$this->getMembersCount());
 		}
 
+		/**
+		  * Gibt die Anzahl der Mitglieder zurueck.
+		  * @return false bei Fehlschlag
+		*/
+
 		function getMembersCount()
 		{
 			if(!$this->status) return false;
 
 			return count($this->raw['members']);
 		}
+
+		/**
+		  * Gibt die Punktesumme der Mitglieder zurueck.
+		  * @return false bei Fehlschlag
+		*/
 
 		function getTotalScores()
 		{
@@ -125,6 +148,11 @@
 				$overall += $member['punkte'];
 			return $overall;
 		}
+
+		/**
+		  * Verrechnet die Punktzahlen der Mitglieder neu und aktualisiert den Eintrag in den Allianzhighscores.
+		  * @return (boolean) Erfolg
+		*/
 
 		function recalcHighscores()
 		{
@@ -141,6 +169,11 @@
 			return true;
 		}
 
+		/**
+		  * Gibt die Platzierung in den Allianzhighscores hinsichtlich des durchschnittlichen Punktestands zurueck.
+		  * @return false bei Fehlschlag
+		*/
+
 		function getRankAverage()
 		{
 			if(!$this->status) return false;
@@ -149,6 +182,11 @@
 			return $highscores->getPosition('alliances', $this->getName(), 'scores_average');
 		}
 
+		/**
+		  * Gibt die Platzierung in den Allianzhighscores hinsichtlich der Punktesumme der Mitglieder zurueck.
+		  * @return false bei Fehlschlag
+		*/
+
 		function getRankTotal()
 		{
 			if(!$this->status) return false;
@@ -156,6 +194,21 @@
 			$highscores = Classes::Highscores();
 			return $highscores->getPosition('alliances', $this->getName(), 'scores_total');
 		}
+
+		/**
+		  * Setzt die Erlaubnis fuer das Mitglied $user, die Aktion $key durchzufueren.
+		  * Folgende Aktionen sind moeglich:
+		  * 0: Rundschreiben verfassen
+		  * 1: Koordinaten der Mitglieder einsehen
+		  * 2: Internen Bereich bearbeiten
+		  * 3: Externen Bereich bearbeiten
+		  * 4: Bewerbungen annehmen/ablehnen
+		  * 5: Mitglieder hinauswerfen
+		  * 6: Raenge verteilen
+		  * 7: Benutzerrechte verteilen
+		  * 8: Bündnis aufloesen
+		  * @return (boolean) Erfolg
+		*/
 
 		function setUserPermissions($user, $key, $permission)
 		{
@@ -166,6 +219,12 @@
 			$this->changed = true;
 			return true;
 		}
+
+		/**
+		  * Setzt oder liest die Eigenschaft der Allianz, ob neue Bewerbungen erlaubt sind.
+		  * @return (boolean) Den Erfolg des Setzens
+		  * @return (boolean) Den aktuellen Status, wenn $allow nicht oder auf -1 gesetzt ist
+		*/
 
 		function allowApplications($allow=-1)
 		{
@@ -179,6 +238,10 @@
 			return true;
 		}
 
+		/**
+		  * Ueberprueft, ob das Mitglied $user die Berechtigung $key besitzt. Siehe setUserPermissions() fuer die Liste der Berechtigungen.
+		*/
+
 		function checkUserPermissions($user, $key)
 		{
 			if(!$this->status) return false;
@@ -187,6 +250,11 @@
 			if(!isset($this->raw['members'][$user]['permissions'][$key])) return false;
 			return $this->raw['members'][$user]['permissions'][$key];
 		}
+
+		/**
+		  * Aktualisiert den gecachten Punktestand eines Mitglieds.
+		  * @return (boolean) Erfolg
+		*/
 
 		function setUserScores($user, $scores)
 		{
@@ -201,6 +269,11 @@
 			return true;
 		}
 
+		/**
+		  * Liefert den gecachten Punktestand eines Mitglieds zurueck.
+		  * @return false bei Fehlschlag
+		*/
+
 		function getUserScores($user)
 		{
 			if(!$this->status) return false;
@@ -209,6 +282,11 @@
 			return $this->raw['members'][$user]['punkte'];
 		}
 
+		/**
+		  * Gibt die Beitrittszeit eines Mitglieds zurueck.
+		  * @return false bei Fehlschlag
+		*/
+
 		function getUserJoiningTime($user)
 		{
 			if(!$this->status) return false;
@@ -216,6 +294,12 @@
 
 			return $this->raw['members'][$user]['time'];
 		}
+
+		/**
+		  * Gibt die Mitgliederliste des Arrays zurueck.
+		  * ( Benutzername => [ 'time' => Beitrittszeit; 'rang' => Benutzerrang; 'punkte' => Punkte-Cache; 'permissions' => ( Berechtigungsnummer, siehe setUserPermissions() => Berechtigung? ) ] )
+		  * @return false bei Fehlschlag
+		*/
 
 		function getUsersList($sortby=false, $invert=false)
 		{
@@ -247,6 +331,11 @@
 			return $members;
 		}
 
+		/**
+		  * Gibt ein Array aller Mitglieder zurueck, die eine bestimmte Berechtigung haben. Fuer die Bedeutung der Berechtigungen siehe setUserPermission().
+		  * @return false bei Fehlschlag
+		*/
+
 		function getUsersWithPermission($permission)
 		{
 			if(!$this->status) return false;
@@ -261,6 +350,11 @@
 			return $users;
 		}
 
+		/**
+		  * Setzt den Rang eines Benutzers.
+		  * @return (boolean) Erfolg
+		*/
+
 		function setUserStatus($user, $status)
 		{
 			if($this->status != 1) return false;
@@ -271,6 +365,11 @@
 			return true;
 		}
 
+		/**
+		  * Gibt den Rang eines Mitglieds zurueck.
+		  * @return false bei Fehlschlag
+		*/
+
 		function getUserStatus($user)
 		{
 			if(!$this->status) return false;
@@ -278,6 +377,12 @@
 			if(!isset($this->raw['members'][$user])) return false;
 			return $this->raw['members'][$user]['rang'];
 		}
+
+		/**
+		  * Nimmt einen Benutzer in die Allianz auf. Rang ist 'Neuling', keinerlei Rechte.
+		  * Stellt die Allianz beim Benutzer <strong>nicht</strong> ein.
+		  * @return (boolean) Erfolg
+		*/
 
 		function addUser($user, $punkte=0)
 		{
@@ -299,6 +404,12 @@
 			return true;
 		}
 
+		/**
+		  * Entfernt einen Benutzer aus einer Allianz. Entfernt die Allianz <strong>nicht</strong> aus dem Benutzer-Array.
+		  * Ist dies der letzte Benutzer, wird die Allianz aufgeloest.
+		  * @return (boolean) Erfolg
+		*/
+
 		function removeUser($user)
 		{
 			if($this->status != 1) return false;
@@ -318,6 +429,11 @@
 			return true;
 		}
 
+		/**
+		  * Fuegt eine neue Bewerbung des Benutzers $user hinzu. Veraendert das User-Array <strong>nicht</strong>.
+		  * @return (boolean) Erfolg
+		*/
+
 		function newApplication($user)
 		{
 			if($this->status != 1) return false;
@@ -331,6 +447,11 @@
 
 			return true;
 		}
+
+		/**
+		  * Entfernt die Bewerbung des Benutzers $user wieder. Veraendert das User-Array <strong>nicht</strong>.
+		  * @return (boolean) Erfolg
+		*/
 
 		function deleteApplication($user)
 		{
@@ -346,6 +467,11 @@
 			return true;
 		}
 
+		/**
+		  * Gibt die Liste der bewerbenden Benutzer zurueck.
+		  * @return false bei Fehlschlag
+		*/
+
 		function getApplicationsList()
 		{
 			if(!$this->status) return false;
@@ -353,6 +479,13 @@
 			if(!isset($this->raw['bewerbungen'])) return array();
 			return $this->raw['bewerbungen'];
 		}
+
+		/**
+		  * Setzt oder liest den Allianznamen.
+		  * @return false bei Fehlschlag
+		  * @return Allianzname, wenn $name nicht oder auf false gesetzt
+		  * @return (boolean) Erfolg
+		*/
 
 		function name($name=false)
 		{
@@ -371,6 +504,11 @@
 				return true;
 			}
 		}
+
+		/**
+		  * Wirft einen Benutzer aus der Allianz. Die Allianz wird aus dem Benutzerprofil entfernt und eine Benachrichtigung erfolgt.
+		  * @return (boolean) Erfolg
+		*/
 
 		function kickUser($user, $by_whom=false)
 		{
@@ -409,6 +547,12 @@
 			return true;
 		}
 
+		/**
+		  * Liefert die externe Allianzbeschreibung zurueck.
+		  * @param $parsed Bestimmt, ob der HTML-Code gefiltert sein soll (fuer die Ausgabe).
+		  * @return false bei Fehlschlag
+		*/
+
 		function getExternalDescription($parsed=true)
 		{
 			if(!$this->status) return false;
@@ -429,6 +573,11 @@
 			}
 		}
 
+		/**
+		  * Veraendert die externe Allianzbeschreibung.
+		  * @return (boolean) Erfolg
+		*/
+
 		function setExternalDescription($description)
 		{
 			if($this->status != 1) return false;
@@ -439,6 +588,11 @@
 			return true;
 		}
 
+		/**
+		  * Setzt die interne Allianzbeschreibung.
+		  * @return (boolean) Erfolg
+		*/
+
 		function setInternalDescription($description)
 		{
 			if($this->status != 1) return false;
@@ -448,6 +602,12 @@
 			$this->changed = true;
 			return true;
 		}
+
+		/**
+		  * Setzt die interne Allianzbeschreibung.
+		  * @param $parsed Bestimmt, ob der HTML-Code gefiltert sein soll (fuer die Ausgabe)
+		  * @return false bei Fehlschlag
+		*/
 
 		function getInternalDescription($parsed=true)
 		{
@@ -468,6 +628,11 @@
 				return $this->raw['inner_description'];
 			}
 		}
+
+		/**
+		  * Nimmt eine Bewerbung an und fuegt den Benutzer zur Allianz hinzu. Die Allianz wird ins Benutzerprofil eingetragen und eine Benachrichtigung erfolgt.
+		  * @return (boolean) Erfolg
+		*/
 
 		function acceptApplication($user, $by_whom=false)
 		{
@@ -509,6 +674,11 @@
 
 			return true;
 		}
+
+		/**
+		  * Weist eine Bewerbung zurueck. Das Benutzerprofil wird aktualisiert, eine Benachrichtigung erfolgt.
+		  * @return (boolean) Erfolg
+		*/
 
 		function rejectApplication($user, $by_whom=false)
 		{
@@ -557,6 +727,11 @@
 			return $instance->getName();
 		}
 
+		/**
+		  * Aktualisiert die Mitgliederliste, wenn ein Benutzer umbenannt wird.
+		  * @return (boolean) Erfolg
+		*/
+
 		function renameUser($old_name, $new_name)
 		{
 			if(!$this->status) return false;
@@ -569,6 +744,10 @@
 			return true;
 		}
 
+		/**
+		  * Gibt zurueck, ob eine Umbenennung des Allianztags moeglich ist. Es muss mindestens die globale Einstellung ALLIANCE_RENAME_PERIOD in Tagen vergangen sein, damit eine erneute Umbenennung moeglich ist.
+		*/
+
 		function renameAllowed()
 		{
 			if(!$this->status) return false;
@@ -576,6 +755,10 @@
 			if(!isset($this->raw['last_rename'])) return true;
 			return (time()-$this->raw['last_rename'] >= global_setting("ALLIANCE_RENAME_PERIOD")*86400);
 		}
+
+		/**
+		  * Benennt die Allianz um. Aktualisiert die Highscores und Profile der Mitglieder.
+		*/
 
 		function rename($new_name)
 		{
@@ -619,12 +802,21 @@
 		}
 	}
 
+	/**
+	  * Liefert die Zahl der existierenden Allianzen zurueck. Diese wird aus den Highscores ermittelt.
+	*/
 
 	function getAlliancesCount()
 	{
 		$highscores = Classes::Highscores();
 		return $highscores->getCount('alliances');
 	}
+
+	/**
+	  * uasort-Callbackfunktion zum Sortieren von Allianzmitgliedern.
+	  * Die globale Variable $sortAllianceMembersBy bestimmt, ob nach Beitrittszeit ('time') oder Punkten ('punkte') sortiert werden soll.
+	  * Ist die globale Variable $sortAllianceMembersInvert gesetzt, wird die Sortierung umgekehrt.
+	*/
 
 	function sortAllianceMembersList($a, $b)
 	{
@@ -648,6 +840,11 @@
 		}
 	}
 
+	/**
+	  * Sucht eine Allianz mit dem Tag $search_string. '*' und '?' sind als Wildcards moeglich.
+	  * @return (array) die gefundenen Allianztags
+	*/
+
 	function findAlliance($search_string)
 	{
 		$preg = '/^'.str_replace(array('\\*', '\\?'), array('.*', '.?'), preg_quote($search_string, '/')).'$/i';
@@ -665,4 +862,3 @@
 		natcasesort($alliances);
 		return $alliances;
 	}
-?>

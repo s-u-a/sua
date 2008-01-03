@@ -162,4 +162,3 @@
 			$this->endTransaction();
 		}
 	}
-?>

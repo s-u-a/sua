@@ -3611,6 +3611,14 @@
 			return $ret;
 		}
 
+		function _i($message)
+		{
+			$this->setLanguage();
+			$ret = _i($message);
+			$this->restoreLanguage();
+			return $ret;
+		}
+
 		function ngettext($msgid1, $msgid2, $n)
 		{
 			$this->setLanguage();
@@ -3751,4 +3759,3 @@
 	{
 		return (file_exists(global_setting('DB_USE_OLD_INGTECH')) ? 1 : 2);
 	}
-?>

@@ -83,4 +83,3 @@
 	}
 
 	register_shutdown_function(array('Classes', 'resetInstances'));
-?>

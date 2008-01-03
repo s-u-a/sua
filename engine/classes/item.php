@@ -251,16 +251,16 @@
 		}
 	}
 
-	function makeItemsString($items, $html=true)
+	function makeItemsString($items, $html=true, $_i=false)
 	{
 		isort($items);
 		$array = array();
 		foreach($items as $id=>$count)
 		{
 			if($count <= 0) continue;
-			$item_obj = Classes::Item($id);
-			if($html) $array[] = utf8_htmlentities($item_obj->getInfo('name')).': '.ths($count);
-			else $array[] = $item_obj->getInfo('name').': '.ths($count, true);
+			$str = sprintf(_("%s: %s"), ($_i ? "[item_".$id."]" : _("[item_".$id."]")), ths($count));
+			if($html) $str = htmlspecialchars($str);
+			$array[] = $str;
 		}
 		return implode(', ', $array);
 	}
@@ -319,4 +319,3 @@
 <?=$tabs_str?></dl>
 <?php
 	}
-?>

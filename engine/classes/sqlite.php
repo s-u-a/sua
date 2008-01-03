@@ -186,4 +186,3 @@
 			return $this->connection->commit();
 		}
 	}
-?>
