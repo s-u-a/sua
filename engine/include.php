@@ -206,23 +206,46 @@
 	if(!isset($_SESSION))
 		$GLOBALS['_SESSION'] = array();
 
+	define("MESSAGE_KAEMPFE", 1);
+	define("MESSAGE_SPIONAGE", 2);
+	define("MESSAGE_TRANSPORT", 3);
+	define("MESSAGE_SAMMELN", 4);
+	define("MESSAGE_BESIEDELUNG", 5);
+	define("MESSAGE_BENUTZERNACHRICHTEN", 6);
+	define("MESSAGE_VERBUENDETE", 7);
+	define("MESSAGE_POSTAUSGANG", 8);
+
+	define("FLEET_BESIEDELN", 1);
+	define("FLEET_SAMMELN", 2);
+	define("FLEET_ANGRIFF", 3);
+	define("FLEET_TRANSPORT", 4);
+	define("FLEET_SPIONIEREN", 5);
+	define("FLEET_STATIONIEREN", 6);
+
 	# Maximales Alter in Tagen der Nachrichtensorten
 	$message_type_times = array (
-		1 => 3,
-		2 => 3,
-		3 => 2,
-		4 => 2,
-		5 => 1,
-		6 => 5,
-		7 => 4,
-		8 => 2
+		MESSAGE_KAEMPFE => 3,
+		MESSAGE_SPIONAGE => 3,
+		MESSAGE_TRANSPORT => 2,
+		MESSAGE_SAMMELN => 2,
+		MESSAGE_BESIEDELUNG => 1,
+		MESSAGE_BENUTZERNACHRICHTEN => 5,
+		MESSAGE_VERBUENDETE => 4,
+		MESSAGE_POSTAUSGANG => 2
 	);
 
 	# Fuer veroeffentlichte Nachrichten
 	$public_messages_time = 30;
 
 	# Zu jeder Flottenauftragsart die zugehoerige Nachrichtensorte
-	$types_message_types = array(1=>5, 2=>4, 3=>1, 4=>3, 5=>2, 6=>3);
+	$types_message_types = array (
+		FLEET_BESIEDELN => MESSAGE_BESIEDELUNG,
+		FLEET_SAMMELN => MESSAGE_SAMMELN,
+		FLEET_ANGRIFF => MESSAGE_KAEMPFE,
+		FLEET_TRANSPORT => MESSAGE_TRANSPORT,
+		FLEET_SPIONIEREN => MESSAGE_SPIONAGE,
+		FLEET_STATIONIEREN => MESSAGE_TRANSPORT
+	);
 
 	function &stripslashes_r(&$var)
 	{ # Macht rekursiv in einem Array addslashes() rueckgaengig

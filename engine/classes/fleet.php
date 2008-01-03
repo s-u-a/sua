@@ -197,7 +197,7 @@
 			if(!$this->status) return false;
 			self::databaseInstance();
 
-			foreach($this->raw[1] as $user=>$info)
+			foreach($this->getVisibleUsers() as $user)
 			{
 				$user_obj = Classes::User($user);
 				$user_obj->unsetFleet($this->getName());
@@ -631,6 +631,7 @@
 		{
 			if(!$this->status || !$this->started() || !isset($this->raw[1][$user]) || $this->isFlyingBack()) return false;
 
+			$is_first_user = (array_search($user, array_keys($this->raw[1])) == 0);
 			$start = $this->raw[1][$user][1];
 			$keys = array_keys($this->raw[0]);
 			$to = $to_t = array_shift($keys);
@@ -715,15 +716,46 @@
 				$new_raw[3] = array_merge($this->raw[3], $new_raw[3]);
 			$new_raw[1][$user][3][2] += $back_tritium;
 
-			unset($this->raw[1][$user]);
-
 			if(count($this->raw[1]) <= 0)
 			{
+				unset($this->raw[1][$user]);
+
 				# Aus der Eventdatei entfernen
 				$event_obj = Classes::EventFile();
 				$event_obj->removeCanceledFleet($this->getName());
 
 				$this->destroy();
+			}
+			elseif(!$is_first_user)
+			{
+				# Weitere Ziele entfernen
+				$remaining_users = array_keys($this->raw[1]);
+				$first_user = array_shift($remaining_users);
+				$targets = array_keys($this->raw[0]);
+				array_shift($targets);
+				$check_users = array();
+				foreach($targets as $target)
+				{
+					if(substr($target, -1) != "T")
+					{
+						$target_arr = explode(":", $target);
+						$galaxy_obj = Classes::Galaxy($target_arr[0]);
+						$check_users[] = $galaxy_obj->getPlanetOwner($target_arr[1], $target_arr[2]);
+					}
+					unset($this->raw[0][$target]);
+				}
+				if($this->getCurrentType() != 6)
+					$fleet_obj->addTarget($this->getLastTarget($first_user), $this->getCurrentType(), true);
+				unset($this->raw[1][$user]);
+				$visible_users = $this->getVisibleUsers();
+				foreach($check_users as $u)
+				{
+					if($u && !in_array($u, $visible_users))
+					{
+						$u_obj = Classes::User($u);
+						$u_obj->unsetFleet($this->getName());
+					}
+				}
 			}
 
 			$new = Classes::Fleet();
@@ -732,7 +764,8 @@
 			$new->createNextEvent();
 
 			$user_obj = Classes::User($user);
-			$user_obj->unsetFleet($this->getName());
+			if(!in_array($user, $this->getVisibleUsers()))
+				$user_obj->unsetFleet($this->getName());
 			$user_obj->addFleet($new->getName());
 
 			if(count($this->raw[1]) <= 0)
@@ -918,6 +951,27 @@
 			$distance = round($distance*1000);
 
 			return $distance;
+		}
+
+		/**
+		  * Liefert ein Array mit den Benutzern zurueck, die die Flotte sehen koennen.
+		*/
+
+		function getVisibleUsers()
+		{
+			if(!$this->status) return array();
+
+			$users = array_keys($this->raw[1]);
+			foreach(array_keys($this->raw[0]) as $target)
+			{
+				if(substr($target, -1) == "T") continue;
+				$target = explode(":", $target);
+				$galaxy_obj = Classes::Galaxy($target[0]);
+				$owner = $galaxy_obj->getPlanetOwner($target[1], $target[2]);
+				if($owner && !in_array($owner, $users))
+					$users[] = $owner;
+			}
+			return $users;
 		}
 
 		function arriveAtNextTarget()
@@ -1477,7 +1531,7 @@
 				}
 
 				# Vom Empfaenger entfernen
-				if($target_user && $target_owner != $first_user)
+				if($target_owner && !in_array($target_owner, $this->getVisibleUsers()))
 					$target_user->unsetFleet($this->getName());
 
 				$this->changed = true;
@@ -1498,7 +1552,6 @@
 				foreach($users as $user)
 				{
 					$user_obj = Classes::User($user);
-					$user_obj->unsetFleet($this->getName());
 					$new_fleet = Classes::Fleet();
 
 					# Flugerfahrung
@@ -1518,6 +1571,9 @@
 						$user_obj->addFleet($new_fleet->getName());
 					}
 					unset($this->raw[1][$user]);
+
+					if(!in_array($user, $this->getVisibleUsers()))
+						$user_obj->unsetFleet($this->getName());
 				}
 
 				if(!$further) $this->destroy();
