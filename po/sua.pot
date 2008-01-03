@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-22 19:25+0100\n"
+"POT-Creation-Date: 2008-01-03 05:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -528,7 +528,7 @@ msgid "Name des Administrators"
 msgstr ""
 
 #: ../admin/usermanagement.php:50 ../admin/usermanagement.php:160
-#: ../login/help/allianceinfo.php:33
+#: ../login/help/allianceinfo.php:33 ../login/allianz.php:538
 msgid "Name"
 msgstr ""
 
@@ -1002,9 +1002,9 @@ msgstr ""
 msgid "Speichern&[admin/news.php|1]"
 msgstr ""
 
-#: ../admin/logs.php:31 ../admin/logs.php:88 ../login/scripts/include.php:306
-#: ../login/scripts/include.php:315 ../login/scripts/include.php:330
-#: ../index.php:43
+#: ../admin/logs.php:31 ../admin/logs.php:88 ../login/allianz.php:284
+#: ../login/scripts/include.php:306 ../login/scripts/include.php:315
+#: ../login/scripts/include.php:330 ../index.php:43
 msgid "Y-m-d, H:i:s"
 msgstr ""
 
@@ -1204,11 +1204,13 @@ msgstr ""
 msgid "Abmelden nicht vergessen&[admin/include.php|2]"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:9
+#: ../login/help/allianceinfo.php:9 ../login/allianz.php:111
 msgid "Diese Allianz gibt es nicht."
 msgstr ""
 
 #: ../login/help/allianceinfo.php:19 ../login/help/playerinfo.php:18
+#: ../login/allianz.php:67 ../login/allianz.php:151 ../login/allianz.php:350
+#: ../login/allianz.php:368 ../login/allianz.php:640
 #: ../login/scripts/include.php:114 ../login/flotten.php:29 ../passwd.php:18
 #: ../passwd.php:52 ../passwd.php:77
 msgid "Datenbankfehler."
@@ -1219,15 +1221,15 @@ msgstr ""
 msgid "Allianzinfo „%s“"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:30
+#: ../login/help/allianceinfo.php:30 ../login/allianz.php:535
 msgid "Allianztag"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:36
+#: ../login/help/allianceinfo.php:36 ../login/allianz.php:544
 msgid "Mitglieder"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:39
+#: ../login/help/allianceinfo.php:39 ../login/allianz.php:547
 msgid "Punkteschnitt"
 msgstr ""
 
@@ -1236,7 +1238,7 @@ msgstr ""
 msgid "(Platz %s von %s)"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:42
+#: ../login/help/allianceinfo.php:42 ../login/allianz.php:550
 msgid "Gesamtpunkte"
 msgstr ""
 
@@ -1248,7 +1250,7 @@ msgstr ""
 msgid "Bei dieser Allianz bewerben&[login/help/allianceinfo.php|1]"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:65
+#: ../login/help/allianceinfo.php:65 ../login/allianz.php:121
 msgid "Diese Allianz akzeptiert keine neuen Bewerbungen."
 msgstr ""
 
@@ -1321,27 +1323,27 @@ msgid "Ausgegebene Rohstoffe"
 msgstr ""
 
 #: ../login/help/playerinfo.php:62 ../login/help/description.php:131
-#: ../login/scripts/include.php:280 ../engine/include.php:652
+#: ../login/scripts/include.php:280 ../engine/include.php:734
 msgid "[ress_0]"
 msgstr ""
 
 #: ../login/help/playerinfo.php:65 ../login/help/description.php:137
-#: ../login/scripts/include.php:283 ../engine/include.php:654
+#: ../login/scripts/include.php:283 ../engine/include.php:736
 msgid "[ress_1]"
 msgstr ""
 
 #: ../login/help/playerinfo.php:68 ../login/help/description.php:143
-#: ../login/scripts/include.php:286 ../engine/include.php:656
+#: ../login/scripts/include.php:286 ../engine/include.php:738
 msgid "[ress_2]"
 msgstr ""
 
 #: ../login/help/playerinfo.php:71 ../login/help/description.php:149
-#: ../login/scripts/include.php:289 ../engine/include.php:658
+#: ../login/scripts/include.php:289 ../engine/include.php:740
 msgid "[ress_3]"
 msgstr ""
 
 #: ../login/help/playerinfo.php:74 ../login/help/description.php:155
-#: ../login/scripts/include.php:292 ../engine/include.php:662
+#: ../login/scripts/include.php:292 ../engine/include.php:744
 msgid "[ress_4]"
 msgstr ""
 
@@ -1357,7 +1359,8 @@ msgstr ""
 msgid "Dieser Benutzer ist derzeit in keinem Bündnis."
 msgstr ""
 
-#: ../login/help/playerinfo.php:106
+#: ../login/help/playerinfo.php:106 ../login/allianz.php:264
+#: ../login/allianz.php:476
 msgid "Informationen zu diesem Spieler anzeigen"
 msgstr ""
 
@@ -1476,7 +1479,8 @@ msgid "Abhängigkeiten"
 msgstr ""
 
 #: ../login/help/dependencies.php:32 ../login/help/description.php:87
-#: ../login/flotten.php:889 ../engine/classes/item.php:314
+#: ../login/allianz.php:191 ../login/flotten.php:889
+#: ../engine/classes/item.php:314
 msgid "Genauere Informationen anzeigen"
 msgstr ""
 
@@ -1548,7 +1552,7 @@ msgid "Stufe"
 msgstr ""
 
 #: ../login/help/description.php:161 ../login/scripts/include.php:295
-#: ../engine/include.php:667
+#: ../engine/include.php:749
 msgid "[ress_5]"
 msgstr ""
 
@@ -1600,6 +1604,413 @@ msgstr ""
 msgid "[fleet_"
 msgstr ""
 
+#: ../login/allianz.php:20 ../login/allianz.php:38 ../login/allianz.php:110
+#: ../login/allianz.php:120 ../login/allianz.php:127 ../login/allianz.php:140
+#: ../login/allianz.php:214 ../login/allianz.php:339 ../login/allianz.php:357
+#: ../login/allianz.php:377 ../login/allianz.php:391 ../login/allianz.php:439
+msgid "Zurück zur Allianzübersicht"
+msgstr ""
+
+#: ../login/allianz.php:20
+msgid "Allian&z[login/allianz.php|0]"
+msgstr ""
+
+#: ../login/allianz.php:21
+msgid "Ihre Bewerbung wurde erfolgreich zurückgezogen."
+msgstr ""
+
+#: ../login/allianz.php:27 ../login/allianz.php:160 ../login/allianz.php:499
+msgid "Allianz"
+msgstr ""
+
+#: ../login/allianz.php:28
+#, php-format
+msgid "Sie haben derzeit eine laufende Bewerbung bei der Allianz %s."
+msgstr ""
+
+#: ../login/allianz.php:30
+msgid "Bewerbung zurückziehen&[login/allianz.php|1]"
+msgstr ""
+
+#: ../login/allianz.php:38
+msgid "Allian&z[login/allianz.php|2]"
+msgstr ""
+
+#: ../login/allianz.php:46 ../login/allianz.php:402
+msgid "Das Allianztag muss mindestens zwei Bytes lang sein."
+msgstr ""
+
+#: ../login/allianz.php:52 ../login/allianz.php:408
+msgid "Das Allianztag darf höchstens sechs Bytes lang sein."
+msgstr ""
+
+#: ../login/allianz.php:58 ../login/allianz.php:414
+msgid "Es gibt schon eine Allianz mit diesem Tag."
+msgstr ""
+
+#: ../login/allianz.php:84
+#, php-format
+msgid "Die Allianz %s wurde erfolgreich gegründet."
+msgstr ""
+
+#: ../login/allianz.php:93
+msgid "Allianztag&[login/allianz.php|2]"
+msgstr ""
+
+#: ../login/allianz.php:94
+msgid ""
+"Das Allianztag wird in der Karte und in den Highscores vor dem Benutzernamen "
+"angezeigt."
+msgstr ""
+
+#: ../login/allianz.php:94
+msgid "Allianztag&[login/allianz.php|1]"
+msgstr ""
+
+#: ../login/allianz.php:96
+msgid "Allianzname&[login/allianz.php|2]"
+msgstr ""
+
+#: ../login/allianz.php:97
+msgid "Allianzname&[login/allianz.php|1]"
+msgstr ""
+
+#: ../login/allianz.php:99
+msgid "Allian&z gründen[login/allianz.php|2]"
+msgstr ""
+
+#: ../login/allianz.php:110
+msgid "Allian&z[login/allianz.php|3]"
+msgstr ""
+
+#: ../login/allianz.php:120
+msgid "Allian&z[login/allianz.php|4]"
+msgstr ""
+
+#: ../login/allianz.php:127
+msgid "Allian&z[login/allianz.php|5]"
+msgstr ""
+
+#: ../login/allianz.php:130 ../login/allianz.php:131
+msgid "Bewerbungste&xt[login/allianz.php|5]"
+msgstr ""
+
+#: ../login/allianz.php:133
+msgid "Bewerbu&ng absenden"
+msgstr ""
+
+#: ../login/allianz.php:140
+msgid "Allian&z[login/allianz.php|6]"
+msgstr ""
+
+#: ../login/allianz.php:145
+msgid "Ihre Bewerbung wurde erfolgreich abgesandt."
+msgstr ""
+
+#: ../login/allianz.php:161
+msgid ""
+"Sie gehören derzeit keiner Allianz an. Es bieten sich Ihnen zwei "
+"Möglichkeiten."
+msgstr ""
+
+#: ../login/allianz.php:164
+msgid "Eigene Allian&z gründen[login/allianz.php|7]"
+msgstr ""
+
+#: ../login/allianz.php:165
+msgid "Allia&nz suchen"
+msgstr ""
+
+#: ../login/allianz.php:173
+msgid "Suchergebnisse"
+msgstr ""
+
+#: ../login/allianz.php:180
+msgid "Es wurden keine Allianzen gefunden."
+msgstr ""
+
+#: ../login/allianz.php:214
+msgid "Allian&z[login/allianz.php|8]"
+msgstr ""
+
+#: ../login/allianz.php:234
+msgid "Nach Namen sortieren"
+msgstr ""
+
+#: ../login/allianz.php:234
+msgid "Name&[login/allianz.php|8]"
+msgstr ""
+
+#: ../login/allianz.php:235
+msgid "Nach Rang sortieren"
+msgstr ""
+
+#: ../login/allianz.php:235
+msgid "Rang&[login/allianz.php|8]"
+msgstr ""
+
+#: ../login/allianz.php:236
+msgid "Nach Punkten sortieren"
+msgstr ""
+
+#: ../login/allianz.php:236
+msgid "P&unkte[login/allianz.php|8]"
+msgstr ""
+
+#: ../login/allianz.php:237
+msgid "Nach Aufnahmezeit sortieren"
+msgstr ""
+
+#: ../login/allianz.php:237
+msgid "Auf&nahmezeit[login/allianz.php|8]"
+msgstr ""
+
+#: ../login/allianz.php:242 ../login/allianz.php:450
+msgid "Kick"
+msgstr ""
+
+#: ../login/allianz.php:289
+msgid ""
+"Die ausgewählten Benutzer werden beim Speichern der Änderungen aus der "
+"Allianz geworfen."
+msgstr ""
+
+#: ../login/allianz.php:305
+msgid "Neue Bewerbungen akzeptieren"
+msgstr ""
+
+#: ../login/allianz.php:311
+msgid "Ä&nderungen speichern[login/allianz.php|8]"
+msgstr ""
+
+#: ../login/allianz.php:339
+msgid "Allian&z[login/allianz.php|9]"
+msgstr ""
+
+#: ../login/allianz.php:344
+msgid "Die Allianz wurde aufgelöst."
+msgstr ""
+
+#: ../login/allianz.php:357
+msgid "Allian&z[login/allianz.php|10]"
+msgstr ""
+
+#: ../login/allianz.php:362
+msgid "Sie haben die Allianz verlassen."
+msgstr ""
+
+#: ../login/allianz.php:377
+msgid "Allian&z[login/allianz.php|11]"
+msgstr ""
+
+#: ../login/allianz.php:380 ../login/allianz.php:381
+msgid "Interner Allianzte&xt[login/allianz.php|11]"
+msgstr ""
+
+#: ../login/allianz.php:383
+msgid "Speicher&n[login/allianz.php|11]"
+msgstr ""
+
+#: ../login/allianz.php:391
+msgid "Allian&z[login/allianz.php|12]"
+msgstr ""
+
+#: ../login/allianz.php:422 ../login/allianz.php:423
+msgid "Allianztag&[login/allianz.php|12]"
+msgstr ""
+
+#: ../login/allianz.php:423
+#, php-format
+msgid "Das Allianztag kann einmal am Tag geändert werden."
+msgid_plural "Das Allianztag kann alle %s Tage geändert werden."
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../login/allianz.php:425 ../login/allianz.php:426
+msgid "Allianzname&[login/allianz.php|12]"
+msgstr ""
+
+#: ../login/allianz.php:428 ../login/allianz.php:429
+msgid "E&xterner Allianztext&[login/allianz.php|12]"
+msgstr ""
+
+#: ../login/allianz.php:431
+msgid "Speicher&n[login/allianz.php|12]"
+msgstr ""
+
+#: ../login/allianz.php:439
+msgid "Allian&z[login/allianz.php|13]"
+msgstr ""
+
+#: ../login/allianz.php:444
+msgid "Mitglied"
+msgstr ""
+
+#: ../login/allianz.php:445
+msgid "Rundschreiben"
+msgstr ""
+
+#: ../login/allianz.php:445
+msgid "Rundschr."
+msgstr ""
+
+#: ../login/allianz.php:446
+msgid "Koordinaten der anderen Allianzmitglieder einsehen"
+msgstr ""
+
+#: ../login/allianz.php:446
+msgid "Koordinaten"
+msgstr ""
+
+#: ../login/allianz.php:447
+msgid "Internen Bereich bearbeiten"
+msgstr ""
+
+#: ../login/allianz.php:447
+msgid "Intern"
+msgstr ""
+
+#: ../login/allianz.php:448
+msgid "Externen Bereich bearbeiten"
+msgstr ""
+
+#: ../login/allianz.php:448
+msgid "Extern"
+msgstr ""
+
+#: ../login/allianz.php:449
+msgid "Bewerbungen annehmen oder ablehnen"
+msgstr ""
+
+#: ../login/allianz.php:449
+msgid "Bewerbungen"
+msgstr ""
+
+#: ../login/allianz.php:450
+msgid "Mitglieder aus der Allianz werfen"
+msgstr ""
+
+#: ../login/allianz.php:451
+msgid "Ränge verteilen"
+msgstr ""
+
+#: ../login/allianz.php:451
+msgid "Ränge"
+msgstr ""
+
+#: ../login/allianz.php:452
+msgid "Benutzerrechte verteilen"
+msgstr ""
+
+#: ../login/allianz.php:452
+msgid "Rechte"
+msgstr ""
+
+#: ../login/allianz.php:453
+msgid "Bündnis auflösen"
+msgstr ""
+
+#: ../login/allianz.php:453
+msgid "Auflösen"
+msgstr ""
+
+#: ../login/allianz.php:492
+msgid "Speichern&[login/allianz.php|13]"
+msgstr ""
+
+#: ../login/allianz.php:512
+msgid "Laufende Bewerbungen"
+msgstr ""
+
+#: ../login/allianz.php:520
+msgid "Annehmen"
+msgstr ""
+
+#: ../login/allianz.php:521
+#, php-format
+msgid ""
+"Sind Sie sicher, dass Sie die Bewerbung des Benutzers %s ablehnen wollen?"
+msgstr ""
+
+#: ../login/allianz.php:521
+msgid "Ablehnen"
+msgstr ""
+
+#: ../login/allianz.php:527
+msgid "Allianz-Informationen"
+msgstr ""
+
+#: ../login/allianz.php:541
+msgid "Ihr Rang"
+msgstr ""
+
+#: ../login/allianz.php:548 ../login/allianz.php:551
+#, php-format
+msgid "%s (Platz %s von %s)"
+msgstr ""
+
+#: ../login/allianz.php:562
+msgid "Wollen Sie wirklich aus der Allianz austreten?"
+msgstr ""
+
+#: ../login/allianz.php:562
+msgid "Aus der Allianz austreten&[login/allianz.php|13]"
+msgstr ""
+
+#: ../login/allianz.php:568
+msgid ""
+"Sind Sie sicher, dass Sie diese Allianz komplett auflösen und allen "
+"Mitgliedern die Mitgliedschaft kündigen wollen?"
+msgstr ""
+
+#: ../login/allianz.php:568
+msgid "Haben Sie es sich doch noch anders überlegt?"
+msgstr ""
+
+#: ../login/allianz.php:568
+msgid "Allianz auflösen&[login/allianz.php|13]"
+msgstr ""
+
+#: ../login/allianz.php:574
+msgid "I&nternen Bereich bearbeiten[login/allianz.php|13]"
+msgstr ""
+
+#: ../login/allianz.php:580
+msgid "E&xternen Bereich bearbeiten[login/alliance.php|13]"
+msgstr ""
+
+#: ../login/allianz.php:586
+msgid "Benutzerrechte ver&walten"
+msgstr ""
+
+#: ../login/allianz.php:594
+msgid "Internes"
+msgstr ""
+
+#: ../login/allianz.php:600
+msgid "Externes"
+msgstr ""
+
+#: ../login/allianz.php:610
+msgid "Allianzrundschreiben"
+msgstr ""
+
+#: ../login/allianz.php:634
+msgid "Das Allianzrundschreiben wurde erfolgreich versandt."
+msgstr ""
+
+#: ../login/allianz.php:647 ../login/allianz.php:648
+msgid "Betreff&[login/allianz.php|13]"
+msgstr ""
+
+#: ../login/allianz.php:650 ../login/allianz.php:651
+msgid "Text&[login/allianz.php|13]"
+msgstr ""
+
+#: ../login/allianz.php:653
+msgid "Allianzrundschreiben verschicken&[login/allianz.php|13]"
+msgstr ""
+
 #: ../login/scripts/include.php:53
 #, php-format
 msgid "Nicht angemeldet. Bitte %serneut anmelden%s."
@@ -1638,7 +2049,7 @@ msgstr ""
 msgid "[title_abbr_full]"
 msgstr ""
 
-#: ../login/scripts/include.php:202 ../engine/include.php:699
+#: ../login/scripts/include.php:202 ../engine/include.php:785
 msgid "[thousand_separator]"
 msgstr ""
 
@@ -3479,35 +3890,35 @@ msgstr ""
 msgid "%s auf %s, Port %d"
 msgstr ""
 
-#: ../engine/include.php:629
+#: ../engine/include.php:702
 #, php-format
 msgid "%d Tag"
 msgid_plural "%d Tage"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/include.php:631
+#: ../engine/include.php:704
 #, php-format
 msgid "%d Stunde"
 msgid_plural "%d Stunden"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/include.php:633
+#: ../engine/include.php:706
 #, php-format
 msgid "%d Minute"
 msgid_plural "%d Minuten"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/include.php:635
+#: ../engine/include.php:708
 #, php-format
 msgid "%d Sekunde"
 msgid_plural "%d Sekunden"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/include.php:702
+#: ../engine/include.php:788
 msgid "[minus_sign]"
 msgstr ""
 
@@ -3593,7 +4004,7 @@ msgstr ""
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr ""
 
-#: ../engine/classes/user.php:3685 ../impressum.php:15 ../passwd.php:26
+#: ../engine/classes/user.php:3694 ../impressum.php:15 ../passwd.php:26
 msgid "[title_full]"
 msgstr ""
 
@@ -3631,6 +4042,18 @@ msgid ""
 "Ihre Flotte erreicht den Planeten %s und will ihren Auftrag ausführen. "
 "Jedoch wurde der Planet zwischenzeitlich verlassen und Ihre Flotte macht "
 "sich auf den weiteren Weg."
+msgstr ""
+
+#: ../engine/classes/fleet.php:1099
+#, php-format
+msgid "Abbau auf %s"
+msgstr ""
+
+#: ../engine/classes/fleet.php:1101
+#, php-format
+msgid ""
+"Ihre Flotte erreicht das Trümmerfeld auf %s und belädt die %s Tonnen "
+"Sammlerkapazität mit folgenden Rohstoffen: %s."
 msgstr ""
 
 #: ../index.php:18
