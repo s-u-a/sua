@@ -1,4 +1,20 @@
 <?php
+/*
+    This file is part of Stars Under Attack.
+
+    Stars Under Attack is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Stars Under Attack is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
+*/
 	require('scripts/include.php');
 
 	if(isset($_POST['prod']) && is_array($_POST['prod']) && count($_POST['prod']) > 0)
@@ -48,7 +64,7 @@
 	foreach($gebaeude as $id)
 	{
 		$item_info = $me->getItemInfo($id, 'gebaeude');
-		
+
 		if($item_info['level'] <= 0 || !$item_info['has_prod'])
 			continue; # Es wird nichts produziert, also nicht anzeigen
 		$prod = $me->checkProductionFactor($id);
