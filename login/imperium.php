@@ -343,9 +343,15 @@
 <dl class="imperium-roboter-auswirkungsgrade">
 	<dt class="c-bauroboter">Bauroboter</dt>
 	<dd class="c-bauroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.125)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
-
+<?php
+			if(file_exists(global_setting("DB_USE_OLD_ROBTECH")))
+			{
+?>
 	<dt class="c-minenroboter">Minenroboter</dt>
 	<dd class="c-minenroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.03125)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+<?php
+			}
+?>
 </dl>
 <?php
 			break;

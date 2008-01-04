@@ -124,8 +124,10 @@
 
 <div class="faq" id="robots">
 	<h3><?=h(_("Wie funktionieren die Roboter?"))?></h3>
-	<p><?=h(sprintf(_("Die Roboter helfen, Gebäudebauzeiten zu verkürzen und die Rohstoffproduktion zu erhöhen. Der Auswirkungsgrad der Roboter hängt von der aktuellen Stufe %s ab. Jede Stufe %1\$s erhöht dabei den Auswirkungsgrad %s um ein Viertelprozent, den Ihrer Minenroboter um ein Sechzehntelprozent."), _("[item_B9_gen_def]"), _("[item_R01_pl_gen_poss_2]")))?></p>
-	<p><?=h(sprintf(_("Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur Verfügung steht. %s liegt die Grenze bei der Hälfte der ursprünglichen Felderzahl des Planeten (%s zeigt also keine Wirkung), für Minenroboter liegt sie bei der aktuellen Ausbaustufe der zugehörigen Mine (Ausnahme: %s, hier liegt die Grenze beim 2-Fachen der Ausbaustufe %s). Möglicherweise liegt eine zusätzliche Grenze für Minenroboter allerdings ebenfalls bei der Hälfte der Planetengröße. Übersteigt die Roboterzahl die Grenze, zeigen überschüssige Roboter keinerlei Wirkung mehr."), _("[item_R01_pl_conj_for]"), _("[item_F9_nom]"), _("[item_R06_pl_nom]"), _("[item_B4_gen_def]")))?></p>
+	<p><?=h(sprintf(_("Die Roboter helfen, Gebäudebauzeiten zu verkürzen und die Rohstoffproduktion zu erhöhen. Der Auswirkungsgrad der Roboter hängt von der aktuellen Stufe %s ab. Jede Stufe %1\$s erhöht dabei den Auswirkungsgrad %s um einen Viertelprozentpunkt."), _("[item_F2_gen_def]"), _("[item_R01_pl_gen_poss_2]")))?></p>
+	<p><?=h(sprintf(_("Für die Minenroboter gilt folgende Formel bei der Berechnung der Produktion:")))?></p>
+	<p><?=h(_("Produktion = Ausgangsproduktion × ( Roboterzahl ⁄ 250 ) × ( 1 + WURZEL( Ausbaustufe der Roboterbautechnik ) )"))?></p>
+	<p><?=h(sprintf(_("Beachten Sie, dass nur begrenzt Platz für Roboter auf Ihrem Planeten zur Verfügung steht. Die Grenze liegt bei der Hälfte der ursprünglichen Felderzahl des Planeten (%s zeigt also keine Wirkung), für Minenroboter besteht eine zusätzliche Grenze bei der aktuellen Ausbaustufe der zugehörigen Mine (Ausnahme: %s, hier liegt die Grenze beim 2-Fachen der Ausbaustufe %s). Übersteigt die Roboterzahl die Grenze, zeigen überschüssige Roboter keinerlei Wirkung mehr."), _("[item_F9_nom]"), _("[item_R06_pl_nom]"), _("[item_B4_gen_def]")))?></p>
 </div>
 
 <div class="faq" id="fleet">

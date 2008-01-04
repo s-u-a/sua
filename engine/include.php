@@ -174,6 +174,7 @@
 		global_setting('DB_GLOBAL_PROD_FACTOR', $DB_DIR.'/global_prod_factor');
 		global_setting('DB_GLOBAL_COST_FACTOR', $DB_DIR.'/global_cost_factor');
 		global_setting('DB_USE_OLD_INGTECH', $DB_DIR.'/use_old_ingtech');
+		global_setting('DB_USE_OLD_ROBTECH', $DB_DIR.'/use_old_robtech');
 		global_setting('DB_NO_ATTS', $DB_DIR.'/no_atts');
 		global_setting("DB_SQLITE", $DB_DIR."/sqlite");
 

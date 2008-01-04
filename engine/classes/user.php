@@ -1090,7 +1090,11 @@
 						$info['prod'][4] *= $level_f*$percent_f;
 						$info['prod'][5] *= $level_f*$percent_f;
 
-						$minen_rob = 1+0.0003125*$this->getItemLevel('F2', 'forschung', $run_eventhandler);
+						$use_old_robtech = file_exists(global_setting("DB_USE_OLD_ROBTECH"));
+						if($use_old_robtech)
+							$minen_rob = 1+0.0003125*$this->getItemLevel('F2', 'forschung', $run_eventhandler);
+						else
+							$minen_rob = sqrt($this->getItemLevel("F2", "forschung", $run_eventhandler))/250;
 						if($minen_rob > 1)
 						{
 							$use_max_limit = !file_exists(global_setting('DB_NO_STRICT_ROB_LIMITS'));
@@ -1098,27 +1102,42 @@
 							$rob = $this->getItemLevel('R02', 'roboter', $run_eventhandler);
 							if($rob > $this->getItemLevel('B0', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B0', 'gebaeude', $run_eventhandler);
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
-							$info['prod'][0] *= pow($minen_rob, $rob);
+							if($use_old_robtech)
+								$info['prod'][0] *= pow($minen_rob, $rob);
+							else
+								$info['prod'][0] *= 1+$minen_rob*$rob;
 
 							$rob = $this->getItemLevel('R03', 'roboter', $run_eventhandler);
 							if($rob > $this->getItemLevel('B1', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B1', 'gebaeude', $run_eventhandler);
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
-							$info['prod'][1] *= pow($minen_rob, $rob);
+							if($use_old_robtech)
+								$info['prod'][1] *= pow($minen_rob, $rob);
+							else
+								$info['prod'][1] *= 1+$minen_rob*$rob;
 
 							$rob = $this->getItemLevel('R04', 'roboter', $run_eventhandler);
 							if($rob > $this->getItemLevel('B2', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B2', 'gebaeude', $run_eventhandler);
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
-							$info['prod'][2] *= pow($minen_rob, $rob);
+							if($use_old_robtech)
+								$info['prod'][2] *= pow($minen_rob, $rob);
+							else
+								$info['prod'][2] *= 1+$minen_rob*$rob;
 
 							$rob = $this->getItemLevel('R05', 'roboter', $run_eventhandler);
 							if($rob > $this->getItemLevel('B3', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B3', 'gebaeude', $run_eventhandler);
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
-							$info['prod'][3] *= pow($minen_rob, $rob);
+							if($use_old_robtech)
+								$info['prod'][3] *= pow($minen_rob, $rob);
+							else
+								$info['prod'][3] *= 1+$minen_rob*$rob;
 
 							$rob = $this->getItemLevel('R06', 'roboter', $run_eventhandler);
 							if($rob > $this->getItemLevel('B4', 'gebaeude', $run_eventhandler)*2) $rob = $this->getItemLevel('B4', 'gebaeude', $run_eventhandler)*2;
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
-							$info['prod'][4] *= pow($minen_rob, $rob);
+							if($use_old_robtech)
+								$info['prod'][4] *= pow($minen_rob, $rob);
+							else
+								$info['prod'][4] *= 1+$minen_rob*$rob;
 						}
 						if($info['prod'][5] > 0)
 							$info['prod'][5] *= pow(1.05, $this->getItemLevel('F3', 'forschung', $run_eventhandler));
@@ -3757,5 +3776,10 @@
 
 	function getIngtechFactor()
 	{
-		return (file_exists(global_setting('DB_USE_OLD_INGTECH')) ? 1 : 2);
+		if(file_exists(global_setting('DB_USE_OLD_INGTECH')))
+			return 1;
+		elseif(file_exists(global_setting("DB_USE_OLD_ROBTECH")))
+			return 2;
+		else
+			return 10;
 	}
