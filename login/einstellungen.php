@@ -12,6 +12,21 @@
 
 	$error = array();
 
+	$my_skin = $me->checkSetting("skin");
+	if(isset($_POST["skin-choice"]))
+		$my_skin[0] = $_POST["skin-choice"];
+	if(isset($_POST["skin"]))
+		$my_skin[1] = $_POST["skin"];
+	if($my_skin[0] == "custom")
+	{
+		if(isset($_POST["skin-parameters"]))
+			$my_skin[2] = $_POST["skin-parameters"];
+	}
+	elseif(isset($_POST["skin-setting"]) && is_array($_POST["skin-setting"]))
+		$my_skin[2] = $_POST["skin-setting"];
+	if($my_skin != $me->checkSetting("skin"))
+		$me->setSetting("skin", $my_skin);
+
 	if(isset($_POST['skin-choice']))
 	{
 		if($_POST['skin-choice'] == 'custom')
@@ -22,9 +37,6 @@
 		elseif(strstr($_POST['skin-choice'], '/'))
 			$me->setSetting('skin', explode('/', $_POST['skin-choice']));
 	}
-
-	if(isset($_POST['schrift']))
-		$me->setSetting('schrift', ($_POST['schrift'] == true));
 
 	if(isset($_POST['benutzerbeschreibung']))
 		$me->setUserDescription($_POST['benutzerbeschreibung']);
@@ -230,56 +242,184 @@
 			<dd class="c-skin">
 				<select name="skin-choice" id="skin-choice"<?=accesskey_attr(_("Skin&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" onchange="recalc_skin();" onkeyup="recalc_skin();">
 <?php
-	$my_skin = $me->checkSetting('skin');
 	foreach($skins as $skin=>$skin_info)
 	{
-		$skin_selected = ($my_skin && $skin == $my_skin[0]);
 ?>
-					<optgroup label="<?=htmlspecialchars($skin_info[0])?>">
-<?php
-		foreach($skin_info[1] as $type=>$type_info)
-		{
-			$type_selected = ($skin_selected && $my_skin && $type == $my_skin[1]);
-?>
-						<option value="<?=htmlspecialchars($skin)?>/<?=htmlspecialchars($type)?>"<?=$type_selected ? ' selected="selected"' : ''?>><?=htmlspecialchars($type_info[0])?></option>
-<?php
-		}
-?>
-					</optgroup>
+					<option value="<?=htmlspecialchars($skin)?>"<?=$my_skin[0] == $skin ? " selected=\"selected\"" : ""?>><?=htmlspecialchars($skin_info[0])?></option>
 <?php
 	}
-	$custom_skin = ($my_skin && $my_skin[0] == 'custom');
 ?>
-					<option value="custom"<?=$custom_skin ? ' selected="selected"' : ''?>><?=h(_("Benutzerdefiniert"))?></option>
+					<option value="custom"<?=$my_skin[0] == "custom" ? ' selected="selected"' : ''?>><?=h(_("Benutzerdefiniert"))?></option>
 				</select>
-				<input type="text" name="skin" id="skin" value="<?=htmlspecialchars($my_skin[1])?>" tabindex="<?=$tabindex++?>" />
-			</dd>
-
-			<dt class="c-schrift"><label for="schrift-choice"><?=h(_("Schrift&[login/einstellungen.php|1]"))?></label></dt>
-			<dd class="c-schrift">
-				<select name="schrift" id="schrift-choice"<?=accesskey_attr(_("Schrift&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>">
-					<option value="1"<?=$me->checkSetting('schrift') ? ' selected="selected"' : ''?>><?=h(_("Lieblingsschrift des Admins"))?></option>
-					<option value="0"<?=!$me->checkSetting('schrift') ? ' selected="selected"' : ''?>><?=h(_("Ihre Lieblingsschrift"))?></option>
-				</select>
+				<input type="text" name="skin" id="skin" value="<?=htmlspecialchars($my_skin[1])?>" tabindex="<?=$tabindex++?>" title="<?=h(_("Skin-Pfad&[login/einstellungen.php|1]"), false)?>"<?=accesskey_attr(_("Skin-Pfad&[login/einstellungen.php|1]"))?> onkeyup="update_skin_path_wait();" onchange="onkeyup();" />
+				<input type="text" name="skin-parameters" id="i-skin-parameters" value="<?=isset($my_skin[2]) && !is_array($my_skin[2]) ? htmlspecialchars($my_skin[2]) : ""?>" title="<?=h(_("Skin-Parameter&[login/einstellungen.php|1]"), false)?>"<?=accesskey_attr(_("Skin-Parameter&[login/einstellungen.php|1]"))?> onkeyup="update_options_wait();" onchange="onkeyup();" />
 			</dd>
 
 			<dt class="c-werbung-ausblenden"><label for="noads"><?=h(_("Werbung ausblenden&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-werbung-ausblenden"><input type="checkbox" name="noads" id="noads"<?=accesskey_attr(_("Werbung ausblenden&[login/einstellungen.php|1]"))?><?=$me->checkSetting('noads') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn Sie die Werbung eingeblendet lassen, helfen Sie, die Finanzen des Spiels zu decken."))?>" tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
 
+		<fieldset id="skin-options-fieldset">
+			<legend><?=h(_("Skin-spezifische Einstellungen"))?></legend>
+			<dl id="skin-options">
+<?php
+	if($my_skin && isset($skins[$my_skin[0]]))
+	{
+		$i = 0;
+		foreach($skins[$my_skin[0]][1] as $option=>$settings)
+		{
+?>
+			<dt class="c-skin-<?=htmlspecialchars($i)?>"><label for="i-skin-<?=htmlspecialchars($i)?>"><?=htmlspecialchars($option)?></label></dt>
+			<dd class="c-skin-<?=htmlspecialchars($i)?>"><select id="i-skin-<?=htmlspecialchars($i)?>" name="skin-setting[<?=htmlspecialchars($i)?>]" onchange="update_options();" onkeyup="onchange();">
+<?php
+			foreach($settings as $j=>$setting)
+			{
+?>
+				<option value="<?=htmlspecialchars($j)?>"<?php if(isset($my_skin[2]) && is_array($my_skin[2]) && isset($my_skin[2][$i]) && $my_skin[2][$i] == $j){?> selected="selected"<?php }?>><?=htmlspecialchars($setting)?></option>
+<?php
+			}
+?>
+			</select></dd>
+<?php
+			$i++;
+		}
+	}
+?>
+			</dl>
+		</fieldset>
+<?php
+
+	$skin_options = array();
+	foreach($skins as $skin=>$info)
+	{
+		$skin_options1 = array();
+		foreach($info[1] as $setting_name=>$options)
+		{
+			$skin_options2 = array();
+			foreach($options as $option)
+				$skin_options2[] = "'".jsentities($option)."'";
+			$skin_options1[] = "[ '".jsentities($setting_name)."', [ ".implode(", ", $skin_options2)." ] ]";
+		}
+		$skin_options[] = "'".jsentities($skin)."' : [ ".implode(", ", $skin_options1)." ]";
+	}
+?>
+
 		<script type="text/javascript">
+			var skin_options = {
+				<?=implode(",\n\t\t\t\t", $skin_options)."\n"?>
+			};
+			var skin_settings = {<?php if($my_skin[0] != "custom" && isset($my_skin[2]) && is_array($my_skin[2])){?> '<?=jsentities($my_skin[0])?>' : [ <?=implode(", ", $my_skin[2])?> ]<?php }?> };
+			var last_skin = null;
+			var options_el = document.getElementById("skin-options");
+			var update_timeout1,update_timeout2;
+
+			function update_skin_path_wait()
+			{
+				if(update_timeout1)
+					clearTimeout(update_timeout1);
+				update_timeout1 = setTimeout("update_skin_path()", 500);
+			}
+
+			function update_options_wait()
+			{
+				if(update_timeout2)
+					clearTimeout(update_timeout2);
+				update_timeout2 = setTimeout("update_options()", 500);
+			}
+
+			function update_skin_path()
+			{
+				var l = document.getElementsByTagName("link");
+				for(var i=0; i<l.length; i++)
+				{
+					if(l[i].rel != "stylesheet") continue;
+					if(document.getElementById("skin-choice").value == "custom")
+						l[i].href = document.getElementById("skin").value;
+					else
+						l[i].href = '<?=jsentities(h_root)?>/login/style/'+document.getElementById("skin-choice").value+'/style.css';
+					break;
+				}
+			}
+
+			function update_options()
+			{
+				var j=1;
+				var params = [ ];
+				if(document.getElementById("skin-choice").value == "custom")
+				{
+					params = document.getElementById("i-skin-parameters").value.split(/\s+/);
+					for(var i=0; i<params.length; i++)
+						params[i] = "skin-"+params[i];
+				}
+				else
+				{
+					var select_el;
+					for(var i=0; select_el=document.getElementById("i-skin-"+i); i++)
+						params[i] = "skin-"+i+"-"+select_el.value;
+				}
+				params = params.join(" ");
+
+				var el = document.getElementById("body-root");
+				while(el)
+				{
+					el.className = el.className.replace(/\s*skin-[^\s]+\s*/g, "")+" "+params;
+					el = document.getElementById("content-"+(j++));
+				}
+			}
+
 			function recalc_skin()
 			{
-				var skin = document.getElementById('skin-choice').value;
-				if(skin == 'custom')
+				if(last_skin)
+				{
+					var op;
+					skin_settings[last_skin] = [ ];
+					for(var i=0; op = document.getElementById("i-skin-"+i); i++)
+						skin_settings[last_skin][i] = document.getElementById("i-skin-"+i).value;
+				}
+
+				while(options_el.firstChild) options_el.removeChild(options_el.firstChild);
+
+				last_skin = document.getElementById('skin-choice').value;
+
+				if(last_skin == 'custom')
 				{
 					document.getElementById('skin').removeAttribute('readonly');
+					document.getElementById('i-skin-parameters').removeAttribute('readonly');
 				}
 				else
 				{
 					document.getElementById('skin').setAttribute('readonly', 'readonly');
-					document.getElementById('skin').value = skin;
+					document.getElementById('i-skin-parameters').setAttribute('readonly', 'readonly');
+
+					if(skin_options[last_skin])
+					{
+						for(var i=0; i<skin_options[last_skin].length; i++)
+						{
+							var dt = document.createElement("dt");
+							dt.className = "c-skin-"+i;
+							var label = document.createElement("label");
+							label.htmlFor = "i-skin-"+i;
+							label.appendChild(document.createTextNode(skin_options[last_skin][i][0]));
+							dt.appendChild(label);
+
+							var dd = document.createElement("dd");
+							dd.className = "c-skin-"+i;
+							var select_el = document.createElement("select");
+							select_el.id = "i-skin-"+i;
+							select_el.name = "skin-setting["+i+"]";
+							select_el.onchange = function(){update_options();};
+							select_el.onkeyup = select_el.onchange;
+							for(var j=0; j<skin_options[last_skin][i][1].length; j++)
+								select_el.options[select_el.length] = new Option(skin_options[last_skin][i][1][j], j, false, (skin_settings[last_skin] && skin_settings[last_skin][i] == j));
+							dd.appendChild(select_el);
+							options_el.appendChild(dt);
+							options_el.appendChild(dd);
+						}
+					}
 				}
+
+				update_options();
+				update_skin_path();
 			}
 			recalc_skin();
 		</script>

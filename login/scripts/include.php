@@ -222,25 +222,16 @@
 
 			$skin_path = '';
 			$my_skin = $me->checkSetting('skin');
-			if($my_skin)
+			if(!$my_skin || !is_array($my_skin) || $my_skin[0] != "custom" && !isset($skins[$my_skin[0]]))
 			{
-				if(!is_array($my_skin))
-				{
-					if(isset($skins['default']) && isset($skins['default'][1][$my_skin]))
-						$my_skin = array('default', $my_skin);
-					else $my_skin = array('custom', $my_skin);
-					$me->setSetting('skin', $my_skin);
-				}
-				if($my_skin[0] == 'custom')
-					$skin_path = $my_skin[1];
-				elseif(isset($skins[$my_skin[0]]))
-					$skin_path = h_root.'/login/style/skin.php?skin='.urlencode($my_skin[0]).'&type='.urlencode($my_skin[1]);
+				$my_skin = array("default", null, array());
+				$me->setSetting("skin", $my_skin);
 			}
-			elseif(isset($skins['default']))
-			{
-				$keys = array_keys($skins['default'][1]);
-				$skin_path = h_root.'/login/style/skin.php?skin=default&type='.urlencode(array_shift($keys));
-			}
+
+			if($my_skin[0] == 'custom')
+				$skin_path = $my_skin[1];
+			elseif(isset($skins[$my_skin[0]]))
+				$skin_path = h_root.'/login/style/'.urlencode($my_skin[0]).'/style.css';
 
 			if(trim($skin_path) != '')
 			{
@@ -249,23 +240,30 @@
 <?php
 			}
 
-			if($me->checkSetting('schrift'))
-			{ # Schrift ueberschreiben
-?>
-		<style type="text/css">
-			html { font-size:9pt; font-family:Arial,Tahoma,"Adobe Helvetica",sans-serif; }
-		</style>
-<?php
-			}
-
 			$class = 'planet-'.$me->getPlanetClass();
 			if(!$me->checkSetting('noads'))
 				$class .= ' mit-werbung';
 			else
 				$class .= ' ohne-werbung';
+
+			if($my_skin[0] == "custom" && isset($my_skin[2]) && !is_array($my_skin[2]))
+				$class .= preg_replace("/^|\s+/", " skin-", $my_skin[2]);
+			elseif($my_skin[0] != "custom")
+			{
+				$i = 0;
+				foreach($skins[$my_skin[0]][1] as $vs)
+				{
+					if(isset($my_skin[2]) && is_array($my_skin[2]) && isset($my_skin[2][$i]) && isset($vs[$my_skin[2][$i]]))
+						$v = $my_skin[2][$i];
+					else
+						$v = 0;
+					$class .= " skin-".$i."-".$v;
+					$i++;
+				}
+			}
 ?>
 	</head>
-	<body class="<?=$class?>" id="body-root"><div id="content-1"><div id="content-2"><div id="content-3"><div id="content-4"><div id="content-5"><div id="content-6"><div id="content-7"><div id="content-8">
+	<body class="<?=htmlspecialchars($class)?>" id="body-root"><div id="content-1" class="<?=htmlspecialchars($class)?>"><div id="content-2" class="<?=htmlspecialchars($class)?>"><div id="content-3" class="<?=htmlspecialchars($class)?>"><div id="content-4" class="<?=htmlspecialchars($class)?>"><div id="content-5" class="<?=htmlspecialchars($class)?>"><div id="content-6" class="<?=htmlspecialchars($class)?>"><div id="content-7" class="<?=htmlspecialchars($class)?>"><div id="content-8" class="<?=htmlspecialchars($class)?>">
 		<ul id="links-down" class="cross-navigation">
 			<li><a href="#inner-content"<?=accesskey_attr(_("Zum Inhalt&[login/scripts/include.php|1]"))?>><?=h(_("Zum Inhalt&[login/scripts/include.php|1]"))?></a></li>
 			<li><a href="#navigation"<?=accesskey_attr(_("Zur Navigation&[login/scripts/include.php|1]"))?>><?=h(_("Zur Navigation&[login/scripts/include.php|1]"))?></a></li>
@@ -275,7 +273,7 @@
 <?php
 			$cur_ress = $me->getRess();
 ?>
-		<div id="content-9">
+		<div id="content-9" class="<?=htmlspecialchars($class)?>">
 			<dl id="ress" class="ress">
 				<dt class="ress-carbon"><?=h(_("[ress_0]"))?></dt>
 				<dd class="ress-carbon<?=($cur_ress[0]<0) ? " negativ" : ""?>" id="ress-carbon"><?=ths($cur_ress[0])?></dd>
@@ -295,7 +293,7 @@
 				<dt class="ress-energie"><?=h(_("[ress_5]"))?></dt>
 				<dd class="ress-energie<?=($cur_ress[5]<0) ? " negativ" : ""?>" id="ress-energie"><?=ths($cur_ress[5])?></dd>
 			</dl>
-			<div id="content-10"><div id="content-11"><div id="content-12"><div id="content-13">
+			<div id="content-10" class="<?=htmlspecialchars($class)?>"><div id="content-11" class="<?=htmlspecialchars($class)?>"><div id="content-12" class="<?=htmlspecialchars($class)?>"><div id="content-13" class="<?=htmlspecialchars($class)?>">
 <?php
 			$locked_until = false;
 			if($l = database_locked())
@@ -427,17 +425,9 @@
 ?>
 				<script type="text/javascript">
 					google_ad_client = "pub-2662652449578921";
-					google_alternate_color = "445577";
+					google_ad_slot = "2761845030";
 					google_ad_width = 120;
 					google_ad_height = 600;
-					google_ad_format = "120x600_as";
-					google_ad_type = "text";
-					google_ad_channel ="";
-					google_color_border = "556688";
-					google_color_text = "FFFFFF";
-					google_color_bg = "445577";
-					google_color_link = "FFFFFF";
-					google_color_url = "FFFFFF";
 				</script>
 				<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
 <?php
@@ -631,11 +621,17 @@
 		</script>
 <?php
 				}
+
+				if(global_setting("PROTOCOL") == "https")
+					$analytics_prefix = "https://ssl";
+				else
+					$analytics_prefix = "http://www";
 ?>
-		<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script>
+		<script src="<?=htmlspecialchars($analytics_prefix)?>.google-analytics.com/ga.js" type="text/javascript"></script>
 		<script type="text/javascript">
-			_uacct = "UA-471643-1";
-			urchinTracker();
+			var pageTracker = _gat._getTracker("UA-471643-1");
+			pageTracker._initData();
+			pageTracker._trackPageview();
 		</script>
 <?php
 			}

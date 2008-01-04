@@ -419,7 +419,7 @@
 	/**
 	  * Sucht nach installierten Skins und liefert ein Array des folgenden
 	  * Formats zurueck:
-	  * [ID] => ( Name, ( ID => ( Titel, ( Dateiname der einzubindenden CSS-Datei vom Skin-Verzeichnis aus gesehen ) ) ) )
+	  * ( ID => [ Name, ( Einstellungsname => ( moeglicher Wert ) ) ] )
 	*/
 
 	function get_skins()
@@ -440,10 +440,10 @@
 				$new_skin = array(array_shift($skins_file), array());
 				foreach($skins_file as $skins_line)
 				{
-					$skins_line = explode("\t", $skins_line, 3);
-					if(count($skins_line) < 3)
+					$skins_line = explode("\t", $skins_line);
+					if(count($skins_line) < 2)
 						continue;
-					$new_skin[1][$skins_line[0]] = array($skins_line[1], explode(' ', $skins_line[2]));
+					$new_skin[1][array_shift($skins_line)] = $skins_line;
 				}
 				unset($new_skin);
 			}

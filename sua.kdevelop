@@ -9,7 +9,7 @@
     <ignoreparts/>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
+    <description/>
     <versioncontrol>kdevsubversion</versioncontrol>
   </general>
   <kdevscriptproject>
@@ -44,11 +44,11 @@
     </webInvocation>
     <shell>
       <phpexe>/usr/bin/php</phpexe>
-      <phpini></phpini>
+      <phpini/>
     </shell>
     <options>
-      <phpincludepath></phpincludepath>
-      <defaultFile></defaultFile>
+      <phpincludepath/>
+      <defaultFile/>
       <startupFileMode>1</startupFileMode>
     </options>
   </kdevphpsupport>
@@ -107,12 +107,12 @@
     <projectdoc>
       <docsystem>Doxygen-Dokumentation</docsystem>
       <docurl>doc/api/</docurl>
-      <usermanualurl></usermanualurl>
+      <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
   <ctagspart>
-    <customArguments></customArguments>
-    <customTagfilePath></customTagfilePath>
+    <customArguments/>
+    <customTagfilePath/>
   </ctagspart>
   <kdevfileview>
     <groups>
