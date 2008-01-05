@@ -325,7 +325,7 @@
 				<?=implode(",\n\t\t\t\t", $skin_options)."\n"?>
 			};
 			var skin_settings = {<?php if($my_skin[0] != "custom" && isset($my_skin[2]) && is_array($my_skin[2])){?> '<?=jsentities($my_skin[0])?>' : [ <?=implode(", ", $my_skin[2])?> ]<?php }?> };
-			var last_skin = null;
+			var last_skin = document.getElementById("skin-choice").value;
 			var options_el = document.getElementById("skin-options");
 			var update_timeout1,update_timeout2;
 
