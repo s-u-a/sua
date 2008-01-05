@@ -41,7 +41,7 @@
 			if($user->userLocked()) $suf = h(_("%s (g)"));
 			elseif($user->umode()) $suf = h(_("%s (U)"));
 ?>
-<h2><?=sprintf(h(_("Spielerinfo „%s“")), sprintf($suf, ($at ? sprintf(h(_("[%s] %s")), "<a href=\"allianceinfo.php?alliance=".htmlspecialchars(urlencode($at).'&'.urlencode(session_name()).'='.urlencode(session_id()))."\" title=\"".h(_("Informationen zu dieser Allianz anzeigen"))."\">".htmlspecialchars($at)."</a>", htmlspecialchars($user->getName())))))?></h2>
+<h2><?=sprintf(h(_("Spielerinfo „%s“")), sprintf($suf, ($at ? sprintf(h(_("[%s] %s")), "<a href=\"allianceinfo.php?alliance=".htmlspecialchars(urlencode($at).'&'.urlencode(session_name()).'='.urlencode(session_id()))."\" title=\"".h(_("Informationen zu dieser Allianz anzeigen"))."\">".htmlspecialchars($at)."</a>", htmlspecialchars($user->getName())) : htmlspecialchars($user->getName()))))?></h2>
 <h3 id="punkte"><?=h(_("Punkte"))?></h3>
 <dl class="punkte">
 	<dt class="c-gebaeude"><?=h(_("[scores_0]"))?></dt>
