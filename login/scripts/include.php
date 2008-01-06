@@ -454,10 +454,24 @@
 			global $DISABLE_ADS;
 			if($me->checkSetting('performance') != 0 && (!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http')
 			{
+				for($i=1; $i<=16; $i++)
+				{
+?>
+				<div class="google-slot" id="google-slot-<?=htmlspecialchars($i)?>"></div>
+<?php
+				}
 ?>
 				<script type="text/javascript">
 					google_ad_client = "pub-2662652449578921";
-					google_ad_slot = "2761845030";
+					google_ad_slot = "";
+					for(var i=1; i<=16; i++)
+					{
+						var el = document.getElementById("google-slot-"+i);
+						if(!el || !el.offsetHeight) break;
+						google_ad_slot += ""+(el.offsetHeight-1);
+					}
+					if(!google_ad_slot)
+						google_ad_slot = "2761845030";
 					google_ad_width = 120;
 					google_ad_height = 600;
 				</script>
