@@ -454,26 +454,49 @@
 			global $DISABLE_ADS;
 			if($me->checkSetting('performance') != 0 && (!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http')
 			{
-				for($i=1; $i<=16; $i++)
-				{
 ?>
-				<div class="google-slot" id="google-slot-<?=htmlspecialchars($i)?>"></div>
-<?php
-				}
-?>
+				<div class="google-params" id="google-color-border-red"></div>
+				<div class="google-params" id="google-color-border-green"></div>
+				<div class="google-params" id="google-color-border-blue"></div>
+				<div class="google-params" id="google-color-text-red"></div>
+				<div class="google-params" id="google-color-text-green"></div>
+				<div class="google-params" id="google-color-text-blue"></div>
+				<div class="google-params" id="google-color-bg-red"></div>
+				<div class="google-params" id="google-color-bg-green"></div>
+				<div class="google-params" id="google-color-bg-blue"></div>
+				<div class="google-params" id="google-color-link-red"></div>
+				<div class="google-params" id="google-color-link-green"></div>
+				<div class="google-params" id="google-color-link-blue"></div>
+				<div class="google-params" id="google-color-url-red"></div>
+				<div class="google-params" id="google-color-url-green"></div>
+				<div class="google-params" id="google-color-url-blue"></div>
 				<script type="text/javascript">
-					google_ad_client = "pub-2662652449578921";
-					google_ad_slot = "";
-					for(var i=1; i<=16; i++)
+					var mkcolourpart_digits = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" ];
+					function mkcolourpart(a_value)
 					{
-						var el = document.getElementById("google-slot-"+i);
-						if(!el || !el.offsetHeight) break;
-						google_ad_slot += ""+(el.offsetHeight-1);
+						if(a_value > 255) a_value = 255;
+						if(a_value < 0) a_value = 0;
+						var digit2 = a_value%16;
+						var digit1 = (a_value-digit2)/16;
+						return mkcolourpart_digits[digit1]+mkcolourpart_digits[digit2];
 					}
-					if(!google_ad_slot)
-						google_ad_slot = "2761845030";
+
+					function mkcolour(a_type)
+					{
+						var v_red = document.getElementById("google-color-"+a_type+"-red").offsetHeight;
+						var v_green = document.getElementById("google-color-"+a_type+"-green").offsetHeight;
+						var v_blue = document.getElementById("google-color-"+a_type+"-blue").offsetHeight;
+						if(!v_red || !v_green || !v_blue) return undefined;
+						return mkcolourpart(v_red-1)+mkcolourpart(v_green-1)+mkcolourpart(v_blue-1);
+					}
+
+					google_ad_client = "pub-2662652449578921";
+					google_ad_slot = "2761845030";
 					google_ad_width = 120;
 					google_ad_height = 600;
+					var g_vars = [ "border", "text", "bg", "link", "url" ];
+					for(var i=0; i<g_vars.length; i++)
+						window["google_color_"+g_vars[i]] = mkcolour(g_vars[i]);
 				</script>
 				<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
 <?php
