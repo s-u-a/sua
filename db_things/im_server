@@ -27,6 +27,22 @@
 
 	set_time_limit(0);
 
+	# Forken, wenn moeglich
+	if(!function_exists("pcntl_fork"))
+		$fork = -1;
+	else
+	{
+		while(true)
+		{
+			output("Forking...");
+			$fork = pcntl_fork();
+			if($fork)
+				pcntl_waitpid($fork, &$status);
+			else
+				break;
+		}
+	}
+
 	$jabber = new Jabber(false);
 	$jabber->terminated = true;
 	$imserver = new IMServer();
@@ -112,7 +128,12 @@
 
 		function handleError($code, $error, $xmlns)
 		{
+			global $fork;
+
 			fputs(STDERR, "Error: ".$error." (".$code.")".($xmlns ? " in ".$xmlns : "")."\n");
+
+			if($fork === 0)
+				exit(1);
 		}
 
 		function handleHeartbeat()
