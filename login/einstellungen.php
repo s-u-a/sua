@@ -239,6 +239,7 @@
 	login_gui::html_head();
 
 	$tabindex = 1;
+	$fieldset = 0;
 	$show_im = isset($messengers['jabber']);
 ?>
 <h2><?=h(_("Einstellungen"))?></h2>
@@ -250,9 +251,14 @@
 <?php
 	}
 ?>
+<script type="text/javascript">
+// <![CDATA[
+	document.write('<p><?=jsentities(h(_("Klicken Sie auf einen der Punkte, um die zugehörigen Einstellungen auszuklappen.")))?></p>');
+// ]]>
+</script>
 <form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/einstellungen.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular" enctype="multipart/form-data">
-	<fieldset class="aussehen">
-		<legend><?=h(_("Aussehen"))?></legend>
+	<fieldset class="aussehen" id="fieldset-<?=$fieldset++?>">
+		<legend><a accesskey="<?=accesskey_attr(_("Aussehen&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=h(_("Aussehen&[login/einstellungen.php|1]"))?></a></legend>
 		<dl>
 			<dt class="c-skin"><label for="skin-choice"><?=h(_("Skin&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-skin">
@@ -441,8 +447,8 @@
 		</script>
 	</fieldset>
 
-	<fieldset class="verhalten">
-		<legend><?=h(_("Verhalten"))?></legend>
+	<fieldset class="verhalten" id="fieldset-<?=$fieldset++?>">
+		<legend><a accesskey="<?=accesskey_attr(_("Verhalten&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=h(_("Verhalten&[login/einstellungen.php|1]"))?></a></legend>
 		<dl>
 			<dt class="c-spionagesonden"><label for="spionagesonden"><?=h(_("Spionagesonden&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-spionagesonden"><input type="text" name="spionagesonden" id="spionagesonden"<?=accesskey_attr(_("Spionagesonden&[login/einstellungen.php|1]"))?> value="<?=htmlspecialchars($me->checkSetting('sonden'))?>" title="<?=h(_("Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der Karte geschickt werden sollen"))?>" tabindex="<?=$tabindex++?>" /></dd>
@@ -480,8 +486,8 @@
 		</dl>
 	</fieldset>
 
-	<fieldset class="benachrichtigung">
-		<legend><?=h(_("Benachrichtigung"))?></legend>
+	<fieldset class="benachrichtigung" id="fieldset-<?=$fieldset++?>">
+		<legend><a accesskey="<?=accesskey_attr(_("Benachrichtigung&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=h(_("Benachrichtigung&[login/einstellungen.php|1]"))?></a></legend>
 <?php
 	if($show_im)
 	{
@@ -786,8 +792,8 @@
 	if(!$me->userLocked())
 	{
 ?>
-	<fieldset class="urlaubsmodus">
-		<legend><?=h(_("Urlaubsmodus"))?></legend>
+	<fieldset class="urlaubsmodus" id="fieldset-<?=$fieldset++?>">
+		<legend><a accesskey="<?=accesskey_attr(_("Urlaubsmodus&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=h(_("Urlaubsmodus&[login/einstellungen.php|1]"))?></a></legend>
 <?php
 		if(!$me->umode())
 		{
@@ -822,8 +828,8 @@
 <?php
 	}
 ?>
-	<fieldset class="benutzeraccount">
-		<legend><?=h(_("Benutzeraccount"))?></legend>
+	<fieldset class="benutzeraccount" id="fieldset-<?=$fieldset++?>">
+		<legend><a accesskey="<?=accesskey_attr(_("Benutzeraccount&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=h(_("Benutzeraccount&[login/einstellungen.php|1]"))?></a></legend>
 		<dl>
 			<dt class="c-ip-schutz"><label for="ipcheck"><?=h(_("IP-Schutz&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=accesskey_attr(_("IP-Schutz&[login/einstellungen.php|1]"))?><?=$me->checkSetting('ipcheck') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)"))?>" tabindex="<?=$tabindex++?>" /></dd>
@@ -879,6 +885,40 @@
 	</fieldset>
 	<div class="einstellungen-speichern-2"><input type="hidden" name="change-checkboxes" value="1" /><button type="submit" tabindex="<?=$save_tabindex?>"><?=h(_("Speicher&n"))?></button></div>
 </form>
+<script type="text/javascript">
+// <![CDATA[
+	var settings_hidden = { };
+
+	function toggleVisibility(i)
+	{
+		var el = document.getElementById("fieldset-"+i);
+		if(!el) return;
+		settings_hidden[i] = !settings_hidden[i];
+		el = el.firstChild;
+		while(el)
+		{
+			if(el.nodeType == 1 && el.nodeName.toLowerCase() != "legend")
+				el.style.display = settings_hidden[i] ? "none" : "";
+			el = el.nextSibling;
+		}
+	}
+
+	var el;
+	for(var i=0; el=document.getElementById("fieldset-"+i); i++)
+	{
+		var legend_el = el.getElementsByTagName("legend")[0];
+		if(legend_el)
+		{
+			var legend_a_el = legend_el.getElementsByTagName("a")[0];
+			if(legend_a_el)
+			{
+				legend_a_el.href = "javascript:toggleVisibility("+i+");";
+				toggleVisibility(i);
+			}
+		}
+	}
+// ]]>
+</script>
 <?php
 	login_gui::html_foot();
 ?>
