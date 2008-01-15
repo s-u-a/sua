@@ -1015,11 +1015,18 @@
 			return $items_instance->getItemsList($type);
 		}
 
+		/**
+		  * Liefert die Abhaengigkeiten des Gegenstandes mit der ID $id zurueck. Die Abhaengigkeiten
+		  * werden rekursiv aufgeloest, also die Abhaengigkeiten der Abhaengigkeiten mitbeachtet.
+		  * @param $deps Zur Rekursion, wird als Referenz uebergeben, die Abhaengigkeiten werden dann dem Array hinzugefuegt
+		  * @return ( Item-ID => Stufe )
+		*/
+
 		function getItemDeps($id, $deps=null)
 		{
 			if(!$this->status) return false;
 
-			if(!$deps) $deps = array();
+			if(!isset($deps)) $deps = array();
 
 			$item_info = $this->getItemInfo($id);
 			if(!$item_info) return false;
@@ -1030,11 +1037,8 @@
 				$dep_info = $this->getItemInfo($dep[0]);
 				if(!$dep_info) continue;
 				if(!isset($deps[$dep[0]]) || $deps[$dep[0]] < $dep[1])
-				{
-					$deps = $this->getItemDeps($dep[0]);
-					if(!isset($deps[$dep[0]]) || $deps[$dep[0]] < $dep[1])
-						$deps[$dep[0]] = $dep[1];
-				}
+					$deps[$dep[0]] = $dep[1];
+				$this->getItemDeps($dep[0], &$deps);
 			}
 
 			return $deps;
