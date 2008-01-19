@@ -322,7 +322,7 @@
 				<dt class="ress-tritium"><?=h(_("[ress_4]"))?></dt>
 				<dd class="ress-tritium<?=($cur_ress[4]<0) ? " negativ" : ""?>" id="ress-tritium"><?=ths($cur_ress[4])?></dd>
 
-				<dt class="ress-energie"><?=h(_("[ress_5]"))?></dt>
+				<dt class="ress-energie<?=($cur_ress[5]<0) ? " negativ" : ""?>"><?=h(_("[ress_5]"))?></dt>
 				<dd class="ress-energie<?=($cur_ress[5]<0) ? " negativ" : ""?>" id="ress-energie"><?=ths($cur_ress[5])?></dd>
 			</dl>
 			<div id="content-10" class="<?=htmlspecialchars($class)?>"><div id="content-11" class="<?=htmlspecialchars($class)?>"><div id="content-12" class="<?=htmlspecialchars($class)?>"><div id="content-13" class="<?=htmlspecialchars($class)?>">
