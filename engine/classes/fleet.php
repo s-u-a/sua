@@ -1437,9 +1437,9 @@
 												foreach($foreign_fleet as $id=>$count)
 												{
 													if(isset($schiffe[$id]))
-														$schiffe[$id] += $count;
+														$schiffe[$id] += $count[0];
 													else
-														$schiffe[$id] = $count;
+														$schiffe[$id] = $count[0];
 												}
 											}
 										}
@@ -2163,7 +2163,7 @@
 					$nachrichten_runden[$name][$runde] .= "\t\t<h3>".h(sprintf($user_obj->_("Runde %s"), ($runde+1)/2))."</h3>\n";
 				}
 
-				$nachrichten_runden[$name][$runde] .= "\t\t<h4>".h(sprintf($user_obj->ngettext("Der Angreifer ist am Zug (Gesamtstärke %s)", "Die Angreifer sind am Zug (Gesamtstärke %s)", count($angreifer)), round($staerke_init))).")</h4>\n";
+				$nachrichten_runden[$name][$runde] .= "\t\t<h4>".h(sprintf($user_obj->ngettext("Der Angreifer ist am Zug (Gesamtstärke %s)", "Die Angreifer sind am Zug (Gesamtstärke %s)", count($angreifer)), round($staerke))).")</h4>\n";
 				$nachrichten_runden[$name][$runde] .= "\t\t<ol>\n";
 			}
 
