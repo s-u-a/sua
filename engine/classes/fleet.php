@@ -1426,13 +1426,13 @@
 										{
 											$count = $target_user->getItemLevel($id, 'schiffe');
 											if($count <= 0) continue;
-											$schiffe[$i] = $count;
+											$schiffe[$id] = $count;
 										}
 
 										# Fremdstationierte Flotten mit den eigenen zusammen anzeigen
 										foreach($target_user->getForeignUsersList() as $foreign_user)
 										{
-											foreach($target_user->getForeignFleetsList($foreign_user) as $foreign_i->$foreign_fleet)
+											foreach($target_user->getForeignFleetsList($foreign_user) as $foreign_i=>$foreign_fleet)
 											{
 												foreach($foreign_fleet as $id=>$count)
 												{
