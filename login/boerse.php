@@ -69,14 +69,11 @@
 			s_el.options[i] = null;
 
 		var i=0;
-		if(req != "1") s_el.options[i++] = new Option("Carbon", "1");
-		if(req != "2") s_el.options[i++] = new Option("Aluminium", "2");
-		if(req != "3") s_el.options[i++] = new Option("Wolfram", "3");
-		if(req != "4") s_el.options[i++] = new Option("Radium", "4");
-		if(req != "5") s_el.options[i++] = new Option("Tritium", "5");
-
-		if(s_el.options[old_v])
-			s_el.options[old_v].selected = true;
+		if(req != "1") s_el.options[i++] = new Option("Carbon", "1", old_v == "1", old_v == "1");
+		if(req != "2") s_el.options[i++] = new Option("Aluminium", "2", old_v == "2", old_v == "2");
+		if(req != "3") s_el.options[i++] = new Option("Wolfram", "3", old_v == "3", old_v == "3");
+		if(req != "4") s_el.options[i++] = new Option("Radium", "4", old_v == "4", old_v == "4");
+		if(req != "5") s_el.options[i++] = new Option("Tritium", "5", old_v == "5", old_v == "5");
 	}
 
 	function refresh_costs()
