@@ -35,7 +35,7 @@
 	);
 ?>
 <h2>Handelsbörse</h2>
-<p>Hier können Sie einen Rohstoffbetrag bieten und einen Mindestbetrag an Rohstoffen dafür verlangen. Eine unabhängige Händergesellschaft (besteht nicht aus reellen Spielern) wird sich um den Auftrag kümmern, sobald der Kurs Ihren Handelsauftrag zulässt. Jedoch wird der Handel nicht sofort durchgeführt, die Handelsgesellschaft entscheidet, wann die den Auftrag annimmt.</p>
+<p>Hier können Sie einen Rohstoffbetrag bieten und einen Mindestbetrag an Rohstoffen dafür verlangen. Eine unabhängige Händlergesellschaft (besteht nicht aus reellen Spielern) wird sich um den Auftrag kümmern, sobald der Kurs Ihren Handelsauftrag zulässt. Jedoch wird der Handel nicht sofort durchgeführt, die Handelsgesellschaft entscheidet, wann die den Auftrag annimmt.</p>
 <p>Je größer die Rohstoffmenge ist, die Sie handeln wollen, desto länger dauert es, bis die Handelsgesellschaft den Auftrag annimmt. Je länger Sie Ihr Angebot aufrecht erhalten wollen, desto mehr Gebühren müssen Sie für den Handel zahlen. Bei einer geringen Lebensdauer kann es passieren, dass die Handelsgesellschaft den Auftrag überhaupt nicht annimmt.</p>
 <p>Der Handelskurs wird durch Angebot und Nachfrage bestimmt. Wenn viele Spieler nur wenig für eine Rohstoffmenge haben wollen, sinkt deren Preis, wenn sie viel dafür verlangen, steigt der Preis. Wenn aber viele den Rohstoff haben wollen, steigt der Preis, wenn sie viel dafür bieten; er sinkt, wenn sie wenig dafür bieten.</p>
 <script type="text/javascript">

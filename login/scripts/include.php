@@ -452,7 +452,7 @@
 			<div id="werbung">
 <?php
 			global $DISABLE_ADS;
-			if($me->checkSetting('performance') != 0 && (!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http')
+			if($me->checkSetting('performance') != 0 && (!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http') # Per https keine Werbung einblenden, da Google nur http unterstuetzt und dann eine Sicherheitswarnung kommt
 			{
 ?>
 				<div class="google-params" id="google-color-border-red"></div>

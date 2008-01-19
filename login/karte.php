@@ -17,6 +17,7 @@
 */
 	require('scripts/include.php');
 
+	# Werbung deaktivieren, weil beim vielen Herumklicken sonst das Laden ewig dauert
 	$DISABLE_ADS = true;
 	login_gui::html_head();
 

@@ -211,9 +211,6 @@
 </ul>
 <?php
 				}
-?>
-</ul>
-<?php
 			}
 		}
 	}
@@ -599,7 +596,7 @@
 					if($alliance->checkUserPermissions($_SESSION['username'], 7))
 					{
 ?>
-	<li class="c-benutzerrechte"><a href="allianz.php?action=permissions&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Benutzerrechte ver&walten"))?>><?=h(_("Benutzerrechte ver&walten"))?></a></li>
+	<li class="c-benutzerrechte"><a href="allianz.php?action=permissions&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Benutzerrechte ver&walten[login/alliance.php|3]"))?>><?=h(_("Benutzerrechte ver&walten[login/alliance.php|3]"))?></a></li>
 <?php
 					}
 ?>

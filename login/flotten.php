@@ -438,7 +438,7 @@
 		<dd class="c-ziel"><?=h($planet_owner ? sprintf(_("„%s“ (%s, Eigentümer: %s)"), htmlspecialchars($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])), vsprintf(_("%d:%d:%d"), explode(":", $fleet_obj->getCurrentTarget())), htmlspecialchars($planet_owner)) : sprintf(_("Unbesiedelt (%s)"), vsprintf(_("%d:%d:%d"), explode(":", $fleet_obj->getCurrentTarget()))))?></dd>
 
 		<dt class="c-auftragsart"><?=h(_("Auftragsart"))?></dt>
-		<dd class="c-auftragsart"><?=h(_("[fleet_".$auftrag."]"))?></dt>
+		<dd class="c-auftragsart"><?=h(_("[fleet_".$auftrag."]"))?></dd>
 
 		<dt class="c-ankunft"><?=h(_("Ankunft"))?></dt>
 		<dd class="c-ankunft"><?=h(sprintf("%s (Serverzeit)", date(_("H:i:s, Y-m-d"), $fleet_obj->getNextArrival())))?></dd>

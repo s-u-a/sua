@@ -194,7 +194,7 @@
 
 			$string .= '<span class="beschreibung transport"';
 			if(strlen($ress_string) > 0) $string .= ' title="'.$ress_string.'"';
-			$string .= '>'.h(_("[fleet_".$fl->getCurrentType()."]"))."</span>";
+			$string .= '>'.h(_("[fleet_".$fl->getCurrentType()."]"))."</span>.";
 
 			$handel = array(array(0, 0, 0, 0, 0), array());
 			foreach($users as $user)
