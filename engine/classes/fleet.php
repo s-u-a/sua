@@ -1434,12 +1434,12 @@
 										{
 											foreach($target_user->getForeignFleetsList($foreign_user) as $foreign_i=>$foreign_fleet)
 											{
-												foreach($foreign_fleet as $id=>$count)
+												foreach($foreign_fleet[0] as $id=>$count)
 												{
 													if(isset($schiffe[$id]))
-														$schiffe[$id] += $count[0];
+														$schiffe[$id] += $count;
 													else
-														$schiffe[$id] = $count[0];
+														$schiffe[$id] = $count;
 												}
 											}
 										}
