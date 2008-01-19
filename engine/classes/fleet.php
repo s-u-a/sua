@@ -1510,7 +1510,7 @@
 								if($message->create())
 								{
 									$message->text($u->_i(sprintf($message_text,
-										h(sprintf($u->_("Spionagebericht des Planeten %s", $next_target_nt))),
+										h(sprintf($u->_("Spionagebericht des Planeten %s"), $next_target_nt)),
 										h($u->_("Planet")),
 										h($u->_("Felder")),
 										h($u->_("Schicken Sie ein Besiedelungsschiff zu diesem Planeten")),
