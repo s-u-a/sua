@@ -1954,5 +1954,5 @@
 
 	function _i($string)
 	{
-		return preg_replace("/\\[(item|ress)_[a-zA-Z0-9]\\]/e", "_('\$0')", $string);
+		return preg_replace("/\\[(item|ress)_[a-zA-Z0-9]+\\]/e", "_('\$0')", $string);
 	}

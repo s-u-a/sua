@@ -2480,7 +2480,7 @@
 			$user->addScores(6, $verteidiger_new_erfahrung);
 
 		$nachrichten = array();
-		foreach($users_angreifer as $n=>$u)
+		foreach($users_all as $n=>$u)
 		{
 			$nachrichten[$n] = $u->_i(sprintf($nachrichten_text,
 				h($u->ngettext("Flotten des Angreifers", "Flotten der Angreifer", count($angreifer_anfang))),
