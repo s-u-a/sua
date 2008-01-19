@@ -51,7 +51,7 @@
 				return "\n\t\t</p>\n\t\t".str_repeat('<br />', $len-2)."\n\t\t<p>\n\t\t\t";
 		}
 
-		$desc = "\t\t<p>\n\t\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', h(_("[itemdesc_".$_GET["id"]."]")))."\n\t\t</p>\n";
+		$desc = "\t\t<p>\n\t\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', h(_i(_("[itemdesc_".$_GET["id"]."]"))))."\n\t\t</p>\n";
 
 		print($desc);
 ?>
@@ -189,7 +189,7 @@
 				$prod[4] *= $global_factors['prod'];
 				$prod[5] *= $global_factors['prod'];
 
-				$start_lvl = $lvl-3;
+				$start_lvl = $me->getItemLevel($_GET["id"])-3;
 				if($start_lvl < 1)
 					$start_lvl = 1;
 
@@ -197,7 +197,7 @@
 				{
 					$act_lvl = $start_lvl+$x;
 ?>
-				<tr<?=($act_lvl == $lvl) ? ' class="active"' : ''?>>
+				<tr<?=($act_lvl == $me->getItemLevel($_GET["id"])) ? ' class="active"' : ''?>>
 					<th><?=ths($act_lvl)?></th>
 <?php
 					if($prod[0] != 0)
