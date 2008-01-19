@@ -1116,7 +1116,7 @@
 							$minen_rob = 1+0.0003125*$this->getItemLevel('F2', 'forschung', $run_eventhandler);
 						else
 							$minen_rob = sqrt($this->getItemLevel("F2", "forschung", $run_eventhandler))/250;
-						if($minen_rob > 1)
+						if($use_old_robtech && $minen_rob > 1 || !$use_old_robtech && $minen_rob > 0)
 						{
 							$use_max_limit = !file_exists(global_setting('DB_NO_STRICT_ROB_LIMITS'));
 
