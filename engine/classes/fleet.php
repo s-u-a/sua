@@ -2482,7 +2482,7 @@
 		$nachrichten = array();
 		foreach($users_angreifer as $n=>$u)
 		{
-			$nachrichten[$n] = $uu->_i(sprintf($nachrichten_text,
+			$nachrichten[$n] = $u->_i(sprintf($nachrichten_text,
 				h($u->ngettext("Flotten des Angreifers", "Flotten der Angreifer", count($angreifer_anfang))),
 				h($u->_("Schiffstyp")),
 				h($u->_("Anzahl")),
