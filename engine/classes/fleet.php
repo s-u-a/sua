@@ -2038,40 +2038,6 @@
 		}
 		$nachrichten_text .= "\t</table>\n";
 
-		if(count($angreifer_anfang) > 1)
-		{
-			$angreifer_nominativ = 'die Angreifer';
-			$angreifer_praedikat = 'sind';
-			$angreifer_praedikat2 = 'haben';
-			$angreifer_genitiv = 'der Angreifer';
-			$angreifer_dativ = 'ihnen';
-		}
-		else
-		{
-			$angreifer_nominativ = 'der Angreifer';
-			$angreifer_praedikat = 'ist';
-			$angreifer_praedikat2 = 'hat';
-			$angreifer_genitiv = 'des Angreifers';
-			$angreifer_dativ = 'ihm';
-		}
-		if(count($verteidiger_anfang) > 1)
-		{
-			$verteidiger_nominativ = 'die Verteidiger';
-			$verteidiger_praedikat = 'sind';
-			$verteidiger_praedikat2 = 'haben';
-			$verteidiger_nominativ_letzt = 'letztere';
-			$verteidiger_genitiv = 'der Verteidiger';
-		}
-		else
-		{
-			$verteidiger_nominativ = 'der Verteidiger';
-			$verteidiger_praedikat = 'ist';
-			$verteidiger_praedikat2 = 'hat';
-			$verteidiger_nominativ_letzt = 'letzterer';
-			$verteidiger_genitiv = 'des Verteidigers';
-		}
-
-
 		# Erstschlag
 		if($angreifer_spiotech > $verteidiger_spiotech)
 		{
@@ -2223,6 +2189,8 @@
 			unset($a_objs);
 			unset($d_objs);
 		}
+		
+		$nachrichten_text .= "%12\$s";
 
 		$nachrichten_text .= "\t<p>\n";
 		if(count($angreifer) == 0)
@@ -2495,8 +2463,8 @@
 				h(sprintf($u->_("%s sind stärker ausgebildet als %s und %s."), $u->ngettext("Die Sensoren des Angreifers", "Die Sensoren der Angreifer", count($angreifer_anfang)), $u->ngettext("die des Verteidigers", "die der Verteidiger", count($verteidiger_anfang)), $u->ngettext("ermöglichen es ihm, den Erstschlag auszuführen", "ermöglichen es ihnen, den Erstschlag auszuführen", count($angreifer_anfang)))),
 				h(sprintf($u->_("%s sind %s nicht überlegen, weshalb %s."), $u->ngettext("Die Sensoren des Angreifers", "Die Sensoren der Angreifer", count($angreifer_anfang)), $u->ngettext("denen des Verteidigers", "denen der Verteidiger", count($verteidiger_anfang)), $u->ngettext("letzterer den Erstschlag ausführt", "letztere den Erstschlag ausführen", count($verteidiger_anfang)))),
 				implode("", $nachrichten_runden[$n]),
-				h($u->ngettext("Der Kampf ist vorüber. Gewinner ist der Angreifer.", "Der Kampf ist vorüber. Gewinner sind die Angreifer.", count($angreifer_anfang))),
 				h($u->ngettext("Der Kampf ist vorüber. Gewinner ist der Verteidiger.", "Der Kampf ist vorüber. Gewinner sind die Verteidiger.", count($verteidiger_anfang))),
+				h($u->ngettext("Der Kampf ist vorüber. Gewinner ist der Angreifer.", "Der Kampf ist vorüber. Gewinner sind die Angreifer.", count($angreifer_anfang))),
 				h($u->_("Der Kampf ist vorüber. Er endet unentschieden.")),
 				h(sprintf($u->ngettext("Der Angreifer hat %s Kampferfahrungspunkte gesammelt.", "Die Angreifer haben %s Kampferfahrungspunkte gesammelt.", count($angreifer_anfang)), ths($angreifer_new_erfahrung))),
 				h(sprintf($u->ngettext("Der Verteidiger hat %s Kampferfahrungspunkte gesammelt.", "Die Verteidiger haben %s Kampferfahrungspunkte gesammelt.", count($verteidiger_anfang)), ths($verteidiger_new_erfahrung)))
