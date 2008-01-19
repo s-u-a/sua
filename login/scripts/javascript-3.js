@@ -474,7 +474,7 @@ function popup_message(message, classn, calling_node)
 
 	popup_el.style.position = 'absolute';
 	popup_el.style.top = posy+'px';
-	popup_el.style.left = posx+'px';
+	popup_el.style.left = (posx+calling_node.offsetWidth)+'px';
 
 	body_el = document.getElementsByTagName('body')[0];
 	body_el.appendChild(popup_el);
