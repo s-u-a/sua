@@ -74,3 +74,5 @@ var time_diff = 0;
 function init_countdown(){ return false; }
 
 function activate_users_list() { return false; }
+
+function fast_action() { return true; }

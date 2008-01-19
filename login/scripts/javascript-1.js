@@ -433,3 +433,9 @@ function activate_users_list(element)
 { /* Not activated in performance mode 1 */
 	return false;
 }
+
+/////////////////////////////
+/// Dummy-Funktionen ///
+/////////////////////////////
+
+function fast_action() { return true; }

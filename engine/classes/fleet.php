@@ -1326,7 +1326,7 @@
 								$message_text .= "\t</div>\n";
 
 								$message_text .= "\t<p class=\"besiedeln\">\n";
-								$message_text .= "\t\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlentities(urlencode($target[0]))."&amp;action_system=".htmlentities(urlencode($target[1]))."&amp;action_planet=".htmlentities(urlencode($target[2]))."\" title=\"%4\$s\">%5\$s</a>\n";
+								$message_text .= "\t\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlentities(urlencode($target[0]))."&amp;action_system=".htmlentities(urlencode($target[1]))."&amp;action_planet=".htmlentities(urlencode($target[2]))."\" onclick=\"return fast_action(this, 'besiedeln', ".$target[0].", ".$target[1].", ".$target[2].");\" title=\"%4\$s\">%5\$s</a>\n";
 								$message_text .= "\t</p>\n";
 								$message_text .= "</div>";
 							}
