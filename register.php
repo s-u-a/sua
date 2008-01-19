@@ -120,7 +120,6 @@
 					else $user_obj->planetName($_POST['hauptplanet']);
 ?>
 <p class="successful"><?=h(sprintf(_("Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten %s."), vsprintf(_("%d:%d:%d"), explode(":", $koords))))?></p>
-</p>
 <ul>
 	<li><a href="index.php"<?=accesskey_attr(_("Zurück zur Startseite&[register.php|1]"))?>><?=h(_("Zurück zur Startseite&[register.php|1]"))?></a></li>
 </ul>
