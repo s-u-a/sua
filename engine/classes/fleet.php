@@ -2595,11 +2595,11 @@
 			{
 				$rtrans = array();
 				$p = $cap/$trans_total;
-				$angreifer_return[$username][0] += ($rtrans[0] = floor($ress_max[0]*$p));
-				$angreifer_return[$username][1] += ($rtrans[1] = floor($ress_max[1]*$p));
-				$angreifer_return[$username][2] += ($rtrans[2] = floor($ress_max[2]*$p));
-				$angreifer_return[$username][3] += ($rtrans[3] = floor($ress_max[3]*$p));
-				$angreifer_return[$username][4] += ($rtrans[4] = floor($ress_max[4]*$p));
+				$angreifer_return[$username][1][0] += ($rtrans[0] = floor($ress_max[0]*$p));
+				$angreifer_return[$username][1][1] += ($rtrans[1] = floor($ress_max[1]*$p));
+				$angreifer_return[$username][1][2] += ($rtrans[2] = floor($ress_max[2]*$p));
+				$angreifer_return[$username][1][3] += ($rtrans[3] = floor($ress_max[3]*$p));
+				$angreifer_return[$username][1][4] += ($rtrans[4] = floor($ress_max[4]*$p));
 
 				$nachrichten[$username] .= "\n\t<p class=\"rohstoffe-erbeutet selbst\">".h(sprintf($users_all[$username]->_("Sie haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."), ths($rtrans[0]), $users_all[$username]->_("[ress_0]"), ths($rtrans[1]), $users_all[$username]->_("[ress_1]"), ths($rtrans[2]), $users_all[$username]->_("[ress_2]"), ths($rtrans[3]), $users_all[$username]->_("[ress_3]"), ths($rtrans[4]), $users_all[$username]->_("[ress_4]")))."</p>\n";
 			}
