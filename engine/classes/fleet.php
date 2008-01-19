@@ -1436,10 +1436,10 @@
 											{
 												foreach($foreign_fleet as $id=>$count)
 												{
-													if(isset($schiffe[$i]))
-														$schiffe[$i] += $count;
+													if(isset($schiffe[$id]))
+														$schiffe[$id] += $count;
 													else
-														$schiffe[$i] = $count;
+														$schiffe[$id] = $count;
 												}
 											}
 										}
