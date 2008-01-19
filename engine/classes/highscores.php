@@ -55,7 +55,7 @@
 				$query .= " WHERE username = ".$this->escape($username).";";
 			}
 			else
-				$query = "INSERT INTO highscores_users ( username, alliance, scores_0, scores_1, scores_2, scores_3, scores_4, scores_5, scores_6, changed ) VALUES ( ".$this->escape($username).", ".$this->escape($alliance).", ".$this->escape($scores[0]).", ".$this->escape($scores[1]).", ".$this->escape($scores[2]).", ".$this->escape($scores[3]).", ".$this->escape($scores[4]).", ".$this->escape($scores[5]).", ".$this->escape($scores[6]).", ".$this->escape(microtime(true))." );";
+				$query = "INSERT INTO highscores_users ( username, alliance, scores_0, scores_1, scores_2, scores_3, scores_4, scores_5, scores_6, changed ) VALUES ( ".$this->escape($username).", ".$this->escape($alliance).", ".$this->escape($scores[0] ? $scores[0] : 0).", ".$this->escape($scores[1] ? $scores[1] : 0).", ".$this->escape($scores[2] ? $scores[2] : 0).", ".$this->escape($scores[3] ? $scores[3] : 0).", ".$this->escape($scores[4] ? $scores[4] : 0).", ".$this->escape($scores[5] ? $scores[5] : 0).", ".$this->escape($scores[6] ? $scores[6] : 0).", ".$this->escape(microtime(true))." );";
 
 			return $this->query($query);
 		}

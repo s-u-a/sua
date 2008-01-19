@@ -2849,10 +2849,6 @@
 			foreach($verb_list as $verb)
 				$this->rejectVerbuendetApplication($verb);
 
-			# Aus den Highscores entfernen
-			$highscores = Classes::Highscores();
-			$highscores->removeEntry('users', $this->getName());
-
 			# Nachrichten entfernen
 			$categories = $this->getMessageCategoriesList();
 			foreach($categories as $category)
@@ -2877,6 +2873,10 @@
 			# IM-Benachrichtigungen entfernen
 			$imfile = Classes::IMFile();
 			$imfile->removeMessages($this->getName());
+			
+			# Aus den Highscores entfernen
+			$highscores = Classes::Highscores();
+			$highscores->removeEntry('users', $this->getName());
 
 			$status = (unlink($this->filename) || chmod($this->filename, 0));
 			if($status)
