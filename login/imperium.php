@@ -361,13 +361,12 @@
 	<dd class="c-bauroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.125)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 <?php
 			if(file_exists(global_setting("DB_USE_OLD_ROBTECH")))
-			{
+				$mrob = $me->getItemLevel('F2', 'forschung')*0.03125;
+			else
+				$mrob = sqrt($me->getItemLevel("F2", "forschung"))/250; 
 ?>
 	<dt class="c-minenroboter">Minenroboter</dt>
-	<dd class="c-minenroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.03125)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
-<?php
-			}
-?>
+	<dd class="c-minenroboter"><?=ths($mrob, null, 2)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 </dl>
 <?php
 			break;

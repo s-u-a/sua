@@ -814,9 +814,9 @@
 
 	/**
 	  * Formatiert eine Zahl in ein lesbares Format.
-	  * @param $count Die zu formatierende Zahl
-	  * @param $utf8 Ohne Auswirkungen, Kompatiblitaetsparameter
-	  * @param $round Anzahl der zu rundenden Stellen, standardmaessig 0
+	  * @param $count float Die zu formatierende Zahl
+	  * @param $utf8 null Ohne Auswirkungen, Kompatiblitaetsparameter
+	  * @param $round integer Anzahl der zu rundenden Stellen, standardmaessig 0
 	*/
 
 	function ths($count, $utf8=null, $round=0)
