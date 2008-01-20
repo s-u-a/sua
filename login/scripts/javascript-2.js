@@ -417,11 +417,11 @@ function increase_ress()
 	var time_diff = (calced_time-window.last_increase_ress)/3600000;
 
 	// Neue Rohstoffvorraete speichern
-	res_now[0] += res_now[0]*time_diff;
-	res_now[1] += res_now[1]*time_diff;
-	res_now[2] += res_now[2]*time_diff;
-	res_now[3] += res_now[3]*time_diff;
-	res_now[4] += res_now[4]*time_diff;
+	res_now[0] += carbon_prod*time_diff;
+	res_now[1] += aluminium_prod*time_diff;
+	res_now[2] += wolfram_prod*time_diff;
+	res_now[3] += radium_prod*time_diff;
+	res_now[4] += tritium_prod*time_diff;
 
 	// Anzeige aktualisieren
 	document.getElementById('ress-carbon').firstChild.data = ths(res_now[0]);

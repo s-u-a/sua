@@ -386,16 +386,20 @@ function move_title(ev)
 /// Auto-Refresh ///
 ////////////////////
 
+var time_diff;
 var refresh_callbacks = [ ];
 
 function refresh_ress(refresh_int, carbon_vorh, aluminium_vorh, wolfram_vorh, radium_vorh, tritium_vorh, carbon_prod, aluminium_prod, wolfram_prod, radium_prod, tritium_prod)
 { // Initialisiert Auto-Refresh
+
+	time_diff = refresh_int/3600000;
+
 	// Speichern der vorhandenen Rohstoffe
-	res[0] = window.carbon_vorh = carbon_vorh;
-	res[1] = window.aluminium_vorh = aluminium_vorh;
-	res[2] = window.wolfram_vorh = wolfram_vorh;
-	res[3] = window.radium_vorh = radium_vorh;
-	res[4] = window.tritium_vorh = tritium_vorh;
+	res_now[0] = window.carbon_vorh = carbon_vorh;
+	res_now[1] = window.aluminium_vorh = aluminium_vorh;
+	res_now[2] = window.wolfram_vorh = wolfram_vorh;
+	res_now[3] = window.radium_vorh = radium_vorh;
+	res_now[4] = window.tritium_vorh = tritium_vorh;
 
 	// Speichern der Rohstoffproduktion
 	window.carbon_prod = carbon_prod;
@@ -414,17 +418,12 @@ function refresh_ress(refresh_int, carbon_vorh, aluminium_vorh, wolfram_vorh, ra
 
 function increase_ress()
 { // Aktualisiert die Rohstoffanzeigen
-	// Ausgleichen von Interval-Verzoegerungen
-	var now_time = new Date();
-	var calced_time = now_time.getTime();
-	var time_diff = (calced_time-window.last_increase_ress)/3600000;
-
 	// Neue Rohstoffvorraete speichern
-	res_now[0] += res_now[0]*time_diff;
-	res_now[1] += res_now[1]*time_diff;
-	res_now[2] += res_now[2]*time_diff;
-	res_now[3] += res_now[3]*time_diff;
-	res_now[4] += res_now[4]*time_diff;
+	res_now[0] += carbon_prod*time_diff;
+	res_now[1] += aluminium_prod*time_diff;
+	res_now[2] += wolfram_prod*time_diff;
+	res_now[3] += radium_prod*time_diff;
+	res_now[4] += tritium_prod*time_diff;
 
 	// Anzeige aktualisieren
 	document.getElementById('ress-carbon').firstChild.data = ths(res_now[0]);
@@ -432,8 +431,6 @@ function increase_ress()
 	document.getElementById('ress-wolfram').firstChild.data = ths(res_now[2]);
 	document.getElementById('ress-radium').firstChild.data = ths(res_now[3]);
 	document.getElementById('ress-tritium').firstChild.data = ths(res_now[4]);
-
-	window.last_increase_ress = calced_time;
 
 	for(var i=0; i<refresh_callbacks.length; i++)
 		refresh_callbacks[i]();
