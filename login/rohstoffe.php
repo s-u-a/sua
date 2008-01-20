@@ -59,7 +59,6 @@
 
 	$tabindex = 1;
 	$ges_prod = $me->getProduction();
-	$ges_prod[5] = round($ges_prod[5]*$ges_prod[6]);
 	$gebaeude = $me->getItemsList('gebaeude');
 	foreach($gebaeude as $id)
 	{
@@ -76,7 +75,7 @@
 				<td class="c-wolfram <?=get_prod_class($item_info['prod'][2])?>"><?=ths($item_info['prod'][2]*$ges_prod[6])?></td>
 				<td class="c-radium <?=get_prod_class($item_info['prod'][3])?>"><?=ths($item_info['prod'][3]*$ges_prod[6])?></td>
 				<td class="c-tritium <?=get_prod_class($item_info['prod'][4])?>"><?=ths($item_info['prod'][4]*$ges_prod[6])?></td>
-				<td class="c-energie <?=get_prod_class($item_info['prod'][5])?>"><?=ths($item_info['prod'][5]*$ges_prod[6])?></td>
+				<td class="c-energie <?=get_prod_class($item_info['prod'][5])?>"><?=ths($item_info['prod'][5])?></td>
 				<td class="c-produktion">
 					<select name="prod[<?=utf8_htmlentities($id)?>]" onchange="this.form.submit();" tabindex="<?=$tabindex?>"<?=($tabindex == 1) ? ' accesskey="u"' : ''?>>
 <?php
