@@ -2610,8 +2610,6 @@
 					if($username == $target_owner)
 						$target_user->changeItemLevel($id, $count2-$count);
 					else $target_user->subForeignShips($username, $id, $count-$count2);
-					var_dump($count);
-					var_dump($count2);
 				}
 			}
 			$user_obj->recalcHighscores(false, false, false, true, true);

@@ -3196,32 +3196,24 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 
-			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$user]) || !isset($this->planet_info["foreign_fleets"][$user][$i]))
+			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$username]))
 				return false;
-
-			$message_obj = Classes::Message();
-			$message_obj->create();
-
-			if($message_obj->getStatus())
+			foreach($this->planet_info["foreign_fleets"][$username] as $i=>$fleet)
 			{
-				$message_obj->text(sprintf(_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf(_("%d:%d:%d"), $this->getPos()), makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0])));
-				$message_obj->subject(sprintf(_("Fremdstationierung zurückgezogen auf %s"), vsprintf(_("%d:%d:%d"), $this->getPos())));
-				$message_obj->from($user);
-				$message_obj->addUser($this->getName(), 3);
+				if(isset($fleet[0][$id])) $count -= $fleet[0][$id];
+				$fleet[0][$id] -= $count;
+				if($fleet[0][$id] <= 0)
+				{
+					unset($fleet[0][$id]);
+					if(count($fleet[0]) <= 0)
+						unset($this->planet_info["foreign_fleets"][$username][$i]);
+				}
+				if($count <= 0) break;
 			}
-
-			unset($this->planet_info["foreign_fleets"][$user][$i]);
-
-			if(count($this->planet_info["foreign_fleets"][$user]) == 0)
-			{
-				unset($this->planet_info["foreign_fleets"][$user]);
-				$user_obj = Classes::User($user);
-				if(!$user_obj->getStatus()) return false;
-					$user_obj->_subForeignCoordinates($this->getPosString());
-			}
-
+			if(count($this->planet_info["foreign_fleets"][$username]) <= 0)
+				unset($this->planet_info["foreign_fleets"][$username]);
 			$this->changed = true;
-
+			if(count > 0) return 2;
 			return true;
 		}
 
