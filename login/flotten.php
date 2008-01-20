@@ -749,7 +749,7 @@
 		<input type="hidden" name="galaxie" value="<?=htmlspecialchars($_POST['galaxie'])?>" />
 		<input type="hidden" name="system" value="<?=htmlspecialchars($_POST['system'])?>" />
 		<input type="hidden" name="planet" value="<?=htmlspecialchars($_POST['planet'])?>" />
-		<button type="submit"<?=accesskey_attr(_("Absen&den[login/flotten.php|1]"))?>><?=h("Absen&den[login/flotten.php|1]")?></button>
+		<button type="submit"<?=accesskey_attr(_("Absen&den[login/flotten.php|1]"))?>><?=h(_("Absen&den[login/flotten.php|1]"))?></button>
 	</div>
 </form>
 <?php
