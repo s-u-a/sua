@@ -51,7 +51,7 @@
 				$admins[$_POST['new_admin'][0]]['password'] = md5($_POST['new_admin'][1]);
 				$admins[$_POST['new_admin'][0]]['permissions'] = array();
 
-				for($i=0; $i<=14; $i++)
+				for($i=0; $i<=15; $i++)
 					$admins[$_POST['new_admin'][0]]['permissions'][$i] = (isset($_POST['new_admin'][$i+2]) ? '1' : '0');
 
 				write_admin_list($admins) && protocol("11.1", $_POST['new_admin'][0]);
@@ -104,7 +104,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="16"><button type="submit"<?=accesskey_attr(_("Hinzufügen&[admin/usermanagement.php|1]"))?>><?=h(_("Hinzufügen&[admin/usermanagement.php|1]"))?></button></td>
+				<td colspan="18"><button type="submit"<?=accesskey_attr(_("Hinzufügen&[admin/usermanagement.php|1]"))?>><?=h(_("Hinzufügen&[admin/usermanagement.php|1]"))?></button></td>
 			</tr>
 		</tfoot>
 	</table>
@@ -174,7 +174,6 @@
 		<thead>
 			<tr>
 				<th rowspan="2" title="<?=h(_("Name des Administrators"))?>"><?=h(_("Name"))?></th>
-				<th rowspan="2"><?=h(_("Passwort"))?></th>
 				<th colspan="7"><?=h(_("Benutzeraktionen"))?></th>
 				<th rowspan="2" xml:lang="en" title="<?=h(_("Anfängerschutz ein-/ausschalten"))?>"><?=h(_("Anfängerschutz"))?></th>
 				<th rowspan="2" xml:lang="en" title="<?=h(_("Changelog bearbeiten"))?>"><?=h(_("Changelog"))?></th>
@@ -185,6 +184,7 @@
 				<th rowspan="2" title="<?=h(_("Spiel sperren/entsperren"))?>"><?=h(_("Spiel sperren"))?></th>
 				<th rowspan="2"><?=h(_("Flottensperre"))?></th>
 				<th rowspan="2" title="<?=h(_("News bearbeiten"))?>"><?=h(_("News"))?></th>
+				<th rowspan="2"><?=h(_("Löschen"))?></th>
 			</tr>
 			<tr>
 				<th title="<?=h(_("Die Benutzerliste einsehen"))?>"><?=h(_("Liste"))?></th>
@@ -235,7 +235,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="15"><button type="submit"><?=h(_("Speichern"))?></button></td>
+				<td colspan="18"><button type="submit"><?=h(_("Speichern"))?></button></td>
 			</tr>
 		</tfoot>
 	</table>
