@@ -17,7 +17,7 @@
 */
 	require('scripts/include.php');
 
-	login_gui::html_head();
+	login_gui::html_head((isset($_GET["type"]) && isset($_GET["message"])) ? array("ignore_messages" => array($_GET["message"])) : array());
 
 	if(isset($_GET['to']))
 	{

@@ -41,7 +41,7 @@
 
 	$flotten = $me->getFleetsList();
 
-	login_gui::html_head();
+	login_gui::html_head(array("notify" => true));
 ?>
 <ul id="planeten-umbenennen">
 	<li><a href="scripts/rename.php?<?=htmlentities(session_name().'='.urlencode(session_id()))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>

@@ -198,8 +198,11 @@
 
 	class login_gui
 	{
-		static function html_head()
+		static function html_head($options=null)
 		{
+			if(!$options) $options = array();
+			if(!is_array($options)) $options = array($options => true);
+
 			global $me;
 			global $skins;
 			global $databases;
@@ -372,7 +375,7 @@
 				<hr class="separator" />
 				<h1><?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), vsprintf(h(_("%d:%d:%d")), $me->getPos()))?></h1>
 <?php
-			if($me->checkSetting('notify') || $_SERVER['PHP_SELF'] == h_root."/login/index.php")
+			if(isset($options["notify"]) && $options["notify"] || !isset($options["notify"]) && $me->checkSetting('notify'))
 			{
 				$ncount = array(
 					1 => 0,
@@ -391,6 +394,7 @@
 					$message_ids = $me->getMessagesList($cat);
 					foreach($message_ids as $message)
 					{
+						if(isset($options["ignore_message"]) && in_array($message, $options["ignore_message"])) continue;
 						$status = $me->checkMessageStatus($message, $cat);
 						if($status == 1 && $cat != 8)
 						{
