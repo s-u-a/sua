@@ -3180,22 +3180,6 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
-			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$username]) || !isset($this->planet_info["foreign_fleets"][$username][0][$id]))
-				return false;
-			if(($this->planet_info["foreign_fleets"][$username][0][$id] -= $count) <= 0)
-			{
-				unset($this->planet_info["foreign_fleets"][$username][0][$id]);
-				if(count($this->planet_info["foreign_fleets"][$username][0]) <= 0)
-					unset($this->planet_info["foreign_fleets"][$username]);
-			}
-			$this->changed = true;
-			return true;
-		}
-
-		function subForeignFleet($user, $i)
-		{
-			if(!$this->status || !isset($this->planet_info)) return false;
-
 			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$username]))
 				return false;
 			foreach($this->planet_info["foreign_fleets"][$username] as $i=>$fleet)
@@ -3215,6 +3199,31 @@
 			$this->changed = true;
 			if($count > 0) return 2;
 			return true;
+		}
+
+		function subForeignFleet($user, $i)
+		{
+			if(!$this->status || !isset($this->planet_info)) return false;
+
+			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$username]))
+				return false;
+			foreach($this->planet_info["foreign_fleets"][$username] as $i=>$fleet)
+			{
+				if(isset($fleet[0][$id])) $count -= $fleet[0][$id];
+					$fleet[0][$id] -= $count;
+				if($fleet[0][$id] <= 0)
+				{
+					unset($fleet[0][$id]);
+					if(count($fleet[0]) <= 0)
+						unset($this->planet_info["foreign_fleets"][$username][$i]);
+				}
+				if($count <= 0) break;
+			}
+			if(count($this->planet_info["foreign_fleets"][$username]) <= 0)
+				unset($this->planet_info["foreign_fleets"][$username]);
+			$this->changed = true;
+			if(count > 0) return 2;
+				return true;
 		}
 
 		function getForeignUsersList()
