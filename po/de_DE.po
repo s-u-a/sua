@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-01-20 06:23+0100\n"
+"PO-Revision-Date: 2008-01-20 08:30+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -1648,8 +1648,8 @@ msgstr "Jenes Sonnensystem in der Karte ansehen"
 #: ../login/flotten.php:838
 #: ../login/flotten.php:999
 #: ../login/flotten.php:1003
-#: ../engine/classes/user.php:3217
 #: ../engine/classes/user.php:3218
+#: ../engine/classes/user.php:3219
 #: ../engine/classes/fleet.php:1027
 #: ../engine/classes/fleet.php:1028
 #: ../engine/classes/fleet.php:1041
@@ -2000,7 +2000,7 @@ msgid "Eigene Allian&z gründen[login/allianz.php|7]"
 msgstr "Eigene Allian&z gründen"
 
 #: ../login/allianz.php:181
-msgid "Allia&nz suchen"
+msgid "Allia&nz suchen[login/allianz.php|7]"
 msgstr "Allia&nz suchen"
 
 #: ../login/allianz.php:189
@@ -2116,8 +2116,8 @@ msgstr "Allianzname"
 
 #: ../login/allianz.php:441
 #: ../login/allianz.php:442
-msgid "E&xterner Allianztext&[login/allianz.php|12]"
-msgstr "E&xterner Allianztext[login/allianz.php|12]"
+msgid "E&xterner Allianztext[login/allianz.php|12]"
+msgstr "E&xterner Allianztext"
 
 #: ../login/allianz.php:444
 msgid "Speicher&n[login/allianz.php|12]"
@@ -4071,7 +4071,7 @@ msgstr "Ihre Bewerbung bei der Allianz %s wurde abgelehnt."
 msgid "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 msgstr "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 
-#: ../engine/classes/user.php:3217
+#: ../engine/classes/user.php:3218
 #, php-format
 msgid ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
@@ -4080,12 +4080,12 @@ msgstr ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
 "Die Flotte bestand aus folgenden Schiffen: %s"
 
-#: ../engine/classes/user.php:3218
+#: ../engine/classes/user.php:3219
 #, php-format
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr "Fremdstationierung zurückgezogen auf %s"
 
-#: ../engine/classes/user.php:3770
+#: ../engine/classes/user.php:3771
 #: ../impressum.php:31
 #: ../passwd.php:42
 msgid "[title_full]"

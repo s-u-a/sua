@@ -432,7 +432,7 @@
 ?>
 <form action="allianz.php?action=extern&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="allianz-extern-form">
 	<dl>
-		<dt class="c-tag"><label for="i-allianz-tag"><?=h(_("Allianztag&[login/allianz.php|12]"))?>"))?></label></dt>
+		<dt class="c-tag"><label for="i-allianz-tag"><?=h(_("Allianztag&[login/allianz.php|12]"))?></label></dt>
 		<dd class="c-tag"><input type="text" name="extern-tag" id="i-allianz-tag" value="<?=htmlspecialchars($alliance->getName())?>" tabindex="<?=$tabindex+3?>"<?=accesskey_attr(_("Allianztag&[login/allianz.php|12]"))?><?php if(!$alliance->renameAllowed()){?> disabled="disabled"<?php }?> /> <span class="allianztag-aendern-hinweis"><?=h(sprintf(ngettext("Das Allianztag kann einmal am Tag geändert werden.", "Das Allianztag kann alle %s Tage geändert werden.", global_setting("ALLIANCE_RENAME_PERIOD")), global_setting("ALLIANCE_RENAME_PERIOD")))?></span></dd>
 
 		<dt class="c-name"><label for="allianz-name-input"><?=h(_("Allianzname&[login/allianz.php|12]"))?></label></dt>

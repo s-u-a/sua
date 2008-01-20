@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-20 06:05+0100\n"
+"POT-Creation-Date: 2008-01-20 08:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1445,8 +1445,8 @@ msgstr ""
 #: ../login/help/playerinfo.php:180 ../login/scripts/include.php:378
 #: ../login/scripts/include.php:554 ../login/flotten.php:439
 #: ../login/flotten.php:495 ../login/flotten.php:838 ../login/flotten.php:999
-#: ../login/flotten.php:1003 ../engine/classes/user.php:3217
-#: ../engine/classes/user.php:3218 ../engine/classes/fleet.php:1027
+#: ../login/flotten.php:1003 ../engine/classes/user.php:3218
+#: ../engine/classes/user.php:3219 ../engine/classes/fleet.php:1027
 #: ../engine/classes/fleet.php:1028 ../engine/classes/fleet.php:1041
 #: ../engine/classes/fleet.php:1042 ../engine/classes/fleet.php:1079
 #: ../engine/classes/fleet.php:1080 ../register.php:122
@@ -1750,7 +1750,7 @@ msgid "Eigene Allian&z gründen[login/allianz.php|7]"
 msgstr ""
 
 #: ../login/allianz.php:181
-msgid "Allia&nz suchen"
+msgid "Allia&nz suchen[login/allianz.php|7]"
 msgstr ""
 
 #: ../login/allianz.php:189
@@ -1863,7 +1863,7 @@ msgid "Allianzname&[login/allianz.php|12]"
 msgstr ""
 
 #: ../login/allianz.php:441 ../login/allianz.php:442
-msgid "E&xterner Allianztext&[login/allianz.php|12]"
+msgid "E&xterner Allianztext[login/allianz.php|12]"
 msgstr ""
 
 #: ../login/allianz.php:444
@@ -4041,7 +4041,7 @@ msgstr ""
 msgid "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 msgstr ""
 
-#: ../engine/classes/user.php:3217
+#: ../engine/classes/user.php:3218
 #, php-format
 msgid ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%"
@@ -4049,12 +4049,12 @@ msgid ""
 "Die Flotte bestand aus folgenden Schiffen: %s"
 msgstr ""
 
-#: ../engine/classes/user.php:3218
+#: ../engine/classes/user.php:3219
 #, php-format
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr ""
 
-#: ../engine/classes/user.php:3770 ../impressum.php:31 ../passwd.php:42
+#: ../engine/classes/user.php:3771 ../impressum.php:31 ../passwd.php:42
 msgid "[title_full]"
 msgstr ""
 
