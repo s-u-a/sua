@@ -3213,7 +3213,7 @@
 			if(count($this->planet_info["foreign_fleets"][$username]) <= 0)
 				unset($this->planet_info["foreign_fleets"][$username]);
 			$this->changed = true;
-			if(count > 0) return 2;
+			if($count > 0) return 2;
 			return true;
 		}
 
