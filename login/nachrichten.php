@@ -17,7 +17,7 @@
 */
 	require('scripts/include.php');
 
-	login_gui::html_head((isset($_GET["type"]) && isset($_GET["message"])) ? array("ignore_messages" => array($_GET["message"])) : ((isset($_GET["type"]) && !isset($_GET["message"]) && isset($_POST["delete"]) && isset($_POST["message"])) ? array("ignore_messages" => array_keys($_POST["message"])) : array()));
+	login_gui::html_head((isset($_GET["type"]) && isset($_GET["message"])) ? array("ignore_messages" => array($_GET["message"])) : ((isset($_GET["type"]) && !isset($_GET["message"]) && (isset($_POST["delete"]) || isset($_POST["read"]) || isset($_POST["archive"])) && isset($_POST["message"])) ? array("ignore_messages" => array_keys($_POST["message"])) : array()));
 
 	if(isset($_GET['to']))
 	{
