@@ -1974,5 +1974,5 @@
 
 	function _i($string, $links=false)
 	{
-		return preg_replace("/\\[(item|ress)_([a-zA-Z0-9]+)([-a-zA-Z0-9_]*)\\]/e", ($links?"'<a href=\"".h_root."/login/help/description.php?id=\$2&amp;".htmlspecialchars(urlencode(session_id()))."=".htmlspecialchars(urlencode(session_name()))."\">'.":"")."_('\$0')".($links?".'</a>'" : ""), $string);
+		return preg_replace("/\\[(item|ress)_([a-zA-Z0-9]+)([-a-zA-Z0-9_]*)\\]/e", ($links?"'<a href=\"".h_root."/login/help/description.php?id=\$2&amp;".htmlspecialchars(urlencode(session_name()))."=".htmlspecialchars(urlencode(session_id()))."\">'.":"")."_('\$0')".($links?".'</a>'" : ""), $string);
 	}
