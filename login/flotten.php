@@ -367,37 +367,10 @@
 
 									foreach($_POST['flotte'] as $id=>$anzahl)
 										$fleet_obj->addFleet($id, $anzahl, $_SESSION['username']);
-
-									$ress = $me->getRess();
-									if(($auftrag == 1 || $auftrag == 4 || $auftrag == 6))
-									{
-										if(!isset($_POST['transport'])) $_POST['transport'] = array(0,0,0,0,0);
-										if(!isset($_POST['rtransport'])) $_POST['rtransport'] = array();
-										if($_POST['transport'][0] > $ress[0]) $_POST['transport'][0] = $ress[0];
-										if($_POST['transport'][1] > $ress[1]) $_POST['transport'][1] = $ress[1];
-										if($_POST['transport'][2] > $ress[2]) $_POST['transport'][2] = $ress[2];
-										if($_POST['transport'][3] > $ress[3]) $_POST['transport'][3] = $ress[3];
-										if($_POST['transport'][4] > $ress[4]) $_POST['transport'][4] = $ress[4];
-
-										foreach($_POST['rtransport'] as $id=>$anzahl)
-										{
-											if($anzahl > $me->getItemLevel($id, 'roboter'))
-												$_POST['rtransport'][$id] = $me->getItemLevel($id, 'roboter');
-										}
-										if($planet_owner == $_SESSION['username'])
-											$fleet_obj->addTransport($_SESSION['username'], $_POST['transport'], $_POST['rtransport']);
-										else $fleet_obj->addTransport($_SESSION['username'], $_POST['transport']);
-										list($_POST['transport'], $_POST['rtransport']) = $fleet_obj->getTransport($_SESSION['username']);
-									}
-									else
-									{
-										$_POST['transport'] = array(0,0,0,0,0);
-										$_POST['rtransport'] = array();
-									}
-
+									
 									$tritium = $fleet_obj->calcNeededTritium($_SESSION['username']);
 
-									if($ress[4]-$_POST['transport'][4] < $tritium)
+									if($ress[4] < $tritium)
 									{
 										if(defined('ajax')) return array('error', _('Nicht genug Tritium vorhanden.'));
 ?>
@@ -407,6 +380,33 @@
 									else
 									{
 										$me->subtractRess(array(0, 0, 0, 0, $tritium));
+
+										$ress = $me->getRess();
+										if(($auftrag == 1 || $auftrag == 4 || $auftrag == 6))
+										{
+											if(!isset($_POST['transport'])) $_POST['transport'] = array(0,0,0,0,0);
+											if(!isset($_POST['rtransport'])) $_POST['rtransport'] = array();
+											if($_POST['transport'][0] > $ress[0]) $_POST['transport'][0] = $ress[0];
+											if($_POST['transport'][1] > $ress[1]) $_POST['transport'][1] = $ress[1];
+											if($_POST['transport'][2] > $ress[2]) $_POST['transport'][2] = $ress[2];
+											if($_POST['transport'][3] > $ress[3]) $_POST['transport'][3] = $ress[3];
+											if($_POST['transport'][4] > $ress[4]) $_POST['transport'][4] = $ress[4];
+	
+											foreach($_POST['rtransport'] as $id=>$anzahl)
+											{
+												if($anzahl > $me->getItemLevel($id, 'roboter'))
+													$_POST['rtransport'][$id] = $me->getItemLevel($id, 'roboter');
+											}
+											if($planet_owner == $_SESSION['username'])
+												$fleet_obj->addTransport($_SESSION['username'], $_POST['transport'], $_POST['rtransport']);
+											else $fleet_obj->addTransport($_SESSION['username'], $_POST['transport']);
+											list($_POST['transport'], $_POST['rtransport']) = $fleet_obj->getTransport($_SESSION['username']);
+										}
+										else
+										{
+											$_POST['transport'] = array(0,0,0,0,0);
+											$_POST['rtransport'] = array();
+										}
 
 										# Flotten abziehen
 										foreach($_POST['flotte'] as $id=>$anzahl)
