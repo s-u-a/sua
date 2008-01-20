@@ -835,10 +835,7 @@
 		if($count < 0)
 		{
 			$neg = true;
-			if($round == 0)
-				$count = (int) substr($count, 1);
-			else
-				$count = (double) substr($count, 1);
+			$count = -$count;
 		}
 
 		$count = str_replace('.', _("[thousand_separator]"), number_format($count, $round, ',', '.'));
