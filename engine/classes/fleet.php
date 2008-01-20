@@ -734,6 +734,7 @@
 			$new_raw[1][$user][3][2] += $back_tritium;
 			
 			unset($this->raw[1]);
+			$this->changed = true;
 
 			if(count($this->raw[1]) <= 0)
 			{
@@ -2609,6 +2610,8 @@
 					if($username == $target_owner)
 						$target_user->changeItemLevel($id, $count2-$count);
 					else $target_user->subForeignShips($username, $id, $count-$count2);
+					var_dump($count);
+					var_dump($count2);
 				}
 			}
 			$user_obj->recalcHighscores(false, false, false, true, true);
