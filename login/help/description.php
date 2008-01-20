@@ -51,7 +51,7 @@
 				return "\n\t\t</p>\n\t\t".str_repeat('<br />', $len-2)."\n\t\t<p>\n\t\t\t";
 		}
 
-		$desc = "\t\t<p>\n\t\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', h(_i(_("[itemdesc_".$_GET["id"]."]"))))."\n\t\t</p>\n";
+		$desc = "\t\t<p>\n\t\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', h(_i(_("[itemdesc_".$_GET["id"]."]"), true)))."\n\t\t</p>\n";
 
 		print($desc);
 ?>
@@ -64,7 +64,7 @@
 	<dl class="item-info">
 		<dt class="item-kosten"><?=h(_("Kosten"))?></dt>
 		<dd class="item-kosten">
-			<?=format_ress($item_info['ress'], 3)?>
+			<?=format_ress($item_info['ress'], 3, false, false, false, $me)?>
 		</dd>
 
 <?php

@@ -757,10 +757,11 @@
 	  * @param $tritium Soll der Array-Wert 4 beachtet werden (Tritium)
 	  * @param $energy Soll der Array-Wert 5 beachtet werden (Energie)
 	  * @param $i_ Die Ausgabe wird so formatiert, dass sie nachtraeglich durch i_() gejagt werden kann
+	  * @param $check_availability (User) Gibt mit HTML-Klassen an, ob so viele Rohstoffe auf dem Planeten vorhanden sind.
 	  * @return (string) Eine den HTML-Code einer dl-Liste mit den formatierten Rohstoffangaben
 	*/
 
-	function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false, $i_=false)
+	function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false, $i_=false, $check_availability=null)
 	{
 		# Erstellt eine Definitionsliste aus der uebergebenen
 		# Rohstoffanzahl, beispielsweise fuer die Rohstoffkosten
@@ -769,25 +770,43 @@
 		$tabs = '';
 		if($tabs_count >= 1)
 			$tabs = str_repeat("\t", $tabs_count);
+		
+		$class = array("", "", "", "", "", "", "");
+		if($check_availability)
+		{
+			$res_avail = $check_availability->getRess();
+			$class[0] = ($res_avail[0]<$ress[0])?" fehlend":"";
+			$class[1] = ($res_avail[1]<$ress[1])?" fehlend":"";
+			$class[2] = ($res_avail[2]<$ress[2])?" fehlend":"";
+			$class[3] = ($res_avail[3]<$ress[3])?" fehlend":"";
+			if($tritium) $class[4] = ($res_avail[4]<$ress[4])?" fehlend":"";
+			if($energy) $class[5] = ($res_avail[5]<$ress[5])?" fehlend":"";
+		}
+		$class[0] .= ($ress[0]<0)?" negativ":"";
+		$class[1] .= ($ress[1]<0)?" negativ":"";
+		$class[2] .= ($ress[2]<0)?" negativ":"";
+		$class[3] .= ($ress[3]<0)?" negativ":"";
+		if($tritium) $class[4] .= ($ress[4]<0)?" negativ":"";
+		if($energy) $class[5] .= ($ress[5]<0)?" negativ":"";
 
 		$return = "<dl class=\"ress\">\n";
-		$return .= $tabs."\t<dt class=\"ress-carbon\">".($i_ ? "[ress_0]" : h(_("[ress_0]")))."</dt>\n";
-		$return .= $tabs."\t<dd class=\"ress-carbon\">".ths($ress[0])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-aluminium\">".($i_ ? "[ress_1]" : h(_("[ress_1]")))."</dt>\n";
-		$return .= $tabs."\t<dd class=\"ress-aluminium\">".ths($ress[1])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-wolfram\">".($i_ ? "[ress_2]" : h(_("[ress_2]")))."</dt>\n";
-		$return .= $tabs."\t<dd class=\"ress-wolfram\">".ths($ress[2])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-radium".($tritium ? "" : " ress-last")."\">".($i_ ? "[ress_3]" : h(_("[ress_3]")))."</dt>\n";
-		$return .= $tabs."\t<dd class=\"ress-radium".($tritium ? "" : " ress-last")."\">".ths($ress[3])."</dd>\n";
+		$return .= $tabs."\t<dt class=\"ress-carbon".$class[0]."\">".($i_ ? "[ress_0]" : h(_("[ress_0]")))."</dt>\n";
+		$return .= $tabs."\t<dd class=\"ress-carbon".$class[0]."\">".ths($ress[0])."</dd>\n";
+		$return .= $tabs."\t<dt class=\"ress-aluminium".$class[1]."\">".($i_ ? "[ress_1]" : h(_("[ress_1]")))."</dt>\n";
+		$return .= $tabs."\t<dd class=\"ress-aluminium".$class[1]."\">".ths($ress[1])."</dd>\n";
+		$return .= $tabs."\t<dt class=\"ress-wolfram".$class[2]."\">".($i_ ? "[ress_2]" : h(_("[ress_2]")))."</dt>\n";
+		$return .= $tabs."\t<dd class=\"ress-wolfram".$class[2]."\">".ths($ress[2])."</dd>\n";
+		$return .= $tabs."\t<dt class=\"ress-radium".$class[3]."".($tritium ? "" : " ress-last")."\">".($i_ ? "[ress_3]" : h(_("[ress_3]")))."</dt>\n";
+		$return .= $tabs."\t<dd class=\"ress-radium".$class[3]."".($tritium ? "" : " ress-last")."\">".ths($ress[3])."</dd>\n";
 		if($tritium)
 		{
-			$return .= $tabs."\t<dt class=\"ress-tritium".($energy ? "" : " ress-last")."\">".($i_ ? "[ress_4]" : h(_("[ress_4]")))."</dt>\n";
-			$return .= $tabs."\t<dd class=\"ress-tritium".($energy ? "" : " ress-last")."\">".ths($ress[4])."</dd>\n";
+			$return .= $tabs."\t<dt class=\"ress-tritium".$class[4]."".($energy ? "" : " ress-last")."\">".($i_ ? "[ress_4]" : h(_("[ress_4]")))."</dt>\n";
+			$return .= $tabs."\t<dd class=\"ress-tritium".$class[4]."".($energy ? "" : " ress-last")."\">".ths($ress[4])."</dd>\n";
 		}
 		if($energy)
 		{
-			$return .= $tabs."\t<dt class=\"ress-energie ress-last\">".($i_ ? "[ress_5]" : h(_("[ress_5]")))."</dt>\n";
-			$return .= $tabs."\t<dd class=\"ress-energie ress-last\">".h(_($ress[5]))."</dd>\n";
+			$return .= $tabs."\t<dt class=\"ress-energie".$class[5]." ress-last\">".($i_ ? "[ress_5]" : h(_("[ress_5]")))."</dt>\n";
+			$return .= $tabs."\t<dd class=\"ress-energie".$class[5]." ress-last\">".h(_($ress[5]))."</dd>\n";
 		}
 		$return .= $tabs."</dl>\n";
 		return $return;
@@ -1950,9 +1969,10 @@
 
 	/**
 	  * Ersetzt Dinge wie [item_B0] durch den entsprechenden gettext-String.
+	  * @param $links (boolean) Sollen die Dinge durch Links auf die Beschreibung ersetzt werden?
 	*/
 
-	function _i($string)
+	function _i($string, $links=false)
 	{
-		return preg_replace("/\\[(item|ress)_[a-zA-Z0-9]+\\]/e", "_('\$0')", $string);
+		return preg_replace("/\\[(item|ress)_[a-zA-Z0-9]+\\]/e", ($links?"'<a href=\"".h_root."/login/help/description.php?id=\$0&amp;".htmlspecialchars(urlencode(session_id()))."=".htmlspecialchars(urlencode(session_name()))."\">'.":"")."_('\$0')".($links?"'</a>'" : ""), $string);
 	}

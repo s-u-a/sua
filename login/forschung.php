@@ -105,7 +105,7 @@
 	<dl>
 		<dt class="item-kosten">Kosten</dt>
 		<dd class="item-kosten">
-			<?=format_ress($item_info['ress'], 3)?>
+			<?=format_ress($item_info['ress'], 3, false, false, false, $me)?>
 		</dd>
 
 		<dt class="item-bauzeit forschung-lokal">Bauzeit lokal</dt>
