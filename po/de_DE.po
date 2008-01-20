@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-01-20 08:30+0100\n"
+"PO-Revision-Date: 2008-01-20 08:55+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -1627,8 +1627,8 @@ msgid "Planeten"
 msgstr "Planeten"
 
 #: ../login/help/playerinfo.php:180
-#: ../login/scripts/include.php:378
-#: ../login/scripts/include.php:554
+#: ../login/scripts/include.php:384
+#: ../login/scripts/include.php:560
 #: ../login/flotten.php:1003
 #: ../engine/classes/fleet.php:1227
 #: ../engine/classes/fleet.php:1503
@@ -1641,8 +1641,8 @@ msgid "Jenes Sonnensystem in der Karte ansehen"
 msgstr "Jenes Sonnensystem in der Karte ansehen"
 
 #: ../login/help/playerinfo.php:180
-#: ../login/scripts/include.php:378
-#: ../login/scripts/include.php:554
+#: ../login/scripts/include.php:384
+#: ../login/scripts/include.php:560
 #: ../login/flotten.php:439
 #: ../login/flotten.php:495
 #: ../login/flotten.php:838
@@ -2317,7 +2317,7 @@ msgid "Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %s
 msgstr "Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s."
 
 #: ../login/scripts/include.php:183
-#: ../login/scripts/include.php:725
+#: ../login/scripts/include.php:731
 #, php-format
 msgid "HTTP redirect: %s"
 msgstr "HTTP redirect: %s"
@@ -2335,8 +2335,8 @@ msgid "[thousand_separator]"
 msgstr " "
 
 #: ../login/scripts/include.php:305
-#: ../login/scripts/include.php:529
-#: ../login/scripts/include.php:661
+#: ../login/scripts/include.php:535
+#: ../login/scripts/include.php:667
 msgid "Zum Inhalt&[login/scripts/include.php|1]"
 msgstr "Zum Inhalt"
 
@@ -2371,162 +2371,178 @@ msgstr "Ihr Benutzeraccount befindet sich im Urlaubsmodus."
 msgid "Es herrscht eine Flottensperre für feindliche Flüge."
 msgstr "Es herrscht eine Flottensperre für feindliche Flüge."
 
-#: ../login/scripts/include.php:416
+#: ../login/scripts/include.php:384
+msgid "Zum vorigen Planeten wechseln"
+msgstr "Zum vorigen Planeten wechseln"
+
+#: ../login/scripts/include.php:384
+msgid "←"
+msgstr "←"
+
+#: ../login/scripts/include.php:384
+msgid "Zum nächsten Planeten wechseln"
+msgstr "Zum nächsten Planeten wechseln"
+
+#: ../login/scripts/include.php:384
+msgid "→"
+msgstr "→"
+
+#: ../login/scripts/include.php:422
 #: ../engine/classes/item.php:278
 #: ../engine/classes/fleet.php:1767
 #, php-format
 msgid "%s: %s"
 msgstr "%s: %s"
 
-#: ../login/scripts/include.php:416
+#: ../login/scripts/include.php:422
 #: ../login/nachrichten.php:124
 #: ../login/nachrichten.php:406
 #: ../engine/classes/message.php:386
 msgid "[message_"
 msgstr "XXX"
 
-#: ../login/scripts/include.php:428
+#: ../login/scripts/include.php:434
 #, php-format
 msgid "Sie haben %s neue &Nachricht.[login/scripts/include.php|2]"
 msgid_plural "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]"
 msgstr[0] "Sie haben %s neue &Nachricht."
 msgstr[1] "Sie haben %s neue &Nachrichten."
 
-#: ../login/scripts/include.php:528
-#: ../login/scripts/include.php:660
+#: ../login/scripts/include.php:534
+#: ../login/scripts/include.php:666
 msgid "Zur Rohstoffanzeige&[login/scripts/include.php|1]"
 msgstr "Zur Rohstoffanzeige"
 
-#: ../login/scripts/include.php:537
+#: ../login/scripts/include.php:543
 msgid "Planeten wechseln"
 msgstr "Planeten wechseln"
 
-#: ../login/scripts/include.php:547
+#: ../login/scripts/include.php:553
 msgid "Ihre &Planeten[login/scripts/include.php|3]"
 msgstr "Ihre &Planeten"
 
-#: ../login/scripts/include.php:560
+#: ../login/scripts/include.php:566
 msgid "Wechseln"
 msgstr "Wechseln"
 
-#: ../login/scripts/include.php:565
+#: ../login/scripts/include.php:571
 msgid "&Übersicht[login/scripts/include.php|3]"
 msgstr "&Übersicht"
 
-#: ../login/scripts/include.php:566
+#: ../login/scripts/include.php:572
 msgid "&Rohstoffe[login/scripts/include.php|3]"
 msgstr "&Rohstoffe"
 
-#: ../login/scripts/include.php:567
+#: ../login/scripts/include.php:573
 msgid "&Gebäude[login/scripts/include.php|3]"
 msgstr "&Gebäude"
 
-#: ../login/scripts/include.php:568
+#: ../login/scripts/include.php:574
 msgid "&Forschung[login/scripts/include.php|3]"
 msgstr "&Forschung"
 
-#: ../login/scripts/include.php:569
+#: ../login/scripts/include.php:575
 msgid "Ro&boter[login/scripts/include.php|3]"
 msgstr "Ro&boter"
 
-#: ../login/scripts/include.php:570
+#: ../login/scripts/include.php:576
 msgid "F&lotten[login/scripts/include.php|3]"
 msgstr "F&lotten"
 
-#: ../login/scripts/include.php:571
+#: ../login/scripts/include.php:577
 msgid "&Schiffswerft[login/scripts/include.php|3]"
 msgstr "&Schiffswerft"
 
-#: ../login/scripts/include.php:572
+#: ../login/scripts/include.php:578
 msgid "&Verteidigung[login/scripts/include.php|3]"
 msgstr "&Verteidigung"
 
-#: ../login/scripts/include.php:573
+#: ../login/scripts/include.php:579
 msgid "Han&delsbörse[login/scripts/include.php|3]"
 msgstr "Han&delsbörse"
 
-#: ../login/scripts/include.php:574
+#: ../login/scripts/include.php:580
 msgid "I&mperium[login/scripts/include.php|3]"
 msgstr "I&mperium"
 
-#: ../login/scripts/include.php:578
+#: ../login/scripts/include.php:584
 msgid "&Karte[login/scripts/include.php|3]"
 msgstr "&Karte"
 
-#: ../login/scripts/include.php:579
+#: ../login/scripts/include.php:585
 msgid "All&ianz[login/scripts/include.php|3]"
 msgstr "All&ianz"
 
-#: ../login/scripts/include.php:580
+#: ../login/scripts/include.php:586
 msgid "V&erbündete[login/scripts/include.php|3]"
 msgstr "V&erbündete"
 
-#: ../login/scripts/include.php:581
+#: ../login/scripts/include.php:587
 msgid "&Highscores[login/scripts/include.php|3]"
 msgstr "&Highscores"
 
-#: ../login/scripts/include.php:582
+#: ../login/scripts/include.php:588
 msgid "Na&chrichten[login/scripts/include.php|3]"
 msgstr "Na&chrichten"
 
-#: ../login/scripts/include.php:583
+#: ../login/scripts/include.php:589
 msgid "Forschungsb&aum[login/scripts/include.php|3]"
 msgstr "Forschungsb&aum"
 
-#: ../login/scripts/include.php:584
+#: ../login/scripts/include.php:590
 msgid "Eins&tellungen[login/scripts/include.php|3]"
 msgstr "Eins&tellungen"
 
-#: ../login/scripts/include.php:589
+#: ../login/scripts/include.php:595
 msgid "Adminbereich&[login/scripts/include.php|3]"
 msgstr "Adminbereich"
 
-#: ../login/scripts/include.php:595
+#: ../login/scripts/include.php:601
 msgid "Abmelden&[login/scripts/include.php|3]"
 msgstr "Abmelden"
 
-#: ../login/scripts/include.php:606
+#: ../login/scripts/include.php:612
 msgid "Board&[login/scripts/include.php|3]"
 msgstr "Board"
 
-#: ../login/scripts/include.php:607
+#: ../login/scripts/include.php:613
 msgid "FAQ&[login/scripts/include.php|3]"
 msgstr "FAQ"
 
-#: ../login/scripts/include.php:608
+#: ../login/scripts/include.php:614
 msgid "Chat&[login/scripts/include.php|3]"
 msgstr "Chat"
 
-#: ../login/scripts/include.php:609
+#: ../login/scripts/include.php:615
 msgid "Entwicklerseite&[login/scripts/include.php|3]"
 msgstr "Entwicklerseite"
 
-#: ../login/scripts/include.php:619
+#: ../login/scripts/include.php:625
 msgid "Serverzeit"
 msgstr "Serverzeit"
 
-#: ../login/scripts/include.php:620
+#: ../login/scripts/include.php:626
 msgid "H:i:s"
 msgstr "H:i:s"
 
-#: ../login/scripts/include.php:629
+#: ../login/scripts/include.php:635
 msgid "mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2(local_time_obj.getSeconds())"
 msgstr "mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2(local_time_obj.getSeconds())"
 
-#: ../login/scripts/include.php:631
+#: ../login/scripts/include.php:637
 msgid "Lokalzeit"
 msgstr "Lokalzeit"
 
-#: ../login/scripts/include.php:646
+#: ../login/scripts/include.php:652
 msgid "Changelog anzeigen&[login/scripts/include.php|4]"
 msgstr "Changelog anzeigen"
 
-#: ../login/scripts/include.php:646
+#: ../login/scripts/include.php:652
 #, php-format
 msgid "Version %s"
 msgstr "Version %s"
 
-#: ../login/scripts/include.php:651
+#: ../login/scripts/include.php:657
 #, php-format
 msgid "Revision %s"
 msgstr "Revision %s"
