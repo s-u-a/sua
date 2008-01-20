@@ -394,7 +394,7 @@
 					$message_ids = $me->getMessagesList($cat);
 					foreach($message_ids as $message)
 					{
-						if(isset($options["ignore_message"]) && in_array($message, $options["ignore_message"])) continue;
+						if(isset($options["ignore_messages"]) && in_array($message, $options["ignore_messages"])) continue;
 						$status = $me->checkMessageStatus($message, $cat);
 						if($status == 1 && $cat != 8)
 						{
