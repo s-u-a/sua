@@ -444,6 +444,20 @@
 		<dt class="c-ankunft"><?=h(_("Ankunft"))?></dt>
 		<dd class="c-ankunft"><?=h(sprintf("%s (Serverzeit)", date(_("H:i:s, Y-m-d"), $fleet_obj->getNextArrival())))?></dd>
 	</dl>
+<?php
+			if($auftrag == 4 && $planet_owner == $me->getName())
+			{
+?>
+	<div class="handel"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($fleet_obj->getName())?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="<?=h(_("Geben Sie dieser Flotte Ladung mit auf den Rückweg"))?>"<?=accesskey_attr(_("Handel&[login/flotten.php|3]"))?>><?=h(_("Handel&[login/flotten.php|3]"))?></a></div>
+<?php
+			}
+			if($auftrag == 3 && !$buendnisflug)
+			{
+?>
+	<div class="buendnisangriff"><a href="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="<?=h(_("Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern."))?>"<?=accesskey_attr(_("Bündnisangriff&[login/flotten.php|3]"))?>><?=h(_("Bündnisangriff&[login/flotten.php|3]"))?></a></div>
+<?php
+			}
+?>	
 </div>
 <?php
 										}
