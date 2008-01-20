@@ -1290,6 +1290,12 @@
 							foreach($message_text as $username=>$text)
 							{
 								$user_obj = Classes::User($username);
+								
+								// Will keine Nachrichten erhalten?
+								$receive = $user_obj->checkSetting('receive');
+								if(isset($this->raw[1][$username]) && isset($receive[3]) && isset($receive[3][0]) && !$receive[3][0])
+									continue;
+								
 								$message_obj = Classes::Message();
 								if($message_obj->create())
 								{
