@@ -1038,7 +1038,8 @@
 				if(!$dep_info) continue;
 				if(!isset($deps[$dep[0]]) || $deps[$dep[0]] < $dep[1])
 					$deps[$dep[0]] = $dep[1];
-				$this->getItemDeps($dep[0], &$deps);
+				if($dep_info["level"] < $dep[1])
+					$this->getItemDeps($dep[0], &$deps);
 			}
 
 			return $deps;
