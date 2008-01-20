@@ -76,19 +76,23 @@
 		$rueckbau = true;
 	}
 
-	if(isset($a_id) && $me->permissionToAct() && $me->buildGebaeude($a_id, $rueckbau))
+	if(isset($a_id) && $me->permissionToAct())
 	{
-		if($me->checkSetting('fastbuild') && $fastbuild_next !== false)
+		$me->buildGebaeude($a_id, $rueckbau);
+		if($me->checkBuildingThing("gebaeude"))
 		{
-			# Fastbuild
-
-			$_SESSION['last_click_ignore'] = true;
-			$url = global_setting("PROTOCOL").'://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?planet='.urlencode($fastbuild_next).'&'.session_name().'='.urlencode(session_id());
-			header('Location: '.$url, true, 303);
-			die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
+			if($me->checkSetting('fastbuild') && $fastbuild_next !== false)
+			{
+				# Fastbuild
+	
+				$_SESSION['last_click_ignore'] = true;
+				$url = global_setting("PROTOCOL").'://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?planet='.urlencode($fastbuild_next).'&'.session_name().'='.urlencode(session_id());
+				header('Location: '.$url, true, 303);
+				die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
+			}
+			else
+				delete_request();
 		}
-		else
-			delete_request();
 	}
 
 	if(isset($_GET['cancel']))
