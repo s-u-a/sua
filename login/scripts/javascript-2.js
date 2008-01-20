@@ -383,14 +383,16 @@ function move_title(ev)
 /// Auto-Refresh ///
 ////////////////////
 
+var refresh_callbacks = [ ];
+
 function refresh_ress(refresh_int, carbon_vorh, aluminium_vorh, wolfram_vorh, radium_vorh, tritium_vorh, carbon_prod, aluminium_prod, wolfram_prod, radium_prod, tritium_prod)
 { // Initialisiert Auto-Refresh
 	// Speichern der vorhandenen Rohstoffe
-	window.carbon_vorh = carbon_vorh;
-	window.aluminium_vorh = aluminium_vorh;
-	window.wolfram_vorh = wolfram_vorh;
-	window.radium_vorh = radium_vorh;
-	window.tritium_vorh = tritium_vorh;
+	res_now[0] = window.carbon_vorh = carbon_vorh;
+	res_now[1] = window.aluminium_vorh = aluminium_vorh;
+	res_now[2] = window.wolfram_vorh = wolfram_vorh;
+	res_now[3] = window.radium_vorh = radium_vorh;
+	res_now[4] = window.tritium_vorh = tritium_vorh;
 
 	// Speichern der Rohstoffproduktion
 	window.carbon_prod = carbon_prod;
@@ -415,20 +417,23 @@ function increase_ress()
 	var time_diff = (calced_time-window.last_increase_ress)/3600000;
 
 	// Neue Rohstoffvorraete speichern
-	window.carbon_vorh += window.carbon_prod*time_diff;
-	window.aluminium_vorh += window.aluminium_prod*time_diff;
-	window.wolfram_vorh += window.wolfram_prod*time_diff;
-	window.radium_vorh += window.radium_prod*time_diff;
-	window.tritium_vorh += window.tritium_prod*time_diff;
+	res_now[0] += res_now[0]*time_diff;
+	res_now[1] += res_now[1]*time_diff;
+	res_now[2] += res_now[2]*time_diff;
+	res_now[3] += res_now[3]*time_diff;
+	res_now[4] += res_now[4]*time_diff;
 
 	// Anzeige aktualisieren
-	document.getElementById('ress-carbon').firstChild.data = ths(window.carbon_vorh);
-	document.getElementById('ress-aluminium').firstChild.data = ths(window.aluminium_vorh);
-	document.getElementById('ress-wolfram').firstChild.data = ths(window.wolfram_vorh);
-	document.getElementById('ress-radium').firstChild.data = ths(window.radium_vorh);
-	document.getElementById('ress-tritium').firstChild.data = ths(window.tritium_vorh);
+	document.getElementById('ress-carbon').firstChild.data = ths(res_now[0]);
+	document.getElementById('ress-aluminium').firstChild.data = ths(res_now[1]);
+	document.getElementById('ress-wolfram').firstChild.data = ths(res_now[2]);
+	document.getElementById('ress-radium').firstChild.data = ths(res_now[3]);
+	document.getElementById('ress-tritium').firstChild.data = ths(res_now[4]);
 
 	window.last_increase_ress = calced_time;
+	
+	for(var i=0; i<refresh_callbacks.length; i++)
+		refresh_callbacks[i]();
 }
 
 ////////////////////////////

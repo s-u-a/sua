@@ -386,42 +386,57 @@ function move_title(ev)
 /// Auto-Refresh ///
 ////////////////////
 
+var refresh_callbacks = [ ];
+
 function refresh_ress(refresh_int, carbon_vorh, aluminium_vorh, wolfram_vorh, radium_vorh, tritium_vorh, carbon_prod, aluminium_prod, wolfram_prod, radium_prod, tritium_prod)
 { // Initialisiert Auto-Refresh
-	// Vorhandene Rohstoffe speichern
-	window.carbon_vorh = carbon_vorh;
-	window.aluminium_vorh = aluminium_vorh;
-	window.wolfram_vorh = wolfram_vorh;
-	window.radium_vorh = radium_vorh;
-	window.tritium_vorh = tritium_vorh;
+	// Speichern der vorhandenen Rohstoffe
+	res[0] = window.carbon_vorh = carbon_vorh;
+	res[1] = window.aluminium_vorh = aluminium_vorh;
+	res[2] = window.wolfram_vorh = wolfram_vorh;
+	res[3] = window.radium_vorh = radium_vorh;
+	res[4] = window.tritium_vorh = tritium_vorh;
 
-	// Produktion speichern
+	// Speichern der Rohstoffproduktion
 	window.carbon_prod = carbon_prod;
 	window.aluminium_prod = aluminium_prod;
 	window.wolfram_prod = wolfram_prod;
 	window.radium_prod = radium_prod;
 	window.tritium_prod = tritium_prod;
 
-	// Automatische Hochzaehlung initialisieren
+	// Zeit wird benoetigt zum Ausgleichen von Interval-Verzoegerungen
+	var now_time = new Date();
+	window.last_increase_ress = now_time.getTime();
+
+	// Interval zum Erhoehen der Rohstoffanzeigen
 	setInterval("increase_ress()", refresh_int);
-	window.refresh_int = refresh_int/3600000;
 }
 
 function increase_ress()
-{ // Zaehlt die Rohstoffe hoch
-	// Variablen der vorhandenen Rohstoffe hochzaehlen
-	window.carbon_vorh += window.carbon_prod*refresh_int;
-	window.aluminium_vorh += window.aluminium_prod*refresh_int;
-	window.wolfram_vorh += window.wolfram_prod*refresh_int;
-	window.radium_vorh += window.radium_prod*refresh_int;
-	window.tritium_vorh += window.tritium_prod*refresh_int;
+{ // Aktualisiert die Rohstoffanzeigen
+	// Ausgleichen von Interval-Verzoegerungen
+	var now_time = new Date();
+	var calced_time = now_time.getTime();
+	var time_diff = (calced_time-window.last_increase_ress)/3600000;
 
-	// Neue Rohstoffvorraete anzeigen
-	document.getElementById('ress-carbon').firstChild.data = ths(window.carbon_vorh);
-	document.getElementById('ress-aluminium').firstChild.data = ths(window.aluminium_vorh);
-	document.getElementById('ress-wolfram').firstChild.data = ths(window.wolfram_vorh);
-	document.getElementById('ress-radium').firstChild.data = ths(window.radium_vorh);
-	document.getElementById('ress-tritium').firstChild.data = ths(window.tritium_vorh);
+	// Neue Rohstoffvorraete speichern
+	res_now[0] += res_now[0]*time_diff;
+	res_now[1] += res_now[1]*time_diff;
+	res_now[2] += res_now[2]*time_diff;
+	res_now[3] += res_now[3]*time_diff;
+	res_now[4] += res_now[4]*time_diff;
+
+	// Anzeige aktualisieren
+	document.getElementById('ress-carbon').firstChild.data = ths(res_now[0]);
+	document.getElementById('ress-aluminium').firstChild.data = ths(res_now[1]);
+	document.getElementById('ress-wolfram').firstChild.data = ths(res_now[2]);
+	document.getElementById('ress-radium').firstChild.data = ths(res_now[3]);
+	document.getElementById('ress-tritium').firstChild.data = ths(res_now[4]);
+
+	window.last_increase_ress = calced_time;
+
+	for(var i=0; i<refresh_callbacks.length; i++)
+		refresh_callbacks[i]();
 }
 
 

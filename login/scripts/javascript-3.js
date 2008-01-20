@@ -393,6 +393,8 @@ function move_title(ev)
 /// Auto-Refresh ///
 ////////////////////
 
+var refresh_callbacks = [ ];
+
 function refresh_ress(refresh_int, carbon_vorh, aluminium_vorh, wolfram_vorh, radium_vorh, tritium_vorh, carbon_prod, aluminium_prod, wolfram_prod, radium_prod, tritium_prod)
 { // Initialisiert Auto-Refresh
 	// Startzeit zur Neuberechnung
@@ -422,13 +424,22 @@ function increase_ress()
 	// Zeitdifferenz berechnen
 	var now_time = new Date();
 	var time_passed = (now_time.getTime()-start_increase_ress)/3600000;
+	
+	res_now[0] = carbon_vorh+carbon_prod*time_passed;
+	res_now[1] = aluminium_vorh+aluminium_prod*time_passed;
+	res_now[2] = wolfram_vorh+wolfram_prod*time_passed;
+	res_now[3] = radium_vorh+radium_prod*time_passed;
+	res_now[4] = tritium_vorh+tritium_prod*time_passed;
 
 	// Werte berechnen und in die Anzeige schreiben
-	document.getElementById('ress-carbon').firstChild.data = ths(carbon_vorh+carbon_prod*time_passed);
-	document.getElementById('ress-aluminium').firstChild.data = ths(aluminium_vorh+aluminium_prod*time_passed);
-	document.getElementById('ress-wolfram').firstChild.data = ths(wolfram_vorh+wolfram_prod*time_passed);
-	document.getElementById('ress-radium').firstChild.data = ths(radium_vorh+radium_prod*time_passed);
-	document.getElementById('ress-tritium').firstChild.data = ths(tritium_vorh+tritium_prod*time_passed);
+	document.getElementById('ress-carbon').firstChild.data = ths(res_now[0]);
+	document.getElementById('ress-aluminium').firstChild.data = ths(res_now[1]);
+	document.getElementById('ress-wolfram').firstChild.data = ths(res_now[2]);
+	document.getElementById('ress-radium').firstChild.data = ths(res_now[3]);
+	document.getElementById('ress-tritium').firstChild.data = ths(res_now[4]);
+	
+	for(var i=0; i<refresh_callbacks.length; i++)
+		refresh_callbacks[i]();
 }
 
 ////////////////////////////
