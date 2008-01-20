@@ -1,3 +1,8 @@
+1200856173	Fehler behoben: automatisch gelöschte Benutzer kamen teilweise noch in den Highscores vor.
+1200856110	Neue Skin-Option: Rohstoffmangel wird rot markiert.
+1200856098	Vergleich der aktuellen mit den usprünglichen Werten in den Schiffs- und Verteidigungseigenschaften.
+1200855993	Buttons, um auf den nächsten und vorigen Planeten zu gelangen.
+1200855964	Anzeige der vorhandenen Rohstoffe, Roboter und Schiffe beim Flottenversand, beim Klick werden diese in die Felder eingefügt.
 1199654057	E-Mail-Benachrichtigungen werden automatisch signiert und lassen sich auf Wunsch verschlüsseln.
 1199653778	Einstellung „Erweiterte Gebäudeansicht“: Der Produktionsunterschied zur nächsten Stufe wird angezeigt.
 1199653744	Neue Farbvarianten des Standardskins: Schwarz und Grün. Schwarz ist das neue Standarddesign. Die Werbung passt sich nun den Farben des Skins an.
