@@ -2490,7 +2490,7 @@
 			if(array_sum($truemmerfeld) > 0)
 			{
 				$nachrichten[$n] .= "\t<p>\n";
-				$nachrichten[$n] .= "\t\t".h($u->_("Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: %s."), sprintf($u->_("%s %s, %s %s, %s %s und %s %s"), ths($truemmerfeld[0]), $u->_("[ress_0]"), ths($truemmerfeld[1]), $u->_("[ress_1]"), ths($truemmerfeld[2]), $u->_("[ress_2]"), ths($truemmerfeld[3]), $u->_("[ress_3]")))."\n";
+				$nachrichten[$n] .= "\t\t".h(sprintf($u->_("Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: %s."), sprintf($u->_("%s %s, %s %s, %s %s und %s %s"), ths($truemmerfeld[0]), $u->_("[ress_0]"), ths($truemmerfeld[1]), $u->_("[ress_1]"), ths($truemmerfeld[2]), $u->_("[ress_2]"), ths($truemmerfeld[3]), $u->_("[ress_3]"))))."\n";
 				$nachrichten[$n] .= "\t</p>\n";
 			}
 		}

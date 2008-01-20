@@ -3180,12 +3180,12 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 			
-			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$username]) || !isset($this->planet_info["foreign_fleets"][$username][$id]))
+			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$username]) || !isset($this->planet_info["foreign_fleets"][$username][0][$id]))
 				return false;
-			if(($this->planet_info["foreign_fleets"][$username][$id] -= $count) <= 0)
+			if(($this->planet_info["foreign_fleets"][$username][0][$id] -= $count) <= 0)
 			{
-				unset($this->planet_info["foreign_fleets"][$username][$id]);
-				if(count($this->planet_info["foreign_fleets"][$username]) <= 0)
+				unset($this->planet_info["foreign_fleets"][$username][0][$id]);
+				if(count($this->planet_info["foreign_fleets"][$username][0]) <= 0)
 					unset($this->planet_info["foreign_fleets"][$username]);
 			}
 			$this->changed = true;
