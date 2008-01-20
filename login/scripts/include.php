@@ -376,9 +376,9 @@
 			
 			$active_planet = $me->getActivePlanet();
 			$active_planet_0 = $active_planet-1;
-			if($active_planet < 0) $active_planet = max($me->getPlanetsList());
+			if($active_planet_0 < 0) $active_planet_0 = max($me->getPlanetsList());
 			$active_planet_1 = $active_planet+1;
-			if($active_planet_1 > max($me->getPlanetsList())) $active_planet = 0;
+			if($active_planet_1 > max($me->getPlanetsList())) $active_planet_1 = 0;
 ?>
 				<hr class="separator" />
 				<h1><a href="?<?=htmlspecialchars("planet=".urlencode($active_planet_0)."&".urlencode(session_name())."=".urlencode(session_id()))?>" title="<?=h(_("Zum vorigen Planeten wechseln"))?>"><?=h(_("←"))?></a> <?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), vsprintf(h(_("%d:%d:%d")), $me->getPos()))?> <a href="?<?=htmlspecialchars("planet=".urlencode($active_planet_1)."&".urlencode(session_name())."=".urlencode(session_id()))?>" title="<?=h(_("Zum nächsten Planeten wechseln"))?>"><?=h(_("→"))?></a></h1>
