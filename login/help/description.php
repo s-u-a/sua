@@ -276,6 +276,7 @@
 				</tr>
 				<tr>
 					<th><?=h(_("Schild"))?></th>
+					<td><?=ths($item->getInfo('def'))?></td>
 					<td><?=ths($item_info["def"])?></td>
 				</tr>
 				<tr>
@@ -325,6 +326,7 @@
 				</tr>
 				<tr>
 					<th><?=h(_("Schild"))?></th>
+					<td><?=ths($item->getInfo('def'))?></td>
 					<td><?=ths($item_info["def"])?></td>
 				</tr>
 			</tbody>
