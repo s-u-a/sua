@@ -732,6 +732,8 @@
 			if(array_search($user, array_keys($this->raw[1])) == 0)
 				$new_raw[3] = array_merge($this->raw[3], $new_raw[3]);
 			$new_raw[1][$user][3][2] += $back_tritium;
+			
+			unset($this->raw[1]);
 
 			if(count($this->raw[1]) <= 0)
 			{
