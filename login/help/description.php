@@ -251,6 +251,7 @@
 		if($type == 'schiffe')
 		{
 			$trans = $item->getInfo('trans');
+			$item_info = $me->getItemInfo($_GET["id"]);
 ?>
 	<div class="desc-values">
 		<h3><?=h(_("Eigenschaften"))?></h3>
@@ -258,6 +259,7 @@
 			<thead>
 				<tr>
 					<th><?=h(_("Eigenschaft"))?></th>
+					<th><?=h(_("Ursprungswert"))?></th>
 					<th><?=h(_("Wert"))?></th>
 				</tr>
 			</thead>
@@ -265,22 +267,25 @@
 				<tr>
 					<th><?=h(_("Transportkapazität"))?></th>
 					<td><?=h(sprintf(_("%s Tonnen, %s Roboter"), ths($trans[0]), ths($trans[1])))?></td>
+					<td><?=h(sprintf(_("%s Tonnen, %s Roboter"), ths($item_info["trans"][0]), ths($item_info["trans"][1])))?></td>
 				</tr>
 				<tr>
 					<th><?=h(_("Angriffsstärke"))?></th>
 					<td><?=ths($item->getInfo('att'))?></td>
+					<td><?=ths($item_info["att"])?></td>
 				</tr>
 				<tr>
 					<th><?=h(_("Schild"))?></th>
-					<td><?=ths($item->getInfo('def'))?></td>
+					<td><?=ths($item_info["def"])?></td>
 				</tr>
 				<tr>
 					<th><?=h(_("Antriebsstärke"))?></th>
 					<td><?=ths($item->getInfo('speed'))?><?=h(_("[unit_separator]"))?><abbr title="<?=h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $item->getInfo("speed")))?>"><?=h(_("µOr⁄s²"))?></abbr></td>
+					<td><?=ths($item_info["speed"])?><?=h(_("[unit_separator]"))?><abbr title="<?=h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $item->getInfo("speed")))?>"><?=h(_("µOr⁄s²"))?></abbr></td>
 				</tr>
 				<tr>
 					<th><?=h(_("Unterstützte Auftragsarten"))?></th>
-					<td>
+					<td colspan="2">
 						<ul>
 <?php
 			foreach($item->getInfo('types') as $t)
@@ -308,6 +313,7 @@
 			<thead>
 				<tr>
 					<th><?=h(_("Eigenschaft"))?></th>
+					<th><?=h(_("Ursprungswert"))?></th>
 					<th><?=h(_("Wert"))?></th>
 				</tr>
 			</thead>
@@ -315,10 +321,11 @@
 				<tr>
 					<th><?=h(_("Angriffsstärke"))?></th>
 					<td><?=ths($item->getInfo('att'))?></td>
+					<td><?=ths($item_info["att"])?></td>
 				</tr>
 				<tr>
 					<th><?=h(_("Schild"))?></th>
-					<td><?=ths($item->getInfo('def'))?></td>
+					<td><?=ths($item_info["def"])?></td>
 				</tr>
 			</tbody>
 		</table>
