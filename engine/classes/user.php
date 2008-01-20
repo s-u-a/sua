@@ -3187,11 +3187,11 @@
 				if(isset($fleet[0][$id])) $count -= $fleet[0][$id];
 				$fleet[0][$id] -= $count;
 				if($fleet[0][$id] <= 0)
-				{
 					unset($fleet[0][$id]);
-					if(count($fleet[0]) <= 0)
-						unset($this->planet_info["foreign_fleets"][$username][$i]);
-				}
+				if(count($fleet[0]) > 0)
+					$this->planet_info["foreign_fleets"][$username][$i] = $fleet;
+				else
+					unset($this->planet_info["foreign_fleets"][$username][$i]);
 				if($count <= 0) break;
 			}
 			if(count($this->planet_info["foreign_fleets"][$username]) <= 0)
