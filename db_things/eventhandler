@@ -34,7 +34,7 @@
 
 		if(include_once("Console/Getopt.php"))
 		{
-			$options = Console_Getopt::getopt($_SERVER['argv'], 'hdDvqe', array('help', 'daemon', 'no-daemon', 'verbose', 'quiet', 'handelskurs'));
+			$options = Console_Getopt::getopt($_SERVER['argv'], 'hdDvq', array('help', 'daemon', 'no-daemon', 'verbose', 'quiet'));
 			if($options instanceof PEAR_Error)
 			{
 				fputs(STDERR, $options->message."\n");
@@ -59,9 +59,6 @@
 						break;
 					case 'q': case '--quiet':
 						$verbose--;
-						break;
-					case 'e': case '--handelskurs':
-						$handelskurs_only = true;
 						break;
 				}
 			}
@@ -435,48 +432,6 @@ EOF
 					continue;
 				}
 
-				$planets = $user->getPlanetsList();
-				foreach($planets as $planet)
-				{
-					$user->setActivePlanet($planet);
-					if($verbose) fputs($errlog, time_prefix()."  Processing planet ".$planet.".\n");
-					$ress = $user->getRess();
-					unset($ress[5]); # Energie soll nicht miteinberechnet werden
-
-					if(min($ress) < 0)
-					{
-						fputs($errlog, time_prefix()."  Warning: Planet ".$user->getPosString()." (".$user->getName().") has negative resources.\n");
-						continue;
-					}
-
-					$min = max($ress);
-					if($min != 0)
-					{
-						foreach($ress as $val)
-						{
-							if($val < $min && $val != 0) $min = $val;
-						}
-
-						$ress[0] /= $min;
-						$ress[1] /= $min;
-						$ress[2] /= $min;
-						$ress[3] /= $min;
-						$ress[4] /= $min;
-					}
-
-					$ress[0] = pow($ress[0], 1/($days+1));
-					$ress[1] = pow($ress[1], 1/($days+1));
-					$ress[2] = pow($ress[2], 1/($days+1));
-					$ress[3] = pow($ress[3], 1/($days+1));
-					$ress[4] = pow($ress[4], 1/($days+1));
-
-					$ges_ress[0] += $ress[0];
-					$ges_ress[1] += $ress[1];
-					$ges_ress[2] += $ress[2];
-					$ges_ress[3] += $ress[3];
-					$ges_ress[4] += $ress[4];
-				}
-
 				$message_categories = $user->getMessageCategoriesList();
 				foreach($message_categories as $category)
 				{
@@ -518,59 +473,6 @@ EOF
 			}
 			closedir($dh);
 
-			if($verbose) fputs($errlog, time_prefix()."Calculating Handelskurs.\n");
-
-			# Kurs berechnen
-			$min = max($ges_ress);
-			if($min != 0)
-			{
-				foreach($ges_ress as $val)
-				{
-					if($val < $min && $val != 0)
-						$min = $val;
-				}
-			}
-
-			if($min == 0)
-				$kurs = array(10, 5, 3.75, 2.5, 1);
-			else
-			{
-				$kurs = array();
-				$kurs[0] = $ges_ress[0]/$min;
-				$kurs[1] = $ges_ress[1]/$min;
-				$kurs[2] = $ges_ress[2]/$min;
-				$kurs[3] = $ges_ress[3]/$min;
-				$kurs[4] = $ges_ress[4]/$min;
-
-				foreach($kurs as $key=>$val)
-				{
-					if($val == 0)
-						$kurs[$key] = 1;
-				}
-			}
-
-			unset($ges_ress);
-
-			# Kurs schreiben
-			$handelskurs = preg_split("/\r\n|\r|\n/", file_get_contents(global_setting("DB_HANDELSKURS")));
-			$handelskurs[0] = $kurs[0];
-			$handelskurs[1] = $kurs[1];
-			$handelskurs[2] = $kurs[2];
-			$handelskurs[3] = $kurs[3];
-			$handelskurs[4] = $kurs[4];
-
-			if($verbose) fputs($errlog, time_prefix()."  The new Handelskurs is:\n".print_r($handelskurs, true)."\n");
-
-			$fh = fopen(global_setting("DB_HANDELSKURS"), 'w');
-			flock($fh, LOCK_EX);
-
-			fwrite($fh, implode("\n", $handelskurs));
-
-			flock($fh, LOCK_UN);
-			fclose($fh);
-
-			fputs($errlog, "Handelskurs recalculated.\n");
-
 			Classes::resetInstances();
 
 			fputs($errlog, "Checked ".$processed_messages." messages.\n");
@@ -604,19 +506,6 @@ EOF
 
 			fputs($errlog, time_prefix()."Finished.\n\n");
 		}
-	}
-
-
-	if($handelskurs_only)
-	{
-		foreach($databases as $selected_database=>$dbinfo)
-		{
-			if(!is_dir($dbinfo['directory']) || /*!$dbinfo['enabled'] ||*/ $dbinfo['dummy']) continue;
-
-			define_globals($selected_database);
-			walkthrough_users($dbinfo['enabled']);
-		}
-		exit(0);
 	}
 
 
