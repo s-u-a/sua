@@ -3184,8 +3184,9 @@
 				return false;
 			foreach($this->planet_info["foreign_fleets"][$username] as $i=>$fleet)
 			{
-				if(isset($fleet[0][$id])) $count -= $fleet[0][$id];
+				if(!isset($fleet[0][$id])) continue;
 				$fleet[0][$id] -= $count;
+				$count = -$fleet[0][$id];
 				if($fleet[0][$id] <= 0)
 					unset($fleet[0][$id]);
 				if(count($fleet[0]) > 0)
