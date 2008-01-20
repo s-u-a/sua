@@ -317,7 +317,7 @@ function show_title(ev)
 { // Mouseover, Initialisieren eines JavaScript-Tooltips
 	if(!ev) ev = window.event;
 
-	var el = ev.target;
+	el = ev.target;
 	if(!el)
 		el = ev.srcElement;
 	last_show_element = el;
@@ -510,7 +510,7 @@ function popup_fadeout(el_key)
 		opacity -= fadeStep;
 		timel += timeStep;
 	}
-	window.setTimeout('fadeout_elements['+el_key+'].parentNode.removeChild(el);', timel);
+	window.setTimeout('fadeout_elements['+el_key+'].parentNode.removeChild(fadeout_elements['+el_key+']);', timel);
 }
 
 //////////////////
