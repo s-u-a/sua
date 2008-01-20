@@ -2489,9 +2489,9 @@
 
 			if(array_sum($truemmerfeld) > 0)
 			{
-				$nachrichten_text .= "\t<p>\n";
-				$nachrichten_text .= "\t\t".h($u->_("Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: %s."), sprintf($u->_("%s %s, %s %s, %s %s und %s %s"), ths($truemmerfeld[0]), $u->_("[ress_0]"), ths($truemmerfeld[1]), $u->_("[ress_1]"), ths($truemmerfeld[2]), $u->_("[ress_2]"), ths($truemmerfeld[3]), $u->_("[ress_3]")))."\n";
-				$nachrichten_text .= "\t</p>\n";
+				$nachrichten[$n] .= "\t<p>\n";
+				$nachrichten[$n] .= "\t\t".h($u->_("Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: %s."), sprintf($u->_("%s %s, %s %s, %s %s und %s %s"), ths($truemmerfeld[0]), $u->_("[ress_0]"), ths($truemmerfeld[1]), $u->_("[ress_1]"), ths($truemmerfeld[2]), $u->_("[ress_2]"), ths($truemmerfeld[3]), $u->_("[ress_3]")))."\n";
+				$nachrichten[$n] .= "\t</p>\n";
 			}
 		}
 
@@ -2606,7 +2606,7 @@
 				{
 					if($username == $target_owner)
 						$target_user->changeItemLevel($id, $count2-$count);
-					else $target_user->subForeignFleet($username, $id, $count-$count2);
+					else $target_user->subForeignShips($username, $id, $count-$count2);
 				}
 			}
 			$user_obj->recalcHighscores(false, false, false, true, true);

@@ -3175,6 +3175,23 @@
 
 			return $next_i;
 		}
+		
+		function subForeignShips($username, $id, $count)
+		{
+			if(!$this->status || !isset($this->planet_info)) return false;
+			
+			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$username]) || !isset($this->planet_info["foreign_fleets"][$username][$id]))
+				return false;
+			if(($this->planet_info["foreign_fleets"][$username][$id] -= $count) <= 0)
+			{
+				unset($this->planet_info["foreign_fleets"][$username][$id]);
+				if(count($this->planet_info["foreign_fleets"][$username]) <= 0)
+					unset($this->planet_info["foreign_fleets"][$username]);
+			}
+			$this->changed = true;
+			return true;
+		}
+		}
 
 		function subForeignFleet($user, $i)
 		{
@@ -3194,7 +3211,7 @@
 				$message_obj->addUser($this->getName(), 3);
 			}
 
-                        unset($this->planet_info["foreign_fleets"][$user][$i]);
+			unset($this->planet_info["foreign_fleets"][$user][$i]);
 
 			if(count($this->planet_info["foreign_fleets"][$user]) == 0)
 			{
