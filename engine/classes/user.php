@@ -3191,7 +3191,6 @@
 			$this->changed = true;
 			return true;
 		}
-		}
 
 		function subForeignFleet($user, $i)
 		{
