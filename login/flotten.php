@@ -556,19 +556,19 @@
 								{
 ?>
 				<dt><label for="transport-carbon"><?=h(_("[ress_0]&[login/flotten.php|1]"))?></label></dt>
-				<dd><input type="text" name="transport[0]" id="transport-carbon" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_0]&[login/flotten.php|1]"))?> tabindex="3" onkeyup="recalc_values();" onclick="recalc_values();" /> <a onclick="document.getElementById('transport-carbon').value=Math.floor(res_now[0]);" class="max" id="fleet-max-0"><?=ths($this_ress[0])?></a></dd>
+				<dd><input type="text" name="transport[0]" id="transport-carbon" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_0]&[login/flotten.php|1]"))?> tabindex="3" onkeyup="recalc_values();" onclick="recalc_values();" /> <a onclick="document.getElementById('transport-carbon').value=Math.floor(res_now[0]); recalc_values();" class="max" id="fleet-max-0"><?=ths($this_ress[0])?></a></dd>
 
 				<dt><label for="transport-aluminium"><?=h(_("[ress_1]&[login/flotten.php|1]"))?></label></dt>
-				<dd><input type="text" name="transport[1]" id="transport-aluminium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_1]&[login/flotten.php|1]"))?> tabindex="4" onkeyup="recalc_values();" onclick="recalc_values();" /> <a onclick="document.getElementById('transport-aluminium').value=Math.floor(res_now[1]);" class="max" id="fleet-max-1"><?=ths($this_ress[1])?></a></dd>
+				<dd><input type="text" name="transport[1]" id="transport-aluminium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_1]&[login/flotten.php|1]"))?> tabindex="4" onkeyup="recalc_values();" onclick="recalc_values();" /> <a onclick="document.getElementById('transport-aluminium').value=Math.floor(res_now[1]); recalc_values();" class="max" id="fleet-max-1"><?=ths($this_ress[1])?></a></dd>
 
 				<dt><label for="transport-wolfram"><?=h(_("[ress_2]&[login/flotten.php|1]"))?></label></dt>
-				<dd><input type="text" name="transport[2]" id="transport-wolfram" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_2]&[login/flotten.php|1]"))?> tabindex="5" onkeyup="recalc_values();" onclick="recalc_values();" /> <a onclick="document.getElementById('transport-wolfram').value=Math.floor(res_now[2]);" class="max" id="fleet-max-2"><?=ths($this_ress[2])?></a></dd>
+				<dd><input type="text" name="transport[2]" id="transport-wolfram" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_2]&[login/flotten.php|1]"))?> tabindex="5" onkeyup="recalc_values();" onclick="recalc_values();" /> <a onclick="document.getElementById('transport-wolfram').value=Math.floor(res_now[2]); recalc_values();" class="max" id="fleet-max-2"><?=ths($this_ress[2])?></a></dd>
 
 				<dt><label for="transport-radium"><?=h(_("[ress_3]&[login/flotten.php|1]"))?></label></dt>
-				<dd><input type="text" name="transport[3]" id="transport-radium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_3]&[login/flotten.php|1]"))?> tabindex="6" onkeyup="recalc_values();" onclick="recalc_values();" /> <a onclick="document.getElementById('transport-radium').value=Math.floor(res_now[3]);" class="max" id="fleet-max-3"><?=ths($this_ress[3])?></a></dd>
+				<dd><input type="text" name="transport[3]" id="transport-radium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_3]&[login/flotten.php|1]"))?> tabindex="6" onkeyup="recalc_values();" onclick="recalc_values();" /> <a onclick="document.getElementById('transport-radium').value=Math.floor(res_now[3]); recalc_values();" class="max" id="fleet-max-3"><?=ths($this_ress[3])?></a></dd>
 
 				<dt><label for="transport-tritium"><?=h(_("[ress_4]&[login/flotten.php|1]"))?></label></dt>
-				<dd><input type="text" name="transport[4]" id="transport-tritium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_4]&[login/flotten.php|1]"))?> tabindex="7" onkeyup="recalc_values();" onclick="recalc_values();" /> <a onclick="document.getElementById('transport-tritium').value=Math.floor(res_now[4]);" class="max" id="fleet-max-4"><?=ths($this_ress[4])?></a></dd>
+				<dd><input type="text" name="transport[4]" id="transport-tritium" value="0" onchange="recalc_values();"<?=accesskey_attr(_("[ress_4]&[login/flotten.php|1]"))?> tabindex="7" onkeyup="recalc_values();" onclick="recalc_values();" /> <a onclick="document.getElementById('transport-tritium').value=Math.floor(res_now[4]); recalc_values();" class="max" id="fleet-max-4"><?=ths($this_ress[4])?></a></dd>
 <?php
 								}
 								if($transport[1] > 0)
@@ -600,14 +600,19 @@
 							{
 ?>
 			var last_res = [ ];
-			refresh_callbacks.push(function(){	
+			refresh_callbacks.push(function(){
+				var changed = false;	
 				for(var i=0; i<=4; i++)
 				{
 					document.getElementById('fleet-max-'+i).firstChild.data = ths(res_now[i]);
 					if(last_res[i] && document.getElementById('transport-'+res_ids[i]).value == last_res[i])
+					{
 						document.getElementById('transport-'+res_ids[i]).value = Math.floor(res_now[i]);
+						changed = true;
+					}
 					last_res[i] = Math.floor(res_now[i]);
 				}
+				if(changed) recalc_values();
 			});
 <?php
 							}
