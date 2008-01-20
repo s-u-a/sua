@@ -582,7 +582,7 @@
 										$item_info = $me->getItemInfo($rob, 'roboter');
 ?>
 				<dt><label for="rtransport-<?=htmlspecialchars($rob)?>"><?=htmlspecialchars($item_info['name'])?></label></dt>
-				<dd><input type="text" name="rtransport[<?=htmlspecialchars($rob)?>]" id="rtransport-<?=htmlspecialchars($rob)?>" value="0" onchange="recalc_values();" tabindex="<?=$tabindex++?>" onkeyup="recalc_values();" onclick="recalc_values();" /> <a onclick="document.getElementById('rtransport-<?=jsentities($rob)?>').value=<?=$item_info["level"]?>;" class="max"><?=ths($item_info["level"])?></a></dd>
+				<dd><input type="text" name="rtransport[<?=htmlspecialchars($rob)?>]" id="rtransport-<?=htmlspecialchars($rob)?>" value="0" onchange="recalc_values();" tabindex="<?=$tabindex++?>" onkeyup="recalc_values();" onclick="recalc_values();" /> <a onclick="document.getElementById('rtransport-<?=jsentities($rob)?>').value=<?=$item_info["level"]?>; recalc_values();" class="max"><?=ths($item_info["level"])?></a></dd>
 <?php
 									}
 								}
