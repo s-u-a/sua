@@ -163,10 +163,10 @@
 			$changed = $r['changed'];
 
 			# Wieviele Spieler sind von den Punkten her darueber?
-			$above = $this->singleField("SELECT COUNT(*) FROM highscores_".$type." WHERE ".$sort_field." > ".$this->escape($scores).";");
+			$above = $this->singleField("SELECT COUNT(*) FROM highscores_".$type." WHERE ".$sort_field." > ".$this->escape($scores)." AND ".$index." != ".$this->escape($id).";");
 
 			# Wieviele Spieler haben die gleiche Punktzahl, aber hatten diese frueher?
-			$above += $this->singleField("SELECT COUNT(*) FROM highscores_".$type." WHERE ".$sort_field." = ".$this->escape($scores)." AND changed < ".$this->escape($changed).";");
+			$above += $this->singleField("SELECT COUNT(*) FROM highscores_".$type." WHERE ".$sort_field." = ".$this->escape($scores)." AND changed < ".$this->escape($changed)." AND ".$index." != ".$this->escape($id).";");
 
 			return ($above+1);
 		}
