@@ -146,7 +146,7 @@
 		<dt><label for="bewerbungstext-textarea"><?=h(_("Bewerbungste&xt[login/allianz.php|5]"))?></label></dt>
 		<dd><textarea name="text" id="bewerbungstext-textarea" cols="50" rows="17" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Bewerbungste&xt[login/allianz.php|5]"))?>></textarea></dd>
 	</dl>
-	<div><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Bewerbu&ng absenden"))?>><?=h(_("Bewerbu&ng absenden"))?></button></div>
+	<div><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Bewerbu&ng absenden[login/allianz.php|5]"))?>><?=h(_("Bewerbu&ng absenden[login/allianz.php|5]"))?></button></div>
 </form>
 <?php
 				}
@@ -178,7 +178,7 @@
 <form action="allianz.php" method="get" class="allianz-moeglichkeiten">
 	<ul>
 		<li><a href="allianz.php?action=gruenden&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" tabindex="<?=$tabindex+2?>"<?=accesskey_attr(_("Eigene Allian&z gründen[login/allianz.php|7]"))?>><?=h(_("Eigene Allian&z gründen[login/allianz.php|7]"))?></a></li>
-		<li><input type="text" name="search" value="<?=(isset($_GET['search'])) ? htmlspecialchars($_GET['search']) : ''?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allia&nz suchen"))?> /> <button type="submit" tabindex="<?=$tabindex++?>"><?=h(_("Allia&nz suchen"))?></button><input type="hidden" name="<?=htmlentities(session_name())?>" value="<?=htmlentities(session_id())?>" /></li>
+		<li><input type="text" name="search" value="<?=(isset($_GET['search'])) ? htmlspecialchars($_GET['search']) : ''?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allia&nz suchen[login/allianz.php|7]"))?> /> <button type="submit" tabindex="<?=$tabindex++?>"><?=h(_("Allia&nz suchen[login/allianz.php|7]"))?></button><input type="hidden" name="<?=htmlentities(session_name())?>" value="<?=htmlentities(session_id())?>" /></li>
 	</ul>
 </form>
 <?php
@@ -438,8 +438,8 @@
 		<dt class="c-name"><label for="allianz-name-input"><?=h(_("Allianzname&[login/allianz.php|12]"))?></label></dt>
 		<dd class="c-name"><input type="text" name="extern-name" id="allianz-name-input" value="<?=htmlspecialchars($alliance->name())?>" tabindex="<?=$tabindex+4?>"<?=accesskey_attr(_("Allianzname&[login/allianz.php|12]"))?> /></dd>
 
-		<dt class="c-text"><label for="allianz-extern-textarea"><?=h(_("E&xterner Allianztext&[login/allianz.php|12]"))?></label></dt>
-		<dd class="c-text"><textarea name="extern-text" id="allianz-extern-textarea" cols="50" rows="17" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("E&xterner Allianztext&[login/allianz.php|12]"))?>><?=preg_replace("/[\t\r\n]/e", "'&#'.ord('\$0').';'", htmlspecialchars($alliance->getExternalDescription(false)))?></textarea></dd>
+		<dt class="c-text"><label for="allianz-extern-textarea"><?=h(_("E&xterner Allianztext[login/allianz.php|12]"))?></label></dt>
+		<dd class="c-text"><textarea name="extern-text" id="allianz-extern-textarea" cols="50" rows="17" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("E&xterner Allianztext[login/allianz.php|12]"))?>><?=preg_replace("/[\t\r\n]/e", "'&#'.ord('\$0').';'", htmlspecialchars($alliance->getExternalDescription(false)))?></textarea></dd>
 	</dl>
 	<div><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Speicher&n[login/allianz.php|12]"))?>><?=h(_("Speicher&n[login/allianz.php|12]"))?></button></div>
 </form>
