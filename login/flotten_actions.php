@@ -268,7 +268,7 @@
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-1').value=<?=$available_ress[0]?>;"><?=ths($available_ress[1])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-1').value=<?=$available_ress[1]?>;"><?=ths($available_ress[1])?></a></td>
 				</tr>
 				<tr class="c-wolfram">
 					<th class="c-gut">Wolfram</th>
@@ -281,7 +281,7 @@
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-2').value=<?=$available_ress[0]?>;"><?=ths($available_ress[2])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-2').value=<?=$available_ress[2]?>;"><?=ths($available_ress[2])?></a></td>
 				</tr>
 				<tr class="c-radium">
 					<th class="c-gut">Radium</th>
@@ -294,7 +294,7 @@
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-3').value=<?=$available_ress[0]?>;"><?=ths($available_ress[3])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-3').value=<?=$available_ress[3]?>;"><?=ths($available_ress[3])?></a></td>
 				</tr>
 				<tr class="c-tritium">
 					<th class="c-gut">Tritium</th>
@@ -307,7 +307,7 @@
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-4').value=<?=$available_ress[0]?>;"><?=ths($available_ress[4])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-4').value=<?=$available_ress[4]?>;"><?=ths($available_ress[4])?></a></td>
 				</tr>
 <?php
 				}
