@@ -22,23 +22,22 @@
 
 int main(int argc,char** argv)
 {
-	std::cerr << "\
-    This file is part of Stars Under Attack.\
-\
-    Stars Under Attack is free software: you can redistribute it and/or modify\
-    it under the terms of the GNU Affero General Public License as published by\
-    the Free Software Foundation, either version 3 of the License, or\
-    (at your option) any later version.\
-\
-    Stars Under Attack is distributed in the hope that it will be useful,\
-    but WITHOUT ANY WARRANTY; without even the implied warranty of\
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\
-    GNU Affero General Public License for more details.\
-\
-    You should have received a copy of the GNU Affero General Public License\
-    along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.\
-\
-";
+	std::cerr << "\n\
+    This file is part of Stars Under Attack.\n\
+\n\
+    Stars Under Attack is free software: you can redistribute it and/or modify\n\
+    it under the terms of the GNU Affero General Public License as published by\n\
+    the Free Software Foundation, either version 3 of the License, or\n\
+    (at your option) any later version.\n\
+\n\
+    Stars Under Attack is distributed in the hope that it will be useful,\n\
+    but WITHOUT ANY WARRANTY; without even the implied warranty of\n\
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n\
+    GNU Affero General Public License for more details.\n\
+\n\
+    You should have received a copy of the GNU Affero General Public License\n\
+    along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.\n\
+\n";
 
 	if(argc < 2)
 	{
@@ -52,6 +51,8 @@ int main(int argc,char** argv)
 
 	int planet_count,byte_pos,byte,tmp_part1,tmp_part2,length;
 	char bin[35];
+	
+	int max=0;
 
 	for(int system = 1; system <= 999; system++)
 	{
@@ -71,7 +72,7 @@ int main(int argc,char** argv)
 				std::cerr << "Please recompile this file, RAND_MAX does not seem to be correct.\n";
 				return 1;
 			}
-			std::cout << length << "\n";
+			if(length > max) max = length;
 
 			tmp_part1 = length >> 1+byte_pos;
 			tmp_part2 = length & ((1 << (2+byte_pos))-1);
@@ -105,6 +106,8 @@ int main(int argc,char** argv)
 			else gfile.write("\0\0\0\0\0\0", 6);
 		}
 	}
+	
+	std::cout << max << "\n";
 
 	std::cerr << "Galaxy " << argv[1] << " successfully created.\n";
 	return 0;
