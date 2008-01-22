@@ -20,16 +20,25 @@
 #include <cstdlib>
 #include <cmath>
 
-inline int pow2(int pot)
-{
-	int res = 1;
-	for(int i=0; i<pot; i++) res *= 2;
-	return res;
-}
-
 int main(int argc,char** argv)
 {
-	std::cout << "This program is free software; you can redistribute it and/or modify it under the terms of the AFFERO GENERAL PUBLIC LICENSE as published by Affero Inc.; either version 1 of the License, or (at your option) any later version.\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the AFFERO GENERAL PUBLIC LICENSE for more details.\nYou should have received a copy of the AFFERO GENERAL PUBLIC LICENSE along with this program; if not, write to Affero Inc., 510 Third Street - Suite 225, San Francisco, CA 94107, USA or have a look at http://www.affero.org/oagpl.html.\n\n";
+	std::cout << "\
+    This file is part of Stars Under Attack.\
+\
+    Stars Under Attack is free software: you can redistribute it and/or modify\
+    it under the terms of the GNU Affero General Public License as published by\
+    the Free Software Foundation, either version 3 of the License, or\
+    (at your option) any later version.\
+\
+    Stars Under Attack is distributed in the hope that it will be useful,\
+    but WITHOUT ANY WARRANTY; without even the implied warranty of\
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\
+    GNU Affero General Public License for more details.\
+\
+    You should have received a copy of the GNU Affero General Public License\
+    along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.\
+\
+";
 
 	if(argc < 2)
 	{
@@ -57,9 +66,14 @@ int main(int argc,char** argv)
 		{
 			if(i<planet_count) length = round(400.0 / (RAND_MAX-1) * std::rand()); // rand(0,400);
 			else length = 0;
+			if(length > 400)
+			{
+				std::cout << "Please recompile this file, RAND_MAX does not seem to be correct.\n";
+				return 1;
+			}
 
 			tmp_part1 = length >> 1+byte_pos;
-			tmp_part2 = length & (pow2(2+byte_pos)-1);
+			tmp_part2 = length & ((1 << (2+byte_pos))-1);
 			if(byte_pos == 0) bin[byte] = 0;
 			bin[byte] |= tmp_part1;
 			byte++;
