@@ -51,8 +51,6 @@ int main(int argc,char** argv)
 
 	int planet_count,byte_pos,byte,tmp_part1,tmp_part2,length;
 	char bin[35];
-	
-	int max=0;
 
 	for(int system = 1; system <= 999; system++)
 	{
@@ -72,7 +70,6 @@ int main(int argc,char** argv)
 				std::cerr << "Please recompile this file, RAND_MAX does not seem to be correct.\n";
 				return 1;
 			}
-			if(length > max) max = length;
 
 			tmp_part1 = length >> 1+byte_pos;
 			tmp_part2 = length & ((1 << (2+byte_pos))-1);
@@ -106,8 +103,6 @@ int main(int argc,char** argv)
 			else gfile.write("\0\0\0\0\0\0", 6);
 		}
 	}
-	
-	std::cout << max << "\n";
 
 	std::cerr << "Galaxy " << argv[1] << " successfully created.\n";
 	return 0;
