@@ -358,15 +358,23 @@
 <h3 id="roboter-auswirkungsgrade">Roboter-Auswirkungsgrade</h3>
 <dl class="imperium-roboter-auswirkungsgrade">
 	<dt class="c-bauroboter">Bauroboter</dt>
-	<dd class="c-bauroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.125)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dd class="c-bauroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.125)?>&thinsp;<abbr title="Prozent">%</abbr> pro Roboter</dd>
+
+	<dt class="c-minenroboter">Minenroboter</dt>
 <?php
 			if(file_exists(global_setting("DB_USE_OLD_ROBTECH")))
-				$mrob = $me->getItemLevel('F2', 'forschung')*0.03125;
-			else
-				$mrob = sqrt($me->getItemLevel("F2", "forschung"))/250; 
+			{
 ?>
-	<dt class="c-minenroboter">Minenroboter</dt>
-	<dd class="c-minenroboter"><?=ths($mrob, null, 2)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dd class="c-minenroboter"><?=ths($me->getItemLevel('F2', 'forschung')*0.03125, null, 2)?>&thinsp;<abbr title="Prozent">%</abbr> pro Roboter</dd>
+<?php
+			}
+			else
+			{
+?>
+	<dd class="c-minenroboter"><?=ths(sqrt($me->getItemLevel("F2", "forschung"))/2.5, null, 2)?> Prozentpunkte pro Roboter</dd>
+<?php
+			}
+?>
 </dl>
 <?php
 			break;
