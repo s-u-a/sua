@@ -22,7 +22,7 @@
 
 int main(int argc,char** argv)
 {
-	std::cout << "\
+	std::cerr << "\
     This file is part of Stars Under Attack.\
 \
     Stars Under Attack is free software: you can redistribute it and/or modify\
@@ -68,9 +68,10 @@ int main(int argc,char** argv)
 			else length = 0;
 			if(length > 400)
 			{
-				std::cout << "Please recompile this file, RAND_MAX does not seem to be correct.\n";
+				std::cerr << "Please recompile this file, RAND_MAX does not seem to be correct.\n";
 				return 1;
 			}
+			std::cout << length << "\n";
 
 			tmp_part1 = length >> 1+byte_pos;
 			tmp_part2 = length & ((1 << (2+byte_pos))-1);
@@ -105,6 +106,6 @@ int main(int argc,char** argv)
 		}
 	}
 
-	std::cout << "Galaxy " << argv[1] << " successfully created.\n";
+	std::cerr << "Galaxy " << argv[1] << " successfully created.\n";
 	return 0;
 }
