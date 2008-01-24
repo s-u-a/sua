@@ -52,7 +52,7 @@
 	<dd class="c-kampferfahrung"><?=ths($user->getScores(6))?></dd>
 
 	<dt class="c-gesamt">Gesamt</dt>
-	<dd class="c-gesamt"><?=ths($user->getScores())?></span> <span class="platz">(Platz&nbsp;<?=ths($user->getRank())?> <span class="gesamt-spieler">von <?=ths(getUsersCount())?>)</span></span></dd>
+	<dd class="c-gesamt"><span class="punkte"><?=ths($user->getScores())?></span> <span class="platz">(Platz&nbsp;<?=ths($user->getRank())?> <span class="gesamt-spieler">von <?=ths(getUsersCount())?>)</span></span></dd>
 </dl>
 <?php
 			$show_koords = $me->maySeeKoords($user->getName());

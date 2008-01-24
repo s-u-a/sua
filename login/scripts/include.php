@@ -436,12 +436,13 @@
 					google_ad_height = 600;
 					google_ad_format = "120x600_as";
 					google_ad_type = "text";
-					google_ad_channel ="";
+					google_ad_channel = "";
 					google_color_border = "556688";
 					google_color_text = "FFFFFF";
 					google_color_bg = "445577";
 					google_color_link = "FFFFFF";
 					google_color_url = "FFFFFF";
+					google_ui_features = "rc:10";
 				</script>
 				<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
 <?php

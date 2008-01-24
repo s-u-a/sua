@@ -395,7 +395,7 @@
 		<dd class="c-ziel"><?=utf8_htmlentities($fleet_obj->getCurrentTarget())?> &ndash; <?=$planet_owner ? utf8_htmlentities($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])).' <span class="playername">('.utf8_htmlentities($planet_owner).')</span>' : 'Unbesiedelt'?></dd>
 
 		<dt class="c-auftragsart">Auftragsart</dt>
-		<dd class="c-auftragsart"><?=isset($type_names[$_POST['auftrag']]) ? htmlentities($type_names[$_POST['auftrag']]) : utf8_htmlentities($_POST['auftrag'])?></dt>
+		<dd class="c-auftragsart"><?=isset($type_names[$_POST['auftrag']]) ? htmlentities($type_names[$_POST['auftrag']]) : utf8_htmlentities($_POST['auftrag'])?></dd>
 
 		<dt class="c-ankunft">Ankunft</dt>
 		<dd class="c-ankunft"><?=date('H:i:s, Y-m-d', $fleet_obj->getNextArrival())?> (Serverzeit)</dd>
