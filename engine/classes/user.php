@@ -3383,7 +3383,7 @@
 			if(!isset($this->raw["foreign_coords"]))
 				$this->raw["foreign_coords"] = array();
 
-			return $this->raw["foreign_coords"];
+			return array_unique($this->raw["foreign_coords"]);
 		}
 
 		function callBackForeignFleet($koords, $i=null)
