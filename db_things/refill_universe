@@ -73,7 +73,7 @@
 			elseif($user_obj->umode()) $galaxy_obj->setPlanetOwnerFlag($planet[1], $planet[2], "U");
 			$galaxy_obj->setPlanetName($planet[1], $planet[2], $user_obj->planetName());
 			if($user_obj->allianceTag())
-				$galaxy_obj->setPlanetOwnerAlliance($user_obj->allianceTag());
+				$galaxy_obj->setPlanetOwnerAlliance($planet[1], $planet[2], $user_obj->allianceTag());
 		}
 		unset($user_obj);
 	}
