@@ -42,7 +42,10 @@
 		for($system = 1; $system <= $g_obj->getSystemsCount(); $system++)
 		{
 			for($planet = 1; $planet <= $g_obj->getPlanetsCount($system); $planet++)
-				$g_obj->setPlanetOwner($system, $planet, "");
+			{
+				$g_obj->_setPlanetOwner($system, $planet, "");
+				$g_obj->setPlanetName($system, $planet, "");
+				$g_obj->setPlanetOwnerAlliance($system, $planet, "");
 		}
 	}
 
@@ -65,6 +68,11 @@
 			$planet = $user_obj->getPos();
 			$galaxy_obj = Classes::Galaxy($planet[0]);
 			$galaxy_obj->setPlanetOwner($planet[1], $planet[2], $user_obj->getName());
+			if($user_obj->userLocked()) $galaxy_obj->setPlanetOwnerFlag($planet[1], $planet[2], "g");
+			elseif($user_obj->umode()) $galaxy_obj->setPlanetOwnerFlag($planet[1], $planet[2], "U");
+			$galaxy_obj->setPlanetName($planet[1], $planet[2], $user_obj->planetName());
+			if($user_obj->allianceTag())
+				$galaxy_obj->setPlanetOwnerAlliance($user_obj->allianceTag());
 		}
 		unset($user_obj);
 	}
