@@ -60,6 +60,8 @@ int main(int argc,char** argv)
 		byte = 0;
 
 		bin[0] = planet_count << 3;
+		
+		planet_count += 10;
 
 		for(int i=0; i<30; i++)
 		{
