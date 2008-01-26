@@ -207,7 +207,7 @@ function get_key_elements()
 		}
 	}
 
-	document.onkeyup = key_event;
+	document.onkeypress = key_event;
 }
 
 function key_event(e)
@@ -222,8 +222,9 @@ function key_event(e)
 		return true;
 
 	var num;
-	if(e.which) num = e.which;
-	else if(e.keyCode) num = e.keyCode;
+	if(typeof e.charCode != "undefined") num = e.charCode;
+	else if(typeof e.which != "undefined") num = e.which;
+	else if(typeof e.keyCode != "undefined") num = e.keyCode;
 	else return true;
 
 	var chr = String.fromCharCode(num).toLowerCase();

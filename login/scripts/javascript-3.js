@@ -142,7 +142,7 @@ function init_countdown(obj_id, f_time, show_cancel, sleep_seconds, finish_url)
 
 function time_up()
 { // Wird jede Sekunde ausgefuehrt und zaehlt Countdowns und Uhren weiter
-	// Uhren hochzahlen
+	// Uhren hochzaehlen
 	local_time_up = new Date();
 	server_time_up = new Date(local_time_up.getTime() - time_diff*1000);
 	if(document.getElementById('time-local'))
@@ -206,7 +206,7 @@ function get_key_elements()
 		}
 	}
 
-	document.onkeyup = key_event;
+	document.onkeypress = key_event;
 }
 
 function key_event(e)
@@ -221,8 +221,9 @@ function key_event(e)
 		return true;
 
 	var num;
-	if(e.which) num = e.which;
-	else if(e.keyCode) num = e.keyCode;
+	if(typeof e.charCode != "undefined") num = e.charCode;
+	else if(typeof e.which != "undefined") num = e.which;
+	else if(typeof e.keyCode != "undefined") num = e.keyCode;
 	else return true;
 
 	var chr = String.fromCharCode(num).toLowerCase();
