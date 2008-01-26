@@ -2966,7 +2966,7 @@
 						{
 							$item_info = $this->getItemInfo($item, 'schiffe', true, true);
 							$this->raw['punkte'][3] += $item_info['scores'];
-							if(isset($remote[$id])) $this->raw["punkte"][3] += $remote[$id]*$item_info["simple_scores"];
+							if(isset($remote[$item])) $this->raw["punkte"][3] += $remote[$item]*$item_info["simple_scores"];
 						}
 					}
 
