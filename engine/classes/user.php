@@ -2986,7 +2986,7 @@
 						{
 							foreach($fleets[0] as $id=>$count)
 							{
-								$item_info = $me->getItemInfo($id, "schiffe");
+								$item_info = $this->getItemInfo($id, "schiffe");
 								$this->raw["punkte"][3] += $count*$item_info["simple_scores"];
 							}
 						}
