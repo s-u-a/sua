@@ -46,7 +46,8 @@
 				'description_parsed' => '',
 				'flotten' => array(),
 				'flotten_passwds' => array(),
-				'foreign_fleets' => array(), # Enthaelt eine Liste der Koordinaten, bei denen Flotte stationiert ist
+				'foreign_fleets' => array(),
+				'foreign_coords' => array(),
 				'alliance' => false,
 				'lang' => language()
 			);
@@ -2941,11 +2942,31 @@
 
 					if($recalc_schiffe)
 					{
+						// Fremdstationierte Flotten einbeziehen
+						$remote = array();
+						$koords = $this->getMyForeignFleets();
+						foreach($koords as $koord)
+						{
+							$koord = explode(":", $koord);
+							$galaxy_obj = Classes::Galaxy($koord[0]);
+							$user_obj = Classes::User($galaxy_obj->getPlanetOwner($koord[1], $koord[2]));
+							if(!$user_obj->getStatus()) continue;
+							foreach($user_obj->getForeignFleetsList($this->getName()) as $i=>$fleets)
+							{
+								foreach($fleets as $id=>$count)
+								{
+									if(!isset($remote[$id])) $remote[$id] = 0;
+									$remote[$id] += $count;
+								}
+							}
+						}
+
 						$items = $this->getItemsList('schiffe');
 						foreach($items as $item)
 						{
 							$item_info = $this->getItemInfo($item, 'schiffe', true, true);
 							$this->raw['punkte'][3] += $item_info['scores'];
+							if(isset($remote[$id])) $this->raw["punkte"][3] += $remote[$id]*$item_info["simple_scores"];
 						}
 					}
 
@@ -3151,6 +3172,15 @@
 			return $this->raw['last_mail'];
 		}
 
+		/**
+		  * Stationiert eine Flotte $fleet vom Planeten $from, die dem Benutzer $user gehört, auf dem aktiven Planeten. 
+		  * @param $user string Der Benutzername des Eigentümers der Flotten.
+		  * @param $fleet array Das Item-Array der Flotten. ( Item-ID => Anzahl )
+		  * @param $from string Die Herkunfskoordinaten der Flotte. Hierhin werden sie beim Abbruch zurückgesandt.
+		  * @param $speed_factor float Mit diesem Geschwindigkeitsfaktor wurden die Flotten losgeschickt, sie werden beim Abbruch genausolangsam zurückfliegen.
+		  * @return boolean Erfolg
+		*/
+
 		function addForeignFleet($user, $fleet, $from, $speed_factor)
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
@@ -3177,6 +3207,15 @@
 			return $next_i;
 		}
 		
+		/**
+		  * Entfernt fremdstationierte Schiffe des Benutzers $username. Hat der Benutzer mehrere Flotten stationiert, wird zunächst von der ältesten abgezogen.
+		  * @param $username Der Benutzername des Eigentümers der Schiffe.
+		  * @param $id Die Item-ID des abzuziehenden Schiffstyps.
+		  * @param $count Wieviele Schiffe abgezogen werden sollen.
+		  * @return 2 Wenn nicht so viele Schiffe vorhanden waren.
+		  * @return boolean Erfolg.
+		*/
+
 		function subForeignShips($username, $id, $count)
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
@@ -3202,6 +3241,13 @@
 			if($count > 0) return 2;
 			return true;
 		}
+		
+		/**
+		  * Entfernt die fremdstationierte Flotte Nummer $i des Benutzers $user. $i kann mit getForeignFleetsList() herausgefunden werden.
+		  * @param $user string Der Benutzername.
+		  * @param $i integer Die Nummer der Flotte. 
+		  * @return boolean Erfolg.
+		*/
 
 		function subForeignFleet($user, $i)
 		{
@@ -3236,6 +3282,12 @@
 			return true;
 		}
 
+		/**
+		  * Gibt die Liste der Benutzer zurück, die auf diesem Planeten Flotte stationiert haben.
+		  * @return array ( Benutzername )
+		  * @return false Bei Fehlschlag.
+		*/
+
 		function getForeignUsersList()
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
@@ -3245,6 +3297,15 @@
 
 			return array_keys($this->planet_info["foreign_fleets"]);
 		}
+
+		/**
+		  * Gibt die Liste der fremdstationierten Flotten des Benutzers $user auf diesem Planeten zurück. Jede ankommende Fremdstationierung erhält einen eigenen Index. Um nur die Flotten einer bestimmten Fremdstationierung zu erhalten, kann $i gesetzt werden.
+		  * @param $user string Der Benutzername.
+		  * @param $i integer Der Index der Fremdstationierung.
+		  * @return array ( Index => ( Item-ID => Anzahl ) ), wenn $i null ist
+		  * @return array ( Item-ID => Anzahl ), wenn $i gesetzt ist
+		  * @return false Bei Fehler, oder wenn $i gesetzt ist, die Flotte aber nicht existiert
+		*/
 
 		function getForeignFleetsList($user, $i=null)
 		{
@@ -3260,10 +3321,10 @@
 				else
 					return $this->planet_info["foreign_fleets"][$user];
 			}
-			elseif(!isset($this->planet_info["foreign_fleets"][$i]))
+			elseif(!isset($this->planet_info["foreign_fleets"][$user]) || !isset($this->planet_info["foreign_fleets"][$user][$i]))
 				return false;
 			else
-				return $this->planet_info["foreign_fleets"][$i];
+				return $this->planet_info["foreign_fleets"][$user][$i];
 		}
 
 		/**
@@ -3276,13 +3337,13 @@
 		{
 			if(!$this->status) return false;
 
-			if(!isset($this->raw["foreign_fleets"]))
-				$this->raw["foreign_fleets"] = array();
+			if(!isset($this->raw["foreign_coords"]))
+				$this->raw["foreign_coords"] = array();
 
-			if(in_array($coords, $this->raw["foreign_fleets"]))
+			if(in_array($coords, $this->raw["foreign_coords"]))
 				return 2;
 
-			$this->raw["foreign_fleets"][] = $coords;
+			$this->raw["foreign_coords"][] = $coords;
 
 			$this->changed = true;
 
@@ -3299,26 +3360,30 @@
 		{
 			if(!$this->status) return false;
 
-			if(!isset($this->raw["foreign_fleets"]))
-				$this->raw["foreign_fleets"] = array();
+			if(!isset($this->raw["foreign_coords"]))
+				$this->raw["foreign_coords"] = array();
 
-			$key = array_search($coords, $this->raw["foreign_fleets"]);
+			$key = array_search($coords, $this->raw["foreign_coords"]);
 			if($key === false) return 2;
 
-			unset($this->raw["foreign_fleets"][$key]);
+			unset($this->raw["foreign_coords"][$key]);
 			$this->changed = true;
 
 			return true;
 		}
 
+		/**
+		  * Liefert die Koordinaten zurück, bei denen dieser Benutzer Flotten stationiert hat.
+		*/
+
 		function getMyForeignFleets()
 		{
 			if(!$this->status) return false;
 
-			if(!isset($this->raw["foreign_fleets"]))
-				$this->raw["foreign_fleets"] = array();
+			if(!isset($this->raw["foreign_coords"]))
+				$this->raw["foreign_coords"] = array();
 
-			return $this->raw["foreign_fleets"];
+			return $this->raw["foreign_coords"];
 		}
 
 		function callBackForeignFleet($koords, $i=null)
