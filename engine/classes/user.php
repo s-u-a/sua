@@ -2942,31 +2942,11 @@
 
 					if($recalc_schiffe)
 					{
-						// Fremdstationierte Flotten einbeziehen
-						$remote = array();
-						$koords = $this->getMyForeignFleets();
-						foreach($koords as $koord)
-						{
-							$koord = explode(":", $koord);
-							$galaxy_obj = Classes::Galaxy($koord[0]);
-							$user_obj = Classes::User($galaxy_obj->getPlanetOwner($koord[1], $koord[2]));
-							if(!$user_obj->getStatus()) continue;
-							foreach($user_obj->getForeignFleetsList($this->getName()) as $i=>$fleets)
-							{
-								foreach($fleets[0] as $id=>$count)
-								{
-									if(!isset($remote[$id])) $remote[$id] = 0;
-									$remote[$id] += $count;
-								}
-							}
-						}
-
 						$items = $this->getItemsList('schiffe');
 						foreach($items as $item)
 						{
 							$item_info = $this->getItemInfo($item, 'schiffe', true, true);
 							$this->raw['punkte'][3] += $item_info['scores'];
-							if(isset($remote[$item])) $this->raw["punkte"][3] += $remote[$item]*$item_info["simple_scores"];
 						}
 					}
 
@@ -2989,6 +2969,27 @@
 					{
 						$item_info = $this->getItemInfo($item, 'forschung', true, true);
 						$this->raw['punkte'][1] += $item_info['scores'];
+					}
+				}
+				
+				if($recalc_schiffe)
+				{
+					// Fremdstationierte Flotten einbeziehen
+					$koords = $this->getMyForeignFleets();
+					foreach($koords as $koord)
+					{
+						$koord = explode(":", $koord);
+						$galaxy_obj = Classes::Galaxy($koord[0]);
+						$user_obj = Classes::User($galaxy_obj->getPlanetOwner($koord[1], $koord[2]));
+						if(!$user_obj->getStatus()) continue;
+						foreach($user_obj->getForeignFleetsList($this->getName()) as $i=>$fleets)
+						{
+							foreach($fleets[0] as $id=>$count)
+							{
+								$item_info = $me->getItemInfo($id, "schiffe");
+								$this->raw["punkte"][3] += $count*$item_info["simple_scores"];
+							}
+						}
 					}
 				}
 
