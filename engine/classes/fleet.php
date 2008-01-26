@@ -2138,7 +2138,7 @@
 					$nachrichten_runden[$name][$runde] .= "\t\t<h3>".h(sprintf($user_obj->_("Runde %s"), ($runde+1)/2))."</h3>\n";
 				}
 
-				$nachrichten_runden[$name][$runde] .= "\t\t<h4>".h(sprintf($runde_starter == "angreifer" ? $user_obj->ngettext("Der Angreifer ist am Zug (Gesamtstärke %s)", "Die Angreifer sind am Zug (Gesamtstärke %s)", count($angreifer)) : $user_obj->ngettext("Der Verteidiger ist am Zug (Gesamtstärke %s)", "Die Verteidiger sind am Zug (Gesamtstärke %s)", count($verteidiger)), round($staerke))).")</h4>\n";
+				$nachrichten_runden[$name][$runde] .= "\t\t<h4>".h(sprintf($runde_starter == "angreifer" ? $user_obj->ngettext("Der Angreifer ist am Zug (Gesamtstärke %s)", "Die Angreifer sind am Zug (Gesamtstärke %s)", count($angreifer)) : $user_obj->ngettext("Der Verteidiger ist am Zug (Gesamtstärke %s)", "Die Verteidiger sind am Zug (Gesamtstärke %s)", count($verteidiger)), ths(round($staerke)))).")</h4>\n";
 				$nachrichten_runden[$name][$runde] .= "\t\t<ol>\n";
 			}
 
