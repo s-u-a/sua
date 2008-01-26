@@ -65,14 +65,9 @@ int main(int argc,char** argv)
 		{
 			if(i<planet_count) length = round(400.0 / (RAND_MAX-1) * std::rand()); // rand(0,400);
 			else length = 0;
-			if(length > 400)
-			{
-				std::cerr << "Please recompile this file, RAND_MAX does not seem to be correct.\n";
-				return 1;
-			}
 
 			tmp_part1 = length >> 1+byte_pos;
-			tmp_part2 = length & ((1 << (2+byte_pos))-1);
+			tmp_part2 = (length & ((1 << 2+byte_pos)-1)) << 7-byte_pos;
 			if(byte_pos == 0) bin[byte] = 0;
 			bin[byte] |= tmp_part1;
 			byte++;
