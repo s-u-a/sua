@@ -2953,7 +2953,7 @@
 							if(!$user_obj->getStatus()) continue;
 							foreach($user_obj->getForeignFleetsList($this->getName()) as $i=>$fleets)
 							{
-								foreach($fleets as $id=>$count)
+								foreach($fleets[0] as $id=>$count)
 								{
 									if(!isset($remote[$id])) $remote[$id] = 0;
 									$remote[$id] += $count;
@@ -3302,8 +3302,8 @@
 		  * Gibt die Liste der fremdstationierten Flotten des Benutzers $user auf diesem Planeten zurück. Jede ankommende Fremdstationierung erhält einen eigenen Index. Um nur die Flotten einer bestimmten Fremdstationierung zu erhalten, kann $i gesetzt werden.
 		  * @param $user string Der Benutzername.
 		  * @param $i integer Der Index der Fremdstationierung.
-		  * @return array ( Index => ( Item-ID => Anzahl ) ), wenn $i null ist
-		  * @return array ( Item-ID => Anzahl ), wenn $i gesetzt ist
+		  * @return array ( Index => [ ( Item-ID => Anzahl ), Herkunftsplanet, Geschwindigkeitsfaktor ] ), wenn $i null ist
+		  * @return array [ ( Item-ID => Anzahl ), Herkunftsplanet, Geschwindigkeitsfaktor ], wenn $i gesetzt ist
 		  * @return false Bei Fehler, oder wenn $i gesetzt ist, die Flotte aber nicht existiert
 		*/
 
