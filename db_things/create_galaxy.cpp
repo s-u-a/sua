@@ -33,6 +33,8 @@ int main(int argc,char** argv)
 		byte = 0;
 
 		bin[0] = planet_count << 3;
+		
+		planet_count += 10;
 
 		for(int i=0; i<30; i++)
 		{
@@ -40,7 +42,7 @@ int main(int argc,char** argv)
 			else length = 0;
 
 			tmp_part1 = length >> 1+byte_pos;
-			tmp_part2 = length & (pow2(2+byte_pos)-1);
+			tmp_part2 = (length & ((1 << 2+byte_pos)-1)) << 7-byte_pos;
 			if(byte_pos == 0) bin[byte] = 0;
 			bin[byte] |= tmp_part1;
 			byte++;
