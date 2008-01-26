@@ -407,7 +407,7 @@
 						$item_info = $me->getItemInfo($last_building[0], 'schiffe');
 						$finishing_time = $last_building[1]+$last_building[2]*$last_building[3];
 ?>
-			<dd class="c-roboter">(<?=utf8_htmlentities($item_info['name'])?>) <span id="restbauzeit-ro-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
+			<dd class="c-schiffe">(<?=utf8_htmlentities($item_info['name'])?>) <span id="restbauzeit-sc-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
 <?php
 						break;
 					case 2:
@@ -453,7 +453,7 @@
 						$item_info = $me->getItemInfo($last_building[0], 'verteidigung');
 						$finishing_time = $last_building[1]+$last_building[2]*$last_building[3];
 ?>
-			<dd class="c-roboter">(<?=utf8_htmlentities($item_info['name'])?>) <span id="restbauzeit-ro-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
+			<dd class="c-verteidigung">(<?=utf8_htmlentities($item_info['name'])?>) <span id="restbauzeit-ve-<?=utf8_htmlentities($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span></dd>
 <?php
 						break;
 					case 2:
