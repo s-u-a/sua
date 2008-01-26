@@ -46,6 +46,7 @@
 				$g_obj->_setPlanetOwner($system, $planet, "");
 				$g_obj->setPlanetName($system, $planet, "");
 				$g_obj->setPlanetOwnerAlliance($system, $planet, "");
+			}
 		}
 	}
 
