@@ -41,7 +41,7 @@
 	<li><?=h(_("Gegen jegliches deutsches Recht zu verstoßen, hierauf folgt eine sofortige Sperrung."))?></li>
 </ul>
 <p id="p3-2"><?=h(sprintf(_("(%2\$d) %3\$s"), 3, 2, sprintf(_("Der Spieler wird ersucht, sich „fair“ gegenüber seinen Mitspielern zu verhalten, und diesen die Möglichkeit, sich im Spiel aufzubauen, nicht zu nehmen. Sollte ein Spieler sich auffällig oft nicht an diese Selbstverständlichkeit halten, so behält es sich der Betreiber vor, dem Spieler die Teilnahme an %s zu untersagen."), _("[title_abbr]"))))?></p>
-<p id="p3-3"><?=h(sprintf(_("(%2\$d) %3\$s"), 3, 3, sprintf(_("Greift der Spieler einen anderen Spieler mehr als fünfmal in 24 Stunden an, so muss er mit Benachteiligungen im Spielverlauf rechnen."), _("[title_abbr]"))))?></p>
+<p id="p3-3"><?=h(sprintf(_("(%2\$d) %3\$s"), 3, 3, sprintf(_("Greift der Spieler einen anderen Spieler mehr als fünfmal in 24 Stunden an, so muss er mit Benachteiligungen im Spielverlauf rechnen, sofern der Verstoß den Administratoren von einer der betroffenen Parteien gemeldet wird und der Spieler nicht vorweisen kann, dass ein Abkommen in beidseitigem Einverständnis getroffen wurde, das diese Angriffe gestattet. Als Beweise für Anklage oder Einspruch in dieser Sache werden ausschließlich vorhandene (archivierte) Nachrichten im spielinternen Posteingang der betroffenen Partei akzeptiert."), _("[title_abbr]"))))?></p>
 <p id="p3-4"><?=h(sprintf(_("(%2\$d) %3\$s"), 3, 4, sprintf(_("Der Betreiber behält sich aus Gründen der Fairness das Recht vor, Allianzen aufzuteilen beziehungsweise aufzulösen und Bündnisse zu kündigen."), _("[title_abbr]"))))?></p>
 
 <h3 id="p4"><?=h(sprintf(_("§ %d: %s"), 4, _("Datenschutz")))?></h3>
