@@ -43,14 +43,13 @@
 		if(!is_file(global_setting("DB_PLAYERS").'/'.$fname) || !is_readable(global_setting("DB_PLAYERS").'/'.$fname))
 			continue;
 
-		# Not using instances for memory reasons
-		$this_user = new User(urldecode($fname));
+		$this_user = Classes::User(urldecode($fname));
 		if(!$this_user->getStatus()) continue;
 
 		//$highscores_obj->updateUser($this_user->getName(), $this_user->allianceTag(), $this_user->getScores());
 		$this_user->doRecalcHighscores();
 
-		unset($this_user);
+		Classes::resetInstances("User");
 	}
 	closedir($dh);
 
@@ -60,7 +59,7 @@
 		if(!is_file(global_setting("DB_ALLIANCES").'/'.$fname) || !is_readable(global_setting("DB_ALLIANCES").'/'.$fname))
 			continue;
 
-		$this_alliance = new Alliance(urldecode($fname));
+		$this_alliance = Classes::Alliance(urldecode($fname));
 		if(!$this_alliance->getStatus())
 			continue;
 
@@ -70,7 +69,8 @@
 
 		$highscores_obj->updateAlliance($this_alliance->getName(), $average, $overall, $members);
 
-		unset($this_alliance);
+		Classes::resetInstances("Alliance");
+		Classes::resetInstances("User");
 	}
 	closedir($dh);
 
