@@ -25,7 +25,7 @@
 	<li>Gegen jegliches deutsches Recht zu verstoßen, hierauf folgt eine sofortige Sperrung.</li>
 </ul>
 <p id="p3-2">(2) Der Spieler wird ersucht, sich &bdquo;<span xml:lang="en">fair</span>&ldquo; gegenüber seinen Mitspielern zu verhalten, und diesen die Möglichkeit, sich im Spiel aufzubauen, nicht zu nehmen. Sollte ein Spieler sich auffällig oft nicht an diese Selbstverständlichkeit halten, so behält es sich der Betreiber vor, dem Spieler die Teilnahme an <abbr xml:lang="en" title="Stars Under Attack">S-U-A</abbr> zu untersagen.</p>
-<p id="p3-3">(3) Greift der Spieler einen anderen Spieler mehr als fünfmal in 24 Stunden an, so muss er mit Benachteiligungen im Spielverlauf rechnen.</p>
+<p id="p3-3">(3) Greift der Spieler einen anderen Spieler mehr als fünfmal in 24 Stunden an, so muss er mit Benachteiligungen im Spielverlauf rechnen, sofern der Verstoß den Administratoren von einer der betroffenen Parteien gemeldet wird und der Spieler nicht vorweisen kann, dass ein Abkommen in beidseitigem Einverständnis getroffen wurde, das diese Angriffe gestattet. Als Beweise für Anklage oder Einspruch in dieser Sache werden ausschließlich vorhandene (archivierte) Nachrichten im spielinternen Posteingang der betroffenen Partei akzeptiert.</p>
 <p id="p3-4">(4) Der Betreiber behält sich aus Gründen der <span xml:lang="en">Fairness</span> das Recht vor, Allianzen aufzuteilen beziehungsweise aufzulösen und Bündnisse zu kündigen.</p>
 
 <h3 id="p4">§&thinsp;4: Datenschutz</h3>
