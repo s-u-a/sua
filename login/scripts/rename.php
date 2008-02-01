@@ -138,7 +138,7 @@
 		if($foreign > 0)
 		{
 ?>
-<p><strong><?=sprintf(h(ngettext("Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn Sie den Planeten auflösen, wird diese Flotte zerstört werden.", "Achtung! Von diesem Planeten sind noch %d Fremdstationierungen aktiv. Wenn Sie den Planeten auflösen, werden diese Flotten zerstört werden.", $foreign)), $foreign)?></strong></p>
+<p><strong><?=sprintf(h(ngettext("Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn Sie den Planeten auflösen, wird diese Flotte zerstört werden.", "Achtung! Von diesem Planeten sind noch %s Fremdstationierungen aktiv. Wenn Sie den Planeten auflösen, werden diese Flotten zerstört werden.", $foreign)), ths($foreign))?></strong></p>
 <?php
 		}
 	}

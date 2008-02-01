@@ -740,13 +740,13 @@
 
 		$return = array();
 		if($time2 >= 86400 && (!$short || $days != 0))
-			$return[] = sprintf(ngettext("%d Tag", "%d Tage", $days), $days);
+			$return[] = sprintf(ngettext("%s Tag", "%s Tage", $days), $days);
 		if($time2 >= 3600 && (!$short || $hours != 0))
-			$return[] = sprintf(ngettext("%d Stunde", "%d Stunden", $hours), $hours);
+			$return[] = sprintf(ngettext("%s Stunde", "%s Stunden", $hours), $hours);
 		if($time2 >= 60 && (!$short || $minutes != 0))
-			$return[] = sprintf(ngettext("%d Minute", "%d Minuten", $minutes), $minutes);
+			$return[] = sprintf(ngettext("%s Minute", "%s Minuten", $minutes), $minutes);
 		if(!$short || $seconds != 0)
-			$return[] = sprintf(ngettext("%d Sekunde", "%d Sekunden", $seconds), $seconds);
+			$return[] = sprintf(ngettext("%s Sekunde", "%s Sekunden", $seconds), $seconds);
 
 		$return = h(implode(' ', $return));
 		return $return;
