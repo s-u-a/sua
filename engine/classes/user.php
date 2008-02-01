@@ -952,33 +952,17 @@
 				return 2;
 		}
 
-		function lastRequest($last_request=false, $last_planet=false)
+		function lastRequest($last_request=null)
 		{
 			if(!$this->status) return false;
 
-			if($last_request === false && $last_planet === false)
+			if($last_request === false)
 			{
-				$return = array();
-				if(!isset($this->raw['last_request']) && !isset($this->raw['last_planet']))
-					return false;
-
-				if(!isset($this->raw['last_request'])) $return[0] = false;
-				else $return[0] = $this->raw['last_request'];
-
-				if(!isset($this->raw['last_planet']) || !$this->planetExists($this->raw['last_planet']))
-				{
-					$planets = $this->getPlanetsList();
-					$return[1] = array_shift($planets);
-				}
-				else $return[1] = $this->raw['last_planet'];
-
-				return $return;
+				if(!isset($this->raw['last_request'])) return null;
+				else return $this->raw['last_request'];
 			}
 
-			if($last_request !== false)
-				$this->raw['last_request'] = $last_request;
-			if($last_planet !== false)
-				$this->raw['last_planet'] = $last_planet;
+			$this->raw['last_request'] = $last_request;
 			$this->changed = true;
 			return true;
 		}
@@ -988,7 +972,6 @@
 			if(!$this->status) return false;
 
 			$this->raw['last_request'] = $_SERVER['REQUEST_URI'];
-			$this->raw['last_planet'] = $this->getActivePlanet();
 			$this->raw['last_active'] = time();
 		}
 

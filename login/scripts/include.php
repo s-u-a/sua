@@ -148,7 +148,7 @@
 	# Wiederherstellen
 	if($resume && $last_request = $me->lastRequest())
 	{
-		$url = 'http://'.$databases[$_SESSION["database"]]["hostname"].$last_request[0];
+		$url = 'http://'.$databases[$_SESSION["database"]]["hostname"].$last_request;
 
 		$url = explode('?', $url, 2);
 		if(isset($url[1]))
@@ -175,7 +175,7 @@
 				$url .= '?';
 			else
 				$url .= '&';
-			$url .= global_setting("URL_SUFFIX");
+			$url .= urlencode(session_name())."=".urlencode(session_id());
 		}
 		header('Location: '.$url, true, 303);
 		die(sprintf(h(_("HTTP redirect: %s")), "<a href=\"".htmlspecialchars($url)."\">".htmlspecialchars($url)."</a>"));
