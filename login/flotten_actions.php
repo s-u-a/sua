@@ -197,7 +197,7 @@
 					if($username == $_SESSION['username']) $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend) und %2$s Roboter (%4$s verbleibend).';
 					else $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend).';
 					$input_name = 'set';
-					$value = '%u';
+					$value = '%d';
 					$disabled = '';
 					$show_submit = true;
 				}
