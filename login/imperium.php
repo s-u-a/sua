@@ -456,8 +456,8 @@
 	<dt class="c-schilde">Schilde</dt>
 	<dd class="c-schilde"><?=str_replace('.', ',', round((pow(1.05, $me->getItemLevel('F5', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 
-	<dt class="c-schildreparatur-pro-runde">Schildreparatur pro Runde</dt>
-	<dd class="c-schildreparatur-pro-runde"><?=str_replace('.', ',', round((pow(1.025, $me->getItemLevel('F10', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dt class="c-schadensminderung-durch-schilde">Schadensminderung durch Schilde</dt>
+	<dd class="c-schadensminderung-durch-schilde"><?=str_replace('.', ',', round((1-pow(.95, $me->getItemLevel('F10', 'forschung')))*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 
 	<dt class="c-laderaumvergroesserung">Laderaumvergrößerung</dt>
 	<dd class="c-laderaumvergroesserung"><?=str_replace('.', ',', round((pow(1.2, $me->getItemLevel('F11', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
