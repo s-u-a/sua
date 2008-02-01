@@ -64,6 +64,22 @@ function myParseInt(string)
 		return count;
 }
 
+function getCookies()
+{
+	var c = { };
+	if(document.cookie)
+	{
+		var c_split = document.cookie.split(/;/);
+		for(var i=0; i<c_split.length; i++)
+		{
+			c_split_i = c_split[i].split(/=/);
+			if(c_split_i < 2) continue;
+			c[decodeURIComponent(c_split_i[0])] = decodeURIComponent(c_split_i[1]);
+		}
+	}
+	return c;
+}
+
 
 /////////////////////////////
 /// Dummy-Funktionen ///

@@ -57,12 +57,12 @@
 		{
 ?>
 		<ul>
-			<li class="item-bau"><input type="text" name="schiffe[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$tabindex++?>" /></li>
+			<li class="item-bau"><input type="text" class="number number-items" name="schiffe[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$tabindex++?>" /></li>
 		</ul>
 <?php
 		}
 ?>
-		<dl>
+		<dl class="lines">
 			<dt class="item-kosten">Kosten</dt>
 			<dd class="item-kosten">
 				<?=format_ress($item_info['ress'], 4, false, false, false, $me)?>
@@ -78,7 +78,7 @@
 	if($tabindex > 1)
 	{
 ?>
-	<div><button type="submit" tabindex="<?=$tabindex++?>" accesskey="u">In A<kbd>u</kbd>ftrag geben</button></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>" accesskey="u">In A<kbd>u</kbd>ftrag geben</button></div>
 <?php
 	}
 ?>
@@ -88,7 +88,7 @@
 	if(count($building_schiffe) > 0)
 	{
 ?>
-<h3 id="aktive-auftraege">Aktive Aufträge</h3>
+<h3 id="aktive-auftraege" class="strong">Aktive Aufträge</h3>
 <ol class="queue schiffe">
 <?php
 		$i = 0;

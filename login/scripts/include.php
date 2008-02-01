@@ -311,25 +311,9 @@
 			$cur_ress = $me->getRess();
 ?>
 		<div id="content-9" class="<?=htmlspecialchars($class)?>">
-			<dl id="ress" class="ress">
-				<dt class="ress-carbon"><?=h(_("[ress_0]"))?></dt>
-				<dd class="ress-carbon<?=($cur_ress[0]<0) ? " negativ" : ""?>" id="ress-carbon"><?=ths($cur_ress[0])?></dd>
-
-				<dt class="ress-aluminium"><?=h(_("[ress_1]"))?></dt>
-				<dd class="ress-aluminium<?=($cur_ress[1]<0) ? " negativ" : ""?>" id="ress-aluminium"><?=ths($cur_ress[1])?></dd>
-
-				<dt class="ress-wolfram"><?=h(_("[ress_2]"))?></dt>
-				<dd class="ress-wolfram<?=($cur_ress[2]<0) ? " negativ" : ""?>" id="ress-wolfram"><?=ths($cur_ress[2])?></dd>
-
-				<dt class="ress-radium"><?=h(_("[ress_3]"))?></dt>
-				<dd class="ress-radium<?=($cur_ress[3]<0) ? " negativ" : ""?>" id="ress-radium"><?=ths($cur_ress[3])?></dd>
-
-				<dt class="ress-tritium"><?=h(_("[ress_4]"))?></dt>
-				<dd class="ress-tritium<?=($cur_ress[4]<0) ? " negativ" : ""?>" id="ress-tritium"><?=ths($cur_ress[4])?></dd>
-
-				<dt class="ress-energie<?=($cur_ress[5]<0) ? " negativ" : ""?>"><?=h(_("[ress_5]"))?></dt>
-				<dd class="ress-energie<?=($cur_ress[5]<0) ? " negativ" : ""?>" id="ress-energie"><?=ths($cur_ress[5])?></dd>
-			</dl>
+<?php
+			echo format_ress($cur_ress, 3, true, true, false, null, "inline bar", "ress");
+?>
 			<div id="content-10" class="<?=htmlspecialchars($class)?>"><div id="content-11" class="<?=htmlspecialchars($class)?>"><div id="content-12" class="<?=htmlspecialchars($class)?>"><div id="content-13" class="<?=htmlspecialchars($class)?>">
 <?php
 			$locked_until = false;
@@ -338,7 +322,7 @@
 				if($l !== true) $locked_until = $l;
 ?>
 				<hr class="separator" />
-				<p id="gesperrt-hinweis" class="spiel"><strong><?=h(_("Das Spiel ist derzeit gesperrt."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s', $locked_until)))))?></span><?php }?></p>
+				<p id="gesperrt-hinweis" class="spiel error"><strong><?=h(_("Das Spiel ist derzeit gesperrt."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s', $locked_until)))))?></span><?php }?></p>
 <?php
 			}
 			elseif($me->userLocked())
@@ -347,14 +331,14 @@
 				if($l) $locked_until = $l;
 ?>
 				<hr class="separator" />
-				<p id="gesperrt-hinweis" class="account"><strong><?=h(_("Ihr Benutzeraccount ist gesperrt."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s', $locked_until)))))?></span><?php }?></p>
+				<p id="gesperrt-hinweis" class="account error"><strong><?=h(_("Ihr Benutzeraccount ist gesperrt."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s', $locked_until)))))?></span><?php }?></p>
 <?php
 			}
 			elseif($me->umode())
 			{
 ?>
 				<hr class="separator" />
-				<p id="gesperrt-hinweis" class="urlaub"><strong><?=h(_("Ihr Benutzeraccount befindet sich im Urlaubsmodus."))?></strong></p>
+				<p id="gesperrt-hinweis" class="urlaub error"><strong><?=h(_("Ihr Benutzeraccount befindet sich im Urlaubsmodus."))?></strong></p>
 <?php
 			}
 			elseif($l = fleets_locked())
@@ -362,7 +346,7 @@
 				if($l !== true) $locked_until = $l;
 ?>
 				<hr class="separator" />
-				<p id="gesperrt-hinweis" class="flotten"><strong><?=h(_("Es herrscht eine Flottensperre für feindliche Flüge."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s', $locked_until)))))?></span><?php }?></p>
+				<p id="gesperrt-hinweis" class="flotten error"><strong><?=h(_("Es herrscht eine Flottensperre für feindliche Flüge."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s', $locked_until)))))?></span><?php }?></p>
 <?php
 			}
 			if($locked_until)
@@ -431,7 +415,7 @@
 					$link .= urlencode(session_name()).'='.urlencode(session_id());
 ?>
 				<hr class="separator" />
-				<p class="neue-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/login/'.$link)?>" title="<?=$title?>"<?=accesskey_attr(ngettext("Sie haben %s neue &Nachricht.[login/scripts/include.php|2]", "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]", $ges_ncount))?>><?=h(sprintf(ngettext("Sie haben %s neue &Nachricht.[login/scripts/include.php|2]", "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]", $ges_ncount), $ges_ncount))?></a></p>
+				<p id="neue-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/login/'.$link)?>" title="<?=$title?>"<?=accesskey_attr(ngettext("Sie haben %s neue &Nachricht.[login/scripts/include.php|2]", "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]", $ges_ncount))?>><?=h(sprintf(ngettext("Sie haben %s neue &Nachricht.[login/scripts/include.php|2]", "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]", $ges_ncount), $ges_ncount))?></a></p>
 <?php
 				}
 			}
@@ -483,6 +467,7 @@
 				<div class="google-params" id="google-color-url-green"></div>
 				<div class="google-params" id="google-color-url-blue"></div>
 				<script type="text/javascript">
+				// <![CDATA[
 					var mkcolourpart_digits = [ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f" ];
 					function mkcolourpart(a_value)
 					{
@@ -509,6 +494,7 @@
 					var g_vars = [ "border", "text", "bg", "link", "url" ];
 					for(var i=0; i<g_vars.length; i++)
 						window["google_color_"+g_vars[i]] = mkcolour(g_vars[i]);
+				// ]]>
 				</script>
 				<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>
 <?php
@@ -566,7 +552,7 @@
 					<noscript><div><button type="submit"><?=h(_("Wechseln"))?></button></div></noscript>
 				</fieldset>
 			</form>
-			<hr class="separator" />
+			<hr class="separator" id="navigation-separator-1" />
 			<ul id="main-navigation">
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/index.php') ? ' class="active"' : ''?> id="navigation-index"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/index.php?<?=htmlspecialchars(session_name().'='.urlencode(session_id()))?>"<?=accesskey_attr(_("&Übersicht[login/scripts/include.php|3]"))?>><?=h(_("&Übersicht[login/scripts/include.php|3]"))?></a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/rohstoffe.php') ? ' class="active"' : ''?> id="navigation-rohstoffe"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/rohstoffe.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("&Rohstoffe[login/scripts/include.php|3]"))?>><?=h(_("&Rohstoffe[login/scripts/include.php|3]"))?></a></li>
@@ -579,7 +565,7 @@
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/boerse.php') ? ' class="active"' : ''?> id="navigation-boerse"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/boerse.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("Han&delsbörse[login/scripts/include.php|3]"))?>><?=h(_("Han&delsbörse[login/scripts/include.php|3]"))?></a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/imperium.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("I&mperium[login/scripts/include.php|3]"))?>><?=h(_("I&mperium[login/scripts/include.php|3]"))?></a></li>
 			</ul>
-			<hr class="separator" />
+			<hr class="separator" id="navigation-separator-2" />
 			<ul id="action-navigation">
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/karte.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("&Karte[login/scripts/include.php|3]"))?>><?=h(_("&Karte[login/scripts/include.php|3]"))?></a></li>
 				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/allianz.php') ? ' class="active"' : ''?> id="navigation-allianz"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/allianz.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("All&ianz[login/scripts/include.php|3]"))?>><?=h(_("All&ianz[login/scripts/include.php|3]"))?></a></li>
@@ -607,7 +593,7 @@
 			if($me->checkSetting('show_extern'))
 			{
 ?>
-			<hr class="separator" />
+			<hr class="separator" id="navigation-separator-3" />
 			<ul id="external-navigation">
 				<li id="navigation-board"><a href="<?=htmlspecialchars(global_setting("USE_PROTOCOL"))?>://board.s-u-a.net/"<?=accesskey_attr(_("Board&[login/scripts/include.php|3]"))?>><?=h(_("Board&[login/scripts/include.php|3]"))?></a></li>
 				<li id="navigation-faq"><a href="http://<?=htmlspecialchars(get_default_hostname().h_root)?>/faq.php"<?=accesskey_attr(_("FAQ&[login/scripts/include.php|3]"))?>><?=h(_("FAQ&[login/scripts/include.php|3]"))?></a></li>
@@ -621,7 +607,7 @@
 
 		<hr class="separator" />
 
-		<dl id="time">
+		<dl class="inline bar" id="time">
 			<dt><?=h(_("Serverzeit"))?></dt>
 			<dd id="time-server"><?=date(_("H:i:s"), time()+1)?></dd>
 		</dl>

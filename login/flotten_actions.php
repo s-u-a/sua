@@ -335,7 +335,7 @@
 ?>
 			<tfoot>
 				<tr>
-					<td colspan="<?=3-$verb?>"><button type="submit">Handel ändern</button></td>
+					<td colspan="<?=3-$verb?>" class="button"><button type="submit">Handel ändern</button></td>
 				</tr>
 			</tfoot>
 <?php
@@ -371,7 +371,7 @@
 ?>
 <fieldset>
 	<legend>Lesezeichen verwalten</legend>
-	<ul class="shortcuts-verwalten">
+	<ol class="shortcuts-verwalten order-list">
 <?php
 				$i = 0;
 				foreach($shortcuts as $shortcut)
@@ -394,7 +394,7 @@
 					$i++;
 				}
 ?>
-	</ul>
+	</ol>
 </fieldset>
 <?php
 			}
@@ -447,11 +447,11 @@
 <p class="buendnisangriff-beschreibung-2">Beachten Sie, dass ein Spieler dem Flottenverbund nicht mehr beitreten kann, wenn seine Flugzeit zum ausgewählten Ziel länger ist als die verbleibende Flugzeit der Flotte.</p>
 <p class="buendnisangriff-beschreibung-3">Wenn hier kein Passwort eingetragen ist, ist die Flottenverbundfunktion für diese Flotte deaktiviert.</p>
 <form action="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="buendnisangriff">
-	<dl>
+	<dl class="form">
 		<dt><label for="i-flottenpasswort">Flottenpasswort</label></dt>
 		<dd><input type="text" name="fleet_passwd"<?php if($passwd !== null){?> value="<?=htmlspecialchars($passwd)?>"<?php }?> /></dd>
 	</dl>
-	<div><button type="submit">Speichern</button></div>
+	<div class="button"><button type="submit">Speichern</button></div>
 </form>
 <?php
 			break;

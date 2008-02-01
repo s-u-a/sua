@@ -70,8 +70,8 @@
 	if(count($anfragen) > 0)
 	{
 ?>
-<h3>Anfragen von anderen Spielern</h3>
-<dl class="buendnisse-anfragen buendnisse-liste">
+<h3 class="strong">Anfragen von anderen Spielern</h3>
+<dl class="buendnisse-anfragen buendnisse-liste player-list-actions">
 <?php
 		foreach($anfragen as $anfrage)
 		{
@@ -92,8 +92,8 @@
 	if(count($bewerbungen) > 0)
 	{
 ?>
-<h3>Bewerbungen bei anderen Spielern</h3>
-<dl class="buendnisse-bewerbungen buendnisse-liste">
+<h3 class="strong">Bewerbungen bei anderen Spielern</h3>
+<dl class="buendnisse-bewerbungen buendnisse-liste player-list-actions">
 <?php
 		foreach($bewerbungen as $bewerbung)
 		{
@@ -123,7 +123,7 @@
 	else
 	{
 ?>
-<dl class="buendnisse buendnisse-liste">
+<dl class="buendnisse buendnisse-liste player-list-actions">
 <?php
 		foreach($verbuendete as $name)
 		{
@@ -139,20 +139,20 @@
 <form action="verbuendete.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="buendnisse-rundschreiben" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
 	<fieldset>
 		<legend>Bündnisrundschreiben</legend>
-		<dl>
+		<dl class="form">
 			<dt class="c-betreff"><label for="betreff-input">Betreff</label></dt>
 			<dd class="c-betreff"><input type="text" name="betreff" id="betreff-input" tabindex="1" accesskey="j" title="[J]" /></dd>
 
 			<dt class="c-text"><label for="text-textarea">Te<kbd>x</kbd>t</label></dt>
 			<dd class="c-text"><textarea name="rundschreiben" id="text-textarea" rows="6" cols="35" accesskey="x" tabindex="2"></textarea></dd>
 		</dl>
-		<div><button type="submit" tabindex="3" accesskey="u">R<kbd>u</kbd>ndschreiben verschicken</button></div>
+		<div class="button"><button type="submit" tabindex="3" accesskey="u">R<kbd>u</kbd>ndschreiben verschicken</button></div>
 	</fieldset>
 </form>
 <?php
 	}
 ?>
-<h3>Neues Bündnis eingehen</h3>
+<h3 class="strong">Neues Bündnis eingehen</h3>
 <?php
 	if(isset($buendnis_error) && strlen(trim($buendnis_error)) > 0)
 	{
@@ -164,14 +164,14 @@
 	}
 ?>
 <form action="verbuendete.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="buendnisse-eingehen">
-	<dl>
+	<dl class="form">
 		<dt class="c-spieler"><label for="spieler-input">Spieler</label></dt>
 		<dd class="c-spieler"><input type="text" name="empfaenger" id="spieler-input" value="<?=(isset($_POST['empfaenger']) ? utf8_htmlentities($_POST['empfaenger']) : '')?>" tabindex="4" accesskey="z" title="[Z]" /></dd>
 
 		<dt class="c-mitteilung"><label for="mitteilung-textarea">Mitteilung</label></dt>
 		<dd class="c-mitteilung"><textarea rows="5" cols="30" name="mitteilung" id="mitteilung-textarea" tabindex="5" accesskey="o" title="[O]"><?=(isset($_POST['mitteilung']) ? preg_replace("/[\t\r\n]/e", '\'&#\'.ord(\'$0\').\';\'', utf8_htmlentities($_POST['mitteilung'])) : '')?></textarea></dd>
 	</dl>
-	<div><button type="submit" tabindex="6" accesskey="n">A<kbd>n</kbd>frage absenden</button></div>
+	<div class="button"><button type="submit" tabindex="6" accesskey="n">A<kbd>n</kbd>frage absenden</button></div>
 </form>
 <script type="text/javascript">
 	activate_users_list(document.getElementById('spieler-input'));

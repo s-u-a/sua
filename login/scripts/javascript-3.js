@@ -89,6 +89,22 @@ function seconds2string(seconds)
 	return timestring;
 }
 
+function getCookies()
+{
+	var c = { };
+	if(document.cookie)
+	{
+		var c_split = document.cookie.split(/;/);
+		for(var i=0; i<c_split.length; i++)
+		{
+			c_split_i = c_split[i].split(/=/);
+			if(c_split_i < 2) continue;
+			c[decodeURIComponent(c_split_i[0])] = decodeURIComponent(c_split_i[1]);
+		}
+	}
+	return c;
+}
+
 //////////////////
 /// Countdowns ///
 //////////////////
@@ -843,46 +859,59 @@ function preload_systems(systems)
 	xmlhttp.open('GET', request_url, true);
 
 	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4 && xmlhttp.status == 200 && xmlhttp.responseXML)
+		if (xmlhttp.readyState == 4)
 		{
-			system_results = xmlhttp.responseXML.getElementsByTagName('system');
-			for(i=0; i<system_results.length; i++)
-			{ // Durch alle Systeme wandern
-				system_number = system_results[i].getAttribute('number');
-				preloaded_systems[system_number] = new Array();
-				system_info = system_results[i].childNodes;
-				for(j=0; j<system_info.length; j++)
-				{ // Alle Planeten auswerten
-					if(system_info[j].nodeType != 1) continue;
-					planet_number = system_info[j].getAttribute('number');
-					preloaded_systems[system_number][planet_number] = new Array();
-					preloading_systems[system_number] = false;
-					planet_infos = system_info[j].childNodes;
-					if(planet_infos.length <= 0) continue;
-					for(k=0; k<planet_infos.length; k++)
-					{
-						if(planet_infos[k].nodeType != 1) continue;
-						var this_info = '';
-						if(planet_infos[k].nodeName.toLowerCase() == 'truemmerfeld')
-							this_info = new Array(planet_infos[k].getAttribute('carbon'), planet_infos[k].getAttribute('aluminium'), planet_infos[k].getAttribute('wolfram'), planet_infos[k].getAttribute('radium'));
-						else if(planet_infos[k].childNodes.length > 0)
-							this_info = planet_infos[k].firstChild.data;
-						preloaded_systems[system_number][planet_number][planet_infos[k].nodeName.toLowerCase()] = this_info;
+			if(xmlhttp.status == 200 && xmlhttp.responseXML)
+			{
+				system_results = xmlhttp.responseXML.getElementsByTagName('system');
+				for(i=0; i<system_results.length; i++)
+				{ // Durch alle Systeme wandern
+					system_number = system_results[i].getAttribute('number');
+					preloaded_systems[system_number] = new Array();
+					system_info = system_results[i].childNodes;
+					for(j=0; j<system_info.length; j++)
+					{ // Alle Planeten auswerten
+						if(system_info[j].nodeType != 1) continue;
+						planet_number = system_info[j].getAttribute('number');
+						preloaded_systems[system_number][planet_number] = new Array();
+						preloading_systems[system_number] = false;
+						planet_infos = system_info[j].childNodes;
+						if(planet_infos.length <= 0) continue;
+						for(k=0; k<planet_infos.length; k++)
+						{
+							if(planet_infos[k].nodeType != 1) continue;
+							var this_info = '';
+							if(planet_infos[k].nodeName.toLowerCase() == 'truemmerfeld')
+								this_info = new Array(planet_infos[k].getAttribute('carbon'), planet_infos[k].getAttribute('aluminium'), planet_infos[k].getAttribute('wolfram'), planet_infos[k].getAttribute('radium'));
+							else if(planet_infos[k].childNodes.length > 0)
+								this_info = planet_infos[k].firstChild.data;
+							preloaded_systems[system_number][planet_number][planet_infos[k].nodeName.toLowerCase()] = this_info;
+						}
 					}
 				}
+				for(var i in systems)
+				{ // Fehlgeschlagene Systeme markieren
+					if(typeof preloaded_systems[systems[i]] == 'undefined')
+						preloaded_systems[systems[i]] = false;
+				}
 			}
-			for(var i in systems)
-			{ // Fehlgeschlagene Systeme markieren
-				if(typeof preloaded_systems[systems[i]] == 'undefined')
-					preloaded_systems[systems[i]] = false;
-			}
+	
+			// Ladevorgang abgeschlossen, Informationskasten ausblenden
+			remove_loading_instance();
 		}
-
-		// Ladevorgang abgeschlossen, Informationskasten ausblenden
-		remove_loading_instance();
 	}
 
 	xmlhttp.send(null);
+}
+
+function change_digit(a_number, a_digit, a_change)
+{
+	var d = Math.floor((a_number%Math.pow(10, a_digit+1))/Math.pow(10, a_digit));
+	var d_new = d+a_change;
+	while(d_new >= 10) d_new -= 10;
+	while(d_new < 0) d_new += 10;
+	a_number += (d_new-d)*Math.pow(10, a_digit);
+	return a_number;
 }
 
 function fast_action(node, action_type, galaxy, system, planet)

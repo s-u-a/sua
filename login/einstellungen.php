@@ -259,7 +259,7 @@
 <form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/einstellungen.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular" enctype="multipart/form-data">
 	<fieldset class="aussehen" id="fieldset-<?=$fieldset++?>">
 		<legend><a accesskey="<?=accesskey_attr(_("Aussehen&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=h(_("Aussehen&[login/einstellungen.php|1]"))?></a></legend>
-		<dl>
+		<dl class="form">
 			<dt class="c-skin"><label for="skin-choice"><?=h(_("Skin&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-skin">
 				<select name="skin-choice" id="skin-choice"<?=accesskey_attr(_("Skin&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" onchange="recalc_skin();" onkeyup="recalc_skin();">
@@ -283,7 +283,7 @@
 
 		<fieldset id="skin-options-fieldset">
 			<legend><?=h(_("Skin-spezifische Einstellungen"))?></legend>
-			<dl id="skin-options">
+			<dl id="skin-options" class="form">
 <?php
 	if($my_skin && isset($skins[$my_skin[0]]))
 	{
@@ -327,6 +327,7 @@
 ?>
 
 		<script type="text/javascript">
+		// <![CDATA[
 			var skin_options = {
 				<?=implode(",\n\t\t\t\t", $skin_options)."\n"?>
 			};
@@ -444,12 +445,13 @@
 				update_skin_path();
 			}
 			recalc_skin();
+		// ]]>
 		</script>
 	</fieldset>
 
 	<fieldset class="verhalten" id="fieldset-<?=$fieldset++?>">
 		<legend><a accesskey="<?=accesskey_attr(_("Verhalten&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=h(_("Verhalten&[login/einstellungen.php|1]"))?></a></legend>
-		<dl>
+		<dl class="form">
 			<dt class="c-spionagesonden"><label for="spionagesonden"><?=h(_("Spionagesonden&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-spionagesonden"><input type="text" name="spionagesonden" id="spionagesonden"<?=accesskey_attr(_("Spionagesonden&[login/einstellungen.php|1]"))?> value="<?=htmlspecialchars($me->checkSetting('sonden'))?>" title="<?=h(_("Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der Karte geschickt werden sollen"))?>" tabindex="<?=$tabindex++?>" /></dd>
 
@@ -496,7 +498,7 @@
 <?php
 	}
 ?>
-		<dl>
+		<dl class="form">
 			<dt class="c-nachrichteninformierung"><label for="notify"><?=h(_("Nachrichten auf jeder Seite&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-nachrichteninformierung"><input type="checkbox" name="notify" id="notify"<?=accesskey_attr(_("Nachrichten auf jeder Seite&[login/einstellungen.php|1]"))?><?=$me->checkSetting('notify') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angezeigt, dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten."))?>" tabindex="<?=$tabindex++?>" /></dd>
 <?php
@@ -785,7 +787,7 @@
 		</fieldset>
 	</fieldset>
 
-	<div class="einstellungen-speichern-1"><button tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Speicher&n[login/einstellungen.php|1]"))?>><?=h(_("Speicher&n[login/einstellungen.php|1]"))?></button></div>
+	<div class="einstellungen-speichern-1 button"><button tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Speicher&n[login/einstellungen.php|1]"))?>><?=h(_("Speicher&n[login/einstellungen.php|1]"))?></button></div>
 <?php
 	$save_tabindex = $tabindex++;
 
@@ -800,7 +802,7 @@
 			if($me->permissionToUmode() || isset($_SESSION['admin_username']))
 			{
 ?>
-		<div><input type="submit" name="umode" value="<?=h(_("Urlaubsmodus&[login/einstellungen.php|1]"), false)?>"<?=accesskey_attr(_("Urlaubsmodus&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" onclick="return confirm('<?=jsentities(_("Wollen Sie den Urlaubsmodus wirklich betreten?"))?>');" /></div>
+		<div class="button"><input type="submit" name="umode" value="<?=h(_("Urlaubsmodus&[login/einstellungen.php|1]"), false)?>"<?=accesskey_attr(_("Urlaubsmodus&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" onclick="return confirm('<?=jsentities(_("Wollen Sie den Urlaubsmodus wirklich betreten?"))?>');" /></div>
 		<p><?=h(sprintf(_("Sie werden frühestens nach drei Tagen (%s) aus dem Urlaubsmodus zurückkehren können."), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i'), $me->getUmodeReturnTime()))))?></p>
 <?php
 			}
@@ -814,7 +816,7 @@
 		elseif($me->permissionToUmode() || isset($_SESSION['admin_username']))
 		{
 ?>
-		<div><input type="submit" name="umode" value="<?=h(_("Urlaubsmodus verlassen"))?>" tabindex="<?=$tabindex++?>" onclick="return confirm('<?=jsentities(_("Wollen Sie den Urlaubsmodus wirklich verlassen?"))?>');" /></div>
+		<div class="button"><input type="submit" name="umode" value="<?=h(_("Urlaubsmodus verlassen"))?>" tabindex="<?=$tabindex++?>" onclick="return confirm('<?=jsentities(_("Wollen Sie den Urlaubsmodus wirklich verlassen?"))?>');" /></div>
 <?php
 		}
 		else
@@ -830,7 +832,7 @@
 ?>
 	<fieldset class="benutzeraccount" id="fieldset-<?=$fieldset++?>">
 		<legend><a accesskey="<?=accesskey_attr(_("Benutzeraccount&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=h(_("Benutzeraccount&[login/einstellungen.php|1]"))?></a></legend>
-		<dl>
+		<dl class="form">
 			<dt class="c-ip-schutz"><label for="ipcheck"><?=h(_("IP-Schutz&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=accesskey_attr(_("IP-Schutz&[login/einstellungen.php|1]"))?><?=$me->checkSetting('ipcheck') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)"))?>" tabindex="<?=$tabindex++?>" /></dd>
 
@@ -871,7 +873,7 @@
 		</dl>
 		<fieldset class="passwort-aendern">
 			<legend><?=h(_("Passwort ändern"))?></legend>
-			<dl>
+			<dl class="form">
 				<dt class="c-altes-passwort"><label for="old-password"><?=h(_("Altes Passw&ort[login/einstellungen.php|1]"))?></label></dt>
 				<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password"<?=accesskey_attr(_("Altes Passw&ort[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
 
@@ -883,11 +885,13 @@
 			</dl>
 		</fieldset>
 	</fieldset>
-	<div class="einstellungen-speichern-2"><input type="hidden" name="change-checkboxes" value="1" /><button type="submit" tabindex="<?=$save_tabindex?>"><?=h(_("Speicher&n"))?></button></div>
+	<div class="einstellungen-speichern-2 button"><input type="hidden" name="change-checkboxes" value="1" /><button type="submit" tabindex="<?=$save_tabindex?>"><?=h(_("Speicher&n"))?></button></div>
 </form>
 <script type="text/javascript">
 // <![CDATA[
 	var settings_hidden = { };
+	var c = getCookies()['settings_expand_<?=md5(jsentities($me->getName()))?>'];
+	if(!c) c = 0;
 
 	function toggleVisibility(i)
 	{
@@ -901,6 +905,11 @@
 				el.style.display = settings_hidden[i] ? "none" : "";
 			el = el.nextSibling;
 		}
+		if(!settings_hidden[i])
+			c = c | (1 << i);
+		else if(c & (1 << i))
+			c = c ^ (1 << i);
+		document.cookie = 'settings_expand_<?=md5(jsentities($me->getName()))?>=' + c;
 	}
 
 	var el;
@@ -913,7 +922,8 @@
 			if(legend_a_el)
 			{
 				legend_a_el.href = "javascript:toggleVisibility("+i+");";
-				toggleVisibility(i);
+				if(!(c & (1 << i)))
+					toggleVisibility(i);
 			}
 		}
 	}

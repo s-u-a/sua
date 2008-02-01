@@ -80,12 +80,12 @@
 			$buildable_global = ($buildable_global && $enough_ress);
 ?>
 	<ul>
-		<li class="item-ausbau forschung-lokal<?=$enough_ress ? '' : ' no-ress'?>"><?=$enough_ress ? '<a href="forschung.php?lokal='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(session_name()).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Lokal weiterentwickeln<?=$enough_ress ? '</a>' : ''?></li>
+		<li class="item-ausbau forschung-lokal <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="forschung.php?lokal='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(session_name()).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Lokal weiterentwickeln<?=$enough_ress ? '</a>' : ''?></li>
 <?php
 			if(count($laufende_forschungen) <= 0)
 			{
 ?>
-		<li class="item-ausbau forschung-global<?=$buildable_global ? '' : ' no-ress'?>"><?=$buildable_global ? '<a href="forschung.php?global='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(session_name()).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Global weiterentwickeln<?=$buildable_global ? '</a>' : ''?></li>
+		<li class="item-ausbau forschung-global <?=$buildable_global ? 'genug' : 'fehlend'?>"><?=$buildable_global ? '<a href="forschung.php?global='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(session_name()).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Global weiterentwickeln<?=$buildable_global ? '</a>' : ''?></li>
 <?php
 			}
 ?>
@@ -102,7 +102,7 @@
 <?php
 		}
 ?>
-	<dl>
+	<dl class="lines">
 		<dt class="item-kosten">Kosten</dt>
 		<dd class="item-kosten">
 			<?=format_ress($item_info['ress'], 3, false, false, false, $me)?>

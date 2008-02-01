@@ -83,7 +83,7 @@
 	}
 // ]]>
 </script>
-<h3 class="boerse-auftraege-heading" id="handelsauftraege">Handelsaufträge</h3>
+<h3 class="boerse-auftraege-heading" id="handelsauftraege" class="strong">Handelsaufträge</h3>
 <?php
 	if(isset($_POST['res_offered']) && isset($_POST['amount']) && isset($_POST['res_requested']) && isset($_POST['min_price']) && isset($_POST['duration']) && in_array($_POST['res_offered'], array("1", "2", "3", "4", "5")) && in_array($_POST['res_requested'], array("1", "2", "3", "4", "5")) && $_POST['res_offered'] != $_POST['res_requested'] && $_POST['amount'] > 0 && in_array($_POST['duration'], array("1", "12", "24", "48", "168", "336", "672")))
 	{
@@ -179,7 +179,7 @@
 <form action="boerse.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>#handelsauftraege" method="post" class="boerse-auftrag">
 	<fieldset>
 		<legend>Neuen Handelsauftrag anlegen</legend>
-		<dl>
+		<dl class="form">
 			<dt class="c-angebot"><label for="i-angebot-rohstoff">Angebot</label></dt>
 			<dd class="c-angebot">
 				<select name="res_offered" id="i-angebot-rohstoff" onchange="refresh_offers(); refresh_costs();" onkeypress="onchange()">
@@ -225,14 +225,14 @@
 			<dt class="c-zusaetzliche-gebuehren">Zusätzliche Gebühren</dt>
 			<dd class="c-zusaetzliche-gebuehren" id="zusaetzliche-gebuehren">0</dd>
 		</dl>
-		<div><button type="submit">Auftrag aufgeben</button></div>
+		<div class="button"><button type="submit">Auftrag aufgeben</button></div>
 	</fieldset>
 </form>
 <script type="text/javascript">
 	refresh_offers();
 	refresh_costs();
 </script>
-<h3 class="boerse-kurs-heading">Kurs</h3>
+<h3 class="boerse-kurs-heading" class="strong">Kurs</h3>
 <table class="boerse-kurs">
 	<thead>
 		<tr>

@@ -16,6 +16,19 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+Format einer Galaxie-Datei:
+Jedes System ist 1655 Bytes lang, die gesamte Datei also 999*1655=1653345.
+Die ersten 5 Bits eines Systems enthalten dessen Anzahl Planeten minus 10. 0 bedeutet also 10 Planeten, sind 30 Planeten (Maximum).
+
+Darauf folgen Informationen über die Planeten.
+Zunächst 30 Angaben über die Größe des Planeten à 9 Bits (Größen von Planeten, die aufgrund der Planetenzahl im System nicht vorkommen, werden ignoriert).
+Dann 5 Auffüll-Bits, zu ignorieren.
+Dann (ab Byte 35) 30 Eigentümer à 24 Bytes.
+Dann (ab Byte 755) 30 Planetennamen à 24 Bytes.
+Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
+*/
+
 	class Galaxy
 	{
 		private $status = false;

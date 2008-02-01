@@ -42,7 +42,7 @@
 			elseif($user->umode()) $suf = h(_("%s (U)"));
 ?>
 <h2><?=sprintf(h(_("Spielerinfo „%s“")), sprintf($suf, ($at ? sprintf(h(_("[%s] %s")), "<a href=\"allianceinfo.php?alliance=".htmlspecialchars(urlencode($at).'&'.urlencode(session_name()).'='.urlencode(session_id()))."\" title=\"".h(_("Informationen zu dieser Allianz anzeigen"))."\">".htmlspecialchars($at)."</a>", htmlspecialchars($user->getName())) : htmlspecialchars($user->getName()))))?></h2>
-<h3 id="punkte"><?=h(_("Punkte"))?></h3>
+<h3 id="punkte" class="strong"><?=h(_("Punkte"))?></h3>
 <dl class="punkte">
 	<dt class="c-gebaeude"><?=h(_("[scores_0]"))?></dt>
 	<dd class="c-gebaeude"><?=ths($user->getScores(0))?></dd>
@@ -73,7 +73,7 @@
 			if($show_koords)
 			{
 ?>
-<h3 id="ausgegebene-rohstoffe"><?=h(_("Ausgegebene Rohstoffe"))?></h3>
+<h3 id="ausgegebene-rohstoffe" class="strong"><?=h(_("Ausgegebene Rohstoffe"))?></h3>
 <dl class="punkte">
 	<dt class="c-carbon"><?=h(_("[ress_0]"))?></dt>
 	<dd class="c-carbon"><?=ths($user->getSpentRess(0))?></dd>
@@ -96,13 +96,13 @@
 <?php
 			}
 ?>
-<h3 id="benutzerbeschreibung"><?=h(_("Benutzerbeschreibung"))?></h3>
+<h3 id="benutzerbeschreibung" class="strong"><?=h(_("Benutzerbeschreibung"))?></h3>
 <div class="benutzerbeschreibung">
 <?php
 			print($user->getUserDescription());
 ?>
 </div>
-<h3 id="buendnisse"><?=h(_("Bündnisse"))?></h3>
+<h3 id="buendnisse" class="strong"><?=h(_("Bündnisse"))?></h3>
 <?php
 			$verbuendet = $user->getVerbuendetList();
 			if(count($verbuendet) <= 0)
@@ -114,7 +114,7 @@
 			else
 			{
 ?>
-<ul class="buendnis-informationen">
+<ul class="buendnis-informationen paragraph">
 <?php
 				foreach($verbuendet as $verbuendeter)
 				{
@@ -127,7 +127,7 @@
 <?php
 			}
 ?>
-<h3 id="daten"><?=h(_("Daten"))?></h3>
+<h3 id="daten" class="strong"><?=h(_("Daten"))?></h3>
 <dl class="daten">
 	<dt class="c-letzte-aktivitaet"><?=h(_("Letzte Aktivität"))?></dt>
 <?php
@@ -167,7 +167,7 @@
 			if($show_koords)
 			{
 ?>
-<h3 id="planeten"><?=h(_("Planeten"))?></h3>
+<h3 id="planeten" class="strong"><?=h(_("Planeten"))?></h3>
 <ul class="playerinfo-planeten">
 <?php
 				$planets = $user->getPlanetsList();
@@ -189,16 +189,16 @@
 			if($user->getName() != $_SESSION['username'])
 			{
 ?>
-<h3 id="nachricht"><?=h(_("Nachricht"))?></h3>
+<h3 id="nachricht" class="strong"><?=h(_("Nachricht"))?></h3>
 <form action="../nachrichten.php?to=&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="playerinfo-nachricht" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?")?>\');');">
-	<dl>
+	<dl class="form">
 		<dt class="c-betreff"><label for="betreff-input"><?=h(_("Betreff&[login/help/playerinfo.php|1]"))?></label></dt>
 		<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" maxlength="30" tabindex="1"<?=accesskey_attr(_("Betreff&[login/help/playerinfo.php|1]"))?> /></dd>
 
 		<dt class="c-inhalt"><label for="inhalt-input"><?=h(_("Inhalt&[login/help/playerinfo.php|1]"))?></label></dt>
 		<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10" tabindex="2"<?=accesskey_attr(_("Inhalt&[login/help/playerinfo.php|1]"))?>></textarea></dd>
 	</dl>
-	<div><button type="submit" tabindex="3"<?=accesskey_attr(_("&Nachricht absenden[login/help/playerinfo.php|1]"))?>><?=h(_("&Nachricht absenden[login/help/playerinfo.php|1]"))?></button><input type="hidden" name="empfaenger" value="<?=htmlspecialchars($user->getName())?>" /></div>
+	<div class="button"><button type="submit" tabindex="3"<?=accesskey_attr(_("&Nachricht absenden[login/help/playerinfo.php|1]"))?>><?=h(_("&Nachricht absenden[login/help/playerinfo.php|1]"))?></button><input type="hidden" name="empfaenger" value="<?=htmlspecialchars($user->getName())?>" /></div>
 </form>
 <?php
 			}

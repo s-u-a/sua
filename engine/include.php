@@ -125,6 +125,7 @@
 	global_setting('MARKET_MIN_USERS', 5); # Wieviele verschiedene Benutzer muessen den Rohstoff als Angebot auf dem Markt haben, damit ein Auftrag angenommen wird?
 	global_setting('MARKET_DELAY', 7200); # Wieviele Sekunden soll es von der Annahme bis zur Fertigstellung eines Angebotes dauern?
 	global_setting('EMAIL_CHANGE_DELAY', 604800); # Nach wie vielen Sekunden soll eine Aenderung der E-Mail-Adresse gueltig werden?
+	global_setting("HIGHSCORES_PERPAGE", 100); # Wieviele Spieler sollen in den Highscores pro Seite angezeigt werden?
 
 	/**
 	  * Initialisiert die Standardwerte fuer die globalen Einstellungen.
@@ -206,8 +207,9 @@
 
 	__autoload('Classes');
 
+	// TODO: Get rid of document.write
 	//if(isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/xhtml+xml') !== false)
-	//	define('CONTENT_TYPE', 'application/xhtml+xml; charset=UTF-8');
+		//define('CONTENT_TYPE', 'application/xhtml+xml; charset=UTF-8');
 	//else
 		define('CONTENT_TYPE', 'text/html; charset=UTF-8');
 	if(isset($_SERVER["HTTP_HOST"]))
@@ -756,12 +758,14 @@
 	  * @param $tabs_count Die Anzahl der einzurueckenden Tabs des HTML-Codes
 	  * @param $tritium Soll der Array-Wert 4 beachtet werden (Tritium)
 	  * @param $energy Soll der Array-Wert 5 beachtet werden (Energie)
-	  * @param $i_ Die Ausgabe wird so formatiert, dass sie nachtraeglich durch i_() gejagt werden kann
+	  * @param $_i Die Ausgabe wird so formatiert, dass sie nachtraeglich durch i_() gejagt werden kann
 	  * @param $check_availability (User) Gibt mit HTML-Klassen an, ob so viele Rohstoffe auf dem Planeten vorhanden sind.
+	  * @param $dl_class string Eine zusätzliche HTML-Klasse, die dem Element zugewiesen wird.
+	  * @param $dl_id string Eine HTML-ID, die der Liste zugewiesen wird.
 	  * @return (string) Eine den HTML-Code einer dl-Liste mit den formatierten Rohstoffangaben
 	*/
 
-	function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false, $i_=false, $check_availability=null)
+	function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false, $_i=false, $check_availability=null, $dl_class="inline", $dl_id=null)
 	{
 		# Erstellt eine Definitionsliste aus der uebergebenen
 		# Rohstoffanzahl, beispielsweise fuer die Rohstoffkosten
@@ -775,38 +779,38 @@
 		if($check_availability)
 		{
 			$res_avail = $check_availability->getRess();
-			$class[0] = ($res_avail[0]<$ress[0])?" fehlend":"";
-			$class[1] = ($res_avail[1]<$ress[1])?" fehlend":"";
-			$class[2] = ($res_avail[2]<$ress[2])?" fehlend":"";
-			$class[3] = ($res_avail[3]<$ress[3])?" fehlend":"";
-			if($tritium) $class[4] = ($res_avail[4]<$ress[4])?" fehlend":"";
-			if($energy) $class[5] = ($res_avail[5]<$ress[5])?" fehlend":"";
+			$class[0] = ($res_avail[0]<$ress[0])?" ress-fehlend":"";
+			$class[1] = ($res_avail[1]<$ress[1])?" ress-fehlend":"";
+			$class[2] = ($res_avail[2]<$ress[2])?" ress-fehlend":"";
+			$class[3] = ($res_avail[3]<$ress[3])?" ress-fehlend":"";
+			if($tritium) $class[4] = ($res_avail[4]<$ress[4])?" ress-fehlend":"";
+			if($energy) $class[5] = ($res_avail[5]<$ress[5])?" ress-fehlend":"";
 		}
-		$class[0] .= ($ress[0]<0)?" negativ":"";
-		$class[1] .= ($ress[1]<0)?" negativ":"";
-		$class[2] .= ($ress[2]<0)?" negativ":"";
-		$class[3] .= ($ress[3]<0)?" negativ":"";
-		if($tritium) $class[4] .= ($ress[4]<0)?" negativ":"";
-		if($energy) $class[5] .= ($ress[5]<0)?" negativ":"";
+		$class[0] .= ($ress[0]<0)?" ress-negativ":"";
+		$class[1] .= ($ress[1]<0)?" ress-negativ":"";
+		$class[2] .= ($ress[2]<0)?" ress-negativ":"";
+		$class[3] .= ($ress[3]<0)?" ress-negativ":"";
+		if($tritium) $class[4] .= ($ress[4]<0)?" ress-negativ":"";
+		if($energy) $class[5] .= ($ress[5]<0)?" ress-negativ":"";
 
-		$return = "<dl class=\"ress\">\n";
-		$return .= $tabs."\t<dt class=\"ress-carbon".$class[0]."\">".($i_ ? "[ress_0]" : h(_("[ress_0]")))."</dt>\n";
-		$return .= $tabs."\t<dd class=\"ress-carbon".$class[0]."\">".ths($ress[0])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-aluminium".$class[1]."\">".($i_ ? "[ress_1]" : h(_("[ress_1]")))."</dt>\n";
-		$return .= $tabs."\t<dd class=\"ress-aluminium".$class[1]."\">".ths($ress[1])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-wolfram".$class[2]."\">".($i_ ? "[ress_2]" : h(_("[ress_2]")))."</dt>\n";
-		$return .= $tabs."\t<dd class=\"ress-wolfram".$class[2]."\">".ths($ress[2])."</dd>\n";
-		$return .= $tabs."\t<dt class=\"ress-radium".$class[3]."".($tritium ? "" : " ress-last")."\">".($i_ ? "[ress_3]" : h(_("[ress_3]")))."</dt>\n";
-		$return .= $tabs."\t<dd class=\"ress-radium".$class[3]."".($tritium ? "" : " ress-last")."\">".ths($ress[3])."</dd>\n";
+		$return = $tabs."<dl class=\"ress ".htmlspecialchars($dl_class)."\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."\"" : "").">\n";
+		$return .= $tabs."\t<dt class=\"ress-carbon".$class[0]."\">".($_i ? "[ress_0]" : h(_("[ress_0]")))."</dt>\n";
+		$return .= $tabs."\t<dd class=\"ress-carbon".$class[0]."\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."-carbon\"" : "").">".ths($ress[0])."</dd>\n";
+		$return .= $tabs."\t<dt class=\"ress-aluminium".$class[1]."\">".($_i ? "[ress_1]" : h(_("[ress_1]")))."</dt>\n";
+		$return .= $tabs."\t<dd class=\"ress-aluminium".$class[1]."\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."-aluminium\"" : "").">".ths($ress[1])."</dd>\n";
+		$return .= $tabs."\t<dt class=\"ress-wolfram".$class[2]."\">".($_i ? "[ress_2]" : h(_("[ress_2]")))."</dt>\n";
+		$return .= $tabs."\t<dd class=\"ress-wolfram".$class[2]."\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."-wolfram\"" : "").">".ths($ress[2])."</dd>\n";
+		$return .= $tabs."\t<dt class=\"ress-radium".$class[3]."".($tritium ? "" : " ress-last")."\">".($_i ? "[ress_3]" : h(_("[ress_3]")))."</dt>\n";
+		$return .= $tabs."\t<dd class=\"ress-radium".$class[3]."".($tritium ? "" : " ress-last")."\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."-radium\"" : "").">".ths($ress[3])."</dd>\n";
 		if($tritium)
 		{
-			$return .= $tabs."\t<dt class=\"ress-tritium".$class[4]."".($energy ? "" : " ress-last")."\">".($i_ ? "[ress_4]" : h(_("[ress_4]")))."</dt>\n";
-			$return .= $tabs."\t<dd class=\"ress-tritium".$class[4]."".($energy ? "" : " ress-last")."\">".ths($ress[4])."</dd>\n";
+			$return .= $tabs."\t<dt class=\"ress-tritium".$class[4]."".($energy ? "" : " ress-last")."\">".($_i ? "[ress_4]" : h(_("[ress_4]")))."</dt>\n";
+			$return .= $tabs."\t<dd class=\"ress-tritium".$class[4]."".($energy ? "" : " ress-last")."\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."-tritium\"" : "").">".ths($ress[4])."</dd>\n";
 		}
 		if($energy)
 		{
-			$return .= $tabs."\t<dt class=\"ress-energie".$class[5]." ress-last\">".($i_ ? "[ress_5]" : h(_("[ress_5]")))."</dt>\n";
-			$return .= $tabs."\t<dd class=\"ress-energie".$class[5]." ress-last\">".h(_($ress[5]))."</dd>\n";
+			$return .= $tabs."\t<dt class=\"ress-energie".$class[5]." ress-last\">".($_i ? "[ress_5]" : h(_("[ress_5]")))."</dt>\n";
+			$return .= $tabs."\t<dd class=\"ress-energie".$class[5]." ress-last\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."-energy\"" : "").">".ths($ress[5])."</dd>\n";
 		}
 		$return .= $tabs."</dl>\n";
 		return $return;
@@ -1969,7 +1973,24 @@
 	  * @param $links (boolean) Sollen die Dinge durch Links auf die Beschreibung ersetzt werden?
 	*/
 
-	function _i($string, $links=false)
+	function _i($string, $links=true)
 	{
 		return preg_replace("/\\[(item|ress)_([a-zA-Z0-9]+)([-a-zA-Z0-9_]*)\\]/e", ($links?"'<a href=\"".h_root."/login/help/description.php?id=\$2&amp;".htmlspecialchars(urlencode(session_name()))."=".htmlspecialchars(urlencode(session_id()))."\">'.h(":"")."_('\$0')".($links?").'</a>'" : ""), $links?h($string):$string);
+	}
+
+	/**
+	  * Fügt in der Zahl $number der Ziffer Nummer $digit $change hinzu. Wird in der Zahl 555 der ersten Ziffer ($digit = 2) $change = 7 addiert, so erhält man 255.
+	  * @param $number integer Die Zahl, die geändert werden soll.
+	  * @param $digit integer Die wievielte Ziffer soll geändert werden? 0 ist ganz rechts. Negative Werte möglich.
+	  * @param $change integer Wieviel soll der Ziffer hinzugefügt werden? Negative Werte möglich.
+	  * @return integer Die neue Zahl.
+	*/
+
+	function change_digit($number, $digit, $change)
+	{
+		$d = floor(($number%pow(10, $digit+1))/pow(10, $digit));
+		$d_new = $d+$change;
+		while($d_new >= 10) $d_new -= 10;
+		while($d_new < 0) $d_new += 10;
+		return $number += ($d_new-$d)*pow(10, $digit);
 	}

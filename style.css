@@ -54,6 +54,7 @@ body { min-height:100%; width:100%; }
 
 #innercontent2-1 { background-color:#292831; background-image:url(images/content_inner_body_left.png); background-repeat:repeat-y; }
 #innercontent2-2 { background-image:url(images/content_inner_body_right.png); background-position:top right; background-repeat:repeat-y; padding:0 80px; }
+#innercontent3 { border:1px solid transparent; }
 
 * html,* html body { overflow:hidden; }
 * html #navigation { position:absolute; z-index:2000; }

@@ -79,11 +79,11 @@
 <form action="rename.php?<?=htmlentities(session_name().'='.urlencode(session_id()))?>" method="post">
 	<fieldset>
 		<legend>Planeten umbenennen</legend>
-		<dl>
+		<dl class="form">
 			<dt><label for="name"><kbd>N</kbd>euer Name</label></dt>
 			<dd><input type="text" id="name" name="planet_name" value="<?=utf8_htmlentities($me->planetName())?>" maxlength="24" accesskey="n" tabindex="1" /></dd>
 		</dl>
-		<div><button type="submit" accesskey="u" tabindex="2"><kbd>U</kbd>mbenennen</button></div>
+		<div class="button"><button type="submit" accesskey="u" tabindex="2"><kbd>U</kbd>mbenennen</button></div>
 	</fieldset>
 </form>
 <?php
@@ -109,11 +109,11 @@
 <form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/scripts/rename.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post">
 	<fieldset>
 		<legend>Planeten aufgeben<input type="hidden" name="act_planet" value="<?=htmlentities($_SESSION['act_planet'])?>" /></legend>
-		<dl>
+		<dl class="form">
 			<dt><label for="password">Passwort</label></dt>
 			<dd><input type="password" id="password" name="password" tabindex="3" /></dd>
 		</dl>
-		<div><button type="submit" tabindex="4">Aufgeben</button></div>
+		<div class="button"><button type="submit" tabindex="4">Aufgeben</button></div>
 	</fieldset>
 </form>
 <?php
@@ -148,7 +148,7 @@
 ?>
 <fieldset class="planeten-reihenfolge">
 	<legend>Planeten-Reihenfolge</legend>
-	<ol>
+	<ol class="order-list">
 <?php
 		$active_planet = $me->getActivePlanet();
 		foreach($planets as $i=>$planet)

@@ -37,8 +37,8 @@
 			$lvl = "%s";
 ?>
 <div class="desc desc-<?=htmlspecialchars($_GET['id'])?> desc-<?=htmlspecialchars($type)?>">
+	<h2><?=h(sprintf($lvl, _("[item_".$_GET["id"]."]"), ths($me->getItemLevel($_GET["id"]))))?></h2>
 	<div class="desc-desc">
-		<h2><?=h(sprintf($lvl, _("[item_".$_GET["id"]."]"), ths($me->getItemLevel($_GET["id"]))))?></h2>
 <?php
 		function repl_nl($nls)
 		{
@@ -61,7 +61,7 @@
 		if($item_info)
 		{
 ?>
-	<dl class="item-info">
+	<dl class="item-info lines">
 		<dt class="item-kosten"><?=h(_("Kosten"))?></dt>
 		<dd class="item-kosten">
 			<?=format_ress($item_info['ress'], 3, false, false, false, $me)?>
@@ -71,11 +71,11 @@
 			if($type == 'forschung')
 			{
 ?>
-		<dt class="item-bauzeit-lokal"><?=h(_("Bauzeit lokal"))?></dt>
-		<dd class="item-bauzeit-lokal"><?=format_btime($item_info['time_local'])?></dd>
+		<dt class="item-bauzeit forschung-lokal"><?=h(_("Bauzeit lokal"))?></dt>
+		<dd class="item-bauzeit forschung-lokal"><?=format_btime($item_info['time_local'])?></dd>
 
-		<dt class="item-bauzeit-global"><?=h(_("Bauzeit global"))?></dt>
-		<dd class="item-bauzeit-global"><?=format_btime($item_info['time_global'])?></dd>
+		<dt class="item-bauzeit forschung-global"><?=h(_("Bauzeit global"))?></dt>
+		<dd class="item-bauzeit forschung-global"><?=format_btime($item_info['time_global'])?></dd>
 <?php
 			}
 			else
@@ -94,8 +94,8 @@
 			isort($deps);
 ?>
 	<div class="desc-deps">
-		<h3><?=h(_("Abhängigkeiten"))?></h3>
-		<ul class="deps">
+		<h3 class="strong"><?=h(_("Abhängigkeiten"))?></h3>
+		<ul class="deps paragraph">
 <?php
 			foreach($deps as $id=>$level)
 			{
@@ -113,8 +113,8 @@
 		{
 ?>
 	<div class="desc-values">
-		<h3><?=h(_("Eigenschaften"))?></h3>
-		<table>
+		<h3 class="strong"><?=h(_("Eigenschaften"))?></h3>
+		<table class="table-small">
 			<thead>
 				<tr>
 					<th><?=h(_("Eigenschaft"))?></th>
@@ -135,8 +135,8 @@
 			{
 ?>
 	<div class="desc-prod">
-		<h3><?=h(_("Produktion pro Stunde"))?></h3>
-		<table>
+		<h3 class="strong"><?=h(_("Produktion pro Stunde"))?></h3>
+		<table class="table-small">
 			<thead>
 				<tr>
 					<th class="c-stufe"><?=h(_("Stufe"))?></th>
@@ -254,8 +254,8 @@
 			$item_info = $me->getItemInfo($_GET["id"]);
 ?>
 	<div class="desc-values">
-		<h3><?=h(_("Eigenschaften"))?></h3>
-		<table>
+		<h3 class="strong"><?=h(_("Eigenschaften"))?></h3>
+		<table class="table-small">
 			<thead>
 				<tr>
 					<th><?=h(_("Eigenschaft"))?></th>
@@ -309,8 +309,8 @@
 		{
 ?>
 	<div class="desc-values">
-		<h3><?=h(_("Eigenschaften"))?></h3>
-		<table>
+		<h3 class="strong"><?=h(_("Eigenschaften"))?></h3>
+		<table class="table-small">
 			<thead>
 				<tr>
 					<th><?=h(_("Eigenschaft"))?></th>

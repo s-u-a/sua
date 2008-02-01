@@ -30,7 +30,7 @@
 	foreach($check_deps as $type=>$heading)
 	{
 ?>
-<table class="deps" id="deps-<?=htmlspecialchars($type)?>">
+<table class="deps table-2" id="deps-<?=htmlspecialchars($type)?>">
 	<thead>
 		<tr>
 			<th class="c-item"><?=h($heading)?></th>

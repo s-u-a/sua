@@ -137,6 +137,7 @@
 		</div></div></div></div>
 		</div></div></div></div>
 		</div></div></div>
+		</div>
 		<hr class="separator" />
 		<ul id="links-up-1" class="cross-navigation">
 			<li><a href="#main-container"<?=accesskey_attr(_("Nach oben&[include.php|4]"))?>><?=h(_("Nach oben&[include.php|4]"))?></a></li>
@@ -174,10 +175,17 @@
 			<li><a href="#innercontent3"><?=h(_("Zum Inhalt&[include.php|1]"))?></a></li>
 		</ul>
 	</div>
-	<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script>
+<?php
+			if(global_setting("PROTOCOL") == "https")
+				$analytics_prefix = "https://ssl";
+			else
+				$analytics_prefix = "http://www";
+?>
+	<script src="<?=htmlspecialchars($analytics_prefix)?>.google-analytics.com/ga.js" type="text/javascript"></script>
 	<script type="text/javascript">
-		_uacct = "UA-471643-1";
-		urchinTracker();
+		var pageTracker = _gat._getTracker("UA-471643-1");
+		pageTracker._initData();
+		pageTracker._trackPageview();
 	</script>
 	</body>
 </html>

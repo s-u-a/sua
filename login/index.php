@@ -239,13 +239,13 @@
 			if($fl->getCurrentType() == 4 && !$fl->isFlyingBack() && $me->permissionToAct() && $me->isOwnPlanet($fl->getCurrentTarget()))
 			{
 ?>
-		<div class="handel"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Geben Sie dieser Flotte Ladung mit auf den Rückweg">Handel</a></div>
+		<div class="handel action"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Geben Sie dieser Flotte Ladung mit auf den Rückweg">Handel</a></div>
 <?php
 			}
 			if($fl->getCurrentType() == 3 && !$fl->isFlyingBack() && array_search($me->getName(), $fl->getUsersList()) === 0)
 			{
 ?>
-		<div class="buendnisangriff"><a href="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern.">Bündnisangriff</a></div>
+		<div class="buendnisangriff action"><a href="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern.">Bündnisangriff</a></div>
 <?php
 			}
 ?>
@@ -263,6 +263,7 @@
 		{
 ?>
 <script type="text/javascript">
+// <![CDATA[
 <?php
 			foreach($countdowns as $countdown)
 			{
@@ -271,6 +272,7 @@
 <?php
 			}
 ?>
+// ]]>
 </script>
 <?php
 		}
@@ -496,6 +498,7 @@
 	{
 ?>
 <script type="text/javascript">
+// <![CDATA[
 <?php
 		foreach($countdowns as $countdown)
 		{
@@ -504,6 +507,7 @@
 <?php
 		}
 ?>
+// ]]>
 </script>
 <?php
 	}

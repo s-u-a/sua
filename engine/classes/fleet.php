@@ -1171,23 +1171,7 @@
 								$message = Classes::Message();
 								if(!$message->create()) continue;
 								$message->subject(sprintf($user_obj->_("Abbau auf %s"), $next_target_nt));
-								$message->text(sprintf("<div class=\"nachricht-sammeln\">
-	<p>".sprintf(h($user_obj->_("Ihre Flotte erreicht das Trümmerfeld auf %s und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s.")), htmlspecialchars($next_target_nt), ths($trans_total), h(sprintf($user_obj->_("%1\$s %5\$s, %2\$s %6\$s, %3\$s %7\$s und %4s %8\$s"), ths($rtrans[0]), ths($rtrans[1]), ths($rtrans[2]), ths($rtrans[3]), $user_obj->_("[ress_0]"), $user_obj->_("[ress_1]"), $user_obj->_("[ress_2]"), $user_obj->_("[ress_3]"))))."</p>
-	<h3>".h(_("Verbleibende Rohstoffe im Trümmerfeld"))."</h3>
-	<dl class=\"ress truemmerfeld-verbleibend\">
-		<dt class=\"c-carbon\">".h($user_obj->_("[ress_0]"))."</dt>
-		<dd class=\"c-carbon\">".ths($tr_verbl[0])."</dd>
-
-		<dt class=\"c-aluminium\">".h($user_obj->_("[ress_1]"))."</dt>
-		<dd class=\"c-aluminium\">".ths($tr_verbl[1])."</dd>
-
-		<dt class=\"c-wolfram\">".h($user_obj->_("[ress_2]"))."</dt>
-		<dd class=\"c-wolfram\">".ths($tr_verbl[2])."</dd>
-
-		<dt class=\"c-radium\">".h($user_obj->_("[ress_3]"))."</dt>
-		<dd class=\"c-radium\">".ths($tr_verbl[3])."</dd>
-	</dl>
-</div>"));
+								$message->text(sprintf("<div class=\"nachricht-sammeln\">\n\t<p>".sprintf(h($user_obj->_("Ihre Flotte erreicht das Trümmerfeld auf %s und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s.")), htmlspecialchars($next_target_nt), ths($trans_total), h(sprintf($user_obj->_("%1\$s %5\$s, %2\$s %6\$s, %3\$s %7\$s und %4s %8\$s"), ths($rtrans[0]), ths($rtrans[1]), ths($rtrans[2]), ths($rtrans[3]), $user_obj->_("[ress_0]"), $user_obj->_("[ress_1]"), $user_obj->_("[ress_2]"), $user_obj->_("[ress_3]"))))."</p>\n\t<h3 class=\"strong\">".h(_("Verbleibende Rohstoffe im Trümmerfeld"))."</h3>\n".$user_obj->_i(format_ress($tr_verbl, 1, false, false, true, false, "ress-block"))."</div>"));
 								$message->addUser($username, 4);
 								$message->html(true);
 							}
@@ -1325,9 +1309,9 @@
 							{
 								# Zielplanet ist nicht besiedelt
 								$message_text = "<div class=\"nachricht-spionage\">\n";
-								$message_text .= "\t<h3>%1\$s</h3>\n";
+								$message_text .= "\t<h3 class=\"strong\">%1\$s</h3>\n";
 								$message_text .= "\t<div id=\"spionage-planet\">\n";
-								$message_text .= "\t\t<h4>%2\$s</h4>\n";
+								$message_text .= "\t\t<h4 class=\"strong\">%2\$s</h4>\n";
 								$message_text .= "\t\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
 								$message_text .= "\t\t\t<dt class=\"c-felder\">%3\$s</dt>\n";
 								$message_text .= "\t\t\t<dd class=\"c-felder\">".ths($target_galaxy->getPlanetSize($target[1], $target[2]))."</dd>\n";
@@ -1385,9 +1369,9 @@
 									$diff = 5;
 
 								$message_text = "<div class=\"nachricht-spionage\">\n";
-								$message_text .= "\t<h3>%6\$s</h3>\n";
+								$message_text .= "\t<h3 class=\"strong\">%6\$s</h3>\n";
 								$message_text .= "\t<div id=\"spionage-planet\">\n";
-								$message_text .= "\t\t<h4>%2\$s</h4>\n";
+								$message_text .= "\t\t<h4 class=\"strong\">%2\$s</h4>\n";
 								$message_text .= "\t\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
 								$message_text .= "\t\t\t<dt class=\"c-felder\">%3\$s</dt>\n";
 								$message_text .= "\t\t\t<dd class=\"c-felder\">".ths($target_user->getTotalFields())."</dd>\n";
@@ -1400,7 +1384,7 @@
 									case 5: # Roboter zeigen
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-roboter\">\n";
-										$next .= "\t\t<h4>%7\$s</h4>\n";
+										$next .= "\t\t<h4 class=\"strong\">%7\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
 										foreach($target_user->getItemsList('roboter') as $id)
 										{
@@ -1414,7 +1398,7 @@
 									case 4: # Forschung zeigen
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-forschung\">\n";
-										$next .= "\t\t<h4>%8\$s</h4>\n";
+										$next .= "\t\t<h4 class=\"strong\">%8\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
 										foreach($target_user->getItemsList('forschung') as $id)
 										{
@@ -1428,7 +1412,7 @@
 									case 3: # Schiffe und Verteidigungsanlagen anzeigen
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-schiffe\">\n";
-										$next .= "\t\t<h4>%9\$s</h4>\n";
+										$next .= "\t\t<h4 class=\"strong\">%9\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
 										$schiffe = array();
 										foreach($target_user->getItemsList('schiffe') as $id)
@@ -1461,7 +1445,7 @@
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
 										$next .= "\t<div id=\"spionage-verteidigung\">\n";
-										$next .= "\t\t<h4>%10\$s</h4>\n";
+										$next .= "\t\t<h4 class=\"strong\">%10\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
 										foreach($target_user->getItemsList('verteidigung') as $id)
 										{
@@ -1475,7 +1459,7 @@
 									case 2: # Gebaeude anzeigen
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-gebaeude\">\n";
-										$next .= "\t\t<h4>%11\$s</h4>\n";
+										$next .= "\t\t<h4 class=\"strong\">%11\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
 										foreach($target_user->getItemsList('gebaeude') as $id)
 										{
@@ -1489,7 +1473,7 @@
 									case 1: # Rohstoffe anzeigen
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-rohstoffe\">\n";
-										$next .= "\t\t<h4>%12\$s</h4>\n";
+										$next .= "\t\t<h4 class=\"strong\">%12\$s</h4>\n";
 										$next .= "\t\t".format_ress($target_user->getRess(), 2, true, false, true);
 										$next .= "\t</div>\n";
 										unset($next);
