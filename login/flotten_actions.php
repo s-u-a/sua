@@ -83,7 +83,7 @@
 ?>
 <form action="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="handel <?=$class?>">
 	<fieldset>
-		<legend><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($username).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=utf8_htmlentities($username)?></a></legend>
+		<legend><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($username).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($username)?></a></legend>
 <?php
 				$trans = $fleet->getTransportCapacity($username);
 				$handel = $fleet->getHandel($username);
@@ -219,7 +219,7 @@
 					}
 				}
 ?>
-		<input type="hidden" name="handel_username" value="<?=utf8_htmlentities($username)?>" />
+		<input type="hidden" name="handel_username" value="<?=htmlspecialchars($username)?>" />
 		<input type="hidden" name="handel_type" value="<?=$input_name?>" />
 		<p><?=htmlspecialchars($mess1)?></p>
 		<p><?php printf($mess2, ths($trans[0]), ths($trans[1]), ths($remaining_trans[0]), ths($remaining_trans[1]))?></p>
@@ -319,9 +319,9 @@
 						$h = 0;
 						if(isset($handel[1][$id])) $h = $handel[1][$id];
 ?>
-				<tr class="c-ro-<?=utf8_htmlentities($id)?>">
-					<th class="c-gut"><?=utf8_htmlentities($item_info['name'])?></th>
-					<td class="c-einlagern"><input type="text" name="handel[1][<?=$id?>]" id="handel-1-<?=$id?>" value="<?=utf8_htmlentities($h)?>" /></td>
+				<tr class="c-ro-<?=htmlspecialchars($id)?>">
+					<th class="c-gut"><?=htmlspecialchars($item_info['name'])?></th>
+					<td class="c-einlagern"><input type="text" name="handel[1][<?=$id?>]" id="handel-1-<?=$id?>" value="<?=htmlspecialchars($h)?>" /></td>
 					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-1-<?=jsentities($id)?>').value=<?=$available_robs[$id]?>"><?=ths($available_robs[$id])?></a></td>
 				</tr>
 <?php
@@ -389,7 +389,7 @@
 					}
 					else $s .= '[unbesiedelt]';
 ?>
-		<li><?=htmlspecialchars($s)?> <span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(session_name()).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(session_name()).'='.session_id())?>" class="runter">[Runter]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlentities(urlencode($shortcut))?>&amp;<?=htmlentities(urlencode(session_name()).'='.session_id())?>" class="loeschen">[Löschen]</a></span></li>
+		<li><?=htmlspecialchars($s)?> <span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.session_id())?>" class="runter">[Runter]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.session_id())?>" class="loeschen">[Löschen]</a></span></li>
 <?php
 					$i++;
 				}

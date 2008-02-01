@@ -28,5 +28,5 @@
 	array_pop($url); array_pop($url); array_pop($url);
 	$url = 'http://'.$_SERVER['HTTP_HOST'].implode('/', $url).'/index.php';
 	header('Location: '.$url);
-	die('Logged out successfully. <a href="'.htmlentities($url).'">Back to home page</a>.');
+	die('Logged out successfully. <a href="'.htmlspecialchars($url).'">Back to home page</a>.');
 ?>

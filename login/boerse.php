@@ -176,7 +176,7 @@
 <?php
 	}
 ?>
-<form action="boerse.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>#handelsauftraege" method="post" class="boerse-auftrag">
+<form action="boerse.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>#handelsauftraege" method="post" class="boerse-auftrag">
 	<fieldset>
 		<legend>Neuen Handelsauftrag anlegen</legend>
 		<dl class="form">

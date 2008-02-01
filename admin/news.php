@@ -108,10 +108,10 @@
 ?>
 		<dl>
 			<dt><label for="heading-<?=$i?>-input">Überschrift</label></dt>
-			<dd><input type="text" name="news[<?=$i?>][0]" id="heading-<?=$i?>-input"<?=isset($news['title']) ? ' value="'.utf8_htmlentities($news['title']).'"' : ''?> /></dd>
+			<dd><input type="text" name="news[<?=$i?>][0]" id="heading-<?=$i?>-input"<?=isset($news['title']) ? ' value="'.htmlspecialchars($news['title']).'"' : ''?> /></dd>
 
 			<dt><label for="text-<?=$i?>-textarea">Text</label></dt>
-			<dd><textarea name="news[<?=$i?>][1]" id="text-<?=$i?>-textarea" rows="15" cols="50"><?=preg_replace("/[\r\n\t]/e", '"&#".ord("$0").";"', utf8_htmlentities($news['text']))?></textarea></dd>
+			<dd><textarea name="news[<?=$i?>][1]" id="text-<?=$i?>-textarea" rows="15" cols="50"><?=preg_replace("/[\r\n\t]/e", '"&#".ord("$0").";"', htmlspecialchars($news['text']))?></textarea></dd>
 		</dl>
 		<ul>
 			<li><button type="submit">Speichern</button></li>

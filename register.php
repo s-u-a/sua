@@ -138,7 +138,7 @@
 	}
 
 ?>
-<form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/register.php')?>" method="post" id="register-form">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/register.php')?>" method="post" id="register-form">
 	<fieldset>
 		<legend><?=h(_("Registrieren"))?></legend>
 		<dl>
@@ -149,14 +149,14 @@
 	{
 		if(!$info['enabled'] || $info['dummy']) continue;
 ?>
-				<option value="<?=utf8_htmlentities($id)?>"<?=(isset($_POST['database']) && $_POST['database'] == $id) ? ' selected="selected"' : ''?>><?=utf8_htmlentities($info['name'])?></option>
+				<option value="<?=htmlspecialchars($id)?>"<?=(isset($_POST['database']) && $_POST['database'] == $id) ? ' selected="selected"' : ''?>><?=htmlspecialchars($info['name'])?></option>
 <?php
 	}
 ?>
 			</select></dd>
 
 			<dt><label for="username"><?=h(_("Benutzername&[register.php|2]"))?></label></dt>
-			<dd><input type="text" id="username" name="username"<?=accesskey_attr(_("Benutzername&[register.php|2]"))?><?=isset($_POST['username']) ? ' value="'.utf8_htmlentities($_POST['username']).'"' : ''?> maxlength="24" /></dd>
+			<dd><input type="text" id="username" name="username"<?=accesskey_attr(_("Benutzername&[register.php|2]"))?><?=isset($_POST['username']) ? ' value="'.htmlspecialchars($_POST['username']).'"' : ''?> maxlength="24" /></dd>
 
 			<dt><label for="password"><?=h(_("Passwort&[register.php|2]"))?></label></dt>
 			<dd><input type="password" id="password" name="password"<?=accesskey_attr(_("Passwort&[register.php|2]"))?> /></dd>
@@ -165,10 +165,10 @@
 			<dd><input type="password" id="password2" name="password2"<?=accesskey_attr(_("Passwort wiederholen&[register.php|2]"))?> /></dd>
 
 			<dt><label for="email"><?=h(_("E-Mail-Adresse&[register.php|2]"))?></label></dt>
-			<dd><input type="text" name="email" id="email"<?=accesskey_attr(_("E-Mail-Adresse&[register.php|2]"))?><?=isset($_POST['email']) ? ' value="'.utf8_htmlentities($_POST['email']).'"' : ''?> /></dd>
+			<dd><input type="text" name="email" id="email"<?=accesskey_attr(_("E-Mail-Adresse&[register.php|2]"))?><?=isset($_POST['email']) ? ' value="'.htmlspecialchars($_POST['email']).'"' : ''?> /></dd>
 
 			<dt><label for="hauptplanet"><?=h(_("Gewünschter Name des Hauptplaneten&[register.php|2]"))?></label></dt>
-			<dd><input type="text" id="hauptplanet" name="hauptplanet"<?=accesskey_attr(_("Gewünschter Name des Hauptplaneten&[register.php|2]"))?><?=isset($_POST['hauptplanet']) ? ' value="'.utf8_htmlentities($_POST['hauptplanet']).'"' : ''?> maxlength="24" /></dd>
+			<dd><input type="text" id="hauptplanet" name="hauptplanet"<?=accesskey_attr(_("Gewünschter Name des Hauptplaneten&[register.php|2]"))?><?=isset($_POST['hauptplanet']) ? ' value="'.htmlspecialchars($_POST['hauptplanet']).'"' : ''?> maxlength="24" /></dd>
 		</dl>
 		<div><input type="checkbox" class="checkbox" name="nutzungsbedingungen" id="nutzungsbedingungen"<?=accesskey_attr(_("Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]"))?> /> <label for="nutzungsbedingungen"><?=sprintf(h(_("Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]")), "<a href=\"rules.php\">", "</a>")?></label></div>
 		<ul>

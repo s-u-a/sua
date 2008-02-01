@@ -51,7 +51,7 @@
 			$author = trim($news['author']);
 ?>
 <div class="news">
-	<h3><?=utf8_htmlentities($title)?><?=($author != '') ? ' <span class="author">('.utf8_htmlentities($author).')</span>' : ''?></h3>
+	<h3><?=htmlspecialchars($title)?><?=($author != '') ? ' <span class="author">('.htmlspecialchars($author).')</span>' : ''?></h3>
 <?php
 		if(isset($news['time']))
 		{

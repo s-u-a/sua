@@ -34,13 +34,13 @@
 		if(count($log) < 2)
 		{
 ?>
-	<li><?=utf8_htmlentities($log[0])?></li>
+	<li><?=htmlspecialchars($log[0])?></li>
 <?php
 		}
 		else
 		{
 ?>
-	<li><span class="zeit"><?=date('Y-m-d, H:i:s', $log[0])?>:</span> <?=utf8_htmlentities($log[1])?></li>
+	<li><span class="zeit"><?=date('Y-m-d, H:i:s', $log[0])?>:</span> <?=htmlspecialchars($log[1])?></li>
 <?php
 		}
 	}

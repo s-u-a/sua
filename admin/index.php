@@ -30,7 +30,7 @@
 
 		$url = 'https://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php?'.urlencode(session_name()).'='.urlencode(session_id());
 		header('Location: '.$url, true, 303);
-		die('HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>');
+		die('HTTP redirect: <a href="'.htmlspecialchars($url).'">'.htmlspecialchars($url).'</a>');
 	}
 
 	if($admin_array['permissions'][2] && isset($_POST['passwd_username']) && isset($_POST['passwd_password']) && User::userExists(trim($_POST['passwd_username'])))

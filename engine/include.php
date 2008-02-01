@@ -625,14 +625,14 @@
 
 				if(count($_POST) > 0)
 				{
-					echo '<form action="'.htmlentities($url).'" method="post">';
+					echo '<form action="'.htmlspecialchars($url).'" method="post">';
 					foreach($_POST as $key=>$val)
-						echo '<input type="hidden" name="'.htmlentities($key).'" value="'.htmlentities($val).'" />';
-					echo '<button type="submit">'.htmlentities($url).'</button>';
+						echo '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($val).'" />';
+					echo '<button type="submit">'.htmlspecialchars($url).'</button>';
 					echo '</form>';
 				}
 				else
-					echo 'HTTP redirect: <a href="'.htmlentities($url).'">'.htmlentities($url).'</a>';
+					echo 'HTTP redirect: <a href="'.htmlspecialchars($url).'">'.htmlspecialchars($url).'</a>';
 				die();
 			}
 		}
@@ -850,39 +850,6 @@
 		return $count;
 	}
 
-	/**
-	  * Funktioniert wie htmlentities(), jedoch mit einem UTF-8-String.
-	  * @param $nospecialchars <, >, & und " werden nicht ersetzt
-	  * @param $js Sollen keine HTML-Entities, sondern JavaScript-Entities (\uXXXX) erzeugt werden?
-	  * @deprecated
-	*/
-
-	function utf8_htmlentities($string, $nospecialchars=false, $js=false)
-	{
-		if($js)
-			$rep = array("'\\\\u'.add_nulls(dechex(", "), 4)");
-		else
-			$rep = array("'&#'.(", ").';'");
-
-		if(!$nospecialchars)
-			$string = htmlspecialchars($string);
-
-		$string = preg_replace("/([\\xc0-\\xdf])([\\x80-\\xbf])/e", $rep[0]."64*ord('$1')+ord('$2')-12416".$rep[1], $string);
-		$string = preg_replace("/([\\xe0-\\xef])([\\x80-\\xbf])([\\x80-\\xbf])/e", $rep[0]."4096*ord('$1')+64*ord('$2')+ord('$3')-925824".$rep[1], $string);
-		$string = preg_replace("/([\\xf0-\\xf7])([\\x80-\\xbf])([\\x80-\\xbf])([\\x80-\\xbf])/e", $rep[0]."262144*ord('$1')+2048*ord('$2')+64*ord('$3')+ord('$4')-63185024)".$rep[1], $string);
-
-		return $string;
-	}
-
-	/**
-	  * Ersetzt alle Nicht-ASCII-Zeichen durch JavaScript-Entities (\uXXXX).
-	  * @deprecated
-	*/
-
-	function utf8_jsentities($string)
-	{
-		return utf8_htmlentities($string, true, true);
-	}
 
 	/**
 	  * Escapt alle ' und \ mit einem Backslash, sodass der String in JavaScript innerhalb von einfachen Anfuehrungszeichen verwendet werden kann.
@@ -914,41 +881,6 @@
 			$count = '0'.$count;
 
 		return $count;
-	}
-
-	/**
-	  * Liefert einen String aus Einsen und Nullen zurueck, in dem jeweils 8 Ziffern den ASCII-Code eines Zeichens darstellen.
-	  * @deprecated
-	*/
-
-	function string2bin($string)
-	{
-		$return = '';
-
-		$len = strlen($string);
-		for($i = 0; $i < $len; $i++)
-			$return .= add_nulls(decbin(ord($string[$i])), 8);
-
-		return $return;
-	}
-
-	/**
-	  * Konvertiert einen string2bin()-String zurueck zu einem String.
-	  * @deprecated
-	*/
-
-	function bin2string($bin)
-	{
-		$return = '';
-
-		$len = strlen($bin);
-		for($i=0; $i < $len; $i+=8)
-		{
-			$substr = substr($bin, $i, 8);
-			$return .= chr(bindec($substr));
-		}
-
-		return $return;
 	}
 
 	/**
@@ -1193,7 +1125,7 @@
 
 		$string = str_replace("\n<p></p>", '<br /><br />', $string);
 
-		$string = utf8_htmlentities($string, true);
+		$string = htmlspecialchars($string, true);
 
 		return $string;
 	}
@@ -1269,7 +1201,7 @@
 	function parse_html_nls($string, $minus1)
 	{
 		$string2 = $string;
-		$string = preg_replace('/[\n]+/e', 'repl_nl(strlen(\'$0\')-$minus1);', utf8_htmlentities($player_info['description']));
+		$string = preg_replace('/[\n]+/e', 'repl_nl(strlen(\'$0\')-$minus1);', htmlspecialchars($player_info['description']));
 		return $string;
 	}
 
@@ -1352,7 +1284,7 @@
 				$url2 .= '#'.$url[2];
 		}
 
-		return $a.htmlentities($url2).$c;
+		return $a.htmlspecialchars($url2).$c;
 	}
 
 	/**

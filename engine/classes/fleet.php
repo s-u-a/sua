@@ -1319,7 +1319,7 @@
 								$message_text .= "\t</div>\n";
 
 								$message_text .= "\t<p class=\"besiedeln\">\n";
-								$message_text .= "\t\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlentities(urlencode($target[0]))."&amp;action_system=".htmlentities(urlencode($target[1]))."&amp;action_planet=".htmlentities(urlencode($target[2]))."\" onclick=\"return fast_action(this, 'besiedeln', ".$target[0].", ".$target[1].", ".$target[2].");\" title=\"%4\$s\">%5\$s</a>\n";
+								$message_text .= "\t\t<a href=\"flotten.php?action=besiedeln&amp;action_galaxy=".htmlspecialchars(urlencode($target[0]))."&amp;action_system=".htmlspecialchars(urlencode($target[1]))."&amp;action_planet=".htmlspecialchars(urlencode($target[2]))."\" onclick=\"return fast_action(this, 'besiedeln', ".$target[0].", ".$target[1].", ".$target[2].");\" title=\"%4\$s\">%5\$s</a>\n";
 								$message_text .= "\t</p>\n";
 								$message_text .= "</div>";
 							}
@@ -1912,7 +1912,7 @@
 				$schild = $item_info['def']*$anzahl;
 
 				$nachrichten_text .= "\t\t\t<tr>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
@@ -1982,7 +1982,7 @@
 				if($anzahl > 0)
 				{
 					$nachrichten_text .= "\t\t\t<tr>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
@@ -2265,7 +2265,7 @@
 				if($anzahl > 0)
 				{
 					$nachrichten_text .= "\t\t\t<tr>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
@@ -2369,7 +2369,7 @@
 				if($anzahl > 0)
 				{
 					$nachrichten_text .= "\t\t\t<tr>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlentities(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";

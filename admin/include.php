@@ -51,7 +51,7 @@
 	{
 		$url = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 		header('Location: '.$url, true, 307);
-		die(sprintf(h(_("Please use SSL: %s")), "<a href=\"".htmlentities($url)."\">".htmlentities($url)."</a>"));
+		die(sprintf(h(_("Please use SSL: %s")), "<a href=\"".htmlspecialchars($url)."\">".htmlspecialchars($url)."</a>"));
 	}
 
 	session_start();
@@ -114,7 +114,7 @@
 			if($request_string != '')
 				$request_uri .= '?'.$request_string;
 ?>
-<form action="<?=htmlentities($request_uri)?>" method="post">
+<form action="<?=htmlspecialchars($request_uri)?>" method="post">
 	<dl>
 		<dt><label for="admin-runde-select"><?=h(_("Runde&[admin/include.php|1]"))?></label></dt>
 		<dd><select name="database"<?=accesskey_attr(_("Runde&[admin/include.php|1]"))?>>
@@ -123,7 +123,7 @@
 			{
 				if($info['dummy']) continue;
 ?>
-			<option value="<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($info['name'])?></option>
+			<option value="<?=htmlspecialchars($id)?>"><?=htmlspecialchars($info['name'])?></option>
 <?php
 			}
 ?>
@@ -193,11 +193,11 @@
 			var h_root = '<?=utf8_jsentities(h_root)?>';
 			var last_min_chars = '<?=utf8_jsentities(global_setting("LIST_MIN_CHARS"))?>';
 		</script>
-		<script type="text/javascript" src="<?=htmlentities(h_root.'/login/scripts/javascript-2.js')?>"></script>
-		<script type="text/javascript" src="<?=htmlentities(h_root.'/sarissa.js')?>"></script>
+		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/login/scripts/javascript-2.js')?>"></script>
+		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/sarissa.js')?>"></script>
 	</head>
 	<body>
-		<h1><a href="<?=htmlentities(h_root.'/admin/index.php')?>"<?=accesskey_attr(_("Adminbereich&[admin/include.php|2]"))?>><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Adminbereich&[admin/include.php|2]")))?></a> [<a href="?logout=1"<?=accesskey_attr(_("Abmelden nicht vergessen&[admin/include.php|2]"))?>><?=h(_("Abmelden nicht vergessen&[admin/include.php|2]"))?></a>]</h1>
+		<h1><a href="<?=htmlspecialchars(h_root.'/admin/index.php')?>"<?=accesskey_attr(_("Adminbereich&[admin/include.php|2]"))?>><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Adminbereich&[admin/include.php|2]")))?></a> [<a href="?logout=1"<?=accesskey_attr(_("Abmelden nicht vergessen&[admin/include.php|2]"))?>><?=h(_("Abmelden nicht vergessen&[admin/include.php|2]"))?></a>]</h1>
 <?php
 		}
 

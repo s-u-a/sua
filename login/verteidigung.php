@@ -38,7 +38,7 @@
 	login_gui::html_head();
 ?>
 <h2>Verteidigung</h2>
-<form action="verteidigung.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post">
+<form action="verteidigung.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post">
 <?php
 	$tabindex = 1;
 	$verteidigung = $me->getItemsList('verteidigung');
@@ -50,14 +50,14 @@
 		if(!$item_info['buildable'] && $item_info['level'] <= 0)
 			continue;
 ?>
-	<div class="item verteidigung" id="item-<?=htmlentities($id)?>">
-		<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a> <span class="anzahl">(<?=utf8_htmlentities($item_info['level'])?>)</span></h3>
+	<div class="item verteidigung" id="item-<?=htmlspecialchars($id)?>">
+		<h3><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="anzahl">(<?=htmlspecialchars($item_info['level'])?>)</span></h3>
 <?php
 		if($me->permissionToAct() && $building_possible && $item_info['buildable'])
 		{
 ?>
 		<ul>
-			<li class="item-bau"><input type="text" class="number number-items" name="verteidigung[<?=utf8_htmlentities($id)?>]" value="0" tabindex="<?=$tabindex++?>" /></li>
+			<li class="item-bau"><input type="text" class="number number-items" name="verteidigung[<?=htmlspecialchars($id)?>]" value="0" tabindex="<?=$tabindex++?>" /></li>
 		</ul>
 <?php
 		}
@@ -101,7 +101,7 @@
 		if($first_building[2] <= 0) array_shift($building_verteidigung);
 		$first_info = $me->getItemInfo($first[0]);
 ?>
-	<li class="<?=utf8_htmlentities($first[0])?> active<?=(count($building_verteidigung) <= 0) ? ' last' : ''?>" title="Fertigstellung: <?=date('H:i:s, Y-m-d', $first[1])?> (Serverzeit)"><strong><?=utf8_htmlentities($first_info['name'])?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $first[0])?> (Serverzeit)</span></strong></li>
+	<li class="<?=htmlspecialchars($first[0])?> active<?=(count($building_verteidigung) <= 0) ? ' last' : ''?>" title="Fertigstellung: <?=date('H:i:s, Y-m-d', $first[1])?> (Serverzeit)"><strong><?=htmlspecialchars($first_info['name'])?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $first[0])?> (Serverzeit)</span></strong></li>
 <?php
 		if(count($building_verteidigung) > 0)
 		{
@@ -112,7 +112,7 @@
 				$finishing_time = $bau[1]+$bau[2]*$bau[3];
 				$item_info = $me->getItemInfo($bau[0]);
 ?>
-	<li class="<?=utf8_htmlentities($bau[0])?><?=($key == $last) ? ' last' : ''?>" title="Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)"><?=utf8_htmlentities($item_info['name'])?> &times; <?=$bau[2]?><?php if($key == $last){?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span><?php }?></li>
+	<li class="<?=htmlspecialchars($bau[0])?><?=($key == $last) ? ' last' : ''?>" title="Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)"><?=htmlspecialchars($item_info['name'])?> &times; <?=$bau[2]?><?php if($key == $last){?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span><?php }?></li>
 <?php
 			}
 		}
@@ -129,7 +129,7 @@
 		}
 ?>
 </script>
-<form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/verteidigung.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="alle-abbrechen">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/verteidigung.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="alle-abbrechen">
 	<p>Geben Sie hier Ihr Passwort ein, um alle im Bau befindlichen Verteidigungsanlagen <strong>ohne Kostenrückerstattung</strong> abzubrechen.</p>
 	<div><input type="password" name="cancel-all-verteidigung" /><input type="submit" value="Alle abbrechen" /></div>
 </form>

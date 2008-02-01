@@ -30,7 +30,7 @@
 	login_gui::html_head();
 ?>
 <h2>Rohstoffproduktion pro Stunde</h2>
-<form action="rohstoffe.php?<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post">
+<form action="rohstoffe.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post">
 	<table class="ress-prod">
 		<thead>
 			<tr>
@@ -69,7 +69,7 @@
 		$prod = $me->checkProductionFactor($id);
 ?>
 			<tr>
-				<th class="c-gebaeude"><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=utf8_htmlentities($item_info['level'])?>)</span></th>
+				<th class="c-gebaeude"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=htmlspecialchars($item_info['level'])?>)</span></th>
 				<td class="c-carbon number <?=get_prod_class($item_info['prod'][0])?>"><?=ths($item_info['prod'][0]*$ges_prod[6])?></td>
 				<td class="c-aluminium number <?=get_prod_class($item_info['prod'][1])?>"><?=ths($item_info['prod'][1]*$ges_prod[6])?></td>
 				<td class="c-wolfram number <?=get_prod_class($item_info['prod'][2])?>"><?=ths($item_info['prod'][2]*$ges_prod[6])?></td>
@@ -77,19 +77,19 @@
 				<td class="c-tritium number <?=get_prod_class($item_info['prod'][4])?>"><?=ths($item_info['prod'][4]*$ges_prod[6])?></td>
 				<td class="c-energie number <?=get_prod_class($item_info['prod'][5])?>"><?=ths($item_info['prod'][5])?></td>
 				<td class="c-produktion">
-					<select name="prod[<?=utf8_htmlentities($id)?>]" onchange="this.form.submit();" tabindex="<?=$tabindex?>"<?=($tabindex == 1) ? ' accesskey="u"' : ''?>>
+					<select name="prod[<?=htmlspecialchars($id)?>]" onchange="this.form.submit();" tabindex="<?=$tabindex?>"<?=($tabindex == 1) ? ' accesskey="u"' : ''?>>
 <?php
 		for($i=1,$h=100; $i>=0; $i-=.05,$h-=5)
 		{
 			$i = round($i, 4);
 ?>
-						<option value="<?=htmlentities($i)?>"<?=($prod == $i) ? ' selected="selected"' : ''?>><?=htmlentities($h)?>&thinsp;%</option>
+						<option value="<?=htmlspecialchars($i)?>"<?=($prod == $i) ? ' selected="selected"' : ''?>><?=htmlspecialchars($h)?>&thinsp;%</option>
 <?php
 			$diff = $i-$prod;
 			if($diff >= 0.0001 && $diff <= 0.0499)
 			{
 ?>
-						<option value="<?=htmlentities($prod)?>" selected="selected"><?=htmlentities(str_replace('.', ',', $prod*100))?>&thinsp;%</option>
+						<option value="<?=htmlspecialchars($prod)?>" selected="selected"><?=htmlspecialchars(str_replace('.', ',', $prod*100))?>&thinsp;%</option>
 <?php
 			}
 		}
@@ -124,7 +124,7 @@
 	$show_day_prod[3] *= $show_days;
 	$show_day_prod[4] *= $show_days;
 ?>
-				<th>Gesamt pr<kbd>o</kbd> <input type="text" class="prod-show-days" name="show_days" id="show_days" value="<?=utf8_htmlentities($show_days)?>" tabindex="<?=$tabindex?>" accesskey="o" onchange="recalc_perday();" onclick="recalc_perday();" onkeyup="recalc_perday();" />&nbsp;Tage</th>
+				<th>Gesamt pr<kbd>o</kbd> <input type="text" class="prod-show-days" name="show_days" id="show_days" value="<?=htmlspecialchars($show_days)?>" tabindex="<?=$tabindex?>" accesskey="o" onchange="recalc_perday();" onclick="recalc_perday();" onkeyup="recalc_perday();" />&nbsp;Tage</th>
 				<td class="c-carbon number <?=get_prod_class($show_day_prod[0])?>" id="taeglich-carbon"><?=ths($show_day_prod[0])?></td>
 				<td class="c-aluminium number <?=get_prod_class($show_day_prod[1])?>" id="taeglich-aluminium"><?=ths($show_day_prod[1])?></td>
 				<td class="c-wolfram number <?=get_prod_class($show_day_prod[2])?>" id="taeglich-wolfram"><?=ths($show_day_prod[2])?></td>

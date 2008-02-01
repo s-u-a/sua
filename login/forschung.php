@@ -71,8 +71,8 @@
 		if($buildable_global && count($laufende_forschungen) > 0)
 			$buildable_global = false; # Es wird schon wo geforscht
 ?>
-<div class="item forschung" id="item-<?=htmlentities($id)?>">
-	<h3><a href="help/description.php?id=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=utf8_htmlentities($item_info['name'])?></a> <span class="stufe">(Level&nbsp;<?=ths($item_info['level'])?>)</span></h3>
+<div class="item forschung" id="item-<?=htmlspecialchars($id)?>">
+	<h3><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(Level&nbsp;<?=ths($item_info['level'])?>)</span></h3>
 <?php
 		if((!($building_geb = $me->checkBuildingThing('gebaeude')) || $building_geb[0] != 'B8') && $item_info['buildable'] && $me->permissionToAct() && !($building = $me->checkBuildingThing('forschung')) && !in_array($id, $laufende_forschungen) && $item_info['deps-okay'])
 		{
@@ -80,12 +80,12 @@
 			$buildable_global = ($buildable_global && $enough_ress);
 ?>
 	<ul>
-		<li class="item-ausbau forschung-lokal <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="forschung.php?lokal='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(session_name()).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Lokal weiterentwickeln<?=$enough_ress ? '</a>' : ''?></li>
+		<li class="item-ausbau forschung-lokal <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="forschung.php?lokal='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Lokal weiterentwickeln<?=$enough_ress ? '</a>' : ''?></li>
 <?php
 			if(count($laufende_forschungen) <= 0)
 			{
 ?>
-		<li class="item-ausbau forschung-global <?=$buildable_global ? 'genug' : 'fehlend'?>"><?=$buildable_global ? '<a href="forschung.php?global='.htmlentities(urlencode($id)).'&amp;'.htmlentities(urlencode(session_name()).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Global weiterentwickeln<?=$buildable_global ? '</a>' : ''?></li>
+		<li class="item-ausbau forschung-global <?=$buildable_global ? 'genug' : 'fehlend'?>"><?=$buildable_global ? '<a href="forschung.php?global='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?>Global weiterentwickeln<?=$buildable_global ? '</a>' : ''?></li>
 <?php
 			}
 ?>
@@ -95,7 +95,7 @@
 		elseif($building && $building[0] == $id)
 		{
 ?>
-	<div class="restbauzeit" id="restbauzeit-<?=htmlentities($id)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building[1])?> (Serverzeit), <a href="forschung.php?cancel=<?=htmlentities(urlencode($id))?>&amp;<?=htmlentities(urlencode(session_name()).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a></div>
+	<div class="restbauzeit" id="restbauzeit-<?=htmlspecialchars($id)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building[1])?> (Serverzeit), <a href="forschung.php?cancel=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a></div>
 	<script type="text/javascript">
 		init_countdown('<?=$id?>', <?=$building[1]?>);
 	</script>

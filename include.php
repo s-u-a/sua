@@ -60,13 +60,13 @@
 			if($base)
 			{
 ?>
-		<base href="<?=htmlentities($base)?>" />
+		<base href="<?=htmlspecialchars($base)?>" />
 <?php
 			}
 ?>
 	</head>
 	<body><div id="main-container">
-		<h1 id="logo"><a href="<?=htmlentities('http://'.$_SERVER['HTTP_HOST'].h_root.'/')?>" title="<?=h(_("Zurück zur Startseite"))?>"<?=accesskey_attr(_("[title_full]&[include.php|1]"))?>><?=h(_("[title_full]&[include.php|1]"))?></a></h1>
+		<h1 id="logo"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/')?>" title="<?=h(_("Zurück zur Startseite"))?>"<?=accesskey_attr(_("[title_full]&[include.php|1]"))?>><?=h(_("[title_full]&[include.php|1]"))?></a></h1>
 		<ul id="links-down" class="cross-navigation">
 			<li><a href="#innercontent3"<?=accesskey_attr(_("Zum Inhalt&[include.php|1]"))?>><?=h(_("Zum Inhalt&[include.php|1]"))?></a></li>
 			<li><a href="#navigation"<?=accesskey_attr(_("Zur Navigation&[include.php|1]"))?>><?=h(_("Zur Navigation&[include.php|1]"))?></a></li>
@@ -76,7 +76,7 @@
 		<div id="content2-0"><div id="content2-1"><div id="content2-2"><div id="content2-3">
 		<div id="content3-0"><div id="content3-1"><div id="content3-2"><div id="content3-3">
 		<div id="content4-1"><div id="content4-2"><div id="content4-3">
-			<form action="<?=htmlentities(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
+			<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
 				<fieldset>
 					<legend><?=h(_("Anmelden"))?></legend>
 					<dl>
@@ -88,7 +88,7 @@
 			{
 				if(!$info['enabled'] || $info['dummy']) continue;
 ?>
-							<option value="<?=utf8_htmlentities($id)?>"><?=utf8_htmlentities($info['name'])?></option>
+							<option value="<?=htmlspecialchars($id)?>"><?=htmlspecialchars($info['name'])?></option>
 <?php
 			}
 ?>
@@ -148,15 +148,15 @@
 		<div id="navigation">
 			<h2 id="navigation-heading"><?=h(_("Navigation"))?></h2>
 			<div id="navigation2"><ol id="navigation-inner">
-				<li class="c-index"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/index.php"<?=accesskey_attr(_("Neuigkeiten&[include.php|6]"))?>><?=h(_("Neuigkeiten&[include.php|6]"))?></a></li>
-				<li class="c-features"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/features.php"<?=accesskey_attr(_("Features&[include.php|6]"))?>><?=h(_("Features&[include.php|6]"))?></a></li>
-				<li class="c-register"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/register.php"<?=accesskey_attr(_("Registrieren&[include.php|6]"))?>><?=h(_("Registrieren&[include.php|6]"))?></a></li>
-				<li class="c-rules"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/rules.php"<?=accesskey_attr(_("Regeln&[include.php|6]"))?>><?=h(_("Regeln&[include.php|6]"))?></a></li>
-				<li class="c-faq"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/faq.php"<?=accesskey_attr(_("FAQ&[include.php|6]"))?>><?=h(_("FAQ&[include.php|6]"))?></a></li>
-				<li class="c-chat"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/chat.php"<?=accesskey_attr(_("Chat&[include.php|6]"))?>><?=h(_("Chat&[include.php|6]"))?></a></li>
-				<li class="c-board"><a href="<?=htmlentities(global_setting("USE_PROTOCOL"))?>://board.s-u-a.net/index.php"<?=accesskey_attr(_("Board&[include.php|6]"))?>><?=h(_("Board&[include.php|6]"))?></a></li>
+				<li class="c-index"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/index.php"<?=accesskey_attr(_("Neuigkeiten&[include.php|6]"))?>><?=h(_("Neuigkeiten&[include.php|6]"))?></a></li>
+				<li class="c-features"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/features.php"<?=accesskey_attr(_("Features&[include.php|6]"))?>><?=h(_("Features&[include.php|6]"))?></a></li>
+				<li class="c-register"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/register.php"<?=accesskey_attr(_("Registrieren&[include.php|6]"))?>><?=h(_("Registrieren&[include.php|6]"))?></a></li>
+				<li class="c-rules"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/rules.php"<?=accesskey_attr(_("Regeln&[include.php|6]"))?>><?=h(_("Regeln&[include.php|6]"))?></a></li>
+				<li class="c-faq"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/faq.php"<?=accesskey_attr(_("FAQ&[include.php|6]"))?>><?=h(_("FAQ&[include.php|6]"))?></a></li>
+				<li class="c-chat"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/chat.php"<?=accesskey_attr(_("Chat&[include.php|6]"))?>><?=h(_("Chat&[include.php|6]"))?></a></li>
+				<li class="c-board"><a href="<?=htmlspecialchars(global_setting("USE_PROTOCOL"))?>://board.s-u-a.net/index.php"<?=accesskey_attr(_("Board&[include.php|6]"))?>><?=h(_("Board&[include.php|6]"))?></a></li>
 				<li class="c-developers"><a href="http://dev.s-u-a.net/"<?=accesskey_attr(_("Entwicklerseite&"))?>><?=h(_("Entwicklerseite&[include.php|6]"))?></a></li>
-				<li class="c-impressum"><a href="http://<?=htmlentities($_SERVER['HTTP_HOST'].h_root)?>/impressum.php"<?=accesskey_attr(_("Impressum&[include.php|6]"))?>><?=h(_("Impressum&[include.php|6]"))?></a></li>
+				<li class="c-impressum"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/impressum.php"<?=accesskey_attr(_("Impressum&[include.php|6]"))?>><?=h(_("Impressum&[include.php|6]"))?></a></li>
 <?php
 			if(isset($_COOKIE['sua_is_admin']) && $_COOKIE['sua_is_admin'])
 			{
