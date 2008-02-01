@@ -22,7 +22,7 @@
 		# Flotte zurueckrufen
 
 		$flotte = Classes::Fleet($_GET['cancel']);
-		if($flotte->callBack($_SESSION['username']))
+		if($flotte->callBack($me->getName()))
 			delete_request();
 	}
 
@@ -44,7 +44,7 @@
 	login_gui::html_head(array("notify" => true));
 ?>
 <ul id="planeten-umbenennen">
-	<li><a href="scripts/rename.php?<?=htmlspecialchars(session_name().'='.urlencode(session_id()))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>
+	<li><a href="scripts/rename.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>
 </ul>
 <?php
 	$active_planet = $me->getActivePlanet();
@@ -73,10 +73,10 @@
 			$users = $fl->getUsersList();
 			if(count($users) <= 0) continue;
 
-			$me_in_users = array_search($_SESSION['username'], $users);
+			$me_in_users = array_search($me->getName(), $users);
 			if($me_in_users !== false)
 			{
-				$first_user = $_SESSION['username'];
+				$first_user = $me->getName();
 				unset($users[$me_in_users]);
 			}
 			else $first_user = array_shift($users);
@@ -239,21 +239,21 @@
 			if($fl->getCurrentType() == 4 && !$fl->isFlyingBack() && $me->permissionToAct() && $me->isOwnPlanet($fl->getCurrentTarget()))
 			{
 ?>
-		<div class="handel action"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Geben Sie dieser Flotte Ladung mit auf den Rückweg">Handel</a></div>
+		<div class="handel action"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Geben Sie dieser Flotte Ladung mit auf den Rückweg">Handel</a></div>
 <?php
 			}
 			if($fl->getCurrentType() == 3 && !$fl->isFlyingBack() && array_search($me->getName(), $fl->getUsersList()) === 0)
 			{
 ?>
-		<div class="buendnisangriff action"><a href="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern.">Bündnisangriff</a></div>
+		<div class="buendnisangriff action"><a href="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern.">Bündnisangriff</a></div>
 <?php
 			}
 ?>
 	</dt>
-	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=htmlspecialchars($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=htmlspecialchars($flotte)?>">Ankunft: <?=date('H:i:s, Y-m-d', $next_arrival)?> (Serverzeit)<?php if(!$fl->isFlyingBack() && ($me_in_users !== false)){?>, <a href="index.php?cancel=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
+	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=htmlspecialchars($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=htmlspecialchars($flotte)?>">Ankunft: <?=date('H:i:s, Y-m-d', $next_arrival)?> (Serverzeit)<?php if(!$fl->isFlyingBack() && ($me_in_users !== false)){?>, <a href="index.php?cancel=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
 <?php
 			$url = '';
-			if($fl->isFlyingBack()) $url = h_root.'/login/flotten.php?planet='.urlencode($me->getPlanetByPos($fl->getCurrentTarget())).'&'.urlencode(session_name()).'='.urlencode(session_id());
+			if($fl->isFlyingBack()) $url = h_root.'/login/flotten.php?planet='.urlencode($me->getPlanetByPos($fl->getCurrentTarget())).'&'.global_setting("URL_SUFFIX");
 			$countdowns[] = array($flotte, $next_arrival, ($fl->isFlyingBack() || ($me_in_users === false)), $url);
 		}
 ?>
@@ -291,7 +291,7 @@
 		$me->setActivePlanet($planet);
 		$class = $me->getPlanetClass();
 ?>
-	<li class="planet-<?=htmlspecialchars($class)?><?=($planet == $active_planet) ? ' active' : ''?>"><?=($planet != $active_planet) ? '<a href="index.php?planet='.htmlspecialchars(urlencode($planet).'&'.urlencode(session_name()).'='.urlencode(session_id())).'" tabindex="'.($tabindex++).'">' : ''?><?=htmlspecialchars($me->planetName())?><?=($planet != $active_planet) ? '</a>' : ''?> <span class="koords">(<?=htmlspecialchars($me->getPosString())?>)</span>
+	<li class="planet-<?=htmlspecialchars($class)?><?=($planet == $active_planet) ? ' active' : ''?>"><?=($planet != $active_planet) ? '<a href="index.php?planet='.htmlspecialchars(urlencode($planet).'&'.global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=htmlspecialchars($me->planetName())?><?=($planet != $active_planet) ? '</a>' : ''?> <span class="koords">(<?=htmlspecialchars($me->getPosString())?>)</span>
 		<dl class="planet-info">
 			<dt class="c-felder">Felder</dt>
 			<dd class="c-felder"><?=ths($me->getUsedFields())?> <span class="gesamtgroesse">(<?=ths($me->getTotalFields())?>)</span></dd>
@@ -308,7 +308,7 @@
 ?>
 			<dd class="c-gebaeudebau"><?=htmlspecialchars($item_info['name'])?> <span class="restbauzeit" id="restbauzeit-ge-<?=htmlspecialchars($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building_gebaeude[1])?> (Serverzeit)</span></dd>
 <?php
-				$countdowns[] = array('ge-'.$planet, $building_gebaeude[1], h_root."/login/gebaeude.php?planet=".urlencode($planet)."&".urlencode(session_name())."=".urlencode(session_id()));
+				$countdowns[] = array('ge-'.$planet, $building_gebaeude[1], h_root."/login/gebaeude.php?planet=".urlencode($planet)."&".global_setting("URL_SUFFIX"));
 			}
 			elseif($me->getRemainingFields() <= 0)
 			{
@@ -337,7 +337,7 @@
 ?>
 			<dd class="c-forschung"><?=htmlspecialchars($item_info['name'])?> <span id="restbauzeit-fo-<?=htmlspecialchars($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building_forschung[1])?> (Serverzeit)</span></dd>
 <?php
-				$countdowns[] = array('fo-'.$planet, $building_forschung[1], h_root."/login/forschung.php?planet=".urlencode($planet)."&".urlencode(session_name())."=".urlencode(session_id()));
+				$countdowns[] = array('fo-'.$planet, $building_forschung[1], h_root."/login/forschung.php?planet=".urlencode($planet)."&".global_setting("URL_SUFFIX"));
 			}
 			else
 			{
@@ -383,7 +383,7 @@
 <?php
 						break;
 				}
-				$countdowns[] = array('ro-'.$planet, $finishing_time, h_root."/login/roboter.php?planet=".urlencode($planet)."&".urlencode(session_name())."=".urlencode(session_id()));
+				$countdowns[] = array('ro-'.$planet, $finishing_time, h_root."/login/roboter.php?planet=".urlencode($planet)."&".global_setting("URL_SUFFIX"));
 			}
 			else
 			{
@@ -429,7 +429,7 @@
 <?php
 						break;
 				}
-				$countdowns[] = array('sc-'.$planet, $finishing_time, h_root."/login/schiffswerft.php?planet=".urlencode($planet)."&".urlencode(session_name())."=".urlencode(session_id()));
+				$countdowns[] = array('sc-'.$planet, $finishing_time, h_root."/login/schiffswerft.php?planet=".urlencode($planet)."&".global_setting("URL_SUFFIX"));
 			}
 			else
 			{
@@ -475,7 +475,7 @@
 <?php
 						break;
 				}
-				$countdowns[] = array('ve-'.$planet, $finishing_time, h_root."/login/verteidigung.php?planet=".urlencode($planet)."&".urlencode(session_name())."=".urlencode(session_id()));
+				$countdowns[] = array('ve-'.$planet, $finishing_time, h_root."/login/verteidigung.php?planet=".urlencode($planet)."&".global_setting("URL_SUFFIX"));
 			}
 			else
 			{

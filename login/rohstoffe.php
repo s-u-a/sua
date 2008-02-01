@@ -30,7 +30,7 @@
 	login_gui::html_head();
 ?>
 <h2>Rohstoffproduktion pro Stunde</h2>
-<form action="rohstoffe.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post">
+<form action="rohstoffe.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post">
 	<table class="ress-prod">
 		<thead>
 			<tr>
@@ -69,7 +69,7 @@
 		$prod = $me->checkProductionFactor($id);
 ?>
 			<tr>
-				<th class="c-gebaeude"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=htmlspecialchars($item_info['level'])?>)</span></th>
+				<th class="c-gebaeude"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=htmlspecialchars($item_info['level'])?>)</span></th>
 				<td class="c-carbon number <?=get_prod_class($item_info['prod'][0])?>"><?=ths($item_info['prod'][0]*$ges_prod[6])?></td>
 				<td class="c-aluminium number <?=get_prod_class($item_info['prod'][1])?>"><?=ths($item_info['prod'][1]*$ges_prod[6])?></td>
 				<td class="c-wolfram number <?=get_prod_class($item_info['prod'][2])?>"><?=ths($item_info['prod'][2]*$ges_prod[6])?></td>

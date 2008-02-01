@@ -132,7 +132,7 @@
 			$me->setActivePlanet($order['planet']);
 ?>
 		<tr class="gebot-<?=htmlspecialchars($order['offered_resource'])?> ertrag-<?=htmlspecialchars($order['requested_resource'])?>">
-			<td class="c-planet"><a href="boerse.php?planet=<?=htmlspecialchars(urlencode($order['planet']))?>&amp;<?=htmlspecialchars(urlencode(session_name())."=".urlencode(session_id()))?>"><?=htmlspecialchars($me->planetName())?> <span class="koords">(<?=htmlspecialchars($me->getPosString())?>)</span></td>
+			<td class="c-planet"><a href="boerse.php?planet=<?=htmlspecialchars(urlencode($order['planet']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=htmlspecialchars($me->planetName())?> <span class="koords">(<?=htmlspecialchars($me->getPosString())?>)</span></td>
 			<td class="c-gebot"><span class="zahl"><?=ths($order['amount'])?></span> <?=h(_("[ress_".($order['offered_resource']-1)."]"))?></td>
 			<td class="c-mindestertrag"><span class="zahl"><?=ths($order['amount']*$order['min_price'])?></span> <?=h(_("[ress_".($order['requested_resource']-1)."]"))?></td>
 			<td class="c-gueltigkeit" id="restbauzeit-boerse-<?=htmlspecialchars($i)?>"><?=date('H:i:s, Y-m-d', $order['expiration'])?> (Serverzeit)</td>
@@ -143,7 +143,7 @@
 			{
 ?>
 			<td class="c-status waiting">Warte auf Händler</td>
-			<td class="c-zurueckziehen waiting"><a href="boerse.php?cancel=<?=htmlspecialchars(urlencode($order['id']))?>&amp;<?=htmlspecialchars(urlencode(session_name())."=".urlencode(session_id()))?>">Zurückziehen</a></td>
+			<td class="c-zurueckziehen waiting"><a href="boerse.php?cancel=<?=htmlspecialchars(urlencode($order['id']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>">Zurückziehen</a></td>
 <?php
 			}
 			else
@@ -176,7 +176,7 @@
 <?php
 	}
 ?>
-<form action="boerse.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>#handelsauftraege" method="post" class="boerse-auftrag">
+<form action="boerse.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>#handelsauftraege" method="post" class="boerse-auftrag">
 	<fieldset>
 		<legend>Neuen Handelsauftrag anlegen</legend>
 		<dl class="form">

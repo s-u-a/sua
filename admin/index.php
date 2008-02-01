@@ -28,7 +28,7 @@
 
 		protocol("1", $_SESSION['username']);
 
-		$url = 'https://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php?'.urlencode(session_name()).'='.urlencode(session_id());
+		$url = 'https://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php?'.urlencode(session_name())."=".urlencode(session_id());
 		header('Location: '.$url, true, 303);
 		die('HTTP redirect: <a href="'.htmlspecialchars($url).'">'.htmlspecialchars($url).'</a>');
 	}

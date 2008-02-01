@@ -1257,7 +1257,7 @@
 
 	function message_repl_links($a, $b, $c)
 	{
-		if(!session_id())
+		if(!global_setting("URL_SUFFIX"))
 			return $a.$b.$c;
 
 		$url2 = html_entity_decode($b);
@@ -1277,7 +1277,7 @@
 
 			if($url[1] != '')
 				$url[1] .= '&';
-			$url[1] .= session_name().'='.urlencode(session_id());
+			$url[1] .= global_setting("URL_SUFFIX");
 
 			$url2 = $url[0].'?'.$url[1];
 			if($url[2] != '')
@@ -1907,7 +1907,7 @@
 
 	function _i($string, $links=true)
 	{
-		return preg_replace("/\\[(item|ress)_([a-zA-Z0-9]+)([-a-zA-Z0-9_]*)\\]/e", ($links?"'<a href=\"".h_root."/login/help/description.php?id=\$2&amp;".htmlspecialchars(urlencode(session_name()))."=".htmlspecialchars(urlencode(session_id()))."\">'.h(":"")."_('\$0')".($links?").'</a>'" : ""), $links?h($string):$string);
+		return preg_replace("/\\[(item|ress)_([a-zA-Z0-9]+)([-a-zA-Z0-9_]*)\\]/e", ($links?"'<a href=\"".h_root."/login/help/description.php?id=\$2&amp;".htmlspecialchars(global_setting("URL_SUFFIX"))."\">'.h(":"")."_('\$0')".($links?").'</a>'" : ""), $links?h($string):$string);
 	}
 
 	/**

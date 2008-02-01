@@ -41,7 +41,7 @@
 			if($user->userLocked()) $suf = h(_("%s (g)"));
 			elseif($user->umode()) $suf = h(_("%s (U)"));
 ?>
-<h2><?=sprintf(h(_("Spielerinfo „%s“")), sprintf($suf, ($at ? sprintf(h(_("[%s] %s")), "<a href=\"allianceinfo.php?alliance=".htmlspecialchars(urlencode($at).'&'.urlencode(session_name()).'='.urlencode(session_id()))."\" title=\"".h(_("Informationen zu dieser Allianz anzeigen"))."\">".htmlspecialchars($at)."</a>", htmlspecialchars($user->getName())) : htmlspecialchars($user->getName()))))?></h2>
+<h2><?=sprintf(h(_("Spielerinfo „%s“")), sprintf($suf, ($at ? sprintf(h(_("[%s] %s")), "<a href=\"allianceinfo.php?alliance=".htmlspecialchars(urlencode($at).'&'.global_setting("URL_SUFFIX"))."\" title=\"".h(_("Informationen zu dieser Allianz anzeigen"))."\">".htmlspecialchars($at)."</a>", htmlspecialchars($user->getName())) : htmlspecialchars($user->getName()))))?></h2>
 <h3 id="punkte" class="strong"><?=h(_("Punkte"))?></h3>
 <dl class="punkte">
 	<dt class="c-gebaeude"><?=h(_("[scores_0]"))?></dt>
@@ -119,7 +119,7 @@
 				foreach($verbuendet as $verbuendeter)
 				{
 ?>
-	<li><a href="playerinfo.php?player=<?=htmlspecialchars(urlencode($verbuendeter))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($verbuendeter)?></a></li>
+	<li><a href="playerinfo.php?player=<?=htmlspecialchars(urlencode($verbuendeter))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($verbuendeter)?></a></li>
 <?php
 				}
 ?>
@@ -177,7 +177,7 @@
 					$user->setActivePlanet($planet);
 					$pos = $user->getPos();
 ?>
-	<li><?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($user->planetName()), "<a href=\"../karte.php?galaxy=".htmlspecialchars(urlencode($pos[0]))."&amp;system=".htmlspecialchars(urlencode($pos[1]))."&amp;".htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))."\" title=\"".h(_("Jenes Sonnensystem in der Karte ansehen"))."\">".h(vsprintf(_("%d:%d:%d"), $pos))."</a>")?></li>
+	<li><?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($user->planetName()), "<a href=\"../karte.php?galaxy=".htmlspecialchars(urlencode($pos[0]))."&amp;system=".htmlspecialchars(urlencode($pos[1]))."&amp;".htmlspecialchars(global_setting("URL_SUFFIX"))."\" title=\"".h(_("Jenes Sonnensystem in der Karte ansehen"))."\">".h(vsprintf(_("%d:%d:%d"), $pos))."</a>")?></li>
 <?php
 				}
 				if($active_planet !== false) $user->setActivePlanet($active_planet);
@@ -186,11 +186,11 @@
 <?php
 			}
 
-			if($user->getName() != $_SESSION['username'])
+			if($user->getName() != $me->getName())
 			{
 ?>
 <h3 id="nachricht" class="strong"><?=h(_("Nachricht"))?></h3>
-<form action="../nachrichten.php?to=&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="playerinfo-nachricht" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?")?>\');');">
+<form action="../nachrichten.php?to=&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="playerinfo-nachricht" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?")?>\');');">
 	<dl class="form">
 		<dt class="c-betreff"><label for="betreff-input"><?=h(_("Betreff&[login/help/playerinfo.php|1]"))?></label></dt>
 		<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" maxlength="30" tabindex="1"<?=accesskey_attr(_("Betreff&[login/help/playerinfo.php|1]"))?> /></dd>

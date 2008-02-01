@@ -38,7 +38,7 @@
 	login_gui::html_head();
 ?>
 <h2>Schiffswerft</h2>
-<form action="schiffswerft.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post">
+<form action="schiffswerft.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post">
 <?php
 	$tabindex = 1;
 	$schiffe = $me->getItemsList('schiffe');
@@ -51,7 +51,7 @@
 			continue;
 ?>
 	<div class="item schiffe" id="item-<?=htmlspecialchars($id)?>">
-		<h3><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="anzahl">(<?=htmlspecialchars($item_info['level'])?>)</span></h3>
+		<h3><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="anzahl">(<?=htmlspecialchars($item_info['level'])?>)</span></h3>
 <?php
 		if($me->permissionToAct() && $building_possible && $item_info['buildable'])
 		{
@@ -129,7 +129,7 @@
 		}
 ?>
 </script>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/schiffswerft.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="alle-abbrechen">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/schiffswerft.php?'.global_setting("URL_SUFFIX"))?>" method="post" class="alle-abbrechen">
 	<p>Geben Sie hier Ihr Passwort ein, um alle im Bau befindlichen Schiffe <strong>ohne Kostenrückerstattung</strong> abzubrechen.</p>
 	<div><input type="password" name="cancel-all-schiffe" /><input type="submit" value="Alle abbrechen" /></div>
 </form>

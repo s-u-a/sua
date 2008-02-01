@@ -73,7 +73,6 @@
 		{
 			# Session aktualisieren
 			$_SESSION['username'] = $_REQUEST['username'];
-			$_SESSION['act_planet'] = 0;
 			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
 			$_SESSION['database'] = $_REQUEST['database'];
 			$_SESSION['use_protocol'] = global_setting("USE_PROTOCOL");
@@ -149,7 +148,6 @@
 	# Wiederherstellen
 	if($resume && $last_request = $me->lastRequest())
 	{
-		$_SESSION['act_planet'] = $last_request[1];
 		$url = 'http://'.$databases[$_SESSION["database"]]["hostname"].$last_request[0];
 
 		$url = explode('?', $url, 2);
@@ -161,9 +159,9 @@
 		foreach($url[1] as $key=>$val)
 		{
 			$val = explode("=", $val, 2);
-			if($val[0] == session_name())
+			if($val[0] == urlencode(session_name()))
 			{
-				$url[1][$key] = urlencode(session_name()).'='.urlencode(session_id());
+				$url[1][$key] = urlencode(session_name())."=".urlencode(session_id());
 				$one = true;
 			}
 		}
@@ -177,21 +175,39 @@
 				$url .= '?';
 			else
 				$url .= '&';
-			$url .= urlencode(session_name()).'='.urlencode(session_id());
+			$url .= global_setting("URL_SUFFIX");
 		}
 		header('Location: '.$url, true, 303);
 		die(sprintf(h(_("HTTP redirect: %s")), "<a href=\"".htmlspecialchars($url)."\">".htmlspecialchars($url)."</a>"));
 	}
 
-	if(isset($_GET['planet']) && $me->planetExists($_GET['planet'])) # Planeten wechseln
-		$_SESSION['act_planet'] = $_GET['planet'];
-	if(!isset($_SESSION['act_planet']) || !$me->planetExists($_SESSION['act_planet']))
+	if(!isset($_REQUEST['planet']) || !$me->planetExists($_REQUEST['planet']))
 	{
 		$planets = $me->getPlanetsList();
-		$_SESSION['act_planet'] = array_shift($planets);
+		$_REQUEST["planet"] = array_shift($planets);
 	}
 
-	$me->setActivePlanet($_SESSION['act_planet']);
+	$me->setActivePlanet($_REQUEST['planet']);
+	
+	# URL-Appendix
+	define_url_suffix();
+	function define_url_suffix()
+	{
+		global $me;
+		$url_suffix = array(
+			session_name() => session_id(),
+			"planet" => $me->getActivePlanet()
+		);
+		$url_suffix_g = array();
+		$url_formular_g = "";
+		foreach($url_suffix as $k=>$v)
+		{
+			$url_suffix_g[] = urlencode($k)."=".urlencode($v);
+			$url_formular_g .= "<input type=\"hidden\" name=\"".htmlspecialchars($k)."\" value=\"".htmlspecialchars($v)."\" />";
+		}
+		global_setting("URL_SUFFIX", implode("&", $url_suffix_g));
+		global_setting("URL_FORMULAR", $url_formular_g);
+	}
 
 	if((!isset($_SESSION['ghost']) || !$_SESSION['ghost']) && !defined('ignore_action'))
 		$me->registerAction();
@@ -365,7 +381,7 @@
 			if($active_planet_1 > max($me->getPlanetsList())) $active_planet_1 = 0;
 ?>
 				<hr class="separator" />
-				<h1><a href="?<?=htmlspecialchars("planet=".urlencode($active_planet_0)."&".urlencode(session_name())."=".urlencode(session_id()))?>" title="<?=h(_("Zum vorigen Planeten wechseln&[login/scripts/include.php|1]"), false)?>"<?=accesskey_attr(_("Zum vorigen Planeten wechseln&[login/scripts/include.php|1]"))?>><?=h(_("←"))?></a> <?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), vsprintf(h(_("%d:%d:%d")), $me->getPos()))?> <a href="?<?=htmlspecialchars("planet=".urlencode($active_planet_1)."&".urlencode(session_name())."=".urlencode(session_id()))?>" title="<?=h(_("Zum nächsten Planeten wechseln&[login/scripts/include.php|1]"), false)?>"<?=accesskey_attr(_("Zum nächsten Planeten wechseln&[login/scripts/include.php|1]"))?>><?=h(_("→"))?></a></h1>
+				<h1><a href="?<?=htmlspecialchars("planet=".urlencode($active_planet_0)."&".global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zum vorigen Planeten wechseln&[login/scripts/include.php|1]"), false)?>"<?=accesskey_attr(_("Zum vorigen Planeten wechseln&[login/scripts/include.php|1]"))?>><?=h(_("←"))?></a> <?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), vsprintf(h(_("%d:%d:%d")), $me->getPos()))?> <a href="?<?=htmlspecialchars("planet=".urlencode($active_planet_1)."&".global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zum nächsten Planeten wechseln&[login/scripts/include.php|1]"), false)?>"<?=accesskey_attr(_("Zum nächsten Planeten wechseln&[login/scripts/include.php|1]"))?>><?=h(_("→"))?></a></h1>
 <?php
 			if(isset($options["notify"]) && $options["notify"] || !isset($options["notify"]) && $me->checkSetting('notify'))
 			{
@@ -412,7 +428,7 @@
 						$link .= '?';
 					else
 						$link .= '&';
-					$link .= urlencode(session_name()).'='.urlencode(session_id());
+					$link .= global_setting("URL_SUFFIX");
 ?>
 				<hr class="separator" />
 				<p id="neue-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/login/'.$link)?>" title="<?=$title?>"<?=accesskey_attr(ngettext("Sie haben %s neue &Nachricht.[login/scripts/include.php|2]", "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]", $ges_ncount))?>><?=h(sprintf(ngettext("Sie haben %s neue &Nachricht.[login/scripts/include.php|2]", "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]", $ges_ncount), $ges_ncount))?></a></p>
@@ -536,17 +552,18 @@
 <?php
 			}
 ?>
-					<select name="planet" onchange="if(this.value != <?=$_SESSION['act_planet']?>) this.form.submit();" onkeyup="if(this.value != <?=$_SESSION['act_planet']?>) this.form.submit();"<?=accesskey_attr(_("Ihre &Planeten[login/scripts/include.php|3]"))?> title="<?=h(_("Ihre &Planeten[login/scripts/include.php|3]"), false)?>">
+					<select name="planet" onchange="if(this.value != <?=$me->getActivePlanet()?>) this.form.submit();" onkeyup="if(this.value != <?=$me->getActivePlanet()?>) this.form.submit();"<?=accesskey_attr(_("Ihre &Planeten[login/scripts/include.php|3]"))?> title="<?=h(_("Ihre &Planeten[login/scripts/include.php|3]"), false)?>">
 <?php
+			$active_planet = $me->getActivePlanet();
 			$planets = $me->getPlanetsList();
 			foreach($planets as $planet)
 			{
 				$me->setActivePlanet($planet);
 ?>
-						<option value="<?=htmlspecialchars($planet)?>"<?=($planet == $_SESSION['act_planet']) ? ' selected="selected"' : ''?>><?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), vsprintf(h(_("%d:%d:%d")), $me->getPos()))?></option>
+						<option value="<?=htmlspecialchars($planet)?>"<?=($planet == $active_planet) ? ' selected="selected"' : ''?>><?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), vsprintf(h(_("%d:%d:%d")), $me->getPos()))?></option>
 <?php
 			}
-			$me->setActivePlanet($_SESSION['act_planet']);
+			$me->setActivePlanet($active_planet);
 ?>
 					</select>
 					<noscript><div><button type="submit"><?=h(_("Wechseln"))?></button></div></noscript>
@@ -554,26 +571,26 @@
 			</form>
 			<hr class="separator" id="navigation-separator-1" />
 			<ul id="main-navigation">
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/index.php') ? ' class="active"' : ''?> id="navigation-index"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/index.php?<?=htmlspecialchars(session_name().'='.urlencode(session_id()))?>"<?=accesskey_attr(_("&Übersicht[login/scripts/include.php|3]"))?>><?=h(_("&Übersicht[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/rohstoffe.php') ? ' class="active"' : ''?> id="navigation-rohstoffe"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/rohstoffe.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("&Rohstoffe[login/scripts/include.php|3]"))?>><?=h(_("&Rohstoffe[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/gebaeude.php') ? ' class="active"' : ''?> id="navigation-gebaeude"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/gebaeude.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("&Gebäude[login/scripts/include.php|3]"))?>><?=h(_("&Gebäude[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/forschung.php') ? ' class="active"' : ''?> id="navigation-forschung"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/forschung.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("&Forschung[login/scripts/include.php|3]"))?>><?=h(_("&Forschung[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/roboter.php') ? ' class="active"' : ''?> id="navigation-roboter"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/roboter.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("Ro&boter[login/scripts/include.php|3]"))?>><?=h(_("Ro&boter[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/flotten.php') ? ' class="active"' : ''?> id="navigation-flotten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/flotten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("F&lotten[login/scripts/include.php|3]"))?>><?=h(_("F&lotten[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/schiffswerft.php') ? ' class="active"' : ''?> id="navigation-schiffswerft"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/schiffswerft.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("&Schiffswerft[login/scripts/include.php|3]"))?>><?=h(_("&Schiffswerft[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verteidigung.php') ? ' class="active"' : ''?> id="navigation-verteidigung"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verteidigung.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("&Verteidigung[login/scripts/include.php|3]"))?>><?=h(_("&Verteidigung[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/boerse.php') ? ' class="active"' : ''?> id="navigation-boerse"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/boerse.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("Han&delsbörse[login/scripts/include.php|3]"))?>><?=h(_("Han&delsbörse[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/imperium.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("I&mperium[login/scripts/include.php|3]"))?>><?=h(_("I&mperium[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/index.php') ? ' class="active"' : ''?> id="navigation-index"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/index.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Übersicht[login/scripts/include.php|3]"))?>><?=h(_("&Übersicht[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/rohstoffe.php') ? ' class="active"' : ''?> id="navigation-rohstoffe"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/rohstoffe.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Rohstoffe[login/scripts/include.php|3]"))?>><?=h(_("&Rohstoffe[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/gebaeude.php') ? ' class="active"' : ''?> id="navigation-gebaeude"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Gebäude[login/scripts/include.php|3]"))?>><?=h(_("&Gebäude[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/forschung.php') ? ' class="active"' : ''?> id="navigation-forschung"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/forschung.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Forschung[login/scripts/include.php|3]"))?>><?=h(_("&Forschung[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/roboter.php') ? ' class="active"' : ''?> id="navigation-roboter"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/roboter.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Ro&boter[login/scripts/include.php|3]"))?>><?=h(_("Ro&boter[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/flotten.php') ? ' class="active"' : ''?> id="navigation-flotten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/flotten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("F&lotten[login/scripts/include.php|3]"))?>><?=h(_("F&lotten[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/schiffswerft.php') ? ' class="active"' : ''?> id="navigation-schiffswerft"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/schiffswerft.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Schiffswerft[login/scripts/include.php|3]"))?>><?=h(_("&Schiffswerft[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verteidigung.php') ? ' class="active"' : ''?> id="navigation-verteidigung"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verteidigung.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Verteidigung[login/scripts/include.php|3]"))?>><?=h(_("&Verteidigung[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/boerse.php') ? ' class="active"' : ''?> id="navigation-boerse"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/boerse.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Han&delsbörse[login/scripts/include.php|3]"))?>><?=h(_("Han&delsbörse[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("I&mperium[login/scripts/include.php|3]"))?>><?=h(_("I&mperium[login/scripts/include.php|3]"))?></a></li>
 			</ul>
 			<hr class="separator" id="navigation-separator-2" />
 			<ul id="action-navigation">
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/karte.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("&Karte[login/scripts/include.php|3]"))?>><?=h(_("&Karte[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/allianz.php') ? ' class="active"' : ''?> id="navigation-allianz"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/allianz.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("All&ianz[login/scripts/include.php|3]"))?>><?=h(_("All&ianz[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verbuendete.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("V&erbündete[login/scripts/include.php|3]"))?>><?=h(_("V&erbündete[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/highscores.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("&Highscores[login/scripts/include.php|3]"))?>><?=h(_("&Highscores[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/nachrichten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("Na&chrichten[login/scripts/include.php|3]"))?>><?=h(_("Na&chrichten[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/help/dependencies.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/help/dependencies.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("Forschungsb&aum[login/scripts/include.php|3]"))?>><?=h(_("Forschungsb&aum[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/einstellungen.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("Eins&tellungen[login/scripts/include.php|3]"))?>><?=h(_("Eins&tellungen[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/karte.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Karte[login/scripts/include.php|3]"))?>><?=h(_("&Karte[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/allianz.php') ? ' class="active"' : ''?> id="navigation-allianz"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("All&ianz[login/scripts/include.php|3]"))?>><?=h(_("All&ianz[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("V&erbündete[login/scripts/include.php|3]"))?>><?=h(_("V&erbündete[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/highscores.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Highscores[login/scripts/include.php|3]"))?>><?=h(_("&Highscores[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Na&chrichten[login/scripts/include.php|3]"))?>><?=h(_("Na&chrichten[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/help/dependencies.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/help/dependencies.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Forschungsb&aum[login/scripts/include.php|3]"))?>><?=h(_("Forschungsb&aum[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/einstellungen.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Eins&tellungen[login/scripts/include.php|3]"))?>><?=h(_("Eins&tellungen[login/scripts/include.php|3]"))?></a></li>
 <?php
 			if(isset($_SESSION['admin_username']))
 			{
@@ -584,7 +601,7 @@
 			else
 			{
 ?>
-				<li id="navigation-abmelden"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/scripts/logout.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("Abmelden&[login/scripts/include.php|3]"))?>><?=h(_("Abmelden&[login/scripts/include.php|3]"))?></a></li>
+				<li id="navigation-abmelden"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/scripts/logout.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Abmelden&[login/scripts/include.php|3]"))?>><?=h(_("Abmelden&[login/scripts/include.php|3]"))?></a></li>
 <?php
 			}
 ?>
@@ -633,9 +650,9 @@
 		<hr class="separator" />
 
 		<ul id="gameinfo">
-			<li class="username"><?=htmlspecialchars($_SESSION['username'])?></li>
+			<li class="username"><?=htmlspecialchars($me->getName())?></li>
 			<li class="database"><?=htmlspecialchars($databases[$_SESSION['database']]['name'])?></li>
-			<li class="version"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/changelog.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="<?=h(_("Changelog anzeigen&[login/scripts/include.php|4]"), false)?>"<?=accesskey_attr(_("Changelog anzeigen&[login/scripts/include.php|4]"))?>><?=sprintf(h(_("Version %s")), htmlspecialchars(VERSION))?></a></li>
+			<li class="version"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/changelog.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Changelog anzeigen&[login/scripts/include.php|4]"), false)?>"<?=accesskey_attr(_("Changelog anzeigen&[login/scripts/include.php|4]"))?>><?=sprintf(h(_("Version %s")), htmlspecialchars(VERSION))?></a></li>
 <?php
 			if(($rev = get_revision()) !== false)
 			{
@@ -712,7 +729,7 @@
 	function delete_request()
 	{
 		$_SESSION['last_click_ignore'] = true;
-		$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.urlencode(session_name()).'='.urlencode(session_id());
+		$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.global_setting("URL_SUFFIX");
 		header('Location: '.$url, true, 303);
 		die(sprintf(h(_("HTTP redirect: %s")), "<a href=\"".htmlspecialchars($url)."\">".htmlspecialchars($url)."</a>"));
 	}

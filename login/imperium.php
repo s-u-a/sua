@@ -46,9 +46,9 @@
 ?>
 <h2>Imperium</h2>
 <ul class="imperium-modi tabs">
-	<li class="c-rohstoffe<?=($action == 'ress') ? ' active' : ''?>"><a href="imperium.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=($action == 'ress') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?>>Rohstoffe</a></li>
-	<li class="c-roboter<?=($action == 'roboter') ? ' active' : ''?>"><a href="imperium.php?action=roboter&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=($action == 'roboter') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?>>Roboter</a></li>
-	<li class="c-flotte<?=($action == 'flotte') ? ' active' : ''?>"><a href="imperium.php?action=flotte&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=($action == 'flotten') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?>>Flotten</a></li>
+	<li class="c-rohstoffe<?=($action == 'ress') ? ' active' : ''?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'ress') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?>>Rohstoffe</a></li>
+	<li class="c-roboter<?=($action == 'roboter') ? ' active' : ''?>"><a href="imperium.php?action=roboter&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'roboter') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?>>Roboter</a></li>
+	<li class="c-flotte<?=($action == 'flotte') ? ' active' : ''?>"><a href="imperium.php?action=flotte&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'flotten') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?>>Flotten</a></li>
 </ul>
 <?php
 	switch($action)
@@ -85,7 +85,7 @@
 				$ges[5] += $this_ges;
 ?>
 		<tr<?=($planet == $active_planet) ? ' class="active"' : ''?>>
-			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>&amp;planet=<?=htmlspecialchars(urlencode($planet))?>"><?=htmlspecialchars($me->getPosString())?></a></th>
+			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;planet=<?=htmlspecialchars(urlencode($planet))?>"><?=htmlspecialchars($me->getPosString())?></a></th>
 			<td class="c-carbon number"><?=ths($ress[0])?></td>
 			<td class="c-aluminium number"><?=ths($ress[1])?></td>
 			<td class="c-wolfram number"><?=ths($ress[2])?></td>
@@ -141,7 +141,7 @@
 				$ges[6] += $this_ges;
 ?>
 		<tr<?=($planet == $active_planet) ? ' class="active"' : ''?>>
-			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>&amp;planet=<?=htmlspecialchars(urlencode($planet))?>"><?=htmlspecialchars($me->getPosString())?></a></th>
+			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;planet=<?=htmlspecialchars(urlencode($planet))?>"><?=htmlspecialchars($me->getPosString())?></a></th>
 			<td class="c-carbon number <?=get_prod_class($this_prod[0])?>"><?=ths($this_prod[0])?></td>
 			<td class="c-aluminium number <?=get_prod_class($this_prod[1])?>"><?=ths($this_prod[1])?></td>
 			<td class="c-wolfram number <?=get_prod_class($this_prod[2])?>"><?=ths($this_prod[2])?></td>
@@ -295,7 +295,7 @@
 			{
 				$item_info = $me->getItemInfo($id, 'roboter');
 ?>
-			<th class="c-<?=htmlspecialchars($id)?>"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a></th>
+			<th class="c-<?=htmlspecialchars($id)?>"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a></th>
 <?php
 			}
 ?>
@@ -313,7 +313,7 @@
 				$max_rob_limit = floor($me->getBasicFields()/2);
 ?>
 		<tr<?=($planet==$active_planet) ? ' class="active"' : ''?>>
-			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>&amp;planet=<?=htmlspecialchars(urlencode($planet))?>&amp;action=roboter"><?=htmlspecialchars($me->getPosString())?></a></th>
+			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;planet=<?=htmlspecialchars(urlencode($planet))?>&amp;action=roboter"><?=htmlspecialchars($me->getPosString())?></a></th>
 <?php
 				foreach($roboter as $id)
 				{
@@ -391,7 +391,7 @@
 			{
 				$me->setActivePlanet($planet);
 ?>
-			<th<?=($planet==$active_planet) ? ' class="active"' : ''?> title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>&amp;planet=<?=htmlspecialchars(urlencode($planet))?>&amp;action=flotte"><?=htmlspecialchars($me->getPosString())?></a></th>
+			<th<?=($planet==$active_planet) ? ' class="active"' : ''?> title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;planet=<?=htmlspecialchars(urlencode($planet))?>&amp;action=flotte"><?=htmlspecialchars($me->getPosString())?></a></th>
 <?php
 			}
 ?>
@@ -409,7 +409,7 @@
 				$this_ges = 0;
 ?>
 		<tr>
-			<th class="c-einheit separator-right"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a></th>
+			<th class="c-einheit separator-right"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a></th>
 <?php
 				foreach($planets as $i=>$planet)
 				{

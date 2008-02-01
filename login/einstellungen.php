@@ -256,7 +256,7 @@
 	document.write('<p><?=jsentities(h(_("Klicken Sie auf einen der Punkte, um die zugehörigen Einstellungen auszuklappen.")))?></p>');
 // ]]>
 </script>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/einstellungen.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="einstellungen-formular" enctype="multipart/form-data">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/einstellungen.php?'.global_setting("URL_SUFFIX"))?>" method="post" class="einstellungen-formular" enctype="multipart/form-data">
 	<fieldset class="aussehen" id="fieldset-<?=$fieldset++?>">
 		<legend><a accesskey="<?=accesskey_attr(_("Aussehen&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=h(_("Aussehen&[login/einstellungen.php|1]"))?></a></legend>
 		<dl class="form">

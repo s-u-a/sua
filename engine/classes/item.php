@@ -328,7 +328,7 @@
 		{
 			$item = Classes::Item($id);
 ?>
-<?=$tabs_str?>	<dt class="c-<?=htmlspecialchars($id)?>"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(urlencode(session_name())."=".urlencode(session_id()))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item->getInfo("name"))?></a></dt>
+<?=$tabs_str?>	<dt class="c-<?=htmlspecialchars($id)?>"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item->getInfo("name"))?></a></dt>
 <?=$tabs_str?>	<dd class="c-<?=htmlspecialchars($id)?>"><?=ths($count)?></dd>
 <?php
 		}

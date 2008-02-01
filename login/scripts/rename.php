@@ -30,16 +30,14 @@
 	$flotte_unterwegs = $me->checkOwnFleetWithPlanet();
 	$planets = $me->getPlanetsList();
 
-	if(isset($_POST['act_planet']) && isset($_POST['password']) && !$flotte_unterwegs && count($planets) > 1)
+	if(isset($_POST['password']) && !$flotte_unterwegs && count($planets) > 1)
 	{
 		if(!$me->checkPassword($_POST['password']))
 			$aufgeben_error = 'Sie haben ein falsches Passwort eingegeben.';
-		elseif($_POST['act_planet'] != $_SESSION['act_planet'])
-			$aufgeben_error = 'Sicherheit: Da inzwischen der Planet gewechselt wurde, hätten Sie es wohl bereut, wenn Sie den aktuellen aufgegeben hätten.';
 		else
 		{
-			$me->removePlanet($_SESSION['act_planet']);
-			$_SESSION['act_planet'] = $me->getActivePlanet();
+			$me->removePlanet($me->getActivePlanet());
+			define_url_suffix();
 			$planets = $me->getPlanetsList();
 		}
 	}
@@ -47,13 +45,13 @@
 	if(isset($_GET['down']))
 	{
 		$me->movePlanetDown($_GET['down']);
-		$_SESSION['act_planet'] = $me->getActivePlanet();
+		define_url_suffix();
 		$planets = $me->getPlanetsList();
 	}
 	if(isset($_GET['up']))
 	{
 		$me->movePlanetUp($_GET['up']);
-		$_SESSION['act_planet'] = $me->getActivePlanet();
+		define_url_suffix();
 		$planets = $me->getPlanetsList();
 	}
 
@@ -76,7 +74,7 @@
 <?php
 	}
 ?>
-<form action="rename.php?<?=htmlspecialchars(session_name().'='.urlencode(session_id()))?>" method="post">
+<form action="rename.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post">
 	<fieldset>
 		<legend>Planeten umbenennen</legend>
 		<dl class="form">
@@ -106,9 +104,9 @@
 <?php
 		}
 ?>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/scripts/rename.php?'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/scripts/rename.php?'.global_setting("URL_SUFFIX"))?>" method="post">
 	<fieldset>
-		<legend>Planeten aufgeben<input type="hidden" name="act_planet" value="<?=htmlspecialchars($_SESSION['act_planet'])?>" /></legend>
+		<legend>Planeten aufgeben</legend>
 		<dl class="form">
 			<dt><label for="password">Passwort</label></dt>
 			<dd><input type="password" id="password" name="password" tabindex="3" /></dd>
@@ -155,7 +153,7 @@
 		{
 			$me->setActivePlanet($planet);
 ?>
-		<li><?=htmlspecialchars($me->planetName())?> <span class="pos">(<?=htmlspecialchars($me->getPosString())?>)</span><span class="aktionen"><?php if($i != 0){?> &ndash; <a href="rename.php?up=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i != count($planets)-1){?> &ndash; <a href="rename.php?down=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.session_id())?>" class="runter">[Runter]</a><?php }?></span></li>
+		<li><?=htmlspecialchars($me->planetName())?> <span class="pos">(<?=htmlspecialchars($me->getPosString())?>)</span><span class="aktionen"><?php if($i != 0){?> &ndash; <a href="rename.php?up=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="hoch">[Hoch]</a><?php } if($i != count($planets)-1){?> &ndash; <a href="rename.php?down=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="runter">[Runter]</a><?php }?></span></li>
 <?php
 		}
 		$me->setActivePlanet($active_planet);

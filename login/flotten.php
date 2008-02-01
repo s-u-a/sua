@@ -238,7 +238,7 @@
 					else
 						$types = array();
 				}
-				elseif($planet_owner == $_SESSION['username'])
+				elseif($planet_owner == $me->getName())
 				{ # Eigener Planet
 					if(isset($types[3])) # Angriff nicht moeglich
 						unset($types[3]);
@@ -361,14 +361,14 @@
 									}
 
 									if($buendnisflug)
-										$fleet_obj->addUser($_SESSION['username'], $me->getPosString());
+										$fleet_obj->addUser($me->getName(), $me->getPosString());
 									else
-										$fleet_obj->addUser($_SESSION['username'], $me->getPosString(), $_POST['speed']);
+										$fleet_obj->addUser($me->getName(), $me->getPosString(), $_POST['speed']);
 
 									foreach($_POST['flotte'] as $id=>$anzahl)
-										$fleet_obj->addFleet($id, $anzahl, $_SESSION['username']);
+										$fleet_obj->addFleet($id, $anzahl, $me->getName());
 									
-									$tritium = $fleet_obj->calcNeededTritium($_SESSION['username']);
+									$tritium = $fleet_obj->calcNeededTritium($me->getName());
 
 									$ress = $me->getRess();
 									if($ress[4] < $tritium)
@@ -398,10 +398,10 @@
 												if($anzahl > $me->getItemLevel($id, 'roboter'))
 													$_POST['rtransport'][$id] = $me->getItemLevel($id, 'roboter');
 											}
-											if($planet_owner == $_SESSION['username'])
-												$fleet_obj->addTransport($_SESSION['username'], $_POST['transport'], $_POST['rtransport']);
-											else $fleet_obj->addTransport($_SESSION['username'], $_POST['transport']);
-											list($_POST['transport'], $_POST['rtransport']) = $fleet_obj->getTransport($_SESSION['username']);
+											if($planet_owner == $me->getName())
+												$fleet_obj->addTransport($me->getName(), $_POST['transport'], $_POST['rtransport']);
+											else $fleet_obj->addTransport($me->getName(), $_POST['transport']);
+											list($_POST['transport'], $_POST['rtransport']) = $fleet_obj->getTransport($me->getName());
 										}
 										else
 										{
@@ -448,13 +448,13 @@
 			if($auftrag == 4 && $planet_owner == $me->getName())
 			{
 ?>
-	<div class="handel action"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($fleet_obj->getName()))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="<?=h(_("Geben Sie dieser Flotte Ladung mit auf den Rückweg"))?>"<?=accesskey_attr(_("Handel&[login/flotten.php|3]"))?>><?=h(_("Handel&[login/flotten.php|3]"))?></a></div>
+	<div class="handel action"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($fleet_obj->getName()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Geben Sie dieser Flotte Ladung mit auf den Rückweg"))?>"<?=accesskey_attr(_("Handel&[login/flotten.php|3]"))?>><?=h(_("Handel&[login/flotten.php|3]"))?></a></div>
 <?php
 			}
 			if($auftrag == 3 && !$buendnisflug)
 			{
 ?>
-	<div class="buendnisangriff actions"><a href="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="<?=h(_("Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern."))?>"<?=accesskey_attr(_("Bündnisangriff&[login/flotten.php|3]"))?>><?=h(_("Bündnisangriff&[login/flotten.php|3]"))?></a></div>
+	<div class="buendnisangriff actions"><a href="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern."))?>"<?=accesskey_attr(_("Bündnisangriff&[login/flotten.php|3]"))?>><?=h(_("Bündnisangriff&[login/flotten.php|3]"))?></a></div>
 <?php
 			}
 ?>	
@@ -481,12 +481,12 @@
 						$fleet_obj = Classes::Fleet();
 						if($fleet_obj->create())
 						{
-							$fleet_obj->addUser($_SESSION['username'], $me->getPosString());
+							$fleet_obj->addUser($me->getName(), $me->getPosString());
 							$fleet_obj->addTarget($_POST['galaxie'].':'.$_POST['system'].':'.$_POST['planet'], 0, false);
 							foreach($_POST['flotte'] as $id=>$anzahl)
-								$fleet_obj->addFleet($id, $anzahl, $_SESSION['username']);
+								$fleet_obj->addFleet($id, $anzahl, $me->getName());
 							$time = $fleet_obj->getNextArrival()-time();
-							$tritium = $fleet_obj->calcNeededTritium($_SESSION['username']);
+							$tritium = $fleet_obj->calcNeededTritium($me->getName());
 							$time_string = '';
 							if($time >= 86400)
 							{
@@ -498,12 +498,12 @@
 							$time_string .= add_nulls(floor($time2/3600), 2).':'.add_nulls(floor(($time2%3600)/60), 2).':'.add_nulls(($time2%60), 2);
 
 							$this_ress = $me->getRess();
-							$transport = $fleet_obj->getTransportCapacity($_SESSION['username']);
+							$transport = $fleet_obj->getTransportCapacity($me->getName());
 
 							# Kein Robotertransport zu fremden Planeten
-							if($planet_owner != $_SESSION['username']) $transport[1] = 0;
+							if($planet_owner != $me->getName()) $transport[1] = 0;
 ?>
-<form action="flotten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
+<form action="flotten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
 	<dl>
 		<dt class="c-ziel"><?=h(_("Ziel"))?></dt>
 		<dd class="c-ziel"><?=sprintf(h(_("%d:%d:%d")), $_POST['galaxie'], $_POST['system'], $_POST['planet'])?> &ndash; <?=$planet_owner ? htmlspecialchars($galaxy_obj->getPlanetName($_POST['system'], $_POST['planet'])).' <span class="playername">('.htmlspecialchars($planet_owner).')</span>' : 'Unbesiedelt'?></dd>
@@ -800,7 +800,7 @@
 		if(isset($_GET['action_system'])) $this_pos[1] = $_GET['action_system'];
 		if(isset($_GET['action_planet'])) $this_pos[2] = $_GET['action_planet'];
 ?>
-<form action="flotten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="flotte-versenden">
+<form action="flotten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="flotte-versenden">
 <?php
 		if($my_flotten < $max_flotten && $me->permissionToAct())
 		{
@@ -865,7 +865,7 @@
 				if(count($shortcuts) > 0)
 				{
 ?>
-					document.write('<ul class="actions"><li><a href="flotten_actions.php?action=shortcuts&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" class="lesezeichen-verwalten-link"<?=accesskey_attr(_("Lesezeichen verwalten&[login/flotten.php|2]"))?>><?=h(_("Lesezeichen verwalten&[login/flotten.php|2]"))?></a></li></ul>');
+					document.write('<ul class="actions"><li><a href="flotten_actions.php?action=shortcuts&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="lesezeichen-verwalten-link"<?=accesskey_attr(_("Lesezeichen verwalten&[login/flotten.php|2]"))?>><?=h(_("Lesezeichen verwalten&[login/flotten.php|2]"))?></a></li></ul>');
 <?php
 				}
 ?>
@@ -940,7 +940,7 @@
 			if($me->getItemLevel($id, 'schiffe') < 1) continue;
 			$item_info = $me->getItemInfo($id, 'schiffe');
 ?>
-			<dt><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a> <a onclick="document.getElementById('i-flotte-<?=jsentities($id)?>').value=<?=$item_info["level"]?>;" class="vorhanden">(<?=h(sprintf(_("%s vorhanden"), ths($item_info['level'])))?>)</a></dt>
+			<dt><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a> <a onclick="document.getElementById('i-flotte-<?=jsentities($id)?>').value=<?=$item_info["level"]?>;" class="vorhanden">(<?=h(sprintf(_("%s vorhanden"), ths($item_info['level'])))?>)</a></dt>
 			<dd><input type="text" name="flotte[<?=htmlspecialchars($id)?>]" id="i-flotte-<?=htmlspecialchars($id)?>" value="0" class="number number-items" tabindex="<?=$i?>"<?=($my_flotten >= $max_flotten || !$me->permissionToAct()) ? ' readonly="readonly"' : ''?> /></dd>
 <?php
 			$i++;
@@ -1019,7 +1019,7 @@
 <?php
 					makeItemList($fi[0], 1);
 ?>
-	<form action="flotten.php?<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>#fremdstationierungen" method="post" class="ihre-fremdstationierungen"><div class="button"><button type="submit" name="callback_foreign[<?=htmlspecialchars($coords)?>][<?=htmlspecialchars($i)?>]"><?=h(sprintf(_("Zurückrufen zum Planeten %s"), sprintf(_("„%s“ (%s)"), $me->planetName(), vsprintf(_("%d:%d:%d"), $me->getPos()))))?></button></div></form>
+	<form action="flotten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>#fremdstationierungen" method="post" class="ihre-fremdstationierungen"><div class="button"><button type="submit" name="callback_foreign[<?=htmlspecialchars($coords)?>][<?=htmlspecialchars($i)?>]"><?=h(sprintf(_("Zurückrufen zum Planeten %s"), sprintf(_("„%s“ (%s)"), $me->planetName(), vsprintf(_("%d:%d:%d"), $me->getPos()))))?></button></div></form>
 <?php
 				}
 				$user_obj->restoreActivePlanet();

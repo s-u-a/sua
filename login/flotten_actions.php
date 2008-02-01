@@ -77,13 +77,13 @@
 			{
 				$verb = $me->isVerbuendet($username);
 
-				if($username == $_SESSION['username']) $class = 'eigen';
+				if($username == $me->getName()) $class = 'eigen';
 				elseif($verb) $class = 'verbuendet';
 				else $class = 'fremd';
 ?>
-<form action="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="handel <?=$class?>">
+<form action="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.global_setting("URL_SUFFIX"))?>" method="post" class="handel <?=$class?>">
 	<fieldset>
-		<legend><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($username).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($username)?></a></legend>
+		<legend><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($username).'&'.global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($username)?></a></legend>
 <?php
 				$trans = $fleet->getTransportCapacity($username);
 				$handel = $fleet->getHandel($username);
@@ -194,7 +194,7 @@
 				if($verb)
 				{
 					$mess1 = 'Sie können das Handelsangebot zu diesem Spieler ändern, da Sie mit ihm verbündet sind.';
-					if($username == $_SESSION['username']) $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend) und %2$s Roboter (%4$s verbleibend).';
+					if($username == $me->getName()) $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend) und %2$s Roboter (%4$s verbleibend).';
 					else $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend).';
 					$input_name = 'set';
 					$value = '%s';
@@ -311,7 +311,7 @@
 				</tr>
 <?php
 				}
-				if($username == $_SESSION['username'] && $trans[1] > 0)
+				if($username == $me->getName() && $trans[1] > 0)
 				{
 					foreach($me->getItemsList('roboter') as $id)
 					{
@@ -389,7 +389,7 @@
 					}
 					else $s .= '[unbesiedelt]';
 ?>
-		<li><?=htmlspecialchars($s)?> <span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.session_id())?>" class="hoch">[Hoch]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.session_id())?>" class="runter">[Runter]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.session_id())?>" class="loeschen">[Löschen]</a></span></li>
+		<li><?=htmlspecialchars($s)?> <span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="hoch">[Hoch]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="runter">[Runter]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="loeschen">[Löschen]</a></span></li>
 <?php
 					$i++;
 				}
@@ -446,7 +446,7 @@
 <p class="buendnisangriff-beschreibung-1">Hier können Sie der ausgewählten Flotte ein Flottenpasswort zuweisen, welches es anderen Spielern ermöglicht, Ihrem Angriff eigene Flotten beizusteuern. Möchte ein anderer Spieler dem Flottenverbund beitreten, so muss er im Flottenmenü Ihren Benutzernamen in Verbindung mit dem hier festgelegten Passwort angeben. Übermitteln Sie ihm hierzu das Passwort selbst, zum Beispiel durch eine Nachricht.</p>
 <p class="buendnisangriff-beschreibung-2">Beachten Sie, dass ein Spieler dem Flottenverbund nicht mehr beitreten kann, wenn seine Flugzeit zum ausgewählten Ziel länger ist als die verbleibende Flugzeit der Flotte.</p>
 <p class="buendnisangriff-beschreibung-3">Wenn hier kein Passwort eingetragen ist, ist die Flottenverbundfunktion für diese Flotte deaktiviert.</p>
-<form action="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.urlencode(session_name()).'='.urlencode(session_id()))?>" method="post" class="buendnisangriff">
+<form action="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.global_setting("URL_SUFFIX"))?>" method="post" class="buendnisangriff">
 	<dl class="form">
 		<dt><label for="i-flottenpasswort">Flottenpasswort</label></dt>
 		<dd><input type="text" name="fleet_passwd"<?php if($passwd !== null){?> value="<?=htmlspecialchars($passwd)?>"<?php }?> /></dd>

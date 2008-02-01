@@ -71,7 +71,7 @@
 				{
 ?>
 <ul class="allianz-bewerben possibilities">
-	<li><a href="../allianz.php?action=apply&amp;for=<?=htmlspecialchars(urlencode($alliance->getName()))?>&amp;<?=htmlspecialchars(urlencode(session_name()).'='.urlencode(session_id()))?>"<?=accesskey_attr(_("Bei dieser Allianz bewerben&[login/help/allianceinfo.php|1]"))?>><?=h(_("Bei dieser Allianz bewerben&[login/help/allianceinfo.php|1]"))?></a></li>
+	<li><a href="../allianz.php?action=apply&amp;for=<?=htmlspecialchars(urlencode($alliance->getName()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Bei dieser Allianz bewerben&[login/help/allianceinfo.php|1]"))?>><?=h(_("Bei dieser Allianz bewerben&[login/help/allianceinfo.php|1]"))?></a></li>
 </ul>
 <?php
 				}
