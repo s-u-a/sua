@@ -956,7 +956,7 @@
 		{
 			if(!$this->status) return false;
 
-			if($last_request === false)
+			if($last_request === null)
 			{
 				if(!isset($this->raw['last_request'])) return null;
 				else return $this->raw['last_request'];
