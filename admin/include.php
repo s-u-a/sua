@@ -189,9 +189,9 @@
 <?php
 			}
 ?>
-			var ths_utf8 = '<?=utf8_jsentities(global_setting("THS_UTF8"))?>';
-			var h_root = '<?=utf8_jsentities(h_root)?>';
-			var last_min_chars = '<?=utf8_jsentities(global_setting("LIST_MIN_CHARS"))?>';
+			var ths_utf8 = '<?=jsentities(global_setting("THS_UTF8"))?>';
+			var h_root = '<?=jsentities(h_root)?>';
+			var last_min_chars = '<?=jsentities(global_setting("LIST_MIN_CHARS"))?>';
 		</script>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/login/scripts/javascript-2.js')?>"></script>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/sarissa.js')?>"></script>

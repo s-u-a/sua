@@ -58,7 +58,7 @@
 	<dt class="c-gesamtpunkte"><?=h(_("Gesamtpunkte"))?></dt>
 	<dd class="c-gesamtpunkte"><?=ths($overall)?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), ths($alliance->getRankTotal()), ths(getAlliancesCount())))?></span></dd>
 </dl>
-<h3 id="allianzbeschreibung"><?=h(_("Allianzbeschreibung"))?></h3>
+<h3 id="allianzbeschreibung" class="strong"><?=h(_("Allianzbeschreibung"))?></h3>
 <div class="allianz-externes">
 <?php
 			print($alliance->getExternalDescription());

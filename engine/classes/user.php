@@ -263,7 +263,7 @@
 						$message->addUser($user, $types_message_types[$type]);
 						$message->subject("Flotte zur\xc3\xbcckgerufen");
 						$message->from($this->getName());
-						$message->text("Ihre Flotte befand sich auf dem Weg zum Planeten \xe2\x80\x9e".$this->planetName()."\xe2\x80\x9c (".$this->getPosString().", Eigent\xc3\xbcmer: ".utf8_htmlentities($this->getName())."). Soeben wurde jener Planet verlassen, weshalb Ihre Flotte sich auf den R\xc3\xbcckweg zu Ihrem Planeten \xe2\x80\x9e".$this_galaxy->getPlanetName($pos[1], $pos[2])."\xe2\x80\x9c (".$pos_string.") macht.");
+						$message->text("Ihre Flotte befand sich auf dem Weg zum Planeten \xe2\x80\x9e".$this->planetName()."\xe2\x80\x9c (".$this->getPosString().", Eigent\xc3\xbcmer: ".htmlspecialchars($this->getName())."). Soeben wurde jener Planet verlassen, weshalb Ihre Flotte sich auf den R\xc3\xbcckweg zu Ihrem Planeten \xe2\x80\x9e".$this_galaxy->getPlanetName($pos[1], $pos[2])."\xe2\x80\x9c (".$pos_string.") macht.");
 					}
 				}
 			}
@@ -3262,8 +3262,8 @@
 
 			if($message_obj->getStatus())
 			{
-				$message_obj->text(sprintf(_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf(_("%s:%s:%s"), $this->getPos()), makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0])));
-				$message_obj->subject(sprintf(_("Fremdstationierung zurückgezogen auf %s"), vsprintf(_("%s:%s:%s"), $this->getPos())));
+				$message_obj->text(sprintf(_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf(_("%d:%d:%d"), $this->getPos()), makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0])));
+				$message_obj->subject(sprintf(_("Fremdstationierung zurückgezogen auf %s"), vsprintf(_("%d:%d:%d"), $this->getPos())));
 				$message_obj->from($user);
 				$message_obj->addUser($this->getName(), 3);
 			}
