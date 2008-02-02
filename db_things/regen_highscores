@@ -46,7 +46,7 @@
 		$this_user = Classes::User(urldecode($fname));
 		if(!$this_user->getStatus()) continue;
 
-		//$highscores_obj->updateUser($this_user->getName(), $this_user->allianceTag(), $this_user->getScores());
+		$highscores_obj->updateUser($this_user->getName(), $this_user->allianceTag());
 		$this_user->doRecalcHighscores();
 
 		Classes::resetInstances("User");
