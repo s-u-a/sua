@@ -114,6 +114,8 @@ function init_countdown(obj_id, f_time, show_cancel, sleep_seconds, finish_url)
 	// obj_id: ID des Items, HTML-ID: restbauzeit-[id]
 	// f_time: Fertigstellungs-Serverzeit
 
+	if(slow_terminal) return false;
+
 	// Abbruchbutton anzeigen
 	show_cancel = ((show_cancel == null) ? true : (show_cancel == true));
 
@@ -415,6 +417,9 @@ var refresh_callbacks = [ ];
 function refresh_ress(refresh_int, carbon_vorh, aluminium_vorh, wolfram_vorh, radium_vorh, tritium_vorh, carbon_prod, aluminium_prod, wolfram_prod, radium_prod, tritium_prod)
 { // Initialisiert Auto-Refresh
 	// Startzeit zur Neuberechnung
+	
+	if(slow_terminal) return false;
+
 	var now_time = new Date();
 	window.start_increase_ress = now_time.getTime();
 
@@ -522,21 +527,24 @@ function popup_fadeout(el_key)
 { // Laesst eine obige Statusmeldung langsam ausblenden
 	el = fadeout_elements[el_key];
 
-	steps = 15;
-	timel = 4000;
+	if(!slow_terminal)
+	{
+		steps = 15;
+		timel = 4000;
+	
+		setOpacity(el_key,100); // To prevent flicker in Firefox
+		                        // The first time the opacity is set
+		                        // the element flickers in Firefox
+		fadeStep = 100/steps;
+		timeStep = timel/steps;
+		opacity = 100;
+		timel = 100;
 
-	setOpacity(el_key,100); // To prevent flicker in Firefox
-	                        // The first time the opacity is set
-	                        // the element flickers in Firefox
-	fadeStep = 100/steps;
-	timeStep = timel/steps;
-	opacity = 100;
-	timel = 100;
-
-	while (opacity >=0) {
-		window.setTimeout("setOpacity("+el_key+","+opacity+")",timel);
-		opacity -= fadeStep;
-		timel += timeStep;
+		while (opacity >=0) {
+			window.setTimeout("setOpacity("+el_key+","+opacity+")",timel);
+			opacity -= fadeStep;
+			timel += timeStep;
+		}
 	}
 	window.setTimeout('fadeout_elements['+el_key+'].parentNode.removeChild(fadeout_elements['+el_key+']);', timel);
 }

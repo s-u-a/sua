@@ -255,8 +255,9 @@
 			var last_min_chars = '<?=jsentities(global_setting("LIST_MIN_CHARS"))?>';
 			var res_now = [ <?=implode(", ", $me->getRess())?> ];
 			var res_ids = [ 'carbon', 'aluminium', 'wolfram', 'radium', 'tritium' ];
+			var slow_terminal = <?=$me->checkSetting("performance") ? "false" : "true"?>;
 		</script>
-		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/login/scripts/javascript-'.$me->checkSetting('performance').".js")?>"></script>
+		<script type="text/javascript" src="<?=htmlspecialchars(h_root."/login/scripts/javascript.js")?>"></script>
 <?php
 			if($me->checkSetting('performance') != 0)
 			{
