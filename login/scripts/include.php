@@ -381,7 +381,7 @@
 			if($active_planet_1 > max($me->getPlanetsList())) $active_planet_1 = 0;
 ?>
 				<hr class="separator" />
-				<h1><a href="?<?=htmlspecialchars("planet=".urlencode($active_planet_0)."&".global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zum vorigen Planeten wechseln&[login/scripts/include.php|1]"), false)?>"<?=accesskey_attr(_("Zum vorigen Planeten wechseln&[login/scripts/include.php|1]"))?>><?=h(_("←"))?></a> <?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), vsprintf(h(_("%d:%d:%d")), $me->getPos()))?> <a href="?<?=htmlspecialchars("planet=".urlencode($active_planet_1)."&".global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zum nächsten Planeten wechseln&[login/scripts/include.php|1]"), false)?>"<?=accesskey_attr(_("Zum nächsten Planeten wechseln&[login/scripts/include.php|1]"))?>><?=h(_("→"))?></a></h1>
+				<h1><a href="?<?=htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$active_planet_0, global_setting("URL_SUFFIX")))?>" title="<?=h(_("Zum vorigen Planeten wechseln&[login/scripts/include.php|1]"), false)?>"<?=accesskey_attr(_("Zum vorigen Planeten wechseln&[login/scripts/include.php|1]"))?>><?=h(_("←"))?></a> <?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), vsprintf(h(_("%d:%d:%d")), $me->getPos()))?> <a href="?<?=htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$active_planet_1, global_setting("URL_SUFFIX")))?>" title="<?=h(_("Zum nächsten Planeten wechseln&[login/scripts/include.php|1]"), false)?>"<?=accesskey_attr(_("Zum nächsten Planeten wechseln&[login/scripts/include.php|1]"))?>><?=h(_("→"))?></a></h1>
 <?php
 			if(isset($options["notify"]) && $options["notify"] || !isset($options["notify"]) && $me->checkSetting('notify'))
 			{
