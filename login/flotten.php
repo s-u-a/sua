@@ -425,7 +425,7 @@
 <h3 class="strong"><?=h(_("Flotte versenden"))?></h3>
 <p class="flotte-anzahl<?=($my_flotten >= $max_flotten) ? ' voll' : ''?>">
 	<?=h(sprintf(ngettext("Sie haben derzeit %s von %s möglichen Flotte unterwegs.", "Sie haben derzeit %s von %s möglichen Flotten unterwegs.", $max_flotten), ths($my_flotten), ths($max_flotten)))?><br />
-	<?=_i(_("Bauen Sie [item_F0_def_acc] aus, um die maximale Anzahl zu erhöhen."))."\n"?>
+	<?=_i(h(_("Bauen Sie [item_F0_def_acc] aus, um die maximale Anzahl zu erhöhen.")))."\n"?>
 </p>
 <?php
 				$this_pos = $me->getPos();

@@ -1125,8 +1125,6 @@
 
 		$string = str_replace("\n<p></p>", '<br /><br />', $string);
 
-		$string = htmlspecialchars($string, true);
-
 		return $string;
 	}
 
@@ -1907,7 +1905,7 @@
 
 	function _i($string, $links=true)
 	{
-		return preg_replace("/\\[(item|ress)_([a-zA-Z0-9]+)([-a-zA-Z0-9_]*)\\]/e", ($links?"'<a href=\"".h_root."/login/help/description.php?id=\$2&amp;".htmlspecialchars(global_setting("URL_SUFFIX"))."\">'.h(":"")."_('\$0')".($links?").'</a>'" : ""), $links?h($string):$string);
+		return preg_replace("/\\[(item|ress)_([a-zA-Z0-9]+)([-a-zA-Z0-9_]*)\\]/e", ($links?"'<a href=\"".h_root."/login/help/description.php?id=\$2&amp;".htmlspecialchars(global_setting("URL_SUFFIX"))."\">'.h(":"")."_('\$0')".($links?").'</a>'" : ""), $string);
 	}
 
 	/**

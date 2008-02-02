@@ -51,7 +51,7 @@
 				return "\n\t\t</p>\n\t\t".str_repeat('<br />', $len-2)."\n\t\t<p>\n\t\t\t";
 		}
 
-		$desc = "\t\t<p>\n\t\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', _i(_("[itemdesc_".$_GET["id"]."]"), true))."\n\t\t</p>\n";
+		$desc = "\t\t<p>\n\t\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', _i(h(_("[itemdesc_".$_GET["id"]."]")), true))."\n\t\t</p>\n";
 
 		print($desc);
 ?>
