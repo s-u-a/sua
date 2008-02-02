@@ -77,27 +77,27 @@
 <?php
 		$i = 1;
 		$active_planet = $me->getActivePlanet();
+		$echo = array();
 		foreach($me->getPlanetsList() as $planet)
 		{
 			$me->setActivePlanet($planet);
-?>
-		'<?=jsentities($me->getPosString())?>' : <?=$i?>,
-<?php
+			$echo[] = "\t\t'".jsentities($me->getPosString())."' : ".$i;
 			$i++;
 		}
 		$me->setActivePlanet($active_planet);
+		echo implode(",\n", $echo)."\n";
 ?>
 	};
 	var my_bookmarks = {
 <?php
+		$echo = array();
 		$shortcuts_list = $me->getPosShortcutsList();
 		foreach($shortcuts_list as $sc)
 		{
-?>
-		'<?=jsentities($sc)?>' : <?=$i?>,
-<?php
+			$echo[] = "\t\t'".jsentities($sc)."' : ".$i;
 			$i++;
 		}
+		echo implode(",\n", $echo)."\n";
 ?>
 	};
 	var bookmark_active_tr = null;
