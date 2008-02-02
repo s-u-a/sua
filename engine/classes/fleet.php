@@ -64,6 +64,16 @@
 		}
 	}
 
+/*
+  * Format von $raw:
+  * [ Ziele, Benutzer, (boolean) gestartet?, Vergangene Ziele ]
+  * Ziele: ( (string) Koordinaten => [ FLEET_TYPE_*, (boolean) Rückflug? ] )
+  * Benutzer: ( (string) Benutzername => [ ( Schiffs-ID => Anzahl ), (string) Start-Koordinaten, (float) Geschwindigkeitsfaktor, Mitgenommene Rohstoffe, Handel, (float) Verbrauchtes Tritium (für die Flugerfahrungspunkte) ] )
+  * Vergangene Ziele: Ziele
+  * Mitgenommene Rohstoffe: [ ( Rohstoffnummer => Menge ), ( Roboter-ID => Anzahl ), Überschüssiges Tritium ]
+  * Handel: [ ( Rohstoffnummer => Menge ), ( Roboter-ID => Anzahl ) ]
+*/
+
 	class Fleet
 	{
 		protected static $database = false;
