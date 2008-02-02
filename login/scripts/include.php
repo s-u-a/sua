@@ -181,13 +181,13 @@
 		die(sprintf(h(_("HTTP redirect: %s")), "<a href=\"".htmlspecialchars($url)."\">".htmlspecialchars($url)."</a>"));
 	}
 
-	if(!isset($_REQUEST['planet']) || !$me->planetExists($_REQUEST['planet']))
+	if(!isset($_GET['planet']) || !$me->planetExists($_GET['planet']))
 	{
 		$planets = $me->getPlanetsList();
-		$_REQUEST["planet"] = array_shift($planets);
+		$_GET["planet"] = array_shift($planets);
 	}
 
-	$me->setActivePlanet($_REQUEST['planet']);
+	$me->setActivePlanet($_GET['planet']);
 	
 	# URL-Appendix
 	define_url_suffix();
