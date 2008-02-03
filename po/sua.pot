@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-29 01:26+0100\n"
+"POT-Creation-Date: 2008-02-03 02:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -528,7 +528,7 @@ msgid "Name des Administrators"
 msgstr ""
 
 #: ../admin/usermanagement.php:66 ../admin/usermanagement.php:176
-#: ../login/help/allianceinfo.php:49 ../login/allianz.php:551
+#: ../login/info/allianceinfo.php:49 ../login/allianz.php:551
 msgid "Name"
 msgstr ""
 
@@ -564,7 +564,7 @@ msgid "Nachricht versenden"
 msgstr ""
 
 #: ../admin/usermanagement.php:71 ../admin/usermanagement.php:180
-#: ../login/help/playerinfo.php:192 ../public_message.php:74
+#: ../login/info/playerinfo.php:192 ../public_message.php:74
 msgid "Nachricht"
 msgstr ""
 
@@ -770,7 +770,7 @@ msgstr ""
 msgid "Sie haben das falsche alte Passwort eingegeben."
 msgstr ""
 
-#: ../admin/index.php:290 ../login/einstellungen.php:208
+#: ../admin/index.php:290 ../login/einstellungen.php:209
 msgid "Die beiden neuen Passworte stimmen nicht überein."
 msgstr ""
 
@@ -879,7 +879,7 @@ msgid "Stunden"
 msgstr ""
 
 #: ../admin/index.php:446 ../admin/index.php:602 ../admin/index.php:632
-#: ../login/flotten.php:493 ../login/flotten.php:680
+#: ../login/flotten.php:700 ../login/flotten.php:1019
 msgid "Tage"
 msgstr ""
 
@@ -1004,8 +1004,8 @@ msgid "Speichern&[admin/news.php|1]"
 msgstr ""
 
 #: ../admin/logs.php:47 ../admin/logs.php:104 ../login/allianz.php:297
-#: ../login/scripts/include.php:325 ../login/scripts/include.php:334
-#: ../login/scripts/include.php:349 ../index.php:59
+#: ../login/include.php:342 ../login/include.php:351 ../login/include.php:366
+#: ../index.php:59
 msgid "Y-m-d, H:i:s"
 msgstr ""
 
@@ -1171,7 +1171,7 @@ msgstr ""
 msgid "Zurück zum Spiel&[admin/include.php|1]"
 msgstr ""
 
-#: ../admin/include.php:176 ../login/scripts/include.php:229 ../chat.php:102
+#: ../admin/include.php:176 ../login/include.php:245 ../chat.php:102
 #: ../include.php:49 ../public_message.php:23
 msgid "[LANG]"
 msgstr ""
@@ -1205,436 +1205,411 @@ msgstr ""
 msgid "Abmelden nicht vergessen&[admin/include.php|2]"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:25 ../login/allianz.php:127
+#: ../login/info/allianceinfo.php:25 ../login/allianz.php:127
 msgid "Diese Allianz gibt es nicht."
 msgstr ""
 
-#: ../login/help/allianceinfo.php:35 ../login/help/playerinfo.php:34
+#: ../login/info/allianceinfo.php:35 ../login/info/playerinfo.php:34
 #: ../login/allianz.php:83 ../login/allianz.php:167 ../login/allianz.php:363
-#: ../login/allianz.php:381 ../login/allianz.php:653
-#: ../login/scripts/include.php:130 ../login/flotten.php:45 ../passwd.php:34
-#: ../passwd.php:68 ../passwd.php:93
+#: ../login/allianz.php:381 ../login/allianz.php:654 ../login/flotten.php:96
+#: ../login/flotten.php:196 ../login/flotten.php:324 ../login/flotten.php:686
+#: ../login/include.php:129 ../passwd.php:34 ../passwd.php:68 ../passwd.php:93
 msgid "Datenbankfehler."
 msgstr ""
 
-#: ../login/help/allianceinfo.php:44
+#: ../login/info/allianceinfo.php:44
 #, php-format
 msgid "Allianzinfo „%s“"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:46 ../login/allianz.php:548
+#: ../login/info/allianceinfo.php:46 ../login/allianz.php:548
 msgid "Allianztag"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:52 ../login/allianz.php:557
+#: ../login/info/allianceinfo.php:52 ../login/allianz.php:557
 msgid "Mitglieder"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:55 ../login/allianz.php:560
+#: ../login/info/allianceinfo.php:55 ../login/allianz.php:560
 msgid "Punkteschnitt"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:56 ../login/help/allianceinfo.php:59
+#: ../login/info/allianceinfo.php:56 ../login/info/allianceinfo.php:59
 #, php-format
 msgid "(Platz %s von %s)"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:58 ../login/allianz.php:563
+#: ../login/info/allianceinfo.php:58 ../login/allianz.php:563
 msgid "Gesamtpunkte"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:61
+#: ../login/info/allianceinfo.php:61
 msgid "Allianzbeschreibung"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:74
-msgid "Bei dieser Allianz bewerben&[login/help/allianceinfo.php|1]"
+#: ../login/info/allianceinfo.php:74
+msgid "Bei dieser Allianz bewerben&[login/info/allianceinfo.php|1]"
 msgstr ""
 
-#: ../login/help/allianceinfo.php:81 ../login/allianz.php:137
+#: ../login/info/allianceinfo.php:81 ../login/allianz.php:137
 msgid "Diese Allianz akzeptiert keine neuen Bewerbungen."
 msgstr ""
 
-#: ../login/help/playerinfo.php:25
+#: ../login/info/playerinfo.php:25
 msgid "Diesen Spieler gibt es nicht."
 msgstr ""
 
-#: ../login/help/playerinfo.php:41
+#: ../login/info/playerinfo.php:41
 #, php-format
 msgid "%s (g)"
 msgstr ""
 
-#: ../login/help/playerinfo.php:42
+#: ../login/info/playerinfo.php:42
 #, php-format
 msgid "%s (U)"
 msgstr ""
 
-#: ../login/help/playerinfo.php:44
+#: ../login/info/playerinfo.php:44
 #, php-format
 msgid "Spielerinfo „%s“"
 msgstr ""
 
-#: ../login/help/playerinfo.php:44
+#: ../login/info/playerinfo.php:44
 #, php-format
 msgid "[%s] %s"
 msgstr ""
 
-#: ../login/help/playerinfo.php:44
+#: ../login/info/playerinfo.php:44
 msgid "Informationen zu dieser Allianz anzeigen"
 msgstr ""
 
-#: ../login/help/playerinfo.php:45
+#: ../login/info/playerinfo.php:45
 msgid "Punkte"
 msgstr ""
 
-#: ../login/help/playerinfo.php:47 ../login/index.php:517
+#: ../login/info/playerinfo.php:47 ../login/index.php:517
 msgid "[scores_0]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:50 ../login/index.php:520
+#: ../login/info/playerinfo.php:50 ../login/index.php:520
 msgid "[scores_1]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:53 ../login/index.php:523
+#: ../login/info/playerinfo.php:53 ../login/index.php:523
 msgid "[scores_2]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:56 ../login/index.php:526
+#: ../login/info/playerinfo.php:56 ../login/index.php:526
 msgid "[scores_3]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:59 ../login/index.php:529
+#: ../login/info/playerinfo.php:59 ../login/index.php:529
 msgid "[scores_4]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:62 ../login/index.php:532
+#: ../login/info/playerinfo.php:62 ../login/index.php:532
 msgid "[scores_5]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:65 ../login/index.php:535
+#: ../login/info/playerinfo.php:65 ../login/index.php:535
 msgid "[scores_6]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:68 ../login/help/playerinfo.php:93
-#: ../engine/classes/fleet.php:2453
+#: ../login/info/playerinfo.php:68 ../login/info/playerinfo.php:93
+#: ../engine/classes/fleet.php:2463
 msgid "Gesamt"
 msgstr ""
 
-#: ../login/help/playerinfo.php:76
+#: ../login/info/playerinfo.php:76
 msgid "Ausgegebene Rohstoffe"
 msgstr ""
 
-#: ../login/help/playerinfo.php:78 ../login/help/description.php:147
-#: ../engine/include.php:797 ../engine/classes/fleet.php:1174
-#: ../engine/classes/fleet.php:1223 ../engine/classes/fleet.php:1224
-#: ../engine/classes/fleet.php:1259 ../engine/classes/fleet.php:1261
-#: ../engine/classes/fleet.php:1738 ../engine/classes/fleet.php:1763
-#: ../engine/classes/fleet.php:2486 ../engine/classes/fleet.php:2565
-#: ../engine/classes/fleet.php:2573 ../engine/classes/fleet.php:2578
+#: ../login/info/playerinfo.php:78 ../login/info/description.php:147
+#: ../engine/include.php:797 ../engine/classes/fleet.php:1184
+#: ../engine/classes/fleet.php:1233 ../engine/classes/fleet.php:1234
+#: ../engine/classes/fleet.php:1269 ../engine/classes/fleet.php:1271
+#: ../engine/classes/fleet.php:1748 ../engine/classes/fleet.php:1773
+#: ../engine/classes/fleet.php:2496 ../engine/classes/fleet.php:2575
+#: ../engine/classes/fleet.php:2583 ../engine/classes/fleet.php:2588
 msgid "[ress_0]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:81 ../login/help/description.php:153
-#: ../engine/include.php:799 ../engine/classes/fleet.php:1174
-#: ../engine/classes/fleet.php:1223 ../engine/classes/fleet.php:1224
-#: ../engine/classes/fleet.php:1259 ../engine/classes/fleet.php:1261
-#: ../engine/classes/fleet.php:1738 ../engine/classes/fleet.php:1763
-#: ../engine/classes/fleet.php:2486 ../engine/classes/fleet.php:2565
-#: ../engine/classes/fleet.php:2573 ../engine/classes/fleet.php:2578
+#: ../login/info/playerinfo.php:81 ../login/info/description.php:153
+#: ../engine/include.php:799 ../engine/classes/fleet.php:1184
+#: ../engine/classes/fleet.php:1233 ../engine/classes/fleet.php:1234
+#: ../engine/classes/fleet.php:1269 ../engine/classes/fleet.php:1271
+#: ../engine/classes/fleet.php:1748 ../engine/classes/fleet.php:1773
+#: ../engine/classes/fleet.php:2496 ../engine/classes/fleet.php:2575
+#: ../engine/classes/fleet.php:2583 ../engine/classes/fleet.php:2588
 msgid "[ress_1]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:84 ../login/help/description.php:159
-#: ../engine/include.php:801 ../engine/classes/fleet.php:1174
-#: ../engine/classes/fleet.php:1223 ../engine/classes/fleet.php:1224
-#: ../engine/classes/fleet.php:1259 ../engine/classes/fleet.php:1261
-#: ../engine/classes/fleet.php:1738 ../engine/classes/fleet.php:1763
-#: ../engine/classes/fleet.php:2486 ../engine/classes/fleet.php:2565
-#: ../engine/classes/fleet.php:2573 ../engine/classes/fleet.php:2578
+#: ../login/info/playerinfo.php:84 ../login/info/description.php:159
+#: ../engine/include.php:801 ../engine/classes/fleet.php:1184
+#: ../engine/classes/fleet.php:1233 ../engine/classes/fleet.php:1234
+#: ../engine/classes/fleet.php:1269 ../engine/classes/fleet.php:1271
+#: ../engine/classes/fleet.php:1748 ../engine/classes/fleet.php:1773
+#: ../engine/classes/fleet.php:2496 ../engine/classes/fleet.php:2575
+#: ../engine/classes/fleet.php:2583 ../engine/classes/fleet.php:2588
 msgid "[ress_2]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:87 ../login/help/description.php:165
-#: ../engine/include.php:803 ../engine/classes/fleet.php:1174
-#: ../engine/classes/fleet.php:1223 ../engine/classes/fleet.php:1224
-#: ../engine/classes/fleet.php:1259 ../engine/classes/fleet.php:1261
-#: ../engine/classes/fleet.php:1738 ../engine/classes/fleet.php:1763
-#: ../engine/classes/fleet.php:2486 ../engine/classes/fleet.php:2565
-#: ../engine/classes/fleet.php:2573 ../engine/classes/fleet.php:2578
+#: ../login/info/playerinfo.php:87 ../login/info/description.php:165
+#: ../engine/include.php:803 ../engine/classes/fleet.php:1184
+#: ../engine/classes/fleet.php:1233 ../engine/classes/fleet.php:1234
+#: ../engine/classes/fleet.php:1269 ../engine/classes/fleet.php:1271
+#: ../engine/classes/fleet.php:1748 ../engine/classes/fleet.php:1773
+#: ../engine/classes/fleet.php:2496 ../engine/classes/fleet.php:2575
+#: ../engine/classes/fleet.php:2583 ../engine/classes/fleet.php:2588
 msgid "[ress_3]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:90 ../login/help/description.php:171
-#: ../engine/include.php:807 ../engine/classes/fleet.php:1223
-#: ../engine/classes/fleet.php:1224 ../engine/classes/fleet.php:1259
-#: ../engine/classes/fleet.php:1261 ../engine/classes/fleet.php:1763
-#: ../engine/classes/fleet.php:1772 ../engine/classes/fleet.php:2565
-#: ../engine/classes/fleet.php:2573
+#: ../login/info/playerinfo.php:90 ../login/info/description.php:171
+#: ../engine/include.php:807 ../engine/classes/fleet.php:1233
+#: ../engine/classes/fleet.php:1234 ../engine/classes/fleet.php:1269
+#: ../engine/classes/fleet.php:1271 ../engine/classes/fleet.php:1773
+#: ../engine/classes/fleet.php:1782 ../engine/classes/fleet.php:2575
+#: ../engine/classes/fleet.php:2583
 msgid "[ress_4]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:99
+#: ../login/info/playerinfo.php:99
 msgid "Benutzerbeschreibung"
 msgstr ""
 
-#: ../login/help/playerinfo.php:105
+#: ../login/info/playerinfo.php:105
 msgid "Bündnisse"
 msgstr ""
 
-#: ../login/help/playerinfo.php:111
+#: ../login/info/playerinfo.php:111
 msgid "Dieser Benutzer ist derzeit in keinem Bündnis."
 msgstr ""
 
-#: ../login/help/playerinfo.php:122 ../login/allianz.php:277
+#: ../login/info/playerinfo.php:122 ../login/allianz.php:277
 #: ../login/allianz.php:489
 msgid "Informationen zu diesem Spieler anzeigen"
 msgstr ""
 
-#: ../login/help/playerinfo.php:130
+#: ../login/info/playerinfo.php:130
 msgid "Daten"
 msgstr ""
 
-#: ../login/help/playerinfo.php:132
+#: ../login/info/playerinfo.php:132
 msgid "Letzte Aktivität"
 msgstr ""
 
-#: ../login/help/playerinfo.php:138 ../login/help/playerinfo.php:155
-#: ../login/scripts/include.php:325 ../login/scripts/include.php:334
-#: ../login/scripts/include.php:349 ../login/flotten.php:535
-#: ../login/einstellungen.php:806 ../login/einstellungen.php:812
-#: ../login/einstellungen.php:825
+#: ../login/info/playerinfo.php:138 ../login/info/playerinfo.php:155
+#: ../login/flotten.php:749 ../login/einstellungen.php:797
+#: ../login/einstellungen.php:803 ../login/einstellungen.php:816
+#: ../login/include.php:342 ../login/include.php:351 ../login/include.php:366
 #, php-format
 msgid "%s (Serverzeit)"
 msgstr ""
 
-#: ../login/help/playerinfo.php:138 ../login/help/playerinfo.php:155
-#: ../login/flotten.php:445 ../login/flotten.php:535 ../public_message.php:72
+#: ../login/info/playerinfo.php:138 ../login/info/playerinfo.php:155
+#: ../login/flotten.php:749 ../login/flotten.php:1127 ../public_message.php:72
 msgid "H:i:s, Y-m-d"
 msgstr ""
 
-#: ../login/help/playerinfo.php:144
+#: ../login/info/playerinfo.php:144
 msgid "Nie"
 msgstr ""
 
-#: ../login/help/playerinfo.php:149
+#: ../login/info/playerinfo.php:149
 msgid "Registrierung"
 msgstr ""
 
-#: ../login/help/playerinfo.php:161
+#: ../login/info/playerinfo.php:161
 msgid "Unbekannt"
 msgstr ""
 
-#: ../login/help/playerinfo.php:170
+#: ../login/info/playerinfo.php:170
 msgid "Planeten"
 msgstr ""
 
-#: ../login/help/playerinfo.php:180 ../login/scripts/include.php:368
-#: ../login/scripts/include.php:546 ../login/flotten.php:1022
-#: ../engine/classes/fleet.php:1211 ../engine/classes/fleet.php:1493
+#: ../login/info/playerinfo.php:180 ../login/flotten.php:662
+#: ../login/include.php:385 ../login/include.php:564
+#: ../engine/classes/fleet.php:1221 ../engine/classes/fleet.php:1503
 #, php-format
 msgid "„%s“ (%s)"
 msgstr ""
 
-#: ../login/help/playerinfo.php:180
+#: ../login/info/playerinfo.php:180
 msgid "Jenes Sonnensystem in der Karte ansehen"
 msgstr ""
 
-#: ../login/help/playerinfo.php:180 ../login/scripts/include.php:368
-#: ../login/scripts/include.php:546 ../login/flotten.php:439
-#: ../login/flotten.php:509 ../login/flotten.php:857 ../login/flotten.php:1018
-#: ../login/flotten.php:1022 ../engine/classes/user.php:3265
-#: ../engine/classes/user.php:3266 ../engine/classes/fleet.php:1027
-#: ../engine/classes/fleet.php:1028 ../engine/classes/fleet.php:1041
-#: ../engine/classes/fleet.php:1042 ../engine/classes/fleet.php:1079
-#: ../engine/classes/fleet.php:1080 ../register.php:122
+#: ../login/info/playerinfo.php:180 ../login/karte.php:592
+#: ../login/flotten.php:497 ../login/flotten.php:658 ../login/flotten.php:662
+#: ../login/flotten.php:723 ../login/flotten.php:1121 ../login/include.php:385
+#: ../login/include.php:564 ../engine/classes/user.php:3248
+#: ../engine/classes/user.php:3249 ../engine/classes/fleet.php:1037
+#: ../engine/classes/fleet.php:1038 ../engine/classes/fleet.php:1051
+#: ../engine/classes/fleet.php:1052 ../engine/classes/fleet.php:1089
+#: ../engine/classes/fleet.php:1090 ../register.php:122
 #, php-format
 msgid "%d:%d:%d"
 msgstr ""
 
-#: ../login/help/playerinfo.php:193
+#: ../login/info/playerinfo.php:193
 msgid ""
 "Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. "
 "Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie "
 "sicher, dass Sie diese Aktion durchführen wollen?"
 msgstr ""
 
-#: ../login/help/playerinfo.php:195 ../login/help/playerinfo.php:196
-msgid "Betreff&[login/help/playerinfo.php|1]"
+#: ../login/info/playerinfo.php:195 ../login/info/playerinfo.php:196
+msgid "Betreff&[login/info/playerinfo.php|1]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:198 ../login/help/playerinfo.php:199
-msgid "Inhalt&[login/help/playerinfo.php|1]"
+#: ../login/info/playerinfo.php:198 ../login/info/playerinfo.php:199
+msgid "Inhalt&[login/info/playerinfo.php|1]"
 msgstr ""
 
-#: ../login/help/playerinfo.php:201
-msgid "&Nachricht absenden[login/help/playerinfo.php|1]"
+#: ../login/info/playerinfo.php:201
+msgid "&Nachricht absenden[login/info/playerinfo.php|1]"
 msgstr ""
 
-#: ../login/help/dependencies.php:23 ../engine/classes/fleet.php:1516
-msgid "Gebäude"
-msgid_plural "Gebäude"
+#: ../login/info/rename.php:139
+#, php-format
+msgid ""
+"Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn "
+"Sie den Planeten auflösen, wird diese Flotte zerstört werden."
+msgid_plural ""
+"Achtung! Von diesem Planeten sind noch %s Fremdstationierungen aktiv. Wenn "
+"Sie den Planeten auflösen, werden diese Flotten zerstört werden."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../login/help/dependencies.php:24 ../engine/classes/fleet.php:1513
-msgid "Forschung"
-msgid_plural "Forschungen"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../login/help/dependencies.php:25 ../login/flotten.php:538
-#: ../login/flotten.php:543 ../login/flotten.php:749
-#: ../engine/classes/fleet.php:1512
-msgid "Roboter"
-msgid_plural "Roboter"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../login/help/dependencies.php:26
-msgid "Schiff"
-msgid_plural "Schiffe"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../login/help/dependencies.php:27
-msgid "Verteidigungsanlage"
-msgid_plural "Verteidigungsanlagen"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../login/help/dependencies.php:37 ../login/help/description.php:97
-msgid "Abhängigkeiten"
+#: ../login/info/description.php:28
+msgid "Dieser Gegenstand existiert nicht."
 msgstr ""
 
-#: ../login/help/dependencies.php:48 ../login/help/description.php:103
-#: ../login/allianz.php:207 ../login/flotten.php:943
-#: ../engine/classes/item.php:331 ../engine/classes/fleet.php:2452
-msgid "Genauere Informationen anzeigen"
-msgstr ""
-
-#: ../login/help/dependencies.php:48 ../login/help/dependencies.php:67
-#: ../login/help/description.php:40 ../login/help/description.php:103
-#: ../engine/classes/item.php:122 ../engine/classes/item.php:278
-#: ../engine/classes/fleet.php:2151 ../engine/classes/fleet.php:2161
-msgid "[item_"
-msgstr ""
-
-#: ../login/help/dependencies.php:67 ../login/help/description.php:35
-#: ../login/help/description.php:103
+#: ../login/info/description.php:35 ../login/info/description.php:103
+#: ../login/forschungsbaum.php:67
 #, php-format
 msgid "%s (Stufe %s)"
 msgstr ""
 
-#: ../login/help/dependencies.php:67
-msgid "Zu diesem Gegenstand scrollen"
+#: ../login/info/description.php:40 ../login/info/description.php:103
+#: ../login/forschungsbaum.php:48 ../login/forschungsbaum.php:67
+#: ../engine/classes/item.php:122 ../engine/classes/item.php:278
+#: ../engine/classes/fleet.php:2161 ../engine/classes/fleet.php:2171
+msgid "[item_"
 msgstr ""
 
-#: ../login/help/description.php:28
-msgid "Dieser Gegenstand existiert nicht."
-msgstr ""
-
-#: ../login/help/description.php:54 ../engine/classes/item.php:123
+#: ../login/info/description.php:54 ../engine/classes/item.php:123
 msgid "[itemdesc_"
 msgstr ""
 
-#: ../login/help/description.php:65
+#: ../login/info/description.php:65
 msgid "Kosten"
 msgstr ""
 
-#: ../login/help/description.php:74
+#: ../login/info/description.php:74
 msgid "Bauzeit lokal"
 msgstr ""
 
-#: ../login/help/description.php:77
+#: ../login/info/description.php:77
 msgid "Bauzeit global"
 msgstr ""
 
-#: ../login/help/description.php:84
+#: ../login/info/description.php:84
 msgid "Bauzeit"
 msgstr ""
 
-#: ../login/help/description.php:116 ../login/help/description.php:257
-#: ../login/help/description.php:312
+#: ../login/info/description.php:97 ../login/forschungsbaum.php:37
+msgid "Abhängigkeiten"
+msgstr ""
+
+#: ../login/info/description.php:103 ../login/allianz.php:207
+#: ../login/forschungsbaum.php:48 ../login/flotten.php:583
+#: ../engine/classes/item.php:331 ../engine/classes/fleet.php:2462
+msgid "Genauere Informationen anzeigen"
+msgstr ""
+
+#: ../login/info/description.php:116 ../login/info/description.php:257
+#: ../login/info/description.php:312
 msgid "Eigenschaften"
 msgstr ""
 
-#: ../login/help/description.php:120 ../login/help/description.php:261
-#: ../login/help/description.php:316
+#: ../login/info/description.php:120 ../login/info/description.php:261
+#: ../login/info/description.php:316
 msgid "Eigenschaft"
 msgstr ""
 
-#: ../login/help/description.php:121 ../login/help/description.php:263
-#: ../login/help/description.php:318
+#: ../login/info/description.php:121 ../login/info/description.php:263
+#: ../login/info/description.php:318
 msgid "Wert"
 msgstr ""
 
-#: ../login/help/description.php:126
+#: ../login/info/description.php:126
 msgid "Benötigte Felderzahl"
 msgstr ""
 
-#: ../login/help/description.php:138
+#: ../login/info/description.php:138
 msgid "Produktion pro Stunde"
 msgstr ""
 
-#: ../login/help/description.php:142
+#: ../login/info/description.php:142
 msgid "Stufe"
 msgstr ""
 
-#: ../login/help/description.php:177 ../engine/include.php:812
+#: ../login/info/description.php:177 ../engine/include.php:812
 msgid "[ress_5]"
 msgstr ""
 
-#: ../login/help/description.php:262 ../login/help/description.php:317
+#: ../login/info/description.php:262 ../login/info/description.php:317
 msgid "Ursprungswert"
 msgstr ""
 
-#: ../login/help/description.php:268 ../login/flotten.php:537
+#: ../login/info/description.php:268 ../login/flotten.php:751
 msgid "Transportkapazität"
 msgstr ""
 
-#: ../login/help/description.php:269 ../login/help/description.php:270
+#: ../login/info/description.php:269 ../login/info/description.php:270
 #, php-format
 msgid "%s Tonnen, %s Roboter"
 msgstr ""
 
-#: ../login/help/description.php:273 ../login/help/description.php:323
+#: ../login/info/description.php:273 ../login/info/description.php:323
 msgid "Angriffsstärke"
 msgstr ""
 
-#: ../login/help/description.php:278 ../login/help/description.php:328
+#: ../login/info/description.php:278 ../login/info/description.php:328
 msgid "Schild"
 msgstr ""
 
-#: ../login/help/description.php:283
+#: ../login/info/description.php:283
 msgid "Antriebsstärke"
 msgstr ""
 
-#: ../login/help/description.php:284 ../login/help/description.php:285
-#: ../login/flotten.php:493 ../login/flotten.php:512 ../login/flotten.php:515
-#: ../login/flotten.php:518 ../login/flotten.php:527 ../login/flotten.php:538
-#: ../login/flotten.php:543 ../login/flotten.php:666 ../login/flotten.php:680
-#: ../login/flotten.php:749 ../faq.php:204 ../faq.php:205 ../faq.php:206
+#: ../login/info/description.php:284 ../login/info/description.php:285
+#: ../login/flotten.php:700 ../login/flotten.php:726 ../login/flotten.php:729
+#: ../login/flotten.php:732 ../login/flotten.php:741 ../login/flotten.php:752
+#: ../login/flotten.php:757 ../login/flotten.php:1005
+#: ../login/flotten.php:1019 ../login/flotten.php:1088 ../faq.php:204
+#: ../faq.php:205 ../faq.php:206
 msgid "[unit_separator]"
 msgstr ""
 
-#: ../login/help/description.php:284 ../login/help/description.php:285
-#: ../login/flotten.php:515
+#: ../login/info/description.php:284 ../login/info/description.php:285
+#: ../login/flotten.php:729
 msgid "Mikroorbit pro Quadratsekunde"
 msgid_plural "Mikroorbits pro Quadratsekunde"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../login/help/description.php:284 ../login/help/description.php:285
-#: ../login/flotten.php:515
+#: ../login/info/description.php:284 ../login/info/description.php:285
+#: ../login/flotten.php:729
 msgid "µOr⁄s²"
 msgstr ""
 
-#: ../login/help/description.php:288
+#: ../login/info/description.php:288
 msgid "Unterstützte Auftragsarten"
 msgstr ""
 
-#: ../login/help/description.php:295 ../login/index.php:197
-#: ../login/flotten.php:442 ../login/flotten.php:554
+#: ../login/info/description.php:295 ../login/index.php:197
+#: ../login/flotten.php:768 ../login/flotten.php:1124
 msgid "[fleet_"
 msgstr ""
 
@@ -1742,9 +1717,7 @@ msgid "Ihre Bewerbung wurde erfolgreich abgesandt."
 msgstr ""
 
 #: ../login/allianz.php:177
-msgid ""
-"Sie gehören derzeit keiner Allianz an. Es bieten sich Ihnen zwei "
-"Möglichkeiten."
+msgid "Sie gehören derzeit keiner Allianz an."
 msgstr ""
 
 #: ../login/allianz.php:180
@@ -1983,369 +1956,143 @@ msgstr ""
 msgid "%s (Platz %s von %s)"
 msgstr ""
 
-#: ../login/allianz.php:575
+#: ../login/allianz.php:576
 msgid "Wollen Sie wirklich aus der Allianz austreten?"
 msgstr ""
 
-#: ../login/allianz.php:575
+#: ../login/allianz.php:576
 msgid "Aus der Allianz austreten&[login/allianz.php|13]"
 msgstr ""
 
-#: ../login/allianz.php:581
+#: ../login/allianz.php:582
 msgid ""
 "Sind Sie sicher, dass Sie diese Allianz komplett auflösen und allen "
 "Mitgliedern die Mitgliedschaft kündigen wollen?"
 msgstr ""
 
-#: ../login/allianz.php:581
+#: ../login/allianz.php:582
 msgid "Haben Sie es sich doch noch anders überlegt?"
 msgstr ""
 
-#: ../login/allianz.php:581
+#: ../login/allianz.php:582
 msgid "Allianz auflösen&[login/allianz.php|13]"
 msgstr ""
 
-#: ../login/allianz.php:587
+#: ../login/allianz.php:588
 msgid "I&nternen Bereich bearbeiten[login/allianz.php|13]"
 msgstr ""
 
-#: ../login/allianz.php:593
+#: ../login/allianz.php:594
 msgid "E&xternen Bereich bearbeiten[login/alliance.php|13]"
 msgstr ""
 
-#: ../login/allianz.php:599
+#: ../login/allianz.php:600
 msgid "Benutzerrechte ver&walten[login/alliance.php|3]"
 msgstr ""
 
-#: ../login/allianz.php:607
+#: ../login/allianz.php:608
 msgid "Internes"
 msgstr ""
 
-#: ../login/allianz.php:613
+#: ../login/allianz.php:614
 msgid "Externes"
 msgstr ""
 
-#: ../login/allianz.php:623
+#: ../login/allianz.php:624
 msgid "Allianzrundschreiben"
 msgstr ""
 
-#: ../login/allianz.php:647
+#: ../login/allianz.php:648
 msgid "Das Allianzrundschreiben wurde erfolgreich versandt."
 msgstr ""
 
-#: ../login/allianz.php:660 ../login/allianz.php:661
+#: ../login/allianz.php:661 ../login/allianz.php:662
 msgid "Betreff&[login/allianz.php|13]"
 msgstr ""
 
-#: ../login/allianz.php:663 ../login/allianz.php:664
+#: ../login/allianz.php:664 ../login/allianz.php:665
 msgid "Text&[login/allianz.php|13]"
 msgstr ""
 
-#: ../login/allianz.php:666
+#: ../login/allianz.php:667
 msgid "Allianzrundschreiben verschicken&[login/allianz.php|13]"
 msgstr ""
 
-#: ../login/karte.php:111 ../login/karte.php:585 ../login/flotten.php:839
+#: ../login/karte.php:125 ../login/karte.php:613 ../login/flotten.php:479
 msgid "unbesiedelt"
 msgstr ""
 
-#: ../login/karte.php:558
+#: ../login/karte.php:574
 msgid "System-Dimension 1 erhöhen&[login/karte.php|1]"
 msgstr ""
 
-#: ../login/karte.php:559
+#: ../login/karte.php:575
 msgid "System-Dimension 2 erhöhen&[login/karte.php|1]"
 msgstr ""
 
-#: ../login/karte.php:560
+#: ../login/karte.php:576
 msgid "System-Dimension 3 erhöhen&[login/karte.php|1]"
 msgstr ""
 
-#: ../login/karte.php:561
+#: ../login/karte.php:577
 msgid "System-Dimension 1 verringern&[login/karte.php|1]"
 msgstr ""
 
-#: ../login/karte.php:562
+#: ../login/karte.php:578
 msgid "System-Dimension 2 verringern&[login/karte.php|1]"
 msgstr ""
 
-#: ../login/karte.php:563
+#: ../login/karte.php:579
 msgid "System-Dimension 3 verringern&[login/karte.php|1]"
 msgstr ""
 
-#: ../login/karte.php:564
+#: ../login/karte.php:580
 msgid "Zur nächsten Galaxie&[login/karte.php|1]"
 msgstr ""
 
-#: ../login/karte.php:565
+#: ../login/karte.php:581
 msgid "Zur vorigen Galaxie&[login/karte.php|1]"
 msgstr ""
 
-#: ../login/karte.php:592
+#: ../login/karte.php:621
 msgid "Lesezeichen verwalten&[login/karte.php|1]"
 msgstr ""
 
-#: ../login/scripts/include.php:67
-#, php-format
-msgid "Nicht angemeldet. Bitte %serneut anmelden%s."
-msgstr ""
-
-#: ../login/scripts/include.php:70
-#, php-format
-msgid ""
-"Anmeldung fehlgeschlagen. Haben Sie sich bereits registriert und Ihren "
-"Benutzernamen und Ihr Passwort korrekt in die zugehörigen Felder über dem "
-"Anmelden-Button eingetragen? Haben Sie Groß-Klein-Schreibung beim Passwort "
-"beachtet? %sProbieren Sie es noch einmal."
-msgstr ""
-
-#: ../login/scripts/include.php:88
-#, php-format
-msgid ""
-"Error: Database version is %s but should be %s. Please run db_things/"
-"update_database.\n"
-msgstr ""
-
-#: ../login/scripts/include.php:140
-#, php-format
-msgid ""
-"Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu "
-"anmelden%s."
-msgstr ""
-
-#: ../login/scripts/include.php:183 ../login/scripts/include.php:717
-#, php-format
-msgid "HTTP redirect: %s"
-msgstr ""
-
-#: ../login/scripts/include.php:232 ../include.php:51 ../include.php:57
-#: ../public_message.php:26
-msgid "[title_abbr_full]"
-msgstr ""
-
-#: ../login/scripts/include.php:237 ../engine/include.php:845
-msgid "[thousand_separator]"
-msgstr ""
-
-#: ../login/scripts/include.php:305 ../login/scripts/include.php:521
-#: ../login/scripts/include.php:653
-msgid "Zum Inhalt&[login/scripts/include.php|1]"
-msgstr ""
-
-#: ../login/scripts/include.php:306
-msgid "Zur Navigation&[login/scripts/include.php|1]"
-msgstr ""
-
-#: ../login/scripts/include.php:307
-msgid "Zu den Spieldaten&[login/scripts/include.php|1]"
-msgstr ""
-
-#: ../login/scripts/include.php:325
-msgid "Das Spiel ist derzeit gesperrt."
-msgstr ""
-
-#: ../login/scripts/include.php:325 ../login/scripts/include.php:334
-#: ../login/scripts/include.php:349
-#, php-format
-msgid "bis %s"
-msgstr ""
-
-#: ../login/scripts/include.php:334
-msgid "Ihr Benutzeraccount ist gesperrt."
-msgstr ""
-
-#: ../login/scripts/include.php:341
-msgid "Ihr Benutzeraccount befindet sich im Urlaubsmodus."
-msgstr ""
-
-#: ../login/scripts/include.php:349
-msgid "Es herrscht eine Flottensperre für feindliche Flüge."
-msgstr ""
-
-#: ../login/scripts/include.php:368
-msgid "Zum vorigen Planeten wechseln&[login/scripts/include.php|1]"
-msgstr ""
-
-#: ../login/scripts/include.php:368
-msgid "←"
-msgstr ""
-
-#: ../login/scripts/include.php:368
-msgid "Zum nächsten Planeten wechseln&[login/scripts/include.php|1]"
-msgstr ""
-
-#: ../login/scripts/include.php:368
-msgid "→"
-msgstr ""
-
-#: ../login/scripts/include.php:406 ../engine/classes/item.php:278
-#: ../engine/classes/fleet.php:1757
-#, php-format
-msgid "%s: %s"
-msgstr ""
-
-#: ../login/scripts/include.php:406 ../login/nachrichten.php:124
-#: ../login/nachrichten.php:406 ../engine/classes/message.php:386
-msgid "[message_"
-msgstr ""
-
-#: ../login/scripts/include.php:418
-#, php-format
-msgid "Sie haben %s neue &Nachricht.[login/scripts/include.php|2]"
-msgid_plural "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]"
+#: ../login/forschungsbaum.php:23 ../engine/classes/fleet.php:1526
+msgid "Gebäude"
+msgid_plural "Gebäude"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../login/scripts/include.php:520 ../login/scripts/include.php:652
-msgid "Zur Rohstoffanzeige&[login/scripts/include.php|1]"
-msgstr ""
-
-#: ../login/scripts/include.php:529
-msgid "Planeten wechseln"
-msgstr ""
-
-#: ../login/scripts/include.php:539
-msgid "Ihre &Planeten[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:552
-msgid "Wechseln"
-msgstr ""
-
-#: ../login/scripts/include.php:557
-msgid "&Übersicht[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:558
-msgid "&Rohstoffe[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:559
-msgid "&Gebäude[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:560
-msgid "&Forschung[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:561
-msgid "Ro&boter[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:562
-msgid "F&lotten[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:563
-msgid "&Schiffswerft[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:564
-msgid "&Verteidigung[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:565
-msgid "Han&delsbörse[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:566
-msgid "I&mperium[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:570
-msgid "&Karte[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:571
-msgid "All&ianz[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:572
-msgid "V&erbündete[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:573
-msgid "&Highscores[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:574
-msgid "Na&chrichten[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:575
-msgid "Forschungsb&aum[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:576
-msgid "Eins&tellungen[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:581
-msgid "Adminbereich&[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:587
-msgid "Abmelden&[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:598
-msgid "Board&[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:599
-msgid "FAQ&[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:600
-msgid "Chat&[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:601
-msgid "Entwicklerseite&[login/scripts/include.php|3]"
-msgstr ""
-
-#: ../login/scripts/include.php:611
-msgid "Serverzeit"
-msgstr ""
-
-#: ../login/scripts/include.php:612
-msgid "H:i:s"
-msgstr ""
-
-#: ../login/scripts/include.php:621
-msgid ""
-"mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2"
-"(local_time_obj.getSeconds())"
-msgstr ""
-
-#: ../login/scripts/include.php:623
-msgid "Lokalzeit"
-msgstr ""
-
-#: ../login/scripts/include.php:638
-msgid "Changelog anzeigen&[login/scripts/include.php|4]"
-msgstr ""
-
-#: ../login/scripts/include.php:638
-#, php-format
-msgid "Version %s"
-msgstr ""
-
-#: ../login/scripts/include.php:643
-#, php-format
-msgid "Revision %s"
-msgstr ""
-
-#: ../login/scripts/rename.php:141
-#, php-format
-msgid ""
-"Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn "
-"Sie den Planeten auflösen, wird diese Flotte zerstört werden."
-msgid_plural ""
-"Achtung! Von diesem Planeten sind noch %d Fremdstationierungen aktiv. Wenn "
-"Sie den Planeten auflösen, werden diese Flotten zerstört werden."
+#: ../login/forschungsbaum.php:24 ../engine/classes/fleet.php:1523
+msgid "Forschung"
+msgid_plural "Forschungen"
 msgstr[0] ""
 msgstr[1] ""
+
+#: ../login/forschungsbaum.php:25 ../login/flotten.php:752
+#: ../login/flotten.php:757 ../login/flotten.php:1088
+#: ../engine/classes/fleet.php:1522
+msgid "Roboter"
+msgid_plural "Roboter"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../login/forschungsbaum.php:26
+msgid "Schiff"
+msgid_plural "Schiffe"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../login/forschungsbaum.php:27
+msgid "Verteidigungsanlage"
+msgid_plural "Verteidigungsanlagen"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../login/forschungsbaum.php:67
+msgid "Zu diesem Gegenstand scrollen"
+msgstr ""
 
 #: ../login/highscores.php:104
 msgid "[scores_"
@@ -2355,36 +2102,56 @@ msgstr ""
 msgid "[ress_"
 msgstr ""
 
-#: ../login/flotten.php:33
-msgid "Flotten"
-msgstr ""
-
-#: ../login/flotten.php:43
+#: ../login/flotten.php:92
 msgid "Dieser Planet ist schon in Ihren Lesezeichen."
 msgstr ""
 
-#: ../login/flotten.php:44
+#: ../login/flotten.php:94
 msgid "Der Planet wurde zu den Lesezeichen hinzugefügt."
 msgstr ""
 
-#: ../login/flotten.php:71 ../login/flotten.php:73
-msgid "Maximale Flottenzahl erreicht."
-msgstr ""
-
-#: ../login/flotten.php:94 ../login/flotten.php:96
+#: ../login/flotten.php:115
 msgid "Keine Spionagesonden vorhanden."
 msgstr ""
 
-#: ../login/flotten.php:108 ../login/flotten.php:110
+#: ../login/flotten.php:122
 msgid "Kein Besiedelungsschiff vorhanden."
 msgstr ""
 
-#: ../login/flotten.php:138 ../login/flotten.php:140
+#: ../login/flotten.php:145
 msgid "Keine Sammler vorhanden."
 msgstr ""
 
-#: ../login/flotten.php:266
-msgid "Diese Aktion ist auf diesen Planeten nicht möglich."
+#: ../login/flotten.php:154 ../login/include.php:351
+msgid "Ihr Benutzeraccount ist gesperrt."
+msgstr ""
+
+#: ../login/flotten.php:156
+msgid "Maximale Flottenzahl erreicht."
+msgstr ""
+
+#: ../login/flotten.php:183
+msgid "Keine vorhandenen Flotten ausgewählt."
+msgstr ""
+
+#: ../login/flotten.php:189
+msgid "Ungültiger Benutzername."
+msgstr ""
+
+#: ../login/flotten.php:192
+msgid "Ungültiges Flottenpasswort."
+msgstr ""
+
+#: ../login/flotten.php:198
+msgid "Sie sind bereits Teil des Bündnisflugs."
+msgstr ""
+
+#: ../login/flotten.php:201
+msgid "Ungültige Koordinaten."
+msgstr ""
+
+#: ../login/flotten.php:213
+msgid "Diesen Planeten gibt es nicht."
 msgstr ""
 
 #: ../login/flotten.php:268
@@ -2393,690 +2160,914 @@ msgid ""
 "anzufliegen."
 msgstr ""
 
-#: ../login/flotten.php:274
-msgid ""
-"Ihre Flotte kann nicht schnell genug fliegen um gleichzeitig mit dem "
-"Flottenverbund am Ziel anzukommen."
+#: ../login/flotten.php:299
+msgid "Ungültigen Auftrag ausgewählt."
 msgstr ""
 
-#: ../login/flotten.php:324
-msgid "Dieser Spieler ist zu stark für Sie."
-msgstr ""
-
-#: ../login/flotten.php:326
+#: ../login/flotten.php:310
 msgid ""
 "Das Imperium dieses Spielers ist so groß, dass Ihre Sensoren beim Versuch, "
 "einen Anflugspunkt auszumachen, durcheinanderkommen. (Aka Anfängerschutz.)"
 msgstr ""
 
-#: ../login/flotten.php:332
-msgid "Dieser Spieler ist zu schwach für Sie."
-msgstr ""
-
-#: ../login/flotten.php:334
+#: ../login/flotten.php:312
 msgid ""
 "Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht "
 "ausmachen und deshalb den Flugkurs nicht berechnen können. (Aka "
 "Anfängerschutz.)"
 msgstr ""
 
-#: ../login/flotten.php:376
+#: ../login/flotten.php:349
 msgid "Nicht genug Tritium vorhanden."
 msgstr ""
 
-#: ../login/flotten.php:425 ../login/flotten.php:436
+#: ../login/flotten.php:393
 msgid "Die Flotte wurde versandt."
 msgstr ""
 
-#: ../login/flotten.php:438 ../login/flotten.php:508
-msgid "Ziel"
+#: ../login/flotten.php:400
+msgid "Fehler."
 msgstr ""
 
-#: ../login/flotten.php:439 ../login/flotten.php:1018
-#: ../engine/classes/fleet.php:1221 ../engine/classes/fleet.php:1493
-#: ../engine/classes/fleet.php:1511 ../engine/classes/fleet.php:1742
-#, php-format
-msgid "„%s“ (%s, Eigentümer: %s)"
+#: ../login/flotten.php:413
+msgid "Flotten"
 msgstr ""
 
-#: ../login/flotten.php:439
-#, php-format
-msgid "Unbesiedelt (%s)"
-msgstr ""
-
-#: ../login/flotten.php:441
-msgid "Auftragsart"
-msgstr ""
-
-#: ../login/flotten.php:444 ../login/einstellungen.php:545
-msgid "Ankunft"
-msgstr ""
-
-#: ../login/flotten.php:451
-msgid "Geben Sie dieser Flotte Ladung mit auf den Rückweg"
-msgstr ""
-
-#: ../login/flotten.php:451
-msgid "Handel&[login/flotten.php|3]"
-msgstr ""
-
-#: ../login/flotten.php:457
-msgid "Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern."
-msgstr ""
-
-#: ../login/flotten.php:457
-msgid "Bündnisangriff&[login/flotten.php|3]"
-msgstr ""
-
-#: ../login/flotten.php:472 ../login/flotten.php:784
-msgid "Ungültige Aktion."
-msgstr ""
-
-#: ../login/flotten.php:511
-msgid "Entfernung"
-msgstr ""
-
-#: ../login/flotten.php:512 ../faq.php:203 ../faq.php:204 ../faq.php:205
-#: ../faq.php:206
-msgid "Orbit"
-msgid_plural "Orbits"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../login/flotten.php:512 ../faq.php:203 ../faq.php:204 ../faq.php:205
-#: ../faq.php:206
-msgid "Or"
-msgstr ""
-
-#: ../login/flotten.php:514
-msgid "Antrieb"
-msgstr ""
-
-#: ../login/flotten.php:517
-msgid "Tritiumverbrauch"
-msgstr ""
-
-#: ../login/flotten.php:518 ../login/flotten.php:538 ../login/flotten.php:543
-msgid "Tonne"
-msgid_plural "Tonnen"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../login/flotten.php:520 ../login/flotten.php:522
-msgid "Gesch&windigkeit[login/flotten.php|1]"
-msgstr ""
-
-#: ../login/flotten.php:534
-msgid "Flugzeit"
-msgstr ""
-
-#: ../login/flotten.php:535 ../login/flotten.php:697
-#, php-format
-msgid "Ankunft: %s"
-msgstr ""
-
-#: ../login/flotten.php:542
-msgid "Verbleibend"
-msgstr ""
-
-#: ../login/flotten.php:547 ../login/flotten.php:549
-msgid "A&uftrag[login/flotten.php|1]"
-msgstr ""
-
-#: ../login/flotten.php:565
-msgid "Transport"
-msgstr ""
-
-#: ../login/flotten.php:572 ../login/flotten.php:573
-msgid "[ress_0]&[login/flotten.php|1]"
-msgstr ""
-
-#: ../login/flotten.php:575 ../login/flotten.php:576
-msgid "[ress_1]&[login/flotten.php|1]"
-msgstr ""
-
-#: ../login/flotten.php:578 ../login/flotten.php:579
-msgid "[ress_2]&[login/flotten.php|1]"
-msgstr ""
-
-#: ../login/flotten.php:581 ../login/flotten.php:582
-msgid "[ress_3]&[login/flotten.php|1]"
-msgstr ""
-
-#: ../login/flotten.php:584 ../login/flotten.php:585
-msgid "[ress_4]&[login/flotten.php|1]"
-msgstr ""
-
-#: ../login/flotten.php:666 ../login/flotten.php:749
-msgid "Tonnen"
-msgstr ""
-
-#: ../login/flotten.php:697
-#, php-format
-msgid "%s (Lokalzeit)"
-msgstr ""
-
-#: ../login/flotten.php:771
-msgid "Absen&den[login/flotten.php|1]"
-msgstr ""
-
-#: ../login/flotten.php:792
+#: ../login/flotten.php:425
 msgid "Flotte versenden"
 msgstr ""
 
-#: ../login/flotten.php:794
+#: ../login/flotten.php:427
 #, php-format
 msgid "Sie haben derzeit %s von %s möglichen Flotte unterwegs."
 msgid_plural "Sie haben derzeit %s von %s möglichen Flotten unterwegs."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../login/flotten.php:795
-#, php-format
-msgid "Bauen Sie %s aus, um die maximale Anzahl zu erhöhen."
+#: ../login/flotten.php:428
+msgid "Bauen Sie [item_F0_def_acc] aus, um die maximale Anzahl zu erhöhen."
 msgstr ""
 
-#: ../login/flotten.php:795
-msgid "[item_F0_def_acc]"
-msgstr ""
-
-#: ../login/flotten.php:811 ../login/flotten.php:812
+#: ../login/flotten.php:451 ../login/flotten.php:452
 msgid "&Ziel[login/flotten.php|2]"
 msgstr ""
 
-#: ../login/flotten.php:812
+#: ../login/flotten.php:452
 msgid "Ziel: System&[login/flotten.php|2]"
 msgstr ""
 
-#: ../login/flotten.php:812
+#: ../login/flotten.php:452
 msgid "Ziel: Planet&[login/flotten.php|2]"
 msgstr ""
 
-#: ../login/flotten.php:815 ../login/flotten.php:817
+#: ../login/flotten.php:455 ../login/flotten.php:457
 msgid "Pla&net[login/flotten.php|2]"
 msgstr ""
 
-#: ../login/flotten.php:818 ../login/einstellungen.php:274
+#: ../login/flotten.php:458 ../login/einstellungen.php:272
 msgid "Benutzerdefiniert"
 msgstr ""
 
-#: ../login/flotten.php:824
+#: ../login/flotten.php:464
 msgid "Lesezeichen"
 msgstr ""
 
-#: ../login/flotten.php:849
+#: ../login/flotten.php:489
 msgid "Eigene Planeten"
 msgstr ""
 
-#: ../login/flotten.php:868
+#: ../login/flotten.php:508
 msgid "Lesezeichen verwalten&[login/flotten.php|2]"
 msgstr ""
 
-#: ../login/flotten.php:918
+#: ../login/flotten.php:558
 msgid "Bündnisflug"
 msgstr ""
 
-#: ../login/flotten.php:920 ../login/flotten.php:921
+#: ../login/flotten.php:560 ../login/flotten.php:561
 msgid "Benutzername&[login/flotten.php|2]"
 msgstr ""
 
-#: ../login/flotten.php:923 ../login/flotten.php:924
+#: ../login/flotten.php:563 ../login/flotten.php:564
 msgid "Flottenpasswort&[login/flotten.php|2]"
 msgstr ""
 
-#: ../login/flotten.php:934 ../engine/classes/fleet.php:1514
+#: ../login/flotten.php:574 ../engine/classes/fleet.php:1524
 msgid "Schiffe"
 msgstr ""
 
-#: ../login/flotten.php:943
+#: ../login/flotten.php:583
 #, php-format
 msgid "%s vorhanden"
 msgstr ""
 
-#: ../login/flotten.php:955
+#: ../login/flotten.php:595
 msgid "&Weiter[login/flotten.php|2]"
 msgstr ""
 
-#: ../login/flotten.php:977
+#: ../login/flotten.php:617
 msgid "Fremdstationierungen auf diesem Planeten"
 msgstr ""
 
-#: ../login/flotten.php:1000
+#: ../login/flotten.php:640
 msgid "Ihre Fremdstationierungen"
 msgstr ""
 
-#: ../login/flotten.php:1022
+#: ../login/flotten.php:658 ../login/flotten.php:1121
+#: ../engine/classes/fleet.php:1231 ../engine/classes/fleet.php:1503
+#: ../engine/classes/fleet.php:1521 ../engine/classes/fleet.php:1752
+#, php-format
+msgid "„%s“ (%s, Eigentümer: %s)"
+msgstr ""
+
+#: ../login/flotten.php:662
 #, php-format
 msgid "Zurückrufen zum Planeten %s"
 msgstr ""
 
-#: ../login/einstellungen.php:196
+#: ../login/flotten.php:725
+msgid "Entfernung"
+msgstr ""
+
+#: ../login/flotten.php:726 ../faq.php:203 ../faq.php:204 ../faq.php:205
+#: ../faq.php:206
+msgid "Orbit"
+msgid_plural "Orbits"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../login/flotten.php:726 ../faq.php:203 ../faq.php:204 ../faq.php:205
+#: ../faq.php:206
+msgid "Or"
+msgstr ""
+
+#: ../login/flotten.php:728
+msgid "Antrieb"
+msgstr ""
+
+#: ../login/flotten.php:731
+msgid "Tritiumverbrauch"
+msgstr ""
+
+#: ../login/flotten.php:732 ../login/flotten.php:752 ../login/flotten.php:757
+msgid "Tonne"
+msgid_plural "Tonnen"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../login/flotten.php:734 ../login/flotten.php:736
+msgid "Gesch&windigkeit[login/flotten.php|1]"
+msgstr ""
+
+#: ../login/flotten.php:748
+msgid "Flugzeit"
+msgstr ""
+
+#: ../login/flotten.php:749 ../login/flotten.php:1036
+#, php-format
+msgid "Ankunft: %s"
+msgstr ""
+
+#: ../login/flotten.php:756
+msgid "Verbleibend"
+msgstr ""
+
+#: ../login/flotten.php:761 ../login/flotten.php:763
+msgid "A&uftrag[login/flotten.php|1]"
+msgstr ""
+
+#: ../login/flotten.php:779
+msgid "Transport"
+msgstr ""
+
+#: ../login/flotten.php:786 ../login/flotten.php:787
+msgid "[ress_0]&[login/flotten.php|1]"
+msgstr ""
+
+#: ../login/flotten.php:789 ../login/flotten.php:790
+msgid "[ress_1]&[login/flotten.php|1]"
+msgstr ""
+
+#: ../login/flotten.php:792 ../login/flotten.php:793
+msgid "[ress_2]&[login/flotten.php|1]"
+msgstr ""
+
+#: ../login/flotten.php:795 ../login/flotten.php:796
+msgid "[ress_3]&[login/flotten.php|1]"
+msgstr ""
+
+#: ../login/flotten.php:798 ../login/flotten.php:799
+msgid "[ress_4]&[login/flotten.php|1]"
+msgstr ""
+
+#: ../login/flotten.php:946
+msgid "Absen&den[login/flotten.php|1]"
+msgstr ""
+
+#: ../login/flotten.php:1005 ../login/flotten.php:1088
+msgid "Tonnen"
+msgstr ""
+
+#: ../login/flotten.php:1036
+#, php-format
+msgid "%s (Lokalzeit)"
+msgstr ""
+
+#: ../login/flotten.php:1120
+msgid "Ziel"
+msgstr ""
+
+#: ../login/flotten.php:1121
+#, php-format
+msgid "Unbesiedelt (%s)"
+msgstr ""
+
+#: ../login/flotten.php:1123
+msgid "Auftragsart"
+msgstr ""
+
+#: ../login/flotten.php:1126 ../login/einstellungen.php:536
+msgid "Ankunft"
+msgstr ""
+
+#: ../login/flotten.php:1133
+msgid "Geben Sie dieser Flotte Ladung mit auf den Rückweg"
+msgstr ""
+
+#: ../login/flotten.php:1133
+msgid "Handel&[login/flotten.php|3]"
+msgstr ""
+
+#: ../login/flotten.php:1139
+msgid "Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern."
+msgstr ""
+
+#: ../login/flotten.php:1139
+msgid "Bündnisangriff&[login/flotten.php|3]"
+msgstr ""
+
+#: ../login/einstellungen.php:197
 msgid "Das war kein gültiger GPG-Schlüssel."
 msgstr ""
 
-#: ../login/einstellungen.php:206
+#: ../login/einstellungen.php:207
 msgid "Das alte Passwort stimmt nicht."
 msgstr ""
 
-#: ../login/einstellungen.php:245
+#: ../login/einstellungen.php:243
 msgid "Einstellungen"
 msgstr ""
 
-#: ../login/einstellungen.php:256
+#: ../login/einstellungen.php:254
 msgid ""
 "Klicken Sie auf einen der Punkte, um die zugehörigen Einstellungen "
 "auszuklappen."
 msgstr ""
 
-#: ../login/einstellungen.php:261
+#: ../login/einstellungen.php:259
 msgid "Aussehen&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:263 ../login/einstellungen.php:265
+#: ../login/einstellungen.php:261 ../login/einstellungen.php:263
 msgid "Skin&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:276
+#: ../login/einstellungen.php:274
 msgid "Skin-Pfad&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:277
+#: ../login/einstellungen.php:275
 msgid "Skin-Parameter&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:280 ../login/einstellungen.php:281
+#: ../login/einstellungen.php:278 ../login/einstellungen.php:279
 msgid "Werbung ausblenden&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:281
+#: ../login/einstellungen.php:279
 msgid ""
 "Wenn Sie die Werbung eingeblendet lassen, helfen Sie, die Finanzen des "
 "Spiels zu decken."
 msgstr ""
 
-#: ../login/einstellungen.php:285
+#: ../login/einstellungen.php:283
 msgid "Skin-spezifische Einstellungen"
 msgstr ""
 
-#: ../login/einstellungen.php:453
+#: ../login/einstellungen.php:451
 msgid "Verhalten&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:455 ../login/einstellungen.php:456
+#: ../login/einstellungen.php:453 ../login/einstellungen.php:454
 msgid "Spionagesonden&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:456
+#: ../login/einstellungen.php:454
 msgid ""
 "Anzahl Spionagesonden, die bei der Spionage eines fremden Planeten aus der "
 "Karte geschickt werden sollen"
 msgstr ""
 
-#: ../login/einstellungen.php:458 ../login/einstellungen.php:459
+#: ../login/einstellungen.php:456 ../login/einstellungen.php:457
 msgid "Auto-Schnellbau&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:459
+#: ../login/einstellungen.php:457
 msgid ""
 "Wird ein Gebäude in Auftrag gegeben, wird automatisch zum nächsten "
 "unbeschäftigten Planeten gewechselt."
 msgstr ""
 
-#: ../login/einstellungen.php:461 ../login/einstellungen.php:462
+#: ../login/einstellungen.php:459 ../login/einstellungen.php:460
 msgid "Schnellbau auf ausgebaute&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:462
+#: ../login/einstellungen.php:460
 msgid ""
 "Durch diese Option werden auch ausgebaute Planeten bei der Schnellbau-"
 "Funktion berücksichtigt."
 msgstr ""
 
-#: ../login/einstellungen.php:464 ../login/einstellungen.php:465
+#: ../login/einstellungen.php:462 ../login/einstellungen.php:463
 msgid "Schnell-Shortcuts&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:465
+#: ../login/einstellungen.php:463
 msgid ""
 "Mit dieser Funktion brauchen Sie zum Ausführen der Shortcuts keine weitere "
 "Taste zu drücken."
 msgstr ""
 
-#: ../login/einstellungen.php:467 ../login/einstellungen.php:468
+#: ../login/einstellungen.php:465 ../login/einstellungen.php:466
 msgid "Javascript-Tooltips&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:468
+#: ../login/einstellungen.php:466
 msgid ""
 "Nicht auf langsamen Computern verwenden! Ist dieser Punkt aktiviert, werden "
 "die normalen Tooltips durch hübsche JavaScript-Tooltips ersetzt."
 msgstr ""
 
-#: ../login/einstellungen.php:470 ../login/einstellungen.php:471
+#: ../login/einstellungen.php:468 ../login/einstellungen.php:469
 msgid "Auto-Refresh&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:471
+#: ../login/einstellungen.php:469
 msgid ""
 "Wird hier eine Zahl größer als 0 eingetragen, wird in deren Sekundenabstand "
 "die Rohstoffanzeige oben automatisch aktualisiert. (Hinweis: Diese Funktion "
 "erzeugt keinen zusätzlichen Traffic.)"
 msgstr ""
 
-#: ../login/einstellungen.php:473 ../login/einstellungen.php:474
+#: ../login/einstellungen.php:471 ../login/einstellungen.php:472
 msgid "Externe Navigationslinks&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:474
+#: ../login/einstellungen.php:472
 msgid ""
 "Wenn diese Option aktiviert ist, werden in der Navigation Links auf "
 "spielexterne Seiten wie das Board angezeigt."
 msgstr ""
 
-#: ../login/einstellungen.php:476 ../login/einstellungen.php:478
-msgid "JavaScript-Performance&[login/einstellungen.php|1]"
+#: ../login/einstellungen.php:474 ../login/einstellungen.php:475
+msgid "JavaScript-Änderungen deaktivieren&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:479
-msgid "Keine Bildschirmänderungen"
+#: ../login/einstellungen.php:475
+msgid ""
+"Mit diese Option können Sie alle fortwährenden JavaScript-Änderungen (zum "
+"Beispiel die Uhr) deaktivieren. Nützlich an langsamen Terminals."
 msgstr ""
 
-#: ../login/einstellungen.php:480
-msgid "Ungenau, wenig CPU-Last"
-msgstr ""
-
-#: ../login/einstellungen.php:481
-msgid "Praktisch, mittlere CPU-Last"
-msgstr ""
-
-#: ../login/einstellungen.php:482
-msgid "Komfortabel und präzise, hohe CPU-Last"
-msgstr ""
-
-#: ../login/einstellungen.php:486 ../login/einstellungen.php:487
+#: ../login/einstellungen.php:477 ../login/einstellungen.php:478
 msgid "Erweiterte Gebäudeansicht&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:487
+#: ../login/einstellungen.php:478
 msgid ""
 "In der Gebäudeansicht wird zusätzlich der Produktionsunterschied zur "
 "nächsten Stufe angezeigt."
 msgstr ""
 
-#: ../login/einstellungen.php:492
+#: ../login/einstellungen.php:483
 msgid "Benachrichtigung&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:497
+#: ../login/einstellungen.php:488
 msgid ""
 "Nach Änderung des Instant-Messaging-Accounts wird zunächst eine "
 "Bestätigungsnachricht versandt."
 msgstr ""
 
-#: ../login/einstellungen.php:502 ../login/einstellungen.php:503
+#: ../login/einstellungen.php:493 ../login/einstellungen.php:494
 msgid "Nachrichten auf jeder Seite&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:503
+#: ../login/einstellungen.php:494
 msgid ""
 "Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angezeigt, "
 "dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten."
 msgstr ""
 
-#: ../login/einstellungen.php:509 ../login/einstellungen.php:511
+#: ../login/einstellungen.php:500 ../login/einstellungen.php:502
 msgid "IM-Account&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:512
+#: ../login/einstellungen.php:503
 msgid "Deaktiviert"
 msgstr ""
 
-#: ../login/einstellungen.php:523
+#: ../login/einstellungen.php:514
 msgid "UIN"
 msgstr ""
 
-#: ../login/einstellungen.php:540
+#: ../login/einstellungen.php:531
 msgid "Benachrichtigung bei Nachrichten"
 msgstr ""
 
-#: ../login/einstellungen.php:544
+#: ../login/einstellungen.php:535
 msgid "Nachrichtentyp"
 msgstr ""
 
-#: ../login/einstellungen.php:546
+#: ../login/einstellungen.php:537
 msgid "Rückkehr"
 msgstr ""
 
-#: ../login/einstellungen.php:551
+#: ../login/einstellungen.php:542
 msgid "IM-Benachrichtigung"
 msgstr ""
 
-#: ../login/einstellungen.php:559 ../login/einstellungen.php:561
+#: ../login/einstellungen.php:550 ../login/einstellungen.php:552
 msgid "[message_1]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:572 ../login/einstellungen.php:574
+#: ../login/einstellungen.php:563 ../login/einstellungen.php:565
 msgid "[message_2]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:585 ../login/einstellungen.php:586
+#: ../login/einstellungen.php:576 ../login/einstellungen.php:577
 msgid "[message_3]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:598 ../login/einstellungen.php:600
+#: ../login/einstellungen.php:589 ../login/einstellungen.php:591
 msgid "[message_4]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:611 ../login/einstellungen.php:612
+#: ../login/einstellungen.php:602 ../login/einstellungen.php:603
 msgid "[message_5]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:628 ../login/einstellungen.php:631
+#: ../login/einstellungen.php:619 ../login/einstellungen.php:622
 msgid "[message_6]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:634 ../login/einstellungen.php:637
+#: ../login/einstellungen.php:625 ../login/einstellungen.php:628
 msgid "[message_7]&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:646
+#: ../login/einstellungen.php:637
 msgid "Benachrichtigung bei Fertigstellung"
 msgstr ""
 
-#: ../login/einstellungen.php:650
+#: ../login/einstellungen.php:641
 msgid "Gegenstandsart"
 msgstr ""
 
-#: ../login/einstellungen.php:651
+#: ../login/einstellungen.php:642
 msgid "Verbl. Bauzeit in der Übersicht"
 msgstr ""
 
-#: ../login/einstellungen.php:656
+#: ../login/einstellungen.php:647
 msgid "IM-Benachichtigung"
 msgstr ""
 
-#: ../login/einstellungen.php:664 ../login/einstellungen.php:666
+#: ../login/einstellungen.php:655 ../login/einstellungen.php:657
 msgid "Gebäude&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:667 ../login/einstellungen.php:677
-#: ../login/einstellungen.php:689 ../login/einstellungen.php:699
-#: ../login/einstellungen.php:711 ../login/einstellungen.php:723
-#: ../login/einstellungen.php:737 ../login/einstellungen.php:749
-#: ../login/einstellungen.php:763 ../login/einstellungen.php:775
+#: ../login/einstellungen.php:658 ../login/einstellungen.php:668
+#: ../login/einstellungen.php:680 ../login/einstellungen.php:690
+#: ../login/einstellungen.php:702 ../login/einstellungen.php:714
+#: ../login/einstellungen.php:728 ../login/einstellungen.php:740
+#: ../login/einstellungen.php:754 ../login/einstellungen.php:766
 msgid "Ausgeschaltet"
 msgstr ""
 
-#: ../login/einstellungen.php:668 ../login/einstellungen.php:678
+#: ../login/einstellungen.php:659 ../login/einstellungen.php:669
 msgid "Jedes einzelne [Gebäude]"
 msgstr ""
 
-#: ../login/einstellungen.php:686 ../login/einstellungen.php:688
+#: ../login/einstellungen.php:677 ../login/einstellungen.php:679
 msgid "Forschung&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:690 ../login/einstellungen.php:700
+#: ../login/einstellungen.php:681 ../login/einstellungen.php:691
 msgid "Jede einzelne [Forschung]"
 msgstr ""
 
-#: ../login/einstellungen.php:708 ../login/einstellungen.php:710
+#: ../login/einstellungen.php:699 ../login/einstellungen.php:701
 msgid "Roboter&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:712 ../login/einstellungen.php:724
+#: ../login/einstellungen.php:703 ../login/einstellungen.php:715
 msgid "Jeder einzelne [Roboter]"
 msgstr ""
 
-#: ../login/einstellungen.php:713 ../login/einstellungen.php:725
+#: ../login/einstellungen.php:704 ../login/einstellungen.php:716
 msgid "Alle [Roboter] eines Typs"
 msgstr ""
 
-#: ../login/einstellungen.php:714 ../login/einstellungen.php:726
+#: ../login/einstellungen.php:705 ../login/einstellungen.php:717
 msgid "Alle [Roboter]"
 msgstr ""
 
-#: ../login/einstellungen.php:734 ../login/einstellungen.php:736
+#: ../login/einstellungen.php:725 ../login/einstellungen.php:727
 msgid "Schiffe&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:738 ../login/einstellungen.php:750
+#: ../login/einstellungen.php:729 ../login/einstellungen.php:741
 msgid "Jedes einzelne [Schiff]"
 msgstr ""
 
-#: ../login/einstellungen.php:739 ../login/einstellungen.php:751
+#: ../login/einstellungen.php:730 ../login/einstellungen.php:742
 msgid "Alle [Schiffe] eines Typs"
 msgstr ""
 
-#: ../login/einstellungen.php:740 ../login/einstellungen.php:752
+#: ../login/einstellungen.php:731 ../login/einstellungen.php:743
 msgid "Alle [Schiffe]"
 msgstr ""
 
-#: ../login/einstellungen.php:760 ../login/einstellungen.php:762
+#: ../login/einstellungen.php:751 ../login/einstellungen.php:753
 msgid "Verteidigung&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:764 ../login/einstellungen.php:776
+#: ../login/einstellungen.php:755 ../login/einstellungen.php:767
 msgid "Jede einzelne [Verteidigungsanlage]"
 msgstr ""
 
-#: ../login/einstellungen.php:765 ../login/einstellungen.php:777
+#: ../login/einstellungen.php:756 ../login/einstellungen.php:768
 msgid "Alle [Verteidigungsanlagen] eines Typs"
 msgstr ""
 
-#: ../login/einstellungen.php:766 ../login/einstellungen.php:778
+#: ../login/einstellungen.php:757 ../login/einstellungen.php:769
 msgid "Alle [Verteidigungsanlagen]"
 msgstr ""
 
-#: ../login/einstellungen.php:790
+#: ../login/einstellungen.php:781
 msgid "Speicher&n[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:798 ../login/einstellungen.php:805
+#: ../login/einstellungen.php:789 ../login/einstellungen.php:796
 msgid "Urlaubsmodus&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:805
+#: ../login/einstellungen.php:796
 msgid "Wollen Sie den Urlaubsmodus wirklich betreten?"
 msgstr ""
 
-#: ../login/einstellungen.php:806
+#: ../login/einstellungen.php:797
 #, php-format
 msgid ""
 "Sie werden frühestens nach drei Tagen (%s) aus dem Urlaubsmodus zurückkehren "
 "können."
 msgstr ""
 
-#: ../login/einstellungen.php:806 ../login/einstellungen.php:825
+#: ../login/einstellungen.php:797 ../login/einstellungen.php:816
 msgid "Y-m-d, H:i"
 msgstr ""
 
-#: ../login/einstellungen.php:812
+#: ../login/einstellungen.php:803
 #, php-format
 msgid "Sie können erst wieder ab dem %s in den Urlaubsmodus wechseln."
 msgstr ""
 
-#: ../login/einstellungen.php:819
+#: ../login/einstellungen.php:810
 msgid "Urlaubsmodus verlassen"
 msgstr ""
 
-#: ../login/einstellungen.php:819
+#: ../login/einstellungen.php:810
 msgid "Wollen Sie den Urlaubsmodus wirklich verlassen?"
 msgstr ""
 
-#: ../login/einstellungen.php:825
+#: ../login/einstellungen.php:816
 #, php-format
 msgid "Sie können den Urlaubsmodus spätestens am %s verlassen."
 msgstr ""
 
-#: ../login/einstellungen.php:834
+#: ../login/einstellungen.php:825
 msgid "Benutzeraccount&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:836 ../login/einstellungen.php:837
+#: ../login/einstellungen.php:827 ../login/einstellungen.php:828
 msgid "IP-Schutz&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:837
+#: ../login/einstellungen.php:828
 msgid ""
 "Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-"
 "Adressen gleichzeitig genutzt werden. (Unsicher!)"
 msgstr ""
 
-#: ../login/einstellungen.php:839 ../login/einstellungen.php:840
+#: ../login/einstellungen.php:830 ../login/einstellungen.php:831
 msgid "E-Mail-Adresse&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:840
+#: ../login/einstellungen.php:831
 msgid ""
 "Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben."
 msgstr ""
 
-#: ../login/einstellungen.php:840
+#: ../login/einstellungen.php:831
 #, php-format
 msgid ""
 "Eine Änderung wird aus Sicherheitsgründen nicht sofort übernommen. Die "
 "Verzögerungsdauer beträgt %s."
 msgstr ""
 
-#: ../login/einstellungen.php:845
+#: ../login/einstellungen.php:836
 #, php-format
 msgid "Vorläufig ist noch Ihre alte E-Mail-Adresse %s aktiv."
 msgstr ""
 
-#: ../login/einstellungen.php:853 ../login/einstellungen.php:864
+#: ../login/einstellungen.php:844 ../login/einstellungen.php:855
 msgid "OpenPGP-Key&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:860
+#: ../login/einstellungen.php:851
 msgid "Schlüssel löschen&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:866
+#: ../login/einstellungen.php:857
 msgid "Den OpenPGP-Key des Spiels herunterladen"
 msgstr ""
 
-#: ../login/einstellungen.php:871 ../login/einstellungen.php:872
+#: ../login/einstellungen.php:862 ../login/einstellungen.php:863
 msgid "Ben&utzerbeschreibung[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:875
+#: ../login/einstellungen.php:866
 msgid "Passwort ändern"
 msgstr ""
 
-#: ../login/einstellungen.php:877 ../login/einstellungen.php:878
+#: ../login/einstellungen.php:868 ../login/einstellungen.php:869
 msgid "Altes Passw&ort[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:880 ../login/einstellungen.php:881
+#: ../login/einstellungen.php:871 ../login/einstellungen.php:872
 msgid "Neues Passwort&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:883 ../login/einstellungen.php:884
+#: ../login/einstellungen.php:874 ../login/einstellungen.php:875
 msgid "Neues Passwort wiederholen&[login/einstellungen.php|1]"
 msgstr ""
 
-#: ../login/einstellungen.php:888
+#: ../login/einstellungen.php:879
 msgid "Speicher&n"
+msgstr ""
+
+#: ../login/include.php:67
+#, php-format
+msgid "Nicht angemeldet. Bitte %serneut anmelden%s."
+msgstr ""
+
+#: ../login/include.php:70
+#, php-format
+msgid ""
+"Anmeldung fehlgeschlagen. Haben Sie sich bereits registriert und Ihren "
+"Benutzernamen und Ihr Passwort korrekt in die zugehörigen Felder über dem "
+"Anmelden-Button eingetragen? Haben Sie Groß-Klein-Schreibung beim Passwort "
+"beachtet? %sProbieren Sie es noch einmal."
+msgstr ""
+
+#: ../login/include.php:87
+#, php-format
+msgid ""
+"Error: Database version is %s but should be %s. Please run db_things/"
+"update_database.\n"
+msgstr ""
+
+#: ../login/include.php:139
+#, php-format
+msgid ""
+"Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu "
+"anmelden%s."
+msgstr ""
+
+#: ../login/include.php:181 ../login/include.php:735
+#, php-format
+msgid "HTTP redirect: %s"
+msgstr ""
+
+#: ../login/include.php:248 ../include.php:51 ../include.php:57
+#: ../public_message.php:26
+msgid "[title_abbr_full]"
+msgstr ""
+
+#: ../login/include.php:253 ../engine/include.php:845
+msgid "[thousand_separator]"
+msgstr ""
+
+#: ../login/include.php:322 ../login/include.php:538 ../login/include.php:671
+msgid "Zum Inhalt&[login/include.php|1]"
+msgstr ""
+
+#: ../login/include.php:323
+msgid "Zur Navigation&[login/include.php|1]"
+msgstr ""
+
+#: ../login/include.php:324
+msgid "Zu den Spieldaten&[login/include.php|1]"
+msgstr ""
+
+#: ../login/include.php:342
+msgid "Das Spiel ist derzeit gesperrt."
+msgstr ""
+
+#: ../login/include.php:342 ../login/include.php:351 ../login/include.php:366
+#, php-format
+msgid "bis %s"
+msgstr ""
+
+#: ../login/include.php:358
+msgid "Ihr Benutzeraccount befindet sich im Urlaubsmodus."
+msgstr ""
+
+#: ../login/include.php:366
+msgid "Es herrscht eine Flottensperre für feindliche Flüge."
+msgstr ""
+
+#: ../login/include.php:385
+msgid "Zum vorigen Planeten wechseln&[login/include.php|1]"
+msgstr ""
+
+#: ../login/include.php:385
+msgid "←"
+msgstr ""
+
+#: ../login/include.php:385
+msgid "Zum nächsten Planeten wechseln&[login/include.php|1]"
+msgstr ""
+
+#: ../login/include.php:385
+msgid "→"
+msgstr ""
+
+#: ../login/include.php:423 ../engine/classes/item.php:278
+#: ../engine/classes/fleet.php:1767
+#, php-format
+msgid "%s: %s"
+msgstr ""
+
+#: ../login/include.php:423 ../login/nachrichten.php:124
+#: ../login/nachrichten.php:406 ../engine/classes/message.php:386
+msgid "[message_"
+msgstr ""
+
+#: ../login/include.php:435
+#, php-format
+msgid "Sie haben %s neue &Nachricht.[login/include.php|2]"
+msgid_plural "Sie haben %s neue &Nachrichten.[login/include.php|2]"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../login/include.php:537 ../login/include.php:670
+msgid "Zur Rohstoffanzeige&[login/include.php|1]"
+msgstr ""
+
+#: ../login/include.php:546
+msgid "Planeten wechseln"
+msgstr ""
+
+#: ../login/include.php:556
+msgid "Ihre &Planeten[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:570
+msgid "Wechseln"
+msgstr ""
+
+#: ../login/include.php:575
+msgid "&Übersicht[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:576
+msgid "&Rohstoffe[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:577
+msgid "&Gebäude[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:578
+msgid "&Forschung[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:579
+msgid "Ro&boter[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:580
+msgid "F&lotten[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:581
+msgid "&Schiffswerft[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:582
+msgid "&Verteidigung[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:583
+msgid "Han&delsbörse[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:584
+msgid "I&mperium[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:588
+msgid "&Karte[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:589
+msgid "All&ianz[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:590
+msgid "V&erbündete[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:591
+msgid "&Highscores[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:592
+msgid "Na&chrichten[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:593
+msgid "Forschungsb&aum[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:594
+msgid "Eins&tellungen[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:599
+msgid "Adminbereich&[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:605
+msgid "Abmelden&[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:616
+msgid "Board&[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:617
+msgid "FAQ&[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:618
+msgid "Chat&[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:619
+msgid "Entwicklerseite&[login/include.php|3]"
+msgstr ""
+
+#: ../login/include.php:629
+msgid "Serverzeit"
+msgstr ""
+
+#: ../login/include.php:630
+msgid "H:i:s"
+msgstr ""
+
+#: ../login/include.php:639
+msgid ""
+"mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2"
+"(local_time_obj.getSeconds())"
+msgstr ""
+
+#: ../login/include.php:641
+msgid "Lokalzeit"
+msgstr ""
+
+#: ../login/include.php:656
+msgid "Changelog anzeigen&[login/include.php|4]"
+msgstr ""
+
+#: ../login/include.php:656
+#, php-format
+msgid "Version %s"
+msgstr ""
+
+#: ../login/include.php:661
+#, php-format
+msgid "Revision %s"
 msgstr ""
 
 #: ../rules.php:22
@@ -3521,9 +3512,9 @@ msgstr ""
 
 #: ../faq.php:93
 #, php-format
-msgid "Ja, selbstverständlich. Derzeit können Sie maximal %d Planet haben."
+msgid "Ja, selbstverständlich. Derzeit können Sie maximal %s Planet haben."
 msgid_plural ""
-"Ja, selbstverständlich. Derzeit können Sie maximal %d Planeten haben."
+"Ja, selbstverständlich. Derzeit können Sie maximal %s Planeten haben."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3532,7 +3523,7 @@ msgstr[1] ""
 msgid ""
 "Wenn Sie mit der Spionagesonde einen leeren Planeten ausspionieren, können "
 "Sie nachsehen, wieviele Felder dieser hat. Die Felderzahl variiert dabei "
-"unabhängig von der Position des Planeten, die Felderzahl beträgt %d–%d "
+"unabhängig von der Position des Planeten, die Felderzahl beträgt %s–%s "
 "Felder. Haben Sie einen Planeten gefunden, den Sie besiedeln möchten, können "
 "Sie einem Besiedelungsschiff den Auftrag dazu erteilen."
 msgstr ""
@@ -3561,13 +3552,13 @@ msgstr ""
 #: ../faq.php:97
 #, php-format
 msgid ""
-"Einige Spieler bevorzugen es, ein oder zwei Kolonien des %d-Planet-Limits "
+"Einige Spieler bevorzugen es, ein oder zwei Kolonien des %s-Planet-Limits "
 "offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – "
 "solche Kolonien werden temporär besiedelt und auf %sproduktion "
 "spezialisiert, damit in einem Krieg der Feind schneller und billiger "
 "angeflogen werden kann."
 msgid_plural ""
-"Einige Spieler bevorzugen es, ein oder zwei Kolonien des %d-Planeten-Limits "
+"Einige Spieler bevorzugen es, ein oder zwei Kolonien des %s-Planeten-Limits "
 "offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – "
 "solche Kolonien werden temporär besiedelt und auf %sproduktion "
 "spezialisiert, damit in einem Krieg der Feind schneller und billiger "
@@ -4012,29 +4003,29 @@ msgstr ""
 
 #: ../engine/include.php:743
 #, php-format
-msgid "%d Tag"
-msgid_plural "%d Tage"
+msgid "%s Tag"
+msgid_plural "%s Tage"
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../engine/include.php:745
 #, php-format
-msgid "%d Stunde"
-msgid_plural "%d Stunden"
+msgid "%s Stunde"
+msgid_plural "%s Stunden"
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../engine/include.php:747
 #, php-format
-msgid "%d Minute"
-msgid_plural "%d Minuten"
+msgid "%s Minute"
+msgid_plural "%s Minuten"
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../engine/include.php:749
 #, php-format
-msgid "%d Sekunde"
-msgid_plural "%d Sekunden"
+msgid "%s Sekunde"
+msgid_plural "%s Sekunden"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4111,7 +4102,7 @@ msgstr ""
 msgid "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 msgstr ""
 
-#: ../engine/classes/user.php:3265
+#: ../engine/classes/user.php:3248
 #, php-format
 msgid ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%"
@@ -4119,16 +4110,16 @@ msgid ""
 "Die Flotte bestand aus folgenden Schiffen: %s"
 msgstr ""
 
-#: ../engine/classes/user.php:3266
+#: ../engine/classes/user.php:3249
 #, php-format
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr ""
 
-#: ../engine/classes/user.php:3837 ../impressum.php:31 ../passwd.php:42
+#: ../engine/classes/user.php:3820 ../impressum.php:31 ../passwd.php:42
 msgid "[title_full]"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1027
+#: ../engine/classes/fleet.php:1037
 #, php-format
 msgid ""
 "Ihre Flotte erreicht den Planeten %s und will mit der Besiedelung anfangen. "
@@ -4136,12 +4127,12 @@ msgid ""
 "sich auf den Rückweg."
 msgstr ""
 
-#: ../engine/classes/fleet.php:1028 ../engine/classes/fleet.php:1041
+#: ../engine/classes/fleet.php:1038 ../engine/classes/fleet.php:1051
 #, php-format
 msgid "Besiedelung von %s fehlgeschlagen"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1042
+#: ../engine/classes/fleet.php:1052
 #, php-format
 msgid ""
 "Ihre Flotte erreicht den Planeten %s und will mit der Besiedelung anfangen. "
@@ -4151,12 +4142,12 @@ msgid ""
 "Ihrer Flotte das Signal zum Rückflug."
 msgstr ""
 
-#: ../engine/classes/fleet.php:1079
+#: ../engine/classes/fleet.php:1089
 #, php-format
 msgid "%s unbesiedelt"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1080
+#: ../engine/classes/fleet.php:1090
 #, php-format
 msgid ""
 "Ihre Flotte erreicht den Planeten %s und will ihren Auftrag ausführen. "
@@ -4164,356 +4155,356 @@ msgid ""
 "sich auf den weiteren Weg."
 msgstr ""
 
-#: ../engine/classes/fleet.php:1173
+#: ../engine/classes/fleet.php:1183
 #, php-format
 msgid "Abbau auf %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1174
+#: ../engine/classes/fleet.php:1184
 #, php-format
 msgid ""
 "Ihre Flotte erreicht das Trümmerfeld auf %s und belädt die %s Tonnen "
 "Sammlerkapazität mit folgenden Rohstoffen: %s."
 msgstr ""
 
-#: ../engine/classes/fleet.php:1174
+#: ../engine/classes/fleet.php:1184
 #, php-format
 msgid "%1$s %5$s, %2$s %6$s, %3$s %7$s und %4s %8$s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1174
+#: ../engine/classes/fleet.php:1184
 msgid "Verbleibende Rohstoffe im Trümmerfeld"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1211
+#: ../engine/classes/fleet.php:1221
 #, php-format
 msgid ""
 "Ein Transport erreicht Ihren Planeten %s. Folgende Spieler liefern Güter ab:"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1221
+#: ../engine/classes/fleet.php:1231
 #, php-format
 msgid "Ihre Flotte erreicht den Planeten %s und liefert folgende Güter ab:"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1223 ../engine/classes/fleet.php:1224
-#: ../engine/classes/fleet.php:1259 ../engine/classes/fleet.php:1261
+#: ../engine/classes/fleet.php:1233 ../engine/classes/fleet.php:1234
+#: ../engine/classes/fleet.php:1269 ../engine/classes/fleet.php:1271
 #, php-format
 msgid "%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1233 ../engine/classes/fleet.php:1265
+#: ../engine/classes/fleet.php:1243 ../engine/classes/fleet.php:1275
 msgid "; "
 msgstr ""
 
-#: ../engine/classes/fleet.php:1251 ../engine/classes/fleet.php:1258
+#: ../engine/classes/fleet.php:1261 ../engine/classes/fleet.php:1268
 msgid "Folgender Handel wird durchgeführt:"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1288
+#: ../engine/classes/fleet.php:1298
 #, php-format
 msgid "Ankunft eines fremden Transportes auf %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1294
+#: ../engine/classes/fleet.php:1304
 #, php-format
 msgid "Ankunft Ihres Transportes auf %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1488
+#: ../engine/classes/fleet.php:1498
 #, php-format
 msgid "Fremde Flotte auf dem Planeten %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1493
+#: ../engine/classes/fleet.php:1503
 #, php-format
 msgid ""
 "Eine fremde Flotte vom Planeten %s wurde von Ihrem Planeten %s aus bei der "
 "Spionage gesichtet."
 msgstr ""
 
-#: ../engine/classes/fleet.php:1506 ../engine/classes/fleet.php:1511
+#: ../engine/classes/fleet.php:1516 ../engine/classes/fleet.php:1521
 #, php-format
 msgid "Spionagebericht des Planeten %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1507
+#: ../engine/classes/fleet.php:1517
 msgid "Planet"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1508
+#: ../engine/classes/fleet.php:1518
 msgid "Felder"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1509
+#: ../engine/classes/fleet.php:1519
 msgid "Schicken Sie ein Besiedelungsschiff zu diesem Planeten"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1510
+#: ../engine/classes/fleet.php:1520
 msgid "Besiedeln"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1515
+#: ../engine/classes/fleet.php:1525
 msgid "Verteidigung"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1517
+#: ../engine/classes/fleet.php:1527
 msgid "Rohstoffe"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1520
+#: ../engine/classes/fleet.php:1530
 #, php-format
 msgid "Spionage des Planeten %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1736
+#: ../engine/classes/fleet.php:1746
 #, php-format
 msgid ""
 "Ihre Flotte erreicht den Planeten %s und beginnt mit seiner Besiedelung."
 msgstr ""
 
-#: ../engine/classes/fleet.php:1738
+#: ../engine/classes/fleet.php:1748
 #, php-format
 msgid ""
 " Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe "
 "wiederhergestellt werden: %s."
 msgstr ""
 
-#: ../engine/classes/fleet.php:1738
+#: ../engine/classes/fleet.php:1748
 #, php-format
 msgid "%s %s, %s %s, %s %s, %s %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1742
+#: ../engine/classes/fleet.php:1752
 #, php-format
 msgid "Eine Flotte erreicht den Planeten %s."
 msgstr ""
 
-#: ../engine/classes/fleet.php:1747
+#: ../engine/classes/fleet.php:1757
 #, php-format
 msgid "Die Flotte besteht aus folgenden Schiffen: %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1753
+#: ../engine/classes/fleet.php:1763
 msgid "Folgende Schiffe werden fremdstationiert:"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1762
+#: ../engine/classes/fleet.php:1772
 msgid "Folgende Güter werden abgeliefert:"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1763
+#: ../engine/classes/fleet.php:1773
 #, php-format
 msgid "%s %s, %s %s, %s %s, %s %s, %s %s."
 msgstr ""
 
-#: ../engine/classes/fleet.php:1772
+#: ../engine/classes/fleet.php:1782
 #, php-format
 msgid "Folgender überschüssiger Treibstoff wird abgeliefert: %s."
 msgstr ""
 
-#: ../engine/classes/fleet.php:1772
+#: ../engine/classes/fleet.php:1782
 #, php-format
 msgid "%s %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1779
+#: ../engine/classes/fleet.php:1789
 #, php-format
 msgid "Besiedelung von %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:1781
+#: ../engine/classes/fleet.php:1791
 #, php-format
 msgid "Stationierung auf %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:2122
+#: ../engine/classes/fleet.php:2132
 #, php-format
 msgid "Runde %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:2125
+#: ../engine/classes/fleet.php:2135
 #, php-format
 msgid "Der Angreifer ist am Zug (Gesamtstärke %s)"
 msgid_plural "Die Angreifer sind am Zug (Gesamtstärke %s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2125
+#: ../engine/classes/fleet.php:2135
 #, php-format
 msgid "Der Verteidiger ist am Zug (Gesamtstärke %s)"
 msgid_plural "Die Verteidiger sind am Zug (Gesamtstärke %s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2151
+#: ../engine/classes/fleet.php:2161
 #, php-format
 msgid "Eine Einheit des Typs %s (%s) wird angeschossen."
 msgstr ""
 
-#: ../engine/classes/fleet.php:2153
+#: ../engine/classes/fleet.php:2163
 #, php-format
 msgid "%s Einheit des Typs %s (%s) wird zerstört."
 msgid_plural "%s Einheiten des Typs %s (%s) werden zerstört."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2153
+#: ../engine/classes/fleet.php:2163
 #, php-format
 msgid "%s verbleibt."
 msgid_plural "%s verbleiben."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2161
+#: ../engine/classes/fleet.php:2171
 #, php-format
 msgid "Alle Einheiten des Typs %s (%s) (%s) werden zerstört."
 msgstr ""
 
-#: ../engine/classes/fleet.php:2447
+#: ../engine/classes/fleet.php:2457
 msgid "Flotten des Angreifers"
 msgid_plural "Flotten der Angreifer"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2448
+#: ../engine/classes/fleet.php:2458
 msgid "Schiffstyp"
 msgstr ""
 
-#: ../engine/classes/fleet.php:2449
+#: ../engine/classes/fleet.php:2459
 msgid "Anzahl"
 msgstr ""
 
-#: ../engine/classes/fleet.php:2450
+#: ../engine/classes/fleet.php:2460
 msgid "Gesamtstärke"
 msgstr ""
 
-#: ../engine/classes/fleet.php:2451
+#: ../engine/classes/fleet.php:2461
 msgid "Gesamtschild"
 msgstr ""
 
-#: ../engine/classes/fleet.php:2454
+#: ../engine/classes/fleet.php:2464
 msgid "Flotten des Verteidigers"
 msgid_plural "Flotten der Verteidiger"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2455
+#: ../engine/classes/fleet.php:2465
 msgid "Keine."
 msgstr ""
 
-#: ../engine/classes/fleet.php:2456
+#: ../engine/classes/fleet.php:2466
 #, php-format
 msgid "%s sind stärker ausgebildet als %s und %s."
 msgstr ""
 
-#: ../engine/classes/fleet.php:2456 ../engine/classes/fleet.php:2457
+#: ../engine/classes/fleet.php:2466 ../engine/classes/fleet.php:2467
 msgid "Die Sensoren des Angreifers"
 msgid_plural "Die Sensoren der Angreifer"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2456
+#: ../engine/classes/fleet.php:2466
 msgid "die des Verteidigers"
 msgid_plural "die der Verteidiger"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2456
+#: ../engine/classes/fleet.php:2466
 msgid "ermöglichen es ihm, den Erstschlag auszuführen"
 msgid_plural "ermöglichen es ihnen, den Erstschlag auszuführen"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2457
+#: ../engine/classes/fleet.php:2467
 #, php-format
 msgid "%s sind %s nicht überlegen, weshalb %s."
 msgstr ""
 
-#: ../engine/classes/fleet.php:2457
+#: ../engine/classes/fleet.php:2467
 msgid "denen des Verteidigers"
 msgid_plural "denen der Verteidiger"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2457
+#: ../engine/classes/fleet.php:2467
 msgid "letzterer den Erstschlag ausführt"
 msgid_plural "letztere den Erstschlag ausführen"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2459
+#: ../engine/classes/fleet.php:2469
 msgid "Der Kampf ist vorüber. Gewinner ist der Verteidiger."
 msgid_plural "Der Kampf ist vorüber. Gewinner sind die Verteidiger."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2460
+#: ../engine/classes/fleet.php:2470
 msgid "Der Kampf ist vorüber. Gewinner ist der Angreifer."
 msgid_plural "Der Kampf ist vorüber. Gewinner sind die Angreifer."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2461
+#: ../engine/classes/fleet.php:2471
 msgid "Der Kampf ist vorüber. Er endet unentschieden."
 msgstr ""
 
-#: ../engine/classes/fleet.php:2462
+#: ../engine/classes/fleet.php:2472
 #, php-format
 msgid "Der Angreifer hat %s Kampferfahrungspunkte gesammelt."
 msgid_plural "Die Angreifer haben %s Kampferfahrungspunkte gesammelt."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2463
+#: ../engine/classes/fleet.php:2473
 #, php-format
 msgid "Der Verteidiger hat %s Kampferfahrungspunkte gesammelt."
 msgid_plural "Die Verteidiger haben %s Kampferfahrungspunkte gesammelt."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/classes/fleet.php:2471
+#: ../engine/classes/fleet.php:2481
 #, php-format
 msgid "Der Angreifer %s hat %s Punkte verloren."
 msgstr ""
 
-#: ../engine/classes/fleet.php:2479
+#: ../engine/classes/fleet.php:2489
 #, php-format
 msgid "Der Verteidiger %s hat %s Punkte verloren."
 msgstr ""
 
-#: ../engine/classes/fleet.php:2486
+#: ../engine/classes/fleet.php:2496
 #, php-format
 msgid ""
 "Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn "
 "des Planeten gelangt: %s."
 msgstr ""
 
-#: ../engine/classes/fleet.php:2486 ../engine/classes/fleet.php:2578
+#: ../engine/classes/fleet.php:2496 ../engine/classes/fleet.php:2588
 #, php-format
 msgid "%s %s, %s %s, %s %s und %s %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:2565
+#: ../engine/classes/fleet.php:2575
 #, php-format
 msgid "Sie haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."
 msgstr ""
 
-#: ../engine/classes/fleet.php:2573
+#: ../engine/classes/fleet.php:2583
 #, php-format
 msgid ""
 "Die überlebenden Angreifer haben %s %s, %s %s, %s %s, %s %s und %s %s "
 "erbeutet."
 msgstr ""
 
-#: ../engine/classes/fleet.php:2578
+#: ../engine/classes/fleet.php:2588
 #, php-format
 msgid ""
 "Durch Wiederverwertung konnten folgende Rohstoffe aus den Trümmern der "
 "zerstörten Verteidigungsanlagen wiederhergestellt werden: %s"
 msgstr ""
 
-#: ../engine/classes/fleet.php:2586
+#: ../engine/classes/fleet.php:2596
 #, php-format
 msgid "Kampf auf %s"
 msgstr ""
@@ -4528,36 +4519,36 @@ msgstr ""
 
 #: ../features.php:44
 #, php-format
-msgid "%d Gebäudetyp"
-msgid_plural "%d Gebäudetypen"
+msgid "%s Gebäudetyp"
+msgid_plural "%s Gebäudetypen"
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../features.php:45
 #, php-format
-msgid "%d Forschungsmöglichkeit"
-msgid_plural "%d Forschungsmöglichkeiten"
+msgid "%s Forschungsmöglichkeit"
+msgid_plural "%s Forschungsmöglichkeiten"
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../features.php:46
 #, php-format
-msgid "%d Roboter"
-msgid_plural "%d verschiedene Roboter"
+msgid "%s Roboter"
+msgid_plural "%s verschiedene Roboter"
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../features.php:47
 #, php-format
-msgid "%d Raumschiffklasse"
-msgid_plural "%d Raumschiffklassen"
+msgid "%s Raumschiffklasse"
+msgid_plural "%s Raumschiffklassen"
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../features.php:48
 #, php-format
-msgid "%d Verteidigungsanlage"
-msgid_plural "%d Verteidigungsanlagen"
+msgid "%s Verteidigungsanlage"
+msgid_plural "%s Verteidigungsanlagen"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4630,22 +4621,22 @@ msgstr ""
 
 #: ../features.php:70
 #, php-format
-msgid "derzeit %d Spieler"
-msgid_plural "derzeit %d Spieler"
+msgid "derzeit %s Spieler"
+msgid_plural "derzeit %s Spieler"
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../features.php:71
 #, php-format
-msgid "derzeit %d Allianz"
-msgid_plural "derzeit %d Allianzen"
+msgid "derzeit %s Allianz"
+msgid_plural "derzeit %s Allianzen"
 msgstr[0] ""
 msgstr[1] ""
 
 #: ../features.php:76
 #, php-format
-msgid "derzeit %d Runde"
-msgid_plural "derzeit %d verschiedene Runden"
+msgid "derzeit %s Runde"
+msgid_plural "derzeit %s verschiedene Runden"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4657,7 +4648,7 @@ msgstr ""
 #: ../features.php:90 ../features.php:91 ../features.php:92 ../features.php:93
 #: ../features.php:94 ../features.php:95 ../features.php:96 ../features.php:97
 #, php-format
-msgid "Screenshot %d"
+msgid "Screenshot %s"
 msgstr ""
 
 #: ../register.php:24 ../register.php:143
