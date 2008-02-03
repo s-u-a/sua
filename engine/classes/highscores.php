@@ -35,7 +35,7 @@
 
 			if($exists)
 			{
-				if($alliance === false && $scores === false) return true;
+				if($alliance === false && $scores === null) return true;
 
 				$query = "UPDATE highscores_users SET ";
 				$set = array();

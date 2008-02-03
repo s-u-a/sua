@@ -118,7 +118,8 @@
 		function backgroundQuery($query)
 		{
 			$this->checkConnection();
-			$result = $this->connection->query($query);
+			try { $result = $this->connection->query($query); }
+			catch(PDOException $e) { $this->printException($e, $query); }
 			if($result == false) return false;
 			$result->closeCursor();
 			return true;
@@ -136,7 +137,8 @@
 		function query($query)
 		{
 			$this->checkConnection();
-			$this->last_result = $this->connection->query($query);
+			try { $this->last_result = $this->connection->query($query); }
+			catch(PDOException $e) { $this->printException($e, $query); }
 			return true;
 		}
 
@@ -157,7 +159,8 @@
 		function arrayQuery($query)
 		{
 			$this->checkConnection();
-			$result = $this->connection->query($query);
+			try { $result = $this->connection->query($query); }
+			catch(PDOException $e) { $this->printException($e, $query); }
 			if($result == false) return false;
 			$data = $result->fetchAll(PDO::FETCH_ASSOC);
 			$result->closeCursor();
@@ -167,7 +170,8 @@
 		function singleQuery($query)
 		{
 			$this->checkConnection();
-			$result = $this->connection->query($query);
+			try { $result = $this->connection->query($query); }
+			catch(PDOException $e) { $this->printException($e, $query); }
 			if($result == false) return false;
 			$data = $result->fetch(PDO::FETCH_ASSOC);
 			$result->closeCursor();
@@ -177,7 +181,8 @@
 		function singleField($query)
 		{
 			$this->checkConnection();
-			$result = $this->connection->query($query);
+			try { $result = $this->connection->query($query); }
+			catch(PDOException $e) { $this->printException($e, $query); }
 			if($result == false) return false;
 			$data = $result->fetchColumn();
 			$result->closeCursor();
@@ -199,7 +204,15 @@
 
 			$this->connection->beginTransaction();
 			foreach($this->transaction_calls as $q)
-				$this->connection->query($q);
+			{
+				try { $this->connection->query($q); }
+				catch(PDOException $e) { $this->printException($e, $q); }
 			return $this->connection->commit();
+		}
+		
+		function printException($exception, $query)
+		{
+			fputs(STDERR, "PDO error, query: ".$query."\n");
+			throw $exception;
 		}
 	}
