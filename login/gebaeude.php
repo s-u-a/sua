@@ -194,10 +194,7 @@
 <?php
 		if($me->checkSetting("extended_buildings"))
 		{
-			$new_prod = $geb["prod"];
-			$new_prod_f = pow(1+1/$geb["level"], 2);
-			foreach($new_prod as $k=>$v)
-				$new_prod[$k] *= $new_prod_f;
+			$geb_next = $me->getItemInfo($id, "gebaeude", true, false, $geb["level"]+1);
 ?>
 
 		<dt class="item-produktion-aktuell">Produktion aktuell</dt>
@@ -207,7 +204,7 @@
 
 		<dt class="item-produktion-naechste-stufe">Nächste Stufe</dt>
 		<dd class="item-produktion-naechste-stufe">
-			<?=format_ress($new_prod, 3, true, true)?>
+			<?=format_ress($geb_next["prod"], 3, true, true)?>
 		</dd>
 <?php
 		}

@@ -1029,14 +1029,14 @@
 			return $deps;
 		}
 
-		function getItemInfo($id, $type=false, $run_eventhandler=true, $calc_scores=false)
+		function getItemInfo($id, $type=false, $run_eventhandler=true, $calc_scores=false, $level=null)
 		{
 			if(!$this->status) return false;
 
 			$this_planet = $this->getActivePlanet();
 			if(!isset($this->cache['getItemInfo'])) $this->cache['getItemInfo'] = array();
 			if(!isset($this->cache['getItemInfo'][$this_planet])) $this->cache['getItemInfo'][$this_planet] = array();
-			if(!isset($this->cache['getItemInfo'][$this_planet][$id]) || ($calc_scores && !isset($this->cache['getItemInfo'][$this_planet][$id]['scores'])))
+			if(!isset($this->cache['getItemInfo'][$this_planet][$id]) || ($calc_scores && !isset($this->cache['getItemInfo'][$this_planet][$id]['scores'])) || $level !== null)
 			{
 				$item = Classes::Item($id);
 				if($type === false) $type = $item->getType();
@@ -1044,7 +1044,7 @@
 				if(!$info) return false;
 				$info['type'] = $type;
 				$info['buildable'] = $info['deps-okay'] = $item->checkDependencies($this, $run_eventhandler);
-				$info['level'] = $this->getItemLevel($id, $type, $run_eventhandler);
+				$info['level'] = ($level !== null ? $level : $this->getItemLevel($id, $type, $run_eventhandler));
 
 				# Bauzeit als Anteil der Punkte des ersten Platzes
 				/*if(isset($info['time']))
@@ -1320,6 +1320,8 @@
 				}
 				elseif($info['time'] < global_setting("MIN_BUILDING_TIME")) $info['time'] = global_setting("MIN_BUILDING_TIME");
 
+				if($level !== null)
+					return $info;
 				$this->cache['getItemInfo'][$this_planet][$id] = $info;
 			}
 
