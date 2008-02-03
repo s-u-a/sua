@@ -207,6 +207,7 @@
 			{
 				try { $this->connection->query($q); }
 				catch(PDOException $e) { $this->printException($e, $q); }
+			}
 			return $this->connection->commit();
 		}
 		
