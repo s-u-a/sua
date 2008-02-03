@@ -114,6 +114,7 @@ EOF
 
 		if($daemon) $errlog = fopen(global_setting("DB_EVENTHANDLER_LOG"), 'a');
 		else $errlog = STDERR;
+		global_setting("LOG", $errlog);
 
 		__autoload('Classes');
 		__autoload('Fleet');

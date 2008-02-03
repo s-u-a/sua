@@ -213,7 +213,7 @@
 		
 		function printException($exception, $query)
 		{
-			fputs(STDERR, "PDO error, query: ".$query."\n");
+			fputs(global_setting("LOG"), "PDO error, query: ".$query."\n");
 			throw $exception;
 		}
 	}

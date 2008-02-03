@@ -194,6 +194,7 @@
 		global_setting('DB_USE_OLD_ROBTECH', $DB_DIR.'/use_old_robtech');
 		global_setting('DB_NO_ATTS', $DB_DIR.'/no_atts');
 		global_setting("DB_SQLITE", $DB_DIR."/sqlite");
+		global_setting("LOG", fopen("php://stderr", "w"));
 
 		return true;
 	}
