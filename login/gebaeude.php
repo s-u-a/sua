@@ -86,7 +86,7 @@
 				# Fastbuild
 	
 				$_SESSION['last_click_ignore'] = true;
-				$url = global_setting("PROTOCOL").'://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?planet='.urlencode($fastbuild_next).'&'.global_setting("URL_SUFFIX");
+				$url = global_setting("PROTOCOL")."://".$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"]."?".preg_replace("/((^|&)planet=)\d+/", "\${1}".$fastbuild_next, global_setting("URL_SUFFIX"));
 				header('Location: '.$url, true, 303);
 				die('HTTP redirect: <a href="'.htmlspecialchars($url).'">'.htmlspecialchars($url).'</a>');
 			}
