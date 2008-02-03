@@ -178,7 +178,7 @@
 <form action="allianz.php" method="get" class="allianz-moeglichkeiten">
 	<ul class="possibilities">
 		<li><a href="allianz.php?action=gruenden&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex+2?>"<?=accesskey_attr(_("Eigene Allian&z gründen[login/allianz.php|7]"))?>><?=h(_("Eigene Allian&z gründen[login/allianz.php|7]"))?></a></li>
-		<li><input type="text" name="search" value="<?=(isset($_GET['search'])) ? htmlspecialchars($_GET['search']) : ''?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allia&nz suchen[login/allianz.php|7]"))?> /> <button type="submit" tabindex="<?=$tabindex++?>"><?=h(_("Allia&nz suchen[login/allianz.php|7]"))?></button><?=global_settings("URL_FORMULAR")?></li>
+		<li><input type="text" name="search" value="<?=(isset($_GET['search'])) ? htmlspecialchars($_GET['search']) : ''?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allia&nz suchen[login/allianz.php|7]"))?> /> <button type="submit" tabindex="<?=$tabindex++?>"><?=h(_("Allia&nz suchen[login/allianz.php|7]"))?></button><?=global_setting("URL_FORMULAR")?></li>
 	</ul>
 </form>
 <?php
