@@ -444,9 +444,9 @@
 	{
 		# Vorgegebene Skins-Liste bekommen
 		$skins = array();
-		if(is_dir(s_root.'/login/style') && is_readable(s_root.'/login/style'))
+		if(is_dir(s_root.'/login/res/style') && is_readable(s_root.'/login/res/style'))
 		{
-			$dh = opendir(s_root.'/login/style');
+			$dh = opendir(s_root.'/login/res/style');
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname[0] == '.') continue;
