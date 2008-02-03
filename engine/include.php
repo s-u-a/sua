@@ -1828,13 +1828,16 @@
 		if($lang === null)
 			return getenv("LANGUAGE");
 
-		if(!isset($languages[$lang]) || !setlocale(LC_MESSAGES, $languages[$lang]))
+		if(!isset($languages[$lang]) || !($locale = setlocale(LC_MESSAGES, $languages[$lang])))
 		{
 			if($die) die("Could not set language to ".$lang."!");
 			return false;
 		}
 		putenv("LANGUAGE=".$lang);
 		putenv("LANG=".$lang);
+		putenv("LC_MESSAGES=".$locale);
+		$_ENV["LANGUAGE"] = $_ENV["LANG"] = $lang;
+		$_ENV["LC_MESSAGES"] = $locale;
 		return true;
 	}
 
