@@ -193,7 +193,7 @@
 			var h_root = '<?=jsentities(h_root)?>';
 			var last_min_chars = '<?=jsentities(global_setting("LIST_MIN_CHARS"))?>';
 		</script>
-		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/login/scripts/javascript-2.js')?>"></script>
+		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/login/res/javascript.js')?>"></script>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/sarissa.js')?>"></script>
 	</head>
 	<body>

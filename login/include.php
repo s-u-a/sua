@@ -16,7 +16,7 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 	$__FILE__ = str_replace("\\", "/", __FILE__);
-	$include_filename = dirname($__FILE__).'/../../engine/include.php';
+	$include_filename = dirname($__FILE__).'/../engine/include.php';
 	$LOGIN = true;
 	require_once($include_filename);
 
@@ -257,7 +257,7 @@
 			var res_ids = [ 'carbon', 'aluminium', 'wolfram', 'radium', 'tritium' ];
 			var slow_terminal = <?=$me->checkSetting("performance") ? "false" : "true"?>;
 		</script>
-		<script type="text/javascript" src="<?=htmlspecialchars(h_root."/login/scripts/javascript.js")?>"></script>
+		<script type="text/javascript" src="<?=htmlspecialchars(h_root."/login/res/javascript.js")?>"></script>
 <?php
 			if($me->checkSetting('performance') != 0)
 			{
@@ -285,7 +285,7 @@
 			if($my_skin[0] == 'custom')
 				$skin_path = $my_skin[1];
 			elseif(isset($skins[$my_skin[0]]))
-				$skin_path = h_root.'/login/style/'.urlencode($my_skin[0]).'/style.css';
+				$skin_path = h_root.'/login/res/style/'.urlencode($my_skin[0]).'/style.css';
 
 			if(trim($skin_path) != '')
 			{
@@ -319,9 +319,9 @@
 	</head>
 	<body class="<?=htmlspecialchars($class)?>" id="body-root"><div id="content-1" class="<?=htmlspecialchars($class)?>"><div id="content-2" class="<?=htmlspecialchars($class)?>"><div id="content-3" class="<?=htmlspecialchars($class)?>"><div id="content-4" class="<?=htmlspecialchars($class)?>"><div id="content-5" class="<?=htmlspecialchars($class)?>"><div id="content-6" class="<?=htmlspecialchars($class)?>"><div id="content-7" class="<?=htmlspecialchars($class)?>"><div id="content-8" class="<?=htmlspecialchars($class)?>">
 		<ul id="links-down" class="cross-navigation">
-			<li><a href="#inner-content"<?=accesskey_attr(_("Zum Inhalt&[login/scripts/include.php|1]"))?>><?=h(_("Zum Inhalt&[login/scripts/include.php|1]"))?></a></li>
-			<li><a href="#navigation"<?=accesskey_attr(_("Zur Navigation&[login/scripts/include.php|1]"))?>><?=h(_("Zur Navigation&[login/scripts/include.php|1]"))?></a></li>
-			<li><a href="#time"<?=accesskey_attr(_("Zu den Spieldaten&[login/scripts/include.php|1]"))?>><?=h(_("Zu den Spieldaten&[login/scripts/include.php|1]"))?></a></li>
+			<li><a href="#inner-content"<?=accesskey_attr(_("Zum Inhalt&[login/include.php|1]"))?>><?=h(_("Zum Inhalt&[login/include.php|1]"))?></a></li>
+			<li><a href="#navigation"<?=accesskey_attr(_("Zur Navigation&[login/include.php|1]"))?>><?=h(_("Zur Navigation&[login/include.php|1]"))?></a></li>
+			<li><a href="#time"<?=accesskey_attr(_("Zu den Spieldaten&[login/include.php|1]"))?>><?=h(_("Zu den Spieldaten&[login/include.php|1]"))?></a></li>
 		</ul>
 		<hr class="separator" />
 <?php
@@ -382,7 +382,7 @@
 			if($active_planet_1 > max($me->getPlanetsList())) $active_planet_1 = 0;
 ?>
 				<hr class="separator" />
-				<h1><a href="?<?=htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$active_planet_0, global_setting("URL_SUFFIX")))?>" title="<?=h(_("Zum vorigen Planeten wechseln&[login/scripts/include.php|1]"), false)?>"<?=accesskey_attr(_("Zum vorigen Planeten wechseln&[login/scripts/include.php|1]"))?>><?=h(_("←"))?></a> <?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), vsprintf(h(_("%d:%d:%d")), $me->getPos()))?> <a href="?<?=htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$active_planet_1, global_setting("URL_SUFFIX")))?>" title="<?=h(_("Zum nächsten Planeten wechseln&[login/scripts/include.php|1]"), false)?>"<?=accesskey_attr(_("Zum nächsten Planeten wechseln&[login/scripts/include.php|1]"))?>><?=h(_("→"))?></a></h1>
+				<h1><a href="?<?=htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$active_planet_0, global_setting("URL_SUFFIX")))?>" title="<?=h(_("Zum vorigen Planeten wechseln&[login/include.php|1]"), false)?>"<?=accesskey_attr(_("Zum vorigen Planeten wechseln&[login/include.php|1]"))?>><?=h(_("←"))?></a> <?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), vsprintf(h(_("%d:%d:%d")), $me->getPos()))?> <a href="?<?=htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$active_planet_1, global_setting("URL_SUFFIX")))?>" title="<?=h(_("Zum nächsten Planeten wechseln&[login/include.php|1]"), false)?>"<?=accesskey_attr(_("Zum nächsten Planeten wechseln&[login/include.php|1]"))?>><?=h(_("→"))?></a></h1>
 <?php
 			if(isset($options["notify"]) && $options["notify"] || !isset($options["notify"]) && $me->checkSetting('notify'))
 			{
@@ -432,7 +432,7 @@
 					$link .= global_setting("URL_SUFFIX");
 ?>
 				<hr class="separator" />
-				<p id="neue-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/login/'.$link)?>" title="<?=$title?>"<?=accesskey_attr(ngettext("Sie haben %s neue &Nachricht.[login/scripts/include.php|2]", "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]", $ges_ncount))?>><?=h(sprintf(ngettext("Sie haben %s neue &Nachricht.[login/scripts/include.php|2]", "Sie haben %s neue &Nachrichten.[login/scripts/include.php|2]", $ges_ncount), $ges_ncount))?></a></p>
+				<p id="neue-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/login/'.$link)?>" title="<?=$title?>"<?=accesskey_attr(ngettext("Sie haben %s neue &Nachricht.[login/include.php|2]", "Sie haben %s neue &Nachrichten.[login/include.php|2]", $ges_ncount))?>><?=h(sprintf(ngettext("Sie haben %s neue &Nachricht.[login/include.php|2]", "Sie haben %s neue &Nachrichten.[login/include.php|2]", $ges_ncount), $ges_ncount))?></a></p>
 <?php
 				}
 			}
@@ -534,8 +534,8 @@
 		<hr class="separator" />
 
 		<ul id="links-up-1" class="cross-navigation">
-			<li><a href="#ress"<?=accesskey_attr(_("Zur Rohstoffanzeige&[login/scripts/include.php|1]"))?>><?=h(_("Zur Rohstoffanzeige&[login/scripts/include.php|1]"))?></a></li>
-			<li><a href="#inner-content"><?=h(_("Zum Inhalt&[login/scripts/include.php|1]"))?></a></li>
+			<li><a href="#ress"<?=accesskey_attr(_("Zur Rohstoffanzeige&[login/include.php|1]"))?>><?=h(_("Zur Rohstoffanzeige&[login/include.php|1]"))?></a></li>
+			<li><a href="#inner-content"><?=h(_("Zum Inhalt&[login/include.php|1]"))?></a></li>
 		</ul>
 
 		<hr class="separator" />
@@ -553,7 +553,7 @@
 <?php
 			}
 ?>
-					<select name="planet" onchange="if(this.value != <?=$me->getActivePlanet()?>) this.form.submit();" onkeyup="if(this.value != <?=$me->getActivePlanet()?>) this.form.submit();"<?=accesskey_attr(_("Ihre &Planeten[login/scripts/include.php|3]"))?> title="<?=h(_("Ihre &Planeten[login/scripts/include.php|3]"), false)?>">
+					<select name="planet" onchange="if(this.value != <?=$me->getActivePlanet()?>) this.form.submit();" onkeyup="if(this.value != <?=$me->getActivePlanet()?>) this.form.submit();"<?=accesskey_attr(_("Ihre &Planeten[login/include.php|3]"))?> title="<?=h(_("Ihre &Planeten[login/include.php|3]"), false)?>">
 <?php
 			$active_planet = $me->getActivePlanet();
 			$planets = $me->getPlanetsList();
@@ -572,37 +572,37 @@
 			</form>
 			<hr class="separator" id="navigation-separator-1" />
 			<ul id="main-navigation">
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/index.php') ? ' class="active"' : ''?> id="navigation-index"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/index.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Übersicht[login/scripts/include.php|3]"))?>><?=h(_("&Übersicht[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/rohstoffe.php') ? ' class="active"' : ''?> id="navigation-rohstoffe"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/rohstoffe.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Rohstoffe[login/scripts/include.php|3]"))?>><?=h(_("&Rohstoffe[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/gebaeude.php') ? ' class="active"' : ''?> id="navigation-gebaeude"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Gebäude[login/scripts/include.php|3]"))?>><?=h(_("&Gebäude[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/forschung.php') ? ' class="active"' : ''?> id="navigation-forschung"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/forschung.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Forschung[login/scripts/include.php|3]"))?>><?=h(_("&Forschung[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/roboter.php') ? ' class="active"' : ''?> id="navigation-roboter"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/roboter.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Ro&boter[login/scripts/include.php|3]"))?>><?=h(_("Ro&boter[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/flotten.php') ? ' class="active"' : ''?> id="navigation-flotten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/flotten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("F&lotten[login/scripts/include.php|3]"))?>><?=h(_("F&lotten[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/schiffswerft.php') ? ' class="active"' : ''?> id="navigation-schiffswerft"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/schiffswerft.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Schiffswerft[login/scripts/include.php|3]"))?>><?=h(_("&Schiffswerft[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verteidigung.php') ? ' class="active"' : ''?> id="navigation-verteidigung"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verteidigung.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Verteidigung[login/scripts/include.php|3]"))?>><?=h(_("&Verteidigung[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/boerse.php') ? ' class="active"' : ''?> id="navigation-boerse"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/boerse.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Han&delsbörse[login/scripts/include.php|3]"))?>><?=h(_("Han&delsbörse[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("I&mperium[login/scripts/include.php|3]"))?>><?=h(_("I&mperium[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/index.php') ? ' class="active"' : ''?> id="navigation-index"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/index.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Übersicht[login/include.php|3]"))?>><?=h(_("&Übersicht[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/rohstoffe.php') ? ' class="active"' : ''?> id="navigation-rohstoffe"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/rohstoffe.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Rohstoffe[login/include.php|3]"))?>><?=h(_("&Rohstoffe[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/gebaeude.php') ? ' class="active"' : ''?> id="navigation-gebaeude"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Gebäude[login/include.php|3]"))?>><?=h(_("&Gebäude[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/forschung.php') ? ' class="active"' : ''?> id="navigation-forschung"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/forschung.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Forschung[login/include.php|3]"))?>><?=h(_("&Forschung[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/roboter.php') ? ' class="active"' : ''?> id="navigation-roboter"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/roboter.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Ro&boter[login/include.php|3]"))?>><?=h(_("Ro&boter[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/flotten.php') ? ' class="active"' : ''?> id="navigation-flotten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/flotten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("F&lotten[login/include.php|3]"))?>><?=h(_("F&lotten[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/schiffswerft.php') ? ' class="active"' : ''?> id="navigation-schiffswerft"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/schiffswerft.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Schiffswerft[login/include.php|3]"))?>><?=h(_("&Schiffswerft[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verteidigung.php') ? ' class="active"' : ''?> id="navigation-verteidigung"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verteidigung.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Verteidigung[login/include.php|3]"))?>><?=h(_("&Verteidigung[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/boerse.php') ? ' class="active"' : ''?> id="navigation-boerse"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/boerse.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Han&delsbörse[login/include.php|3]"))?>><?=h(_("Han&delsbörse[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("I&mperium[login/include.php|3]"))?>><?=h(_("I&mperium[login/include.php|3]"))?></a></li>
 			</ul>
 			<hr class="separator" id="navigation-separator-2" />
 			<ul id="action-navigation">
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/karte.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Karte[login/scripts/include.php|3]"))?>><?=h(_("&Karte[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/allianz.php') ? ' class="active"' : ''?> id="navigation-allianz"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("All&ianz[login/scripts/include.php|3]"))?>><?=h(_("All&ianz[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("V&erbündete[login/scripts/include.php|3]"))?>><?=h(_("V&erbündete[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/highscores.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Highscores[login/scripts/include.php|3]"))?>><?=h(_("&Highscores[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Na&chrichten[login/scripts/include.php|3]"))?>><?=h(_("Na&chrichten[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/help/dependencies.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/help/dependencies.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Forschungsb&aum[login/scripts/include.php|3]"))?>><?=h(_("Forschungsb&aum[login/scripts/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/einstellungen.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Eins&tellungen[login/scripts/include.php|3]"))?>><?=h(_("Eins&tellungen[login/scripts/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/karte.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Karte[login/include.php|3]"))?>><?=h(_("&Karte[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/allianz.php') ? ' class="active"' : ''?> id="navigation-allianz"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("All&ianz[login/include.php|3]"))?>><?=h(_("All&ianz[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("V&erbündete[login/include.php|3]"))?>><?=h(_("V&erbündete[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/highscores.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Highscores[login/include.php|3]"))?>><?=h(_("&Highscores[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Na&chrichten[login/include.php|3]"))?>><?=h(_("Na&chrichten[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/forschungsbaum.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/forschungsbaum.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Forschungsb&aum[login/include.php|3]"))?>><?=h(_("Forschungsb&aum[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == h_root.'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/einstellungen.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Eins&tellungen[login/include.php|3]"))?>><?=h(_("Eins&tellungen[login/include.php|3]"))?></a></li>
 <?php
 			if(isset($_SESSION['admin_username']))
 			{
 ?>
-				<li id="navigation-abmelden"><a href="<?=htmlspecialchars('https://'.$_SERVER['HTTP_HOST'].h_root)?>/admin/index.php"<?=accesskey_attr(_("Adminbereich&[login/scripts/include.php|3]"))?>><?=h(_("Adminbereich&[login/scripts/include.php|3]"))?></a></li>
+				<li id="navigation-abmelden"><a href="<?=htmlspecialchars('https://'.$_SERVER['HTTP_HOST'].h_root)?>/admin/index.php"<?=accesskey_attr(_("Adminbereich&[login/include.php|3]"))?>><?=h(_("Adminbereich&[login/include.php|3]"))?></a></li>
 <?php
 			}
 			else
 			{
 ?>
-				<li id="navigation-abmelden"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/scripts/logout.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Abmelden&[login/scripts/include.php|3]"))?>><?=h(_("Abmelden&[login/scripts/include.php|3]"))?></a></li>
+				<li id="navigation-abmelden"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/info/logout.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Abmelden&[login/include.php|3]"))?>><?=h(_("Abmelden&[login/include.php|3]"))?></a></li>
 <?php
 			}
 ?>
@@ -613,10 +613,10 @@
 ?>
 			<hr class="separator" id="navigation-separator-3" />
 			<ul id="external-navigation">
-				<li id="navigation-board"><a href="<?=htmlspecialchars(global_setting("USE_PROTOCOL"))?>://board.s-u-a.net/"<?=accesskey_attr(_("Board&[login/scripts/include.php|3]"))?>><?=h(_("Board&[login/scripts/include.php|3]"))?></a></li>
-				<li id="navigation-faq"><a href="http://<?=htmlspecialchars(get_default_hostname().h_root)?>/faq.php"<?=accesskey_attr(_("FAQ&[login/scripts/include.php|3]"))?>><?=h(_("FAQ&[login/scripts/include.php|3]"))?></a></li>
-				<li id="navigation-chat"><a href="http://<?=htmlspecialchars(get_default_hostname().h_root)?>/chat.php"<?=accesskey_attr(_("Chat&[login/scripts/include.php|3]"))?>><?=h(_("Chat&[login/scripts/include.php|3]"))?></a></li>
-				<li id="navigation-developers"><a href="http://dev.s-u-a.net/"<?=accesskey_attr(_("Entwicklerseite&[login/scripts/include.php|3]"))?>><?=h(_("Entwicklerseite&[login/scripts/include.php|3]"))?></a></li>
+				<li id="navigation-board"><a href="<?=htmlspecialchars(global_setting("USE_PROTOCOL"))?>://board.s-u-a.net/"<?=accesskey_attr(_("Board&[login/include.php|3]"))?>><?=h(_("Board&[login/include.php|3]"))?></a></li>
+				<li id="navigation-faq"><a href="http://<?=htmlspecialchars(get_default_hostname().h_root)?>/faq.php"<?=accesskey_attr(_("FAQ&[login/include.php|3]"))?>><?=h(_("FAQ&[login/include.php|3]"))?></a></li>
+				<li id="navigation-chat"><a href="http://<?=htmlspecialchars(get_default_hostname().h_root)?>/chat.php"<?=accesskey_attr(_("Chat&[login/include.php|3]"))?>><?=h(_("Chat&[login/include.php|3]"))?></a></li>
+				<li id="navigation-developers"><a href="http://dev.s-u-a.net/"<?=accesskey_attr(_("Entwicklerseite&[login/include.php|3]"))?>><?=h(_("Entwicklerseite&[login/include.php|3]"))?></a></li>
 			</ul>
 <?php
 			}
@@ -653,7 +653,7 @@
 		<ul id="gameinfo">
 			<li class="username"><?=htmlspecialchars($me->getName())?></li>
 			<li class="database"><?=htmlspecialchars($databases[$_SESSION['database']]['name'])?></li>
-			<li class="version"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/changelog.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Changelog anzeigen&[login/scripts/include.php|4]"), false)?>"<?=accesskey_attr(_("Changelog anzeigen&[login/scripts/include.php|4]"))?>><?=sprintf(h(_("Version %s")), htmlspecialchars(VERSION))?></a></li>
+			<li class="version"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/changelog.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Changelog anzeigen&[login/include.php|4]"), false)?>"<?=accesskey_attr(_("Changelog anzeigen&[login/include.php|4]"))?>><?=sprintf(h(_("Version %s")), htmlspecialchars(VERSION))?></a></li>
 <?php
 			if(($rev = get_revision()) !== false)
 			{
@@ -667,8 +667,8 @@
 		<hr class="separator" />
 
 		<ul id="links-up-2" class="cross-navigation">
-			<li><a href="#ress"><?=h(_("Zur Rohstoffanzeige&[login/scripts/include.php|1]"))?></a></li>
-			<li><a href="#inner-content"><?=h(_("Zum Inhalt&[login/scripts/include.php|1]"))?></a></li>
+			<li><a href="#ress"><?=h(_("Zur Rohstoffanzeige&[login/include.php|1]"))?></a></li>
+			<li><a href="#inner-content"><?=h(_("Zum Inhalt&[login/include.php|1]"))?></a></li>
 		</ul>
 
 		<div id="css-3"></div>

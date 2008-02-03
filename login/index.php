@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('scripts/include.php');
+	require('include.php');
 
 	if(isset($_GET['cancel']))
 	{
@@ -44,7 +44,7 @@
 	login_gui::html_head(array("notify" => true));
 ?>
 <ul id="planeten-umbenennen">
-	<li><a href="scripts/rename.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>
+	<li><a href="info/rename.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>
 </ul>
 <?php
 	$active_planet = $me->getActivePlanet();
@@ -239,13 +239,13 @@
 			if($fl->getCurrentType() == 4 && !$fl->isFlyingBack() && $me->permissionToAct() && $me->isOwnPlanet($fl->getCurrentTarget()))
 			{
 ?>
-		<div class="handel action"><a href="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Geben Sie dieser Flotte Ladung mit auf den Rückweg">Handel</a></div>
+		<div class="handel action"><a href="info/flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Geben Sie dieser Flotte Ladung mit auf den Rückweg">Handel</a></div>
 <?php
 			}
 			if($fl->getCurrentType() == 3 && !$fl->isFlyingBack() && array_search($me->getName(), $fl->getUsersList()) === 0)
 			{
 ?>
-		<div class="buendnisangriff action"><a href="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern.">Bündnisangriff</a></div>
+		<div class="buendnisangriff action"><a href="info/flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern.">Bündnisangriff</a></div>
 <?php
 			}
 ?>

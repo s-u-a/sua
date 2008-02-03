@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('scripts/include.php');
+	require('include.php');
 
 	# Werbung deaktivieren, weil beim vielen Herumklicken sonst das Laden ewig dauert
 	$DISABLE_ADS = true;
@@ -255,7 +255,7 @@
 						new_alliance1.className = 'allianz-fremd';
 					new_alliance1.appendChild(document.createTextNode('['));
 					var new_alliance2 = document.createElement('a');
-					new_alliance2.href = 'help/allianceinfo.php?alliance='+encodeURIComponent(sinfo[i]['alliance'])+'&<?=global_setting("URL_SUFFIX")?>';
+					new_alliance2.href = 'info/allianceinfo.php?alliance='+encodeURIComponent(sinfo[i]['alliance'])+'&<?=global_setting("URL_SUFFIX")?>';
 					new_alliance2.className = "alliancename";
 					new_alliance2.setAttribute('<?=$title_attr?>', 'Informationen zu dieser Allianz anzeigen');
 <?php
@@ -280,7 +280,7 @@
 				playername1.className = 'playername';
 				playername1.appendChild(document.createTextNode('('));
 				var playername2 = document.createElement('a');
-				playername2.href = 'help/playerinfo.php?player='+encodeURIComponent(sinfo[i]['owner'])+'&<?=global_setting("URL_SUFFIX")?>';
+				playername2.href = 'info/playerinfo.php?player='+encodeURIComponent(sinfo[i]['owner'])+'&<?=global_setting("URL_SUFFIX")?>';
 				playername2.setAttribute('<?=$title_attr?>', 'Informationen zu diesem Spieler anzeigen');
 <?php
 		if($me->checkSetting('tooltips'))
@@ -618,7 +618,7 @@
 ?>
 				</optgroup>
 			</select>
-			<ul class="actions"><li><a href="flotten_actions.php?action=shortcuts&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="lesezeichen-verwalten-link"<?=accesskey_attr(_("Lesezeichen verwalten&[login/karte.php|1]"))?>><?=h(_("Lesezeichen verwalten&[login/karte.php|1]"))?></a></li></ul>
+			<ul class="actions"><li><a href="info/flotten_actions.php?action=shortcuts&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="lesezeichen-verwalten-link"<?=accesskey_attr(_("Lesezeichen verwalten&[login/karte.php|1]"))?>><?=h(_("Lesezeichen verwalten&[login/karte.php|1]"))?></a></li></ul>
 		</div>
 		<div id="karte-koordinaten"><input type="text" name="galaxy" value="<?=htmlspecialchars($galaxy_n)?>" tabindex="<?=($tabindex++)-1?>" id="current-galaxy-number" class="number number-koords" />:<input type="text" name="system" value="<?=htmlspecialchars($system_n)?>" tabindex="<?=($tabindex++)-1?>" id="current-system-number" class="number number-koords" /></div>
 	</fieldset>
@@ -679,7 +679,7 @@
 		if($planet[1])
 		{
 ?>
-			<td class="c-name"><?php if($planet[3]){?><span class="allianz<?=($planet[3] == $me->allianceTag()) ? '-eigen' : '-fremd'?>">[<a href="help/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($planet[3]))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu dieser Allianz anzeigen" class="alliancename"><?=htmlspecialchars($planet[3])?></a>]</span> <?php }?><?=htmlspecialchars($planet[2])?> <span class="playername">(<a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($that_uname))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($that_uname)?></a><?=$planet[4] ? ' ('.htmlspecialchars($planet[4]).')' : ''?>)</span></td>
+			<td class="c-name"><?php if($planet[3]){?><span class="allianz<?=($planet[3] == $me->allianceTag()) ? '-eigen' : '-fremd'?>">[<a href="info/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($planet[3]))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu dieser Allianz anzeigen" class="alliancename"><?=htmlspecialchars($planet[3])?></a>]</span> <?php }?><?=htmlspecialchars($planet[2])?> <span class="playername">(<a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($that_uname))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($that_uname)?></a><?=$planet[4] ? ' ('.htmlspecialchars($planet[4]).')' : ''?>)</span></td>
 <?php
 		}
 		else

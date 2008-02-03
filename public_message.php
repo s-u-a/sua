@@ -31,7 +31,7 @@
 		$keys = array_keys($skins['default'][1]);
 		$sub_skin = array_shift($keys);
 ?>
-		<link rel="stylesheet" href="<?=h_root?>/login/style/skin.php?skin=default&amp;type=<?=htmlspecialchars($sub_skin)?>" type="text/css" />
+		<link rel="stylesheet" href="<?=h_root?>/login/res/style/skin.php?skin=default&amp;type=<?=htmlspecialchars($sub_skin)?>" type="text/css" />
 <?php
 	}
 ?>

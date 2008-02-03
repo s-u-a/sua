@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('scripts/include.php');
+	require('include.php');
 
 	login_gui::html_head();
 
@@ -41,7 +41,7 @@
 			{
 ?>
 <h2><?=h(_("Allianz"))?></h2>
-<p class="allianz-laufende-bewerbung successful"><?=sprintf(h(_("Sie haben derzeit eine laufende Bewerbung bei der Allianz %s.")), "<a href=\"help/allianceinfo.php?alliance=".htmlspecialchars(urlencode($application)."&".global_setting("URL_SUFFIX"))."\">".htmlspecialchars($application)."</a>")?></p>
+<p class="allianz-laufende-bewerbung successful"><?=sprintf(h(_("Sie haben derzeit eine laufende Bewerbung bei der Allianz %s.")), "<a href=\"info/allianceinfo.php?alliance=".htmlspecialchars(urlencode($application)."&".global_setting("URL_SUFFIX"))."\">".htmlspecialchars($application)."</a>")?></p>
 <ul class="allianz-laufende-bewerbung-aktionen possibilities">
 	<li><a href="allianz.php?action=cancel&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Bewerbung zurückziehen&[login/allianz.php|1]"))?>><?=h(_("Bewerbung zurückziehen&[login/allianz.php|1]"))?></a></li>
 </ul>
@@ -204,7 +204,7 @@
 					foreach($alliances as $alliance)
 					{
 ?>
-	<li><a href="help/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($alliance))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($alliance)?></a></li>
+	<li><a href="info/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($alliance))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($alliance)?></a></li>
 <?php
 					}
 ?>
@@ -274,7 +274,7 @@
 				}
 ?>
 		<tr>
-			<th class="c-name"><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($member_name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($member_name)?></a></th>
+			<th class="c-name"><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($member_name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($member_name)?></a></th>
 <?php
 				if($alliance->checkUserPermissions($me->getName(), 6))
 				{
@@ -486,7 +486,7 @@
 					}
 ?>
 			<tr>
-				<th><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($member_name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($member_name)?></a><input type="hidden" name="permissions[<?=htmlspecialchars($i)?>][9]" value="on" /></th>
+				<th><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($member_name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($member_name)?></a><input type="hidden" name="permissions[<?=htmlspecialchars($i)?>][9]" value="on" /></th>
 				<td><input type="checkbox" name="permissions[<?=htmlspecialchars($i)?>][0]"<?=$alliance->checkUserPermissions($member_name, 0) ? ' checked="checked"' : ''?> /></td>
 				<td><input type="checkbox" name="permissions[<?=htmlspecialchars($i)?>][1]"<?=$alliance->checkUserPermissions($member_name, 1) ? ' checked="checked"' : ''?> /></td>
 				<td><input type="checkbox" name="permissions[<?=htmlspecialchars($i)?>][2]"<?=$alliance->checkUserPermissions($member_name, 2) ? ' checked="checked"' : ''?> /></td>
@@ -528,7 +528,7 @@
 						foreach($applications as $bewerbung)
 						{
 ?>
-	<dt><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=htmlspecialchars($bewerbung)?></a></dt>
+	<dt><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=htmlspecialchars($bewerbung)?></a></dt>
 	<dd><ul>
 		<li><a href="allianz.php?action=annehmen&amp;which=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=h(_("Annehmen"))?></a></li>
 		<li><a href="allianz.php?action=ablehnen&amp;which=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="return confirm('<?=jsentities(sprintf(_("Sind Sie sicher, dass Sie die Bewerbung des Benutzers %s ablehnen wollen?"), $bewerbung))?>');"><?=h(_("Ablehnen"))?></a></li>

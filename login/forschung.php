@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('scripts/include.php');
+	require('include.php');
 
 	$laufende_forschungen = array();
 	$planets = $me->getPlanetsList();
@@ -72,7 +72,7 @@
 			$buildable_global = false; # Es wird schon wo geforscht
 ?>
 <div class="item forschung" id="item-<?=htmlspecialchars($id)?>">
-	<h3><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(Level&nbsp;<?=ths($item_info['level'])?>)</span></h3>
+	<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(Level&nbsp;<?=ths($item_info['level'])?>)</span></h3>
 <?php
 		if((!($building_geb = $me->checkBuildingThing('gebaeude')) || $building_geb[0] != 'B8') && $item_info['buildable'] && $me->permissionToAct() && !($building = $me->checkBuildingThing('forschung')) && !in_array($id, $laufende_forschungen) && $item_info['deps-okay'])
 		{

@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('include.php');
+	require('../include.php');
 
 	$planet_error = false;
 	if(isset($_POST['planet_name']))
@@ -104,7 +104,7 @@
 <?php
 		}
 ?>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/scripts/rename.php?'.global_setting("URL_SUFFIX"))?>" method="post">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/info/rename.php?'.global_setting("URL_SUFFIX"))?>" method="post">
 	<fieldset>
 		<legend>Planeten aufgeben</legend>
 		<dl class="form">

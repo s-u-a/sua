@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('scripts/include.php');
+	require('include.php');
 
 	login_gui::html_head();
 
@@ -76,7 +76,7 @@
 		foreach($anfragen as $anfrage)
 		{
 ?>
-	<dt><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($anfrage))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($anfrage)?></a></dt>
+	<dt><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($anfrage))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($anfrage)?></a></dt>
 	<dd><ul>
 		<li><a href="verbuendete.php?anfrage=<?=htmlspecialchars(urlencode($anfrage))?>&amp;annehmen=1&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>">Annehmen</a></li>
 		<li><a href="verbuendete.php?anfrage=<?=htmlspecialchars(urlencode($anfrage))?>&amp;annehmen=0&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>">Ablehnen</a></li>
@@ -98,7 +98,7 @@
 		foreach($bewerbungen as $bewerbung)
 		{
 ?>
-	<dt><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($bewerbung)?></a></dt>
+	<dt><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($bewerbung)?></a></dt>
 	<dd><ul>
 		<li><a href="verbuendete.php?bewerbung=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>">Zurückziehen</a></li>
 	</ul></dd>
@@ -128,7 +128,7 @@
 		foreach($verbuendete as $name)
 		{
 ?>
-	<dt><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($name)?></a></dt>
+	<dt><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($name)?></a></dt>
 	<dd><ul>
 		<li><a href="verbuendete.php?kuendigen=<?=htmlspecialchars(urlencode($name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="return confirm('Wollen Sie das Bündnis mit dem Spieler <?=jsentities($name)?> wirklich kündigen?');">Kündigen</a></li>
 	</ul></dd>

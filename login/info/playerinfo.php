@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('../scripts/include.php');
+	require('../include.php');
 
 	login_gui::html_head();
 
@@ -192,13 +192,13 @@
 <h3 id="nachricht" class="strong"><?=h(_("Nachricht"))?></h3>
 <form action="../nachrichten.php?to=&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="playerinfo-nachricht" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?")?>\');');">
 	<dl class="form">
-		<dt class="c-betreff"><label for="betreff-input"><?=h(_("Betreff&[login/help/playerinfo.php|1]"))?></label></dt>
-		<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" maxlength="30" tabindex="1"<?=accesskey_attr(_("Betreff&[login/help/playerinfo.php|1]"))?> /></dd>
+		<dt class="c-betreff"><label for="betreff-input"><?=h(_("Betreff&[login/info/playerinfo.php|1]"))?></label></dt>
+		<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" maxlength="30" tabindex="1"<?=accesskey_attr(_("Betreff&[login/info/playerinfo.php|1]"))?> /></dd>
 
-		<dt class="c-inhalt"><label for="inhalt-input"><?=h(_("Inhalt&[login/help/playerinfo.php|1]"))?></label></dt>
-		<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10" tabindex="2"<?=accesskey_attr(_("Inhalt&[login/help/playerinfo.php|1]"))?>></textarea></dd>
+		<dt class="c-inhalt"><label for="inhalt-input"><?=h(_("Inhalt&[login/info/playerinfo.php|1]"))?></label></dt>
+		<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10" tabindex="2"<?=accesskey_attr(_("Inhalt&[login/info/playerinfo.php|1]"))?>></textarea></dd>
 	</dl>
-	<div class="button"><button type="submit" tabindex="3"<?=accesskey_attr(_("&Nachricht absenden[login/help/playerinfo.php|1]"))?>><?=h(_("&Nachricht absenden[login/help/playerinfo.php|1]"))?></button><input type="hidden" name="empfaenger" value="<?=htmlspecialchars($user->getName())?>" /></div>
+	<div class="button"><button type="submit" tabindex="3"<?=accesskey_attr(_("&Nachricht absenden[login/info/playerinfo.php|1]"))?>><?=h(_("&Nachricht absenden[login/info/playerinfo.php|1]"))?></button><input type="hidden" name="empfaenger" value="<?=htmlspecialchars($user->getName())?>" /></div>
 </form>
 <?php
 			}

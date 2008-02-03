@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('scripts/include.php');
+	require('include.php');
 
 	login_gui::html_head();
 
@@ -145,12 +145,12 @@
 ?>
 		<tr class="<?=$class?> allianz-<?=$alliance_class?>">
 			<th class="c-platz"><?=ths($start+$i)?></th>
-			<td class="c-spieler"><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($info['username']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen" class="playername"><?=htmlspecialchars($info['username'])?></a></td>
+			<td class="c-spieler"><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($info['username']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen" class="playername"><?=htmlspecialchars($info['username'])?></a></td>
 <?php
 			if($info['alliance'])
 			{
 ?>
-			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($info['alliance']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu dieser Allianz anzeigen" class="alliancename"><?=htmlspecialchars($info['alliance'])?></a></td>
+			<td class="c-allianz"><a href="info/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($info['alliance']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu dieser Allianz anzeigen" class="alliancename"><?=htmlspecialchars($info['alliance'])?></a></td>
 <?php
 			}
 			else
@@ -173,7 +173,7 @@
 ?>
 		<tr class="<?=$class?>">
 			<th class="c-platz"><?=ths($start+$i)?></th>
-			<td class="c-allianz"><a href="help/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($info['tag']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu dieser Allianz anzeigen"><?=htmlspecialchars($info['tag'])?></a></td>
+			<td class="c-allianz"><a href="info/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($info['tag']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu dieser Allianz anzeigen"><?=htmlspecialchars($info['tag'])?></a></td>
 			<td class="c-punkteschnitt number"><?=ths($info['scores_average'])?></td>
 			<td class="c-gesamtpunkte number"><?=ths($info['scores_total'])?></td>
 			<td class="c-mitglieder number"><?=ths($info['members_count'])?></td>

@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('scripts/include.php');
+	require('../include.php');
 
 	if(!isset($_GET['action']))
 		$_GET['action'] = false;
@@ -83,7 +83,7 @@
 ?>
 <form action="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.global_setting("URL_SUFFIX"))?>" method="post" class="handel <?=$class?>">
 	<fieldset>
-		<legend><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($username).'&'.global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($username)?></a></legend>
+		<legend><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($username).'&'.global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($username)?></a></legend>
 <?php
 				$trans = $fleet->getTransportCapacity($username);
 				$handel = $fleet->getHandel($username);

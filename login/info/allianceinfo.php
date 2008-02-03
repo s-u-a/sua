@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('../scripts/include.php');
+	require('../include.php');
 
 	login_gui::html_head();
 
@@ -71,7 +71,7 @@
 				{
 ?>
 <ul class="allianz-bewerben possibilities">
-	<li><a href="../allianz.php?action=apply&amp;for=<?=htmlspecialchars(urlencode($alliance->getName()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Bei dieser Allianz bewerben&[login/help/allianceinfo.php|1]"))?>><?=h(_("Bei dieser Allianz bewerben&[login/help/allianceinfo.php|1]"))?></a></li>
+	<li><a href="../allianz.php?action=apply&amp;for=<?=htmlspecialchars(urlencode($alliance->getName()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Bei dieser Allianz bewerben&[login/info/allianceinfo.php|1]"))?>><?=h(_("Bei dieser Allianz bewerben&[login/info/allianceinfo.php|1]"))?></a></li>
 </ul>
 <?php
 				}

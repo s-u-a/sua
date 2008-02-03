@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('scripts/include.php');
+	require('include.php');
 
 	$changed = false;
 
@@ -357,7 +357,7 @@
 					if(document.getElementById("skin-choice").value == "custom")
 						l[i].href = document.getElementById("skin").value;
 					else
-						l[i].href = '<?=jsentities(h_root)?>/login/style/'+document.getElementById("skin-choice").value+'/style.css';
+						l[i].href = '<?=jsentities(h_root)?>/login/res/style/'+document.getElementById("skin-choice").value+'/style.css';
 					break;
 				}
 			}

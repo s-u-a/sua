@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('scripts/include.php');
+	require('include.php');
 
 	login_gui::html_head((isset($_GET["type"]) && isset($_GET["message"])) ? array("ignore_messages" => array($_GET["message"])) : ((isset($_GET["type"]) && !isset($_GET["message"]) && (isset($_POST["delete"]) || isset($_POST["read"]) || isset($_POST["archive"])) && isset($_POST["message"])) ? array("ignore_messages" => array_keys($_POST["message"])) : array()));
 
@@ -202,7 +202,7 @@
 					{
 ?>
 	<dt class="c-absender">Absender</dt>
-	<dd class="c-absender"><a href="help/playerinfo.php?player=<?=htmlspecialchars(urlencode($message->from()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($message->from())?></a></dd>
+	<dd class="c-absender"><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($message->from()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($message->from())?></a></dd>
 
 <?php
 					}

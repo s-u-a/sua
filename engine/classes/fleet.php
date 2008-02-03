@@ -1922,7 +1922,7 @@
 				$schild = $item_info['def']*$anzahl;
 
 				$nachrichten_text .= "\t\t\t<tr>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"info/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
@@ -1992,7 +1992,7 @@
 				if($anzahl > 0)
 				{
 					$nachrichten_text .= "\t\t\t<tr>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"info/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
@@ -2275,7 +2275,7 @@
 				if($anzahl > 0)
 				{
 					$nachrichten_text .= "\t\t\t<tr>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"info/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
@@ -2379,7 +2379,7 @@
 				if($anzahl > 0)
 				{
 					$nachrichten_text .= "\t\t\t<tr>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"help/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"info/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";

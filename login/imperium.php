@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('scripts/include.php');
+	require('include.php');
 
 	$active_planet = $me->getActivePlanet();
 
@@ -295,7 +295,7 @@
 			{
 				$item_info = $me->getItemInfo($id, 'roboter');
 ?>
-			<th class="c-<?=htmlspecialchars($id)?>"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a></th>
+			<th class="c-<?=htmlspecialchars($id)?>"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a></th>
 <?php
 			}
 ?>
@@ -409,7 +409,7 @@
 				$this_ges = 0;
 ?>
 		<tr>
-			<th class="c-einheit separator-right"><a href="help/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a></th>
+			<th class="c-einheit separator-right"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a></th>
 <?php
 				foreach($planets as $i=>$planet)
 				{
