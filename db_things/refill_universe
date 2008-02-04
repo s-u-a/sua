@@ -68,6 +68,11 @@
 			$user_obj->setActivePlanet($planet_idx);
 			$planet = $user_obj->getPos();
 			$galaxy_obj = Classes::Galaxy($planet[0]);
+			if($galaxy_obj->getPlanetsCount($planet[1]) < $planet[2])
+			{
+				fputs(STDERR, $planet[0].":".$planet[1].":".$planet[2]." does not exist.\n");
+				continue;
+			}
 			$galaxy_obj->setPlanetOwner($planet[1], $planet[2], $user_obj->getName());
 			if($user_obj->userLocked()) $galaxy_obj->setPlanetOwnerFlag($planet[1], $planet[2], "g");
 			elseif($user_obj->umode()) $galaxy_obj->setPlanetOwnerFlag($planet[1], $planet[2], "U");
