@@ -314,7 +314,7 @@
 			if($planet_owner[$i] && (($auftrag == FLEET_ANGRIFF || $auftrag == FLEET_SPIONIEREN) && !$that_user[$i]->userLocked() || $auftrag == FLEET_STATIONIEREN && $planet_owner[$i] != $me->getName()) && !file_exists(global_setting("DB_NONOOBS")))
 			{
 				# Anfaengerschutz ueberpruefen
-				$that_punkte = $that_user->getScores();
+				$that_punkte = $that_user[$i]->getScores();
 				$this_punkte = $me->getScores();
 
 				if($that_punkte > $this_punkte && $that_punkte*0.05 > $this_punkte)
