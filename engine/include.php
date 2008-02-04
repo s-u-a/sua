@@ -775,7 +775,7 @@
 		$tabs = '';
 		if($tabs_count >= 1)
 			$tabs = str_repeat("\t", $tabs_count);
-		
+
 		$class = array("", "", "", "", "", "", "");
 		if($check_availability)
 		{
@@ -1866,6 +1866,8 @@
 				return null;
 			$gpg = new gnupg();
 			$gpg->seterrormode(gnupg::ERROR_WARNING);
+			if(isset($config["gpghome"]))
+				putenv("GNUPGHOME=".$config["gpghome"]);
 			if(!$gpg->addsignkey($config["fingerprint"], $config["password"]))
 				return null;
 		}

@@ -1,2 +1,3 @@
 fingerprint = AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHHIIIIJJJJ
 password = blabla
+gpghome = /var/www/.gnupg/
