@@ -496,6 +496,7 @@
 	}
 
 	$me->setActivePlanet($active_planet);
+	define_url_suffix();
 ?>
 </ol>
 <?php
