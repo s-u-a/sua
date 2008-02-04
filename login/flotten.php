@@ -1072,15 +1072,15 @@
 				document.getElementById('flugzeit-'+i).innerHTML = time_string;
 
 				var jetzt = new Date();
-				var ankunft_server = new Date(jetzt.getTime()+(time*1000));
-				var ankunft_server_server = new Date(ankunft_server.getTime()-time_diff);
+				var ankunft_client = new Date(jetzt.getTime()+(time[i]*1000));
+				var ankunft_server = new Date(ankunft_client.getTime()-time_diff);
 
 				var attrName;
 				if(document.getElementById('flugzeit-'+i).getAttribute('titleAttribute'))
 					attrName = 'titleAttribute';
 				else
 					attrName = 'title';
-				document.getElementById('flugzeit-'+i).setAttribute(attrName, '<?=sprintf(str_replace("'", "\\'", _("Ankunft: %s")), sprintf(str_replace("'", "\\'", _("%s (Lokalzeit)")), "'+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+' (Lokalzeit); '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+'"))?>');
+				document.getElementById('flugzeit-'+i).setAttribute(attrName, '<?=sprintf(str_replace("'", "\\'", _("Ankunft: %s")), sprintf(str_replace("'", "\\'", _("%s (Lokalzeit)")), "'+mk2(ankunft_client.getHours())+':'+mk2(ankunft_client.getMinutes())+':'+mk2(ankunft_client.getSeconds())+', '+ankunft_client.getFullYear()+'-'+mk2(ankunft_client.getMonth()+1)+'-'+mk2(ankunft_client.getDate())+' (Lokalzeit); '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+'"))?>');
 
 				if(display)
 					tritium = tritium_all[i];
