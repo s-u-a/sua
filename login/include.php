@@ -259,7 +259,7 @@
 		</script>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root."/login/res/javascript.js")?>"></script>
 <?php
-			if($me->checkSetting('performance') != 0)
+			if($me->checkSetting('performance'))
 			{
 				if($me->checkSetting('ajax'))
 				{
@@ -465,7 +465,7 @@
 			<div id="werbung">
 <?php
 			global $DISABLE_ADS;
-			if($me->checkSetting('performance') != 0 && (!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http') # Per https keine Werbung einblenden, da Google nur http unterstuetzt und dann eine Sicherheitswarnung kommt
+			if($me->checkSetting('performance') && (!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http') # Per https keine Werbung einblenden, da Google nur http unterstuetzt und dann eine Sicherheitswarnung kommt
 			{
 ?>
 				<div class="google-params" id="google-color-border-red"></div>
@@ -630,7 +630,7 @@
 			<dd id="time-server"><?=date(_("H:i:s"), time()+1)?></dd>
 		</dl>
 <?php
-			if($me->checkSetting('performance') != 0)
+			if($me->checkSetting('performance'))
 			{
 ?>
 		<script type="text/javascript">
@@ -675,7 +675,7 @@
 		</div></div></div></div></div></div></div></div>
 		<div id="css-4"></div>
 <?php
-			if($me->checkSetting('performance') != 0)
+			if($me->checkSetting('performance'))
 			{
 				if($me->checkSetting('tooltips') || $me->checkSetting('shortcuts') || $me->checkSetting('ress_refresh') > 0)
 				{
