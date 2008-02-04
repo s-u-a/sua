@@ -96,7 +96,7 @@
 		$me->setSetting('fastbuild_full', isset($_POST['fastbuild_full']));
 		$me->setSetting("gpg_im", isset($_POST["gpg_im"]));
 		$me->setSetting("extended_buildings", isset($_POST["extended_buildings"]));
-		$me->setSetting("performance", isset($_POST["performance"]));
+		$me->setSetting("performance", !isset($_POST["performance"]));
 
 		if(!isset($_POST['im-receive']) || !isset($_POST['im-receive']['messages']))
 			$messenger_receive['messages'] = array(1=>false, 2=>false, 3=>false, 4=>false, 5=>false, 6=>false, 7=>false);
