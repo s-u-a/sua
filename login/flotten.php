@@ -295,7 +295,7 @@
 
 				$types[$i] = array_flip($types[$i]);
 
-				if(!$buendnisflug && !in_array($v, $types[$i]))
+				if(!$buendnisflug && $v && !in_array($v, $types[$i]))
 					throw new LoginFlottenException(_("Ungültigen Auftrag ausgewählt."), 0, LoginFlottenException::$TYPE_TYPE);
 
 				if($v == FLEET_STATIONIEREN || $v == FLEET_BESIEDELN)
