@@ -261,6 +261,13 @@
 			return $this->raw[0];
 		}
 
+		function getOldTargetsInformation()
+		{
+			if(!$this->status) return false;
+
+			return $this->raw[3];
+		}
+
 		function getOldTargetsList()
 		{
 			if(!$this->status) return false;
@@ -273,9 +280,16 @@
 			return $targets;
 		}
 
-		function getNeededSlots()
+		function getNeededSlots($user=null)
 		{
 			if(!$this->status) return false;
+
+			$users = array_keys($this->raw[1]);
+			$first_user = array_shift($users);
+			if($user === null) $user = $first_user;
+			if(!isset($this->raw[1][$user])) return false;
+
+			if($user != $first_user) return 1;
 
 			$slots = 0;
 			foreach($this->raw[0] as $k=>$v)
@@ -374,6 +388,12 @@
 			$users = array_keys($this->raw[1]);
 			$duration = $this->calcTime(array_shift($users), $this->getLastTarget(), $this->getCurrentTarget());
 			return $start_time+$duration;
+		}
+
+		function getDepartingTime()
+		{
+			if(!$this->status) return false;
+			return $this->raw[2];
 		}
 
 		function isFlyingBack()
@@ -578,7 +598,6 @@
 				{
 					if(substr($target, -1) == 'T') $target = substr($target, 0, -1);
 					$tritium += $this->getTritium($user, $old_target, $target);
-					$old_target = $target;
 				}
 				if($old_target != $this->raw[1][$user][1])
 					$tritium += $this->getTritium($user, $old_target, $this->raw[1][$user][1]);
@@ -612,17 +631,29 @@
 			return $this->getTritium($user, $from, $to)/1000;
 		}
 
-		function getTime($i)
+		function getTime($target)
 		{
-			if(!$this->status || (!isset($this->raw[0][$i]) && !isset($this->raw[0][$i.'T']))) return false;
+			if(!$this->status) return false;
 			if(count($this->raw[1]) <= 0) return false;
 
 			$keys = array_keys($this->raw[1]);
 			$user = array_shift($keys);
-			$from = $this->raw[1][$user][1];
-			$to = $i;
 
-			return $this->calcTime($user, $from, $to);
+			$targets = array_keys($this->raw[0]);
+			$max = array_search($target, $targets);
+			if($max === false) $max = array_search($target."T", $targets);
+			if($max === false) return false;
+
+			$time = 0;
+			$last = $this->getLastTarget($user);
+			for($i=0; $i<=$max; $i++)
+			{
+				if(substr($targets[$i], -1) == "T") $targets[$i] = substr($targets[$i], 0, -1);
+				$time += $this->calcTime($user, $last, $targets[$i]);
+				$last = $targets[$i];
+			}
+
+			return $time;
 		}
 
 		function calcTime($user, $from, $to, $use_min_time=true)
@@ -742,7 +773,7 @@
 			if(array_search($user, array_keys($this->raw[1])) == 0)
 				$new_raw[3] = array_merge($this->raw[3], $new_raw[3]);
 			$new_raw[1][$user][3][2] += $back_tritium;
-			
+
 			unset($this->raw[1]);
 			$this->changed = true;
 
@@ -927,6 +958,8 @@
 		{
 			__autoload('Galaxy');
 
+			if(substr($start, -1) == "T") $start = substr($start, 0, -1);
+			if(substr($target, -1) == "T") $target = substr($target, 0, -1);
 			$this_pos = explode(':', $start);
 			$that_pos = explode(':', $target);
 
@@ -1284,12 +1317,12 @@
 							foreach($message_text as $username=>$text)
 							{
 								$user_obj = Classes::User($username);
-								
+
 								// Will keine Nachrichten erhalten?
 								$receive = $user_obj->checkSetting('receive');
 								if(isset($this->raw[1][$username]) && isset($receive[3]) && isset($receive[3][0]) && !$receive[3][0])
 									continue;
-								
+
 								$message_obj = Classes::Message();
 								if($message_obj->create())
 								{
@@ -2192,7 +2225,7 @@
 			unset($a_objs);
 			unset($d_objs);
 		}
-		
+
 		$nachrichten_text .= "%12\$s";
 
 		$nachrichten_text .= "\t<p>\n";

@@ -456,6 +456,96 @@
 <?php
 			break;
 		}
+		case "route":
+		{
+?>
+<h2 id="flugroute"><?=h(_("Flugroute"))?></h2>
+<?php
+			if(!isset($_GET['id'])) $flotten_id = false;
+			else $flotten_id = $_GET['id'];
+
+			if($flotten_id)
+			{
+				$fleet = Classes::Fleet($flotten_id);
+				if(!$fleet->getStatus()) $flotten_id = false;
+				$flotten_id = $fleet->getName();
+
+				if($flotten_id && array_search($me->getName(), $fleet->getUsersList()) !== 0)
+					$flotten_id = false;
+			}
+
+			if(!$flotten_id)
+			{
+?>
+<p class="error"><?=h(_("Ungültigen Flug ausgewählt."))?></p>
+<?php
+				login_gui::html_foot();
+				exit();
+			}
+?>
+<table class="route paragraph">
+	<thead>
+		<tr>
+			<th class="c-ziel"><?=h(_("Ziel"))?></th>
+			<th class="c-auftrag"><?=h(_("Auftrag"))?></th>
+			<th class="c-ankunft"><?=h(_("Ankunft"))?></th>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+			$i = 0;
+			$targets = $fleet->getOldTargetsInformation();
+			$old_count = count($targets);
+			$targets = array_merge($targets, $fleet->getTargetsInformation());
+			$countdowns = array();
+			foreach($targets as $target=>$info)
+			{
+				if($info[1]) continue;
+				if(substr($target, -1) == "T") $target = substr($target, 0, -1);
+				$target_arr = explode(":", $target);
+				$galaxy_obj = Classes::Galaxy($target_arr[0]);
+				$planet_owner = $galaxy_obj->getPlanetOwner($target_arr[1], $target_arr[2]);
+				$planet_name = $galaxy_obj->getPlanetName($target_arr[1], $target_arr[2]);
+				$planet_alliance = $galaxy_obj->getPlanetOwnerAlliance($target_arr[1], $target_arr[2]);
+
+				$koords = "<a href=\"../karte.php?galaxy=".htmlspecialchars(urlencode($target_arr[0])."&system=".urlencode($target_arr[1])."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Diesen Planeten in der Karte anzeigen"))."\">".vsprintf(h(_("%d:%d:%d")), $target_arr)."</a>";
+				if(!$planet_owner)
+					$string = sprintf(h(_("%s (unbesiedelt)")), $koords);
+				else
+				{
+					$owner = "<a href=\"playerinfo.php?player=".htmlspecialchars(urlencode($planet_owner)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Genauere Informationen anzeigen"))."\">".htmlspecialchars($planet_owner)."</a>";
+					if($planet_alliance)
+						$owner = sprintf(h(_("[%s] %s")), "<a href=\"allianceinfo.php?alliance=".htmlspecialchars(urlencode($planet_alliance)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Genauere Informationen anzeigen"))."\">".htmlspecialchars($planet_alliance)."</a>", $owner);
+					$string = sprintf(h(_("„%s“ (%s, Eigentümer: %s)")), htmlspecialchars($planet_name), $koords, $owner);
+				}
+				$countdowns[$i] = $fleet->getDepartingTime()+$fleet->getTime($target);
+?>
+		<tr id="target-<?=$i?>" class="type-<?=htmlspecialchars($info[0])?><?=$i<$old_count ? " type-weak" : ($i == $old_count ? " active" : "")?>">
+			<td class="c-ziel"><?=$string?></td>
+			<td class="c-auftrag"><?=h(_("[fleet_".$info[0]."]"))?></td>
+			<td class="c-ankunft" id="restbauzeit-<?=$i?>"><?=h(sprintf(_("Ankunft: %s"), sprintf(_("%s (Serverzeit)"), date(_("H:i:s, Y-m-d"), $countdown[$i]))))?></td>
+		</tr>
+<?php
+				$i++;
+			}
+?>
+	</tbody>
+</table>
+<script type="text/javascript">
+// <![CDATA[
+<?php
+			foreach($countdowns as $i=>$time)
+			{
+?>
+	init_countdown('<?=jsentities($i)?>', <?=$time?>, false, undefined, undefined, function(){var el1=document.getElementById('target-<?=$i?>');el1.className=el1.className.replace(/(\s|^)active(\s|$)/, "$1type-weak$2");var el2=document.getElementById('target-<?=$i+1?>');if(el2)el2.className+=" active";});
+<?php
+			}
+?>
+// ]]>
+</script>
+<?php
+			break;
+		}
 		default:
 		{
 ?>
