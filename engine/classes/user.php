@@ -1727,7 +1727,7 @@
 				'noads' => false, 'show_extern' => false,
 				'notify' => false,
 				"extended_buildings" => false,
-				'performance' => 2, 'fastbuild_full' => false,
+				'performance' => true, 'fastbuild_full' => false,
 				'receive' => array(
 					1 => array(true, true),
 					2 => array(true, false),
@@ -2860,7 +2860,7 @@
 			# IM-Benachrichtigungen entfernen
 			$imfile = Classes::IMFile();
 			$imfile->removeMessages($this->getName());
-			
+
 			# Aus den Highscores entfernen
 			$highscores = Classes::Highscores();
 			$highscores->removeEntry('users', $this->getName());
@@ -2956,7 +2956,7 @@
 						$this->raw['punkte'][1] += $item_info['scores'];
 					}
 				}
-				
+
 				if($recalc_schiffe)
 				{
 					// Fremdstationierte Flotten einbeziehen
@@ -3159,7 +3159,7 @@
 		}
 
 		/**
-		  * Stationiert eine Flotte $fleet vom Planeten $from, die dem Benutzer $user gehört, auf dem aktiven Planeten. 
+		  * Stationiert eine Flotte $fleet vom Planeten $from, die dem Benutzer $user gehört, auf dem aktiven Planeten.
 		  * @param $user string Der Benutzername des Eigentümers der Flotten.
 		  * @param $fleet array Das Item-Array der Flotten. ( Item-ID => Anzahl )
 		  * @param $from string Die Herkunfskoordinaten der Flotte. Hierhin werden sie beim Abbruch zurückgesandt.
@@ -3192,7 +3192,7 @@
 
 			return $next_i;
 		}
-		
+
 		/**
 		  * Entfernt fremdstationierte Schiffe des Benutzers $username. Hat der Benutzer mehrere Flotten stationiert, wird zunächst von der ältesten abgezogen.
 		  * @param $username Der Benutzername des Eigentümers der Schiffe.
@@ -3205,7 +3205,7 @@
 		function subForeignShips($username, $id, $count)
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
-			
+
 			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$username]))
 				return false;
 			foreach($this->planet_info["foreign_fleets"][$username] as $i=>$fleet)
@@ -3227,11 +3227,11 @@
 			if($count > 0) return 2;
 			return true;
 		}
-		
+
 		/**
 		  * Entfernt die fremdstationierte Flotte Nummer $i des Benutzers $user. $i kann mit getForeignFleetsList() herausgefunden werden.
 		  * @param $user string Der Benutzername.
-		  * @param $i integer Die Nummer der Flotte. 
+		  * @param $i integer Die Nummer der Flotte.
 		  * @return boolean Erfolg.
 		*/
 
