@@ -550,9 +550,9 @@
 
 			if(!$this->raw[1][$user][4][2])
 			{
-				$transport = $this->getTransport();
+				$transport = $this->getTransport($user);
 				$max_ress -= array_sum($transport[0]);
-				$max_rob -= array_sum($transport[1]);
+				$max_robs -= array_sum($transport[1]);
 			}
 
 			if($give !== null && !$give)
