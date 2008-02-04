@@ -71,7 +71,7 @@
   * Benutzer: ( (string) Benutzername => [ ( Schiffs-ID => Anzahl ), (string) Start-Koordinaten, (float) Geschwindigkeitsfaktor, Mitgenommene Rohstoffe, Handel, (float) Verbrauchtes Tritium (für die Flugerfahrungspunkte) ] )
   * Vergangene Ziele: Ziele
   * Mitgenommene Rohstoffe: [ ( Rohstoffnummer => Menge ), ( Roboter-ID => Anzahl ), Überschüssiges Tritium ]
-  * Handel: [ ( Rohstoffnummer => Menge ), ( Roboter-ID => Anzahl ) ]
+  * Handel: [ ( Rohstoffnummer => Menge ), ( Roboter-ID => Anzahl ), Rohstoffe abliefern? ]
 */
 
 	class Fleet
@@ -164,7 +164,8 @@
 					),
 					array(
 						decode_ress_list($u[7]),
-						decode_item_list($u[8])
+						decode_item_list($u[8]),
+						(float)$u[10]
 					),
 					(float)$u[9]
 				);
@@ -206,7 +207,7 @@
 
 			$users = array();
 			foreach($this->raw[1] as $k=>$v)
-				$users[] = $k."\t".encode_item_list($v[0])."\t".$v[1]."\t".$v[2]."\t".encode_ress_list($v[3][0])."\t".encode_item_list($v[3][1])."\t".$v[3][2]."\t".encode_ress_list($v[4][0])."\t".encode_item_list($v[4][1])."\t".$v[5];
+				$users[] = $k."\t".encode_item_list($v[0])."\t".$v[1]."\t".$v[2]."\t".encode_ress_list($v[3][0])."\t".encode_item_list($v[3][1])."\t".$v[3][2]."\t".encode_ress_list($v[4][0])."\t".encode_item_list($v[4][1])."\t".$v[5]."\t".$v[4][2];
 			self::$database->setField($this->name, "users", implode("\n", $users));
 
 			self::$database->setField($this->name, "start", $this->raw[2]);
@@ -441,7 +442,7 @@
 				$from, # Startkoordinaten
 				$factor, # Geschwindigkeitsfaktor
 				array(array(0, 0, 0, 0, 0), array(), 0), # Mitgenommene Rohstoffe
-				array(array(0, 0, 0, 0, 0), array()), # Handel
+				array(array(0, 0, 0, 0, 0), array(), 0), # Handel
 				0 # Verbrauchtes Tritium
 			);
 
@@ -538,11 +539,28 @@
 			return true;
 		}
 
-		function setHandel($user, $ress=false, $robs=false)
+		function setHandel($user, $ress=false, $robs=false, $give=null)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
 
+			if($give !== null)
+				$this->raw[1][$user][4][2] = $give;
+
 			list($max_ress, $max_robs) = $this->getTransportCapacity($user);
+
+			if(!$this->raw[1][$user][4][2])
+			{
+				$transport = $this->getTransport();
+				$max_ress -= array_sum($transport[0]);
+				$max_rob -= array_sum($transport[1]);
+			}
+
+			if($give !== null && !$give)
+			{
+				$this->raw[1][$user][4][0] = fit_to_max($this->raw[1][$user][4][0], $max_ress);
+				$this->raw[1][$user][4][1] = fit_to_max($this->raw[1][$user][4][1], $max_robs);
+			}
+
 			if($ress !== false && is_array($ress))
 			{
 				if(!isset($ress[0])) $ress[0] = 0;
@@ -868,6 +886,14 @@
 			if(!$this->status) return false;
 
 			return array_keys($this->raw[1]);
+		}
+
+		function getFleetOwner()
+		{
+			if(!$this->status) return false;
+
+			$users = array_keys($this->raw[1]);
+			return array_shift($users);
 		}
 
 		function from($user)

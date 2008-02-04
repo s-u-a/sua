@@ -87,6 +87,15 @@
 <?php
 				$trans = $fleet->getTransportCapacity($username);
 				$handel = $fleet->getHandel($username);
+				$used = $fleet->getTransport($username);
+				if($me->getName() == $fleet->getFleetOwner() && isset($_POST["handel_username"]) && $_POST["handel_username"] == $username && $fleet->setHandel(false, false, !isset($_POST["keepres"])))
+					$handel[2] = !isset($_POST["keepres"]);
+				if(!$handel[2])
+				{
+					$trans[0] -= array_sum($used[0]);
+					$trans[1] -= array_sum($used[1]);
+				}
+
 				$remaining_trans = array($trans[0]-array_sum($handel[0]), $trans[1]-array_sum($handel[1]));
 
 				if(isset($_POST['handel_username']) && $_POST['handel_username'] == $username && isset($_POST['handel']) && is_array($_POST['handel']))
@@ -144,51 +153,53 @@
 
 					$new_handel = array(fit_to_max($new_handel[0], $max[0]), fit_to_max($new_handel[1], $max[1]));
 
-					if($type == 'set') $status = $fleet->setHandel($_POST['handel_username'], $new_handel[0], $new_handel[1]);
-					else $status = $fleet->addHandel($_POST['handel_username'], $new_handel[0], $new_handel[1]);
-					if($status)
+					if($type == 'set') $fleet->setHandel($_POST['handel_username'], $new_handel[0], $new_handel[1]);
+					else $fleet->addHandel($_POST['handel_username'], $new_handel[0], $new_handel[1]);
+				}
+
+				$new_handel = $fleet->getHandel($username);
+				if($handel != $new_handel)
+				{
+					# Gueter vom Planeten abziehen
+					if($type == 'set')
 					{
-						# Gueter vom Planeten abziehen
-						if($type == 'set')
+						$ress_sub = array($new_handel[0][0]-$handel[0][0],
+											$new_handel[0][1]-$handel[0][1],
+											$new_handel[0][2]-$handel[0][2],
+											$new_handel[0][3]-$handel[0][3],
+											$new_handel[0][4]-$handel[0][4]);
+						$rob_sub = array();
+						foreach($me->getItemsList('roboter') as $id)
 						{
-							$ress_sub = array($new_handel[0][0]-$handel[0][0],
-							                  $new_handel[0][1]-$handel[0][1],
-							                  $new_handel[0][2]-$handel[0][2],
-							                  $new_handel[0][3]-$handel[0][3],
-							                  $new_handel[0][4]-$handel[0][4]);
-							$rob_sub = array();
-							foreach($me->getItemsList('roboter') as $id)
-							{
-								$old = $new = 0;
-								if(isset($handel[1][$id])) $old = $handel[1][$id];
-								if(isset($new_handel[1][$id])) $new = $new_handel[1][$id];
-								if($new != $old)
-									$rob_sub[$id] = $new-$old;
-							}
+							$old = $new = 0;
+							if(isset($handel[1][$id])) $old = $handel[1][$id];
+							if(isset($new_handel[1][$id])) $new = $new_handel[1][$id];
+							if($new != $old)
+								$rob_sub[$id] = $new-$old;
 						}
-						else list($ress_sub, $rob_sub) = $new_handel;
-
-						$me->subtractRess($ress_sub, false);
-						$available_ress = $me->getRess();
-						foreach($rob_sub as $id=>$sub)
-						{
-							$available_robs[$id] -= $sub;
-							$me->changeItemLevel($id, -$sub, 'roboter');
-						}
-
-						if($type == 'set') $handel = $new_handel;
-						else
-						{
-							$handel[0][0] += $new_handel[0][0];
-							$handel[0][1] += $new_handel[0][1];
-							$handel[0][2] += $new_handel[0][2];
-							$handel[0][3] += $new_handel[0][3];
-							$handel[0][4] += $new_handel[0][4];
-							foreach($new_handel[1] as $k=>$v)
-								$handel[1][$k] += $v;
-						}
-						$remaining_trans = array($trans[0]-array_sum($handel[0]), $trans[1]-array_sum($handel[1]));
 					}
+					else list($ress_sub, $rob_sub) = $new_handel;
+
+					$me->subtractRess($ress_sub, false);
+					$available_ress = $me->getRess();
+					foreach($rob_sub as $id=>$sub)
+					{
+						$available_robs[$id] -= $sub;
+						$me->changeItemLevel($id, -$sub, 'roboter');
+					}
+
+					if($type == 'set') $handel = $new_handel;
+					else
+					{
+						$handel[0][0] += $new_handel[0][0];
+						$handel[0][1] += $new_handel[0][1];
+						$handel[0][2] += $new_handel[0][2];
+						$handel[0][3] += $new_handel[0][3];
+						$handel[0][4] += $new_handel[0][4];
+						foreach($new_handel[1] as $k=>$v)
+							$handel[1][$k] += $v;
+					}
+					$remaining_trans = array($trans[0]-array_sum($handel[0]), $trans[1]-array_sum($handel[1]));
 				}
 
 				if($verb)
@@ -223,6 +234,17 @@
 		<input type="hidden" name="handel_type" value="<?=$input_name?>" />
 		<p><?=htmlspecialchars($mess1)?></p>
 		<p><?php printf($mess2, ths($trans[0]), ths($trans[1]), ths($remaining_trans[0]), ths($remaining_trans[1]))?></p>
+<?php
+				if($me->getName() == $fleet->getFleetOwner())
+				{
+?>
+		<dl>
+			<dt class="c-rohstoffe-behalten"><label for="i-rohstoffe-behalten"><?=h(_("Transportgut der Flotte nicht abliefern&[login/info/flotten_actions.php|1]"))?></label></dt>
+			<dd class="c-rohstoffe-behalten"><input type="checkbox" id="i-rohstoffe-behalten" name="keepres"<?=$handel[2] ? " checked=\"checked\"" : ""?> title="<?=h(_("Diese Funktion erleichtert es Ihnen, mit einer Flugroute Rohstoffe von mehreren Planeten einzusammeln."))?>"<?=accesskey_attr(_("Transportgut der Flotte nicht abliefern&[login/info/flotten_actions.php|1]"))?> /></dd>
+		</dl>
+<?php
+				}
+?>
 		<table>
 			<thead>
 				<tr>
