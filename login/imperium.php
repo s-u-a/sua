@@ -75,6 +75,7 @@
 			foreach($planets as $planet)
 			{
 				$me->setActivePlanet($planet);
+				define_url_suffix();
 				$ress = $me->getRess();
 				$ges[0] += $ress[0];
 				$ges[1] += $ress[1];
@@ -85,7 +86,7 @@
 				$ges[5] += $this_ges;
 ?>
 		<tr<?=($planet == $active_planet) ? ' class="active"' : ''?>>
-			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;planet=<?=htmlspecialchars(urlencode($planet))?>"><?=htmlspecialchars($me->getPosString())?></a></th>
+			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=htmlspecialchars($me->getPosString())?></a></th>
 			<td class="c-carbon number"><?=ths($ress[0])?></td>
 			<td class="c-aluminium number"><?=ths($ress[1])?></td>
 			<td class="c-wolfram number"><?=ths($ress[2])?></td>
@@ -139,9 +140,11 @@
 				$ges[5] += $this_prod[5];
 				$this_ges = $this_prod[0]+$this_prod[1]+$this_prod[2]+$this_prod[3]+$this_prod[4];
 				$ges[6] += $this_ges;
+
+				define_url_suffix();
 ?>
 		<tr<?=($planet == $active_planet) ? ' class="active"' : ''?>>
-			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;planet=<?=htmlspecialchars(urlencode($planet))?>"><?=htmlspecialchars($me->getPosString())?></a></th>
+			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=htmlspecialchars($me->getPosString())?></a></th>
 			<td class="c-carbon number <?=get_prod_class($this_prod[0])?>"><?=ths($this_prod[0])?></td>
 			<td class="c-aluminium number <?=get_prod_class($this_prod[1])?>"><?=ths($this_prod[1])?></td>
 			<td class="c-wolfram number <?=get_prod_class($this_prod[2])?>"><?=ths($this_prod[2])?></td>
@@ -311,9 +314,11 @@
 			{
 				$me->setActivePlanet($planet);
 				$max_rob_limit = floor($me->getBasicFields()/2);
+
+				define_url_suffix();
 ?>
 		<tr<?=($planet==$active_planet) ? ' class="active"' : ''?>>
-			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;planet=<?=htmlspecialchars(urlencode($planet))?>&amp;action=roboter"><?=htmlspecialchars($me->getPosString())?></a></th>
+			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;action=roboter"><?=htmlspecialchars($me->getPosString())?></a></th>
 <?php
 				foreach($roboter as $id)
 				{
@@ -390,8 +395,9 @@
 			foreach($planets as $planet)
 			{
 				$me->setActivePlanet($planet);
+				define_url_suffix();
 ?>
-			<th<?=($planet==$active_planet) ? ' class="active"' : ''?> title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;planet=<?=htmlspecialchars(urlencode($planet))?>&amp;action=flotte"><?=htmlspecialchars($me->getPosString())?></a></th>
+			<th<?=($planet==$active_planet) ? ' class="active"' : ''?> title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;action=flotte"><?=htmlspecialchars($me->getPosString())?></a></th>
 <?php
 			}
 ?>
@@ -466,6 +472,7 @@
 	}
 
 	$me->setActivePlanet($active_planet);
+	define_url_suffix();
 
 	login_gui::html_foot();
 ?>

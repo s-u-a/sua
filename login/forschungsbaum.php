@@ -45,7 +45,7 @@
 			$item_info = $me->getItemInfo($item, $type);
 ?>
 		<tr id="deps-<?=htmlspecialchars($item)?>">
-			<td class="c-item"><a href="description.php?id=<?=htmlspecialchars(urlencode($item))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=h(_("[item_".$item."]"))?></a></td>
+			<td class="c-item"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($item))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=h(_("[item_".$item."]"))?></a></td>
 <?php
 			if(!isset($item_info['deps']) || count($item_info['deps']) <= 0)
 			{

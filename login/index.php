@@ -232,6 +232,9 @@
 						$string .= " Das Verbundflottenpasswort lautet <span class=\"flottenpasswd\">".htmlspecialchars($fleet_passwd)."</span>.";
 				}
 			}
+
+			if($fl->getNeededSlots($me->getName()) > 1)
+				$string .= " <a href=\"info/flotten_actions.php?action=route&amp;id=".htmlspecialchars(urlencode($flotte))."&".htmlspecialchars(global_setting("URL_SUFFIX"))."\">Route anzeigen</a>";
 ?>
 	<dt class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=htmlspecialchars($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug">
 		<?=$string."\n"?>
@@ -253,7 +256,7 @@
 	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=htmlspecialchars($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=htmlspecialchars($flotte)?>">Ankunft: <?=date('H:i:s, Y-m-d', $next_arrival)?> (Serverzeit)<?php if(!$fl->isFlyingBack() && ($me_in_users !== false)){?>, <a href="index.php?cancel=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
 <?php
 			$url = '';
-			if($fl->isFlyingBack()) $url = h_root.'/login/flotten.php?planet='.urlencode($me->getPlanetByPos($fl->getCurrentTarget())).'&'.global_setting("URL_SUFFIX");
+			if($fl->isFlyingBack()) $url = h_root.'/login/flotten.php?'.<?=htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$me->getPlanetByPos($fl->getCurrentTarget()), global_setting("URL_SUFFIX")));
 			$countdowns[] = array($flotte, $next_arrival, ($fl->isFlyingBack() || ($me_in_users === false)), $url);
 		}
 ?>
@@ -290,8 +293,10 @@
 	{
 		$me->setActivePlanet($planet);
 		$class = $me->getPlanetClass();
+
+		define_url_suffix();
 ?>
-	<li class="planet-<?=htmlspecialchars($class)?><?=($planet == $active_planet) ? ' active' : ''?>"><?=($planet != $active_planet) ? '<a href="index.php?planet='.htmlspecialchars(urlencode($planet).'&'.global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=htmlspecialchars($me->planetName())?><?=($planet != $active_planet) ? '</a>' : ''?> <span class="koords">(<?=htmlspecialchars($me->getPosString())?>)</span>
+	<li class="planet-<?=htmlspecialchars($class)?><?=($planet == $active_planet) ? ' active' : ''?>"><?=($planet != $active_planet) ? '<a href="index.php?'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=htmlspecialchars($me->planetName())?><?=($planet != $active_planet) ? '</a>' : ''?> <span class="koords">(<?=htmlspecialchars($me->getPosString())?>)</span>
 		<dl class="planet-info">
 			<dt class="c-felder">Felder</dt>
 			<dd class="c-felder"><?=ths($me->getUsedFields())?> <span class="gesamtgroesse">(<?=ths($me->getTotalFields())?>)</span></dd>
@@ -308,7 +313,7 @@
 ?>
 			<dd class="c-gebaeudebau"><?=htmlspecialchars($item_info['name'])?> <span class="restbauzeit" id="restbauzeit-ge-<?=htmlspecialchars($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building_gebaeude[1])?> (Serverzeit)</span></dd>
 <?php
-				$countdowns[] = array('ge-'.$planet, $building_gebaeude[1], h_root."/login/gebaeude.php?planet=".urlencode($planet)."&".global_setting("URL_SUFFIX"));
+				$countdowns[] = array('ge-'.$planet, $building_gebaeude[1], h_root."/login/gebaeude.php?".global_setting("URL_SUFFIX"));
 			}
 			elseif($me->getRemainingFields() <= 0)
 			{
@@ -337,7 +342,7 @@
 ?>
 			<dd class="c-forschung"><?=htmlspecialchars($item_info['name'])?> <span id="restbauzeit-fo-<?=htmlspecialchars($planet)?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building_forschung[1])?> (Serverzeit)</span></dd>
 <?php
-				$countdowns[] = array('fo-'.$planet, $building_forschung[1], h_root."/login/forschung.php?planet=".urlencode($planet)."&".global_setting("URL_SUFFIX"));
+				$countdowns[] = array('fo-'.$planet, $building_forschung[1], h_root."/login/forschung.php?".global_setting("URL_SUFFIX"));
 			}
 			else
 			{
@@ -383,7 +388,7 @@
 <?php
 						break;
 				}
-				$countdowns[] = array('ro-'.$planet, $finishing_time, h_root."/login/roboter.php?planet=".urlencode($planet)."&".global_setting("URL_SUFFIX"));
+				$countdowns[] = array('ro-'.$planet, $finishing_time, h_root."/login/roboter.php?".global_setting("URL_SUFFIX"));
 			}
 			else
 			{
@@ -429,7 +434,7 @@
 <?php
 						break;
 				}
-				$countdowns[] = array('sc-'.$planet, $finishing_time, h_root."/login/schiffswerft.php?planet=".urlencode($planet)."&".global_setting("URL_SUFFIX"));
+				$countdowns[] = array('sc-'.$planet, $finishing_time, h_root."/login/schiffswerft.php?".global_setting("URL_SUFFIX"));
 			}
 			else
 			{
@@ -475,7 +480,7 @@
 <?php
 						break;
 				}
-				$countdowns[] = array('ve-'.$planet, $finishing_time, h_root."/login/verteidigung.php?planet=".urlencode($planet)."&".global_setting("URL_SUFFIX"));
+				$countdowns[] = array('ve-'.$planet, $finishing_time, h_root."/login/verteidigung.php?".global_setting("URL_SUFFIX"));
 			}
 			else
 			{

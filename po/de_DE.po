@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-02-03 02:27+0100\n"
+"PO-Revision-Date: 2008-02-04 02:00+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -18,501 +18,709 @@ msgid "[item_B0]"
 msgstr "Carbonfabrik"
 
 #: ../po/refresh_tmp.php:3
+msgid "[item_B0_def_acc]"
+msgstr "die Carbonfabrik"
+
+#: ../po/refresh_tmp.php:4
 msgid "[itemdesc_B0]"
 msgstr ""
 "Als Carbon bezeichnet man besondere Kohlenstoffkristalle, ähnlich wie Diamant, die durch ihre außergewöhnliche Struktur leichter als Aluminium aber härter als Stahl sind. Carbon eignet sich deshalb vorzüglich zum Bau von Raumschiffen, wird aber auch in allen anderen Gebieten viel verwendet. Für Gebäude ist Carbon der wichtigste Baustoff.\n"
 "\n"
 "Kohlenstoff sammelt sich schichtartig im Untergrund. An manchen Stellen liegen diese Schichten sehr nahe an der Planetenoberfläche und treten teilweise sogar heraus. Dort werden Carbonminen errichtet, welche die Kohle bergen und sie durch komplizierte Kristallisierungsvorgänge zu Carbon umwandeln. "
 
-#: ../po/refresh_tmp.php:4
+#: ../po/refresh_tmp.php:5
 msgid "[item_B1]"
 msgstr "Aluminiumgießerei"
 
-#: ../po/refresh_tmp.php:5
+#: ../po/refresh_tmp.php:6
+msgid "[item_B1_def_acc]"
+msgstr "die Aluminiumgießerei"
+
+#: ../po/refresh_tmp.php:7
 msgid "[itemdesc_B1]"
 msgstr ""
 "Aluminium ist ein leichter Stoff, das in sämtlichen Bereichen Verwendung findet. Zwar ist es leicht schwerer als Carbon, aber als Metall bietet es viele Vorteile in Sachen Biegsamkeit und Flexibilität und Wärme- und Elektrizitätsleitung. Besonders für Roboter ist Aluminium ein wichtiger Stoff, aber auch in der Forschung findet es oft gute Verwendung.\n"
 "\n"
 "In der Aluminiumgießerei wird Aluminium aus Gestein aus dem Boden eingeschmolzen und zu Barren geformt, die in allen Bereichen weiterverwertet werden können."
 
-#: ../po/refresh_tmp.php:6
+#: ../po/refresh_tmp.php:8
 msgid "[item_B2]"
 msgstr "Wolframextraktor"
 
-#: ../po/refresh_tmp.php:7
+#: ../po/refresh_tmp.php:9
+msgid "[item_B2_def_acc]"
+msgstr "den Wolframextraktor"
+
+#: ../po/refresh_tmp.php:10
 msgid "[itemdesc_B2]"
 msgstr ""
 "Wolfram ist ein extrem hitzebeständiges aber schweres Metall. Es wird vor allem in Bereichen verwendet, wo unter sehr hohen Temperaturen gearbeitet werden muss, unter anderem bei Forschungen, bei denen mit Kernfusion oder -reaktion gearbeitet wird. Für Raumschiffe und Verteidigungsanlagen spielt Wolfram eine sehr wichtige Rolle, da in Antrieben und beim Eintritt in die Planetenatmosphäre sehr große Hitze entstehen kann.\n"
 "\n"
 "Wolfram wird durch komplizierte Reaktionen und Filtrierungen aus Wolfram-Erzen extrahiert. Wie Aluminium wird es zu Barren geschmolzen, die allgemeine Verwendung finden. "
 
-#: ../po/refresh_tmp.php:8
+#: ../po/refresh_tmp.php:11
 msgid "[item_B3]"
 msgstr "Radiumgrube"
 
-#: ../po/refresh_tmp.php:9
+#: ../po/refresh_tmp.php:12
+msgid "[item_B3_def_acc]"
+msgstr "die Radiumgrube"
+
+#: ../po/refresh_tmp.php:13
 msgid "[itemdesc_B3]"
 msgstr "Radium eignet sich besonders gut für Kernreaktionen und wird deshalb vor allem in der Forschung und bei der Produktion von Raumschiffen und Verteidigungsanlagen verwendet. Leider kommt Radium sehr spärlich auf den meisten Planeten vor, es bedarf riesiger Produktionsstätten, in denen zu einem minimalen Ausbeutungsanteil das Radium aus dem Boden geholt wird."
 
-#: ../po/refresh_tmp.php:10
+#: ../po/refresh_tmp.php:14
 msgid "[item_B4]"
 msgstr "Tritiumgenerator"
 
-#: ../po/refresh_tmp.php:11
+#: ../po/refresh_tmp.php:15
+msgid "[item_B4_def_acc]"
+msgstr "den Tritiumgenerator"
+
+#: ../po/refresh_tmp.php:16
 msgid "[itemdesc_B4]"
 msgstr "Bei Tritium handelt es sich um ein radioaktives Wasserstoff-Isotop, das sich gut zur Kernfusion eignet. Die riesigen Generatoren filtern das Tritium, je nach Planeten, aus Wasservorkommen oder aus der Atmosphäre, wo es durch winzige Kernreaktionen entsteht, die durch kosmische Strahlung hervorgerufen werden. Tritium eignet sich ideal als Treibstoff für Fusionsantriebe. Solche Antriebe erfordern zudem viel Wolfram, da bei der Kernfusion sehr hohe Temperaturen entstehen können."
 
-#: ../po/refresh_tmp.php:12
+#: ../po/refresh_tmp.php:17
 msgid "[item_B5]"
 msgstr "Solarkraftwerk"
 
-#: ../po/refresh_tmp.php:13
+#: ../po/refresh_tmp.php:18
+msgid "[item_B5_def_acc]"
+msgstr "das Solarkraftwerk"
+
+#: ../po/refresh_tmp.php:19
 msgid "[itemdesc_B5]"
 msgstr "Im Solarkraftwerk werden verschiedene elektromagnetische Strahlungen von nahegelegenen Sternen gebündelt und beim Auftreffen auf Solarzellen in elektrischen Strom umgewandelt. Das Solarkraftwerk stellt so eine kostengünstige Energiequelle für andere wichtige Gebäude dar."
 
-#: ../po/refresh_tmp.php:14
+#: ../po/refresh_tmp.php:20
 msgid "[item_B6]"
 msgstr "Sonnenwindkraftwerk"
 
-#: ../po/refresh_tmp.php:15
+#: ../po/refresh_tmp.php:21
+msgid "[item_B6_def_acc]"
+msgstr "das Sonnenwindkraftwerk"
+
+#: ../po/refresh_tmp.php:22
 msgid "[itemdesc_B6]"
 msgstr "Sonnenwindkraftwerke werden in der Umlaufbahn der Planeten stationiert, was zwar mehr Kosten verursacht als die Aufstellung eines Solarkraftwerks, dafür aber deutlich produktiver und platzsparender ist. Die Kraftwerke machen sich von Sternen kommende Alpha- und Betastrahlung zunutze und senden frei werdende Energie in Form von elektromagnetischen Strahlen zum Planeten, wo sie als Lieferant für viele wichtige Gebäude dient."
 
-#: ../po/refresh_tmp.php:16
+#: ../po/refresh_tmp.php:23
 msgid "[item_B7]"
 msgstr "Wärmekraftwerk"
 
-#: ../po/refresh_tmp.php:17
+#: ../po/refresh_tmp.php:24
+msgid "[item_B7_def_acc]"
+msgstr "das Wärmekraftwerk"
+
+#: ../po/refresh_tmp.php:25
 msgid "[itemdesc_B7]"
 msgstr ""
 "Das Wärmekraftwerk ist die Krönung unter den Gebäuden. Die [item_F9] ermöglicht es, tief unter der Planetenoberfläche Gebäude zu errichten, wo es sich die Wärme aus dem Planeteninnern zunutze macht. Bei den tiefen Bohrungen, die für eine ertragreiche Energieproduktion nötig sind, werden gleichzeitig die elementaren Stoffe Aluminium, Wolfram und Radium gewonnen.\n"
 "\n"
 "Das Wärmekraftwerk ist eine riesige Anlage, die deswegen auch nicht sehr kostengünstig aufzubauen ist. Es erfordert großes Geschick und sehr fortgeschrittene Technologie, ein solches Gebäude aufstellen zu können."
 
-#: ../po/refresh_tmp.php:18
+#: ../po/refresh_tmp.php:26
 msgid "[item_B8]"
 msgstr "Forschungslabor"
 
-#: ../po/refresh_tmp.php:19
+#: ../po/refresh_tmp.php:27
+msgid "[item_B8_def_acc]"
+msgstr "das Forschungslabor"
+
+#: ../po/refresh_tmp.php:28
 msgid "[itemdesc_B8]"
 msgstr "Durch Forschung können nötige Technologien für Raumschiffe, Verteidigungsanlagen, Roboter, Gebäude oder andere Forschungen entwickelt werden. Je weiter das Forschungslabor ausgebaut ist, desto schneller können darin Forschungen entwickelt werden. Jede Stufe des Forschungslabors verkürzt dabei die Forschungszeit auf dem jeweiligen Planeten um fünf Prozent und verkürzt die globale Forschungszeit auf anderen Planeten um 2,5 Prozent. Beachten Sie, dass Sie in einem sich im Ausbau befindlichen Forschungslabor nicht forschen können."
 
-#: ../po/refresh_tmp.php:20
+#: ../po/refresh_tmp.php:29
 msgid "[item_B9]"
 msgstr "Roboterfabrik"
 
-#: ../po/refresh_tmp.php:21
+#: ../po/refresh_tmp.php:30
+msgid "[item_B9_def_acc]"
+msgstr "die Roboterfabrik"
+
+#: ../po/refresh_tmp.php:31
 msgid "[itemdesc_B9]"
 msgstr "Roboter verhelfen größeren Spielern, bei denen Bauzeiten ins Unerträgliche angestiegen sind oder die auf ihren Planeten keinen Platz mehr für neue Minen haben, sich trotzdem weiterzuentwickeln. In gemeinsamer Wirkung mit der [item_F2] stellen Roboter einen auf keinen Fall zu unterschätzenden technologischen Vorteil dar."
 
-#: ../po/refresh_tmp.php:22
+#: ../po/refresh_tmp.php:32
 msgid "[item_B10]"
 msgstr "Werft"
 
-#: ../po/refresh_tmp.php:23
+#: ../po/refresh_tmp.php:33
+msgid "[item_B10_def_acc]"
+msgstr "die Werft"
+
+#: ../po/refresh_tmp.php:34
 msgid "[itemdesc_B10]"
 msgstr "In der Werft werden Raumschiffe und Verteidigungsanlagen produziert. Je größer die Werft ist, desto größere Geräte kann sie produzieren, gleichzeitig verringert sich die benötigte Bauzeit. Jede Stufe der Werft verringert die Bauzeit Ihrer Raumschiffe und Verteidigungsanlagen um fünf Prozent."
 
-#: ../po/refresh_tmp.php:24
+#: ../po/refresh_tmp.php:35
 #: ../faq.php:152
 msgid "[item_F0]"
 msgstr "Kontrollwesen"
 
-#: ../po/refresh_tmp.php:25
+#: ../po/refresh_tmp.php:36
+msgid "[item_F0_def_acc]"
+msgstr "das Kontrollwesen"
+
+#: ../po/refresh_tmp.php:37
 msgid "[itemdesc_F0]"
 msgstr "Je höher das Kontrollwesen entwickelt ist, desto mehr Flotten können gleichzeitig von einer [item_B10] koordiniert werden. Jede Stufe des Kontrollwesens erhöht somit die Anzahl der Flotten, die gleichzeitig kontrolliert werden können."
 
-#: ../po/refresh_tmp.php:26
+#: ../po/refresh_tmp.php:38
 msgid "[item_F1]"
 msgstr "Spionagetechnik"
 
-#: ../po/refresh_tmp.php:27
+#: ../po/refresh_tmp.php:39
+msgid "[item_F1_def_acc]"
+msgstr "die Spionagetechnik"
+
+#: ../po/refresh_tmp.php:40
 msgid "[itemdesc_F1]"
 msgstr "Die Spionagetechnik verbessert die Sensoren Ihres Planeten, die sich nähernde Flotten entdecken, und die Ihrer [item_S5]n. Werden Sie von einem Gegner ausspioniert, entscheidet Ihre Überlegenheit in der Spionagetechnik, wie viele Details Ihres Planeten Sie vor der feindlichen Spionagesonde verstecken können. Sind Sie einem Angreifer in Spionagetechnik überlegen, ist es Ihnen möglich, die angreifende Flotte sehr früh zu erspähen und so im Kampf den Erstschlag auszuüben."
 
-#: ../po/refresh_tmp.php:28
+#: ../po/refresh_tmp.php:41
 msgid "[item_F2]"
 msgstr "Roboterbautechnik"
 
-#: ../po/refresh_tmp.php:29
+#: ../po/refresh_tmp.php:42
+msgid "[item_F2_def_acc]"
+msgstr "die Roboterbautechnik"
+
+#: ../po/refresh_tmp.php:43
 msgid "[itemdesc_F2]"
 msgstr "Die Roboterbautechnik verbessert Ihre Roboter und erforscht neue Roboterarten. Jede Stufe der Roboterbautechnik erhöht den Auswirkungsgrad Ihrer [item_R01] um einen Viertelprozentpunkt und den Ihrer Rohstoffroboter um einen Sechzehntelprozentpunkt."
 
-#: ../po/refresh_tmp.php:30
+#: ../po/refresh_tmp.php:44
 msgid "[item_F3]"
 msgstr "Energietechnik"
 
-#: ../po/refresh_tmp.php:31
+#: ../po/refresh_tmp.php:45
+msgid "[item_F3_def_acc]"
+msgstr "die Energietechnik"
+
+#: ../po/refresh_tmp.php:46
 msgid "[itemdesc_F3]"
 msgstr "Eine hohe Energietechnik ermöglicht den Betrieb von Hochspannungsanlagen und macht die Energiegewinnung effizienter. Jede Stufe der Energietechnik erhöht somit die Energielieferung Ihrer Kraftwerke um fünf Prozent."
 
-#: ../po/refresh_tmp.php:32
+#: ../po/refresh_tmp.php:47
 msgid "[item_F4]"
 msgstr "Waffentechnik"
 
-#: ../po/refresh_tmp.php:33
+#: ../po/refresh_tmp.php:48
+msgid "[item_F4_def_acc]"
+msgstr "die Waffentechnik"
+
+#: ../po/refresh_tmp.php:49
 msgid "[itemdesc_F4]"
 msgstr "Die Waffentechnik macht die Waffen Ihrer Raumschiffe und Verteidiungsanlangen stärker und erforscht stärkere Waffen, die für schwerere Raumschiffe benötigt werden. Jede Stufe erhöht den Angriffswert Ihrer Schiffe und Verteidiungsanlagen um fünf Prozent."
 
-#: ../po/refresh_tmp.php:34
+#: ../po/refresh_tmp.php:50
 msgid "[item_F5]"
 msgstr "Verteidigungsstrategie"
 
-#: ../po/refresh_tmp.php:35
+#: ../po/refresh_tmp.php:51
+msgid "[item_F5_def_acc]"
+msgstr "die Verteidigungsstrategie"
+
+#: ../po/refresh_tmp.php:52
 msgid "[itemdesc_F5]"
 msgstr "Eine bessere Verteidigungsstrategie sorgt für bessere Schilde der Verteidigungsanlagen und Raumschiffe. Größere Verteidigungsanlangen können nur mit guten Verteidigungsstrategien betrieben werden. Jede Stufe der Verteidigungsstrategie erhöht den Schildwert Ihrer Verteidigungsanlangen und Flotten um fünf Prozent."
 
-#: ../po/refresh_tmp.php:36
+#: ../po/refresh_tmp.php:53
 msgid "[item_F10]"
 msgstr "Schildtechnik"
 
-#: ../po/refresh_tmp.php:37
+#: ../po/refresh_tmp.php:54
+msgid "[item_F10_def_acc]"
+msgstr "die Schildtechnik"
+
+#: ../po/refresh_tmp.php:55
 msgid "[itemdesc_F10]"
 msgstr "Die Schildtechnik ermöglicht, beschädigte Schilde im Kampf zu regenerieren, um so länger zu überleben. Jede Stufe der Schildtechnik regeneriert am Ende einer jeden Runde den Schild aller aktuell beschädigten Raumschiffe um 2,5 %."
 
-#: ../po/refresh_tmp.php:38
+#: ../po/refresh_tmp.php:56
 msgid "[item_F6]"
 msgstr "Rückstoßantrieb"
 
-#: ../po/refresh_tmp.php:39
+#: ../po/refresh_tmp.php:57
+msgid "[item_F6_def_acc]"
+msgstr "den Rückstoßantrieb"
+
+#: ../po/refresh_tmp.php:58
 msgid "[itemdesc_F6]"
 msgstr "Dieser einfache Antrieb erhöht die Geschwindigkeit aller Raumschiffe um 2,5 %."
 
-#: ../po/refresh_tmp.php:40
+#: ../po/refresh_tmp.php:59
 msgid "[item_F7]"
 msgstr "Ionenantrieb"
 
-#: ../po/refresh_tmp.php:41
+#: ../po/refresh_tmp.php:60
+msgid "[item_F7_def_acc]"
+msgstr "den Ionenantrieb"
+
+#: ../po/refresh_tmp.php:61
 msgid "[itemdesc_F7]"
 msgstr "Der Ionenantrieb erhöht die Geschwindigkeit aller Raumschiffe um fünf Prozent."
 
-#: ../po/refresh_tmp.php:42
+#: ../po/refresh_tmp.php:62
 msgid "[item_F8]"
 msgstr "Kernantrieb"
 
-#: ../po/refresh_tmp.php:43
+#: ../po/refresh_tmp.php:63
+msgid "[item_F8_def_acc]"
+msgstr "den Kernantrieb"
+
+#: ../po/refresh_tmp.php:64
 msgid "[itemdesc_F8]"
 msgstr "Der Kernantrieb erhöht die Geschwindigkeit aller Raumschiffe drastisch, um 50 % pro Entwicklungsstufe."
 
-#: ../po/refresh_tmp.php:44
+#: ../po/refresh_tmp.php:65
 msgid "[item_F9]"
 msgstr "Ingenieurswissenschaft"
 
-#: ../po/refresh_tmp.php:45
+#: ../po/refresh_tmp.php:66
+msgid "[item_F9_def_acc]"
+msgstr "die Ingenieurswissenschaft"
+
+#: ../po/refresh_tmp.php:67
 msgid "[itemdesc_F9]"
 msgstr "Erforscht neue Wege des Tief- und Hochbaus. Jede Stufe vergrößert die Größe Ihrer Planeten um die Hälfte eines weiteren Faktors. (Stufe 1: 150 % der Ursprungsgröße, Stufe 2: 200 % der Ursprungsgröße, Stufe 3: 250 % der Ursprungsgröße, …)"
 
-#: ../po/refresh_tmp.php:46
+#: ../po/refresh_tmp.php:68
 msgid "[item_F11]"
 msgstr "Laderaumerweiterung"
 
-#: ../po/refresh_tmp.php:47
+#: ../po/refresh_tmp.php:69
+msgid "[item_F11_def_acc]"
+msgstr "die Laderaumerweiterung"
+
+#: ../po/refresh_tmp.php:70
 msgid "[itemdesc_F11]"
 msgstr "Die Laderaumerweiterung ermöglicht einen besseren Ausbau des Laderaums bei Raumschiffen und Kompression der Waren. Jede Stufe der Laderaumerweiterung vergrößert den Laderaum aller Schiffe um 20 %."
 
-#: ../po/refresh_tmp.php:48
+#: ../po/refresh_tmp.php:71
 msgid "[item_R01]"
 msgstr "Bauroboter"
 
-#: ../po/refresh_tmp.php:49
+#: ../po/refresh_tmp.php:72
+msgid "[item_R01_def_acc]"
+msgstr "den Bauroboter"
+
+#: ../po/refresh_tmp.php:73
 msgid "[itemdesc_R01]"
 msgstr "Bauroboter helfen beim Aufbau von Gebäuden. Durch Entwicklung der [item_F2] lernen die Roboter dazu und ihre Auswirkung verstärkt sich. Ein Planet bietet nur beschränkten Platz für Bauroboter, die Grenze liegt bei der Hälfte der Anzahl seiner ursprünglichen Felder ([item_F9] zeigt keine Auswirkung)."
 
-#: ../po/refresh_tmp.php:50
+#: ../po/refresh_tmp.php:74
 msgid "[item_R02]"
 msgstr "Carbonroboter"
 
-#: ../po/refresh_tmp.php:51
+#: ../po/refresh_tmp.php:75
+msgid "[item_R02_def_acc]"
+msgstr "den Carbonroboter"
+
+#: ../po/refresh_tmp.php:76
 msgid "[itemdesc_R02]"
 msgstr "Carbonroboter wurden speziell für die Arbeit in Carbonfabriken konzipiert und erhöhen dort die Carbonproduktion. Ihr Auswirkungsgrad ist abhängig von der Entwicklungsstufe der [item_F2]. In der [item_B0] finden nur begrenzt Carbonroboter Platz. Jede Stufe der [item_B0] bietet Platz für einen Carbonroboter."
 
-#: ../po/refresh_tmp.php:52
+#: ../po/refresh_tmp.php:77
 msgid "[item_R03]"
 msgstr "Aluminiumroboter"
 
-#: ../po/refresh_tmp.php:53
+#: ../po/refresh_tmp.php:78
+msgid "[item_R03_def_acc]"
+msgstr "den Aluminiumroboter"
+
+#: ../po/refresh_tmp.php:79
 msgid "[itemdesc_R03]"
 msgstr "Aluminiumroboter arbeiten in [item_B1]en und [item_B7] und erhöhen deren Produktion um einen Wirkungsgrad, der abhängig von der [item_F2] ist. Da nur begrenzt Platz für Aluminiumroboter vorhanden ist, wirkt sich maximal eine Anzahl an Aluminiumrobotern, die der Ausbaustufe der [item_B1] enspricht, auf die Produktion aus."
 
-#: ../po/refresh_tmp.php:54
+#: ../po/refresh_tmp.php:80
 msgid "[item_R04]"
 msgstr "Wolframroboter"
 
-#: ../po/refresh_tmp.php:55
+#: ../po/refresh_tmp.php:81
+msgid "[item_R04_def_acc]"
+msgstr "den Wolframroboter"
+
+#: ../po/refresh_tmp.php:82
 msgid "[itemdesc_R04]"
 msgstr "Wolframroboter erhöhen die Wolframproduktion des [item_B2]s und des [item_B7]s. Da Wolframroboter sehr viel Platz einnehmen, ist ihre Anzahl auf die Ausbaustufe des [item_B2]s begrenzt. Durch die Entwicklung der [item_F2] wird der Wirkungsgrad der Wolframroboter erhöht."
 
-#: ../po/refresh_tmp.php:56
+#: ../po/refresh_tmp.php:83
 msgid "[item_R05]"
 msgstr "Radiumroboter"
 
-#: ../po/refresh_tmp.php:57
+#: ../po/refresh_tmp.php:84
+msgid "[item_R05_def_acc]"
+msgstr "den Radiumroboter"
+
+#: ../po/refresh_tmp.php:85
 msgid "[itemdesc_R05]"
 msgstr "Radiumroboter helfen der [item_B3] und dem [item_B7] bei der Produktion von Radium. Je höher die [item_F2] entwickelt ist, umso mehr steigern sie die Radiumproduktion. Jedes Gebäude beherbergt nur eine bestimmte Anzahl an Arbeitsplätzen für Roboter. Jede Ausbaustufe der [item_B3] stellt einen davon für Radiumroboter zur Verfügung."
 
-#: ../po/refresh_tmp.php:58
+#: ../po/refresh_tmp.php:86
 msgid "[item_R06]"
 msgstr "Tritiumroboter"
 
-#: ../po/refresh_tmp.php:59
+#: ../po/refresh_tmp.php:87
+msgid "[item_R06_def_acc]"
+msgstr "den Tritiumroboter"
+
+#: ../po/refresh_tmp.php:88
 msgid "[itemdesc_R06]"
 msgstr "Tritiumroboter sind die Krönung der Roboterwissenschaft. Lange glaubte man, der Einsatz von Robotern in [item_B4]en sei zu gefährlich bis hin zur Unmöglichkeit. Doch je weiter die [item_F2] entwickelt wird, desto sicherer und produktiver wird der Einsatz von Robotern, wodurch der Einsatz von Tritiumrobotern ermöglicht wird. Durch die immense Größe der [item_B4]en bietet jede ihrer Ausbaustufen zwei Arbeitsplätze für Tritiumroboter an."
 
-#: ../po/refresh_tmp.php:60
+#: ../po/refresh_tmp.php:89
 msgid "[item_S0]"
 msgstr "Transporter „Hopper“"
 
-#: ../po/refresh_tmp.php:61
+#: ../po/refresh_tmp.php:90
+msgid "[item_S0_def_acc]"
+msgstr "den Transporter „Hopper“"
+
+#: ../po/refresh_tmp.php:91
 msgid "[itemdesc_S0]"
 msgstr "Der Transporter „Hopper“ war das erste ernstzunehmende Raumschiff, das von der Menschheit entwickelt wurde. Es wurde erstmals im Jahre 2146 zum Testflug zwischen Mars und Erde gebraucht und dient seither als kostengünstiger und leicht herzustellender Transporter."
 
-#: ../po/refresh_tmp.php:62
+#: ../po/refresh_tmp.php:92
 msgid "[item_S1]"
 msgstr "Transporter „Castor“"
 
-#: ../po/refresh_tmp.php:63
+#: ../po/refresh_tmp.php:93
+msgid "[item_S1_def_acc]"
+msgstr "den Transporter „Castor“"
+
+#: ../po/refresh_tmp.php:94
 msgid "[itemdesc_S1]"
 msgstr "Als die Menschheit begann, Transporter zwischen Planeten zu ernsthaften geschäftlichen Zwecken einzusetzen, war es unabsehbar, dass die Kapazität der „Hopper“ irgendwann nicht mehr ausreichen würde. Auch weil die „Hopper“ im Krieg viel zu schnell zerstört wurden, wurde eine neue Generation der Transporter entwickelt, welche einen weitaus höheren Laderaum besitzt und mit einem bessseren Schild ausgestattet ist. Castoren ermöglichen deshalb einen sichereren Transport von Rohstoffen durchs Universum."
 
-#: ../po/refresh_tmp.php:64
+#: ../po/refresh_tmp.php:95
 msgid "[item_S2]"
 msgstr "Transporter „Arche Noah“"
 
-#: ../po/refresh_tmp.php:65
+#: ../po/refresh_tmp.php:96
+msgid "[item_S2_def_acc]"
+msgstr "den Transporter „Arche Noah“"
+
+#: ../po/refresh_tmp.php:97
 msgid "[itemdesc_S2]"
 msgstr ""
 "Als George Halliwell im Jahre 2516 nach einem Erdbeben plötzlich eine seltsame Metallspitze vor seinem Haus aus dem Boden ragen sah, konnte er noch nicht ahnen, was für eine gigantische Entdeckung er gemacht hatte. Schnell stellte sich heraus, dass es sich um ein eingegrabenes Raumschiff handelte, jedoch konnte sich niemand erklären, wie es dort hingelangt war. Je weiter das Schiff ausgegraben wurde, desto größer wurde die Verblüffung der Forscher – das Schiff war größer als jedes bisher gebaute Schiff. Untersuchungen zeigten, dass es schon über 3000 Jahre alt war. Bis heute weiß keiner, wo es herkommt und wer es gebaut hat. Der einzige Hinweis ist ein in die Schiffswand eingeritztes „Noah“.\n"
 "\n"
 "Man baute eine Kopie der „Arche Noah“ und orientierte sich dabei an den bisher unbekannten Antriebs- und Lagerungstechniken. Es wurde damit zum ersten Mal in der Geschichte möglich, auch Roboter zu fremden Planeten zu transportieren."
 
-#: ../po/refresh_tmp.php:66
+#: ../po/refresh_tmp.php:98
 msgid "[item_S3]"
 msgstr "Sammler „Hoover“"
 
-#: ../po/refresh_tmp.php:67
+#: ../po/refresh_tmp.php:99
+msgid "[item_S3_def_acc]"
+msgstr "den Sammler „Hoover“"
+
+#: ../po/refresh_tmp.php:100
 msgid "[itemdesc_S3]"
 msgstr "Der Sammler stellt eine robustere Form des Transporters „Castor“ dar. Zusätzliche Maschinerie verringert zwar die Ladekapazität des Sammlers im Vergleich zum Castor, aber sie ermöglicht ihm, auch den gefährlichen Flug in Trümmerfelder durchzuführen und dort Rohstoffe zu sammeln."
 
-#: ../po/refresh_tmp.php:68
+#: ../po/refresh_tmp.php:101
 msgid "[item_S5]"
 msgstr "Spionagesonde „Oculus Aquilæ“"
 
-#: ../po/refresh_tmp.php:69
+#: ../po/refresh_tmp.php:102
+msgid "[item_S5_def_acc]"
+msgstr "die Spionagesonde „Oculus Aquilæ“"
+
+#: ../po/refresh_tmp.php:103
 msgid "[itemdesc_S5]"
 msgstr "Die Spionagesonde ist ein kleines und schnelles Schiff, das fast nur aus Antrieb und Sensoren besteht. Sie ermöglicht, schnell Informationen über einen Planeten und – falls vorhanden – dessen Bewohner zu erlangen."
 
-#: ../po/refresh_tmp.php:70
+#: ../po/refresh_tmp.php:104
 msgid "[item_S6]"
 msgstr "Besiedelungsschiff „Mayflower“"
 
-#: ../po/refresh_tmp.php:71
+#: ../po/refresh_tmp.php:105
+msgid "[item_S6_def_acc]"
+msgstr "das Besiedelungsschiff „Mayflower“"
+
+#: ../po/refresh_tmp.php:106
 msgid "[itemdesc_S6]"
 msgstr "Die „Mayflower“ war eines der ersten Schiffe, das Menschen zum Mars transportierte. Später wurden Nachbildungen dieses Schiffes erbaut, die die Besiedelung unbesiedelter Planeten ermöglichten. Ein Teil der in das Besiedelungsschiff verbauten Rohstoffe lässt sich bei der Besiedelung regenerieren, sodass auf der neuen Kolonie sofort Rohstoffe zum Bau zur Verfügung stehen."
 
-#: ../po/refresh_tmp.php:72
+#: ../po/refresh_tmp.php:107
 msgid "[item_S7]"
 msgstr "Buster-Korvette"
 
-#: ../po/refresh_tmp.php:73
+#: ../po/refresh_tmp.php:108
+msgid "[item_S7_def_acc]"
+msgstr "die Buster-Korvette"
+
+#: ../po/refresh_tmp.php:109
 msgid "[itemdesc_S7]"
 msgstr "Als im Jahre 2276 die ersten Kriege zwischen den einzelnen Kolonien ausbrachen, brachte eine Rüstungsfirma die Buster-Korvette auf den Markt. Sie war ein kleines schnelles Ein-Mann-Schiff und einfach zu fliegen. Heute wird sie meist nur noch für Spähflüge genutzt oder als erste Angriffswelle in einer Schlacht benutzt, um die feindlichen Linien zu durchbrechen. Sie war das erste militärische Schiff und brachte vielen den Tod. Der berühmteste Einsatz der Buster-Korvette war die Rebellion des Orion-Paktes, als die Vereinten Kolonien die Versorgungskette des Paktes durchbrachen und somit die Rebellion niederschlugen."
 
-#: ../po/refresh_tmp.php:74
+#: ../po/refresh_tmp.php:110
 msgid "[item_S8]"
 msgstr "Octopus-Korvette"
 
-#: ../po/refresh_tmp.php:75
-msgid "[itemdesc_S8]"
-msgstr "56 Jahre nach der Erfindung der \"Buster-Korvette\" entwickelten Wissenschaftler einen Prototypen einer verbesserten Version der Buster-Korvette, der sich als Erfolg erwies. Er war zwar kein so wendiges Schiff wie die Buster-Korvette, aber wesentlich stärker und widerstandsfähiger. Er war mit zwei kleinen Raketengeschützen ausgerüstet, sowie einer Laser-Gatlin. Anfangs wurde er nur von der National- oder auch Octopus-Garde verwendet, woraus auch sein späterer Name entstand, da er genau wie die Garde für schnelle Angriffe gedacht war. Später wurde er aber beim gesamten Militär eingesetzt."
+#: ../po/refresh_tmp.php:111
+msgid "[item_S8_def_acc]"
+msgstr "die Octopus-Korvette"
 
-#: ../po/refresh_tmp.php:76
+#: ../po/refresh_tmp.php:112
+msgid "[itemdesc_S8]"
+msgstr "56 Jahre nach der Erfindung der \"Buster-Korvette\" entwickelten Wissenschaftler einen Prototypen einer verbesserten Version der Buster-Korvette, der sich als Erfolg erwies. Er war zwar kein so wendiges Schiff wie die Buster-Korvette, aber wesentlich stärker und widerstandsfähiger. Er war mit zwei kleinen Raketengeschützen ausgerüstet, sowie einer Laser-Gatling. Anfangs wurde er nur von der National- oder auch Octopus-Garde verwendet, woraus auch sein späterer Name entstand, da er genau wie die Garde für schnelle Angriffe gedacht war. Später wurde er aber beim gesamten Militär eingesetzt."
+
+#: ../po/refresh_tmp.php:113
 msgid "[item_S9]"
 msgstr "Python-Korvette"
 
-#: ../po/refresh_tmp.php:77
-msgid "[itemdesc_S9]"
-msgstr "2350 wurde schließlich die beste der heutigen Korvetten entwickelt, die Python-Korvette. Sie war eine Mischung aus ihren beiden Vorgängern, wendig aber auch stark und für bis zu sechs Piloten gebaut. Sie verfügte über Präzisionsgeschütze sowie ein durchschlagendes Gatlin-Geschütz, welches die anderen Korvetten in den Schatten stellte. Ihre wahre Stärke zeigte sich bei der Schlacht um die Minenkolonien, als eine Armada von Buster- und Octopus-Korvetten einer terroristischen Allianz gegen eine wesentlich kleinere Flotte von Python-Korvetten der Sternenförderation und der Garde verlor."
+#: ../po/refresh_tmp.php:114
+msgid "[item_S9_def_acc]"
+msgstr "die Python-Korvette"
 
-#: ../po/refresh_tmp.php:78
+#: ../po/refresh_tmp.php:115
+msgid "[itemdesc_S9]"
+msgstr "2350 wurde schließlich die beste der heutigen Korvetten entwickelt, die Python-Korvette. Sie war eine Mischung aus ihren beiden Vorgängern, wendig aber auch stark und für bis zu sechs Piloten gebaut. Sie verfügte über Präzisionsgeschütze sowie ein durchschlagendes Gatling-Geschütz, welches die anderen Korvetten in den Schatten stellte. Ihre wahre Stärke zeigte sich bei der Schlacht um die Minenkolonien, als eine Armada von Buster- und Octopus-Korvetten einer terroristischen Allianz gegen eine wesentlich kleinere Flotte von Python-Korvetten der Sternenförderation und der Garde verlor."
+
+#: ../po/refresh_tmp.php:116
 msgid "[item_S10]"
 msgstr "Jotka-Fregatte"
 
-#: ../po/refresh_tmp.php:79
+#: ../po/refresh_tmp.php:117
+msgid "[item_S10_def_acc]"
+msgstr "die Jotka-Fregatte"
+
+#: ../po/refresh_tmp.php:118
 msgid "[itemdesc_S10]"
 msgstr "."
 
-#: ../po/refresh_tmp.php:80
+#: ../po/refresh_tmp.php:119
 msgid "[item_S11]"
 msgstr "Kleib-Fregatte"
 
-#: ../po/refresh_tmp.php:81
+#: ../po/refresh_tmp.php:120
+msgid "[item_S11_def_acc]"
+msgstr "die Kleib-Fregatte"
+
+#: ../po/refresh_tmp.php:121
 msgid "[itemdesc_S11]"
 msgstr "."
 
-#: ../po/refresh_tmp.php:82
+#: ../po/refresh_tmp.php:122
 msgid "[item_S12]"
 msgstr "Amann-Fregatte"
 
-#: ../po/refresh_tmp.php:83
+#: ../po/refresh_tmp.php:123
+msgid "[item_S12_def_acc]"
+msgstr "die Amann-Fregatte"
+
+#: ../po/refresh_tmp.php:124
 msgid "[itemdesc_S12]"
 msgstr "."
 
-#: ../po/refresh_tmp.php:84
+#: ../po/refresh_tmp.php:125
 msgid "[item_S13]"
 msgstr "Sheliak-Kreuzer"
 
-#: ../po/refresh_tmp.php:85
+#: ../po/refresh_tmp.php:126
+msgid "[item_S13_def_acc]"
+msgstr "den Sheliak-Kreuzer"
+
+#: ../po/refresh_tmp.php:127
 msgid "[itemdesc_S13]"
 msgstr "."
 
-#: ../po/refresh_tmp.php:86
+#: ../po/refresh_tmp.php:128
 msgid "[item_S14]"
 msgstr "Vega-Kreuzer"
 
-#: ../po/refresh_tmp.php:87
+#: ../po/refresh_tmp.php:129
+msgid "[item_S14_def_acc]"
+msgstr "den Vega-Kreuzer"
+
+#: ../po/refresh_tmp.php:130
 msgid "[itemdesc_S14]"
 msgstr "."
 
-#: ../po/refresh_tmp.php:88
+#: ../po/refresh_tmp.php:131
 msgid "[item_S15]"
 msgstr "Nemesis-Kreuzer"
 
-#: ../po/refresh_tmp.php:89
+#: ../po/refresh_tmp.php:132
+msgid "[item_S15_def_acc]"
+msgstr "den Nemesis-Kreuzer"
+
+#: ../po/refresh_tmp.php:133
 msgid "[itemdesc_S15]"
 msgstr "."
 
-#: ../po/refresh_tmp.php:90
+#: ../po/refresh_tmp.php:134
 msgid "[item_S16]"
 msgstr "Torvalds-Schlachtschiff"
 
-#: ../po/refresh_tmp.php:91
+#: ../po/refresh_tmp.php:135
+msgid "[item_S16_def_acc]"
+msgstr "das Torvalds-Schlachtschiff"
+
+#: ../po/refresh_tmp.php:136
 msgid "[itemdesc_S16]"
 msgstr "."
 
-#: ../po/refresh_tmp.php:92
+#: ../po/refresh_tmp.php:137
 msgid "[item_V0]"
 msgstr "Einfaches Lasergeschütz"
 
-#: ../po/refresh_tmp.php:93
+#: ../po/refresh_tmp.php:138
+msgid "[item_V0_def_acc]"
+msgstr "das einfache Lasergeschütz"
+
+#: ../po/refresh_tmp.php:139
 msgid "[itemdesc_V0]"
 msgstr "Das einfache Lasergeschütz wurde aus Angst vor Piraten und fremden Zivilisationen zur Verteidigung von Planeten im Jahre 2150 von der Menschheit entwickelt. Es ist eine sehr kostengünstige und nicht zu unterschätzende Anlage zum Schutz eines Planeten."
 
-#: ../po/refresh_tmp.php:94
+#: ../po/refresh_tmp.php:140
 msgid "[item_V1]"
-msgstr "Gatlin"
+msgstr "Gatling"
 
-#: ../po/refresh_tmp.php:95
+#: ../po/refresh_tmp.php:141
+msgid "[item_V1_def_acc]"
+msgstr "die Gatling"
+
+#: ../po/refresh_tmp.php:142
 msgid "[itemdesc_V1]"
 msgstr ""
-"Als jedoch mit der Zeit immer größere und stärkere Schiffe entwickelt wurden, merkte die Menschheit, dass die bisherigen Verteidigungsanlagen nicht mehr ausreichten und entwickelten aus diesem Grund im Jahre 2263 das Gatlin.\n"
+"Als jedoch mit der Zeit immer größere und stärkere Schiffe entwickelt wurden, merkte die Menschheit, dass die bisherigen Verteidigungsanlagen nicht mehr ausreichten und entwickelten aus diesem Grund im Jahre 2263 die Gatling.\n"
 "\n"
 "Das Gatlin ist ein Geschütz, welches mehrere hundert glühende Aluminiumgeschosse pro Sekunde mit einer Geschwindigkeit von etwa dreißigtausend Metern pro Sekunde auf feindliche Schiffe schießt."
 
-#: ../po/refresh_tmp.php:96
+#: ../po/refresh_tmp.php:143
 msgid "[item_V2]"
 msgstr "Mehrfachraketenwerfer"
 
-#: ../po/refresh_tmp.php:97
+#: ../po/refresh_tmp.php:144
+msgid "[item_V2_def_acc]"
+msgstr "den Mehrfachraketenwerfer"
+
+#: ../po/refresh_tmp.php:145
 msgid "[itemdesc_V2]"
 msgstr ""
 "Mit Entwicklung von immer besseren Antrieben wurden im Jahre 2387 der Mehrfachraketenwerfer, welcher eine Salve bestehend aus 15 Raketen abfeuert, entwickelt.\n"
 "\n"
 "Die Raketen steuern das Ziel mit etwa zehntausend Metern pro Sekunde an und entwickeln beim Aufschlag eine enorme Sprengkraft, die nicht selten riesige Löcher in die feindlichen Raumschiffe reißt."
 
-#: ../po/refresh_tmp.php:98
+#: ../po/refresh_tmp.php:146
 msgid "[item_V6]"
 msgstr "Schweres Lasergeschütz"
 
-#: ../po/refresh_tmp.php:99
+#: ../po/refresh_tmp.php:147
+msgid "[item_V6_def_acc]"
+msgstr "das schwere Lasergeschütz"
+
+#: ../po/refresh_tmp.php:148
 msgid "[itemdesc_V6]"
 msgstr "Diese Anlage ist eine Weiterentwicklung des einfachen Lasergeschützes, die durch die Erforschung neuartiger Laserarten möglich wurde. So wird nun viel mehr Energie genutzt, um den Laserstrahl zu bündeln, was zur Folge hat, das Schiffe, die von diesem neuartigem Laser getroffen werden, nahezu sofort explodieren, was unter Umständen auch andere Schiffe in der Nähe beschädigt."
 
-#: ../po/refresh_tmp.php:100
+#: ../po/refresh_tmp.php:149
 msgid "[item_V3]"
 msgstr "EMP"
 
-#: ../po/refresh_tmp.php:101
+#: ../po/refresh_tmp.php:150
+msgid "[item_V3_def_acc]"
+msgstr "den EMP"
+
+#: ../po/refresh_tmp.php:151
 msgid "[itemdesc_V3]"
 msgstr ""
 "Dieses System wurde erst durch starke Antriebe und neuartigen Technologien im Bereich Waffentechnik möglich. Es feuert eine Rakete auf das Ziel ab, welche in kurzer Entfernung zum Ziel detoniert und dabei einen elektromagnetischen Impuls mit einer Leistung von mehreren Milliarden Watt aussendet, dies hat zur Folge, dass sofort sämtliche elektronische Geräte in der der Nähe zerstört werden.\n"
 "\n"
 "Nachdem dies geschehen ist, wird noch eine zweite Rakete mit einem konventionellen Sprengkopf abgefeuert, die das Ziel völlig zerstört."
 
-#: ../po/refresh_tmp.php:102
+#: ../po/refresh_tmp.php:152
 msgid "[item_V4]"
 msgstr "Ionenkanone"
 
-#: ../po/refresh_tmp.php:103
+#: ../po/refresh_tmp.php:153
+msgid "[item_V4_def_acc]"
+msgstr "die Ionenkanone"
+
+#: ../po/refresh_tmp.php:154
 msgid "[itemdesc_V4]"
 msgstr ""
 "Im Jahre 2521, als die Bedrohung durch feindlich gesinnte Zivilisationen immer mehr zunahm, wurde eine neuartige Waffe, welche große Fortschritte bei der Ionenforschung voraussetzte, entwickelt.\n"
 "\n"
 "Ein Strahl, ähnlich einem Laserstrahl, allerdings nicht aus Licht, sondern aus Ionen bestehend, wird auf das Ziel abgefeurt, beim Auftrweffen entsteht so viel Energie, die das Schiff sofort vedampfen lässt."
 
-#: ../po/refresh_tmp.php:104
+#: ../po/refresh_tmp.php:155
 msgid "[item_V5]"
 msgstr "Radonkanone"
 
-#: ../po/refresh_tmp.php:105
+#: ../po/refresh_tmp.php:156
+msgid "[item_V5_def_acc]"
+msgstr "die Radonkanone"
+
+#: ../po/refresh_tmp.php:157
 msgid "[itemdesc_V5]"
 msgstr ""
 "Diese neuartige Anlage ist die effektivste Möglichkeit, sich gegen Angriffe zu verteidigen, die die Menschheit je Entwickelt hat, die aber auch sehr teuer und schwer zu bauen ist.\n"
 "\n"
 "Es wird auf zwei Kelvin heruntergekühltes Radon auf ein gegnerisches Raumschiff gefeuert, welches aufgrund seiner Temperatur durch die Hülle eindringt und sich dort durch die Erwärmung explosionsartig ausdehnt. Durch den entstehenden Druck wird das Raumschiff von innen heraus gesprengt."
 
-#: ../po/refresh_tmp.php:106
+#: ../po/refresh_tmp.php:158
 msgid "[message_1]"
 msgstr "Kämpfe"
 
-#: ../po/refresh_tmp.php:107
+#: ../po/refresh_tmp.php:159
 msgid "[message_2]"
 msgstr "Spionage"
 
-#: ../po/refresh_tmp.php:108
+#: ../po/refresh_tmp.php:160
 msgid "[message_3]"
 msgstr "Transport"
 
-#: ../po/refresh_tmp.php:109
+#: ../po/refresh_tmp.php:161
 msgid "[message_4]"
 msgstr "Sammeln"
 
-#: ../po/refresh_tmp.php:110
+#: ../po/refresh_tmp.php:162
 msgid "[message_5]"
 msgstr "Besiedelung"
 
-#: ../po/refresh_tmp.php:111
+#: ../po/refresh_tmp.php:163
 msgid "[message_6]"
 msgstr "Benutzernachrichten"
 
-#: ../po/refresh_tmp.php:112
+#: ../po/refresh_tmp.php:164
 msgid "[message_7]"
 msgstr "Verbündete"
 
-#: ../po/refresh_tmp.php:113
+#: ../po/refresh_tmp.php:165
 msgid "[message_8]"
 msgstr "Postausgang"
 
-#: ../po/refresh_tmp.php:114
+#: ../po/refresh_tmp.php:166
 msgid "[fleet_1]"
 msgstr "Besiedeln"
 
-#: ../po/refresh_tmp.php:115
+#: ../po/refresh_tmp.php:167
 msgid "[fleet_2]"
 msgstr "Sammeln"
 
-#: ../po/refresh_tmp.php:116
+#: ../po/refresh_tmp.php:168
 msgid "[fleet_3]"
 msgstr "Angriff"
 
-#: ../po/refresh_tmp.php:117
+#: ../po/refresh_tmp.php:169
 msgid "[fleet_4]"
 msgstr "Transport"
 
-#: ../po/refresh_tmp.php:118
+#: ../po/refresh_tmp.php:170
 msgid "[fleet_5]"
 msgstr "Spionieren"
 
-#: ../po/refresh_tmp.php:119
+#: ../po/refresh_tmp.php:171
 msgid "[fleet_6]"
 msgstr "Stationieren"
 
@@ -958,8 +1166,8 @@ msgstr "Stunden"
 #: ../admin/index.php:446
 #: ../admin/index.php:602
 #: ../admin/index.php:632
-#: ../login/flotten.php:700
-#: ../login/flotten.php:1019
+#: ../login/flotten.php:743
+#: ../login/flotten.php:1066
 msgid "Tage"
 msgstr "Tage"
 
@@ -1331,6 +1539,128 @@ msgstr "Adminbereich"
 msgid "Abmelden nicht vergessen&[admin/include.php|2]"
 msgstr "Abmelden nicht vergessen"
 
+#: ../login/info/flotten_actions.php:462
+msgid "Flugroute"
+msgstr "Flugroute"
+
+#: ../login/info/flotten_actions.php:480
+msgid "Ungültigen Flug ausgewählt."
+msgstr "Ungültigen Flug ausgewählt."
+
+#: ../login/info/flotten_actions.php:489
+#: ../login/flotten.php:1183
+msgid "Ziel"
+msgstr "Ziel"
+
+#: ../login/info/flotten_actions.php:490
+msgid "Auftrag"
+msgstr "Auftrag"
+
+#: ../login/info/flotten_actions.php:491
+#: ../login/flotten.php:1189
+#: ../login/einstellungen.php:536
+msgid "Ankunft"
+msgstr "Ankunft"
+
+#: ../login/info/flotten_actions.php:511
+msgid "Diesen Planeten in der Karte anzeigen"
+msgstr "Diesen Planeten in der Karte anzeigen"
+
+#: ../login/info/flotten_actions.php:511
+#: ../login/info/playerinfo.php:180
+#: ../login/karte.php:592
+#: ../login/flotten.php:513
+#: ../login/flotten.php:674
+#: ../login/flotten.php:678
+#: ../login/flotten.php:751
+#: ../login/flotten.php:922
+#: ../login/flotten.php:1184
+#: ../login/include.php:385
+#: ../login/include.php:564
+#: ../engine/classes/user.php:3250
+#: ../engine/classes/user.php:3251
+#: ../engine/classes/fleet.php:1070
+#: ../engine/classes/fleet.php:1071
+#: ../engine/classes/fleet.php:1084
+#: ../engine/classes/fleet.php:1085
+#: ../engine/classes/fleet.php:1122
+#: ../engine/classes/fleet.php:1123
+#: ../register.php:122
+#, php-format
+msgid "%d:%d:%d"
+msgstr "%d:%d:%d"
+
+#: ../login/info/flotten_actions.php:513
+#, php-format
+msgid "%s (unbesiedelt)"
+msgstr "%s (unbesiedelt)"
+
+#: ../login/info/flotten_actions.php:516
+#: ../login/info/flotten_actions.php:518
+#: ../login/info/description.php:103
+#: ../login/allianz.php:207
+#: ../login/forschungsbaum.php:48
+#: ../login/flotten.php:599
+#: ../engine/classes/item.php:331
+#: ../engine/classes/fleet.php:2495
+msgid "Genauere Informationen anzeigen"
+msgstr "Genauere Informationen anzeigen"
+
+#: ../login/info/flotten_actions.php:518
+#: ../login/info/playerinfo.php:44
+#, php-format
+msgid "[%s] %s"
+msgstr "[%s] %s"
+
+#: ../login/info/flotten_actions.php:519
+#: ../login/flotten.php:674
+#: ../login/flotten.php:1184
+#: ../engine/classes/fleet.php:1264
+#: ../engine/classes/fleet.php:1536
+#: ../engine/classes/fleet.php:1554
+#: ../engine/classes/fleet.php:1785
+#, php-format
+msgid "„%s“ (%s, Eigentümer: %s)"
+msgstr "„%s“ (%s, Eigentümer: %s)"
+
+#: ../login/info/flotten_actions.php:525
+#: ../login/info/description.php:295
+#: ../login/index.php:197
+#: ../login/flotten.php:809
+#: ../login/flotten.php:1187
+msgid "[fleet_"
+msgstr "XXX"
+
+#: ../login/info/flotten_actions.php:526
+#: ../login/flotten.php:783
+#: ../login/flotten.php:1083
+#, php-format
+msgid "Ankunft: %s"
+msgstr "Ankunft: %s"
+
+#: ../login/info/flotten_actions.php:526
+#: ../login/info/playerinfo.php:138
+#: ../login/info/playerinfo.php:155
+#: ../login/flotten.php:783
+#: ../login/einstellungen.php:797
+#: ../login/einstellungen.php:803
+#: ../login/einstellungen.php:816
+#: ../login/include.php:342
+#: ../login/include.php:351
+#: ../login/include.php:366
+#, php-format
+msgid "%s (Serverzeit)"
+msgstr "%s (Serverzeit)"
+
+#: ../login/info/flotten_actions.php:526
+#: ../login/info/playerinfo.php:138
+#: ../login/info/playerinfo.php:155
+#: ../login/flotten.php:783
+#: ../login/flotten.php:1190
+#: ../public_message.php:72
+msgid "H:i:s, Y-m-d"
+msgstr "H:i:s, Y-m-d"
+
 #: ../login/info/allianceinfo.php:25
 #: ../login/allianz.php:127
 msgid "Diese Allianz gibt es nicht."
@@ -1344,9 +1674,9 @@ msgstr "Diese Allianz gibt es nicht."
 #: ../login/allianz.php:381
 #: ../login/allianz.php:654
 #: ../login/flotten.php:96
-#: ../login/flotten.php:196
-#: ../login/flotten.php:324
-#: ../login/flotten.php:686
+#: ../login/flotten.php:216
+#: ../login/flotten.php:336
+#: ../login/flotten.php:701
 #: ../login/include.php:129
 #: ../passwd.php:34
 #: ../passwd.php:68
@@ -1418,11 +1748,6 @@ msgid "Spielerinfo „%s“"
 msgstr "Spielerinfo „%s“"
 
 #: ../login/info/playerinfo.php:44
-#, php-format
-msgid "[%s] %s"
-msgstr "[%s] %s"
-
-#: ../login/info/playerinfo.php:44
 msgid "Informationen zu dieser Allianz anzeigen"
 msgstr "Informationen zu dieser Allianz anzeigen"
 
@@ -1431,43 +1756,43 @@ msgid "Punkte"
 msgstr "Punkte"
 
 #: ../login/info/playerinfo.php:47
-#: ../login/index.php:517
+#: ../login/index.php:522
 msgid "[scores_0]"
 msgstr "Gebäude"
 
 #: ../login/info/playerinfo.php:50
-#: ../login/index.php:520
+#: ../login/index.php:525
 msgid "[scores_1]"
 msgstr "Forschung"
 
 #: ../login/info/playerinfo.php:53
-#: ../login/index.php:523
+#: ../login/index.php:528
 msgid "[scores_2]"
 msgstr "Roboter"
 
 #: ../login/info/playerinfo.php:56
-#: ../login/index.php:526
+#: ../login/index.php:531
 msgid "[scores_3]"
 msgstr "Flotte"
 
 #: ../login/info/playerinfo.php:59
-#: ../login/index.php:529
+#: ../login/index.php:534
 msgid "[scores_4]"
 msgstr "Verteidigung"
 
 #: ../login/info/playerinfo.php:62
-#: ../login/index.php:532
+#: ../login/index.php:537
 msgid "[scores_5]"
 msgstr "Flugerfahrung"
 
 #: ../login/info/playerinfo.php:65
-#: ../login/index.php:535
+#: ../login/index.php:540
 msgid "[scores_6]"
 msgstr "Kampferfahrung"
 
 #: ../login/info/playerinfo.php:68
 #: ../login/info/playerinfo.php:93
-#: ../engine/classes/fleet.php:2463
+#: ../engine/classes/fleet.php:2496
 msgid "Gesamt"
 msgstr "Gesamt"
 
@@ -1477,83 +1802,83 @@ msgstr "Ausgegebene Rohstoffe"
 
 #: ../login/info/playerinfo.php:78
 #: ../login/info/description.php:147
-#: ../engine/include.php:797
-#: ../engine/classes/fleet.php:1184
-#: ../engine/classes/fleet.php:1233
-#: ../engine/classes/fleet.php:1234
-#: ../engine/classes/fleet.php:1269
-#: ../engine/classes/fleet.php:1271
-#: ../engine/classes/fleet.php:1748
-#: ../engine/classes/fleet.php:1773
-#: ../engine/classes/fleet.php:2496
-#: ../engine/classes/fleet.php:2575
-#: ../engine/classes/fleet.php:2583
-#: ../engine/classes/fleet.php:2588
+#: ../engine/include.php:798
+#: ../engine/classes/fleet.php:1217
+#: ../engine/classes/fleet.php:1266
+#: ../engine/classes/fleet.php:1267
+#: ../engine/classes/fleet.php:1302
+#: ../engine/classes/fleet.php:1304
+#: ../engine/classes/fleet.php:1781
+#: ../engine/classes/fleet.php:1806
+#: ../engine/classes/fleet.php:2529
+#: ../engine/classes/fleet.php:2608
+#: ../engine/classes/fleet.php:2616
+#: ../engine/classes/fleet.php:2621
 msgid "[ress_0]"
 msgstr "Carbon"
 
 #: ../login/info/playerinfo.php:81
 #: ../login/info/description.php:153
-#: ../engine/include.php:799
-#: ../engine/classes/fleet.php:1184
-#: ../engine/classes/fleet.php:1233
-#: ../engine/classes/fleet.php:1234
-#: ../engine/classes/fleet.php:1269
-#: ../engine/classes/fleet.php:1271
-#: ../engine/classes/fleet.php:1748
-#: ../engine/classes/fleet.php:1773
-#: ../engine/classes/fleet.php:2496
-#: ../engine/classes/fleet.php:2575
-#: ../engine/classes/fleet.php:2583
-#: ../engine/classes/fleet.php:2588
+#: ../engine/include.php:800
+#: ../engine/classes/fleet.php:1217
+#: ../engine/classes/fleet.php:1266
+#: ../engine/classes/fleet.php:1267
+#: ../engine/classes/fleet.php:1302
+#: ../engine/classes/fleet.php:1304
+#: ../engine/classes/fleet.php:1781
+#: ../engine/classes/fleet.php:1806
+#: ../engine/classes/fleet.php:2529
+#: ../engine/classes/fleet.php:2608
+#: ../engine/classes/fleet.php:2616
+#: ../engine/classes/fleet.php:2621
 msgid "[ress_1]"
 msgstr "Aluminium"
 
 #: ../login/info/playerinfo.php:84
 #: ../login/info/description.php:159
-#: ../engine/include.php:801
-#: ../engine/classes/fleet.php:1184
-#: ../engine/classes/fleet.php:1233
-#: ../engine/classes/fleet.php:1234
-#: ../engine/classes/fleet.php:1269
-#: ../engine/classes/fleet.php:1271
-#: ../engine/classes/fleet.php:1748
-#: ../engine/classes/fleet.php:1773
-#: ../engine/classes/fleet.php:2496
-#: ../engine/classes/fleet.php:2575
-#: ../engine/classes/fleet.php:2583
-#: ../engine/classes/fleet.php:2588
+#: ../engine/include.php:802
+#: ../engine/classes/fleet.php:1217
+#: ../engine/classes/fleet.php:1266
+#: ../engine/classes/fleet.php:1267
+#: ../engine/classes/fleet.php:1302
+#: ../engine/classes/fleet.php:1304
+#: ../engine/classes/fleet.php:1781
+#: ../engine/classes/fleet.php:1806
+#: ../engine/classes/fleet.php:2529
+#: ../engine/classes/fleet.php:2608
+#: ../engine/classes/fleet.php:2616
+#: ../engine/classes/fleet.php:2621
 msgid "[ress_2]"
 msgstr "Wolfram"
 
 #: ../login/info/playerinfo.php:87
 #: ../login/info/description.php:165
-#: ../engine/include.php:803
-#: ../engine/classes/fleet.php:1184
-#: ../engine/classes/fleet.php:1233
-#: ../engine/classes/fleet.php:1234
-#: ../engine/classes/fleet.php:1269
-#: ../engine/classes/fleet.php:1271
-#: ../engine/classes/fleet.php:1748
-#: ../engine/classes/fleet.php:1773
-#: ../engine/classes/fleet.php:2496
-#: ../engine/classes/fleet.php:2575
-#: ../engine/classes/fleet.php:2583
-#: ../engine/classes/fleet.php:2588
+#: ../engine/include.php:804
+#: ../engine/classes/fleet.php:1217
+#: ../engine/classes/fleet.php:1266
+#: ../engine/classes/fleet.php:1267
+#: ../engine/classes/fleet.php:1302
+#: ../engine/classes/fleet.php:1304
+#: ../engine/classes/fleet.php:1781
+#: ../engine/classes/fleet.php:1806
+#: ../engine/classes/fleet.php:2529
+#: ../engine/classes/fleet.php:2608
+#: ../engine/classes/fleet.php:2616
+#: ../engine/classes/fleet.php:2621
 msgid "[ress_3]"
 msgstr "Radium"
 
 #: ../login/info/playerinfo.php:90
 #: ../login/info/description.php:171
-#: ../engine/include.php:807
-#: ../engine/classes/fleet.php:1233
-#: ../engine/classes/fleet.php:1234
-#: ../engine/classes/fleet.php:1269
-#: ../engine/classes/fleet.php:1271
-#: ../engine/classes/fleet.php:1773
-#: ../engine/classes/fleet.php:1782
-#: ../engine/classes/fleet.php:2575
-#: ../engine/classes/fleet.php:2583
+#: ../engine/include.php:808
+#: ../engine/classes/fleet.php:1266
+#: ../engine/classes/fleet.php:1267
+#: ../engine/classes/fleet.php:1302
+#: ../engine/classes/fleet.php:1304
+#: ../engine/classes/fleet.php:1806
+#: ../engine/classes/fleet.php:1815
+#: ../engine/classes/fleet.php:2608
+#: ../engine/classes/fleet.php:2616
 msgid "[ress_4]"
 msgstr "Tritium"
 
@@ -1583,27 +1908,6 @@ msgstr "Daten"
 msgid "Letzte Aktivität"
 msgstr "Letzte Aktivität"
 
-#: ../login/info/playerinfo.php:138
-#: ../login/info/playerinfo.php:155
-#: ../login/flotten.php:749
-#: ../login/einstellungen.php:797
-#: ../login/einstellungen.php:803
-#: ../login/einstellungen.php:816
-#: ../login/include.php:342
-#: ../login/include.php:351
-#: ../login/include.php:366
-#, php-format
-msgid "%s (Serverzeit)"
-msgstr "%s (Serverzeit)"
-
-#: ../login/info/playerinfo.php:138
-#: ../login/info/playerinfo.php:155
-#: ../login/flotten.php:749
-#: ../login/flotten.php:1127
-#: ../public_message.php:72
-msgid "H:i:s, Y-m-d"
-msgstr "H:i:s, Y-m-d"
-
 #: ../login/info/playerinfo.php:144
 msgid "Nie"
 msgstr "Nie"
@@ -1621,11 +1925,11 @@ msgid "Planeten"
 msgstr "Planeten"
 
 #: ../login/info/playerinfo.php:180
-#: ../login/flotten.php:662
+#: ../login/flotten.php:678
 #: ../login/include.php:385
 #: ../login/include.php:564
-#: ../engine/classes/fleet.php:1221
-#: ../engine/classes/fleet.php:1503
+#: ../engine/classes/fleet.php:1254
+#: ../engine/classes/fleet.php:1536
 #, php-format
 msgid "„%s“ (%s)"
 msgstr "„%s“ (%s)"
@@ -1633,28 +1937,6 @@ msgstr "„%s“ (%s)"
 #: ../login/info/playerinfo.php:180
 msgid "Jenes Sonnensystem in der Karte ansehen"
 msgstr "Jenes Sonnensystem in der Karte ansehen"
-
-#: ../login/info/playerinfo.php:180
-#: ../login/karte.php:592
-#: ../login/flotten.php:497
-#: ../login/flotten.php:658
-#: ../login/flotten.php:662
-#: ../login/flotten.php:723
-#: ../login/flotten.php:1121
-#: ../login/include.php:385
-#: ../login/include.php:564
-#: ../engine/classes/user.php:3248
-#: ../engine/classes/user.php:3249
-#: ../engine/classes/fleet.php:1037
-#: ../engine/classes/fleet.php:1038
-#: ../engine/classes/fleet.php:1051
-#: ../engine/classes/fleet.php:1052
-#: ../engine/classes/fleet.php:1089
-#: ../engine/classes/fleet.php:1090
-#: ../register.php:122
-#, php-format
-msgid "%d:%d:%d"
-msgstr "%d:%d:%d"
 
 #: ../login/info/playerinfo.php:193
 msgid "Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?"
@@ -1698,8 +1980,8 @@ msgstr "%s (Stufe %s)"
 #: ../login/forschungsbaum.php:67
 #: ../engine/classes/item.php:122
 #: ../engine/classes/item.php:278
-#: ../engine/classes/fleet.php:2161
-#: ../engine/classes/fleet.php:2171
+#: ../engine/classes/fleet.php:2194
+#: ../engine/classes/fleet.php:2204
 msgid "[item_"
 msgstr "XXX"
 
@@ -1728,15 +2010,6 @@ msgstr "Bauzeit"
 #: ../login/forschungsbaum.php:37
 msgid "Abhängigkeiten"
 msgstr "Abhängigkeiten"
-
-#: ../login/info/description.php:103
-#: ../login/allianz.php:207
-#: ../login/forschungsbaum.php:48
-#: ../login/flotten.php:583
-#: ../engine/classes/item.php:331
-#: ../engine/classes/fleet.php:2462
-msgid "Genauere Informationen anzeigen"
-msgstr "Genauere Informationen anzeigen"
 
 #: ../login/info/description.php:116
 #: ../login/info/description.php:257
@@ -1769,7 +2042,7 @@ msgid "Stufe"
 msgstr "Stufe"
 
 #: ../login/info/description.php:177
-#: ../engine/include.php:812
+#: ../engine/include.php:813
 msgid "[ress_5]"
 msgstr "Energie"
 
@@ -1779,7 +2052,7 @@ msgid "Ursprungswert"
 msgstr "Ursprungswert"
 
 #: ../login/info/description.php:268
-#: ../login/flotten.php:751
+#: ../login/flotten.php:789
 msgid "Transportkapazität"
 msgstr "Transportkapazität"
 
@@ -1805,16 +2078,16 @@ msgstr "Antriebsstärke"
 
 #: ../login/info/description.php:284
 #: ../login/info/description.php:285
-#: ../login/flotten.php:700
-#: ../login/flotten.php:726
-#: ../login/flotten.php:729
-#: ../login/flotten.php:732
-#: ../login/flotten.php:741
-#: ../login/flotten.php:752
-#: ../login/flotten.php:757
-#: ../login/flotten.php:1005
-#: ../login/flotten.php:1019
-#: ../login/flotten.php:1088
+#: ../login/flotten.php:743
+#: ../login/flotten.php:754
+#: ../login/flotten.php:761
+#: ../login/flotten.php:764
+#: ../login/flotten.php:773
+#: ../login/flotten.php:790
+#: ../login/flotten.php:795
+#: ../login/flotten.php:1066
+#: ../login/flotten.php:1095
+#: ../login/flotten.php:1148
 #: ../faq.php:204
 #: ../faq.php:205
 #: ../faq.php:206
@@ -1823,7 +2096,7 @@ msgstr " "
 
 #: ../login/info/description.php:284
 #: ../login/info/description.php:285
-#: ../login/flotten.php:729
+#: ../login/flotten.php:761
 msgid "Mikroorbit pro Quadratsekunde"
 msgid_plural "Mikroorbits pro Quadratsekunde"
 msgstr[0] "Mikroorbit pro Quadratsekunde"
@@ -1831,20 +2104,13 @@ msgstr[1] "Mikroorbits pro Quadratsekunde"
 
 #: ../login/info/description.php:284
 #: ../login/info/description.php:285
-#: ../login/flotten.php:729
+#: ../login/flotten.php:761
 msgid "µOr⁄s²"
 msgstr "µOr⁄s²"
 
 #: ../login/info/description.php:288
 msgid "Unterstützte Auftragsarten"
 msgstr "Unterstützte Auftragsarten"
-
-#: ../login/info/description.php:295
-#: ../login/index.php:197
-#: ../login/flotten.php:768
-#: ../login/flotten.php:1124
-msgid "[fleet_"
-msgstr "XXX"
 
 #: ../login/allianz.php:36
 #: ../login/allianz.php:54
@@ -2268,7 +2534,8 @@ msgstr "Allianzrundschreiben verschicken"
 
 #: ../login/karte.php:125
 #: ../login/karte.php:613
-#: ../login/flotten.php:479
+#: ../login/flotten.php:495
+#: ../login/flotten.php:904
 msgid "unbesiedelt"
 msgstr "unbesiedelt"
 
@@ -2309,24 +2576,24 @@ msgid "Lesezeichen verwalten&[login/karte.php|1]"
 msgstr "Lesezeichen verwalten"
 
 #: ../login/forschungsbaum.php:23
-#: ../engine/classes/fleet.php:1526
+#: ../engine/classes/fleet.php:1559
 msgid "Gebäude"
 msgid_plural "Gebäude"
 msgstr[0] "Gebäude"
 msgstr[1] "Gebäude"
 
 #: ../login/forschungsbaum.php:24
-#: ../engine/classes/fleet.php:1523
+#: ../engine/classes/fleet.php:1556
 msgid "Forschung"
 msgid_plural "Forschungen"
 msgstr[0] "Forschung"
 msgstr[1] "Forschungen"
 
 #: ../login/forschungsbaum.php:25
-#: ../login/flotten.php:752
-#: ../login/flotten.php:757
-#: ../login/flotten.php:1088
-#: ../engine/classes/fleet.php:1522
+#: ../login/flotten.php:790
+#: ../login/flotten.php:795
+#: ../login/flotten.php:1148
+#: ../engine/classes/fleet.php:1555
 msgid "Roboter"
 msgid_plural "Roboter"
 msgstr[0] "Roboter"
@@ -2352,8 +2619,8 @@ msgstr "Zu diesem Gegenstand scrollen"
 msgid "[scores_"
 msgstr "XXX"
 
-#: ../login/boerse.php:136
 #: ../login/boerse.php:137
+#: ../login/boerse.php:138
 msgid "[ress_"
 msgstr "XXX"
 
@@ -2386,31 +2653,35 @@ msgstr "Ihr Benutzeraccount ist gesperrt."
 msgid "Maximale Flottenzahl erreicht."
 msgstr "Maximale Flottenzahl erreicht."
 
-#: ../login/flotten.php:183
+#: ../login/flotten.php:185
 msgid "Keine vorhandenen Flotten ausgewählt."
 msgstr "Keine vorhandenen Flotten ausgewählt."
 
-#: ../login/flotten.php:189
+#: ../login/flotten.php:209
 msgid "Ungültiger Benutzername."
 msgstr "Ungültiger Benutzername."
 
-#: ../login/flotten.php:192
+#: ../login/flotten.php:212
 msgid "Ungültiges Flottenpasswort."
 msgstr "Ungültiges Flottenpasswort."
 
-#: ../login/flotten.php:198
+#: ../login/flotten.php:218
 msgid "Sie sind bereits Teil des Bündnisflugs."
 msgstr "Sie sind bereits Teil des Bündnisflugs."
 
-#: ../login/flotten.php:201
+#: ../login/flotten.php:228
 msgid "Ungültige Koordinaten."
 msgstr "Ungültige Koordinaten."
 
-#: ../login/flotten.php:213
+#: ../login/flotten.php:231
+msgid "Die Flotte darf nicht zweimal zu einem Planeten fliegen."
+msgstr "Die Flotte darf nicht zweimal zu einem Planeten fliegen."
+
+#: ../login/flotten.php:241
 msgid "Diesen Planeten gibt es nicht."
 msgstr "Diesen Planeten gibt es nicht."
 
-#: ../login/flotten.php:268
+#: ../login/flotten.php:294
 msgid "Sie haben nicht die richtigen Schiffe ausgewählt, um diesen Planeten anzufliegen."
 msgstr "Sie haben nicht die richtigen Schiffe ausgewählt, um diesen Planeten anzufliegen."
 
@@ -2418,136 +2689,139 @@ msgstr "Sie haben nicht die richtigen Schiffe ausgewählt, um diesen Planeten an
 msgid "Ungültigen Auftrag ausgewählt."
 msgstr "Ungültigen Auftrag ausgewählt."
 
-#: ../login/flotten.php:310
+#: ../login/flotten.php:321
 msgid "Das Imperium dieses Spielers ist so groß, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (Aka Anfängerschutz.)"
 msgstr "Das Imperium dieses Spielers ist so groß, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (Aka Anfängerschutz.)"
 
-#: ../login/flotten.php:312
+#: ../login/flotten.php:323
 msgid "Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen können. (Aka Anfängerschutz.)"
 msgstr "Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen können. (Aka Anfängerschutz.)"
 
-#: ../login/flotten.php:349
+#: ../login/flotten.php:339
+msgid "Flottenlimit überschritten."
+msgstr "Flottenlimit überschritten."
+
+#: ../login/flotten.php:365
 msgid "Nicht genug Tritium vorhanden."
 msgstr "Nicht genug Tritium vorhanden."
 
-#: ../login/flotten.php:393
+#: ../login/flotten.php:409
 msgid "Die Flotte wurde versandt."
 msgstr "Die Flotte wurde versandt."
 
-#: ../login/flotten.php:400
+#: ../login/flotten.php:416
 msgid "Fehler."
 msgstr "Fehler."
 
-#: ../login/flotten.php:413
+#: ../login/flotten.php:429
 msgid "Flotten"
 msgstr "Flotten"
 
-#: ../login/flotten.php:425
+#: ../login/flotten.php:441
 msgid "Flotte versenden"
 msgstr "Flotte versenden"
 
-#: ../login/flotten.php:427
+#: ../login/flotten.php:443
 #, php-format
 msgid "Sie haben derzeit %s von %s möglichen Flotte unterwegs."
 msgid_plural "Sie haben derzeit %s von %s möglichen Flotten unterwegs."
 msgstr[0] "Sie haben derzeit %s von %s möglichen Flotte unterwegs."
 msgstr[1] "Sie haben derzeit %s von %s möglichen Flotten unterwegs."
 
-#: ../login/flotten.php:428
+#: ../login/flotten.php:444
 msgid "Bauen Sie [item_F0_def_acc] aus, um die maximale Anzahl zu erhöhen."
 msgstr "Bauen Sie [item_F0_def_acc] aus, um die maximale Anzahl zu erhöhen."
 
-#: ../login/flotten.php:451
-#: ../login/flotten.php:452
+#: ../login/flotten.php:467
+#: ../login/flotten.php:468
+#: ../login/flotten.php:876
+#: ../login/flotten.php:877
 msgid "&Ziel[login/flotten.php|2]"
 msgstr "&Ziel"
 
-#: ../login/flotten.php:452
+#: ../login/flotten.php:468
+#: ../login/flotten.php:877
 msgid "Ziel: System&[login/flotten.php|2]"
 msgstr "Ziel: System"
 
-#: ../login/flotten.php:452
+#: ../login/flotten.php:468
+#: ../login/flotten.php:877
 msgid "Ziel: Planet&[login/flotten.php|2]"
 msgstr "Ziel: Planet"
 
-#: ../login/flotten.php:455
-#: ../login/flotten.php:457
+#: ../login/flotten.php:471
+#: ../login/flotten.php:473
+#: ../login/flotten.php:880
+#: ../login/flotten.php:882
 msgid "Pla&net[login/flotten.php|2]"
 msgstr "Pla&net"
 
-#: ../login/flotten.php:458
+#: ../login/flotten.php:474
+#: ../login/flotten.php:883
 #: ../login/einstellungen.php:272
 msgid "Benutzerdefiniert"
 msgstr "Benutzerdefiniert"
 
-#: ../login/flotten.php:464
+#: ../login/flotten.php:480
+#: ../login/flotten.php:889
 msgid "Lesezeichen"
 msgstr "Lesezeichen"
 
-#: ../login/flotten.php:489
+#: ../login/flotten.php:505
+#: ../login/flotten.php:914
 msgid "Eigene Planeten"
 msgstr "Eigene Planeten"
 
-#: ../login/flotten.php:508
+#: ../login/flotten.php:524
 msgid "Lesezeichen verwalten&[login/flotten.php|2]"
 msgstr "Lesezeichen verwalten"
 
-#: ../login/flotten.php:558
+#: ../login/flotten.php:574
 msgid "Bündnisflug"
 msgstr "Bündnisflug"
 
-#: ../login/flotten.php:560
-#: ../login/flotten.php:561
+#: ../login/flotten.php:576
+#: ../login/flotten.php:577
 msgid "Benutzername&[login/flotten.php|2]"
 msgstr "Benutzername"
 
-#: ../login/flotten.php:563
-#: ../login/flotten.php:564
+#: ../login/flotten.php:579
+#: ../login/flotten.php:580
 msgid "Flottenpasswort&[login/flotten.php|2]"
 msgstr "Flottenpasswort"
 
-#: ../login/flotten.php:574
-#: ../engine/classes/fleet.php:1524
+#: ../login/flotten.php:590
+#: ../engine/classes/fleet.php:1557
 msgid "Schiffe"
 msgstr "Schiffe"
 
-#: ../login/flotten.php:583
+#: ../login/flotten.php:599
 #, php-format
 msgid "%s vorhanden"
 msgstr "%s vorhanden"
 
-#: ../login/flotten.php:595
+#: ../login/flotten.php:611
 msgid "&Weiter[login/flotten.php|2]"
 msgstr "&Weiter"
 
-#: ../login/flotten.php:617
+#: ../login/flotten.php:633
 msgid "Fremdstationierungen auf diesem Planeten"
 msgstr "Fremdstationierungen auf diesem Planeten"
 
-#: ../login/flotten.php:640
+#: ../login/flotten.php:656
 msgid "Ihre Fremdstationierungen"
 msgstr "Ihre Fremdstationierungen"
 
-#: ../login/flotten.php:658
-#: ../login/flotten.php:1121
-#: ../engine/classes/fleet.php:1231
-#: ../engine/classes/fleet.php:1503
-#: ../engine/classes/fleet.php:1521
-#: ../engine/classes/fleet.php:1752
-#, php-format
-msgid "„%s“ (%s, Eigentümer: %s)"
-msgstr "„%s“ (%s, Eigentümer: %s)"
-
-#: ../login/flotten.php:662
+#: ../login/flotten.php:678
 #, php-format
 msgid "Zurückrufen zum Planeten %s"
 msgstr "Zurückrufen zum Planeten %s"
 
-#: ../login/flotten.php:725
+#: ../login/flotten.php:753
 msgid "Entfernung"
 msgstr "Entfernung"
 
-#: ../login/flotten.php:726
+#: ../login/flotten.php:754
 #: ../faq.php:203
 #: ../faq.php:204
 #: ../faq.php:205
@@ -2557,7 +2831,7 @@ msgid_plural "Orbits"
 msgstr[0] "Orbit"
 msgstr[1] "Orbits"
 
-#: ../login/flotten.php:726
+#: ../login/flotten.php:754
 #: ../faq.php:203
 #: ../faq.php:204
 #: ../faq.php:205
@@ -2565,120 +2839,105 @@ msgstr[1] "Orbits"
 msgid "Or"
 msgstr "Or"
 
-#: ../login/flotten.php:728
+#: ../login/flotten.php:760
 msgid "Antrieb"
 msgstr "Antrieb"
 
-#: ../login/flotten.php:731
+#: ../login/flotten.php:763
 msgid "Tritiumverbrauch"
 msgstr "Tritiumverbrauch"
 
-#: ../login/flotten.php:732
-#: ../login/flotten.php:752
-#: ../login/flotten.php:757
+#: ../login/flotten.php:764
+#: ../login/flotten.php:790
+#: ../login/flotten.php:795
 msgid "Tonne"
 msgid_plural "Tonnen"
 msgstr[0] "Tonne"
 msgstr[1] "Tonnen"
 
-#: ../login/flotten.php:734
-#: ../login/flotten.php:736
+#: ../login/flotten.php:766
+#: ../login/flotten.php:768
 msgid "Gesch&windigkeit[login/flotten.php|1]"
 msgstr "Gesch&windigkeit"
 
-#: ../login/flotten.php:748
+#: ../login/flotten.php:782
 msgid "Flugzeit"
 msgstr "Flugzeit"
 
-#: ../login/flotten.php:749
-#: ../login/flotten.php:1036
-#, php-format
-msgid "Ankunft: %s"
-msgstr "Ankunft: %s"
-
-#: ../login/flotten.php:756
+#: ../login/flotten.php:794
 msgid "Verbleibend"
 msgstr "Verbleibend"
 
-#: ../login/flotten.php:761
-#: ../login/flotten.php:763
+#: ../login/flotten.php:802
+#: ../login/flotten.php:804
 msgid "A&uftrag[login/flotten.php|1]"
 msgstr "A&uftrag"
 
-#: ../login/flotten.php:779
+#: ../login/flotten.php:820
 msgid "Transport"
 msgstr "Transport"
 
-#: ../login/flotten.php:786
-#: ../login/flotten.php:787
+#: ../login/flotten.php:827
+#: ../login/flotten.php:828
 msgid "[ress_0]&[login/flotten.php|1]"
 msgstr "Carbo&n"
 
-#: ../login/flotten.php:789
-#: ../login/flotten.php:790
+#: ../login/flotten.php:830
+#: ../login/flotten.php:831
 msgid "[ress_1]&[login/flotten.php|1]"
 msgstr "Aluminium"
 
-#: ../login/flotten.php:792
-#: ../login/flotten.php:793
+#: ../login/flotten.php:833
+#: ../login/flotten.php:834
 msgid "[ress_2]&[login/flotten.php|1]"
 msgstr "Wolfram"
 
-#: ../login/flotten.php:795
-#: ../login/flotten.php:796
+#: ../login/flotten.php:836
+#: ../login/flotten.php:837
 msgid "[ress_3]&[login/flotten.php|1]"
 msgstr "Radium"
 
-#: ../login/flotten.php:798
-#: ../login/flotten.php:799
+#: ../login/flotten.php:839
+#: ../login/flotten.php:840
 msgid "[ress_4]&[login/flotten.php|1]"
 msgstr "Tritium"
 
-#: ../login/flotten.php:946
+#: ../login/flotten.php:995
 msgid "Absen&den[login/flotten.php|1]"
 msgstr "Absen&den"
 
-#: ../login/flotten.php:1005
-#: ../login/flotten.php:1088
-msgid "Tonnen"
-msgstr "Tonnen"
-
-#: ../login/flotten.php:1036
+#: ../login/flotten.php:1083
 #, php-format
 msgid "%s (Lokalzeit)"
 msgstr "%s (Lokalzeit)"
 
-#: ../login/flotten.php:1120
-msgid "Ziel"
-msgstr "Ziel"
+#: ../login/flotten.php:1095
+#: ../login/flotten.php:1148
+msgid "Tonnen"
+msgstr "Tonnen"
 
-#: ../login/flotten.php:1121
+#: ../login/flotten.php:1184
 #, php-format
 msgid "Unbesiedelt (%s)"
 msgstr "Unbesiedelt (%s)"
 
-#: ../login/flotten.php:1123
+#: ../login/flotten.php:1186
 msgid "Auftragsart"
 msgstr "Auftragsart"
 
-#: ../login/flotten.php:1126
-#: ../login/einstellungen.php:536
-msgid "Ankunft"
-msgstr "Ankunft"
-
-#: ../login/flotten.php:1133
+#: ../login/flotten.php:1198
 msgid "Geben Sie dieser Flotte Ladung mit auf den Rückweg"
 msgstr "Geben Sie dieser Flotte Ladung mit auf den Rückweg"
 
-#: ../login/flotten.php:1133
+#: ../login/flotten.php:1198
 msgid "Handel&[login/flotten.php|3]"
 msgstr "Handel"
 
-#: ../login/flotten.php:1139
+#: ../login/flotten.php:1204
 msgid "Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern."
 msgstr "Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern."
 
-#: ../login/flotten.php:1139
+#: ../login/flotten.php:1204
 msgid "Bündnisangriff&[login/flotten.php|3]"
 msgstr "Bündnisangriff"
 
@@ -3151,7 +3410,7 @@ msgid "[title_abbr_full]"
 msgstr "S-U-A – Stars Under Attack"
 
 #: ../login/include.php:253
-#: ../engine/include.php:845
+#: ../engine/include.php:846
 msgid "[thousand_separator]"
 msgstr " "
 
@@ -3206,7 +3465,7 @@ msgstr "→"
 
 #: ../login/include.php:423
 #: ../engine/classes/item.php:278
-#: ../engine/classes/fleet.php:1767
+#: ../engine/classes/fleet.php:1800
 #, php-format
 msgid "%s: %s"
 msgstr "%s: %s"
@@ -4031,35 +4290,35 @@ msgstr "Sie erreichen die Kanäle alternativ mit einem beliebigen IRC-Client."
 msgid "%s auf %s, Port %d"
 msgstr "%s auf %s, Port %d"
 
-#: ../engine/include.php:743
+#: ../engine/include.php:744
 #, php-format
 msgid "%s Tag"
 msgid_plural "%s Tage"
 msgstr[0] "%s Tag"
 msgstr[1] "%s Tage"
 
-#: ../engine/include.php:745
+#: ../engine/include.php:746
 #, php-format
 msgid "%s Stunde"
 msgid_plural "%s Stunden"
 msgstr[0] "%s Stunde"
 msgstr[1] "%s Stunden"
 
-#: ../engine/include.php:747
+#: ../engine/include.php:748
 #, php-format
 msgid "%s Minute"
 msgid_plural "%s Minuten"
 msgstr[0] "%s Minute"
 msgstr[1] "%s Minuten"
 
-#: ../engine/include.php:749
+#: ../engine/include.php:750
 #, php-format
 msgid "%s Sekunde"
 msgid_plural "%s Sekunden"
 msgstr[0] "%s Sekunde"
 msgstr[1] "%s Sekunden"
 
-#: ../engine/include.php:848
+#: ../engine/include.php:849
 msgid "[minus_sign]"
 msgstr "−"
 
@@ -4133,7 +4392,7 @@ msgstr "Ihre Bewerbung bei der Allianz %s wurde abgelehnt."
 msgid "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 msgstr "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 
-#: ../engine/classes/user.php:3248
+#: ../engine/classes/user.php:3250
 #, php-format
 msgid ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
@@ -4142,386 +4401,386 @@ msgstr ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
 "Die Flotte bestand aus folgenden Schiffen: %s"
 
-#: ../engine/classes/user.php:3249
+#: ../engine/classes/user.php:3251
 #, php-format
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr "Fremdstationierung zurückgezogen auf %s"
 
-#: ../engine/classes/user.php:3820
+#: ../engine/classes/user.php:3822
 #: ../impressum.php:31
 #: ../passwd.php:42
 msgid "[title_full]"
 msgstr "Stars Under Attack"
 
-#: ../engine/classes/fleet.php:1037
+#: ../engine/classes/fleet.php:1070
 #, php-format
 msgid "Ihre Flotte erreicht den Planeten %s und will mit der Besiedelung anfangen. Jedoch ist der Planet bereits vom Spieler %s besetzt, und Ihre Flotte macht sich auf den Rückweg."
 msgstr "Ihre Flotte erreicht den Planeten %s und will mit der Besiedelung anfangen. Jedoch ist der Planet bereits vom Spieler %s besetzt, und Ihre Flotte macht sich auf den Rückweg."
 
-#: ../engine/classes/fleet.php:1038
-#: ../engine/classes/fleet.php:1051
+#: ../engine/classes/fleet.php:1071
+#: ../engine/classes/fleet.php:1084
 #, php-format
 msgid "Besiedelung von %s fehlgeschlagen"
 msgstr "Besiedelung von %s fehlgeschlagen"
 
-#: ../engine/classes/fleet.php:1052
+#: ../engine/classes/fleet.php:1085
 #, php-format
 msgid "Ihre Flotte erreicht den Planeten %s und will mit der Besiedelung anfangen. Als Sie jedoch Ihren Zentralcomputer um Bestätigung für die Besiedelung bittet, kommt dieser durcheinander, da Sie schon so viele Planeten haben und er nicht so viele gleichzeitig kontrollieren kann, und schickt in Panik Ihrer Flotte das Signal zum Rückflug."
 msgstr "Ihre Flotte erreicht den Planeten %s und will mit der Besiedelung anfangen. Als Sie jedoch Ihren Zentralcomputer um Bestätigung für die Besiedelung bittet, kommt dieser durcheinander, da Sie schon so viele Planeten haben und er nicht so viele gleichzeitig kontrollieren kann, und schickt in Panik Ihrer Flotte das Signal zum Rückflug."
 
-#: ../engine/classes/fleet.php:1089
+#: ../engine/classes/fleet.php:1122
 #, php-format
 msgid "%s unbesiedelt"
 msgstr "%s unbesiedelt"
 
-#: ../engine/classes/fleet.php:1090
+#: ../engine/classes/fleet.php:1123
 #, php-format
 msgid "Ihre Flotte erreicht den Planeten %s und will ihren Auftrag ausführen. Jedoch wurde der Planet zwischenzeitlich verlassen und Ihre Flotte macht sich auf den weiteren Weg."
 msgstr "Ihre Flotte erreicht den Planeten %s und will ihren Auftrag ausführen. Jedoch wurde der Planet zwischenzeitlich verlassen und Ihre Flotte macht sich auf den weiteren Weg."
 
-#: ../engine/classes/fleet.php:1183
+#: ../engine/classes/fleet.php:1216
 #, php-format
 msgid "Abbau auf %s"
 msgstr "Abbau auf %s"
 
-#: ../engine/classes/fleet.php:1184
+#: ../engine/classes/fleet.php:1217
 #, php-format
 msgid "Ihre Flotte erreicht das Trümmerfeld auf %s und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s."
 msgstr "Ihre Flotte erreicht das Trümmerfeld auf %s und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s."
 
-#: ../engine/classes/fleet.php:1184
+#: ../engine/classes/fleet.php:1217
 #, php-format
 msgid "%1$s %5$s, %2$s %6$s, %3$s %7$s und %4s %8$s"
 msgstr "%1$s %5$s, %2$s %6$s, %3$s %7$s und %4s %8$s"
 
-#: ../engine/classes/fleet.php:1184
+#: ../engine/classes/fleet.php:1217
 msgid "Verbleibende Rohstoffe im Trümmerfeld"
 msgstr "Verbleibende Rohstoffe im Trümmerfeld"
 
-#: ../engine/classes/fleet.php:1221
+#: ../engine/classes/fleet.php:1254
 #, php-format
 msgid "Ein Transport erreicht Ihren Planeten %s. Folgende Spieler liefern Güter ab:"
 msgstr "Ein Transport erreicht Ihren Planeten %s. Folgende Spieler liefern Güter ab:"
 
-#: ../engine/classes/fleet.php:1231
+#: ../engine/classes/fleet.php:1264
 #, php-format
 msgid "Ihre Flotte erreicht den Planeten %s und liefert folgende Güter ab:"
 msgstr "Ihre Flotte erreicht den Planeten %s und liefert folgende Güter ab:"
 
-#: ../engine/classes/fleet.php:1233
-#: ../engine/classes/fleet.php:1234
-#: ../engine/classes/fleet.php:1269
-#: ../engine/classes/fleet.php:1271
+#: ../engine/classes/fleet.php:1266
+#: ../engine/classes/fleet.php:1267
+#: ../engine/classes/fleet.php:1302
+#: ../engine/classes/fleet.php:1304
 #, php-format
 msgid "%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"
 msgstr "%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"
 
-#: ../engine/classes/fleet.php:1243
-#: ../engine/classes/fleet.php:1275
+#: ../engine/classes/fleet.php:1276
+#: ../engine/classes/fleet.php:1308
 msgid "; "
 msgstr "; "
 
-#: ../engine/classes/fleet.php:1261
-#: ../engine/classes/fleet.php:1268
+#: ../engine/classes/fleet.php:1294
+#: ../engine/classes/fleet.php:1301
 msgid "Folgender Handel wird durchgeführt:"
 msgstr "Folgender Handel wird durchgeführt:"
 
-#: ../engine/classes/fleet.php:1298
+#: ../engine/classes/fleet.php:1331
 #, php-format
 msgid "Ankunft eines fremden Transportes auf %s"
 msgstr "Ankunft eines fremden Transportes auf %s"
 
-#: ../engine/classes/fleet.php:1304
+#: ../engine/classes/fleet.php:1337
 #, php-format
 msgid "Ankunft Ihres Transportes auf %s"
 msgstr "Ankunft Ihres Transportes auf %s"
 
-#: ../engine/classes/fleet.php:1498
+#: ../engine/classes/fleet.php:1531
 #, php-format
 msgid "Fremde Flotte auf dem Planeten %s"
 msgstr "Fremde Flotte auf dem Planeten %s"
 
-#: ../engine/classes/fleet.php:1503
+#: ../engine/classes/fleet.php:1536
 #, php-format
 msgid "Eine fremde Flotte vom Planeten %s wurde von Ihrem Planeten %s aus bei der Spionage gesichtet."
 msgstr "Eine fremde Flotte vom Planeten %s wurde von Ihrem Planeten %s aus bei der Spionage gesichtet."
 
-#: ../engine/classes/fleet.php:1516
-#: ../engine/classes/fleet.php:1521
+#: ../engine/classes/fleet.php:1549
+#: ../engine/classes/fleet.php:1554
 #, php-format
 msgid "Spionagebericht des Planeten %s"
 msgstr "Spionagebericht des Planeten %s"
 
-#: ../engine/classes/fleet.php:1517
+#: ../engine/classes/fleet.php:1550
 msgid "Planet"
 msgstr "Planet"
 
-#: ../engine/classes/fleet.php:1518
+#: ../engine/classes/fleet.php:1551
 msgid "Felder"
 msgstr "Felder"
 
-#: ../engine/classes/fleet.php:1519
+#: ../engine/classes/fleet.php:1552
 msgid "Schicken Sie ein Besiedelungsschiff zu diesem Planeten"
 msgstr "Schicken Sie ein Besiedelungsschiff zu diesem Planeten"
 
-#: ../engine/classes/fleet.php:1520
+#: ../engine/classes/fleet.php:1553
 msgid "Besiedeln"
 msgstr "Besiedeln"
 
-#: ../engine/classes/fleet.php:1525
+#: ../engine/classes/fleet.php:1558
 msgid "Verteidigung"
 msgstr "Verteidigung"
 
-#: ../engine/classes/fleet.php:1527
+#: ../engine/classes/fleet.php:1560
 msgid "Rohstoffe"
 msgstr "Rohstoffe"
 
-#: ../engine/classes/fleet.php:1530
+#: ../engine/classes/fleet.php:1563
 #, php-format
 msgid "Spionage des Planeten %s"
 msgstr "Spionage des Planeten %s"
 
-#: ../engine/classes/fleet.php:1746
+#: ../engine/classes/fleet.php:1779
 #, php-format
 msgid "Ihre Flotte erreicht den Planeten %s und beginnt mit seiner Besiedelung."
 msgstr "Ihre Flotte erreicht den Planeten %s und beginnt mit seiner Besiedelung."
 
-#: ../engine/classes/fleet.php:1748
+#: ../engine/classes/fleet.php:1781
 #, php-format
 msgid " Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe wiederhergestellt werden: %s."
 msgstr " Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe wiederhergestellt werden: %s."
 
-#: ../engine/classes/fleet.php:1748
+#: ../engine/classes/fleet.php:1781
 #, php-format
 msgid "%s %s, %s %s, %s %s, %s %s"
 msgstr "%s %s, %s %s, %s %s, %s %s"
 
-#: ../engine/classes/fleet.php:1752
+#: ../engine/classes/fleet.php:1785
 #, php-format
 msgid "Eine Flotte erreicht den Planeten %s."
 msgstr "Eine Flotte erreicht den Planeten %s."
 
-#: ../engine/classes/fleet.php:1757
+#: ../engine/classes/fleet.php:1790
 #, php-format
 msgid "Die Flotte besteht aus folgenden Schiffen: %s"
 msgstr "Die Flotte besteht aus folgenden Schiffen: %s"
 
-#: ../engine/classes/fleet.php:1763
+#: ../engine/classes/fleet.php:1796
 msgid "Folgende Schiffe werden fremdstationiert:"
 msgstr "Folgende Schiffe werden fremdstationiert:"
 
-#: ../engine/classes/fleet.php:1772
+#: ../engine/classes/fleet.php:1805
 msgid "Folgende Güter werden abgeliefert:"
 msgstr "Folgende Güter werden abgeliefert:"
 
-#: ../engine/classes/fleet.php:1773
+#: ../engine/classes/fleet.php:1806
 #, php-format
 msgid "%s %s, %s %s, %s %s, %s %s, %s %s."
 msgstr "%s %s, %s %s, %s %s, %s %s, %s %s."
 
-#: ../engine/classes/fleet.php:1782
+#: ../engine/classes/fleet.php:1815
 #, php-format
 msgid "Folgender überschüssiger Treibstoff wird abgeliefert: %s."
 msgstr "Folgender überschüssiger Treibstoff wird abgeliefert: %s."
 
-#: ../engine/classes/fleet.php:1782
+#: ../engine/classes/fleet.php:1815
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
 
-#: ../engine/classes/fleet.php:1789
+#: ../engine/classes/fleet.php:1822
 #, php-format
 msgid "Besiedelung von %s"
 msgstr "Besiedelung von %s"
 
-#: ../engine/classes/fleet.php:1791
+#: ../engine/classes/fleet.php:1824
 #, php-format
 msgid "Stationierung auf %s"
 msgstr "Stationierung auf %s"
 
-#: ../engine/classes/fleet.php:2132
+#: ../engine/classes/fleet.php:2165
 #, php-format
 msgid "Runde %s"
 msgstr "Runde %s"
 
-#: ../engine/classes/fleet.php:2135
+#: ../engine/classes/fleet.php:2168
 #, php-format
 msgid "Der Angreifer ist am Zug (Gesamtstärke %s)"
 msgid_plural "Die Angreifer sind am Zug (Gesamtstärke %s)"
 msgstr[0] "Der Angreifer ist am Zug (Gesamtstärke %s)"
 msgstr[1] "Die Angreifer sind am Zug (Gesamtstärke %s)"
 
-#: ../engine/classes/fleet.php:2135
+#: ../engine/classes/fleet.php:2168
 #, php-format
 msgid "Der Verteidiger ist am Zug (Gesamtstärke %s)"
 msgid_plural "Die Verteidiger sind am Zug (Gesamtstärke %s)"
 msgstr[0] "Der Verteidiger ist am Zug (Gesamtstärke %s)"
 msgstr[1] "Die Verteidiger sind am Zug (Gesamtstärke %s)"
 
-#: ../engine/classes/fleet.php:2161
+#: ../engine/classes/fleet.php:2194
 #, php-format
 msgid "Eine Einheit des Typs %s (%s) wird angeschossen."
 msgstr "Eine Einheit des Typs %s (%s) wird angeschossen."
 
-#: ../engine/classes/fleet.php:2163
+#: ../engine/classes/fleet.php:2196
 #, php-format
 msgid "%s Einheit des Typs %s (%s) wird zerstört."
 msgid_plural "%s Einheiten des Typs %s (%s) werden zerstört."
 msgstr[0] "%s Einheit des Typs %s (%s) wird zerstört."
 msgstr[1] "%s Einheiten des Typs %s (%s) werden zerstört."
 
-#: ../engine/classes/fleet.php:2163
+#: ../engine/classes/fleet.php:2196
 #, php-format
 msgid "%s verbleibt."
 msgid_plural "%s verbleiben."
 msgstr[0] "%s verbleibt."
 msgstr[1] "%s verbleiben."
 
-#: ../engine/classes/fleet.php:2171
+#: ../engine/classes/fleet.php:2204
 #, php-format
 msgid "Alle Einheiten des Typs %s (%s) (%s) werden zerstört."
 msgstr "Alle Einheiten des Typs %s (%s) (%s) werden zerstört."
 
-#: ../engine/classes/fleet.php:2457
+#: ../engine/classes/fleet.php:2490
 msgid "Flotten des Angreifers"
 msgid_plural "Flotten der Angreifer"
 msgstr[0] "Flotten des Angreifers"
 msgstr[1] "Flotten der Angreifer"
 
-#: ../engine/classes/fleet.php:2458
+#: ../engine/classes/fleet.php:2491
 msgid "Schiffstyp"
 msgstr "Schiffstyp"
 
-#: ../engine/classes/fleet.php:2459
+#: ../engine/classes/fleet.php:2492
 msgid "Anzahl"
 msgstr "Anzahl"
 
-#: ../engine/classes/fleet.php:2460
+#: ../engine/classes/fleet.php:2493
 msgid "Gesamtstärke"
 msgstr "Gesamtstärke"
 
-#: ../engine/classes/fleet.php:2461
+#: ../engine/classes/fleet.php:2494
 msgid "Gesamtschild"
 msgstr "Gesamtschild"
 
-#: ../engine/classes/fleet.php:2464
+#: ../engine/classes/fleet.php:2497
 msgid "Flotten des Verteidigers"
 msgid_plural "Flotten der Verteidiger"
 msgstr[0] "Flotten des Verteidigers"
 msgstr[1] "Flotten der Verteidiger"
 
-#: ../engine/classes/fleet.php:2465
+#: ../engine/classes/fleet.php:2498
 msgid "Keine."
 msgstr "Keine."
 
-#: ../engine/classes/fleet.php:2466
+#: ../engine/classes/fleet.php:2499
 #, php-format
 msgid "%s sind stärker ausgebildet als %s und %s."
 msgstr "%s sind stärker ausgebildet als %s und %s."
 
-#: ../engine/classes/fleet.php:2466
-#: ../engine/classes/fleet.php:2467
+#: ../engine/classes/fleet.php:2499
+#: ../engine/classes/fleet.php:2500
 msgid "Die Sensoren des Angreifers"
 msgid_plural "Die Sensoren der Angreifer"
 msgstr[0] "Die Sensoren des Angreifers"
 msgstr[1] "Die Sensoren der Angreifer"
 
-#: ../engine/classes/fleet.php:2466
+#: ../engine/classes/fleet.php:2499
 msgid "die des Verteidigers"
 msgid_plural "die der Verteidiger"
 msgstr[0] "die des Verteidigers"
 msgstr[1] "die der Verteidiger"
 
-#: ../engine/classes/fleet.php:2466
+#: ../engine/classes/fleet.php:2499
 msgid "ermöglichen es ihm, den Erstschlag auszuführen"
 msgid_plural "ermöglichen es ihnen, den Erstschlag auszuführen"
 msgstr[0] "ermöglichen es ihm, den Erstschlag auszuführen"
 msgstr[1] "ermöglichen es ihnen, den Erstschlag auszuführen"
 
-#: ../engine/classes/fleet.php:2467
+#: ../engine/classes/fleet.php:2500
 #, php-format
 msgid "%s sind %s nicht überlegen, weshalb %s."
 msgstr "%s sind %s nicht überlegen, weshalb %s."
 
-#: ../engine/classes/fleet.php:2467
+#: ../engine/classes/fleet.php:2500
 msgid "denen des Verteidigers"
 msgid_plural "denen der Verteidiger"
 msgstr[0] "denen des Verteidigers"
 msgstr[1] "denen der Verteidiger"
 
-#: ../engine/classes/fleet.php:2467
+#: ../engine/classes/fleet.php:2500
 msgid "letzterer den Erstschlag ausführt"
 msgid_plural "letztere den Erstschlag ausführen"
 msgstr[0] "letzterer den Erstschlag ausführt"
 msgstr[1] "letztere den Erstschlag ausführen"
 
-#: ../engine/classes/fleet.php:2469
+#: ../engine/classes/fleet.php:2502
 msgid "Der Kampf ist vorüber. Gewinner ist der Verteidiger."
 msgid_plural "Der Kampf ist vorüber. Gewinner sind die Verteidiger."
 msgstr[0] "Der Kampf ist vorüber. Gewinner ist der Verteidiger."
 msgstr[1] "Der Kampf ist vorüber. Gewinner sind die Verteidiger."
 
-#: ../engine/classes/fleet.php:2470
+#: ../engine/classes/fleet.php:2503
 msgid "Der Kampf ist vorüber. Gewinner ist der Angreifer."
 msgid_plural "Der Kampf ist vorüber. Gewinner sind die Angreifer."
 msgstr[0] "Der Kampf ist vorüber. Gewinner ist der Angreifer."
 msgstr[1] "Der Kampf ist vorüber. Gewinner sind die Angreifer."
 
-#: ../engine/classes/fleet.php:2471
+#: ../engine/classes/fleet.php:2504
 msgid "Der Kampf ist vorüber. Er endet unentschieden."
 msgstr "Der Kampf ist vorüber. Er endet unentschieden."
 
-#: ../engine/classes/fleet.php:2472
+#: ../engine/classes/fleet.php:2505
 #, php-format
 msgid "Der Angreifer hat %s Kampferfahrungspunkte gesammelt."
 msgid_plural "Die Angreifer haben %s Kampferfahrungspunkte gesammelt."
 msgstr[0] "Der Angreifer hat %s Kampferfahrungspunkte gesammelt."
 msgstr[1] "Die Angreifer haben %s Kampferfahrungspunkte gesammelt."
 
-#: ../engine/classes/fleet.php:2473
+#: ../engine/classes/fleet.php:2506
 #, php-format
 msgid "Der Verteidiger hat %s Kampferfahrungspunkte gesammelt."
 msgid_plural "Die Verteidiger haben %s Kampferfahrungspunkte gesammelt."
 msgstr[0] "Der Verteidiger hat %s Kampferfahrungspunkte gesammelt."
 msgstr[1] "Die Verteidiger haben %s Kampferfahrungspunkte gesammelt."
 
-#: ../engine/classes/fleet.php:2481
+#: ../engine/classes/fleet.php:2514
 #, php-format
 msgid "Der Angreifer %s hat %s Punkte verloren."
 msgstr "Der Angreifer %s hat %s Punkte verloren."
 
-#: ../engine/classes/fleet.php:2489
+#: ../engine/classes/fleet.php:2522
 #, php-format
 msgid "Der Verteidiger %s hat %s Punkte verloren."
 msgstr "Der Verteidiger %s hat %s Punkte verloren."
 
-#: ../engine/classes/fleet.php:2496
+#: ../engine/classes/fleet.php:2529
 #, php-format
 msgid "Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: %s."
 msgstr "Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: %s."
 
-#: ../engine/classes/fleet.php:2496
-#: ../engine/classes/fleet.php:2588
+#: ../engine/classes/fleet.php:2529
+#: ../engine/classes/fleet.php:2621
 #, php-format
 msgid "%s %s, %s %s, %s %s und %s %s"
 msgstr "%s %s, %s %s, %s %s und %s %s"
 
-#: ../engine/classes/fleet.php:2575
+#: ../engine/classes/fleet.php:2608
 #, php-format
 msgid "Sie haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."
 msgstr "Sie haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."
 
-#: ../engine/classes/fleet.php:2583
+#: ../engine/classes/fleet.php:2616
 #, php-format
 msgid "Die überlebenden Angreifer haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."
 msgstr "Die überlebenden Angreifer haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."
 
-#: ../engine/classes/fleet.php:2588
+#: ../engine/classes/fleet.php:2621
 #, php-format
 msgid "Durch Wiederverwertung konnten folgende Rohstoffe aus den Trümmern der zerstörten Verteidigungsanlagen wiederhergestellt werden: %s"
 msgstr "Durch Wiederverwertung konnten folgende Rohstoffe aus den Trümmern der zerstörten Verteidigungsanlagen wiederhergestellt werden: %s"
 
-#: ../engine/classes/fleet.php:2596
+#: ../engine/classes/fleet.php:2629
 #, php-format
 msgid "Kampf auf %s"
 msgstr "Kampf auf %s"

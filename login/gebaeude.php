@@ -84,7 +84,7 @@
 			if($me->checkSetting('fastbuild') && $fastbuild_next !== false)
 			{
 				# Fastbuild
-	
+
 				$_SESSION['last_click_ignore'] = true;
 				$url = global_setting("PROTOCOL")."://".$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"]."?".preg_replace("/((^|&)planet=)\d+/", "\${1}".$fastbuild_next, global_setting("URL_SUFFIX"));
 				header('Location: '.$url, true, 303);
@@ -115,18 +115,21 @@
 		if($fastbuild_prev !== false)
 		{
 			$me->setActivePlanet($fastbuild_prev);
+			define_url_suffix();
 ?>
-	<li class="c-prev"><a href="gebaeude.php?planet=<?=htmlspecialchars(urlencode($fastbuild_prev))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=htmlspecialchars($me->planetName())?>&ldquo; (<?=htmlspecialchars($me->getPosString())?>) [U]" tabindex="1" accesskey="u" rel="prev">&larr;</a></li>
+	<li class="c-prev"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX")))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=htmlspecialchars($me->planetName())?>&ldquo; (<?=htmlspecialchars($me->getPosString())?>) [U]" tabindex="1" accesskey="u" rel="prev">&larr;</a></li>
 <?php
 		}
 		if($fastbuild_next !== false)
 		{
 			$me->setActivePlanet($fastbuild_next);
+			define_url_suffix();
 ?>
-	<li class="c-next"><a href="gebaeude.php?planet=<?=htmlspecialchars(urlencode($fastbuild_next))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=htmlspecialchars($me->planetName())?>&ldquo; (<?=htmlspecialchars($me->getPosString())?>) [Q]" tabindex="2" accesskey="q" rel="next">&rarr;</a></li>
+	<li class="c-next"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX")))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=htmlspecialchars($me->planetName())?>&ldquo; (<?=htmlspecialchars($me->getPosString())?>) [Q]" tabindex="2" accesskey="q" rel="next">&rarr;</a></li>
 <?php
 		}
 		$me->setActivePlanet($active_planet);
+		define_url_suffix();
 ?>
 </ul>
 <?php

@@ -188,7 +188,7 @@
 	}
 
 	$me->setActivePlanet($_GET['planet']);
-	
+
 	# URL-Appendix
 	define_url_suffix();
 	function define_url_suffix()
@@ -374,7 +374,7 @@
 				</script>
 <?php
 			}
-			
+
 			$active_planet = $me->getActivePlanet();
 			$active_planet_0 = $active_planet-1;
 			if($active_planet_0 < 0) $active_planet_0 = max($me->getPlanetsList());

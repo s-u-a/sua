@@ -109,7 +109,7 @@ function getCookies()
 /// Countdowns ///
 //////////////////
 
-function init_countdown(obj_id, f_time, show_cancel, sleep_seconds, finish_url)
+function init_countdown(obj_id, f_time, show_cancel, sleep_seconds, finish_url, finish_callback)
 { // Initialisiert einen Countdown
 	// obj_id: ID des Items, HTML-ID: restbauzeit-[id]
 	// f_time: Fertigstellungs-Serverzeit
@@ -152,7 +152,7 @@ function init_countdown(obj_id, f_time, show_cancel, sleep_seconds, finish_url)
 	}
 
 	// In globales Array einfuegen, das jede Sekunde durchgearbeitet wird
-	window.countdowns.push(new Array(obj_obj, f_time, sleep_seconds, finish_url));
+	window.countdowns.push(new Array(obj_obj, f_time, sleep_seconds, finish_url, finish_callback));
 
 	// Countdown gleich ausfuehren, damit der Platzhalter nicht sichtbar ist
 	time_up();
@@ -191,8 +191,12 @@ function time_up()
 			link_fertig.appendChild(document.createTextNode('Fertig.'));
 			c[0].appendChild(link_fertig);
 
+			// Callback-Funktion
+			if(c[4]) c[4]();
+
 			// Countdown entfernen
 			countdowns[i] = false;
+
 			continue;
 		}
 
@@ -417,7 +421,7 @@ var refresh_callbacks = [ ];
 function refresh_ress(refresh_int, carbon_vorh, aluminium_vorh, wolfram_vorh, radium_vorh, tritium_vorh, carbon_prod, aluminium_prod, wolfram_prod, radium_prod, tritium_prod)
 { // Initialisiert Auto-Refresh
 	// Startzeit zur Neuberechnung
-	
+
 	if(slow_terminal) return false;
 
 	var now_time = new Date();
@@ -446,7 +450,7 @@ function increase_ress()
 	// Zeitdifferenz berechnen
 	var now_time = new Date();
 	var time_passed = (now_time.getTime()-start_increase_ress)/3600000;
-	
+
 	res_now[0] = carbon_vorh+carbon_prod*time_passed;
 	res_now[1] = aluminium_vorh+aluminium_prod*time_passed;
 	res_now[2] = wolfram_vorh+wolfram_prod*time_passed;
@@ -459,7 +463,7 @@ function increase_ress()
 	document.getElementById('ress-wolfram').firstChild.data = ths(res_now[2]);
 	document.getElementById('ress-radium').firstChild.data = ths(res_now[3]);
 	document.getElementById('ress-tritium').firstChild.data = ths(res_now[4]);
-	
+
 	for(var i=0; i<refresh_callbacks.length; i++)
 		refresh_callbacks[i]();
 }
@@ -531,7 +535,7 @@ function popup_fadeout(el_key)
 	{
 		steps = 15;
 		timel = 4000;
-	
+
 		setOpacity(el_key,100); // To prevent flicker in Firefox
 		                        // The first time the opacity is set
 		                        // the element flickers in Firefox
@@ -903,7 +907,7 @@ function preload_systems(systems)
 						preloaded_systems[systems[i]] = false;
 				}
 			}
-	
+
 			// Ladevorgang abgeschlossen, Informationskasten ausblenden
 			remove_loading_instance();
 		}

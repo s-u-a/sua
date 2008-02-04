@@ -208,7 +208,7 @@
 
 	__autoload('Classes');
 
-	// TODO: Get rid of document.write
+	// TODO: Get rid of document.write and innerHTML
 	//if(isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/xhtml+xml') !== false)
 		//define('CONTENT_TYPE', 'application/xhtml+xml; charset=UTF-8');
 	//else
