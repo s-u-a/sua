@@ -228,7 +228,7 @@
 					throw new LoginFlottenException(_("Ungültige Koordinaten."), 0, $i == 0 ? LoginFlottenException::$TYPE_FLEETS : LoginFlottenException::$TYPE_TYPE);
 
 				if(array($_POST["galaxie"][$k], $_POST["system"][$k], $_POST["planet"][$k]) == $me->getPos() || in_array(array($_POST["galaxie"][$k], $_POST["system"][$k], $_POST["planet"][$k]), $target_koords))
-					throw new LoginFlottenException(_("Die Flotte darf nicht zweimal zu einem Planeten fliegen."), 0, LoginFlottenException::$TYPE_TYPE);
+					throw new LoginFlottenException(_("Die Flotte darf nicht zweimal zu einem Planeten fliegen."), 0, $i == 0 ? LoginFlottenException::$TYPE_FLEETS : LoginFlottenException::$TYPE_TYPE);
 
 				$auftraege[$i] = $v;
 				$target_koords[$i] = array($_POST["galaxie"][$k], $_POST["system"][$k], $_POST["planet"][$k]);
@@ -770,7 +770,7 @@
 							for($j=1,$pr=100; $j>0; $j-=.05,$pr-=5)
 							{
 ?>
-					<option value="<?=htmlspecialchars($j)?>"<?=(isset($_POST["speed"]) && $_POST["speed"] == $j) ? " selected=\"selected\"" : ""?>><?=htmlspecialchars($pr)?><?=h(_("[unit_separator]"))?>%</option>
+					<option value="<?=htmlspecialchars($j)?>"<?=(isset($_POST["speed"]) && $_POST["speed"] == "".$j) ? " selected=\"selected\"" : ""?>><?=htmlspecialchars($pr)?><?=h(_("[unit_separator]"))?>%</option>
 <?php
 							}
 ?>
