@@ -256,7 +256,7 @@
 	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=htmlspecialchars($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=htmlspecialchars($flotte)?>">Ankunft: <?=date('H:i:s, Y-m-d', $next_arrival)?> (Serverzeit)<?php if(!$fl->isFlyingBack() && ($me_in_users !== false)){?>, <a href="index.php?cancel=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen">Abbrechen</a><?php }?></dd>
 <?php
 			$url = '';
-			if($fl->isFlyingBack()) $url = h_root.'/login/flotten.php?'.<?=htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$me->getPlanetByPos($fl->getCurrentTarget()), global_setting("URL_SUFFIX")));
+			if($fl->isFlyingBack()) $url = h_root.'/login/flotten.php?'.htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$me->getPlanetByPos($fl->getCurrentTarget()), global_setting("URL_SUFFIX")));
 			$countdowns[] = array($flotte, $next_arrival, ($fl->isFlyingBack() || ($me_in_users === false)), $url);
 		}
 ?>
