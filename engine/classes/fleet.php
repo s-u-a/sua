@@ -1291,8 +1291,13 @@
 								$message_text[$target_owner] .= $username.": ";
 								if($write_this_username) $message_text[$username] .= sprintf($user_obj->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $user_obj->_("[ress_0]"), ths($data[3][0][0], true), $user_obj->_("[ress_1]"), ths($data[3][0][1], true), $user_obj->_("[ress_2]"), ths($data[3][0][2], true), $user_obj->_("[ress_3]"), ths($data[3][0][3], true), $user_obj->_("[ress_4]"), ths($data[3][0][4], true));
 								$message_text[$target_owner] .= sprintf($target_user->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $target_user->_("[ress_0]"), ths($data[3][0][0], true), $target_user->_("[ress_1]"), ths($data[3][0][1], true), $target_user->_("[ress_2]"), ths($data[3][0][2], true), $target_user->_("[ress_3]"), ths($data[3][0][3], true), $target_user->_("[ress_4]"), ths($data[3][0][4], true));
-								$target_user->addRess($data[3][0]);
-								$this->raw[1][$username][3][0] = array(0,0,0,0,0);
+								if($data[4][2])
+								{
+									$target_user->addRess($data[3][0]);
+									$this->raw[1][$username][3][0] = array(0,0,0,0,0);
+								}
+								else
+									$data[3] = array(array(0,0,0,0,0),array());
 								if($target_owner == $username && array_sum($data[3][1]) > 0)
 								{
 									$target_user->setLanguage();
@@ -1306,11 +1311,21 @@
 								}
 								if($write_this_username) $message_text[$username] .= "\n";
 								$message_text[$target_owner] .= "\n";
-								if(array_sum_r($data[4]) > 0)
+								if(array_sum($data[4][0])+array_sum($data[4][1]) > 0)
 								{
 									$handel[$username] = $data[4];
-									$this->raw[1][$username][3][0] = $data[4][0];
-									$this->raw[1][$username][3][1] = $data[4][1];
+									foreach($data[4][0] as $k=>$v)
+									{
+										if(!isset($this->raw[1][$username][3][0][$k]))
+											$this->raw[1][$username][3][0][$k] = 0;
+										$this->raw[1][$username][3][0][$k] += $v;
+									}
+									foreach($data[4][1] as $k=>$v)
+									{
+										if(!isset($this->raw[1][$username][3][1][$k]))
+											$this->raw[1][$username][3][1][$k] = 0;
+										$this->raw[1][$username][3][1][$k] += $v;
+									}
 									$this->raw[1][$username][4] = array(array(0,0,0,0,0),array());
 									$make_handel_message = true;
 								}
