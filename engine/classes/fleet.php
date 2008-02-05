@@ -442,7 +442,7 @@
 				$from, # Startkoordinaten
 				$factor, # Geschwindigkeitsfaktor
 				array(array(0, 0, 0, 0, 0), array(), 0), # Mitgenommene Rohstoffe
-				array(array(0, 0, 0, 0, 0), array(), 0), # Handel
+				array(array(0, 0, 0, 0, 0), array(), true), # Handel
 				0 # Verbrauchtes Tritium
 			);
 
@@ -513,6 +513,12 @@
 			list($max_ress, $max_robs) = $this->getTransportCapacity($user);
 			$max_ress -= array_sum($this->raw[1][$user][4][0]);
 			$max_robs -= array_sum($this->raw[1][$user][4][1]);
+			if(!$this->raw[1][$user][4][2])
+			{
+				$transport = $this->getTransport($user);
+				$max_ress -= array_sum($transport[0]);
+				$max_robs -= array_sum($transport[1]);
+			}
 			if($ress)
 			{
 				$ress = fit_to_max($ress, $max_ress);
