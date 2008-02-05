@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-02-04 21:36+0100\n"
+"PO-Revision-Date: 2008-02-05 03:02+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -1611,7 +1611,7 @@ msgstr "%s (unbesiedelt)"
 #: ../login/forschungsbaum.php:48
 #: ../login/flotten.php:599
 #: ../engine/classes/item.php:331
-#: ../engine/classes/fleet.php:2521
+#: ../engine/classes/fleet.php:2536
 msgid "Genauere Informationen anzeigen"
 msgstr "Genauere Informationen anzeigen"
 
@@ -1625,9 +1625,9 @@ msgstr "[%s] %s"
 #: ../login/flotten.php:674
 #: ../login/flotten.php:1184
 #: ../engine/classes/fleet.php:1290
-#: ../engine/classes/fleet.php:1562
-#: ../engine/classes/fleet.php:1580
-#: ../engine/classes/fleet.php:1811
+#: ../engine/classes/fleet.php:1577
+#: ../engine/classes/fleet.php:1595
+#: ../engine/classes/fleet.php:1826
 #, php-format
 msgid "„%s“ (%s, Eigentümer: %s)"
 msgstr "„%s“ (%s, Eigentümer: %s)"
@@ -1650,6 +1650,8 @@ msgstr "Ankunft: %s"
 #: ../login/info/flotten_actions.php:548
 #: ../login/info/playerinfo.php:138
 #: ../login/info/playerinfo.php:155
+#: ../login/boerse.php:139
+#: ../login/boerse.php:153
 #: ../login/flotten.php:783
 #: ../login/einstellungen.php:797
 #: ../login/einstellungen.php:803
@@ -1664,6 +1666,8 @@ msgstr "%s (Serverzeit)"
 #: ../login/info/flotten_actions.php:548
 #: ../login/info/playerinfo.php:138
 #: ../login/info/playerinfo.php:155
+#: ../login/boerse.php:139
+#: ../login/boerse.php:153
 #: ../login/flotten.php:783
 #: ../login/flotten.php:1190
 #: ../public_message.php:72
@@ -1801,7 +1805,7 @@ msgstr "Kampferfahrung"
 
 #: ../login/info/playerinfo.php:68
 #: ../login/info/playerinfo.php:93
-#: ../engine/classes/fleet.php:2522
+#: ../engine/classes/fleet.php:2537
 msgid "Gesamt"
 msgstr "Gesamt"
 
@@ -1811,83 +1815,108 @@ msgstr "Ausgegebene Rohstoffe"
 
 #: ../login/info/playerinfo.php:78
 #: ../login/info/description.php:147
+#: ../login/boerse.php:72
+#: ../login/boerse.php:188
+#: ../login/boerse.php:200
+#: ../login/boerse.php:245
+#: ../login/boerse.php:254
 #: ../engine/include.php:798
 #: ../engine/classes/fleet.php:1243
 #: ../engine/classes/fleet.php:1292
 #: ../engine/classes/fleet.php:1293
-#: ../engine/classes/fleet.php:1328
-#: ../engine/classes/fleet.php:1330
-#: ../engine/classes/fleet.php:1807
-#: ../engine/classes/fleet.php:1832
-#: ../engine/classes/fleet.php:2555
-#: ../engine/classes/fleet.php:2634
-#: ../engine/classes/fleet.php:2642
-#: ../engine/classes/fleet.php:2647
+#: ../engine/classes/fleet.php:1343
+#: ../engine/classes/fleet.php:1345
+#: ../engine/classes/fleet.php:1822
+#: ../engine/classes/fleet.php:1847
+#: ../engine/classes/fleet.php:2570
+#: ../engine/classes/fleet.php:2649
+#: ../engine/classes/fleet.php:2657
+#: ../engine/classes/fleet.php:2662
 msgid "[ress_0]"
 msgstr "Carbon"
 
 #: ../login/info/playerinfo.php:81
 #: ../login/info/description.php:153
+#: ../login/boerse.php:73
+#: ../login/boerse.php:189
+#: ../login/boerse.php:201
+#: ../login/boerse.php:246
+#: ../login/boerse.php:262
 #: ../engine/include.php:800
 #: ../engine/classes/fleet.php:1243
 #: ../engine/classes/fleet.php:1292
 #: ../engine/classes/fleet.php:1293
-#: ../engine/classes/fleet.php:1328
-#: ../engine/classes/fleet.php:1330
-#: ../engine/classes/fleet.php:1807
-#: ../engine/classes/fleet.php:1832
-#: ../engine/classes/fleet.php:2555
-#: ../engine/classes/fleet.php:2634
-#: ../engine/classes/fleet.php:2642
-#: ../engine/classes/fleet.php:2647
+#: ../engine/classes/fleet.php:1343
+#: ../engine/classes/fleet.php:1345
+#: ../engine/classes/fleet.php:1822
+#: ../engine/classes/fleet.php:1847
+#: ../engine/classes/fleet.php:2570
+#: ../engine/classes/fleet.php:2649
+#: ../engine/classes/fleet.php:2657
+#: ../engine/classes/fleet.php:2662
 msgid "[ress_1]"
 msgstr "Aluminium"
 
 #: ../login/info/playerinfo.php:84
 #: ../login/info/description.php:159
+#: ../login/boerse.php:74
+#: ../login/boerse.php:190
+#: ../login/boerse.php:202
+#: ../login/boerse.php:247
+#: ../login/boerse.php:270
 #: ../engine/include.php:802
 #: ../engine/classes/fleet.php:1243
 #: ../engine/classes/fleet.php:1292
 #: ../engine/classes/fleet.php:1293
-#: ../engine/classes/fleet.php:1328
-#: ../engine/classes/fleet.php:1330
-#: ../engine/classes/fleet.php:1807
-#: ../engine/classes/fleet.php:1832
-#: ../engine/classes/fleet.php:2555
-#: ../engine/classes/fleet.php:2634
-#: ../engine/classes/fleet.php:2642
-#: ../engine/classes/fleet.php:2647
+#: ../engine/classes/fleet.php:1343
+#: ../engine/classes/fleet.php:1345
+#: ../engine/classes/fleet.php:1822
+#: ../engine/classes/fleet.php:1847
+#: ../engine/classes/fleet.php:2570
+#: ../engine/classes/fleet.php:2649
+#: ../engine/classes/fleet.php:2657
+#: ../engine/classes/fleet.php:2662
 msgid "[ress_2]"
 msgstr "Wolfram"
 
 #: ../login/info/playerinfo.php:87
 #: ../login/info/description.php:165
+#: ../login/boerse.php:75
+#: ../login/boerse.php:191
+#: ../login/boerse.php:203
+#: ../login/boerse.php:248
+#: ../login/boerse.php:278
 #: ../engine/include.php:804
 #: ../engine/classes/fleet.php:1243
 #: ../engine/classes/fleet.php:1292
 #: ../engine/classes/fleet.php:1293
-#: ../engine/classes/fleet.php:1328
-#: ../engine/classes/fleet.php:1330
-#: ../engine/classes/fleet.php:1807
-#: ../engine/classes/fleet.php:1832
-#: ../engine/classes/fleet.php:2555
-#: ../engine/classes/fleet.php:2634
-#: ../engine/classes/fleet.php:2642
-#: ../engine/classes/fleet.php:2647
+#: ../engine/classes/fleet.php:1343
+#: ../engine/classes/fleet.php:1345
+#: ../engine/classes/fleet.php:1822
+#: ../engine/classes/fleet.php:1847
+#: ../engine/classes/fleet.php:2570
+#: ../engine/classes/fleet.php:2649
+#: ../engine/classes/fleet.php:2657
+#: ../engine/classes/fleet.php:2662
 msgid "[ress_3]"
 msgstr "Radium"
 
 #: ../login/info/playerinfo.php:90
 #: ../login/info/description.php:171
+#: ../login/boerse.php:76
+#: ../login/boerse.php:192
+#: ../login/boerse.php:204
+#: ../login/boerse.php:249
+#: ../login/boerse.php:286
 #: ../engine/include.php:808
 #: ../engine/classes/fleet.php:1292
 #: ../engine/classes/fleet.php:1293
-#: ../engine/classes/fleet.php:1328
-#: ../engine/classes/fleet.php:1330
-#: ../engine/classes/fleet.php:1832
-#: ../engine/classes/fleet.php:1841
-#: ../engine/classes/fleet.php:2634
-#: ../engine/classes/fleet.php:2642
+#: ../engine/classes/fleet.php:1343
+#: ../engine/classes/fleet.php:1345
+#: ../engine/classes/fleet.php:1847
+#: ../engine/classes/fleet.php:1856
+#: ../engine/classes/fleet.php:2649
+#: ../engine/classes/fleet.php:2657
 msgid "[ress_4]"
 msgstr "Tritium"
 
@@ -1934,11 +1963,12 @@ msgid "Planeten"
 msgstr "Planeten"
 
 #: ../login/info/playerinfo.php:180
+#: ../login/boerse.php:136
 #: ../login/flotten.php:678
 #: ../login/include.php:385
 #: ../login/include.php:564
 #: ../engine/classes/fleet.php:1280
-#: ../engine/classes/fleet.php:1562
+#: ../engine/classes/fleet.php:1577
 #, php-format
 msgid "„%s“ (%s)"
 msgstr "„%s“ (%s)"
@@ -1989,8 +2019,8 @@ msgstr "%s (Stufe %s)"
 #: ../login/forschungsbaum.php:67
 #: ../engine/classes/item.php:122
 #: ../engine/classes/item.php:278
-#: ../engine/classes/fleet.php:2220
-#: ../engine/classes/fleet.php:2230
+#: ../engine/classes/fleet.php:2235
+#: ../engine/classes/fleet.php:2245
 msgid "[item_"
 msgstr "XXX"
 
@@ -2585,14 +2615,14 @@ msgid "Lesezeichen verwalten&[login/karte.php|1]"
 msgstr "Lesezeichen verwalten"
 
 #: ../login/forschungsbaum.php:23
-#: ../engine/classes/fleet.php:1585
+#: ../engine/classes/fleet.php:1600
 msgid "Gebäude"
 msgid_plural "Gebäude"
 msgstr[0] "Gebäude"
 msgstr[1] "Gebäude"
 
 #: ../login/forschungsbaum.php:24
-#: ../engine/classes/fleet.php:1582
+#: ../engine/classes/fleet.php:1597
 msgid "Forschung"
 msgid_plural "Forschungen"
 msgstr[0] "Forschung"
@@ -2602,7 +2632,7 @@ msgstr[1] "Forschungen"
 #: ../login/flotten.php:790
 #: ../login/flotten.php:795
 #: ../login/flotten.php:1148
-#: ../engine/classes/fleet.php:1581
+#: ../engine/classes/fleet.php:1596
 msgid "Roboter"
 msgid_plural "Roboter"
 msgstr[0] "Roboter"
@@ -2628,10 +2658,159 @@ msgstr "Zu diesem Gegenstand scrollen"
 msgid "[scores_"
 msgstr "XXX"
 
+#: ../login/boerse.php:37
+msgid "Handelsbörse"
+msgstr "Handelsbörse"
+
+#: ../login/boerse.php:38
+msgid "Hier können Sie einen Rohstoffbetrag bieten und einen Mindestbetrag an Rohstoffen dafür verlangen. Eine unabhängige Händlergesellschaft (besteht nicht aus reellen Spielern) wird sich um den Auftrag kümmern, sobald der Kurs Ihren Handelsauftrag zulässt. Jedoch wird der Handel nicht sofort durchgeführt, die Handelsgesellschaft entscheidet, wann die den Auftrag annimmt."
+msgstr "Hier können Sie einen Rohstoffbetrag bieten und einen Mindestbetrag an Rohstoffen dafür verlangen. Eine unabhängige Händlergesellschaft (besteht nicht aus reellen Spielern) wird sich um den Auftrag kümmern, sobald der Kurs Ihren Handelsauftrag zulässt. Jedoch wird der Handel nicht sofort durchgeführt, die Handelsgesellschaft entscheidet, wann die den Auftrag annimmt."
+
+#: ../login/boerse.php:39
+msgid "Je größer die Rohstoffmenge ist, die Sie handeln wollen, desto länger dauert es, bis die Handelsgesellschaft den Auftrag annimmt. Je länger Sie Ihr Angebot aufrecht erhalten wollen, desto mehr Gebühren müssen Sie für den Handel zahlen. Bei einer geringen Lebensdauer kann es passieren, dass die Handelsgesellschaft den Auftrag überhaupt nicht annimmt."
+msgstr "Je größer die Rohstoffmenge ist, die Sie handeln wollen, desto länger dauert es, bis die Handelsgesellschaft den Auftrag annimmt. Je länger Sie Ihr Angebot aufrecht erhalten wollen, desto mehr Gebühren müssen Sie für den Handel zahlen. Bei einer geringen Lebensdauer kann es passieren, dass die Handelsgesellschaft den Auftrag überhaupt nicht annimmt."
+
+#: ../login/boerse.php:40
+msgid "Der Handelskurs wird durch Angebot und Nachfrage bestimmt. Wenn viele Spieler nur wenig für eine Rohstoffmenge haben wollen, sinkt deren Preis, wenn sie viel dafür verlangen, steigt der Preis. Wenn aber viele den Rohstoff haben wollen, steigt der Preis, wenn sie viel dafür bieten; er sinkt, wenn sie wenig dafür bieten."
+msgstr "Der Handelskurs wird durch Angebot und Nachfrage bestimmt. Wenn viele Spieler nur wenig für eine Rohstoffmenge haben wollen, sinkt deren Preis, wenn sie viel dafür verlangen, steigt der Preis. Wenn aber viele den Rohstoff haben wollen, steigt der Preis, wenn sie viel dafür bieten; er sinkt, wenn sie wenig dafür bieten."
+
+#: ../login/boerse.php:86
+msgid "Handelsaufträge"
+msgstr "Handelsaufträge"
+
+#: ../login/boerse.php:95
+msgid "Sie können nicht mehr anbieten als Sie besitzen."
+msgstr "Sie können nicht mehr anbieten als Sie besitzen."
+
+#: ../login/boerse.php:105
+msgid "Der Auftrag wurde hinzugefügt."
+msgstr "Der Auftrag wurde hinzugefügt."
+
+#: ../login/boerse.php:117
+#: ../engine/classes/fleet.php:1591
+msgid "Planet"
+msgstr "Planet"
+
+#: ../login/boerse.php:118
+msgid "Gebot"
+msgstr "Gebot"
+
+#: ../login/boerse.php:119
+msgid "Mindestertrag"
+msgstr "Mindestertrag"
+
+#: ../login/boerse.php:120
+msgid "Gültigkeit"
+msgstr "Gültigkeit"
+
+#: ../login/boerse.php:121
+msgid "Status"
+msgstr "Status"
+
+#: ../login/boerse.php:122
+#: ../login/boerse.php:147
+msgid "Zurückziehen"
+msgstr "Zurückziehen"
+
 #: ../login/boerse.php:137
 #: ../login/boerse.php:138
 msgid "[ress_"
 msgstr "XXX"
+
+#: ../login/boerse.php:146
+msgid "Warte auf Händler"
+msgstr "Warte auf Händler"
+
+#: ../login/boerse.php:183
+msgid "Neuen Handelsauftrag anlegen"
+msgstr "Neuen Handelsauftrag anlegen"
+
+#: ../login/boerse.php:185
+#: ../login/boerse.php:187
+msgid "Angebot&[login/boerse.php|1]"
+msgstr "Angebot"
+
+#: ../login/boerse.php:197
+#: ../login/boerse.php:199
+msgid "Gewünschter Rohstoff&[login/boerse.php|1]"
+msgstr "Gewünschter Rohstoff"
+
+#: ../login/boerse.php:208
+#: ../login/boerse.php:209
+msgid "Minimale Menge&[login/boerse.php|1]"
+msgstr "Minimale Menge"
+
+#: ../login/boerse.php:211
+#: ../login/boerse.php:213
+msgid "Angebotsdauer&[login/boerse.php|1]"
+msgstr "Angebotsdauer"
+
+#: ../login/boerse.php:214
+#, php-format
+msgid "Eine Stunde (%s %%)"
+msgstr "Eine Stunde (%s %%)"
+
+#: ../login/boerse.php:215
+#, php-format
+msgid "Zwölf Stunden (%s %%)"
+msgstr "Zwölf Stunden (%s %%)"
+
+#: ../login/boerse.php:216
+#, php-format
+msgid "Einen Tag (%s %%)"
+msgstr "Einen Tag (%s %%)"
+
+#: ../login/boerse.php:217
+#, php-format
+msgid "Zwei Tage (%s %%)"
+msgstr "Zwei Tage (%s %%)"
+
+#: ../login/boerse.php:218
+#, php-format
+msgid "Eine Woche (%s %%)"
+msgstr "Eine Woche (%s %%)"
+
+#: ../login/boerse.php:219
+#, php-format
+msgid "Zwei Wochen (%s %%)"
+msgstr "Zwei Wochen (%s %%)"
+
+#: ../login/boerse.php:220
+#, php-format
+msgid "Vier Wochen (%s %%)"
+msgstr "Vier Wochen (%s %%)"
+
+#: ../login/boerse.php:224
+msgid "Aktueller Ertrag"
+msgstr "Aktueller Ertrag"
+
+#: ../login/boerse.php:227
+msgid "Zusätzliche Gebühren"
+msgstr "Zusätzliche Gebühren"
+
+#: ../login/boerse.php:230
+msgid "Auftrag aufgeben&[login/boerse.php|1]"
+msgstr "Auftrag aufgeben"
+
+#: ../login/boerse.php:237
+msgid "Kurs"
+msgstr "Kurs"
+
+#: ../login/boerse.php:241
+msgid "von"
+msgstr "von"
+
+#: ../login/boerse.php:242
+msgid "nach"
+msgstr "nach"
+
+#: ../login/boerse.php:255
+#: ../login/boerse.php:264
+#: ../login/boerse.php:273
+#: ../login/boerse.php:282
+#: ../login/boerse.php:291
+msgid "—"
+msgstr "—"
 
 #: ../login/flotten.php:92
 msgid "Dieser Planet ist schon in Ihren Lesezeichen."
@@ -2800,7 +2979,7 @@ msgid "Flottenpasswort&[login/flotten.php|2]"
 msgstr "Flottenpasswort"
 
 #: ../login/flotten.php:590
-#: ../engine/classes/fleet.php:1583
+#: ../engine/classes/fleet.php:1598
 msgid "Schiffe"
 msgstr "Schiffe"
 
@@ -3474,7 +3653,7 @@ msgstr "→"
 
 #: ../login/include.php:423
 #: ../engine/classes/item.php:278
-#: ../engine/classes/fleet.php:1826
+#: ../engine/classes/fleet.php:1841
 #, php-format
 msgid "%s: %s"
 msgstr "%s: %s"
@@ -4478,318 +4657,314 @@ msgstr "Ihre Flotte erreicht den Planeten %s und liefert folgende Güter ab:"
 
 #: ../engine/classes/fleet.php:1292
 #: ../engine/classes/fleet.php:1293
-#: ../engine/classes/fleet.php:1328
-#: ../engine/classes/fleet.php:1330
+#: ../engine/classes/fleet.php:1343
+#: ../engine/classes/fleet.php:1345
 #, php-format
 msgid "%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"
 msgstr "%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"
 
-#: ../engine/classes/fleet.php:1302
-#: ../engine/classes/fleet.php:1334
+#: ../engine/classes/fleet.php:1307
+#: ../engine/classes/fleet.php:1349
 msgid "; "
 msgstr "; "
 
-#: ../engine/classes/fleet.php:1320
-#: ../engine/classes/fleet.php:1327
+#: ../engine/classes/fleet.php:1335
+#: ../engine/classes/fleet.php:1342
 msgid "Folgender Handel wird durchgeführt:"
 msgstr "Folgender Handel wird durchgeführt:"
 
-#: ../engine/classes/fleet.php:1357
+#: ../engine/classes/fleet.php:1372
 #, php-format
 msgid "Ankunft eines fremden Transportes auf %s"
 msgstr "Ankunft eines fremden Transportes auf %s"
 
-#: ../engine/classes/fleet.php:1363
+#: ../engine/classes/fleet.php:1378
 #, php-format
 msgid "Ankunft Ihres Transportes auf %s"
 msgstr "Ankunft Ihres Transportes auf %s"
 
-#: ../engine/classes/fleet.php:1557
+#: ../engine/classes/fleet.php:1572
 #, php-format
 msgid "Fremde Flotte auf dem Planeten %s"
 msgstr "Fremde Flotte auf dem Planeten %s"
 
-#: ../engine/classes/fleet.php:1562
+#: ../engine/classes/fleet.php:1577
 #, php-format
 msgid "Eine fremde Flotte vom Planeten %s wurde von Ihrem Planeten %s aus bei der Spionage gesichtet."
 msgstr "Eine fremde Flotte vom Planeten %s wurde von Ihrem Planeten %s aus bei der Spionage gesichtet."
 
-#: ../engine/classes/fleet.php:1575
-#: ../engine/classes/fleet.php:1580
+#: ../engine/classes/fleet.php:1590
+#: ../engine/classes/fleet.php:1595
 #, php-format
 msgid "Spionagebericht des Planeten %s"
 msgstr "Spionagebericht des Planeten %s"
 
-#: ../engine/classes/fleet.php:1576
-msgid "Planet"
-msgstr "Planet"
-
-#: ../engine/classes/fleet.php:1577
+#: ../engine/classes/fleet.php:1592
 msgid "Felder"
 msgstr "Felder"
 
-#: ../engine/classes/fleet.php:1578
+#: ../engine/classes/fleet.php:1593
 msgid "Schicken Sie ein Besiedelungsschiff zu diesem Planeten"
 msgstr "Schicken Sie ein Besiedelungsschiff zu diesem Planeten"
 
-#: ../engine/classes/fleet.php:1579
+#: ../engine/classes/fleet.php:1594
 msgid "Besiedeln"
 msgstr "Besiedeln"
 
-#: ../engine/classes/fleet.php:1584
+#: ../engine/classes/fleet.php:1599
 msgid "Verteidigung"
 msgstr "Verteidigung"
 
-#: ../engine/classes/fleet.php:1586
+#: ../engine/classes/fleet.php:1601
 msgid "Rohstoffe"
 msgstr "Rohstoffe"
 
-#: ../engine/classes/fleet.php:1589
+#: ../engine/classes/fleet.php:1604
 #, php-format
 msgid "Spionage des Planeten %s"
 msgstr "Spionage des Planeten %s"
 
-#: ../engine/classes/fleet.php:1805
+#: ../engine/classes/fleet.php:1820
 #, php-format
 msgid "Ihre Flotte erreicht den Planeten %s und beginnt mit seiner Besiedelung."
 msgstr "Ihre Flotte erreicht den Planeten %s und beginnt mit seiner Besiedelung."
 
-#: ../engine/classes/fleet.php:1807
+#: ../engine/classes/fleet.php:1822
 #, php-format
 msgid " Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe wiederhergestellt werden: %s."
 msgstr " Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe wiederhergestellt werden: %s."
 
-#: ../engine/classes/fleet.php:1807
+#: ../engine/classes/fleet.php:1822
 #, php-format
 msgid "%s %s, %s %s, %s %s, %s %s"
 msgstr "%s %s, %s %s, %s %s, %s %s"
 
-#: ../engine/classes/fleet.php:1811
+#: ../engine/classes/fleet.php:1826
 #, php-format
 msgid "Eine Flotte erreicht den Planeten %s."
 msgstr "Eine Flotte erreicht den Planeten %s."
 
-#: ../engine/classes/fleet.php:1816
+#: ../engine/classes/fleet.php:1831
 #, php-format
 msgid "Die Flotte besteht aus folgenden Schiffen: %s"
 msgstr "Die Flotte besteht aus folgenden Schiffen: %s"
 
-#: ../engine/classes/fleet.php:1822
+#: ../engine/classes/fleet.php:1837
 msgid "Folgende Schiffe werden fremdstationiert:"
 msgstr "Folgende Schiffe werden fremdstationiert:"
 
-#: ../engine/classes/fleet.php:1831
+#: ../engine/classes/fleet.php:1846
 msgid "Folgende Güter werden abgeliefert:"
 msgstr "Folgende Güter werden abgeliefert:"
 
-#: ../engine/classes/fleet.php:1832
+#: ../engine/classes/fleet.php:1847
 #, php-format
 msgid "%s %s, %s %s, %s %s, %s %s, %s %s."
 msgstr "%s %s, %s %s, %s %s, %s %s, %s %s."
 
-#: ../engine/classes/fleet.php:1841
+#: ../engine/classes/fleet.php:1856
 #, php-format
 msgid "Folgender überschüssiger Treibstoff wird abgeliefert: %s."
 msgstr "Folgender überschüssiger Treibstoff wird abgeliefert: %s."
 
-#: ../engine/classes/fleet.php:1841
+#: ../engine/classes/fleet.php:1856
 #, php-format
 msgid "%s %s"
 msgstr "%s %s"
 
-#: ../engine/classes/fleet.php:1848
+#: ../engine/classes/fleet.php:1863
 #, php-format
 msgid "Besiedelung von %s"
 msgstr "Besiedelung von %s"
 
-#: ../engine/classes/fleet.php:1850
+#: ../engine/classes/fleet.php:1865
 #, php-format
 msgid "Stationierung auf %s"
 msgstr "Stationierung auf %s"
 
-#: ../engine/classes/fleet.php:2191
+#: ../engine/classes/fleet.php:2206
 #, php-format
 msgid "Runde %s"
 msgstr "Runde %s"
 
-#: ../engine/classes/fleet.php:2194
+#: ../engine/classes/fleet.php:2209
 #, php-format
 msgid "Der Angreifer ist am Zug (Gesamtstärke %s)"
 msgid_plural "Die Angreifer sind am Zug (Gesamtstärke %s)"
 msgstr[0] "Der Angreifer ist am Zug (Gesamtstärke %s)"
 msgstr[1] "Die Angreifer sind am Zug (Gesamtstärke %s)"
 
-#: ../engine/classes/fleet.php:2194
+#: ../engine/classes/fleet.php:2209
 #, php-format
 msgid "Der Verteidiger ist am Zug (Gesamtstärke %s)"
 msgid_plural "Die Verteidiger sind am Zug (Gesamtstärke %s)"
 msgstr[0] "Der Verteidiger ist am Zug (Gesamtstärke %s)"
 msgstr[1] "Die Verteidiger sind am Zug (Gesamtstärke %s)"
 
-#: ../engine/classes/fleet.php:2220
+#: ../engine/classes/fleet.php:2235
 #, php-format
 msgid "Eine Einheit des Typs %s (%s) wird angeschossen."
 msgstr "Eine Einheit des Typs %s (%s) wird angeschossen."
 
-#: ../engine/classes/fleet.php:2222
+#: ../engine/classes/fleet.php:2237
 #, php-format
 msgid "%s Einheit des Typs %s (%s) wird zerstört."
 msgid_plural "%s Einheiten des Typs %s (%s) werden zerstört."
 msgstr[0] "%s Einheit des Typs %s (%s) wird zerstört."
 msgstr[1] "%s Einheiten des Typs %s (%s) werden zerstört."
 
-#: ../engine/classes/fleet.php:2222
+#: ../engine/classes/fleet.php:2237
 #, php-format
 msgid "%s verbleibt."
 msgid_plural "%s verbleiben."
 msgstr[0] "%s verbleibt."
 msgstr[1] "%s verbleiben."
 
-#: ../engine/classes/fleet.php:2230
+#: ../engine/classes/fleet.php:2245
 #, php-format
 msgid "Alle Einheiten des Typs %s (%s) (%s) werden zerstört."
 msgstr "Alle Einheiten des Typs %s (%s) (%s) werden zerstört."
 
-#: ../engine/classes/fleet.php:2516
+#: ../engine/classes/fleet.php:2531
 msgid "Flotten des Angreifers"
 msgid_plural "Flotten der Angreifer"
 msgstr[0] "Flotten des Angreifers"
 msgstr[1] "Flotten der Angreifer"
 
-#: ../engine/classes/fleet.php:2517
+#: ../engine/classes/fleet.php:2532
 msgid "Schiffstyp"
 msgstr "Schiffstyp"
 
-#: ../engine/classes/fleet.php:2518
+#: ../engine/classes/fleet.php:2533
 msgid "Anzahl"
 msgstr "Anzahl"
 
-#: ../engine/classes/fleet.php:2519
+#: ../engine/classes/fleet.php:2534
 msgid "Gesamtstärke"
 msgstr "Gesamtstärke"
 
-#: ../engine/classes/fleet.php:2520
+#: ../engine/classes/fleet.php:2535
 msgid "Gesamtschild"
 msgstr "Gesamtschild"
 
-#: ../engine/classes/fleet.php:2523
+#: ../engine/classes/fleet.php:2538
 msgid "Flotten des Verteidigers"
 msgid_plural "Flotten der Verteidiger"
 msgstr[0] "Flotten des Verteidigers"
 msgstr[1] "Flotten der Verteidiger"
 
-#: ../engine/classes/fleet.php:2524
+#: ../engine/classes/fleet.php:2539
 msgid "Keine."
 msgstr "Keine."
 
-#: ../engine/classes/fleet.php:2525
+#: ../engine/classes/fleet.php:2540
 #, php-format
 msgid "%s sind stärker ausgebildet als %s und %s."
 msgstr "%s sind stärker ausgebildet als %s und %s."
 
-#: ../engine/classes/fleet.php:2525
-#: ../engine/classes/fleet.php:2526
+#: ../engine/classes/fleet.php:2540
+#: ../engine/classes/fleet.php:2541
 msgid "Die Sensoren des Angreifers"
 msgid_plural "Die Sensoren der Angreifer"
 msgstr[0] "Die Sensoren des Angreifers"
 msgstr[1] "Die Sensoren der Angreifer"
 
-#: ../engine/classes/fleet.php:2525
+#: ../engine/classes/fleet.php:2540
 msgid "die des Verteidigers"
 msgid_plural "die der Verteidiger"
 msgstr[0] "die des Verteidigers"
 msgstr[1] "die der Verteidiger"
 
-#: ../engine/classes/fleet.php:2525
+#: ../engine/classes/fleet.php:2540
 msgid "ermöglichen es ihm, den Erstschlag auszuführen"
 msgid_plural "ermöglichen es ihnen, den Erstschlag auszuführen"
 msgstr[0] "ermöglichen es ihm, den Erstschlag auszuführen"
 msgstr[1] "ermöglichen es ihnen, den Erstschlag auszuführen"
 
-#: ../engine/classes/fleet.php:2526
+#: ../engine/classes/fleet.php:2541
 #, php-format
 msgid "%s sind %s nicht überlegen, weshalb %s."
 msgstr "%s sind %s nicht überlegen, weshalb %s."
 
-#: ../engine/classes/fleet.php:2526
+#: ../engine/classes/fleet.php:2541
 msgid "denen des Verteidigers"
 msgid_plural "denen der Verteidiger"
 msgstr[0] "denen des Verteidigers"
 msgstr[1] "denen der Verteidiger"
 
-#: ../engine/classes/fleet.php:2526
+#: ../engine/classes/fleet.php:2541
 msgid "letzterer den Erstschlag ausführt"
 msgid_plural "letztere den Erstschlag ausführen"
 msgstr[0] "letzterer den Erstschlag ausführt"
 msgstr[1] "letztere den Erstschlag ausführen"
 
-#: ../engine/classes/fleet.php:2528
+#: ../engine/classes/fleet.php:2543
 msgid "Der Kampf ist vorüber. Gewinner ist der Verteidiger."
 msgid_plural "Der Kampf ist vorüber. Gewinner sind die Verteidiger."
 msgstr[0] "Der Kampf ist vorüber. Gewinner ist der Verteidiger."
 msgstr[1] "Der Kampf ist vorüber. Gewinner sind die Verteidiger."
 
-#: ../engine/classes/fleet.php:2529
+#: ../engine/classes/fleet.php:2544
 msgid "Der Kampf ist vorüber. Gewinner ist der Angreifer."
 msgid_plural "Der Kampf ist vorüber. Gewinner sind die Angreifer."
 msgstr[0] "Der Kampf ist vorüber. Gewinner ist der Angreifer."
 msgstr[1] "Der Kampf ist vorüber. Gewinner sind die Angreifer."
 
-#: ../engine/classes/fleet.php:2530
+#: ../engine/classes/fleet.php:2545
 msgid "Der Kampf ist vorüber. Er endet unentschieden."
 msgstr "Der Kampf ist vorüber. Er endet unentschieden."
 
-#: ../engine/classes/fleet.php:2531
+#: ../engine/classes/fleet.php:2546
 #, php-format
 msgid "Der Angreifer hat %s Kampferfahrungspunkte gesammelt."
 msgid_plural "Die Angreifer haben %s Kampferfahrungspunkte gesammelt."
 msgstr[0] "Der Angreifer hat %s Kampferfahrungspunkte gesammelt."
 msgstr[1] "Die Angreifer haben %s Kampferfahrungspunkte gesammelt."
 
-#: ../engine/classes/fleet.php:2532
+#: ../engine/classes/fleet.php:2547
 #, php-format
 msgid "Der Verteidiger hat %s Kampferfahrungspunkte gesammelt."
 msgid_plural "Die Verteidiger haben %s Kampferfahrungspunkte gesammelt."
 msgstr[0] "Der Verteidiger hat %s Kampferfahrungspunkte gesammelt."
 msgstr[1] "Die Verteidiger haben %s Kampferfahrungspunkte gesammelt."
 
-#: ../engine/classes/fleet.php:2540
+#: ../engine/classes/fleet.php:2555
 #, php-format
 msgid "Der Angreifer %s hat %s Punkte verloren."
 msgstr "Der Angreifer %s hat %s Punkte verloren."
 
-#: ../engine/classes/fleet.php:2548
+#: ../engine/classes/fleet.php:2563
 #, php-format
 msgid "Der Verteidiger %s hat %s Punkte verloren."
 msgstr "Der Verteidiger %s hat %s Punkte verloren."
 
-#: ../engine/classes/fleet.php:2555
+#: ../engine/classes/fleet.php:2570
 #, php-format
 msgid "Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: %s."
 msgstr "Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: %s."
 
-#: ../engine/classes/fleet.php:2555
-#: ../engine/classes/fleet.php:2647
+#: ../engine/classes/fleet.php:2570
+#: ../engine/classes/fleet.php:2662
 #, php-format
 msgid "%s %s, %s %s, %s %s und %s %s"
 msgstr "%s %s, %s %s, %s %s und %s %s"
 
-#: ../engine/classes/fleet.php:2634
+#: ../engine/classes/fleet.php:2649
 #, php-format
 msgid "Sie haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."
 msgstr "Sie haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."
 
-#: ../engine/classes/fleet.php:2642
+#: ../engine/classes/fleet.php:2657
 #, php-format
 msgid "Die überlebenden Angreifer haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."
 msgstr "Die überlebenden Angreifer haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."
 
-#: ../engine/classes/fleet.php:2647
+#: ../engine/classes/fleet.php:2662
 #, php-format
 msgid "Durch Wiederverwertung konnten folgende Rohstoffe aus den Trümmern der zerstörten Verteidigungsanlagen wiederhergestellt werden: %s"
 msgstr "Durch Wiederverwertung konnten folgende Rohstoffe aus den Trümmern der zerstörten Verteidigungsanlagen wiederhergestellt werden: %s"
 
-#: ../engine/classes/fleet.php:2655
+#: ../engine/classes/fleet.php:2670
 #, php-format
 msgid "Kampf auf %s"
 msgstr "Kampf auf %s"
