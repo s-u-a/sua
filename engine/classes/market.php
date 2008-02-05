@@ -62,7 +62,7 @@
 		{
 			$q = $this->arrayQuery("SELECT price FROM market_rate WHERE offer = ".$this->escape($offer)." AND request = ".$this->escape($request)." ORDER BY date desc LIMIT 1;");
 			if(!isset($q[0])) return 0;
-			return $q[0]['price'];
+			return 0+$q[0]['price'];
 		}
 
 		protected function getNewId()
