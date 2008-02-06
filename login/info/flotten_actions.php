@@ -240,7 +240,7 @@
 ?>
 		<dl>
 			<dt class="c-rohstoffe-behalten"><label for="i-rohstoffe-behalten"><?=h(_("Transportgut der Flotte nicht abliefern&[login/info/flotten_actions.php|1]"))?></label></dt>
-			<dd class="c-rohstoffe-behalten"><input type="checkbox" id="i-rohstoffe-behalten" name="keepres"<?=$handel[2] ? " checked=\"checked\"" : ""?> title="<?=h(_("Diese Funktion erleichtert es Ihnen, mit einer Flugroute Rohstoffe von mehreren Planeten einzusammeln."))?>"<?=accesskey_attr(_("Transportgut der Flotte nicht abliefern&[login/info/flotten_actions.php|1]"))?> /></dd>
+			<dd class="c-rohstoffe-behalten"><input type="checkbox" id="i-rohstoffe-behalten" name="keepres"<?=!$handel[2] ? " checked=\"checked\"" : ""?> title="<?=h(_("Diese Funktion erleichtert es Ihnen, mit einer Flugroute Rohstoffe von mehreren Planeten einzusammeln."))?>"<?=accesskey_attr(_("Transportgut der Flotte nicht abliefern&[login/info/flotten_actions.php|1]"))?> /></dd>
 		</dl>
 <?php
 				}
