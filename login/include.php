@@ -241,6 +241,7 @@
 
 		try
 		{
+			Captcha::getConfig();
 			login_gui::html_head();
 			if($error)
 			{

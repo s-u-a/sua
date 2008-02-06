@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-06 23:52+0100\n"
+"POT-Creation-Date: 2008-02-07 00:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1212,7 +1212,7 @@ msgid "Speichern&[admin/news.php|1]"
 msgstr ""
 
 #: ../admin/logs.php:47 ../admin/logs.php:104 ../login/allianz.php:297
-#: ../login/include.php:388 ../login/include.php:397 ../login/include.php:412
+#: ../login/include.php:389 ../login/include.php:398 ../login/include.php:413
 #: ../index.php:59
 msgid "Y-m-d, H:i:s"
 msgstr ""
@@ -1379,7 +1379,7 @@ msgstr ""
 msgid "Zurück zum Spiel&[admin/include.php|1]"
 msgstr ""
 
-#: ../admin/include.php:176 ../login/include.php:296 ../chat.php:102
+#: ../admin/include.php:176 ../login/include.php:297 ../chat.php:102
 #: ../include.php:49 ../public_message.php:23
 msgid "[LANG]"
 msgstr ""
@@ -1452,7 +1452,7 @@ msgstr ""
 #: ../login/info/flotten_actions.php:533 ../login/info/playerinfo.php:180
 #: ../login/karte.php:592 ../login/flotten.php:513 ../login/flotten.php:694
 #: ../login/flotten.php:698 ../login/flotten.php:771 ../login/flotten.php:941
-#: ../login/flotten.php:1213 ../login/include.php:431 ../login/include.php:610
+#: ../login/flotten.php:1213 ../login/include.php:432 ../login/include.php:611
 #: ../engine/classes/user.php:3250 ../engine/classes/user.php:3251
 #: ../engine/classes/fleet.php:1102 ../engine/classes/fleet.php:1103
 #: ../engine/classes/fleet.php:1116 ../engine/classes/fleet.php:1117
@@ -1502,8 +1502,8 @@ msgstr ""
 #: ../login/info/playerinfo.php:155 ../login/boerse.php:141
 #: ../login/boerse.php:155 ../login/flotten.php:803
 #: ../login/einstellungen.php:796 ../login/einstellungen.php:802
-#: ../login/einstellungen.php:815 ../login/include.php:388
-#: ../login/include.php:397 ../login/include.php:412
+#: ../login/einstellungen.php:815 ../login/include.php:389
+#: ../login/include.php:398 ../login/include.php:413
 #, php-format
 msgid "%s (Serverzeit)"
 msgstr ""
@@ -1729,7 +1729,7 @@ msgid "Planeten"
 msgstr ""
 
 #: ../login/info/playerinfo.php:180 ../login/boerse.php:138
-#: ../login/flotten.php:698 ../login/include.php:431 ../login/include.php:610
+#: ../login/flotten.php:698 ../login/include.php:432 ../login/include.php:611
 #: ../engine/classes/fleet.php:1286 ../engine/classes/fleet.php:1588
 #, php-format
 msgid "„%s“ (%s)"
@@ -2561,7 +2561,7 @@ msgstr ""
 msgid "Keine Sammler vorhanden."
 msgstr ""
 
-#: ../login/flotten.php:154 ../login/include.php:397
+#: ../login/flotten.php:154 ../login/include.php:398
 msgid "Ihr Benutzeraccount ist gesperrt."
 msgstr ""
 
@@ -3283,7 +3283,7 @@ msgid ""
 "anmelden%s."
 msgstr ""
 
-#: ../login/include.php:181 ../login/include.php:781
+#: ../login/include.php:181 ../login/include.php:782
 #, php-format
 msgid "HTTP redirect: %s"
 msgstr ""
@@ -3292,214 +3292,214 @@ msgstr ""
 msgid "Fehler beim Auswerten der Captcha-Informationen."
 msgstr ""
 
-#: ../login/include.php:299 ../include.php:51 ../include.php:57
+#: ../login/include.php:300 ../include.php:51 ../include.php:57
 #: ../public_message.php:26
 msgid "[title_abbr_full]"
 msgstr ""
 
-#: ../login/include.php:303 ../engine/include.php:862
+#: ../login/include.php:304 ../engine/include.php:862
 msgid "[thousand_separator]"
 msgstr ""
 
-#: ../login/include.php:368 ../login/include.php:584 ../login/include.php:717
+#: ../login/include.php:369 ../login/include.php:585 ../login/include.php:718
 msgid "Zum Inhalt&[login/include.php|1]"
 msgstr ""
 
-#: ../login/include.php:369
+#: ../login/include.php:370
 msgid "Zur Navigation&[login/include.php|1]"
 msgstr ""
 
-#: ../login/include.php:370
+#: ../login/include.php:371
 msgid "Zu den Spieldaten&[login/include.php|1]"
 msgstr ""
 
-#: ../login/include.php:388
+#: ../login/include.php:389
 msgid "Das Spiel ist derzeit gesperrt."
 msgstr ""
 
-#: ../login/include.php:388 ../login/include.php:397 ../login/include.php:412
+#: ../login/include.php:389 ../login/include.php:398 ../login/include.php:413
 #, php-format
 msgid "bis %s"
 msgstr ""
 
-#: ../login/include.php:404
+#: ../login/include.php:405
 msgid "Ihr Benutzeraccount befindet sich im Urlaubsmodus."
 msgstr ""
 
-#: ../login/include.php:412
+#: ../login/include.php:413
 msgid "Es herrscht eine Flottensperre für feindliche Flüge."
 msgstr ""
 
-#: ../login/include.php:431
+#: ../login/include.php:432
 msgid "Zum vorigen Planeten wechseln&[login/include.php|1]"
 msgstr ""
 
-#: ../login/include.php:431
+#: ../login/include.php:432
 msgid "←"
 msgstr ""
 
-#: ../login/include.php:431
+#: ../login/include.php:432
 msgid "Zum nächsten Planeten wechseln&[login/include.php|1]"
 msgstr ""
 
-#: ../login/include.php:431
+#: ../login/include.php:432
 msgid "→"
 msgstr ""
 
-#: ../login/include.php:469 ../engine/classes/item.php:278
+#: ../login/include.php:470 ../engine/classes/item.php:278
 #: ../engine/classes/fleet.php:1852
 #, php-format
 msgid "%s: %s"
 msgstr ""
 
-#: ../login/include.php:469 ../login/nachrichten.php:124
+#: ../login/include.php:470 ../login/nachrichten.php:124
 #: ../login/nachrichten.php:406 ../engine/classes/message.php:386
 msgid "[message_"
 msgstr ""
 
-#: ../login/include.php:481
+#: ../login/include.php:482
 #, php-format
 msgid "Sie haben %s neue &Nachricht.[login/include.php|2]"
 msgid_plural "Sie haben %s neue &Nachrichten.[login/include.php|2]"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../login/include.php:583 ../login/include.php:716
+#: ../login/include.php:584 ../login/include.php:717
 msgid "Zur Rohstoffanzeige&[login/include.php|1]"
 msgstr ""
 
-#: ../login/include.php:592
+#: ../login/include.php:593
 msgid "Planeten wechseln"
 msgstr ""
 
-#: ../login/include.php:602
+#: ../login/include.php:603
 msgid "Ihre &Planeten[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:616
+#: ../login/include.php:617
 msgid "Wechseln"
 msgstr ""
 
-#: ../login/include.php:621
+#: ../login/include.php:622
 msgid "&Übersicht[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:622
+#: ../login/include.php:623
 msgid "&Rohstoffe[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:623
+#: ../login/include.php:624
 msgid "&Gebäude[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:624
+#: ../login/include.php:625
 msgid "&Forschung[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:625
+#: ../login/include.php:626
 msgid "Ro&boter[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:626
+#: ../login/include.php:627
 msgid "F&lotten[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:627
+#: ../login/include.php:628
 msgid "&Schiffswerft[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:628
+#: ../login/include.php:629
 msgid "&Verteidigung[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:629
+#: ../login/include.php:630
 msgid "Han&delsbörse[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:630
+#: ../login/include.php:631
 msgid "I&mperium[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:634
+#: ../login/include.php:635
 msgid "&Karte[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:635
+#: ../login/include.php:636
 msgid "All&ianz[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:636
+#: ../login/include.php:637
 msgid "V&erbündete[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:637
+#: ../login/include.php:638
 msgid "&Highscores[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:638
+#: ../login/include.php:639
 msgid "Na&chrichten[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:639
+#: ../login/include.php:640
 msgid "Forschungsb&aum[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:640
+#: ../login/include.php:641
 msgid "Eins&tellungen[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:645
+#: ../login/include.php:646
 msgid "Adminbereich&[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:651
+#: ../login/include.php:652
 msgid "Abmelden&[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:662
+#: ../login/include.php:663
 msgid "Board&[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:663
+#: ../login/include.php:664
 msgid "FAQ&[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:664
+#: ../login/include.php:665
 msgid "Chat&[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:665
+#: ../login/include.php:666
 msgid "Entwicklerseite&[login/include.php|3]"
 msgstr ""
 
-#: ../login/include.php:675
+#: ../login/include.php:676
 msgid "Serverzeit"
 msgstr ""
 
-#: ../login/include.php:676
+#: ../login/include.php:677
 msgid "H:i:s"
 msgstr ""
 
-#: ../login/include.php:685
+#: ../login/include.php:686
 msgid ""
 "mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2"
 "(local_time_obj.getSeconds())"
 msgstr ""
 
-#: ../login/include.php:687
+#: ../login/include.php:688
 msgid "Lokalzeit"
 msgstr ""
 
-#: ../login/include.php:702
+#: ../login/include.php:703
 msgid "Changelog anzeigen&[login/include.php|4]"
 msgstr ""
 
-#: ../login/include.php:702
+#: ../login/include.php:703
 #, php-format
 msgid "Version %s"
 msgstr ""
 
-#: ../login/include.php:707
+#: ../login/include.php:708
 #, php-format
 msgid "Revision %s"
 msgstr ""
@@ -4940,11 +4940,11 @@ msgstr ""
 msgid "Kampf auf %s"
 msgstr ""
 
-#: ../engine/classes/captcha.php:46
+#: ../engine/classes/captcha.php:47
 msgid "Generierter Code"
 msgstr ""
 
-#: ../engine/classes/captcha.php:49
+#: ../engine/classes/captcha.php:50
 msgid "Okay"
 msgstr ""
 

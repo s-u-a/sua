@@ -3833,8 +3833,6 @@
 		{
 			if(!$this->status) return false;
 
-			return true;
-
 			if(!$this->permissionToAct(false)) return false;
 
 			if(!isset($this->raw["last_challenge"]))
