@@ -1295,26 +1295,31 @@
 								$write_this_username = ($username != $target_owner);
 								if($write_this_username) $message_text[$username] = sprintf($user_obj->_("Ihre Flotte erreicht den Planeten %s und liefert folgende Güter ab:"), sprintf($target_user->_("„%s“ (%s, Eigentümer: %s)"), $target_user->planetName(), $next_target_nt, $target_owner))."\n";
 								$message_text[$target_owner] .= $username.": ";
-								if($write_this_username) $message_text[$username] .= sprintf($user_obj->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $user_obj->_("[ress_0]"), ths($data[3][0][0], true), $user_obj->_("[ress_1]"), ths($data[3][0][1], true), $user_obj->_("[ress_2]"), ths($data[3][0][2], true), $user_obj->_("[ress_3]"), ths($data[3][0][3], true), $user_obj->_("[ress_4]"), ths($data[3][0][4], true));
-								$message_text[$target_owner] .= sprintf($target_user->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $target_user->_("[ress_0]"), ths($data[3][0][0], true), $target_user->_("[ress_1]"), ths($data[3][0][1], true), $target_user->_("[ress_2]"), ths($data[3][0][2], true), $target_user->_("[ress_3]"), ths($data[3][0][3], true), $target_user->_("[ress_4]"), ths($data[3][0][4], true));
 								if($data[4][2])
 								{
 									$target_user->addRess($data[3][0]);
 									$this->raw[1][$username][3][0] = array(0,0,0,0,0);
+									if($write_this_username) $message_text[$username] .= sprintf($user_obj->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $user_obj->_("[ress_0]"), ths($data[3][0][0], true), $user_obj->_("[ress_1]"), ths($data[3][0][1], true), $user_obj->_("[ress_2]"), ths($data[3][0][2], true), $user_obj->_("[ress_3]"), ths($data[3][0][3], true), $user_obj->_("[ress_4]"), ths($data[3][0][4], true));
+									$message_text[$target_owner] .= sprintf($target_user->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $target_user->_("[ress_0]"), ths($data[3][0][0], true), $target_user->_("[ress_1]"), ths($data[3][0][1], true), $target_user->_("[ress_2]"), ths($data[3][0][2], true), $target_user->_("[ress_3]"), ths($data[3][0][3], true), $target_user->_("[ress_4]"), ths($data[3][0][4], true));
+
+									if($target_owner == $username && array_sum($data[3][1]) > 0)
+									{
+										$target_user->setLanguage();
+										$items_string = makeItemsString($data[3][1], false);
+										$target_user->restoreLanguage();
+										if($write_this_username) $message_text[$username] .= "\n".$items_string;
+										$message_text[$target_owner] .= $target_user->_("; ").$items_string;
+										foreach($data[3][1] as $id=>$anzahl)
+											$target_user->changeItemLevel($id, $anzahl, 'roboter');
+										$this->raw[1][$username][3][1] = array();
+									}
 								}
 								else
-									$data[3] = array(array(0,0,0,0,0),array());
-								if($target_owner == $username && array_sum($data[3][1]) > 0)
 								{
-									$target_user->setLanguage();
-									$items_string = makeItemsString($data[3][1], false);
-									$target_user->restoreLanguage();
-									if($write_this_username) $message_text[$username] .= "\n".$items_string;
-									$message_text[$target_owner] .= $target_user->_("; ").$items_string;
-									foreach($data[3][1] as $id=>$anzahl)
-										$target_user->changeItemLevel($id, $anzahl, 'roboter');
-									$this->raw[1][$username][3][1] = array();
+									if($write_this_username) $message_text[$username] .= $user_obj->_("Keine.");
+									$message_text[$target_owner] .= $target_user->_("Keine.");
 								}
+
 								if($write_this_username) $message_text[$username] .= "\n";
 								$message_text[$target_owner] .= "\n";
 								if(array_sum($data[4][0])+array_sum($data[4][1]) > 0)
