@@ -212,6 +212,9 @@
 				}
 			}
 
+			if(!$handel[2])
+				$string .= " Die transportierten Rohstoffe werden nicht abgeliefert werden.";
+
 			if(array_sum($handel[0]) > 0 || array_sum($handel[1]) > 0)
 			{
 				$string .= ' Es wird ein <span class="beschreibung handel" title="';

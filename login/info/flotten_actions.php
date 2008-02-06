@@ -88,7 +88,7 @@
 				$trans = $fleet->getTransportCapacity($username);
 				$handel = $fleet->getHandel($username);
 				$used = $fleet->getTransport($username);
-				if($me->getName() == $fleet->getFleetOwner() && isset($_POST["handel_username"]) && $_POST["handel_username"] == $username && $fleet->setHandel(false, false, !isset($_POST["keepres"])))
+				if($me->getName() == $fleet->getFleetOwner() && isset($_POST["handel_username"]) && $_POST["handel_username"] == $username && $fleet->setHandel($username, false, false, !isset($_POST["keepres"])))
 					$handel[2] = !isset($_POST["keepres"]);
 				if(!$handel[2])
 				{
