@@ -3858,7 +3858,7 @@
 			if($this->status != 1) return false;
 
 			if(!isset($this->raw["challenge_failures"]))
-				$this->raw["challene_failures"] = 0;
+				$this->raw["challenge_failures"] = 0;
 			$this->raw["challenge_failures"]++;
 			$this->changed = true;
 
