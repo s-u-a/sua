@@ -109,6 +109,7 @@
 	global_setting('DB_DATABASES', $GDB_DIR.'/databases');
 	global_setting('DB_HOSTNAME', $GDB_DIR.'/hostname');
 	global_setting('DB_GPG', $GDB_DIR.'/gpg');
+	global_setting("DB_CAPTCHA", $GDB_DIR."/captcha");
 	global_setting('EVENTHANDLER_INTERVAL', 2);
 	global_setting('EVENTHANDLER_MARKETCACHE', 10); # Wieviele Eventhandler-Intervalle sollen aus der Boersendatenbank gecacht werden?
 	global_setting('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
@@ -126,6 +127,10 @@
 	global_setting('MARKET_DELAY', 7200); # Wieviele Sekunden soll es von der Annahme bis zur Fertigstellung eines Angebotes dauern?
 	global_setting('EMAIL_CHANGE_DELAY', 604800); # Nach wie vielen Sekunden soll eine Aenderung der E-Mail-Adresse gueltig werden?
 	global_setting("HIGHSCORES_PERPAGE", 100); # Wieviele Spieler sollen in den Highscores pro Seite angezeigt werden?
+	global_setting("CHALLENGE_MIN_TIME", 900); # Wieviele Sekunden müssen mindestens zwischen zwei Captcha-Abfragen vergehen?
+	global_setting("CHALLENGE_MAX_TIME", 5400); # Wieviele Sekunden dürfen maximal zwischen zwei Captcha-Abfragen vergehen?
+	global_setting("CHALLENGE_MAX_FAILURES", 5); # Wieoft hintereinander darf ein Benutzer maximal eine Captcha-Abfrage falsch beantworten?
+	global_setting("CHALLENGE_LOCK_TIME", 86400); # Für wieviele Sekunden wird ein Benutzer gesperrt, wenn er eine Captcha-Abfrage zu oft falsch beantwortet hat?
 
 	/**
 	  * Initialisiert die Standardwerte fuer die globalen Einstellungen.
@@ -216,6 +221,10 @@
 	if(isset($_SERVER["HTTP_HOST"]))
 		header('Content-type: '.CONTENT_TYPE);
 
+	// Script-Filename herausfinden
+	if(!isset($_SERVER["SCRIPT_FILENAME"]) && substr($_SERVER["PHP_SELF"], 0, strlen(h_root)) == $_SERVER["PHP_SELF"])
+		$_SERVER["SCRIPT_FILENAME"] = s_root.substr($_SERVER["PHP_SELF"], strlen(h_root));
+
 	if(!isset($USE_OB) || $USE_OB)
 		ob_start('ob_gzhandler');
 	$tabindex = 1;
@@ -284,6 +293,13 @@
 		stripslashes_r($_POST);
 		stripslashes_r($_GET);
 		stripslashes_r($_COOKIE);
+	}
+
+	if(isset($_GET["agpl"]) && $_GET["agpl"] == "!" && isset($_SERVER["SCRIPT_FILENAME"]))
+	{
+		header("Content-type: application/x-httpd-php;charset=UTF-8");
+		print file_get_contents($_SERVER["SCRIPT_FILENAME"]);
+		exit(0);
 	}
 
 
@@ -1929,4 +1945,56 @@
 		while($d_new >= 10) $d_new -= 10;
 		while($d_new < 0) $d_new += 10;
 		return $number += ($d_new-$d)*pow(10, $digit);
+	}
+
+	/**
+	  * Gibt versteckte Formularfelder mit den Werten des Arrays $array aus. Nützlich, um POST-Requests zu wiederholen.
+	  * @param $array array Assoziatives Array, das Parameterwert den Parameternamen zuordnet.
+	  * @param $tabs integer Zahl der Tabs, die vor den Code gehängt werden sollen.
+	  * @param $prefix string printf-Ausdruck, mit dem die Feldnamen ausgegeben werden (zum Beispiel feld[%s], um ein Array zu übertragen). Standardmäßig %s.
+	*/
+
+	function make_hidden_fields($array, $tabs=0, $prefix="%s")
+	{
+		$t = str_repeat("\t", $tabs);
+		foreach($array as $k=>$v)
+		{
+			if(is_array($v))
+			{
+				make_hidden_fields($v, $tabs, sprintf($prefix, $k)."[%s]");
+				continue;
+			}
+?>
+<?=$t?><input type="hidden" name="<?=htmlspecialchars(sprintf($prefix, $k))?>" value="<?=preg_replace("/[\n\t\r]/e", "'&#'.ord('$0').';'", htmlspecialchars($v))?>" />
+<?php
+		}
+	}
+
+	/**
+	  * Implodiert ein assoziatives Array und gibt den Code für ein JavaScript-Object seiner Entsprechung zurück.
+	*/
+
+	function aimplode_js($array)
+	{
+		$string = array();
+		foreach($array as $k=>$v)
+			$string[] = "'".jsentities($k)."' : ".(is_array($v) ? js_assoc_implode($v) : "'".jsentities($v)."'");
+		return $string = "{ ".implode(", ", $string)." }";
+	}
+
+	/**
+	  * Implodiert ein assoziatives Array und gibt den Code für einen Query-String zurück.
+	*/
+
+	function aimplode_url($array, $prefix="%s")
+	{
+		$string = array();
+		foreach($array as $k=>$v)
+		{
+			if(is_array($v))
+				$string = array_merge($string, aimplode_url($v, sprintf($prefix, urlencode($k))."[%s]"));
+			else
+				$string[] = sprintf($prefix, urlencode($k))."=".urlencode($v);
+		}
+		return $string = implode("&", $string);
 	}

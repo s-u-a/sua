@@ -24,7 +24,7 @@
 	__autoload('Fleet');
 	__autoload('Galaxy');
 
-	class LoginFlottenException extends Exception
+	class LoginFlottenException extends SuaException
 	{
 		protected $type = 0;
 

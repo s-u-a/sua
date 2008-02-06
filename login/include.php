@@ -209,10 +209,59 @@
 		global_setting("URL_FORMULAR", $url_formular_g);
 	}
 
+	$tabindex = 1;
+
+	# Captcha-Abfrage
+	__autoload("Captcha");
+	while($me->challengeNeeded())
+	{
+		$error = null;
+		try
+		{
+			if(isset($_POST["recaptcha_challenge_field"]) && isset($_POST["recaptcha_response_field"]))
+			{
+				Captcha::validate($_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
+				$me->challengePassed();
+				break;
+			}
+		}
+		catch(CaptchaException $e)
+		{
+			switch($e->getCode())
+			{
+				case CaptchaException::$HTTP_ERROR:
+					$error = _("Fehler beim Auswerten der Captcha-Informationen.");
+					break;
+				case CaptchaException::$USER_ERROR:
+					$me->challengeFailed();
+					$error = $e->getMessage();
+					break;
+			}
+		}
+
+		try
+		{
+			login_gui::html_head();
+			if($error)
+			{
+?>
+<p class="error"><?=htmlspecialchars($error)?></p>
+<?php
+			}
+
+			Captcha::challenge($tabindex);
+
+			login_gui::html_foot();
+			exit(0);
+		}
+		catch(CaptchaException $e)
+		{
+			break;
+		}
+	}
+
 	if((!isset($_SESSION['ghost']) || !$_SESSION['ghost']) && !defined('ignore_action'))
 		$me->registerAction();
-
-	$tabindex = 1;
 
 	class login_gui
 	{
@@ -336,7 +385,7 @@
 				if($l !== true) $locked_until = $l;
 ?>
 				<hr class="separator" />
-				<p id="gesperrt-hinweis" class="spiel error"><strong><?=h(_("Das Spiel ist derzeit gesperrt."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s', $locked_until)))))?></span><?php }?></p>
+				<p id="gesperrt-hinweis" class="spiel error"><strong><?=h(_("Das Spiel ist derzeit gesperrt."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s'), $locked_until))))?></span><?php }?></p>
 <?php
 			}
 			elseif($me->userLocked())
@@ -345,7 +394,7 @@
 				if($l) $locked_until = $l;
 ?>
 				<hr class="separator" />
-				<p id="gesperrt-hinweis" class="account error"><strong><?=h(_("Ihr Benutzeraccount ist gesperrt."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s', $locked_until)))))?></span><?php }?></p>
+				<p id="gesperrt-hinweis" class="account error"><strong><?=h(_("Ihr Benutzeraccount ist gesperrt."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s'), $locked_until))))?></span><?php }?></p>
 <?php
 			}
 			elseif($me->umode())
@@ -360,7 +409,7 @@
 				if($l !== true) $locked_until = $l;
 ?>
 				<hr class="separator" />
-				<p id="gesperrt-hinweis" class="flotten error"><strong><?=h(_("Es herrscht eine Flottensperre für feindliche Flüge."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s', $locked_until)))))?></span><?php }?></p>
+				<p id="gesperrt-hinweis" class="flotten error"><strong><?=h(_("Es herrscht eine Flottensperre für feindliche Flüge."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s'), $locked_until))))?></span><?php }?></p>
 <?php
 			}
 			if($locked_until)

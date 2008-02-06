@@ -1713,9 +1713,9 @@
 			else return time()+3*86400;
 		}
 
-		function permissionToAct()
+		function permissionToAct($check_challenge=true)
 		{
-			return !(database_locked() || $this->userLocked() || $this->umode());
+			return !database_locked() && !$this->userLocked() && !$this->umode() && (!$check_challenge || !$this->challengeNeeded());
 		}
 
 		protected function getDataFromRaw()
@@ -3827,6 +3827,46 @@
 				$this->lastMailSent($last_mail_sent);
 			error_reporting($er);
 			return $return;
+		}
+
+		function challengeNeeded()
+		{
+			if(!$this->status) return false;
+
+			return true;
+
+			if(!$this->permissionToAct(false)) return false;
+
+			if(!isset($this->raw["last_challenge"]))
+				return true;
+
+			$rand = rand(global_setting("CHALLENGE_MIN_TIME"), global_setting("CHALLENGE_MAX_TIME"));
+			if(time()-$this->raw["last_challenge"] > $rand)
+				return true;
+		}
+
+		function challengePassed()
+		{
+			if($this->status != 1) return false;
+
+			$this->raw["last_challenge"] = time();
+			$this->raw["challenge_failures"] = 0;
+			$this->changed = true;
+			return true;
+		}
+
+		function challengeFailed()
+		{
+			if($this->status != 1) return false;
+
+			if(!isset($this->raw["challenge_failures"]))
+				$this->raw["challene_failures"] = 0;
+			$this->raw["challenge_failures"]++;
+			$this->changed = true;
+
+			if($this->raw["challenge_failures"] > global_setting("CHALLENGE_MAX_FAILURES") && !$this->userLocked())
+				$this->lockUser(time()+global_setting("CHALLENGE_LOCK_TIME"));
+			return true;
 		}
 	}
 
