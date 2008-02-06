@@ -1569,7 +1569,7 @@
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-rohstoffe\">\n";
 										$next .= "\t\t<h4 class=\"strong\">%12\$s</h4>\n";
-										$next .= "\t\t".format_ress($target_user->getRess(), 2, true, false, true);
+										$next .= format_ress($target_user->getRess(), 2, true, false, true);
 										$next .= "\t</div>\n";
 										unset($next);
 								}

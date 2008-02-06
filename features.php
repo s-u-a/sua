@@ -64,7 +64,7 @@
 	<li><?=h(_("Völlige Ummodellierbarkeit des Designs durch Skins"))?></li>
 	<li><?=h(_("Flug- und Kampferfahrungspunkte verschaffen Vorteil"))?></li>
 	<li><?=h(_("HTTPS schützt vertrauliche Daten"))?></li>
-	<li><?=h(sprintf(_("Geplant: %s"), _("Lassen Sie Flotten von einem Planeten zum nächsten und von dort zu einem weiteren fliegen.")))?></li>
+	<li><?=h(_("Lassen Sie Flotten von einem Planeten zum nächsten und von dort zu einem weiteren fliegen."))?></li>
 	<li><?=h(_("Stationieren Sie Flotten bei Ihren Verbündeten, um diesen zu unterstützen."))?></li>
 	<li><?=h(_("Fliegen Sie gemeinsame Angriffe mit Ihren Verbündeten."))?></li>
 	<li><?=h(sprintf(ngettext("derzeit %s Spieler", "derzeit %s Spieler", $players), $players))?></li>

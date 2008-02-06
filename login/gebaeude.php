@@ -189,7 +189,9 @@
 	<dl class="lines">
 		<dt class="item-kosten">Kosten</dt>
 		<dd class="item-kosten">
-			<?=format_ress($geb['ress'], 3, false, false, false, $me)?>
+<?php
+		echo format_ress($geb['ress'], 3, false, false, false, $me);
+?>
 		</dd>
 
 		<dt class="item-bauzeit">Bauzeit</dt>
@@ -202,12 +204,16 @@
 
 		<dt class="item-produktion-aktuell">Produktion aktuell</dt>
 		<dd class="item-produktion-aktuell">
-			<?=format_ress($geb["prod"], 3, true, true)?>
+<?php
+			echo format_ress($geb["prod"], 3, true, true);
+?>
 		</dd>
 
 		<dt class="item-produktion-naechste-stufe">Nächste Stufe</dt>
 		<dd class="item-produktion-naechste-stufe">
-			<?=format_ress($geb_next["prod"], 3, true, true)?>
+<?php
+			echo format_ress($geb_next["prod"], 3, true, true);
+?>
 		</dd>
 <?php
 		}

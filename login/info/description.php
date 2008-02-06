@@ -64,7 +64,9 @@
 	<dl class="item-info lines">
 		<dt class="item-kosten"><?=h(_("Kosten"))?></dt>
 		<dd class="item-kosten">
-			<?=format_ress($item_info['ress'], 3, false, false, false, $me)?>
+<?php
+			echo format_ress($item_info['ress'], 3, false, false, false, $me);
+?>
 		</dd>
 
 <?php

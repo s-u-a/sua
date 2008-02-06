@@ -65,7 +65,9 @@
 		<dl class="lines">
 			<dt class="item-kosten">Kosten</dt>
 			<dd class="item-kosten">
-				<?=format_ress($item_info['ress'], 4, false, false, false, $me)?>
+<?php
+		echo format_ress($item_info['ress'], 4, false, false, false, $me);
+?>
 			</dd>
 
 			<dt class="item-bauzeit">Bauzeit</dt>
