@@ -197,6 +197,8 @@
 			$string .= '>'.h(_("[fleet_".$fl->getCurrentType()."]"))."</span>.";
 
 			$handel = array(array(0, 0, 0, 0, 0), array());
+			$give = false;
+			$dont_give = false;
 			foreach($users as $user)
 			{
 				$this_handel = $fl->getHandel($user);
@@ -210,10 +212,19 @@
 					if(isset($handel[1][$id])) $handel[1][$id] += $count;
 					else $handel[1][$id] = $count;
 				}
+				if($this_handel[2])
+					$give = true;
+				else
+					$dont_give = true;
 			}
 
-			if(!$handel[2])
-				$string .= " Die transportierten Rohstoffe werden nicht abgeliefert werden.";
+			if(!$fl->isFlyingBack())
+			{
+				if(!$give && $dont_give)
+					$string .= " Die transportierten Rohstoffe werden nicht abgeliefert werden.";
+				elseif($give && $dont_give)
+					$string .= " Nicht alle transportierten Rohstoffe werden abgeliefert werden.";
+			}
 
 			if(array_sum($handel[0]) > 0 || array_sum($handel[1]) > 0)
 			{
