@@ -145,7 +145,7 @@ function init_countdown(obj_id, f_time, show_cancel, sleep_seconds, finish_url, 
 	if(show_cancel)
 	{ // Abbrechen-Link anlegen
 		var cancel_link = document.createElement('a');
-		cancel_link.href = '?cancel='+encodeURIComponent(obj_id)+'&'+session_cookie+'='+encodeURIComponent(session_id);
+		cancel_link.href = '?cancel='+encodeURIComponent(obj_id)+'&'+url_suffix;
 		cancel_link.className = 'abbrechen';
 		cancel_link.appendChild(document.createTextNode('Abbrechen'));
 		obj_obj.appendChild(cancel_link);
@@ -185,7 +185,7 @@ function time_up()
 			// Fertig-Link anzeigen
 			var link_fertig = document.createElement('a');
 			if(c[3]) link_fertig.href = c[3];
-			else link_fertig.href = '?'+window.session_cookie+'='+encodeURIComponent(window.session_id);
+			else link_fertig.href = '?'+url_suffix;
 			link_fertig.className = 'fertig';
 			link_fertig.title = 'Seite neu laden.';
 			link_fertig.appendChild(document.createTextNode('Fertig.'));
@@ -746,7 +746,7 @@ function do_make_users_list(node)
 	else
 	{ // Mithilfe der Sarissa-Bibliothek AJAX-Request durchfuehren
 		var xmlhttp = new XMLHttpRequest();
-		var request_url = h_root+'/login/res/ajax.php?action=userlist&query='+encodeURIComponent(node.value)+'&'+encodeURIComponent(session_cookie)+'='+encodeURIComponent(session_id)+'&database='+encodeURIComponent(database_id);
+		var request_url = h_root+'/login/res/ajax.php?action=userlist&query='+encodeURIComponent(node.value)+'&'+url_suffix+'&database='+encodeURIComponent(database_id);
 		xmlhttp.open('GET', request_url, true);
 		xmlhttp.onreadystatechange = function() {
 			if(xmlhttp.readyState == 4 && xmlhttp.status == 200)
@@ -852,7 +852,7 @@ function preload_systems(systems)
 		systems.push(pr_system);
 	}
 
-	request_url = h_root+'/login/res/ajax.php?action=universe&'+encodeURIComponent(session_cookie)+'='+encodeURIComponent(session_id)+'&database='+encodeURIComponent(database_id);
+	request_url = h_root+'/login/res/ajax.php?action=universe&'+url_suffix+'&database='+encodeURIComponent(database_id);
 	var c = 0;
 	for(var i=0; i<systems.length; i++)
 	{ // Systeme als GET-Request an die URL haengen
@@ -930,7 +930,7 @@ function fast_action(node, action_type, galaxy, system, planet)
 { // Fuehrt einen Flottenversandt oder Aehnliches durch kurzen Klick aus der Karte aus
 	// AJAX-Request ausfuehren (synchron)
 	var xmlhttp = new XMLHttpRequest();
-	var request_url = h_root+'/login/res/ajax.php?action='+encodeURIComponent(action_type)+'&action_galaxy='+encodeURIComponent(galaxy)+'&action_system='+encodeURIComponent(system)+'&action_planet='+encodeURIComponent(planet)+'&'+encodeURIComponent(session_cookie)+'='+encodeURIComponent(session_id)+'&database='+encodeURIComponent(database_id);
+	var request_url = h_root+'/login/res/ajax.php?action='+encodeURIComponent(action_type)+'&action_galaxy='+encodeURIComponent(galaxy)+'&action_system='+encodeURIComponent(system)+'&action_planet='+encodeURIComponent(planet)+'&'+url_suffix+'&database='+encodeURIComponent(database_id);
 	xmlhttp.open('GET', request_url, false);
 	xmlhttp.send(null);
 

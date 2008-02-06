@@ -236,7 +236,6 @@
 
 	login_gui::html_head();
 
-	$tabindex = 1;
 	$fieldset = 0;
 	$show_im = isset($messengers['jabber']);
 ?>

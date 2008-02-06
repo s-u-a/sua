@@ -141,12 +141,12 @@
 		<legend>Bündnisrundschreiben</legend>
 		<dl class="form">
 			<dt class="c-betreff"><label for="betreff-input">Betreff</label></dt>
-			<dd class="c-betreff"><input type="text" name="betreff" id="betreff-input" tabindex="1" accesskey="j" title="[J]" /></dd>
+			<dd class="c-betreff"><input type="text" name="betreff" id="betreff-input" tabindex="<?=$tabindex++?>" accesskey="j" title="[J]" /></dd>
 
 			<dt class="c-text"><label for="text-textarea">Te<kbd>x</kbd>t</label></dt>
-			<dd class="c-text"><textarea name="rundschreiben" id="text-textarea" rows="6" cols="35" accesskey="x" tabindex="2"></textarea></dd>
+			<dd class="c-text"><textarea name="rundschreiben" id="text-textarea" rows="6" cols="35" accesskey="x" tabindex="<?=$tabindex++?>"></textarea></dd>
 		</dl>
-		<div class="button"><button type="submit" tabindex="3" accesskey="u">R<kbd>u</kbd>ndschreiben verschicken</button></div>
+		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>" accesskey="u">R<kbd>u</kbd>ndschreiben verschicken</button></div>
 	</fieldset>
 </form>
 <?php
@@ -166,12 +166,12 @@
 <form action="verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="buendnisse-eingehen">
 	<dl class="form">
 		<dt class="c-spieler"><label for="spieler-input">Spieler</label></dt>
-		<dd class="c-spieler"><input type="text" name="empfaenger" id="spieler-input" value="<?=(isset($_POST['empfaenger']) ? htmlspecialchars($_POST['empfaenger']) : '')?>" tabindex="4" accesskey="z" title="[Z]" /></dd>
+		<dd class="c-spieler"><input type="text" name="empfaenger" id="spieler-input" value="<?=(isset($_POST['empfaenger']) ? htmlspecialchars($_POST['empfaenger']) : '')?>" tabindex="<?=$tabindex++?>" accesskey="z" title="[Z]" /></dd>
 
 		<dt class="c-mitteilung"><label for="mitteilung-textarea">Mitteilung</label></dt>
-		<dd class="c-mitteilung"><textarea rows="5" cols="30" name="mitteilung" id="mitteilung-textarea" tabindex="5" accesskey="o" title="[O]"><?=(isset($_POST['mitteilung']) ? preg_replace("/[\t\r\n]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($_POST['mitteilung'])) : '')?></textarea></dd>
+		<dd class="c-mitteilung"><textarea rows="5" cols="30" name="mitteilung" id="mitteilung-textarea" tabindex="<?=$tabindex++?>" accesskey="o" title="[O]"><?=(isset($_POST['mitteilung']) ? preg_replace("/[\t\r\n]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($_POST['mitteilung'])) : '')?></textarea></dd>
 	</dl>
-	<div class="button"><button type="submit" tabindex="6" accesskey="n">A<kbd>n</kbd>frage absenden</button></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>" accesskey="n">A<kbd>n</kbd>frage absenden</button></div>
 </form>
 <script type="text/javascript">
 	activate_users_list(document.getElementById('spieler-input'));

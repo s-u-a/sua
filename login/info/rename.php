@@ -79,9 +79,9 @@
 		<legend>Planeten umbenennen</legend>
 		<dl class="form">
 			<dt><label for="name"><kbd>N</kbd>euer Name</label></dt>
-			<dd><input type="text" id="name" name="planet_name" value="<?=htmlspecialchars($me->planetName())?>" maxlength="24" accesskey="n" tabindex="1" /></dd>
+			<dd><input type="text" id="name" name="planet_name" value="<?=htmlspecialchars($me->planetName())?>" maxlength="24" accesskey="n" tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
-		<div class="button"><button type="submit" accesskey="u" tabindex="2"><kbd>U</kbd>mbenennen</button></div>
+		<div class="button"><button type="submit" accesskey="u" tabindex="<?=$tabindex++?>"><kbd>U</kbd>mbenennen</button></div>
 	</fieldset>
 </form>
 <?php
@@ -109,9 +109,9 @@
 		<legend>Planeten aufgeben</legend>
 		<dl class="form">
 			<dt><label for="password">Passwort</label></dt>
-			<dd><input type="password" id="password" name="password" tabindex="3" /></dd>
+			<dd><input type="password" id="password" name="password" tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
-		<div class="button"><button type="submit" tabindex="4">Aufgeben</button></div>
+		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>">Aufgeben</button></div>
 	</fieldset>
 </form>
 <?php

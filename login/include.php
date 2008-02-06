@@ -212,6 +212,8 @@
 	if((!isset($_SESSION['ghost']) || !$_SESSION['ghost']) && !defined('ignore_action'))
 		$me->registerAction();
 
+	$tabindex = 1;
+
 	class login_gui
 	{
 		static function html_head($options=null)
@@ -247,8 +249,7 @@
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 		<title><?=h(_("[title_abbr_full]"))?></title>
 		<script type="text/javascript">
-			var session_cookie = '<?=str_replace('\'', '\\\'', session_name())?>';
-			var session_id = '<?=str_replace('\'', '\\\'', session_id())?>';
+			var url_suffix = '<?=jsentities(global_setting("URL_SUFFIX"))?>';
 			var database_id = '<?=str_replace('\'', '\\\'', $_SESSION['database'])?>';
 			var ths_utf8 = '<?=jsentities(_("[thousand_separator]"))?>';
 			var h_root = '<?=jsentities(h_root)?>';
@@ -259,21 +260,17 @@
 		</script>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root."/login/res/javascript.js")?>"></script>
 <?php
-			if($me->checkSetting('performance'))
+			if($me->checkSetting('performance') && $me->checkSetting('ajax'))
 			{
-				if($me->checkSetting('ajax'))
-				{
 ?>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/sarissa.js')?>"></script>
 <?php
-				}
+			}
 ?>
 		<script type="text/javascript">
 			set_time_globals(<?=time()+1?>);
 		</script>
 <?php
-			}
-
 			$skin_path = '';
 			$my_skin = $me->checkSetting('skin');
 			if(!$my_skin || !is_array($my_skin) || $my_skin[0] != "custom" && !isset($skins[$my_skin[0]]))

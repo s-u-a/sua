@@ -117,7 +117,7 @@
 			$me->setActivePlanet($fastbuild_prev);
 			define_url_suffix();
 ?>
-	<li class="c-prev"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=htmlspecialchars($me->planetName())?>&ldquo; (<?=htmlspecialchars($me->getPosString())?>) [U]" tabindex="1" accesskey="u" rel="prev">&larr;</a></li>
+	<li class="c-prev"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=htmlspecialchars($me->planetName())?>&ldquo; (<?=htmlspecialchars($me->getPosString())?>) [U]" tabindex="<?=$tabindex++?>" accesskey="u" rel="prev">&larr;</a></li>
 <?php
 		}
 		if($fastbuild_next !== false)
@@ -125,7 +125,7 @@
 			$me->setActivePlanet($fastbuild_next);
 			define_url_suffix();
 ?>
-	<li class="c-next"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=htmlspecialchars($me->planetName())?>&ldquo; (<?=htmlspecialchars($me->getPosString())?>) [Q]" tabindex="2" accesskey="q" rel="next">&rarr;</a></li>
+	<li class="c-next"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=htmlspecialchars($me->planetName())?>&ldquo; (<?=htmlspecialchars($me->getPosString())?>) [Q]" tabindex="<?=$tabindex++?>" accesskey="q" rel="next">&rarr;</a></li>
 <?php
 		}
 		$me->setActivePlanet($active_planet);

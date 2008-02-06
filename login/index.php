@@ -44,7 +44,7 @@
 	login_gui::html_head(array("notify" => true));
 ?>
 <ul id="planeten-umbenennen">
-	<li><a href="info/rename.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="2"><kbd>u</kbd>mbenennen</a></li>
+	<li><a href="info/rename.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Planeten umbenennen/aufgeben" accesskey="u" tabindex="<?=$tabindex++?>"><kbd>u</kbd>mbenennen</a></li>
 </ul>
 <?php
 	$active_planet = $me->getActivePlanet();
@@ -287,7 +287,6 @@
 	$me->setActivePlanet($active_planet);
 	$show_building = $me->checkSetting('show_building');
 	$countdowns = array();
-	$tabindex = 3;
 	$planets = $me->getPlanetsList();
 	foreach($planets as $planet)
 	{

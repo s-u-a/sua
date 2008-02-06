@@ -141,7 +141,7 @@
 		public function cancelOrder($id, $user)
 		{
 			$u = Classes::User($user);
-			$r = $this->arrayQuery("SELECT id, planet, amount, offered_resource FROM market WHERE id = ".$this->escape($id)." AND user = ".$this->escape($u->getName())." AND finish = -1;");
+			$r = $this->arrayQuery("SELECT id, planet, amount, offered_resource, requested_resource FROM market WHERE id = ".$this->escape($id)." AND user = ".$this->escape($u->getName())." AND finish = -1;");
 			if(isset($r[0]))
 			{
 				$this->query("DELETE FROM market WHERE id = ".$this->escape($r[0]['id']).";");

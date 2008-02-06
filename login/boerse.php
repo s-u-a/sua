@@ -124,6 +124,8 @@
 	</thead>
 	<tbody>
 <?php
+		$tabindex_save = $tabindex;
+		$tabindex += 6;
 		$i = 0;
 		$countdowns = array();
 		$active_planet = $me->getActivePlanet();
@@ -133,7 +135,7 @@
 			define_url_suffix();
 ?>
 		<tr class="gebot-<?=htmlspecialchars($order['offered_resource'])?> ertrag-<?=htmlspecialchars($order['requested_resource'])?>">
-			<td class="c-planet"><a href="boerse.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), "<span class=\"koords\">".htmlspecialchars($me->getPosString())."</span>")?></td>
+			<td class="c-planet"><a href="boerse.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"><?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), "<span class=\"koords\">".htmlspecialchars($me->getPosString())."</span>")?></td>
 			<td class="c-gebot"><span class="zahl"><?=ths($order['amount'])?></span> <?=h(_("[ress_".($order['offered_resource']-1)."]"))?></td>
 			<td class="c-mindestertrag"><span class="zahl"><?=ths($order['amount']*$order['min_price'])?></span> <?=h(_("[ress_".($order['requested_resource']-1)."]"))?></td>
 			<td class="c-gueltigkeit" id="restbauzeit-boerse-<?=htmlspecialchars($i)?>"><?=sprintf(h(_("%s (Serverzeit)")), htmlspecialchars(date(_('H:i:s, Y-m-d'), $order['expiration'])))?></td>
@@ -162,6 +164,7 @@
 		}
 		$me->setActivePlanet($active_planet);
 		define_url_suffix();
+		list($tabindex, $tabindex_save) = array($tabindex_save, $tabindex);
 ?>
 	</tbody>
 </table>
@@ -182,21 +185,21 @@
 	<fieldset>
 		<legend><?=h(_("Neuen Handelsauftrag anlegen"))?></legend>
 		<dl class="form">
-			<dt class="c-angebot"><label for="i-angebot-rohstoff"><?=h(_("Angebot&[login/boerse.php|1]"))?></label></dt>
+			<dt class="c-angebot"><label for="i-angebot-rohstoff"><?=h(_("Angeb&ot[login/boerse.php|1]"))?></label></dt>
 			<dd class="c-angebot">
-				<select name="res_offered" id="i-angebot-rohstoff" onchange="refresh_offers(); refresh_costs();" onkeypress="onchange()"<?=accesskey_attr(_("Angebot&[login/boerse.php|1]"))?>>
+				<select name="res_offered" id="i-angebot-rohstoff" onchange="refresh_offers(); refresh_costs();" onkeypress="onchange()" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Angebot&[login/boerse.php|1]"))?>>
 					<option value="1"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 1){?> selected="selected"<?php }?>><?=h(_("[ress_0]"))?></option>
 					<option value="2"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 2){?> selected="selected"<?php }?>><?=h(_("[ress_1]"))?></option>
 					<option value="3"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 3){?> selected="selected"<?php }?>><?=h(_("[ress_2]"))?></option>
 					<option value="4"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 4){?> selected="selected"<?php }?>><?=h(_("[ress_3]"))?></option>
 					<option value="5"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 5){?> selected="selected"<?php }?>><?=h(_("[ress_4]"))?></option>
 				</select>
-				<input type="text" id="i-menge" name="amount" value="<?=isset($_POST['amount']) ? htmlspecialchars($_POST['amount']) : 0?>" onchange="refresh_costs();" onkeypress="onchange();" onclick="onchange();" />
+				<input type="text" id="i-menge" name="amount" value="<?=isset($_POST['amount']) ? htmlspecialchars($_POST['amount']) : 0?>" onchange="refresh_costs();" onkeypress="onchange();" onclick="onchange();" tabindex="<?=$tabindex++?>" />
 			</dd>
 
 			<dt class="c-gewuenschter-rohstoff"><label for="i-gewuenschter-rohstoff"><?=h(_("Gewünschter Rohstoff&[login/boerse.php|1]"))?></label></dt>
 			<dd class="c-gewuenschter-rohstoff">
-				<select name="res_requested" id="i-gewuenschter-rohstoff" onchange="refresh_costs();" onkeypress="onchange();"<?=accesskey_attr(_("Gewünschter Rohstoff&[login/boerse.php|1]"))?>>
+				<select name="res_requested" id="i-gewuenschter-rohstoff" onchange="refresh_costs();" onkeypress="onchange();" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Gewünschter Rohstoff&[login/boerse.php|1]"))?>>
 					<option value="1"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 1){?> selected="selected"<?php }?>><?=h(_("[ress_0]"))?></option>
 					<option value="2"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 2){?> selected="selected"<?php }?>><?=h(_("[ress_1]"))?></option>
 					<option value="3"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 3){?> selected="selected"<?php }?>><?=h(_("[ress_2]"))?></option>
@@ -206,11 +209,11 @@
 			</dd>
 
 			<dt class="c-minimale-menge"><label for="i-minimale-menge"><?=h(_("Minimale Menge&[login/boerse.php|1]"))?></label></dt>
-			<dd class="c-minimale-menge"><input type="text" id="i-minimale-menge" name="min_price" value="<?=isset($_POST['min_price']) ? htmlspecialchars($_POST['min_price']) : 0?>" onchange="refresh_costs();" onkeypress="onchange();" onclick="onchange();"<?=accesskey_attr(_("Minimale Menge&[login/boerse.php|1]"))?> /></dd>
+			<dd class="c-minimale-menge"><input type="text" id="i-minimale-menge" name="min_price" value="<?=isset($_POST['min_price']) ? htmlspecialchars($_POST['min_price']) : 0?>" onchange="refresh_costs();" onkeypress="onchange();" onclick="onchange();" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Minimale Menge&[login/boerse.php|1]"))?> /></dd>
 
 			<dt class="c-angebotsdauer"><label for="i-angebotsdauer"><?=h(_("Angebotsdauer&[login/boerse.php|1]"))?></label></dt>
 			<dd class="c-angebotsdauer">
-				<select name="duration" id="i-angebotsdauer" onchange="refresh_costs();" onkeypress="onchange();"<?=accesskey_attr(_("Angebotsdauer&[login/boerse.php|1]"))?>>
+				<select name="duration" id="i-angebotsdauer" onchange="refresh_costs();" onkeypress="onchange();" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Angebotsdauer&[login/boerse.php|1]"))?>>
 					<option value="1"<?php if(isset($_POST['duration']) && $_POST['duration'] == 1){?> selected="selected"<?php }?>><?=sprintf(h(_("Eine Stunde (%s %%)")), 5)?></option>
 					<option value="12"<?php if(isset($_POST['duration']) && $_POST['duration'] == 12){?> selected="selected"<?php }?>><?=sprintf(h(_("Zwölf Stunden (%s %%)")), 10)?></option>
 					<option value="24"<?php if(isset($_POST['duration']) && $_POST['duration'] == 24){?> selected="selected"<?php }?>><?=sprintf(h(_("Einen Tag (%s %%)")), 15)?></option>
@@ -227,9 +230,12 @@
 			<dt class="c-zusaetzliche-gebuehren"><?=h(_("Zusätzliche Gebühren"))?></dt>
 			<dd class="c-zusaetzliche-gebuehren" id="zusaetzliche-gebuehren">0</dd>
 		</dl>
-		<div class="button"><button type="submit"<?=accesskey_attr(_("Auftrag aufgeben&[login/boerse.php|1]"))?>><?=h(_("Auftrag aufgeben&[login/boerse.php|1]"))?></button></div>
+		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Auftrag aufgeben&[login/boerse.php|1]"))?>><?=h(_("Auftrag aufgeben&[login/boerse.php|1]"))?></button></div>
 	</fieldset>
 </form>
+<?php
+	$tabindex = $tabindex_save;
+?>
 <script type="text/javascript">
 	refresh_offers();
 	refresh_costs();
