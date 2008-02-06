@@ -179,8 +179,7 @@
 		<title><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Adminbereich")))?></title>
 		<link rel="stylesheet" href="<?=htmlspecialchars(h_root.'/admin/style.css')?>" type="text/css" />
 		<script type="text/javascript">
-			var session_cookie = '<?=str_replace('\'', '\\\'', session_name())?>';
-			var session_id = '<?=str_replace('\'', '\\\'', session_id())?>';
+			var url_suffix = '<?=urlencode(session_name())."=".urlencode(session_id())?>';
 <?php
 			if(isset($_SESSION['database']))
 			{
