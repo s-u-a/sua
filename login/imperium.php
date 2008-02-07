@@ -278,11 +278,6 @@
 	<dt class="c-gesamt">Gesamt</dt>
 	<dd class="c-gesamt"><?=ths($me->getSpentRess())?></dd>
 </dl>
-<h3 id="forschungsverbesserungen" class="strong">Forschungsverbesserungen</h3>
-<dl class="imperium-rohstoffe-auswirkungsgrade">
-	<dt class="c-energieproduktion">Energieproduktion</dt>
-	<dd class="c-energieproduktion"><?=str_replace('.', ',', round((pow(1.05, $me->getItemLevel('F3', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
-</dl>
 <?php
 			break;
 		case 'roboter':

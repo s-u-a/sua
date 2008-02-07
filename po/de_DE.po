@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-02-07 00:10+0100\n"
+"PO-Revision-Date: 2008-02-07 04:54+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -1167,7 +1167,7 @@ msgstr "Stunden"
 #: ../admin/index.php:602
 #: ../admin/index.php:632
 #: ../login/flotten.php:763
-#: ../login/flotten.php:1095
+#: ../login/flotten.php:1096
 msgid "Tage"
 msgstr "Tage"
 
@@ -1539,43 +1539,43 @@ msgstr "Adminbereich"
 msgid "Abmelden nicht vergessen&[admin/include.php|2]"
 msgstr "Abmelden nicht vergessen"
 
-#: ../login/info/flotten_actions.php:242
-#: ../login/info/flotten_actions.php:243
+#: ../login/info/flotten_actions.php:245
+#: ../login/info/flotten_actions.php:246
 msgid "Transportgut der Flotte nicht abliefern&[login/info/flotten_actions.php|1]"
 msgstr "Transportgut der Flotte nicht abliefern"
 
-#: ../login/info/flotten_actions.php:243
+#: ../login/info/flotten_actions.php:246
 msgid "Diese Funktion erleichtert es Ihnen, mit einer Flugroute Rohstoffe von mehreren Planeten einzusammeln."
 msgstr "Diese Funktion erleichtert es Ihnen, mit einer Flugroute Rohstoffe von mehreren Planeten einzusammeln."
 
-#: ../login/info/flotten_actions.php:484
+#: ../login/info/flotten_actions.php:516
 msgid "Flugroute"
 msgstr "Flugroute"
 
-#: ../login/info/flotten_actions.php:502
+#: ../login/info/flotten_actions.php:534
 msgid "Ungültigen Flug ausgewählt."
 msgstr "Ungültigen Flug ausgewählt."
 
-#: ../login/info/flotten_actions.php:511
-#: ../login/flotten.php:1212
+#: ../login/info/flotten_actions.php:543
+#: ../login/flotten.php:1213
 msgid "Ziel"
 msgstr "Ziel"
 
-#: ../login/info/flotten_actions.php:512
+#: ../login/info/flotten_actions.php:544
 msgid "Auftrag"
 msgstr "Auftrag"
 
-#: ../login/info/flotten_actions.php:513
-#: ../login/flotten.php:1218
+#: ../login/info/flotten_actions.php:545
+#: ../login/flotten.php:1219
 #: ../login/einstellungen.php:535
 msgid "Ankunft"
 msgstr "Ankunft"
 
-#: ../login/info/flotten_actions.php:533
+#: ../login/info/flotten_actions.php:565
 msgid "Diesen Planeten in der Karte anzeigen"
 msgstr "Diesen Planeten in der Karte anzeigen"
 
-#: ../login/info/flotten_actions.php:533
+#: ../login/info/flotten_actions.php:565
 #: ../login/info/playerinfo.php:180
 #: ../login/karte.php:592
 #: ../login/flotten.php:513
@@ -1583,11 +1583,11 @@ msgstr "Diesen Planeten in der Karte anzeigen"
 #: ../login/flotten.php:698
 #: ../login/flotten.php:771
 #: ../login/flotten.php:941
-#: ../login/flotten.php:1213
+#: ../login/flotten.php:1214
 #: ../login/include.php:432
 #: ../login/include.php:611
-#: ../engine/classes/user.php:3250
-#: ../engine/classes/user.php:3251
+#: ../engine/classes/user.php:3285
+#: ../engine/classes/user.php:3286
 #: ../engine/classes/fleet.php:1102
 #: ../engine/classes/fleet.php:1103
 #: ../engine/classes/fleet.php:1116
@@ -1599,13 +1599,13 @@ msgstr "Diesen Planeten in der Karte anzeigen"
 msgid "%d:%d:%d"
 msgstr "%d:%d:%d"
 
-#: ../login/info/flotten_actions.php:535
+#: ../login/info/flotten_actions.php:567
 #, php-format
 msgid "%s (unbesiedelt)"
 msgstr "%s (unbesiedelt)"
 
-#: ../login/info/flotten_actions.php:538
-#: ../login/info/flotten_actions.php:540
+#: ../login/info/flotten_actions.php:570
+#: ../login/info/flotten_actions.php:572
 #: ../login/info/description.php:105
 #: ../login/allianz.php:207
 #: ../login/forschungsbaum.php:48
@@ -1615,15 +1615,15 @@ msgstr "%s (unbesiedelt)"
 msgid "Genauere Informationen anzeigen"
 msgstr "Genauere Informationen anzeigen"
 
-#: ../login/info/flotten_actions.php:540
+#: ../login/info/flotten_actions.php:572
 #: ../login/info/playerinfo.php:44
 #, php-format
 msgid "[%s] %s"
 msgstr "[%s] %s"
 
-#: ../login/info/flotten_actions.php:541
+#: ../login/info/flotten_actions.php:573
 #: ../login/flotten.php:694
-#: ../login/flotten.php:1213
+#: ../login/flotten.php:1214
 #: ../engine/classes/fleet.php:1296
 #: ../engine/classes/fleet.php:1588
 #: ../engine/classes/fleet.php:1606
@@ -1632,22 +1632,22 @@ msgstr "[%s] %s"
 msgid "„%s“ (%s, Eigentümer: %s)"
 msgstr "„%s“ (%s, Eigentümer: %s)"
 
-#: ../login/info/flotten_actions.php:547
+#: ../login/info/flotten_actions.php:579
 #: ../login/info/description.php:297
 #: ../login/index.php:197
 #: ../login/flotten.php:829
-#: ../login/flotten.php:1216
+#: ../login/flotten.php:1217
 msgid "[fleet_"
 msgstr "XXX"
 
-#: ../login/info/flotten_actions.php:548
+#: ../login/info/flotten_actions.php:580
 #: ../login/flotten.php:803
-#: ../login/flotten.php:1112
+#: ../login/flotten.php:1113
 #, php-format
 msgid "Ankunft: %s"
 msgstr "Ankunft: %s"
 
-#: ../login/info/flotten_actions.php:548
+#: ../login/info/flotten_actions.php:580
 #: ../login/info/playerinfo.php:138
 #: ../login/info/playerinfo.php:155
 #: ../login/boerse.php:141
@@ -1663,13 +1663,13 @@ msgstr "Ankunft: %s"
 msgid "%s (Serverzeit)"
 msgstr "%s (Serverzeit)"
 
-#: ../login/info/flotten_actions.php:548
+#: ../login/info/flotten_actions.php:580
 #: ../login/info/playerinfo.php:138
 #: ../login/info/playerinfo.php:155
 #: ../login/boerse.php:141
 #: ../login/boerse.php:155
 #: ../login/flotten.php:803
-#: ../login/flotten.php:1219
+#: ../login/flotten.php:1220
 #: ../public_message.php:72
 msgid "H:i:s, Y-m-d"
 msgstr "H:i:s, Y-m-d"
@@ -1820,7 +1820,7 @@ msgstr "Ausgegebene Rohstoffe"
 #: ../login/boerse.php:203
 #: ../login/boerse.php:251
 #: ../login/boerse.php:260
-#: ../engine/include.php:814
+#: ../engine/include.php:832
 #: ../engine/classes/fleet.php:1249
 #: ../engine/classes/fleet.php:1302
 #: ../engine/classes/fleet.php:1303
@@ -1842,7 +1842,7 @@ msgstr "Carbon"
 #: ../login/boerse.php:204
 #: ../login/boerse.php:252
 #: ../login/boerse.php:268
-#: ../engine/include.php:816
+#: ../engine/include.php:834
 #: ../engine/classes/fleet.php:1249
 #: ../engine/classes/fleet.php:1302
 #: ../engine/classes/fleet.php:1303
@@ -1864,7 +1864,7 @@ msgstr "Aluminium"
 #: ../login/boerse.php:205
 #: ../login/boerse.php:253
 #: ../login/boerse.php:276
-#: ../engine/include.php:818
+#: ../engine/include.php:836
 #: ../engine/classes/fleet.php:1249
 #: ../engine/classes/fleet.php:1302
 #: ../engine/classes/fleet.php:1303
@@ -1886,7 +1886,7 @@ msgstr "Wolfram"
 #: ../login/boerse.php:206
 #: ../login/boerse.php:254
 #: ../login/boerse.php:284
-#: ../engine/include.php:820
+#: ../engine/include.php:838
 #: ../engine/classes/fleet.php:1249
 #: ../engine/classes/fleet.php:1302
 #: ../engine/classes/fleet.php:1303
@@ -1908,7 +1908,7 @@ msgstr "Radium"
 #: ../login/boerse.php:207
 #: ../login/boerse.php:255
 #: ../login/boerse.php:292
-#: ../engine/include.php:824
+#: ../engine/include.php:842
 #: ../engine/classes/fleet.php:1302
 #: ../engine/classes/fleet.php:1303
 #: ../engine/classes/fleet.php:1354
@@ -2081,7 +2081,7 @@ msgid "Stufe"
 msgstr "Stufe"
 
 #: ../login/info/description.php:179
-#: ../engine/include.php:829
+#: ../engine/include.php:847
 msgid "[ress_5]"
 msgstr "Energie"
 
@@ -2124,9 +2124,9 @@ msgstr "Antriebsstärke"
 #: ../login/flotten.php:793
 #: ../login/flotten.php:810
 #: ../login/flotten.php:815
-#: ../login/flotten.php:1095
-#: ../login/flotten.php:1124
-#: ../login/flotten.php:1177
+#: ../login/flotten.php:1096
+#: ../login/flotten.php:1125
+#: ../login/flotten.php:1178
 #: ../faq.php:204
 #: ../faq.php:205
 #: ../faq.php:206
@@ -2631,7 +2631,7 @@ msgstr[1] "Forschungen"
 #: ../login/forschungsbaum.php:25
 #: ../login/flotten.php:810
 #: ../login/flotten.php:815
-#: ../login/flotten.php:1177
+#: ../login/flotten.php:1178
 #: ../engine/classes/fleet.php:1607
 msgid "Roboter"
 msgid_plural "Roboter"
@@ -3097,38 +3097,38 @@ msgstr "Tritium"
 msgid "Absen&den[login/flotten.php|1]"
 msgstr "Absen&den"
 
-#: ../login/flotten.php:1112
+#: ../login/flotten.php:1113
 #, php-format
 msgid "%s (Lokalzeit)"
 msgstr "%s (Lokalzeit)"
 
-#: ../login/flotten.php:1124
-#: ../login/flotten.php:1177
+#: ../login/flotten.php:1125
+#: ../login/flotten.php:1178
 msgid "Tonnen"
 msgstr "Tonnen"
 
-#: ../login/flotten.php:1213
+#: ../login/flotten.php:1214
 #, php-format
 msgid "Unbesiedelt (%s)"
 msgstr "Unbesiedelt (%s)"
 
-#: ../login/flotten.php:1215
+#: ../login/flotten.php:1216
 msgid "Auftragsart"
 msgstr "Auftragsart"
 
-#: ../login/flotten.php:1227
+#: ../login/flotten.php:1228
 msgid "Geben Sie dieser Flotte Ladung mit auf den Rückweg"
 msgstr "Geben Sie dieser Flotte Ladung mit auf den Rückweg"
 
-#: ../login/flotten.php:1227
+#: ../login/flotten.php:1228
 msgid "Handel&[login/flotten.php|3]"
 msgstr "Handel"
 
-#: ../login/flotten.php:1233
+#: ../login/flotten.php:1234
 msgid "Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern."
 msgstr "Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern."
 
-#: ../login/flotten.php:1233
+#: ../login/flotten.php:1234
 msgid "Bündnisangriff&[login/flotten.php|3]"
 msgstr "Bündnisangriff"
 
@@ -3588,7 +3588,7 @@ msgid "Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %s
 msgstr "Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s."
 
 #: ../login/include.php:181
-#: ../login/include.php:782
+#: ../login/include.php:783
 #, php-format
 msgid "HTTP redirect: %s"
 msgstr "HTTP redirect: %s"
@@ -3605,7 +3605,7 @@ msgid "[title_abbr_full]"
 msgstr "S-U-A – Stars Under Attack"
 
 #: ../login/include.php:304
-#: ../engine/include.php:862
+#: ../engine/include.php:880
 msgid "[thousand_separator]"
 msgstr " "
 
@@ -4485,35 +4485,35 @@ msgstr "Sie erreichen die Kanäle alternativ mit einem beliebigen IRC-Client."
 msgid "%s auf %s, Port %d"
 msgstr "%s auf %s, Port %d"
 
-#: ../engine/include.php:760
+#: ../engine/include.php:763
 #, php-format
 msgid "%s Tag"
 msgid_plural "%s Tage"
 msgstr[0] "%s Tag"
 msgstr[1] "%s Tage"
 
-#: ../engine/include.php:762
+#: ../engine/include.php:765
 #, php-format
 msgid "%s Stunde"
 msgid_plural "%s Stunden"
 msgstr[0] "%s Stunde"
 msgstr[1] "%s Stunden"
 
-#: ../engine/include.php:764
+#: ../engine/include.php:767
 #, php-format
 msgid "%s Minute"
 msgid_plural "%s Minuten"
 msgstr[0] "%s Minute"
 msgstr[1] "%s Minuten"
 
-#: ../engine/include.php:766
+#: ../engine/include.php:769
 #, php-format
 msgid "%s Sekunde"
 msgid_plural "%s Sekunden"
 msgstr[0] "%s Sekunde"
 msgstr[1] "%s Sekunden"
 
-#: ../engine/include.php:865
+#: ../engine/include.php:883
 msgid "[minus_sign]"
 msgstr "−"
 
@@ -4587,7 +4587,7 @@ msgstr "Ihre Bewerbung bei der Allianz %s wurde abgelehnt."
 msgid "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 msgstr "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 
-#: ../engine/classes/user.php:3250
+#: ../engine/classes/user.php:3285
 #, php-format
 msgid ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
@@ -4596,12 +4596,12 @@ msgstr ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
 "Die Flotte bestand aus folgenden Schiffen: %s"
 
-#: ../engine/classes/user.php:3251
+#: ../engine/classes/user.php:3286
 #, php-format
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr "Fremdstationierung zurückgezogen auf %s"
 
-#: ../engine/classes/user.php:3822
+#: ../engine/classes/user.php:3857
 #: ../impressum.php:31
 #: ../passwd.php:42
 msgid "[title_full]"
@@ -5409,37 +5409,41 @@ msgstr "Es besteht selbstverständlich keine Garantie auf eine Antwort, normaler
 msgid "Fragen zum Spiel über andere Wege als die hier angegebenen, wie zum Beispiel über die private ICQ-Nummer des Betreibers, werden als unverschämt erachtet und höchstwahrscheinlich ignoriert."
 msgstr "Fragen zum Spiel über andere Wege als die hier angegebenen, wie zum Beispiel über die private ICQ-Nummer des Betreibers, werden als unverschämt erachtet und höchstwahrscheinlich ignoriert."
 
-#: ../impressum.php:47
+#: ../impressum.php:46
 msgid "Idee, Programmierung, Projektleitung und -verwaltung"
 msgstr "Idee, Programmierung, Projektleitung und -verwaltung"
 
-#: ../impressum.php:50
-msgid "Finanzen, Design, Hauptseite, Items"
-msgstr "Finanzen, Design, Hauptseite, Items"
+#: ../impressum.php:49
+msgid "Finanzen"
+msgstr "Finanzen"
 
-#: ../impressum.php:53
-msgid "Moderation, Testing"
-msgstr "Moderation, Testing"
+#: ../impressum.php:52
+msgid "Moderation"
+msgstr "Moderation"
 
-#: ../impressum.php:56
+#: ../impressum.php:55
+msgid "Items"
+msgstr "Items"
+
+#: ../impressum.php:58
 msgid "Design der Hauptseite"
 msgstr "Design der Hauptseite"
 
-#: ../impressum.php:59
-msgid "Diverse Schiffsbeschreibungen"
-msgstr "Diverse Schiffsbeschreibungen"
-
 #: ../impressum.php:61
+msgid "[language] translation"
+msgstr "Deutsche Sprachversion"
+
+#: ../impressum.php:62
 msgid "[translator_email]"
 msgstr "webmaster@s-u-a.net"
 
-#: ../impressum.php:61
+#: ../impressum.php:62
 msgid "[translator_name]"
 msgstr "Candid Dauth"
 
-#: ../impressum.php:62
-msgid "[language] translation"
-msgstr "Deutsche Übersetzung"
+#: ../impressum.php:64
+msgid "Testing"
+msgstr "Testing"
 
 #: ../public_message.php:40
 msgid "Öffentliche Nachricht"
