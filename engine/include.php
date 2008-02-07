@@ -2016,3 +2016,19 @@
 		}
 		return $string = implode("&", $string);
 	}
+
+	/**
+	  * Funktioniert wie explode(), liefert aber ein leeres Array bei einem leeren String zurück.
+	*/
+
+	function explode0($delimiter, $string, $limit=null)
+	{
+		if(strlen($string) > 0)
+		{
+			if(isset($limit))
+				return explode($delimiter, $string, $limit);
+			else
+				return explode($delimiter, $string);
+		}
+		return array();
+	}

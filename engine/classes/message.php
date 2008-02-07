@@ -292,7 +292,7 @@
 
 		function addUser($user, $type=6)
 		{
-			$users = explode("\n", self::$database->messageUsers($this->name));
+			$users = explode0("\n", self::$database->messageUsers($this->name));
 			$users[] = $user."\r".$type;
 			self::$database->messageUsers($this->name, implode("\n", $users));
 
