@@ -73,7 +73,7 @@
 <h2 id="handel">Handel</h2>
 <p>Die Handelsfunktion ermöglicht es Ihnen, herannahenden Transporten Rohstoffe oder Roboter mit auf den Weg zu geben, ohne dass Sie dazu einen zusätzlichen Transport starten müssen.</p>
 <?php
-			foreach($fleet->getUsersList() as $username)
+			foreach($fleet->getUsersList() as $no=>$username)
 			{
 				$verb = $me->isVerbuendet($username);
 
@@ -230,6 +230,9 @@
 					}
 				}
 ?>
+		<script type="text/javascript">
+			res_now['handel-<?=$no?>'] = [ <?=implode(", ", $me->getRess())?> ];
+		</script>
 		<input type="hidden" name="handel_username" value="<?=htmlspecialchars($username)?>" />
 		<input type="hidden" name="handel_type" value="<?=$input_name?>" />
 		<p><?=htmlspecialchars($mess1)?></p>
@@ -267,8 +270,8 @@
 				{
 ?>
 				<tr class="c-carbon">
-					<th class="c-gut">Carbon</th>
-					<td class="c-einlagern"><input type="text" name="handel[0][0]" id="handel-0-0" value="<?php printf($value, $handel[0][0])?>"<?=$disabled?> /></td>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-0">Carbon</label></th>
+					<td class="c-einlagern"><input type="text" name="handel[0][0]" id="handel-<?=$no?>-0-0" value="<?php printf($value, $handel[0][0])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
 					{
@@ -277,11 +280,11 @@
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-0').value=<?=floor($available_ress[0])?>;"><?=ths($available_ress[0])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-0').value=Math.floor(res_now['handel-<?=$no?>'][0]);" id="handel-<?=$no?>-carbon"><?=ths($available_ress[0])?></a></td>
 				</tr>
 				<tr class="c-aluminium">
-					<th class="c-gut">Aluminium</th>
-					<td class="c-einlagern"><input type="text" name="handel[0][1]" id="handel-0-1" value="<?php printf($value, $handel[0][1])?>"<?=$disabled?> /></td>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-1">Aluminium</label></th>
+					<td class="c-einlagern"><input type="text" name="handel[0][1]" id="handel-<?=$no?>-0-1" value="<?php printf($value, $handel[0][1])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
 					{
@@ -290,11 +293,11 @@
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-1').value=<?=floor($available_ress[1])?>;"><?=ths($available_ress[1])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-1').value=Math.floor(res_now['handel-<?=$no?>'][1]);" id="handel-<?=$no?>-aluminium"><?=ths($available_ress[1])?></a></td>
 				</tr>
 				<tr class="c-wolfram">
-					<th class="c-gut">Wolfram</th>
-					<td class="c-einlagern"><input type="text" name="handel[0][2]" id="handel-0-2" value="<?php printf($value, $handel[0][2])?>"<?=$disabled?> /></td>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-2">Wolfram</label></th>
+					<td class="c-einlagern"><input type="text" name="handel[0][2]" id="handel-<?=$no?>-0-2" value="<?php printf($value, $handel[0][2])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
 					{
@@ -303,11 +306,11 @@
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-2').value=<?=floor($available_ress[2])?>;"><?=ths($available_ress[2])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-2').value=Math.floor(res_now['handel-<?=$no?>'][2]);" id="handel-<?=$no?>-wolfram"><?=ths($available_ress[2])?></a></td>
 				</tr>
 				<tr class="c-radium">
-					<th class="c-gut">Radium</th>
-					<td class="c-einlagern"><input type="text" name="handel[0][3]" id="handel-0-3" value="<?php printf($value, $handel[0][3])?>"<?=$disabled?> /></td>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-3">Radium</label></th>
+					<td class="c-einlagern"><input type="text" name="handel[0][3]" id="handel-<?=$no?>-0-3" value="<?php printf($value, $handel[0][3])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
 					{
@@ -316,11 +319,11 @@
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-3').value=<?=floor($available_ress[3])?>;"><?=ths($available_ress[3])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-3').value=Math.floor(res_now['handel-<?=$no?>'][3]);" id="handel-<?=$no?>-radium"><?=ths($available_ress[3])?></a></td>
 				</tr>
 				<tr class="c-tritium">
-					<th class="c-gut">Tritium</th>
-					<td class="c-einlagern"><input type="text" name="handel[0][4]" id="handel-0-4" value="<?php printf($value, $handel[0][4])?>"<?=$disabled?> /></td>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-4">Tritium</label></th>
+					<td class="c-einlagern"><input type="text" name="handel[0][4]" id="handel-<?=$no?>-0-4" value="<?php printf($value, $handel[0][4])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
 					{
@@ -329,7 +332,7 @@
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-0-4').value=<?=floor($available_ress[4])?>;"><?=ths($available_ress[4])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-4').value=Math.floor(res_now['handel-<?=$no?>'][4]);" id="handel-<?=$no?>-tritium"><?=ths($available_ress[4])?></a></td>
 				</tr>
 <?php
 				}
@@ -342,9 +345,9 @@
 						if(isset($handel[1][$id])) $h = $handel[1][$id];
 ?>
 				<tr class="c-ro-<?=htmlspecialchars($id)?>">
-					<th class="c-gut"><?=htmlspecialchars($item_info['name'])?></th>
-					<td class="c-einlagern"><input type="text" name="handel[1][<?=$id?>]" id="handel-1-<?=$id?>" value="<?=htmlspecialchars($h)?>" /></td>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-1-<?=jsentities($id)?>').value=<?=$available_robs[$id]?>"><?=ths($available_robs[$id])?></a></td>
+					<th class="c-gut"><label for="handel-<?=$no?>-1-<?=$id?>"><?=htmlspecialchars($item_info['name'])?></label></th>
+					<td class="c-einlagern"><input type="text" name="handel[1][<?=$id?>]" id="handel-<?=$no?>-1-<?=$id?>" value="<?=htmlspecialchars($h)?>" /></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-1-<?=jsentities($id)?>').value=<?=$available_robs[$id]?>"><?=ths($available_robs[$id])?></a></td>
 				</tr>
 <?php
 					}
@@ -364,6 +367,35 @@
 				}
 ?>
 		</table>
+<?php
+				if($me->checkSetting("performance") && $me->checkSetting("ress_refresh") > 0)
+				{
+					$prod = $me->getProduction();
+					$limit = $me->getProductionLimit();
+?>
+		<script type="text/javascript">
+		// <![CDATA[
+			refresh_ress(<?=$me->checkSetting('ress_refresh')*1000?>, 'handel-<?=$no?>', [ <?=implode(", ", $me->getRess())?> ], [ <?=implode(", ", $me->getProduction())?> ] , [ <?=implode(", ", $me->getProductionLimit())?> ]);
+
+			if(!last_res) var last_res = { };
+			last_res['handel-<?=$no?>'] = [ ];
+			refresh_callbacks['handel-<?=$no?>'] = [ function(){
+				var changed = false;
+				for(var i=0; i<=4; i++)
+				{
+					if(last_res['handel-<?=$no?>'][i] && document.getElementById('handel-<?=$no?>-0-'+i).value == last_res['handel-<?=$no?>'][i])
+					{
+						document.getElementById('handel-<?=$no?>-0-'+i).value = Math.floor(res_now['handel-<?=$no?>'][i]);
+						changed = true;
+					}
+					last_res['handel-<?=$no?>'][i] = Math.floor(res_now['handel-<?=$no?>'][i]);
+				}
+			} ];
+		// ]]>
+		</script>
+<?php
+				}
+?>
 	</fieldset>
 </form>
 <?php

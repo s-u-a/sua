@@ -1042,7 +1042,7 @@
 					document.getElementById('transport-'+res_ids[i]).value = Math.floor(res_now['ress'][i]);
 					changed = true;
 				}
-				last_res[i] = Math.floor(res_now[i]);
+				last_res[i] = Math.floor(res_now['ress'][i]);
 			}
 			if(changed) recalc_values();
 		});

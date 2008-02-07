@@ -418,6 +418,8 @@ function move_title(ev)
 
 var refresh_callbacks = { };
 
+Array.prototype.copy = function() { return this.slice(0, this.length); }
+
 function refresh_ress(refresh_int, id, vorh, prod, lim)
 { // Initialisiert Auto-Refresh
 	// Startzeit zur Neuberechnung
@@ -427,7 +429,7 @@ function refresh_ress(refresh_int, id, vorh, prod, lim)
 	var now_time = new Date();
 	var start_time = now_time.getTime();
 
-	res_now[id] = vorh;
+	res_now[id] = vorh.copy();
 	if(!refresh_callbacks[id])
 		refresh_callbacks[id] = [ ];
 
@@ -438,6 +440,7 @@ function refresh_ress(refresh_int, id, vorh, prod, lim)
 function increase_ress(start_time, id, vorh, prod, lim)
 { // Aktualisiert die Rohstoffanzeigen
 	// Zeitdifferenz berechnen
+
 	var now_time = new Date();
 	var time_passed = (now_time.getTime()-start_time)/3600000;
 

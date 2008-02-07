@@ -304,7 +304,7 @@
 			var ths_utf8 = '<?=jsentities(_("[thousand_separator]"))?>';
 			var h_root = '<?=jsentities(h_root)?>';
 			var last_min_chars = '<?=jsentities(global_setting("LIST_MIN_CHARS"))?>';
-			var res_now = [ <?=implode(", ", $me->getRess())?> ];
+			var res_now = { 'ress' : [ <?=implode(", ", $me->getRess())?> ] };
 			var res_ids = [ 'carbon', 'aluminium', 'wolfram', 'radium', 'tritium' ];
 			var slow_terminal = <?=$me->checkSetting("performance") ? "false" : "true"?>;
 		</script>

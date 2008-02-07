@@ -43,23 +43,26 @@
 
 <h3>Mitwirkende</h3>
 <dl>
-	<dt><a href="mailto:webmaster@s-u-a.net">Candid Dauth</a></dt>
-	<dd><?=h(_("Idee, Programmierung, Projektleitung und -verwaltung"))?></dd>
+	<dt><?=h(_("Idee, Programmierung, Projektleitung und -verwaltung"))?></dt>
+	<dd><a href="mailto:webmaster@s-u-a.net">Candid Dauth</a></dd>
 
-	<dt><a href="mailto:rmueller@s-u-a.net">rmueller</a></dt>
-	<dd><?=h(_("Finanzen, Design, Hauptseite, Items"))?></dd>
+	<dt><?=h(_("Finanzen"))?></dt>
+	<dd><a href="mailto:rmueller@s-u-a.net">rmueller</a></dd>
 
-	<dt><a href="mailto:soltari@s-u-a.net">Soltari</a></dt>
-	<dd><?=h(_("Moderation, Testing"))?></dd>
+	<dt><?=h(_("Moderation"))?></dt>
+	<dd>Soltari</dd>
 
-	<dt>Geki</dt>
-	<dd><?=h(_("Design der Hauptseite"))?></dd>
+	<dt><?=h(_("Items"))?></dt>
+	<dd><a href="mailto:rmueller@s-u-a.net">rmueller</a>, <a href="mailto:barade@s-u-a.net">Barade</a></dd>
 
-	<dt><a href="mailto:barade@s-u-a.net">Barade</a></dt>
-	<dd><?=h(_("Diverse Schiffsbeschreibungen"))?></dd>
+	<dt><?=h(_("Design der Hauptseite"))?></dt>
+	<dd>Geki</dd>
 
-	<dt><?php if(_("[translator_email]") && _("[translator_email]") != "[translator_email]"){?><a href="mailto:<?=h(_("[translator_email]"))?>"><?php }?><?=h(_("[translator_name]"))?><?php if(_("[translator_email]") && _("[translator_email]") != "[translator_email]"){?></a><?php }?></dt>
-	<dd><?=h(_("[language] translation"))?></dd>
+	<dt><?=h(_("[language] translation"))?></dt>
+	<dd><?php if(_("[translator_email]") && _("[translator_email]") != "[translator_email]"){?><a href="mailto:<?=h(_("[translator_email]"))?>"><?php }?><?=h(_("[translator_name]"))?><?php if(_("[translator_email]") && _("[translator_email]") != "[translator_email]"){?></a><?php }?></dd>
+
+	<dt><?=h(_("Testing"))?></dt>
+	<dd>Soltari, pyr0t0n</dd>
 </dl>
 <?php
 	home_gui::html_foot();
