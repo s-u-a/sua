@@ -3848,6 +3848,9 @@
 		{
 			if(!$this->status) return false;
 
+			if(isset($_SESSION["username"]))
+				return false;
+
 			if(!$this->permissionToAct(false)) return false;
 
 			if(!isset($this->raw["next_challenge"]))
