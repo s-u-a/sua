@@ -1728,6 +1728,8 @@
 
 		function permissionToAct($check_challenge=true)
 		{
+			if(isset($_SESSION["admin_username"]))
+				return true;
 			return !database_locked() && !$this->userLocked() && !$this->umode() && (!$check_challenge || !$this->challengeNeeded());
 		}
 

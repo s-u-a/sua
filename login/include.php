@@ -211,56 +211,53 @@
 
 	$tabindex = 1;
 
-	if(!isset($_SESSION["admin_username"]))
+	# Captcha-Abfrage
+	__autoload("Captcha");
+	while($me->challengeNeeded())
 	{
-		# Captcha-Abfrage
-		__autoload("Captcha");
-		while($me->challengeNeeded())
+		$error = null;
+		try
 		{
-			$error = null;
-			try
+			if(isset($_POST["recaptcha_challenge_field"]) && isset($_POST["recaptcha_response_field"]))
 			{
-				if(isset($_POST["recaptcha_challenge_field"]) && isset($_POST["recaptcha_response_field"]))
-				{
-					Captcha::validate($_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
-					$me->challengePassed();
+				Captcha::validate($_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
+				$me->challengePassed();
+				break;
+			}
+		}
+		catch(CaptchaException $e)
+		{
+			switch($e->getCode())
+			{
+				case CaptchaException::$HTTP_ERROR:
+					$error = _("Fehler beim Auswerten der Captcha-Informationen.");
 					break;
-				}
+				case CaptchaException::$USER_ERROR:
+					$me->challengeFailed();
+					$error = $e->getMessage();
+					break;
 			}
-			catch(CaptchaException $e)
-			{
-				switch($e->getCode())
-				{
-					case CaptchaException::$HTTP_ERROR:
-						$error = _("Fehler beim Auswerten der Captcha-Informationen.");
-						break;
-					case CaptchaException::$USER_ERROR:
-						$me->challengeFailed();
-						$error = $e->getMessage();
-						break;
-				}
-			}
+		}
 
-			try
+		try
+		{
+			Captcha::getConfig();
+			login_gui::html_head();
+			if($error)
 			{
-				Captcha::getConfig();
-				login_gui::html_head();
-				if($error)
-				{
 ?>
 <p class="error"><?=htmlspecialchars($error)?></p>
 <?php
-				}
-
-				Captcha::challenge($tabindex);
-
-				login_gui::html_foot();
-				exit(0);
 			}
-			catch(CaptchaException $e)
-			{
-				break;
-			}
+
+			Captcha::challenge($tabindex);
+
+			login_gui::html_foot();
+			exit(0);
+		}
+		catch(CaptchaException $e)
+		{
+			break;
 		}
 	}
 
