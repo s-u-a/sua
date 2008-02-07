@@ -1622,6 +1622,13 @@
 			return $this->cache['getProduction'][$planet];
 		}
 
+		/*function getProductionLimit($run_eventhandler=true)
+		{
+			if(!$this->status || !$this->planet_info) return false;
+
+			$limit =
+		}*/
+
 		function userLocked($check_unlocked=true)
 		{
 			if(!$this->status) return false;
@@ -3841,19 +3848,16 @@
 
 			if(!$this->permissionToAct(false)) return false;
 
-			if(!isset($this->raw["last_challenge"]))
+			if(!isset($this->raw["next_challenge"]))
 				return true;
-
-			$rand = rand(global_setting("CHALLENGE_MIN_TIME"), global_setting("CHALLENGE_MAX_TIME"));
-			if(time()-$this->raw["last_challenge"] > $rand)
-				return true;
+			else return (time() >= $this->raw["next_challenge"]);
 		}
 
 		function challengePassed()
 		{
 			if($this->status != 1) return false;
 
-			$this->raw["last_challenge"] = time();
+			$this->raw["next_challenge"] = time()+rand(global_setting("CHALLENGE_MIN_TIME"), global_setting("CHALLENGE_MAX_TIME"));
 			$this->raw["challenge_failures"] = 0;
 			$this->changed = true;
 			return true;
