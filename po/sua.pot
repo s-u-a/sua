@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-07 04:53+0100\n"
+"POT-Creation-Date: 2008-02-07 06:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1453,7 +1453,7 @@ msgstr ""
 #: ../login/karte.php:592 ../login/flotten.php:513 ../login/flotten.php:694
 #: ../login/flotten.php:698 ../login/flotten.php:771 ../login/flotten.php:941
 #: ../login/flotten.php:1214 ../login/include.php:432 ../login/include.php:611
-#: ../engine/classes/user.php:3285 ../engine/classes/user.php:3286
+#: ../engine/classes/user.php:3283 ../engine/classes/user.php:3284
 #: ../engine/classes/fleet.php:1102 ../engine/classes/fleet.php:1103
 #: ../engine/classes/fleet.php:1116 ../engine/classes/fleet.php:1117
 #: ../engine/classes/fleet.php:1154 ../engine/classes/fleet.php:1155
@@ -3297,7 +3297,7 @@ msgstr ""
 msgid "[title_abbr_full]"
 msgstr ""
 
-#: ../login/include.php:304 ../engine/include.php:880
+#: ../login/include.php:304 ../engine/include.php:882
 msgid "[thousand_separator]"
 msgstr ""
 
@@ -4463,7 +4463,11 @@ msgid_plural "%s Sekunden"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../engine/include.php:883
+#: ../engine/include.php:882
+msgid "[decimal_separator]"
+msgstr ""
+
+#: ../engine/include.php:885
 msgid "[minus_sign]"
 msgstr ""
 
@@ -4536,7 +4540,7 @@ msgstr ""
 msgid "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 msgstr ""
 
-#: ../engine/classes/user.php:3285
+#: ../engine/classes/user.php:3283
 #, php-format
 msgid ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%"
@@ -4544,12 +4548,12 @@ msgid ""
 "Die Flotte bestand aus folgenden Schiffen: %s"
 msgstr ""
 
-#: ../engine/classes/user.php:3286
+#: ../engine/classes/user.php:3284
 #, php-format
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr ""
 
-#: ../engine/classes/user.php:3857 ../impressum.php:31 ../passwd.php:42
+#: ../engine/classes/user.php:3855 ../impressum.php:31 ../passwd.php:42
 msgid "[title_full]"
 msgstr ""
 

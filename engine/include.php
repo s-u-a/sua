@@ -858,10 +858,12 @@
 	  * @param $round integer Anzahl der zu rundenden Stellen, standardmaessig 0
 	*/
 
-	function ths($count, $utf8=null, $round=0)
+	function ths($count, $utf8=null, $round=null)
 	{
-		# Fuegt Tausendertrennzeichen ein
-		# (Oben als THS_UTF8 und THS_HTML definiert)
+		if(!isset($round) && isset($utf8) && !is_bool($utf8) && is_numeric($utf8))
+			$round = $utf8;
+		if(!isset($round))
+			$round = 0;
 
 		if(!isset($count))
 			$count = 0;
@@ -877,7 +879,7 @@
 			$count = -$count;
 		}
 
-		$count = str_replace('.', _("[thousand_separator]"), number_format($count, $round, ',', '.'));
+		$count = str_replace(array('.', ','), array(_("[thousand_separator]"), _("[decimal_separator]")), number_format($count, $round, ',', '.'));
 
 		if($neg)
 			$count = _("[minus_sign]").$count;

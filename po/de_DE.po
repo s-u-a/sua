@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-02-07 04:54+0100\n"
+"PO-Revision-Date: 2008-02-07 06:34+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -1586,8 +1586,8 @@ msgstr "Diesen Planeten in der Karte anzeigen"
 #: ../login/flotten.php:1214
 #: ../login/include.php:432
 #: ../login/include.php:611
-#: ../engine/classes/user.php:3285
-#: ../engine/classes/user.php:3286
+#: ../engine/classes/user.php:3283
+#: ../engine/classes/user.php:3284
 #: ../engine/classes/fleet.php:1102
 #: ../engine/classes/fleet.php:1103
 #: ../engine/classes/fleet.php:1116
@@ -3605,7 +3605,7 @@ msgid "[title_abbr_full]"
 msgstr "S-U-A – Stars Under Attack"
 
 #: ../login/include.php:304
-#: ../engine/include.php:880
+#: ../engine/include.php:882
 msgid "[thousand_separator]"
 msgstr " "
 
@@ -4513,7 +4513,11 @@ msgid_plural "%s Sekunden"
 msgstr[0] "%s Sekunde"
 msgstr[1] "%s Sekunden"
 
-#: ../engine/include.php:883
+#: ../engine/include.php:882
+msgid "[decimal_separator]"
+msgstr ","
+
+#: ../engine/include.php:885
 msgid "[minus_sign]"
 msgstr "−"
 
@@ -4587,7 +4591,7 @@ msgstr "Ihre Bewerbung bei der Allianz %s wurde abgelehnt."
 msgid "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 msgstr "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 
-#: ../engine/classes/user.php:3285
+#: ../engine/classes/user.php:3283
 #, php-format
 msgid ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
@@ -4596,12 +4600,12 @@ msgstr ""
 "Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\n"
 "Die Flotte bestand aus folgenden Schiffen: %s"
 
-#: ../engine/classes/user.php:3286
+#: ../engine/classes/user.php:3284
 #, php-format
 msgid "Fremdstationierung zurückgezogen auf %s"
 msgstr "Fremdstationierung zurückgezogen auf %s"
 
-#: ../engine/classes/user.php:3857
+#: ../engine/classes/user.php:3855
 #: ../impressum.php:31
 #: ../passwd.php:42
 msgid "[title_full]"

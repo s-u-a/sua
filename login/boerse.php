@@ -99,7 +99,7 @@
 		{
 			$ress = array(0, 0, 0, 0, 0);
 			$ress[$_POST['res_offered']-1] = -$incl_tax;
-			$market->addOrder($me->getName(), $me->getActivePlanet(), $_POST['res_offered'], $_POST['amount'], $_POST['res_requested'], round($_POST['min_price']/$_POST['amount'], 2), time()+$_POST['duration']*3600);
+			$market->addOrder($me->getName(), $me->getActivePlanet(), $_POST['res_offered'], $_POST['amount'], $_POST['res_requested'], $_POST['min_price']/$_POST['amount'], time()+$_POST['duration']*3600);
 			$me->addRess($ress);
 ?>
 <p class="successful"><?=h(_("Der Auftrag wurde hinzugefügt."))?></p>
@@ -107,6 +107,7 @@
 		}
 	}
 
+	$tabindex_save = $tabindex;
 	$orders = $market->getOrders($me->getName());
 	if(count($orders) > 0)
 	{
@@ -124,7 +125,6 @@
 	</thead>
 	<tbody>
 <?php
-		$tabindex_save = $tabindex;
 		$tabindex += 6;
 		$i = 0;
 		$countdowns = array();
@@ -259,41 +259,41 @@
 		<tr class="r-carbon">
 			<th class="c-von"><?=h(_("[ress_0]"))?></th>
 			<td class="c-carbon disabled"><?=h(_("—"))?></td>
-			<td class="c-aluminium"><?=htmlspecialchars($market->getRate(1, 2))?></td>
-			<td class="c-wolfram"><?=htmlspecialchars($market->getRate(1, 3))?></td>
-			<td class="c-radium"><?=htmlspecialchars($market->getRate(1, 4))?></td>
-			<td class="c-tritium"><?=htmlspecialchars($market->getRate(1, 5))?></td>
+			<td class="c-aluminium"><?=ths($market->getRate(1, 2), 2)?></td>
+			<td class="c-wolfram"><?=ths($market->getRate(1, 3), 2)?></td>
+			<td class="c-radium"><?=ths($market->getRate(1, 4), 2)?></td>
+			<td class="c-tritium"><?=ths($market->getRate(1, 5), 2)?></td>
 		</tr>
 		<tr class="r-aluminium">
 			<th class="c-von"><?=h(_("[ress_1]"))?></th>
-			<td class="c-carbon"><?=htmlspecialchars($market->getRate(2, 1))?></td>
+			<td class="c-carbon"><?=ths($market->getRate(2, 1), 2)?></td>
 			<td class="c-aluminium disabled"><?=h(_("—"))?></td>
-			<td class="c-wolfram"><?=htmlspecialchars($market->getRate(2, 3))?></td>
-			<td class="c-radium"><?=htmlspecialchars($market->getRate(2, 4))?></td>
-			<td class="c-tritium"><?=htmlspecialchars($market->getRate(2, 5))?></td>
+			<td class="c-wolfram"><?=ths($market->getRate(2, 3), 2)?></td>
+			<td class="c-radium"><?=ths($market->getRate(2, 4), 2)?></td>
+			<td class="c-tritium"><?=ths($market->getRate(2, 5), 2)?></td>
 		</tr>
 		<tr class="r-wolfram">
 			<th class="c-von"><?=h(_("[ress_2]"))?>m</th>
-			<td class="c-carbon"><?=htmlspecialchars($market->getRate(3, 1))?></td>
-			<td class="c-aluminium"><?=htmlspecialchars($market->getRate(3, 2))?></td>
+			<td class="c-carbon"><?=ths($market->getRate(3, 1), 2)?></td>
+			<td class="c-aluminium"><?=ths($market->getRate(3, 2), 2)?></td>
 			<td class="c-wolfram disabled"><?=h(_("—"))?></td>
-			<td class="c-radium"><?=htmlspecialchars($market->getRate(3, 4))?></td>
-			<td class="c-tritium"><?=htmlspecialchars($market->getRate(3, 5))?></td>
+			<td class="c-radium"><?=ths($market->getRate(3, 4), 2)?></td>
+			<td class="c-tritium"><?=ths($market->getRate(3, 5), 2)?></td>
 		</tr>
 		<tr class="r-radium">
 			<th class="c-von"><?=h(_("[ress_3]"))?></th>
-			<td class="c-carbon"><?=htmlspecialchars($market->getRate(4, 1))?></td>
-			<td class="c-aluminium"><?=htmlspecialchars($market->getRate(4, 2))?></td>
-			<td class="c-wolfram"><?=htmlspecialchars($market->getRate(4, 3))?></td>
+			<td class="c-carbon"><?=ths($market->getRate(4, 1), 2)?></td>
+			<td class="c-aluminium"><?=ths($market->getRate(4, 2), 2)?></td>
+			<td class="c-wolfram"><?=ths($market->getRate(4, 3), 2)?></td>
 			<td class="c-radium disabled"><?=h(_("—"))?></td>
-			<td class="c-tritium"><?=htmlspecialchars($market->getRate(4, 5))?></td>
+			<td class="c-tritium"><?=ths($market->getRate(4, 5), 2)?></td>
 		</tr>
 		<tr class="r-tritium">
 			<th class="c-von"><?=h(_("[ress_4]"))?></th>
-			<td class="c-carbon"><?=htmlspecialchars($market->getRate(5, 1))?></td>
-			<td class="c-aluminium"><?=htmlspecialchars($market->getRate(5, 2))?></td>
-			<td class="c-wolfram"><?=htmlspecialchars($market->getRate(5, 3))?></td>
-			<td class="c-radium"><?=htmlspecialchars($market->getRate(5, 4))?></td>
+			<td class="c-carbon"><?=ths($market->getRate(5, 1), 2)?></td>
+			<td class="c-aluminium"><?=ths($market->getRate(5, 2), 2)?></td>
+			<td class="c-wolfram"><?=ths($market->getRate(5, 3), 2)?></td>
+			<td class="c-radium"><?=ths($market->getRate(5, 4), 2)?></td>
 			<td class="c-tritium disabled"><?=h(_("—"))?></td>
 		</tr>
 	</tbody>
