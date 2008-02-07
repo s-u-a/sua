@@ -785,7 +785,7 @@
 				$target_user_obj->addRess($this->raw[1][$user][4][0]);
 				foreach($this->raw[1][$user][4][1] as $id=>$count)
 					$target_user_obj->changeItemLevel($id, $count, 'roboter');
-				$this->raw[1][$user][4] = array(array(0,0,0,0,0), array());
+				$this->raw[1][$user][4] = array(array(0,0,0,0,0), array(), true);
 			}
 
 			$new_raw = array(
@@ -1337,7 +1337,7 @@
 											$this->raw[1][$username][3][1][$k] = 0;
 										$this->raw[1][$username][3][1][$k] += $v;
 									}
-									$this->raw[1][$username][4] = array(array(0,0,0,0,0),array());
+									$this->raw[1][$username][4] = array(array(0,0,0,0,0),array(),true);
 									$make_handel_message = true;
 								}
 							}
