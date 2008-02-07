@@ -1602,6 +1602,12 @@
 
 					$prod[5] = $energie_prod-$energie_need;
 
+					foreach(global_setting("MIN_PRODUCTION") as $k=>$v)
+					{
+						if(!isset($prod[$k])) $prod[$k] = 0;
+						if($prod[$k] < $v) $prod[$k] = $v;
+					}
+
 					stdround($prod[0]);
 					stdround($prod[1]);
 					stdround($prod[2]);
