@@ -129,9 +129,11 @@
 	global_setting("HIGHSCORES_PERPAGE", 100); # Wieviele Spieler sollen in den Highscores pro Seite angezeigt werden?
 	global_setting("CHALLENGE_MIN_TIME", 900); # Wieviele Sekunden müssen mindestens zwischen zwei Captcha-Abfragen vergehen?
 	global_setting("CHALLENGE_MAX_TIME", 5400); # Wieviele Sekunden dürfen maximal zwischen zwei Captcha-Abfragen vergehen?
-	global_setting("CHALLENGE_MAX_FAILURES", 5); # Wieoft hintereinander darf ein Benutzer maximal eine Captcha-Abfrage falsch beantworten?
+	global_setting("CHALLENGE_MAX_FAILURES", 8); # Wieoft hintereinander darf ein Benutzer maximal eine Captcha-Abfrage falsch beantworten?
 	global_setting("CHALLENGE_LOCK_TIME", 86400); # Für wieviele Sekunden wird ein Benutzer gesperrt, wenn er eine Captcha-Abfrage zu oft falsch beantwortet hat?
 	global_setting("MIN_PRODUCTION", array(20, 10, 0, 0, 0)); # Die Produktion kann nicht unter diesen Wert sinken
+	global_setting("PRODUCTION_LIMIT_INITIAL", array(500000, 500000, 500000, 500000, 500000, 1000000)); # Initiallimits für Rohstoffspeicher
+	global_setting("PRODUCTION_LIMIT_STEPS", array(100000, 100000, 100000, 100000, 100000, 10000000)); # Wachstum der Rohstoffspeicher je gebauten Roboter/Energietechnik
 
 	/**
 	  * Initialisiert die Standardwerte fuer die globalen Einstellungen.
@@ -780,10 +782,11 @@
 	  * @param $check_availability (User) Gibt mit HTML-Klassen an, ob so viele Rohstoffe auf dem Planeten vorhanden sind.
 	  * @param $dl_class string Eine zusätzliche HTML-Klasse, die dem Element zugewiesen wird.
 	  * @param $dl_id string Eine HTML-ID, die der Liste zugewiesen wird.
+	  * @param $check_limit User Gibt mit HTML-Klassen an, ob die Rohstoffmenge die Speicher übersteigt
 	  * @return (string) Eine den HTML-Code einer dl-Liste mit den formatierten Rohstoffangaben
 	*/
 
-	function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false, $_i=false, $check_availability=null, $dl_class="inline", $dl_id=null)
+	function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false, $_i=false, $check_availability=null, $dl_class="inline", $dl_id=null, $check_limit=null)
 	{
 		# Erstellt eine Definitionsliste aus der uebergebenen
 		# Rohstoffanzahl, beispielsweise fuer die Rohstoffkosten
@@ -797,12 +800,26 @@
 		if($check_availability)
 		{
 			$res_avail = $check_availability->getRess();
-			$class[0] = ($res_avail[0]<$ress[0])?" ress-fehlend":"";
-			$class[1] = ($res_avail[1]<$ress[1])?" ress-fehlend":"";
-			$class[2] = ($res_avail[2]<$ress[2])?" ress-fehlend":"";
-			$class[3] = ($res_avail[3]<$ress[3])?" ress-fehlend":"";
-			if($tritium) $class[4] = ($res_avail[4]<$ress[4])?" ress-fehlend":"";
-			if($energy) $class[5] = ($res_avail[5]<$ress[5])?" ress-fehlend":"";
+			$class[0] .= ($res_avail[0]<$ress[0])?" ress-fehlend":"";
+			$class[1] .= ($res_avail[1]<$ress[1])?" ress-fehlend":"";
+			$class[2] .= ($res_avail[2]<$ress[2])?" ress-fehlend":"";
+			$class[3] .= ($res_avail[3]<$ress[3])?" ress-fehlend":"";
+			if($tritium) $class[4] .= ($res_avail[4]<$ress[4])?" ress-fehlend":"";
+			if($energy) $class[5] .= ($res_avail[5]<$ress[5])?" ress-fehlend":"";
+		}
+		if($check_limit)
+		{
+			$res_limit = $check_limit->getProductionLimit();
+			$class[0] = ($res_limit[0]<$ress[0])?" speicher-voll":"";
+			$class[1] = ($res_limit[1]<$ress[1])?" speicher-voll":"";
+			$class[2] = ($res_limit[2]<$ress[2])?" speicher-voll":"";
+			$class[3] = ($res_limit[3]<$ress[3])?" speicher-voll":"";
+			if($tritium) $class[4] = ($res_limit[4]<$ress[4])?" speicher-voll":"";
+			if($energy)
+			{
+				$prod = $check_limit->getProduction();
+				$class[5] = ($prod[7])?" speicher-voll":"";
+			}
 		}
 		$class[0] .= ($ress[0]<0)?" ress-negativ":"";
 		$class[1] .= ($ress[1]<0)?" ress-negativ":"";

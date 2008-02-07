@@ -132,6 +132,20 @@
 				<td class="c-tritium number <?=get_prod_class($show_day_prod[4])?>" id="taeglich-tritium"><?=ths($show_day_prod[4])?></td>
 				<td class="c-speichern" colspan="2" class="button"><button type="submit" tabindex="<?=$tabindex+1?>" accesskey="n">Speicher<kbd>n</kbd></button></td>
 			</tr>
+<?php
+	$limit = $me->getProductionLimit();
+	$ress = $me->getRess();
+?>
+			<tr class="c-speicher">
+				<th>Speicher</th>
+				<td class="c-carbon number<?=$limit[0] < $ress[0] ? " voll" : ""?>"><?=ths($limit[0])?></td>
+				<td class="c-aluminium number<?=$limit[1] < $ress[1] ? " voll" : ""?>"><?=ths($limit[1])?></td>
+				<td class="c-wolfram number<?=$limit[2] < $ress[2] ? " voll" : ""?>"><?=ths($limit[2])?></td>
+				<td class="c-radium number<?=$limit[3] < $ress[3] ? " voll" : ""?>"><?=ths($limit[3])?></td>
+				<td class="c-tritium number<?=$limit[4] < $ress[4] ? " voll" : ""?>"><?=ths($limit[4])?></td>
+				<td class="c-energie number<?=$limit[5] < $ress[5] ? " voll" : ""?>"><?=ths($limit[5])?></td>
+				<td class="c-produktion empty"></td>
+			</tr>
 		</tfoot>
 	</table>
 </form>

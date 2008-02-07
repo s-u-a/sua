@@ -1515,14 +1515,18 @@
 			if($this->planet_info['last_refresh'] >= $time) return false;
 
 			$prod = $this->getProduction($time !== false);
+			$limit = $this->getProductionLimit($time !== false);
 
 			$f = ($time-$this->planet_info['last_refresh'])/3600;
 
-			$this->ress[0] += $prod[0]*$f;
-			$this->ress[1] += $prod[1]*$f;
-			$this->ress[2] += $prod[2]*$f;
-			$this->ress[3] += $prod[3]*$f;
-			$this->ress[4] += $prod[4]*$f;
+			for($i=0; $i<=4; $i++)
+			{
+				if($this->ress[$i] >= $limit[$i])
+					continue;
+				$this->ress[$i] += $prod[$i]*$f;
+				if($this->ress[$i] > $limit[$i])
+					$this->ress[$i] = $limit[$i];
+			}
 
 			$this->planet_info['last_refresh'] = $time;
 
@@ -1569,8 +1573,8 @@
 			$planet = $this->getActivePlanet();
 			if(!isset($this->cache['getProduction'][$planet]))
 			{
-				$prod = array(0,0,0,0,0,0,0);
-				if($this->permissionToAct())
+				$prod = array(0,0,0,0,0,0,0,false);
+				if($this->permissionToAct(false))
 				{
 					$gebaeude = $this->getItemsList('gebaeude');
 
@@ -1587,6 +1591,13 @@
 						$prod[2] += $item['prod'][2];
 						$prod[3] += $item['prod'][3];
 						$prod[4] += $item['prod'][4];
+					}
+
+					$limit = $this->getProductionLimit($run_eventhandler);
+					if($energie_prod > $limit[5])
+					{
+						$energie_prod = $limit[5];
+						$prod[7] = true;
 					}
 
 					$f = 1;
@@ -1622,12 +1633,21 @@
 			return $this->cache['getProduction'][$planet];
 		}
 
-		/*function getProductionLimit($run_eventhandler=true)
+		function getProductionLimit($run_eventhandler=true)
 		{
 			if(!$this->status || !$this->planet_info) return false;
 
-			$limit =
-		}*/
+			$limit = global_setting("PRODUCTION_LIMIT_INITIAL");
+			$steps = global_setting("PRODUCTION_LIMIT_STEPS");
+			$limit[0] += $this->getItemLevel("R01", "roboter", $run_eventhandler)*$steps[0];
+			$limit[1] += $this->getItemLevel("R01", "roboter", $run_eventhandler)*$steps[1];
+			$limit[2] += $this->getItemLevel("R01", "roboter", $run_eventhandler)*$steps[2];
+			$limit[3] += $this->getItemLevel("R01", "roboter", $run_eventhandler)*$steps[3];
+			$limit[4] += $this->getItemLevel("R01", "roboter", $run_eventhandler)*$steps[4];
+			$limit[5] += $this->getItemLevel("F3", "forschung", $run_eventhandler)*$steps[5];
+
+			return $limit;
+		}
 
 		function userLocked($check_unlocked=true)
 		{
@@ -1728,7 +1748,7 @@
 
 		function permissionToAct($check_challenge=true)
 		{
-			if(isset($_SESSION["admin_username"]))
+			if($check_challenge && isset($_SESSION["admin_username"]))
 				return true;
 			return !database_locked() && !$this->userLocked() && !$this->umode() && (!$check_challenge || !$this->challengeNeeded());
 		}

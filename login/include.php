@@ -376,7 +376,7 @@
 ?>
 		<div id="content-9" class="<?=htmlspecialchars($class)?>">
 <?php
-			echo format_ress($cur_ress, 3, true, true, false, null, "inline bar", "ress");
+			echo format_ress($cur_ress, 3, true, true, false, null, "inline bar", "ress", $me);
 ?>
 			<div id="content-10" class="<?=htmlspecialchars($class)?>"><div id="content-11" class="<?=htmlspecialchars($class)?>"><div id="content-12" class="<?=htmlspecialchars($class)?>"><div id="content-13" class="<?=htmlspecialchars($class)?>">
 <?php
@@ -745,8 +745,9 @@
 					{
 						$ress = $me->getRess();
 						$prod = $me->getProduction();
+						$limit = $me->getProductionLimit();
 ?>
-			refresh_ress(<?=$me->checkSetting('ress_refresh')*1000?>, <?=$ress[0]?>, <?=$ress[1]?>, <?=$ress[2]?>, <?=$ress[3]?>, <?=$ress[4]?>, <?=$prod[0]?>, <?=$prod[1]?>, <?=$prod[2]?>, <?=$prod[3]?>, <?=$prod[4]?>);
+			refresh_ress(<?=$me->checkSetting('ress_refresh')*1000?>, 'ress', [ <?=$ress[0]?>, <?=$ress[1]?>, <?=$ress[2]?>, <?=$ress[3]?>, <?=$ress[4]?> ], [ <?=$prod[0]?>, <?=$prod[1]?>, <?=$prod[2]?>, <?=$prod[3]?>, <?=$prod[4]?>] , [ <?=$limit[0]?>, <?=$limit[1]?>, <?=$limit[2]?>, <?=$limit[3]?>, <?=$limit[4]?> ]);
 <?php
 					}
 ?>

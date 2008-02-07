@@ -416,56 +416,48 @@ function move_title(ev)
 /// Auto-Refresh ///
 ////////////////////
 
-var refresh_callbacks = [ ];
+var refresh_callbacks = { };
 
-function refresh_ress(refresh_int, carbon_vorh, aluminium_vorh, wolfram_vorh, radium_vorh, tritium_vorh, carbon_prod, aluminium_prod, wolfram_prod, radium_prod, tritium_prod)
+function refresh_ress(refresh_int, id, vorh, prod, lim)
 { // Initialisiert Auto-Refresh
 	// Startzeit zur Neuberechnung
 
 	if(slow_terminal) return false;
 
 	var now_time = new Date();
-	window.start_increase_ress = now_time.getTime();
+	var start_time = now_time.getTime();
 
-	// Speichern der vorhandenen Rohstoffe
-	window.carbon_vorh = carbon_vorh;
-	window.aluminium_vorh = aluminium_vorh;
-	window.wolfram_vorh = wolfram_vorh;
-	window.radium_vorh = radium_vorh;
-	window.tritium_vorh = tritium_vorh;
-
-	// Speichern der Rohstoffproduktion
-	window.carbon_prod = carbon_prod;
-	window.aluminium_prod = aluminium_prod;
-	window.wolfram_prod = wolfram_prod;
-	window.radium_prod = radium_prod;
-	window.tritium_prod = tritium_prod;
+	res_now[id] = vorh;
+	if(!refresh_callbacks[id])
+		refresh_callbacks[id] = [ ];
 
 	// Interval zum Erhoehen der Rohstoffanzeigen
-	setInterval("increase_ress()", refresh_int);
+	setInterval(function(){increase_ress(start_time, id, vorh, prod, lim)}, refresh_int);
 }
 
-function increase_ress()
+function increase_ress(start_time, id, vorh, prod, lim)
 { // Aktualisiert die Rohstoffanzeigen
 	// Zeitdifferenz berechnen
 	var now_time = new Date();
-	var time_passed = (now_time.getTime()-start_increase_ress)/3600000;
+	var time_passed = (now_time.getTime()-start_time)/3600000;
 
-	res_now[0] = carbon_vorh+carbon_prod*time_passed;
-	res_now[1] = aluminium_vorh+aluminium_prod*time_passed;
-	res_now[2] = wolfram_vorh+wolfram_prod*time_passed;
-	res_now[3] = radium_vorh+radium_prod*time_passed;
-	res_now[4] = tritium_vorh+tritium_prod*time_passed;
+	for(var i=0; i<=4; i++)
+	{
+		if(res_now[id][i] >= lim[i]) continue;
+		res_now[id][i] = vorh[i]+prod[i]*time_passed;
+		if(res_now[id][i] > lim[i])
+			res_now[id][i] = lim[i];
+	}
 
 	// Werte berechnen und in die Anzeige schreiben
-	document.getElementById('ress-carbon').firstChild.data = ths(res_now[0]);
-	document.getElementById('ress-aluminium').firstChild.data = ths(res_now[1]);
-	document.getElementById('ress-wolfram').firstChild.data = ths(res_now[2]);
-	document.getElementById('ress-radium').firstChild.data = ths(res_now[3]);
-	document.getElementById('ress-tritium').firstChild.data = ths(res_now[4]);
+	document.getElementById(id+'-carbon').firstChild.data = ths(res_now[id][0]);
+	document.getElementById(id+'-aluminium').firstChild.data = ths(res_now[id][1]);
+	document.getElementById(id+'-wolfram').firstChild.data = ths(res_now[id][2]);
+	document.getElementById(id+'-radium').firstChild.data = ths(res_now[id][3]);
+	document.getElementById(id+'-tritium').firstChild.data = ths(res_now[id][4]);
 
-	for(var i=0; i<refresh_callbacks.length; i++)
-		refresh_callbacks[i]();
+	for(var i=0; i<refresh_callbacks[id].length; i++)
+		refresh_callbacks[id][i]();
 }
 
 ////////////////////////////

@@ -1031,14 +1031,15 @@
 					{
 ?>
 		var last_res = [ ];
-		refresh_callbacks.push(function(){
+		if(!refresh_callbacks['ress']) refresh_callbacks['ress'] = [ ];
+		refresh_callbacks['ress'].push(function(){
 			var changed = false;
 			for(var i=0; i<=4; i++)
 			{
-				document.getElementById('fleet-max-'+i).firstChild.data = ths(res_now[i]);
+				document.getElementById('fleet-max-'+i).firstChild.data = ths(res_now['ress'][i]);
 				if(last_res[i] && document.getElementById('transport-'+res_ids[i]).value == last_res[i])
 				{
-					document.getElementById('transport-'+res_ids[i]).value = Math.floor(res_now[i]);
+					document.getElementById('transport-'+res_ids[i]).value = Math.floor(res_now['ress'][i]);
 					changed = true;
 				}
 				last_res[i] = Math.floor(res_now[i]);
