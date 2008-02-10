@@ -16,6 +16,9 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	import("Dataset/Dataset");
+	import("Dataset/Classes");
+
 	/**
 	  * Repraesentiert eine Allianz im Spiel.
 	*/
@@ -332,7 +335,7 @@
 				$sortAllianceMembersInvert = $invert;
 
 				$members_raw = $this->raw['members'];
-				uasort($members_raw, 'sortAllianceMembersList');
+				uasort($members_raw, array("Alliance", 'sortAllianceMembersList'));
 				$members = array_keys($members_raw);
 			}
 			else
@@ -817,65 +820,66 @@
 
 			return true;
 		}
-	}
 
-	/**
-	  * Liefert die Zahl der existierenden Allianzen zurueck. Diese wird aus den Highscores ermittelt.
-	*/
+		/**
+		* Liefert die Zahl der existierenden Allianzen zurueck. Diese wird aus den Highscores ermittelt.
+		*/
 
-	function getAlliancesCount()
-	{
-		$highscores = Classes::Highscores();
-		return $highscores->getCount('alliances');
-	}
-
-	/**
-	  * uasort-Callbackfunktion zum Sortieren von Allianzmitgliedern.
-	  * Die globale Variable $sortAllianceMembersBy bestimmt, ob nach Beitrittszeit ('time') oder Punkten ('punkte') sortiert werden soll.
-	  * Ist die globale Variable $sortAllianceMembersInvert gesetzt, wird die Sortierung umgekehrt.
-	*/
-
-	function sortAllianceMembersList($a, $b)
-	{
-		global $sortAllianceMembersInvert;
-		global $sortAllianceMembersBy;
-
-		if(isset($sortAllianceMembersInvert) && $sortAllianceMembersInvert) $invert = -1;
-		else $invert = 1;
-		if(isset($sortAllianceMembersBy) && ($sortAllianceMembersBy == 'punkte' || $sortAllianceMembersBy == 'time'))
+		static function getAlliancesCount()
 		{
-			if($a[$sortAllianceMembersBy] > $b[$sortAllianceMembersBy]) return $invert;
-			elseif($a[$sortAllianceMembersBy] < $b[$sortAllianceMembersBy]) return -$invert;
-			else return 0;
+			$highscores = Classes::Highscores();
+			return $highscores->getCount('alliances');
 		}
-		else
-		{
-			$cmp = strnatcasecmp($a[$sortAllianceMembersBy], $b[$sortAllianceMembersBy]);
-			if($cmp < 0) return -$invert;
-			elseif($cmp > 0) return $invert;
-			else return 0;
-		}
-	}
 
-	/**
-	  * Sucht eine Allianz mit dem Tag $search_string. '*' und '?' sind als Wildcards moeglich.
-	  * @return (array) die gefundenen Allianztags
-	*/
+		/**
+		* uasort-Callbackfunktion zum Sortieren von Allianzmitgliedern.
+		* Die globale Variable $sortAllianceMembersBy bestimmt, ob nach Beitrittszeit ('time') oder Punkten ('punkte') sortiert werden soll.
+		* Ist die globale Variable $sortAllianceMembersInvert gesetzt, wird die Sortierung umgekehrt.
+		*/
 
-	function findAlliance($search_string)
-	{
-		$preg = '/^'.str_replace(array('\\*', '\\?'), array('.*', '.?'), preg_quote($search_string, '/')).'$/i';
-		$alliances = array();
-		$dh = opendir(global_setting("DB_ALLIANCES"));
-		while(($fname = readdir($dh)) !== false)
+		static function sortAllianceMembersList($a, $b)
 		{
-			if(!is_file(global_setting("DB_ALLIANCES").'/'.$fname) || !is_readable(global_setting("DB_ALLIANCES").'/'.$fname))
-				continue;
-			$alliance = urldecode($fname);
-			if(preg_match($preg, $alliance))
-				$alliances[] = $alliance;
+			global $sortAllianceMembersInvert;
+			global $sortAllianceMembersBy;
+
+			if(isset($sortAllianceMembersInvert) && $sortAllianceMembersInvert) $invert = -1;
+			else $invert = 1;
+			if(isset($sortAllianceMembersBy) && ($sortAllianceMembersBy == 'punkte' || $sortAllianceMembersBy == 'time'))
+			{
+				if($a[$sortAllianceMembersBy] > $b[$sortAllianceMembersBy]) return $invert;
+				elseif($a[$sortAllianceMembersBy] < $b[$sortAllianceMembersBy]) return -$invert;
+				else return 0;
+			}
+			else
+			{
+				$cmp = strnatcasecmp($a[$sortAllianceMembersBy], $b[$sortAllianceMembersBy]);
+				if($cmp < 0) return -$invert;
+				elseif($cmp > 0) return $invert;
+				else return 0;
+			}
 		}
-		closedir($dh);
-		natcasesort($alliances);
-		return $alliances;
+
+		/**
+		* Sucht eine Allianz mit dem Tag $search_string. '*' und '?' sind als Wildcards moeglich.
+		* @return (array) die gefundenen Allianztags
+		*/
+
+		static function findAlliance($search_string)
+		{
+			$preg = '/^'.str_replace(array('\\*', '\\?'), array('.*', '.?'), preg_quote($search_string, '/')).'$/i';
+			$alliances = array();
+			$dh = opendir(global_setting("DB_ALLIANCES"));
+			while(($fname = readdir($dh)) !== false)
+			{
+				if(!is_file(global_setting("DB_ALLIANCES").'/'.$fname) || !is_readable(global_setting("DB_ALLIANCES").'/'.$fname))
+					continue;
+				$alliance = urldecode($fname);
+				if(preg_match($preg, $alliance))
+					$alliances[] = $alliance;
+			}
+			closedir($dh);
+			natcasesort($alliances);
+			return $alliances;
+		}
+
 	}

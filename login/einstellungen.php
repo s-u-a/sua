@@ -234,7 +234,7 @@
 		}
 	}
 
-	login_gui::html_head();
+	$gui->init();
 
 	$fieldset = 0;
 	$show_im = isset($messengers['jabber']);
@@ -486,6 +486,18 @@
 ?>
 		<p><?=h(_("Nach Änderung des Instant-Messaging-Accounts wird zunächst eine Bestätigungsnachricht versandt."))?></p>
 <?php
+		if(!imserver_running())
+		{
+?>
+		<p class="error imserver"><?=sprintf(h(_("Der Instant-Messaging-Bot läuft im Moment %snicht%s!")), "<strong>", "</strong>")?></p>
+<?php
+		}
+		else
+		{
+?>
+		<p class="successful imserver"><?=h(_("Der Instant-Messaging-Bot ist gestartet."))?></p>
+<?php
+		}
 	}
 ?>
 		<dl class="form">
@@ -789,7 +801,13 @@
 <?php
 		if(!$me->umode())
 		{
-			if($me->permissionToUmode() || isset($_SESSION['admin_username']))
+			if(!$me->umodePossible())
+			{
+?>
+		<p><?=h(_("Sie können derzeit nicht in den Urlaubsmodus wechseln, da Sie Flotten zu fremden Planeten unterwegs haben."))?></p>
+<?php
+			}
+			elseif($me->permissionToUmode() || isset($_SESSION['admin_username']))
 			{
 ?>
 		<div class="button"><input type="submit" name="umode" value="<?=h(_("Urlaubsmodus&[login/einstellungen.php|1]"), false)?>"<?=accesskey_attr(_("Urlaubsmodus&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" onclick="return confirm('<?=jsentities(_("Wollen Sie den Urlaubsmodus wirklich betreten?"))?>');" /></div>
@@ -920,5 +938,5 @@
 // ]]>
 </script>
 <?php
-	login_gui::html_foot();
+	$gui->end();
 ?>

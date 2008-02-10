@@ -45,7 +45,7 @@
 		}
 	}
 
-	home_gui::html_head();
+	$gui->init();
 ?>
 <h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Passwort vergessen?")))?></h2>
 <?php
@@ -170,5 +170,5 @@
 <?php
 	}
 
-	home_gui::html_foot();
+	$gui->end();
 ?>

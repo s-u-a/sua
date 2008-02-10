@@ -17,7 +17,7 @@
 */
 	require('include.php');
 
-	login_gui::html_head();
+	$gui->init();
 
 	$check_deps = array(
 		'gebaeude' => ngettext("Gebäude", "Gebäude", 1),
@@ -82,5 +82,5 @@
 <?php
 	}
 
-	login_gui::html_foot();
+	$gui->end();
 ?>

@@ -16,6 +16,9 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	import("Dataset/SQLite");
+	import("Dataset/Classes");
+
 	class PublicMessageDatabase extends SQLite
 	{
 		protected $tables = array("public_messages" => array("message_id PRIMARY KEY", "last_view INT", "sender", "text", "parsed", "subject", "html INT", "receiver", "time", "type"));
@@ -108,12 +111,6 @@
 			$html = $message->html();
 			$this->html($html);
 			$text = $message->rawText();
-			if($html)
-			{
-				$text = preg_replace('/ ?<span class="koords">.*?<\\/span>/', '', $text);
-				$text = preg_replace('/ ?<span class="angreifer-name">.*?<\\/span>/', 'Ein Angreifer', $text);
-				$text = preg_replace('/ ?<span class="verteidiger-name">.*?<\\/span>/', 'Ein Verteidiger', $text);
-			}
 			$this->text($text);
 
 			$this->subject($message->subject());
@@ -123,13 +120,22 @@
 			return true;
 		}
 
-		function text($text=false)
+		function text($text=false, $filter=true)
 		{
 			// last_view erneuern
 			$this->_read();
 
 			if($text === false)
-				return self::$database->getField($this->name, "parsed");
+			{
+				$text = self::$database->getField($this->name, "parsed");
+				if($this->html() && $filter)
+				{
+					$text = preg_replace('/ ?<span class="koords">.*?<\\/span>/', '', $text);
+					$text = preg_replace('/ ?<span class="angreifer-name">.*?<\\/span>/', 'Ein Angreifer', $text);
+					$text = preg_replace('/ ?<span class="verteidiger-name">.*?<\\/span>/', 'Ein Verteidiger', $text);
+				}
+				return $text;
+			}
 
 			self::$database->setField($this->name, "text", $text);
 			$this->_createParsed();

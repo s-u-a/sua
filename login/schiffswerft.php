@@ -35,12 +35,11 @@
 			delete_request();
 	}
 
-	login_gui::html_head();
+	$gui->init();
 ?>
-<h2>Schiffswerft</h2>
+<h2><?=h(_("Schiffswerft"))?></h2>
 <form action="schiffswerft.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post">
 <?php
-	$tabindex = 1;
 	$schiffe = $me->getItemsList('schiffe');
 	$building_possible = (!($building_gebaeude = $me->checkBuildingThing('gebaeude')) || $building_gebaeude[0] != 'B10');
 	foreach($schiffe as $id)
@@ -51,7 +50,7 @@
 			continue;
 ?>
 	<div class="item schiffe" id="item-<?=htmlspecialchars($id)?>">
-		<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="anzahl">(<?=htmlspecialchars($item_info['level'])?>)</span></h3>
+		<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a> <span class="anzahl">(<?=htmlspecialchars($item_info['level'])?>)</span></h3>
 <?php
 		if($me->permissionToAct() && $building_possible && $item_info['buildable'])
 		{
@@ -63,14 +62,14 @@
 		}
 ?>
 		<dl class="lines">
-			<dt class="item-kosten">Kosten</dt>
+			<dt class="item-kosten"><?=h(_("Kosten"))?></dt>
 			<dd class="item-kosten">
 <?php
 		echo format_ress($item_info['ress'], 4, false, false, false, $me);
 ?>
 			</dd>
 
-			<dt class="item-bauzeit">Bauzeit</dt>
+			<dt class="item-bauzeit"><?=h(_("Bauzeit"))?></dt>
 			<dd class="item-bauzeit"><?=format_btime($item_info['time'])?></dd>
 		</dl>
 	</div>
@@ -80,7 +79,7 @@
 	if($tabindex > 1)
 	{
 ?>
-	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>" accesskey="u">In A<kbd>u</kbd>ftrag geben</button></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("In A&uftrag geben[login/schiffswerft.php|1]"))?>><?=h(_("In A&uftrag geben[login/schiffswerft.php|1]"))?></button></div>
 <?php
 	}
 ?>
@@ -103,7 +102,7 @@
 		if($first_building[2] <= 0) array_shift($building_schiffe);
 		$first_info = $me->getItemInfo($first[0]);
 ?>
-	<li class="<?=htmlspecialchars($first[0])?> active<?=(count($building_schiffe) <= 0) ? ' last' : ''?>" title="Fertigstellung: <?=date('H:i:s, Y-m-d', $first[1])?> (Serverzeit)"><strong><?=htmlspecialchars($first_info['name'])?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $first[0])?> (Serverzeit)</span></strong></li>
+	<li class="<?=htmlspecialchars($first[0])?> active<?=(count($building_schiffe) <= 0) ? ' last' : ''?>"><strong><?=htmlspecialchars($first_info['name'])?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>"><?=htmlspecialchars(format_ftime($first[1], $me))?></span></strong></li>
 <?php
 		if(count($building_schiffe) > 0)
 		{
@@ -114,29 +113,36 @@
 				$finishing_time = $bau[1]+$bau[2]*$bau[3];
 				$item_info = $me->getItemInfo($bau[0]);
 ?>
-	<li class="<?=htmlspecialchars($bau[0])?><?=($key == $last) ? ' last' : ''?>" title="Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)"><?=htmlspecialchars($item_info['name'])?> &times; <?=$bau[2]?><?php if($key == $last){?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $finishing_time)?> (Serverzeit)</span><?php }?></li>
+	<li class="<?=htmlspecialchars($bau[0])?><?=($key == $last) ? ' last' : ''?>"><?=htmlspecialchars($item_info['name'])?> &times; <?=$bau[2]?><?php if($key == $last){?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span><?php }?></li>
 <?php
 			}
 		}
 ?>
 </ol>
+<?php
+		if(!$me->umode())
+		{
+?>
 <script type="text/javascript">
 	init_countdown('0', <?=$first[1]?>, false);
 <?php
-		if(count($building_schiffe) > 0)
-		{
+			if(count($building_schiffe) > 0)
+			{
 ?>
 	init_countdown('<?=$i-1?>', <?=$finishing_time?>, false);
 <?php
-		}
+			}
 ?>
 </script>
+<?php
+		}
+?>
 <form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/schiffswerft.php?'.global_setting("URL_SUFFIX"))?>" method="post" class="alle-abbrechen">
-	<p>Geben Sie hier Ihr Passwort ein, um alle im Bau befindlichen Schiffe <strong>ohne Kostenrückerstattung</strong> abzubrechen.</p>
-	<div><input type="password" name="cancel-all-schiffe" /><input type="submit" value="Alle abbrechen" /></div>
+	<p><?=sprintf(h(_("Geben Sie hier Ihr Passwort ein, um alle im Bau befindlichen Schiffe %sohne Kostenrückerstattung%s abzubrechen.")), "<strong>", "</strong>")?></p>
+	<div><input type="password" name="cancel-all-schiffe" /><input type="submit" value="<?=h(_("Alle abbrechen&[login/schiffe.php|1]"), false)?>"<?=accesskey_attr(_("Alle abbrechen&[login/schiffe.php|1]"))?> /></div>
 </form>
 <?php
 	}
 
-	login_gui::html_foot();
+	$gui->end();
 ?>

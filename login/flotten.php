@@ -21,8 +21,8 @@
 	$max_flotten = $me->getMaxParallelFleets();
 	$my_flotten = $me->getCurrentParallelFleets();
 
-	__autoload('Fleet');
-	__autoload('Galaxy');
+	import('Dataset/Fleet');
+	import('Dataset/Galaxy');
 
 	class LoginFlottenException extends SuaException
 	{
@@ -306,6 +306,17 @@
 		if(!$buendnisflug && in_array(0, $_POST["auftrag"]))
 			throw new LoginFlottenException("", 2, LoginFlottenException::$TYPE_FLEETS);
 
+		$this_punkte = $me->getScores();
+		$this_punkte_all = $me->getScores();
+		if($buendnisflug)
+		{
+			foreach($buendnisflug_fleet->getUsersList() as $attacking_user)
+			{
+				$attacking_user_obj = Classes::User($attacking_user);
+				$this_punkte_all += $attacking_user_obj->getScores();
+			}
+		}
+
 		$that_user = array();
 		foreach($auftraege as $i=>$auftrag)
 		{
@@ -315,11 +326,10 @@
 			{
 				# Anfaengerschutz ueberpruefen
 				$that_punkte = $that_user[$i]->getScores();
-				$this_punkte = $me->getScores();
 
 				if($that_punkte > $this_punkte && $that_punkte*0.05 > $this_punkte)
 					throw new LoginFlottenException(_("Das Imperium dieses Spielers ist so groß, dass Ihre Sensoren beim Versuch, einen Anflugspunkt auszumachen, durcheinanderkommen. (Aka Anfängerschutz.)"), 0, LoginFlottenException::$TYPE_TYPE);
-				if($that_punkte < $this_punkte && $that_punkte < $this_punkte*0.05)
+				if($that_punkte < $this_punkte_all && $that_punkte < $this_punkte_all*0.05)
 					throw new LoginFlottenException(_("Dieser Spieler ist noch so klein, dass Ihre Sensoren das Ziel nicht ausmachen und deshalb den Flugkurs nicht berechnen können. (Aka Anfängerschutz.)"), 0, LoginFlottenException::$TYPE_TYPE);
 			}
 		}
@@ -424,7 +434,7 @@
 			die();
 		}
 
-		login_gui::html_head();
+		$gui->init();
 ?>
 <h2><?=h(_("Flotten"))?></h2>
 <?php
@@ -465,7 +475,7 @@
 		<legend><input type="radio" name="buendnisflug" value="0"<?php if(!$buendnisflug){?> checked="checked"<?php }?> id="i-eigenes-ziel" onclick="update_active_fieldset()" onchange="onclick()" /> <label for="i-eigenes-ziel">Eigenes Ziel</label></legend>
 		<dl class="form">
 			<dt class="c-ziel"><label for="ziel-galaxie"><?=h(_("&Ziel[login/flotten.php|2]"))?></label></dt>
-			<dd class="c-ziel"><input type="text" id="ziel-galaxie" name="galaxie[0]" value="<?=htmlspecialchars(isset($_POST["galaxie"]) && isset($_POST["galaxie"][0]) ? $_POST["galaxie"][0] : $this_pos[0])?>" onfocus="document.getElementById('i-eigenes-ziel').checked=true; update_active_fieldset();" title="<?=h("Ziel: Galaxie")?>"<?=accesskey_attr(_("&Ziel[login/flotten.php|2]"))?> tabindex="<?=$tabindex++?>" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="<?=strlen(getGalaxiesCount())?>" class="number number-koords" />:<input type="text" id="ziel-system" name="system[0]" value="<?=htmlspecialchars(isset($_POST["system"]) && isset($_POST["system"][0]) ? $_POST["system"][0] : $this_pos[1])?>" onfocus="document.getElementById('i-eigenes-ziel').checked=true; update_active_fieldset();" title="<?=h(_("Ziel: System&[login/flotten.php|2]"), false)?>"<?=accesskey_attr(_("Ziel: System&[login/flotten.php|2]"))?> tabindex="<?=$tabindex++?>" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="3" class="number number-koords" />:<input type="text" id="ziel-planet" name="planet[0]" value="<?=htmlspecialchars(isset($_POST["planet"]) && isset($_POST["planet"][0]) ? $_POST["planet"][0] : $this_pos[2])?>" onfocus="document.getElementById('i-eigenes-ziel').checked=true; update_active_fieldset();" title="<?=h(_("Ziel: Planet&[login/flotten.php|2]"), false)?>"<?=accesskey_attr(_("Ziel: Planet&[login/flotten.php|2]"))?> tabindex="<?=$tabindex++?>" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="2" class="number number-koords" /></dd>
+			<dd class="c-ziel"><input type="text" id="ziel-galaxie" name="galaxie[0]" value="<?=htmlspecialchars(isset($_POST["galaxie"]) && isset($_POST["galaxie"][0]) ? $_POST["galaxie"][0] : $this_pos[0])?>" onfocus="document.getElementById('i-eigenes-ziel').checked=true; update_active_fieldset();" title="<?=h("Ziel: Galaxie")?>"<?=accesskey_attr(_("&Ziel[login/flotten.php|2]"))?> tabindex="<?=$tabindex++?>" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="<?=strlen(Galaxy::getGalaxiesCount())?>" class="number number-koords" />:<input type="text" id="ziel-system" name="system[0]" value="<?=htmlspecialchars(isset($_POST["system"]) && isset($_POST["system"][0]) ? $_POST["system"][0] : $this_pos[1])?>" onfocus="document.getElementById('i-eigenes-ziel').checked=true; update_active_fieldset();" title="<?=h(_("Ziel: System&[login/flotten.php|2]"), false)?>"<?=accesskey_attr(_("Ziel: System&[login/flotten.php|2]"))?> tabindex="<?=$tabindex++?>" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="3" class="number number-koords" />:<input type="text" id="ziel-planet" name="planet[0]" value="<?=htmlspecialchars(isset($_POST["planet"]) && isset($_POST["planet"][0]) ? $_POST["planet"][0] : $this_pos[2])?>" onfocus="document.getElementById('i-eigenes-ziel').checked=true; update_active_fieldset();" title="<?=h(_("Ziel: Planet&[login/flotten.php|2]"), false)?>"<?=accesskey_attr(_("Ziel: Planet&[login/flotten.php|2]"))?> tabindex="<?=$tabindex++?>" onclick="syncronise(true);" onchange="syncronise(true);" onkeyup="syncronise(true);" maxlength="2" class="number number-koords" /></dd>
 			<script type="text/javascript">
 				// <![CDATA[
 				document.write('<dt class="c-planet"><label for="ziel-planet-wahl"><?=h(_("Pla&net[login/flotten.php|2]"))?></label></dt>');
@@ -656,13 +666,13 @@
 					{
 						$fleets = array();
 						foreach($me->getForeignFleetsList($user) as $fi)
-							$fleets = iadd($fleets, $fi[0]);
-						isort($fleets);
+							$fleets = Item::iadd($fleets, $fi[0]);
+						Item::isort($fleets);
 ?>
 <fieldset>
 	<legend><?=htmlspecialchars($user)?></legend>
 <?php
-						makeItemList($fleets, 1);
+						Item::makeItemList($fleets, 1);
 ?>
 </fieldset>
 <?php
@@ -693,7 +703,7 @@
 ?>
 	<legend><?=h(sprintf(_("„%s“ (%s, Eigentümer: %s)"), $user_obj->planetName(), vsprintf(_("%d:%d:%d"), $coords_a), $user_obj->getName()))?></legend>
 <?php
-							makeItemList($fi[0], 1);
+							Item::makeItemList($fi[0], 1);
 ?>
 	<form action="flotten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>#fremdstationierungen" method="post" class="ihre-fremdstationierungen"><div class="button"><button type="submit" name="callback_foreign[<?=htmlspecialchars($coords)?>][<?=htmlspecialchars($i)?>]" tabindex="<?=$tabindex++?>"><?=h(sprintf(_("Zurückrufen zum Planeten %s"), sprintf(_("„%s“ (%s)"), $me->planetName(), vsprintf(_("%d:%d:%d"), $me->getPos()))))?></button></div></form>
 <?php
@@ -740,7 +750,7 @@
 					# Kein Robotertransport zu fremden Planeten
 					if($planet_owner[0] != $me->getName()) $transport[1] = 0;
 ?>
-<form action="flotten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
+<form action="flotten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="flotte-versenden-2" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=jsentities(_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird Ihre Flotte auch zweimal abgesandt (sofern die nötigen Schiffe verfügbar sind). Sind Sie sicher, dass Sie diese Aktion durchführen wollen?"))?>\');');">
 <?php
 					if($e->getMessage())
 					{
@@ -893,7 +903,7 @@
 		<legend><input type="checkbox" name="auftrag[<?=$i?>]" value="0" id="i-weiteres-ziel" onchange="update_active_fieldset();" tabindex="<?=$tabindex++?>" /> <label for="i-weiteres-ziel">Weiteres Ziel eingeben (nicht bei Stationieren)</label></legend>
 		<dl class="form">
 			<dt class="c-ziel"><label for="ziel-galaxie"><?=h(_("&Ziel[login/flotten.php|2]"))?></label></dt>
-			<dd class="c-ziel"><input type="text" id="ziel-galaxie" name="galaxie[<?=$i?>]" value="<?=htmlspecialchars($this_pos[0])?>" title="<?=h("Ziel: Galaxie")?>"<?=accesskey_attr(_("&Ziel[login/flotten.php|2]"))?> tabindex="<?=$tabindex++?>" onclick="syncronise(true);" onkeyup="syncronise(true);" onchange="document.getElementById('i-weiteres-ziel').checked = true; update_active_fieldset(); syncronise(true);" maxlength="<?=strlen(getGalaxiesCount())?>" class="number number-koords" />:<input type="text" id="ziel-system" name="system[<?=$i?>]" value="<?=htmlspecialchars($this_pos[1])?>" title="<?=h(_("Ziel: System&[login/flotten.php|2]"), false)?>"<?=accesskey_attr(_("Ziel: System&[login/flotten.php|2]"))?> tabindex="<?=$tabindex++?>" onclick="syncronise(true);" onchange="document.getElementById('i-weiteres-ziel').checked = true; update_active_fieldset(); syncronise(true);" onkeyup="syncronise(true);" maxlength="3" class="number number-koords" />:<input type="text" id="ziel-planet" name="planet[<?=$i?>]" value="<?=htmlspecialchars($this_pos[2])?>" title="<?=h(_("Ziel: Planet&[login/flotten.php|2]"), false)?>"<?=accesskey_attr(_("Ziel: Planet&[login/flotten.php|2]"))?> tabindex="<?=$tabindex++?>" onclick="syncronise(true);"  onchange="document.getElementById('i-weiteres-ziel').checked = true; update_active_fieldset(); syncronise(true);" onkeyup="syncronise(true);" maxlength="2" class="number number-koords" /></dd>
+			<dd class="c-ziel"><input type="text" id="ziel-galaxie" name="galaxie[<?=$i?>]" value="<?=htmlspecialchars($this_pos[0])?>" title="<?=h("Ziel: Galaxie")?>"<?=accesskey_attr(_("&Ziel[login/flotten.php|2]"))?> tabindex="<?=$tabindex++?>" onclick="syncronise(true);" onkeyup="syncronise(true);" onchange="document.getElementById('i-weiteres-ziel').checked = true; update_active_fieldset(); syncronise(true);" maxlength="<?=strlen(Galaxy::getGalaxiesCount())?>" class="number number-koords" />:<input type="text" id="ziel-system" name="system[<?=$i?>]" value="<?=htmlspecialchars($this_pos[1])?>" title="<?=h(_("Ziel: System&[login/flotten.php|2]"), false)?>"<?=accesskey_attr(_("Ziel: System&[login/flotten.php|2]"))?> tabindex="<?=$tabindex++?>" onclick="syncronise(true);" onchange="document.getElementById('i-weiteres-ziel').checked = true; update_active_fieldset(); syncronise(true);" onkeyup="syncronise(true);" maxlength="3" class="number number-koords" />:<input type="text" id="ziel-planet" name="planet[<?=$i?>]" value="<?=htmlspecialchars($this_pos[2])?>" title="<?=h(_("Ziel: Planet&[login/flotten.php|2]"), false)?>"<?=accesskey_attr(_("Ziel: Planet&[login/flotten.php|2]"))?> tabindex="<?=$tabindex++?>" onclick="syncronise(true);"  onchange="document.getElementById('i-weiteres-ziel').checked = true; update_active_fieldset(); syncronise(true);" onkeyup="syncronise(true);" maxlength="2" class="number number-koords" /></dd>
 			<script type="text/javascript">
 				// <![CDATA[
 					document.write('<dt class="c-planet"><label for="ziel-planet-wahl"><?=h(_("Pla&net[login/flotten.php|2]"))?></label></dt>');
@@ -1101,23 +1111,23 @@
 				time_string += mk2(Math.floor(time2/3600))+':'+mk2(Math.floor((time2%3600)/60))+':'+mk2(Math.floor(time2%60));
 				document.getElementById('flugzeit-'+i).innerHTML = time_string;
 
-				var jetzt = new Date();
-				var ankunft_client = new Date(jetzt.getTime()+(time[i]*1000));
-				var ankunft_server = new Date(ankunft_client.getTime()-time_diff);
-
-				var attrName;
-				if(document.getElementById('flugzeit-'+i).getAttribute('titleAttribute'))
-					attrName = 'titleAttribute';
-				else
-					attrName = 'title';
-				document.getElementById('flugzeit-'+i).setAttribute(attrName, '<?=sprintf(str_replace("'", "\\'", _("Ankunft: %s")), sprintf(str_replace("'", "\\'", _("%s (Lokalzeit)")), "'+mk2(ankunft_client.getHours())+':'+mk2(ankunft_client.getMinutes())+':'+mk2(ankunft_client.getSeconds())+', '+ankunft_client.getFullYear()+'-'+mk2(ankunft_client.getMonth()+1)+'-'+mk2(ankunft_client.getDate())+' (Lokalzeit); '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+'"))?>');
-
 				if(display)
 					tritium = tritium_all[i];
 				if(document.getElementById('auftrag-'+i).value == <?=FLEET_STATIONIEREN?> || document.getElementById('auftrag-'+i).value == <?=FLEET_BESIEDELN?>)
 					display = false;
 				document.getElementById('target-'+(i+1)).style.display = (display ? "block" : "none");
 			}
+
+			setInterval(function(){
+				for(var i=0; i<time.length; i++)
+				{
+					var jetzt = new Date();
+					var ankunft_client = new Date(jetzt.getTime()+(time[i]*1000));
+					var ankunft_server = new Date(ankunft_client.getTime()-time_diff);
+
+					set_title(document.getElementById('flugzeit-'+i), '<?=sprintf(str_replace("'", "\\'", _("Ankunft: %s")), sprintf(str_replace("'", "\\'", _("%s (Lokalzeit)")), "'+mk2(ankunft_client.getHours())+':'+mk2(ankunft_client.getMinutes())+':'+mk2(ankunft_client.getSeconds())+', '+ankunft_client.getFullYear()+'-'+mk2(ankunft_client.getMonth()+1)+'-'+mk2(ankunft_client.getDate())+' (Lokalzeit); '+mk2(ankunft_server.getHours())+':'+mk2(ankunft_server.getMinutes())+':'+mk2(ankunft_server.getSeconds())+', '+ankunft_server.getFullYear()+'-'+mk2(ankunft_server.getMonth()+1)+'-'+mk2(ankunft_server.getDate())+'"))?>');
+				}
+			}, 1000);
 
 			// Tritiumverbrauch
 			if(!isNaN(speed))
@@ -1243,6 +1253,6 @@
 			}
 		}
 
-		login_gui::html_foot();
+		$gui->end();
 	}
 ?>

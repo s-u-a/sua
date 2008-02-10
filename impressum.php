@@ -17,7 +17,7 @@
 */
 	require('include.php');
 
-	home_gui::html_head();
+	$gui->init();
 ?>
 <h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Impressum")))?></h2>
 <h3><?=h(_("Verantwortlicher"))?></h3>
@@ -65,5 +65,5 @@
 	<dd>Soltari, pyr0t0n</dd>
 </dl>
 <?php
-	home_gui::html_foot();
+	$gui->end();
 ?>

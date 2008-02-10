@@ -16,6 +16,9 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	import("Dataset/Dataset");
+	import("Dataset/Classes");
+
 	class User extends Dataset
 	{
 		protected $active_planet = null;
@@ -199,7 +202,7 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 
-			return ceil($this->planet_info['size'][1]/($this->getItemLevel('F9', 'forschung')/getIngtechFactor()+1));
+			return ceil($this->planet_info['size'][1]/($this->getItemLevel('F9', 'forschung')/self::getIngtechFactor()+1));
 		}
 
 		function setFields($size)
@@ -227,13 +230,19 @@
 			return $this->planet_info['pos'];
 		}
 
+		function getPosFormatted()
+		{
+			if(!$this->status || !isset($this->planet_info)) return false;
+
+			return vsprintf(_("%d:%d:%d"), $this->getPos());
+		}
+
 		function getPlanetClass()
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 
 			$pos = $this->getPos();
-			__autoload('Galaxy');
-			return getPlanetClass($pos[0], $pos[1], $pos[2]);
+			return Galaxy::calcPlanetClass($pos[0], $pos[1], $pos[2]);
 		}
 
 		function removePlanet()
@@ -356,7 +365,7 @@
 
 			if(count($this->raw['planets']) <= 0) $size = 375;
 			else $size = $galaxy->getPlanetSize($pos[1], $pos[2]);
-			$size = floor($size*($this->getItemLevel('F9', 'forschung')/getIngtechFactor()+1));
+			$size = floor($size*($this->getItemLevel('F9', 'forschung')/self::getIngtechFactor()+1));
 
 			$planets = $this->getPlanetsList();
 			if(count($planets) == 0) $planet_index = 0;
@@ -627,7 +636,7 @@
 				$eventfile = Classes::EventFile();
 				foreach($this->raw['flotten'] as $i=>$flotte)
 				{
-					__autoload('Fleet');
+					import('Dataset/Fleet');
 					if(!Fleet::fleetExists($flotte))
 					{
 						unset($this->raw['flotten'][$i]);
@@ -1399,8 +1408,8 @@
 					foreach($planets as $planet)
 					{
 						$this->setActivePlanet($planet);
-						$size = ceil($this->getTotalFields()/(($this->getItemLevel('F9', false, false)-$value)/getIngtechFactor()+1));
-						$this->setFields(floor($size*($this->getItemLevel('F9', false, false)/getIngtechFactor()+1)));
+						$size = ceil($this->getTotalFields()/(($this->getItemLevel('F9', false, false)-$value)/self::getIngtechFactor()+1));
+						$this->setFields(floor($size*($this->getItemLevel('F9', false, false)/self::getIngtechFactor()+1)));
 					}
 					$this->setActivePlanet($active_planet);
 					break;
@@ -1446,7 +1455,7 @@
 							$one = true;
 						}
 					}
-					if($one) usort($actions, 'sortEventhandlerActions');
+					if($one) usort($actions, array("User", 'sortEventhandlerActions'));
 
 					break;*/
 
@@ -1487,7 +1496,7 @@
 									$one = true;
 								}
 							}
-							if($one) usort($actions, 'sortEventhandlerActions');
+							if($one) usort($actions, array("User", 'sortEventhandlerActions'));
 						}
 					}
 					$this->setActivePlanet($active_planet);
@@ -1572,7 +1581,7 @@
 			if(!isset($this->cache['getProduction'][$planet]))
 			{
 				$prod = array(0,0,0,0,0,0,0,false);
-				if($this->permissionToAct(false))
+				if($this->permissionToAct())
 				{
 					$gebaeude = $this->getItemsList('gebaeude');
 
@@ -1699,6 +1708,48 @@
 			{
 				$set = (bool)$set;
 				if($set == $this->umode()) return true;
+				if($set && !$this->umodePossible()) return false;
+
+				if(!$set)
+				{
+					$time_diff = time()-$this->raw["umode_time"];
+					$active_planet = $this->getActivePlanet();
+					foreach($this->getPlanetsList() as $planet)
+					{
+						$this->setActivePlanet($planet);
+						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["gebaeude"]) && $this->planet_info["building"]["gebaeude"])
+							$this->planet_info["building"]["gebaeude"][1] += $time_diff;
+						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["forschung"]) && $this->planet_info["building"]["forschung"])
+							$this->planet_info["building"]["forschung"][1] += $time_diff;
+						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["roboter"]) && $this->planet_info["building"]["roboter"])
+						{
+							foreach($this->planet_info["building"]["roboter"] as $k=>$v)
+								$this->planet_info["building"]["roboter"][$k][1] += $time_diff;
+						}
+						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["schiffe"]) && $this->planet_info["building"]["schiffe"])
+						{
+							foreach($this->planet_info["building"]["schiffe"] as $k=>$v)
+								$this->planet_info["building"]["schiffe"][$k][1] += $time_diff;
+						}
+						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["verteidigung"]) && $this->planet_info["building"]["verteidigung"])
+						{
+							foreach($this->planet_info["building"]["verteidigung"] as $k=>$v)
+								$this->planet_info["building"]["verteidigung"][$k][1] += $time_diff;
+						}
+					}
+					foreach($this->getFleetsList() as $fleet)
+					{
+						$fleet_obj = Classes::Fleet($fleet);
+						$fleet_obj->moveTime($time_diff);
+					}
+				}
+				else
+				{
+					$eventfile = Classes::EventFile();
+					foreach($this->getFleetsList() as $fleet)
+						$eventfile->removeCanceledFleet($fleet);
+				}
+
 				$this->raw['umode'] = $set;
 				$this->raw['umode_time'] = time();
 				$this->changed = true;
@@ -1724,6 +1775,27 @@
 			return (isset($this->raw['umode']) && $this->raw['umode']);
 		}
 
+		function umodePossible()
+		{
+			if(!$this->status) return false;
+
+			foreach($this->getFleetsList() as $fleet)
+			{
+				$fleet_obj = Classes::Fleet($fleet);
+				if(!$fleet_obj->userExists($this->getName()))
+					continue;
+				foreach($fleet_obj->getTargetsList() as $target)
+				{
+					$target_spl = explode(":", $target);
+					$galaxy_obj = Classes::Galaxy($target_spl[0]);
+					$owner = $galaxy_obj->getPlanetOwner($target_spl[1], $target_spl[2]);
+					if($owner && $owner != $this->getName())
+						return false;
+				}
+			}
+			return true;
+		}
+
 		function permissionToUmode()
 		{
 			if(!$this->status) return false;
@@ -1736,6 +1808,15 @@
 			return ((time()-$this->raw['umode_time']) > $min_days*86400);
 		}
 
+		function getUmodeEnteringTime()
+		{
+			if(!$this->status) return false;
+
+			if(!$this->umode() || !isset($this->raw["umode_time"])) return null;
+
+			return $this->raw["umode_time"];
+		}
+
 		function getUmodeReturnTime()
 		{
 			if(!$this->status) return false;
@@ -1744,11 +1825,9 @@
 			else return time()+3*86400;
 		}
 
-		function permissionToAct($check_challenge=true)
+		function permissionToAct()
 		{
-			if($check_challenge && isset($_SESSION["admin_username"]))
-				return true;
-			return !database_locked() && !$this->userLocked() && !$this->umode() && (!$check_challenge || !$this->challengeNeeded());
+			return !database_locked() && !$this->userLocked() && !$this->umode();
 		}
 
 		protected function getDataFromRaw()
@@ -1924,6 +2003,9 @@
 		{
 			if(!$this->raw) return false;
 
+			if($this->umode())
+				return 2;
+
 			$active_planet = $this->getActivePlanet();
 
 			foreach($this->getPlanetsList() as $planet)
@@ -2041,7 +2123,7 @@
 					}
 				}
 
-				mergeEventhandlerActions(&$actions, array(&$actions_gebaeude, &$actions_forschung, &$actions_roboter, &$actions_schiffe, &$actions_verteidigung));
+				self::mergeEventhandlerActions(&$actions, array(&$actions_gebaeude, &$actions_forschung, &$actions_roboter, &$actions_schiffe, &$actions_verteidigung));
 
 				unset($actions_gebaeude);
 				unset($actions_forschung);
@@ -2379,7 +2461,7 @@
 
 			if($tag === '')
 			{
-				__autoload('Alliance');
+				import('Dataset/Alliance');
 				if(!isset($this->raw['alliance']) || trim($this->raw['alliance']) == '' || !Alliance::allianceExists($this->raw['alliance']))
 					return false;
 				else return trim($this->raw['alliance']);
@@ -3123,7 +3205,7 @@
 			$this->setActivePlanet($active_planet);
 
 			# Nachrichtenabsender aendern
-			__autoload("Message");
+			import("Dataset/Message");
 			$message_db = new MessageDatabase();
 			$message_db->renameUser($this->name, $new_name);
 			unset($message_db);
@@ -3280,7 +3362,7 @@
 
 			if($message_obj->getStatus())
 			{
-				$message_obj->text(sprintf(_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf(_("%d:%d:%d"), $this->getPos()), makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0])));
+				$message_obj->text(sprintf(_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf(_("%d:%d:%d"), $this->getPos()), Item::makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0])));
 				$message_obj->subject(sprintf(_("Fremdstationierung zurückgezogen auf %s"), vsprintf(_("%d:%d:%d"), $this->getPos())));
 				$message_obj->from($user);
 				$message_obj->addUser($this->getName(), 3);
@@ -3607,12 +3689,15 @@
 			$imfile = Classes::IMFile();
 			$imfile->removeMessages($this->getName(), $special_id);
 
-			$messenger_receive = $this->checkSetting('messenger_receive');
-			if(!$messenger_receive['building'][$type]) return 2;
+			$reload_stack = Classes::ReloadStack();
+			$reload_stack->reset($this->getName(), $special_id);
+
 			$building = $this->checkBuildingThing($type);
 			if(!$building) return 2;
+
+			$messenger_receive = $this->checkSetting('messenger_receive');
 			$messenger_settings = $this->getNotificationType();
-			if(!$messenger_settings) return 2;
+			$add_message = ($messenger_settings && $messenger_receive['building'][$type]);
 
 			$planet_prefix = "(".$this->planetName().", ".$this->getPosString().") ";
 
@@ -3622,48 +3707,71 @@
 					if(!$building || ($type == 'forschung' && $building[2] && $this->getActivePlanet() != $building[4]))
 						break;
 
-					$item_info = $this->getItemInfo($building[0], $type);
+					if($add_message)
+					{
+						$item_info = $this->getItemInfo($building[0], $type);
 
-					if($type == 'gebaeude')
-						$message = $planet_prefix."Gebäudebau abgeschlossen: ".$item_info['name']." (".($item_info['level']+($building[2] ? -1 : 1)).")";
-					else
-						$message = $planet_prefix."Forschung fertiggestellt: ".$item_info['name']." (".($item_info['level']+1).")";
-					$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $message, $special_id, $building[1]);
+						if($type == 'gebaeude')
+							$message = $planet_prefix."Gebäudebau abgeschlossen: ".$item_info['name']." (".($item_info['level']+($building[2] ? -1 : 1)).")";
+						else
+							$message = $planet_prefix."Forschung fertiggestellt: ".$item_info['name']." (".($item_info['level']+1).")";
+						$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $message, $special_id, $building[1]);
+					}
 					break;
 				case 'roboter': case 'schiffe': case 'verteidigung':
-					switch($type)
+					$building_number = 0;
+					$finish_time = time();
+					foreach($building as $b)
 					{
-						case 'roboter': $singular = 'Roboter'; $plural = 'Roboter'; $art = 'ein'; break;
-						case 'schiffe': $singular = 'Schiff'; $plural = 'Schiffe'; $art = 'ein'; break;
-						case 'verteidigung': $singular = 'Verteidigungsanlage'; $plural = 'Verteidigungsanlagen'; $art = 'eine'; break;
+						$building_number += $b[2];
+						while($building_number > global_setting("RELOAD_LIMIT"))
+						{
+							$building_number -= global_setting("RELOAD_LIMIT");
+							$b[2] -= global_setting("RELOAD_LIMIT");
+							if($b[2] >= 0) $finish_time += global_setting("RELOAD_LIMIT")*$b[3];
+							else $finish_time -= $b[2]*$b[3];
+							$reload_stack->addReload($this->getName(), $finish_time, $special_id);
+						}
+						if($b[2] > 0)
+							$finish_time += $b[2]*$b[3];
 					}
 
-					switch($messenger_receive['building'][$type])
+					if($add_message)
 					{
-						case 1:
-							foreach($building as $b)
-							{
-								$item_info = $this->getItemInfo($b[0], $type);
-								$time = $b[1];
-								for($i=0; $i<$b[2]; $i++)
+						switch($type)
+						{
+							case 'roboter': $singular = 'Roboter'; $plural = 'Roboter'; $art = 'ein'; break;
+							case 'schiffe': $singular = 'Schiff'; $plural = 'Schiffe'; $art = 'ein'; break;
+							case 'verteidigung': $singular = 'Verteidigungsanlage'; $plural = 'Verteidigungsanlagen'; $art = 'eine'; break;
+						}
+
+						switch($messenger_receive['building'][$type])
+						{
+							case 1:
+								foreach($building as $b)
 								{
-									$time += $b[3];
-									$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.ucfirst($art)." ".$singular." der Sorte ".$item_info['name']." wurde fertiggestellt.", $special_id, $time);
+									$item_info = $this->getItemInfo($b[0], $type);
+									$time = $b[1];
+									for($i=0; $i<$b[2]; $i++)
+									{
+										$time += $b[3];
+										$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.ucfirst($art)." ".$singular." der Sorte ".$item_info['name']." wurde fertiggestellt.", $special_id, $time);
+									}
 								}
-							}
-							break;
-						case 2:
-							foreach($building as $b)
-							{
-								$item_info = $this->getItemInfo($b[0], $type);
-								$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.$b[2]." ".($b[2]==1 ? $singular : $plural)." der Sorte ".$item_info['name']." ".($b[2]==1 ? 'wurde' : 'wurden')." fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
-							}
-							break;
-						case 3:
-							$keys = array_keys($building);
-							$b = $building[array_pop($keys)];
-							$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix."Alle ".$plural." wurden fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
-							break;
+								break;
+							case 2:
+								foreach($building as $b)
+								{
+									$item_info = $this->getItemInfo($b[0], $type);
+									$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.$b[2]." ".($b[2]==1 ? $singular : $plural)." der Sorte ".$item_info['name']." ".($b[2]==1 ? 'wurde' : 'wurden')." fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
+								}
+								break;
+							case 3:
+								$keys = array_keys($building);
+								$b = $building[array_pop($keys)];
+								$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix."Alle ".$plural." wurden fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
+								break;
+						}
 					}
 					break;
 			}
@@ -3866,10 +3974,10 @@
 		{
 			if(!$this->status) return false;
 
-			if(isset($_SESSION["username"]))
+			if(isset($_SESSION["admin_username"]))
 				return false;
 
-			if(!$this->permissionToAct(false)) return false;
+			if(!$this->permissionToAct()) return false;
 
 			if(!isset($this->raw["next_challenge"]))
 				return true;
@@ -3899,57 +4007,57 @@
 				$this->lockUser(time()+global_setting("CHALLENGE_LOCK_TIME"));
 			return true;
 		}
-	}
 
-	function getUsersCount()
-	{
-		$highscores = Classes::Highscores();
-		return $highscores->getCount('users');
-	}
-
-	function sortEventhandlerActions($a, $b)
-	{
-		if($a[0] < $b[0]) return -1;
-		elseif($a[0] > $b[0]) return 1;
-		else return 0;
-	}
-
-	function mergeEventhandlerActions(&$actions, $pa)
-	{
-		$count = array(count($pa[0]), count($pa[1]), count($pa[2]), count($pa[3]), count($pa[4]));
-		$count_g = array_sum($count);
-
-		$next = array(0, 0, 0, 0, 0);
-
-		$tnext = array(null, null, null, null, null);
-
-		if($next[0] < $count[0]) $tnext[0] = $pa[0][$next[0]][0];
-		if($next[1] < $count[1]) $tnext[1] = $pa[1][$next[1]][0];
-		if($next[2] < $count[2]) $tnext[2] = $pa[2][$next[2]][0];
-		if($next[3] < $count[3]) $tnext[3] = $pa[3][$next[3]][0];
-		if($next[4] < $count[4]) $tnext[4] = $pa[4][$next[4]][0];
-
-		$actions = array();
-		array_pad($actions, $count_g, null);
-
-		for($i = 0; $i<$count_g; $i++)
+		static function getUsersCount()
 		{
-			$m = min_index($tnext);
-			$actions[$i] = &$pa[$m][$next[$m]];
-			$next[$m]++;
-			if($next[$m] >= $count[$m])
-				$tnext[$m] = null;
-			else
-				$tnext[$m] = $pa[$m][$next[$m]][0];
+			$highscores = Classes::Highscores();
+			return $highscores->getCount('users');
 		}
-	}
 
-	function getIngtechFactor()
-	{
-		if(file_exists(global_setting('DB_USE_OLD_INGTECH')))
-			return 1;
-		elseif(file_exists(global_setting("DB_USE_OLD_ROBTECH")))
-			return 2;
-		else
-			return 10;
+		static function sortEventhandlerActions($a, $b)
+		{
+			if($a[0] < $b[0]) return -1;
+			elseif($a[0] > $b[0]) return 1;
+			else return 0;
+		}
+
+		static function mergeEventhandlerActions(&$actions, $pa)
+		{
+			$count = array(count($pa[0]), count($pa[1]), count($pa[2]), count($pa[3]), count($pa[4]));
+			$count_g = array_sum($count);
+
+			$next = array(0, 0, 0, 0, 0);
+
+			$tnext = array(null, null, null, null, null);
+
+			if($next[0] < $count[0]) $tnext[0] = $pa[0][$next[0]][0];
+			if($next[1] < $count[1]) $tnext[1] = $pa[1][$next[1]][0];
+			if($next[2] < $count[2]) $tnext[2] = $pa[2][$next[2]][0];
+			if($next[3] < $count[3]) $tnext[3] = $pa[3][$next[3]][0];
+			if($next[4] < $count[4]) $tnext[4] = $pa[4][$next[4]][0];
+
+			$actions = array();
+			array_pad($actions, $count_g, null);
+
+			for($i = 0; $i<$count_g; $i++)
+			{
+				$m = min_index($tnext);
+				$actions[$i] = &$pa[$m][$next[$m]];
+				$next[$m]++;
+				if($next[$m] >= $count[$m])
+					$tnext[$m] = null;
+				else
+					$tnext[$m] = $pa[$m][$next[$m]][0];
+			}
+		}
+
+		static function getIngtechFactor()
+		{
+			if(file_exists(global_setting('DB_USE_OLD_INGTECH')))
+				return 1;
+			elseif(file_exists(global_setting("DB_USE_OLD_ROBTECH")))
+				return 2;
+			else
+				return 10;
+		}
 	}

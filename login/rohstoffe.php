@@ -27,7 +27,7 @@
 			$me->setSetting('prod_show_days', $_POST['show_days']);
 	}
 
-	login_gui::html_head();
+	$gui->init();
 ?>
 <h2>Rohstoffproduktion pro Stunde</h2>
 <form action="rohstoffe.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post">
@@ -57,7 +57,6 @@
 			return 'null';
 	}
 
-	$tabindex = 1;
 	$ges_prod = $me->getProduction();
 	$gebaeude = $me->getItemsList('gebaeude');
 	foreach($gebaeude as $id)
@@ -210,5 +209,5 @@
 // ]]>
 </script>
 <?php
-	login_gui::html_foot();
+	$gui->end();
 ?>

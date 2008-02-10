@@ -37,7 +37,7 @@
 	$messengers = get_messenger_info();
 	$show_im = isset($messengers['jabber']);
 
-	home_gui::html_head();
+	$gui->init();
 ?>
 <h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Features")))?></h2>
 <ul>
@@ -97,5 +97,5 @@
 	<li><a href="images/screenshots/screenshot_12.png"><img src="images/screenshots/preview_12.jpg" alt="<?=h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
 </ul>
 <?php
-	home_gui::html_foot();
+	$gui->end();
 ?>

@@ -17,7 +17,7 @@
 */
 	require('include.php');
 
-	__autoload('User');
+	import('Dataset/User');
 
 	if($admin_array['permissions'][1] && isset($_POST['ghost_username']) && User::userExists(trim($_POST['ghost_username'])))
 	{

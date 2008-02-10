@@ -17,7 +17,7 @@
 */
 	require('include.php');
 
-	home_gui::html_head();
+	$gui->init();
 ?>
 <h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("FAQ")))?></h2>
 <p><?=sprintf(h(_("Hier eine Liste häufig gestellter Fragen. Sollte die Frage, die Sie suchen, nicht dabei sein, schreiben Sie einfach ins %sBoard%s.")), "<a href=\"".global_setting("USE_PROTOCOL")."://board.s-u-a.net/index.php\">", "</a>")?></p>
@@ -211,5 +211,5 @@
 	<p><?=sprintf(h(_("Besuchen Sie doch einmal die %s%s-Entwicklerseiten%s, dort finden Sie weitere Informationen, wie Sie das Spiel bekommen können.")), "<a href=\"http://dev.s-u-a.net/\">", h(_("title_abbr")), "</a>")?></p>
 </div>
 <?php
-	home_gui::html_foot();
+	$gui->end();
 ?>

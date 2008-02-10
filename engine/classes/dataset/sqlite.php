@@ -16,6 +16,8 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	import("Dataset/Classes");
+
 	class SQLite
 	{
 		protected $filename = false;
@@ -210,10 +212,10 @@
 			}
 			return $this->connection->commit();
 		}
-		
+
 		function printException($exception, $query)
 		{
-			fputs(global_setting("LOG"), "PDO error, query: ".$query."\n");
+			fputs(global_setting("LOG"), "\nPDO error, query: ".$query);
 			throw $exception;
 		}
 	}

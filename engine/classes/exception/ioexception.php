@@ -15,10 +15,9 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	$__FILE__ = str_replace("\\", "/", __FILE__);
-	$include_filename = dirname($__FILE__).'/engine/include.php';
-	require_once($include_filename);
 
-	language("de_DE", true);
-	$gui = new HomeGui();
-?>
+	import("Exception/SuaException");
+
+	class IOException extends SuaException
+	{
+	}

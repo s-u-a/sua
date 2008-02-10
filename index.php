@@ -28,8 +28,8 @@
 			return "\n\t</p>\n".str_repeat('<br />', $len-2)."\n\t<p>\n\t\t";
 	}
 
-	$SHOW_META_DESCRIPTION = true;
-	home_gui::html_head();
+	$gui->setOption("meta", true);
+	$gui->init();
 ?>
 <h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Neuigkeiten")))?></h2>
 <?php
@@ -66,5 +66,5 @@
 <?php
 	}
 
-	home_gui::html_foot();
+	$gui->end();
 ?>

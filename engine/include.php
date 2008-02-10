@@ -26,8 +26,6 @@
 	date_default_timezone_set(@date_default_timezone_get());
 	language("de_DE");
 
-	class IOException extends Exception {};
-
 	# s_root ermitteln: Absoluter Pfad zum Spielverzeichnis
 	$this_filename = '/engine/include.php';
 	$__FILE__ = str_replace('\\', '/', __FILE__);
@@ -106,6 +104,7 @@
 	global_setting('DB_NOTIFICATIONS', $GDB_DIR.'/notifications');
 	global_setting('DB_EVENTHANDLER_LOG', $GDB_DIR.'/eventhandler.log');
 	global_setting('DB_EVENTHANDLER_PIDFILE', $GDB_DIR.'/eventhandler.pid');
+	global_setting("DB_IMSERVER_PIDFILE", $GDB_DIR."/imserver.pid");
 	global_setting('DB_DATABASES', $GDB_DIR.'/databases');
 	global_setting('DB_HOSTNAME', $GDB_DIR.'/hostname');
 	global_setting('DB_GPG', $GDB_DIR.'/gpg');
@@ -134,6 +133,13 @@
 	global_setting("MIN_PRODUCTION", array(20, 10, 0, 0, 0)); # Die Produktion kann nicht unter diesen Wert sinken
 	global_setting("PRODUCTION_LIMIT_INITIAL", array(500000, 500000, 500000, 500000, 500000, 1000000)); # Initiallimits für Rohstoffspeicher
 	global_setting("PRODUCTION_LIMIT_STEPS", array(100000, 100000, 100000, 100000, 100000, 10000000)); # Wachstum der Rohstoffspeicher je gebauten Roboter/Energietechnik
+	global_setting("RELOAD_LIMIT", 100); # Alle wieviel gebauten Roboter/Schiffe/Verteidigungsanlagen soll der Benutzeraccount neugeladen werden?
+	global_setting("RELOAD_STACK_INTERVAL", 120); # Alle wieviel Sekunden sollen die Benutzeraccounts neugeladen werden?
+	global_setting("SESSION_TIMEOUT", 1800); # Wieviele Sekunden Inaktivität sollen zur Zerstörung der Session führen?
+	global_setting("CLASSES", dirname(__FILE__)."/classes");
+
+	import("Exception/ClassException");
+	import("Exception/IOException");
 
 	/**
 	  * Initialisiert die Standardwerte fuer die globalen Einstellungen.
@@ -207,14 +213,45 @@
 		return true;
 	}
 
-	function __autoload($class)
+	function get_includes($dirn=null)
 	{
-		if(strtolower($class) == 'items') $class = 'Item';
-		$filename = s_root.'/engine/classes/'.strtolower($class).'.php';
-		if(is_file($filename) && is_readable($filename)) require_once($filename);
+		if(!isset($dirn))
+			static $includes;
+		if(!isset($includes))
+		{
+			if(!isset($dirn)) $dirn = global_setting("CLASSES");
+
+			$includes = array();
+			$dir = dir($dirn);
+			if(!$dir) throw new IOException("Could not open directory ".$dirn.".");
+			while(($fname = $dir->read()) !== false)
+			{
+				if($fname[0] == '.') continue;
+				if(is_file($dirn."/".$fname) && is_readable($dirn."/".$fname))
+					$includes[] = substr($dirn."/".$fname, strlen(global_setting("CLASSES")."/"));
+				elseif(is_dir($dirn."/".$fname))
+					$includes = array_merge($includes, get_includes($dirn."/".$fname));
+			}
+		}
+		return $includes;
 	}
 
-	__autoload('Classes');
+	function import($class)
+	{
+		$matches = 0;
+		$class_pattern = "/^".str_replace(array("\\?", "\\*"), array(".", ".*"), preg_quote($class, "/"))."\\.php\$/i";
+		foreach(get_includes() as $include)
+		{
+			if(preg_match($class_pattern, $include))
+			{
+				require_once(global_setting("CLASSES")."/".$include);
+				$matches++;
+			}
+		}
+
+		if($matches < 1)
+			throw new ClassException("Could not load class ".$class.".");
+	}
 
 	// TODO: Get rid of document.write and innerHTML
 	//if(isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/xhtml+xml') !== false)
@@ -230,6 +267,7 @@
 
 	if(!isset($USE_OB) || $USE_OB)
 		ob_start('ob_gzhandler');
+
 	$tabindex = 1;
 
 	if(!isset($LOGIN) || !$LOGIN)
@@ -238,32 +276,20 @@
 	if(!isset($_SESSION))
 		$GLOBALS['_SESSION'] = array();
 
-	define("MESSAGE_KAEMPFE", 1);
-	define("MESSAGE_SPIONAGE", 2);
-	define("MESSAGE_TRANSPORT", 3);
-	define("MESSAGE_SAMMELN", 4);
-	define("MESSAGE_BESIEDELUNG", 5);
-	define("MESSAGE_BENUTZERNACHRICHTEN", 6);
-	define("MESSAGE_VERBUENDETE", 7);
-	define("MESSAGE_POSTAUSGANG", 8);
+	# TODO: Die folgenden Dinge in eine globale Einstellung auslagern
 
-	define("FLEET_BESIEDELN", 1);
-	define("FLEET_SAMMELN", 2);
-	define("FLEET_ANGRIFF", 3);
-	define("FLEET_TRANSPORT", 4);
-	define("FLEET_SPIONIEREN", 5);
-	define("FLEET_STATIONIEREN", 6);
-
+	import("Dataset/Fleet");
+	import("Dataset/Message");
 	# Maximales Alter in Tagen der Nachrichtensorten
 	$message_type_times = array (
-		MESSAGE_KAEMPFE => 3,
-		MESSAGE_SPIONAGE => 3,
-		MESSAGE_TRANSPORT => 2,
-		MESSAGE_SAMMELN => 2,
-		MESSAGE_BESIEDELUNG => 1,
-		MESSAGE_BENUTZERNACHRICHTEN => 5,
-		MESSAGE_VERBUENDETE => 4,
-		MESSAGE_POSTAUSGANG => 2
+		Message::$TYPE_KAEMPFE => 3,
+		Message::$TYPE_SPIONAGE => 3,
+		Message::$TYPE_TRANSPORT => 2,
+		Message::$TYPE_SAMMELN => 2,
+		Message::$TYPE_BESIEDELUNG => 1,
+		Message::$TYPE_BENUTZERNACHRICHTEN => 5,
+		Message::$TYPE_VERBUENDETE => 4,
+		Message::$TYPE_POSTAUSGANG => 2
 	);
 
 	# Fuer veroeffentlichte Nachrichten
@@ -271,13 +297,17 @@
 
 	# Zu jeder Flottenauftragsart die zugehoerige Nachrichtensorte
 	$types_message_types = array (
-		FLEET_BESIEDELN => MESSAGE_BESIEDELUNG,
-		FLEET_SAMMELN => MESSAGE_SAMMELN,
-		FLEET_ANGRIFF => MESSAGE_KAEMPFE,
-		FLEET_TRANSPORT => MESSAGE_TRANSPORT,
-		FLEET_SPIONIEREN => MESSAGE_SPIONAGE,
-		FLEET_STATIONIEREN => MESSAGE_TRANSPORT
+		Fleet::$TYPE_BESIEDELN => Message::$TYPE_BESIEDELUNG,
+		Fleet::$TYPE_SAMMELN => Message::$TYPE_SAMMELN,
+		Fleet::$TYPE_ANGRIFF => Message::$TYPE_KAEMPFE,
+		Fleet::$TYPE_TRANSPORT => Message::$TYPE_TRANSPORT,
+		Fleet::$TYPE_SPIONIEREN => Message::$TYPE_SPIONAGE,
+		Fleet::$TYPE_STATIONIEREN => Message::$TYPE_TRANSPORT
 	);
+
+	# Version herausfinden
+	$version = get_version();
+	define('VERSION', $version);
 
 	function &stripslashes_r(&$var)
 	{ # Macht rekursiv in einem Array addslashes() rueckgaengig
@@ -867,9 +897,9 @@
 
 		if(!isset($count))
 			$count = 0;
-		if($round == 0)
+		if($round === 0)
 			$count = floor($count);
-		else
+		elseif($round)
 			$count = round($count, $round);
 
 		$neg = false;
@@ -879,7 +909,7 @@
 			$count = -$count;
 		}
 
-		$count = str_replace(array('.', ','), array(_("[thousand_separator]"), _("[decimal_separator]")), number_format($count, $round, ',', '.'));
+		$count = str_replace(array('.', ','), array(_("[thousand_separator]"), _("[decimal_separator]")), number_format($count, null, ',', '.'));
 
 		if($neg)
 			$count = _("[minus_sign]").$count;
@@ -1768,7 +1798,7 @@
 	}
 
 	/**
-	  * Konvertiert eine Array, das Items eine Anzahl zuweist, in einen String. Format: (Item-ID ' ' Anzahl ( ' ' Item-ID ' ' Anzahl)* )?
+	  * Konvertiert ein Array, das Items eine Anzahl zuweist, in einen String. Format: (Item-ID ' ' Anzahl ( ' ' Item-ID ' ' Anzahl)* )?
 	*/
 
 	function encode_item_list($list)
@@ -1823,7 +1853,12 @@
 		if($make_tags)
 			return preg_replace("/&amp;([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß])/", "<kbd>$1</kbd>", htmlspecialchars($text));
 		elseif(preg_match("/^(.*?)&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)(.*)\$/", $text, $m))
-			return htmlspecialchars($m[1].$m[2].$m[3])." [".htmlspecialchars(str_replace(array("ä", "ö", "ü"), array("Ä", "Ö", "Ü"), strtoupper($m[2])))."]";
+		{
+			if(preg_match("/\\[&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)\\]/", $text))
+				return htmlspecialchars($m[1].$m[2].$m[3]);
+			else
+				return htmlspecialchars($m[1].$m[2].$m[3])." [".htmlspecialchars(str_replace(array("ä", "ö", "ü"), array("Ä", "Ö", "Ü"), strtoupper($m[2])))."]";
+		}
 		else
 			return htmlspecialchars($text);
 	}
@@ -2033,4 +2068,85 @@
 				return explode($delimiter, $string);
 		}
 		return array();
+	}
+
+	/**
+	  * Überprüft, ob db_things/imserver gestartet ist.
+	  * @return boolean
+	*/
+
+	function imserver_running()
+	{
+		if(!is_file(global_setting("DB_IMSERVER_PIDFILE")) || !is_readable(global_setting("DB_IMSERVER_PIDFILE")))
+			return false;
+		$fh = fopen(global_setting("DB_IMSERVER_PIDFILE"), "r");
+		$running = !flock($fh, LOCK_EX + LOCK_NB);
+		if(!$running) flock($fh, LOCK_UN);
+		return $running;
+	}
+
+	/**
+	  * Formatiert Planeteninformationen in ein lesbares Format.
+	*/
+
+	function format_planet($koords, $name=null, $username=null, $alliance=null)
+	{
+		$koords = vsprintf(_("%d:%d:%d"), explode(":", $koords));
+		if(!$name)
+			return sprintf(_("%s (unbesiedelt)"), $koords);
+		elseif(!$username)
+			return sprintf(_("„%s“ (%s)"), $name, $koords);
+		else
+		{
+			if($alliance)
+				$username = sprintf(_("[%s] %s"), $alliance, $username);
+			return sprintf(_("„%s“ (%s, Eigentümer: %s)"), $name, $koords, $username);
+		}
+	}
+
+	/**
+	  * Wie format_planet(), fügt aber Links auf alles ein
+	*/
+
+	function format_planet_h($koords, $name=null, $username=null, $alliance=null)
+	{
+		$koords = "<a href=\"".htmlspecialchars(h_root."/karte.php?shortcut=".urlencode($koords)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Diesen Planeten in der Karte anzeigen"))."\" class=\"koords\">".vsprintf(h(_("%d:%d:%d")), explode(":", $koords))."</a>";
+		if(!$name)
+			return sprintf(h(_("%s (unbesiedelt)")), $koords);
+		elseif(!$username)
+			return sprintf(h(_("„%s“ (%s)")), $name, $koords);
+		else
+		{
+			$username = "<a href=\"".htmlspecialchars(h_root."/info/playerinfo.php?player=".urlencode($player)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Informationen zu diesem Spieler anzeigen"))."\" class=\"playername\">".htmlspecialchars($player)."</a>";
+			if($alliance)
+				$username = sprintf(h(_("[%s] %s")), "<a href=\"".htmlspecialchars(h_root."/info/allianceinfo.php?alliance=".urlencode($alliance)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Informationen zu dieser Allianz anzeigen"))."\" class=\"alliancename\">".htmlspecialchars($alliance)."</a>", $username);
+			return sprintf(h(_("„%s“ (%s, Eigentümer: %s)")), $name, $koords, $username);
+		}
+	}
+
+	/**
+	  * Formatiert eine Fertigstellungszeit ordentlich.
+	  * @param $time integer
+	  * @param $user User Wird benötigt, um die Zeit beim Urlaubsmodus anzuhalten
+	*/
+
+	function format_ftime($time, $user=null)
+	{
+		if($user && $user->umode())
+		{
+			$time -= $user->getUmodeEnteringTime();
+			$days = floor($time/86400);
+			$time = $time%86400;
+			$hours = floor($time/3600);
+			$time = $time%3600;
+			$minutes = floor($time/60);
+			$time = $time%60;
+
+			if($days > 0)
+				return sprintf(_("%s d %02d:%02d:%02d"), ths($days), $hours, $minutes, $time);
+			else
+				return sprintf(_("%02d:%02d:%02d"), $hours, $minutes, $time);
+		}
+
+		return sprintf(_("Fertigstellung: %s"), sprintf(_("%s (Serverzeit)"), date(_("Y-m-d H:i:s"), $time)));
 	}

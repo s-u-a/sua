@@ -26,7 +26,8 @@
 
 	if(!$popup)
 	{
-		home_gui::html_head('http://'.$_SERVER['HTTP_HOST'].h_root.'/chat/');
+		$gui->setOption("base", "http://".$_SERVER["HTTP_HOST"].h_root."/chat/");
+		$gui->init();
 ?>
 <h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Chat")))?></h2>
 <?php
@@ -167,5 +168,5 @@
 		}
 	}
 
-	home_gui::html_foot();
+	$gui->end();
 ?>

@@ -15,10 +15,17 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	$__FILE__ = str_replace("\\", "/", __FILE__);
-	$include_filename = dirname($__FILE__).'/engine/include.php';
-	require_once($include_filename);
 
-	language("de_DE", true);
-	$gui = new HomeGui();
-?>
+	import("Exception/SuaException");
+
+	class CaptchaException extends SuaException
+	{
+		static $HTTP_ERROR = 1;
+		static $CONFIG_ERROR = 2;
+		static $USER_ERROR = 3;
+
+		function __construct($message = null, $code = 0)
+		{
+			parent::__construct($message, $code);
+		}
+	}

@@ -20,7 +20,7 @@
 	if(!isset($_GET['action']))
 		$_GET['action'] = false;
 
-	login_gui::html_head();
+	$gui->init();
 
 	switch($_GET['action'])
 	{
@@ -48,18 +48,18 @@
 			if(!$flotten_id)
 			{
 ?>
-<p class="error">Ungültigen Transport ausgewählt.</p>
+<p class="error"><?=h(_("Ungültigen Transport ausgewählt."))?></p>
 <?php
-				login_gui::html_foot();
+				$gui->end();
 				exit();
 			}
 
 			if(!$me->permissionToAct())
 			{
 ?>
-<p class="error">Sie haben keine Berechtigung, Flottenaufträge aufzugeben.</p>
+<p class="error"><?=h(_("Sie haben keine Berechtigung, Flottenaufträge aufzugeben."))?></p>
 <?php
-				login_gui::html_foot();
+				$gui->end();
 				exit();
 			}
 
@@ -83,7 +83,7 @@
 ?>
 <form action="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.global_setting("URL_SUFFIX"))?>" method="post" class="handel <?=$class?>">
 	<fieldset>
-		<legend><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($username).'&'.global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($username)?></a></legend>
+		<legend><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($username).'&'.global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($username)?></a></legend>
 <?php
 				$trans = $fleet->getTransportCapacity($username);
 				$handel = $fleet->getHandel($username);
@@ -204,9 +204,9 @@
 
 				if($verb)
 				{
-					$mess1 = 'Sie können das Handelsangebot zu diesem Spieler ändern, da Sie mit ihm verbündet sind.';
-					if($username == $me->getName()) $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend) und %2$s Roboter (%4$s verbleibend).';
-					else $mess2 = 'Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend).';
+					$mess1 = _('Sie können das Handelsangebot zu diesem Spieler ändern, da Sie mit ihm verbündet sind.');
+					if($username == $me->getName()) $mess2 = _('Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend) und %2$s Roboter (%4$s verbleibend).');
+					else $mess2 = _('Die Flotte hat Platz für %1$s Tonnen Rohstoffe (%3$s verbleibend).');
 					$input_name = 'set';
 					$value = '%s';
 					$disabled = '';
@@ -214,8 +214,8 @@
 				}
 				else
 				{
-					$mess1 = 'Sie können das bereits eingelagerte Handelsangebot für diesen Spieler nicht ändern, da Sie nicht mit ihm verbündet sind. Sie können nur weitere Rohstoffe einlagern.';
-					$mess2 = 'Es verbleibt Platz für %3$s Tonnen Rohstoffe.';
+					$mess1 = _('Sie können das bereits eingelagerte Handelsangebot für diesen Spieler nicht ändern, da Sie nicht mit ihm verbündet sind. Sie können nur weitere Rohstoffe einlagern.');
+					$mess2 = _('Es verbleibt Platz für %3$s Tonnen Rohstoffe.');
 					$input_name = 'add';
 					$value = '0';
 					if($remaining_trans[0] == 0)
@@ -242,8 +242,8 @@
 				{
 ?>
 		<dl>
-			<dt class="c-rohstoffe-behalten"><label for="i-rohstoffe-behalten"><?=h(_("Transportgut der Flotte nicht abliefern&[login/info/flotten_actions.php|1]"))?></label></dt>
-			<dd class="c-rohstoffe-behalten"><input type="checkbox" id="i-rohstoffe-behalten" name="keepres"<?=!$handel[2] ? " checked=\"checked\"" : ""?> title="<?=h(_("Diese Funktion erleichtert es Ihnen, mit einer Flugroute Rohstoffe von mehreren Planeten einzusammeln."))?>"<?=accesskey_attr(_("Transportgut der Flotte nicht abliefern&[login/info/flotten_actions.php|1]"))?> /></dd>
+			<dt class="c-rohstoffe-behalten"><label for="i-rohstoffe-behalten"><?=h(_("Transportgut der Flotte nicht abliefern"))?></label></dt>
+			<dd class="c-rohstoffe-behalten"><input type="checkbox" id="i-rohstoffe-behalten" name="keepres"<?=!$handel[2] ? " checked=\"checked\"" : ""?> title="<?=h(_("Diese Funktion erleichtert es Ihnen, mit einer Flugroute Rohstoffe von mehreren Planeten einzusammeln."))?>" /></dd>
 		</dl>
 <?php
 				}
@@ -251,17 +251,17 @@
 		<table>
 			<thead>
 				<tr>
-					<th class="c-gut">Gut</th>
-					<th class="c-einlagern">Einlagern</th>
+					<th class="c-gut"><?=h(_("Gut"))?></th>
+					<th class="c-einlagern"><?=h(_("Einlagern"))?></th>
 <?php
 				if(!$verb)
 				{
 ?>
-					<th class="c-bereits-eingelagert">Bereits eingelagert</th>
+					<th class="c-bereits-eingelagert"><?=h(_("Bereits eingelagert"))?></th>
 <?php
 				}
 ?>
-					<th class="c-verfuegbar">Verfügbar</th>
+					<th class="c-verfuegbar"><?=h(_("Verfügbar"))?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -270,7 +270,7 @@
 				{
 ?>
 				<tr class="c-carbon">
-					<th class="c-gut"><label for="handel-<?=$no?>-0-0">Carbon</label></th>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-0"><?=h(_("[ress_0]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[0][0]" id="handel-<?=$no?>-0-0" value="<?php printf($value, $handel[0][0])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
@@ -283,7 +283,7 @@
 					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-0').value=Math.floor(res_now['handel-<?=$no?>'][0]);" id="handel-<?=$no?>-carbon"><?=ths($available_ress[0])?></a></td>
 				</tr>
 				<tr class="c-aluminium">
-					<th class="c-gut"><label for="handel-<?=$no?>-0-1">Aluminium</label></th>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-1"><?=h(_("[ress_1]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[0][1]" id="handel-<?=$no?>-0-1" value="<?php printf($value, $handel[0][1])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
@@ -296,7 +296,7 @@
 					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-1').value=Math.floor(res_now['handel-<?=$no?>'][1]);" id="handel-<?=$no?>-aluminium"><?=ths($available_ress[1])?></a></td>
 				</tr>
 				<tr class="c-wolfram">
-					<th class="c-gut"><label for="handel-<?=$no?>-0-2">Wolfram</label></th>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-2"><?=h(_("[ress_2]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[0][2]" id="handel-<?=$no?>-0-2" value="<?php printf($value, $handel[0][2])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
@@ -309,7 +309,7 @@
 					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-2').value=Math.floor(res_now['handel-<?=$no?>'][2]);" id="handel-<?=$no?>-wolfram"><?=ths($available_ress[2])?></a></td>
 				</tr>
 				<tr class="c-radium">
-					<th class="c-gut"><label for="handel-<?=$no?>-0-3">Radium</label></th>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-3"><?=h(_("[ress_3]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[0][3]" id="handel-<?=$no?>-0-3" value="<?php printf($value, $handel[0][3])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
@@ -322,7 +322,7 @@
 					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-3').value=Math.floor(res_now['handel-<?=$no?>'][3]);" id="handel-<?=$no?>-radium"><?=ths($available_ress[3])?></a></td>
 				</tr>
 				<tr class="c-tritium">
-					<th class="c-gut"><label for="handel-<?=$no?>-0-4">Tritium</label></th>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-4"><?=h(_("[ress_4]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[0][4]" id="handel-<?=$no?>-0-4" value="<?php printf($value, $handel[0][4])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
@@ -345,7 +345,7 @@
 						if(isset($handel[1][$id])) $h = $handel[1][$id];
 ?>
 				<tr class="c-ro-<?=htmlspecialchars($id)?>">
-					<th class="c-gut"><label for="handel-<?=$no?>-1-<?=$id?>"><?=htmlspecialchars($item_info['name'])?></label></th>
+					<th class="c-gut"><label for="handel-<?=$no?>-1-<?=$id?>"><?=h(_("[item_".$id."]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[1][<?=$id?>]" id="handel-<?=$no?>-1-<?=$id?>" value="<?=htmlspecialchars($h)?>" /></td>
 					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-1-<?=jsentities($id)?>').value=<?=$available_robs[$id]?>"><?=ths($available_robs[$id])?></a></td>
 				</tr>
@@ -360,7 +360,7 @@
 ?>
 			<tfoot>
 				<tr>
-					<td colspan="<?=3-$verb?>" class="button"><button type="submit">Handel ändern</button></td>
+					<td colspan="<?=3-$verb?>" class="button"><button type="submit"><?=h(_("Handel ändern"))?></button></td>
 				</tr>
 			</tfoot>
 <?php
@@ -415,16 +415,14 @@
 			if($count <= 0)
 			{
 ?>
-<p class="nothingtodo">
-	Sie haben keine Planetenlesezeichen gespeichert. In der Karte können Sie Lesezeichen anlegen.
-</p>
+<p class="nothingtodo"><?=h(_("Sie haben keine Planetenlesezeichen gespeichert. In der Karte können Sie Lesezeichen anlegen."))?></p>
 <?php
 			}
 			else
 			{
 ?>
 <fieldset>
-	<legend>Lesezeichen verwalten</legend>
+	<legend><?=h(_("Lesezeichen verwalten"))?></legend>
 	<ol class="shortcuts-verwalten order-list">
 <?php
 				$i = 0;
@@ -441,9 +439,9 @@
 						if($alliance) $s .= '['.$alliance.'] ';
 						$s .= $owner.')';
 					}
-					else $s .= '[unbesiedelt]';
+					else $s .= '['._("unbesiedelt").']';
 ?>
-		<li><?=htmlspecialchars($s)?> <span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="hoch">[Hoch]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="runter">[Runter]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="loeschen">[Löschen]</a></span></li>
+		<li><?=htmlspecialchars($s)?> <span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="hoch">[<?=h(_("Hoch"))?>]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="runter">[<?=h(_("Runter"))?>]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="loeschen">[<?=h(_("Löschen"))?>]</a></span></li>
 <?php
 					$i++;
 				}
@@ -472,9 +470,9 @@
 			if(!$flotten_id)
 			{
 ?>
-<p class="error">Ungültigen Angriff ausgewählt.</p>
+<p class="error"><?=h(_("Ungültigen Angriff ausgewählt."))?></p>
 <?php
-				login_gui::html_foot();
+				$gui->end();
 				exit();
 			}
 
@@ -485,27 +483,27 @@
 				if($_POST["fleet_passwd"] != $passwd && $me->resolveFleetPasswd($_POST["fleet_passwd"]) !== null)
 				{
 ?>
-<p class="error">Dieses Passwort wurde schon für eine andere Flotte verwendet.</p>
+<p class="error"><?=h(_("Dieses Passwort wurde schon für eine andere Flotte verwendet."))?></p>
 <?php
 				}
 				elseif(!$me->changeFleetPasswd($flotten_id, trim($_POST["fleet_passwd"])))
 				{
 ?>
-<p class="error">Das Passwort konnte nicht geändert werden.</p>
+<p class="error"><?=h(_("Das Passwort konnte nicht geändert werden."))?></p>
 <?php
 				}
 			}
 			$passwd = $me->getFleetPasswd($flotten_id);
 ?>
-<p class="buendnisangriff-beschreibung-1">Hier können Sie der ausgewählten Flotte ein Flottenpasswort zuweisen, welches es anderen Spielern ermöglicht, Ihrem Angriff eigene Flotten beizusteuern. Möchte ein anderer Spieler dem Flottenverbund beitreten, so muss er im Flottenmenü Ihren Benutzernamen in Verbindung mit dem hier festgelegten Passwort angeben. Übermitteln Sie ihm hierzu das Passwort selbst, zum Beispiel durch eine Nachricht.</p>
-<p class="buendnisangriff-beschreibung-2">Beachten Sie, dass ein Spieler dem Flottenverbund nicht mehr beitreten kann, wenn seine Flugzeit zum ausgewählten Ziel länger ist als die verbleibende Flugzeit der Flotte.</p>
-<p class="buendnisangriff-beschreibung-3">Wenn hier kein Passwort eingetragen ist, ist die Flottenverbundfunktion für diese Flotte deaktiviert.</p>
+<p class="buendnisangriff-beschreibung-1"><?=h(_("Hier können Sie der ausgewählten Flotte ein Flottenpasswort zuweisen, welches es anderen Spielern ermöglicht, Ihrem Angriff eigene Flotten beizusteuern. Möchte ein anderer Spieler dem Flottenverbund beitreten, so muss er im Flottenmenü Ihren Benutzernamen in Verbindung mit dem hier festgelegten Passwort angeben. Übermitteln Sie ihm hierzu das Passwort selbst, zum Beispiel durch eine Nachricht."))?></p>
+<p class="buendnisangriff-beschreibung-2"><?=h(_("Beachten Sie, dass ein Spieler dem Flottenverbund nicht mehr beitreten kann, wenn seine Flugzeit zum ausgewählten Ziel länger ist als die verbleibende Flugzeit der Flotte."))?></p>
+<p class="buendnisangriff-beschreibung-3"><?=h(_("Wenn hier kein Passwort eingetragen ist, ist die Flottenverbundfunktion für diese Flotte deaktiviert."))?></p>
 <form action="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.global_setting("URL_SUFFIX"))?>" method="post" class="buendnisangriff">
 	<dl class="form">
-		<dt><label for="i-flottenpasswort">Flottenpasswort</label></dt>
-		<dd><input type="text" name="fleet_passwd"<?php if($passwd !== null){?> value="<?=htmlspecialchars($passwd)?>"<?php }?> /></dd>
+		<dt><label for="i-flottenpasswort"><?=h(_("Flottenpasswort&[login/info/flotten_actions.php|1]"))?></label></dt>
+		<dd><input type="text" name="fleet_passwd"<?php if($passwd !== null){?> value="<?=htmlspecialchars($passwd)?>"<?php }?><?=accesskey_attr(_("Flottenpasswort&[login/info/flotten_actions.php|1]"))?> /></dd>
 	</dl>
-	<div class="button"><button type="submit">Speichern</button></div>
+	<div class="button"><button type="submit"<?=accesskey_attr(_("Speichern&[login/info/flotten_actions.php|1]"))?>><?=h(_("Speichern&[login/info/flotten_actions.php|1]"))?></button></div>
 </form>
 <?php
 			break;
@@ -533,7 +531,7 @@
 ?>
 <p class="error"><?=h(_("Ungültigen Flug ausgewählt."))?></p>
 <?php
-				login_gui::html_foot();
+				$gui->end();
 				exit();
 			}
 ?>
@@ -603,11 +601,11 @@
 		default:
 		{
 ?>
-<p class="error">Ungültige Aktion.</p>
+<p class="error"><?=h(_("Ungültige Aktion."))?></p>
 <?php
 			break;
 		}
 	}
 
-	login_gui::html_foot();
+	$gui->end();
 ?>

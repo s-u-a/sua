@@ -27,6 +27,20 @@
 
 	set_time_limit(0);
 
+	if(!touch(global_setting("DB_IMSERVER_PIDFILE")) || !($fh_pid = fopen(global_setting("DB_IMSERVER_PIDFILE"), 'r+')))
+	{
+		fputs(STDERR, "Error, couldn't create pid file ".global_setting("DB_IMSERVER_PIDFILE").".\n");
+		exit(1);
+	}
+
+	if(!flock($fh_pid, LOCK_EX + LOCK_NB))
+	{
+		fputs(STDERR, "Error, another instance seems already to be running. The PID seems to be ".trim(file_get_contents(global_setting("DB_IMSERVER_PIDFILE"))).".\n");
+		exit(1);
+	}
+
+	ftruncate($fh_pid, 0);
+
 	# Forken, wenn moeglich
 	if(!function_exists("pcntl_fork"))
 		$fork = -1;
@@ -37,7 +51,11 @@
 			output("Forking...");
 			$fork = pcntl_fork();
 			if($fork)
+			{
+				ftruncate($fh_pid, 0);
+				fwrite($fh_pid, $fork);
 				pcntl_waitpid($fork, &$status);
+			}
 			else
 				break;
 		}

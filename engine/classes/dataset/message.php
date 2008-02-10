@@ -16,6 +16,9 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	import("Dataset/SQLite");
+	import("Dataset/Classes");
+
 	class MessageDatabase extends SQLite
 	{
 		protected $tables = array("messages" => array("message_id PRIMARY KEY", "time INT", "text", "parsed_text", "sender", "users", "subject", "html INT"));
@@ -212,6 +215,15 @@
 		protected static $database = false;
 		protected $name = false;
 
+		static $TYPE_KAEMPFE = 1;
+		static $TYPE_SPIONAGE = 2;
+		static $TYPE_TRANSPORT = 3;
+		static $TYPE_SAMMELN = 4;
+		static $TYPE_BESIEDELUNG = 5;
+		static $TYPE_BENUTZERNACHRICHTEN = 6;
+		static $TYPE_VERBUENDETE = 7;
+		static $TYPE_POSTAUSGANG = 8;
+
 		static protected function databaseInstance()
 		{
 			if(!self::$database)
@@ -383,7 +395,7 @@
 					{
 						$im_receive = $user_obj->checkSetting('messenger_receive');
 						if($im_receive['messages'][$type])
-							$imfile->addMessage($im_settings[0], $im_settings[1], $user, "Sie haben eine neue Nachricht der Sorte "._("[message_".$type."]").($this->from() ? " von ".$this->from() : '')." erhalten. Der Betreff lautet: ".$this->subject());
+							$imfile->addMessage($im_settings[0], $im_settings[1], $user, sprintf($this->from() ? $user_obj->_("Sie haben eine neue Nachricht der Sorte %s von %s erhalten. Der Betreff lautet: %s") : $user_obj->_("Sie haben eine neue Nachricht der Sorte %s erhalten. Der Betreff lautet: %3\$s"), $user_obj->_("[message_".$type."]"), $this->from(), $this->subject()));
 					}
 					unset($this->im_check_notify[$user]);
 				}

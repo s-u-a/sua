@@ -17,7 +17,7 @@
 */
 	require('../include.php');
 
-	login_gui::html_head();
+	$gui->init();
 
 	if(!isset($_GET['id'])) $item = false;
 	else $item = Classes::Item($_GET['id']);
@@ -93,7 +93,7 @@
 		$deps = $me->getItemDeps($_GET["id"]);
 		if(count($deps) > 0)
 		{
-			isort($deps);
+			Item::isort($deps);
 ?>
 	<div class="desc-deps">
 		<h3 class="strong"><?=h(_("Abhängigkeiten"))?></h3>
@@ -340,5 +340,5 @@
 ?>
 </div>
 <?php
-	login_gui::html_foot();
+	$gui->end();
 ?>

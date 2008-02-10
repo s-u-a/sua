@@ -19,7 +19,7 @@
 
 	$databases = get_databases();
 
-	home_gui::html_head();
+	$gui->init();
 ?>
 <h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Registrieren")))?></h2>
 <?php
@@ -43,7 +43,7 @@
 		{
 			$_POST['username'] = str_replace("\x0a", ' ', trim($_POST['username'])); # nbsp
 
-			__autoload('User');
+			import('Dataset/User');
 			if(User::UserExists($_POST['username']))
 				$error = _('Dieser Spieler existiert bereits. Bitte wählen Sie einen anderen Namen.');
 			elseif(substr($_POST['username'], -4) == ' (U)')
@@ -58,8 +58,7 @@
 
 				# Koordinaten des Hauptplaneten bestimmen
 
-				__autoload('Galaxy');
-				$galaxies_count = getGalaxiesCount();
+				$galaxies_count = Galaxy::getGalaxiesCount();
 				$galaxies = array();
 				for($i=1; $i<=$galaxies_count; $i++)
 					$galaxies[] = $i;
@@ -177,5 +176,5 @@
 	</fieldset>
 </form>
 <?php
-	home_gui::html_foot();
+	$gui->end();
 ?>

@@ -154,9 +154,6 @@
 		static function html_head()
 		{
 ?>
-<?='<?=xml version="1.0" encoding="UTF-8"?>'."\n"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <!--
     This file is part of Stars Under Attack.
 
@@ -173,6 +170,9 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 -->
+<?='<?=xml version="1.0" encoding="UTF-8"?>'."\n"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=h(_("[LANG]"))?>">
 	<head>
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />

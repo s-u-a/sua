@@ -22,7 +22,7 @@
 	if(isset($_GET['cancel']))
 		$market->cancelOrder($_GET['cancel'], $me->getName());
 
-	login_gui::html_head();
+	$gui->init();
 
 	$taxes = array (
 		"1" => .05,
@@ -299,5 +299,5 @@
 	</tbody>
 </table>
 <?php
-	login_gui::html_foot();
+	$gui->end();
 ?>

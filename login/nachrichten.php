@@ -15,15 +15,20 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 	require('include.php');
 
-	login_gui::html_head((isset($_GET["type"]) && isset($_GET["message"])) ? array("ignore_messages" => array($_GET["message"])) : ((isset($_GET["type"]) && !isset($_GET["message"]) && (isset($_POST["delete"]) || isset($_POST["read"]) || isset($_POST["archive"])) && isset($_POST["message"])) ? array("ignore_messages" => array_keys($_POST["message"])) : array()));
+	if(isset($_GET["type"]) && isset($_GET["message"]))
+		$gui->setOption("ignore_messages", array($_GET["message"]));
+	elseif(isset($_GET["type"]) && !isset($_GET["message"]) && (isset($_POST["delete"]) || isset($_POST["read"]) || isset($_POST["archive"])) && isset($_POST["message"]))
+		$gui->setOption("ignore_messages", array_keys($_POST["message"]));
+	$gui->init();
 
 	if(isset($_GET['to']))
 	{
 		# Neue Nachricht verfassen
 ?>
-<h2><a href="nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" accesskey="w" tabindex="5">Nachrichten</a></h2>
+<h2><a href="nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Nachrichtenkategorienübersicht"))?>"<?=accesskey_attr(_("Nachrichten [&W][login/nachrichten.php|1]"))?> tabindex="<?=$tabindex+4?>"><?=h(_("Nachrichten [&W][login/nachrichten.php|1]"))?></a></h2>
 <?php
 		$error = '';
 		$show_form = true;
@@ -35,13 +40,13 @@
 			$_POST['empfaenger'] = trim($_POST['empfaenger']);
 
 			if(!User::userExists($_POST['empfaenger']))
-				$error = 'Der Empfänger, den Sie eingegeben haben, existiert nicht.';
+				$error = _('Der Empfänger, den Sie eingegeben haben, existiert nicht.');
 			elseif(strtolower($_POST['empfaenger']) == strtolower($me->getName()))
-				$error = 'Sie können sich nicht selbst eine Nachricht schicken.';
+				$error = _('Sie können sich nicht selbst eine Nachricht schicken.');
 			elseif(strlen($_POST['betreff']) > 30)
-				$error = 'Der Betreff darf maximal 30 Bytes lang sein.';
+				$error = _('Der Betreff darf maximal 30 Bytes lang sein.');
 			elseif(strlen($_POST['inhalt']) <= 0)
-				$error = 'Sie müssen eine Nachricht eingeben.';
+				$error = _('Sie müssen eine Nachricht eingeben.');
 			else
 			{
 				# Nachricht versenden
@@ -57,9 +62,7 @@
 					$message->addUser(User::resolveName($_POST['empfaenger']), 6);
 					$message->addUser($me->getName(), 8);
 ?>
-<p class="successful">
-	Die Nachricht wurde erfolgreich versandt.
-</p>
+<p class="successful"><?=h(_("Die Nachricht wurde erfolgreich versandt."))?></p>
 <?php
 					$show_form = false;
 					unset($message);
@@ -70,9 +73,7 @@
 		if(trim($error) != '')
 		{
 ?>
-<p class="error">
-	<?=htmlspecialchars($error)."\n"?>
-</p>
+<p class="error"><?=htmlspecialchars($error)?></p>
 <?php
 		}
 
@@ -80,11 +81,11 @@
 		{
 			# Formular zum Absenden anzeigen
 ?>
-<form action="nachrichten.php?to=&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="nachrichten-neu" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'Doppelklickschutz: Sie haben ein zweites Mal auf \u201eAbsenden\u201c geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?\');');">
+<form action="nachrichten.php?to=&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="nachrichten-neu" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=jsentities(_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?"))?>\');');">
 	<fieldset>
-		<legend>Nachricht verfassen</legend>
+		<legend><?=h(_("Nachricht verfassen"))?></legend>
 		<dl class="form">
-			<dt class="c-empfaenger"><label for="empfaenger-input">Empfänger</label></dt>
+			<dt class="c-empfaenger"><label for="empfaenger-input"><?=h(_("Empfänger [&Z][login/nachrichten.php|1]"))?></label></dt>
 <?php
 			$empfaenger = $_GET['to'];
 			if(isset($_POST['empfaenger']))
@@ -95,17 +96,20 @@
 			if(isset($_POST['betreff']))
 				$betreff = $_POST['betreff'];
 ?>
-			<dd class="c-empfaenger"><input type="text" id="empfaenger-input" name="empfaenger" value="<?=htmlspecialchars($empfaenger)?>" tabindex="1" accesskey="z" title="[Z]" /></dd>
+			<dd class="c-empfaenger"><input type="text" id="empfaenger-input" name="empfaenger" value="<?=htmlspecialchars($empfaenger)?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Empfänger [&Z][login/nachrichten.php|1]"))?> /></dd>
 
-			<dt class="c-betreff"><label for="betreff-input">Betreff</label></dt>
-			<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" value="<?=htmlspecialchars($betreff)?>" maxlength="30" tabindex="2" accesskey="j" title="[J]" /></dd>
+			<dt class="c-betreff"><label for="betreff-input"><?=h(_("Betreff [&J][login/nachrichten.php|1]"))?></label></dt>
+			<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" value="<?=htmlspecialchars($betreff)?>" maxlength="30" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Betreff [&J][login/nachrichten.php|1]"))?> /></dd>
 
-			<dt class="c-inhalt"><label for="inhalt-input">Inhalt</label></dt>
-			<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10" tabindex="3" accesskey="x" title="[X]"><?=isset($_POST['inhalt']) ? preg_replace("/[\n\r\t]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($_POST['inhalt'])) : ''?></textarea></dd>
+			<dt class="c-inhalt"><label for="inhalt-input"><?=h(_("Inhalt [&X][login/nachrichten.php|1]"))?></label></dt>
+			<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Inhalt [&X][login/nachrichten.php|1]"))?>><?=isset($_POST['inhalt']) ? preg_replace("/[\n\r\t]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($_POST['inhalt'])) : ''?></textarea></dd>
 		</dl>
 	</fieldset>
-	<div class="button"><button type="submit" accesskey="n" tabindex="4">Abse<kbd>n</kbd>den</button></div>
+	<div class="button"><button type="submit"<?=accesskey_attr(_("Abse&nden[login/nachrichten.php|1]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Abse&nden[login/nachrichten.php|1]"))?></button></div>
 </form>
+<?php
+			$tabindex++; # Oben für den Back-Link verwendet
+?>
 <script type="text/javascript">
 	// Autocompletion des Empfaengers
 	activate_users_list(document.getElementById('empfaenger-input'));
@@ -121,14 +125,12 @@
 		{
 			# Nachricht anzeigen
 ?>
-<h2><a href="nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" tabindex="6" accesskey="w">Nachrichten</a>: <a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Zurück zur Nachrichtenübersicht: <?=h(_("[message_".$_GET["type"]."]"))?> [O]" tabindex="5" accesskey="o"><?=h(_("[message_".$_GET['type']."]"))?></a></h2>
+<h2><a href="nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Nachrichtenkategorienübersicht"))?>" tabindex="<?=$tabindex+6?>"<?=accesskey_attr(_("Nachrichten [&W][login/nachrichten.php|2]"))?>><?=h(_("Nachrichten [&W][login/nachrichten.php|2]"))?></a>: <a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(sprintf(_("Zurück zur Nachrichtenübersicht: %s"), _("[message_".$_GET["type"]."]")))?>" tabindex="<?=$tabindex+5?>"<?=accesskey_attr(_("%s [&O][login/nachrichten.php|2]"))?>><?=h(sprintf(_("%s [&O][login/nachrichten.php|2]"), _("[message_".$_GET['type']."]")))?></a></h2>
 <?php
 			if(!$me->checkMessage($_GET['message'], $_GET['type']))
 			{
 ?>
-<p class="error">
-	Diese Nachricht existiert nicht.
-</p>
+<p class="error"><?=h(_("Diese Nachricht existiert nicht."))?></p>
 <?php
 			}
 			else
@@ -137,9 +139,7 @@
 				if(!$message->getStatus())
 				{
 ?>
-<p class="error">
-	Datenbankfehler.
-</p>
+<p class="error"><?=h(_("Datenbankfehler."))?></p>
 <?php
 				}
 				else
@@ -182,13 +182,13 @@
 						if($unread_prev !== false)
 						{
 ?>
-	<li class="c-prev"><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($unread_prev))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Vorige ungelesene Nachricht [U]" accesskey="u" tabindex="4">&larr;</a></li>
+	<li class="c-prev"><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($unread_prev))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Vorige &ungelesene Nachricht[login/nachrichten.php|2]"), false)?>"<?=accesskey_attr(_("Vorige &ungelesene Nachricht[login/nachrichten.php|2]"))?> tabindex="<?=$tabindex+4?>"><?=h(_("←"))?></a></li>
 <?php
 						}
 						if($unread_next !== false)
 						{
 ?>
-	<li class="c-next"><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($unread_next))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Nächste ungelesene Nachricht [Q]" accesskey="q" tabindex="3">&rarr;</a></li>
+	<li class="c-next"><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($unread_next))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Nächste ungelesene Nachricht [&Q][login/nachrichten.php|2]"), false)?>"<?=accesskey_attr(_("Nächste ungelesene Nachricht [&Q][login/nachrichten.php|2]"))?> tabindex="<?=$tabindex+3?>"><?=h(_("→"))?></a></li>
 <?php
 						}
 ?>
@@ -201,21 +201,21 @@
 					if(trim($message->from()) != '')
 					{
 ?>
-	<dt class="c-absender">Absender</dt>
-	<dd class="c-absender"><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($message->from()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($message->from())?></a></dd>
+	<dt class="c-absender"><?=h(_("Absender"))?></dt>
+	<dd class="c-absender"><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($message->from()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($message->from())?></a></dd>
 
 <?php
 					}
 					$subject = trim($message->subject());
 					if(strlen($subject) <= 0) $subject = "Kein Betreff";
 ?>
-	<dt class="c-betreff">Betreff</dt>
+	<dt class="c-betreff"><?=h(_("Betreff"))?></dt>
 	<dd class="c-betreff"><?=htmlspecialchars($subject)?></dd>
 
-	<dt class="c-zeit">Zeit</dt>
-	<dd class="c-zeit"><?=date('H:i:s, Y-m-d', $message->getTime())?></dd>
+	<dt class="c-zeit"><?=h(_("Zeit"))?></dt>
+	<dd class="c-zeit"><?=date(_('H:i:s, Y-m-d'), $message->getTime())?></dd>
 
-	<dt class="c-nachricht">Nachricht</dt>
+	<dt class="c-nachricht"><?=h(_("Nachricht"))?></dt>
 	<dd class="c-nachricht">
 <?php
 					function repl_links($a, $b, $c)
@@ -265,8 +265,8 @@
 					{
 ?>
 <ul class="nachrichten-verbuendeten-links actions">
-	<li class="c-verbuendete"><a href="verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>">Zur Verbündetenseite</a></li>
-	<li class="c-allianz"><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>">Zur Allianzseite</a></li>
+	<li class="c-verbuendete"><a href="verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Zur Verbündetenseite&[login/nachrichten.php|2]"))?>><?=h(_("Zur Verbündetenseite&[login/nachrichten.php|2]"))?></a></li>
+	<li class="c-allianz"><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Zur Allianzseite&[login/nachrichten.php|2]"))?>><?=h(_("Zur Allianzseite&[login/nachrichten.php|2]"))?></a></li>
 </ul>
 <?php
 					}
@@ -283,16 +283,20 @@
 		<?=global_setting("URL_FORMULAR")."\n"?>
 		<input type="hidden" name="to" value="<?=htmlspecialchars($message->from())?>" />
 		<input type="hidden" name="subject" value="<?=htmlspecialchars($re_betreff)?>" />
-		<button type="submit" accesskey="w" tabindex="1">Ant<kbd>w</kbd>orten</button>
+		<button type="submit"<?=accesskey_attr(_("Ant&worten[login/nachrichten.php|2]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Ant&worten[login/nachrichten.php|2]"))?></button>
 	</div>
 </form>
 <?php
 					}
+					else
+						$tabindex++;
 ?>
 <form action="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="nachricht-loeschen-formular">
-	<div><input type="hidden" name="message[<?=htmlspecialchars($_GET['message'])?>]" value="on" /><input type="submit" name="delete" accesskey="n" tabindex="2" value="Löschen" title="[N]" /> <input type="submit" name="archive" tabindex="3" value="Archivieren" /></div>
+	<div><input type="hidden" name="message[<?=htmlspecialchars($_GET['message'])?>]" value="on" /><input type="submit" name="delete" tabindex="<?=$tabindex++?>" value="<?=h(_("Lösche&n[login/nachrichten.php|2]"), false)?>"<?=accesskey_attr(_("Lösche&n[login/nachrichten.php|2"))?> /> <input type="submit" name="archive" tabindex="<?=$tabindex++?>" value="<?=h(_("Archivieren&[login/nachrichten.php|2]"))?>"<?=accesskey_attr(_("Archivieren&[login/nachrichten.php|2]"))?> /></div>
 </form>
 <?php
+					$tabindex += 4;
+
 					if(isset($_POST['weiterleitung-to']))
 					{
 						$_POST['weiterleitung-to'] = trim($_POST['weiterleitung-to']);
@@ -300,13 +304,13 @@
 						if(!User::userExists($_POST['weiterleitung-to']))
 						{
 ?>
-<p class="error">Der Empfänger, den Sie eingegeben haben, existiert nicht.</p>
+<p class="error"><?=h(_("Der Empfänger, den Sie eingegeben haben, existiert nicht."))?></p>
 <?php
 						}
 						elseif($_POST['weiterleitung-to'] == $me->getName())
 						{
 ?>
-<p class="error">Sie können sich nicht selbst eine Nachricht schicken.</p>
+<p class="error"><?=h(_("Sie können sich nicht selbst eine Nachricht schicken."))?></p>
 <?php
 						}
 						else
@@ -315,25 +319,26 @@
 							if(!$weiterleitung_message->create())
 							{
 ?>
-<p class="error">Datenbankfehler.</p>
+<p class="error"><?=h(_("Datenbankfehler."))?></p>
 <?php
 							}
 							else
 							{
 								$weiterleitung_text = '';
+								$to_user = Classes::User($_POST["weiterleitung_to"]);
 								if($message->html())
 									$weiterleitung_text .= "<p class=\"weitergeleitete-nachricht\">\n\t";
-								$weiterleitung_text .= "--- Weitergeleitete Nachricht";
+								$weiterleitung_text .= "--- ".($message->html() ? h($to_user->_("Weitergeleitete Nachricht")) : $to_user->_("Weitergeleitete Nachricht"));
 								if(trim($message->from()) != '')
 								{
-									$weiterleitung_text .= ", Absender: ";
+									$weiterleitung_text .= ", ".($message->html() ? h($to_user->_("Absender")) : $to_user->_("Absender")).": ";
 									if($message->html())
 										$weiterleitung_text .= htmlspecialchars($message->from());
 									else
 										$weiterleitung_text .= $message->from();
 								}
 								if($message->getTime())
-									$weiterleitung_text .= ", Sendezeit: ".date('H:i:s, Y-m-d', $message->getTime());
+									$weiterleitung_text .= ", ".sprintf($message->html() ? h($to_user->_("Sendezeit: %s")) : $to_user->_("Sendezeit: %s"), date($to_user->_('H:i:s, Y-m-d'), $message->getTime()));
 								$weiterleitung_text .= " ---\n";
 								if($message->html())
 									$weiterleitung_text .= "</p>";
@@ -341,10 +346,10 @@
 								$weiterleitung_message->text($weiterleitung_text.$message->rawText());
 								$weiterleitung_message->subject('Fwd: '.$message->subject());
 								$weiterleitung_message->from($me->getName());
-								$weiterleitung_message->addUser(User::resolveName($_POST['weiterleitung-to']), $_GET['type']);
+								$weiterleitung_message->addUser(User::resolveName($to_user->getName()));
 								$weiterleitung_message->html($message->html());
 ?>
-<p class="successful">Die Nachricht wurde erfolgreich weitergeleitet.</p>
+<p class="successful"><?=h(_("Die Nachricht wurde erfolgreich weitergeleitet."))?></p>
 <?php
 								unset($_POST['weiterleitung-to']);
 								unset($weiterleitung_message);
@@ -368,28 +373,26 @@
 					{
 						$host = get_default_hostname();
 ?>
-<p id="nachricht-veroeffentlichen">
-	Sie können diese Nachricht öffentlich verlinken: <a href="http://<?=htmlspecialchars($host.h_root)?>/public_message.php?id=<?=htmlspecialchars(urlencode($_GET['message']))?>&amp;database=<?=htmlspecialchars(urlencode($_SESSION['database']))?>">http://<?=htmlspecialchars($host.h_root)?>/public_message.php?id=<?=htmlspecialchars(urlencode($_GET['message']))?>&amp;database=<?=htmlspecialchars(urlencode($_SESSION['database']))?></a>
-</p>
+<p id="nachricht-veroeffentlichen"><?=sprintf(h(_("Sie können diese Nachricht öffentlich verlinken: %s")), "<a href=\"http://".htmlspecialchars($host.h_root)."/public_message.php?id=".htmlspecialchars(urlencode($_GET['message']))."&amp;database=".htmlspecialchars(urlencode($_SESSION['database']))."\">http://".htmlspecialchars($host.h_root)."/public_message.php?id=".htmlspecialchars(urlencode($_GET['message']))."&amp;database=".htmlspecialchars(urlencode($_SESSION['database']))."</a>")?></p>
 <?php
 					}
 					else
 					{
 ?>
 <ul id="nachricht-veroeffentlichen" class="possibilities">
-	<li><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($_GET['message']))?>&amp;publish=1&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>#nachricht-veroeffentlichen">Nachricht veröffentlichen</a></li>
+	<li><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($_GET['message']))?>&amp;publish=1&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>#nachricht-veroeffentlichen"<?=accesskey_attr(_("Nachricht veröffentlichen&[login/nachrichten.php|2]"))?>><?=h(_("Nachricht veröffentlichen&[login/nachrichten.php|2]"))?></a></li>
 </ul>
 <?php
 					}
 ?>
 <form action="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($_GET['message']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>#nachricht-weiterleiten-formular" method="post" id="nachricht-weiterleiten-formular" class="nachricht-weiterleiten-formular">
 	<fieldset>
-		<legend>Nachricht weiterleiten</legend>
+		<legend><?=h(_("Nachricht weiterleiten"))?></legend>
 		<dl class="form">
-			<dt><label for="empfaenger-input">Empfänger</label></dt>
-			<dd><input type="text" id="empfaenger-input" name="weiterleitung-to" value="<?=isset($_POST['weiterleitung-to']) ? htmlspecialchars($_POST['weiterleitung-to']) : ''?>" title="[X]" accesskey="x" tabindex="5" /></dd>
+			<dt><label for="empfaenger-input"><?=h(_("Empfänger [&X][login/nachrichten.php|2]"))?></label></dt>
+			<dd><input type="text" id="empfaenger-input" name="weiterleitung-to" value="<?=isset($_POST['weiterleitung-to']) ? htmlspecialchars($_POST['weiterleitung-to']) : ''?>"<?=accesskey_attr(_("Empfänger [&X][login/nachrichten.php|2]"))?> tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
-		<div class="button"><button type="submit" tabindex="6">Weiterleiten</button></div>
+		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Weiterleiten&[login/nachrichten.php|2]"))?>><?=h(_("Weiterleiten&[login/nachrichten.php|2]"))?></button></div>
 	</fieldset>
 </form>
 <script type="text/javascript">
@@ -403,7 +406,7 @@
 		{
 			# Nachrichtenuebersicht einer Kategorie anzeigen
 ?>
-<h2><a href="nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Zurück zur Nachrichtenkategorienübersicht [W]" accesskey="w" tabindex="4">Nachrichten</a>: <?=h(_("[message_".$_GET['type']."]"))?></h2>
+<h2><a href="nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Nachrichtenkategorienübersicht"))?>"<?=accesskey_attr(_("Nachrichten [&W][login/nachrichten.php|3]"))?> tabindex="<?=$tabindex+4?>"><?=h(_("Nachrichten [&W][login/nachrichten.php|3]"))?></a>: <?=h(_("[message_".$_GET['type']."]"))?></h2>
 <?php
 			if(isset($_POST['message']) && is_array($_POST['message']))
 			{
@@ -456,7 +459,7 @@
 		</thead>
 		<tbody>
 <?php
-				$tabindex = 5;
+				$tabindex_save = $tabindex+5;
 				foreach($messages_list as $message_id)
 				{
 					$status = $me->checkMessageStatus($message_id, $_GET['type']);
@@ -474,10 +477,10 @@
 					if(strlen($subject) <= 0) $subject = "Kein Betreff";
 ?>
 			<tr class="<?=$class?>">
-				<td class="c-auswaehlen"><input type="checkbox" name="message[<?=htmlspecialchars($message_id)?>]" tabindex="<?=$tabindex++?>" /></td>
+				<td class="c-auswaehlen"><input type="checkbox" name="message[<?=htmlspecialchars($message_id)?>]" tabindex="<?=$tabindex_save++?>" /></td>
 				<td class="c-betreff"><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($message_id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"><?=htmlspecialchars($subject)?></a></td>
 				<td class="c-absender"><?=htmlspecialchars($message->from())?></td>
-				<td class="c-datum"><?=date('H:i:s, Y-m-d', $message->getTime())?></td>
+				<td class="c-datum"><?=date(_('H:i:s, Y-m-d'), $message->getTime())?></td>
 			</tr>
 <?php
 				}
@@ -489,16 +492,17 @@
 				<td class="c-auswaehlen">
 					<script type="text/javascript">
 						// <![CDATA[
-						document.write('<button onclick="toggle_selection(); return false;" class="auswahl-button" title="[O]" accesskey="o" tabindex="1"><abbr title="Auswahl umkehren">A</abbr></button>');
+						document.write('<button onclick="toggle_selection(); return false;" class="auswahl-button"<?=accesskey_attr(_("Auswahl umkehren [&O][login/nachrichten.php|3]"))?> tabindex="<?=$tabindex?>"><abbr title="<?=h(_("Auswahl umkehren [&O][login/nachrichten.php|3]"))?>"><?=h(_("A[uswahl umkehren]"))?></abbr></button>');
 						// ]]>
 					</script>
 				</td>
-				<td colspan="3"><input type="submit" name="delete" class="loeschen-button" accesskey="n" tabindex="2" value="Löschen" title="[N]" /> <input type="submit" name="read" class="als-gelesen-markieren-button" tabindex="3" accesskey="u" title="[U]" value="Als gelesen markieren" /> <input type="submit" name="archive" class="archivieren-button" tabindex="4" value="Archivieren" /></td>
+				<td colspan="3"><input type="submit" name="delete" class="loeschen-button"<?=accesskey_attr(_("Lösche&n[login/nachrichten.php|3]"))?> tabindex="<?=$tabindex+1?>" value="<?=h(_("Lösche&n[login/nachrichten.php|3]"), false)?>" /> <input type="submit" name="read" class="als-gelesen-markieren-button" tabindex="<?=$tabindex+2?>"<?=accesskey_attr(_("Als gelesen markieren [&U][login/nachrichten.php|3]"))?> value="<?=h(_("Als gelesen markieren [&U][login/nachrichten.php|3]"), false)?>" /> <input type="submit" name="archive" class="archivieren-button"<?=accesskey_attr(_("Archivieren&[login/nachrichten.php|3]"))?> tabindex="<?=$tabindex+3?>" value="<?=h(_("Archivieren&[login/nachrichten.php|3]"))?>" /></td>
 			</tr>
 		</tfoot>
 	</table>
 </form>
 <?php
+				$tabindex = $tabindex_save;
 			}
 		}
 	}
@@ -552,40 +556,40 @@
 		else
 			$ges_ncount[2] = 'leer type-empty';
 ?>
-<h2>Nachrichten</h2>
+<h2><?=h(_("Nachrichten"))?></h2>
 <ul class="nachrichten-neu-link possibilities">
-	<li><a href="nachrichten.php?to=&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" accesskey="n" tabindex="1"><kbd>N</kbd>eue Nachricht</a></li>
+	<li><a href="nachrichten.php?to=&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("&Neue Nachricht[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("&Neue Nachricht[login/nachrichten.php|4]"))?></a></li>
 </ul>
 <dl class="nachrichten-kategorien categories">
-	<dt class="c-kaempfe <?=$ncount[1][2]?>"><a href="nachrichten.php?type=1&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" accesskey="ä" tabindex="2">K<kbd>ä</kbd>mpfe</a></dt>
+	<dt class="c-kaempfe <?=$ncount[1][2]?>"><a href="nachrichten.php?type=1&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("K&ämpfe[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("K&ämpfe[login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-kaempfe <?=$ncount[1][2]?>"><?=htmlspecialchars($ncount[1][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[1][1])?>)</span></dd>
 
-	<dt class="c-spionage <?=$ncount[2][2]?>"><a href="nachrichten.php?type=2&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" accesskey="o" tabindex="3">Spi<kbd>o</kbd>nage</a></dt>
+	<dt class="c-spionage <?=$ncount[2][2]?>"><a href="nachrichten.php?type=2&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Spi&onage[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Spi&onage[login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-spionage <?=$ncount[2][2]?>"><?=htmlspecialchars($ncount[2][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[2][1])?>)</span></dd>
 
-	<dt class="c-transport <?=$ncount[3][2]?>"><a href="nachrichten.php?type=3&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" accesskey="j" title="[J]" tabindex="4">Transport</a></dt>
+	<dt class="c-transport <?=$ncount[3][2]?>"><a href="nachrichten.php?type=3&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Transport [&J][login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Transport [&J][login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-transport <?=$ncount[3][2]?>"><?=htmlspecialchars($ncount[3][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[3][1])?>)</span></dd>
 
-	<dt class="c-sammeln <?=$ncount[4][2]?>"><a href="nachrichten.php?type=4&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" accesskey="q" title="[Q]" tabindex="5">Sammeln</a></dt>
+	<dt class="c-sammeln <?=$ncount[4][2]?>"><a href="nachrichten.php?type=4&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Sammeln [&Q][login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Sammeln [&Q][login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-sammeln <?=$ncount[4][2]?>"><?=htmlspecialchars($ncount[4][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[4][1])?>)</span></dd>
 
-	<dt class="c-besiedelung <?=$ncount[5][2]?>"><a href="nachrichten.php?type=5&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" accesskey="u" tabindex="6">Besiedel<kbd>u</kbd>ng</a></dt>
+	<dt class="c-besiedelung <?=$ncount[5][2]?>"><a href="nachrichten.php?type=5&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Besiedel&ung[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Besiedel&ung[login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-besiedelung <?=$ncount[5][2]?>"><?=htmlspecialchars($ncount[5][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[5][1])?>)</span></dd>
 
-	<dt class="c-benutzernachrichten <?=$ncount[6][2]?>"><a href="nachrichten.php?type=6&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" accesskey="z" tabindex="7">Benut<kbd>z</kbd>ernachrichten</a></dt>
+	<dt class="c-benutzernachrichten <?=$ncount[6][2]?>"><a href="nachrichten.php?type=6&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Benut&zernachrichten[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Benut&zernachrichten[login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-benutzernachrichten <?=$ncount[6][2]?>"><?=htmlspecialchars($ncount[6][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[6][1])?>)</span></dd>
 
-	<dt class="c-verbeundete <?=$ncount[7][2]?>"><a href="nachrichten.php?type=7&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" accesskey="ü" tabindex="8">Verb<kbd>ü</kbd>ndete</a></dt>
+	<dt class="c-verbeundete <?=$ncount[7][2]?>"><a href="nachrichten.php?type=7&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Verb&ündete[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Verb&ündete[login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-verbuendete <?=$ncount[7][2]?>"><?=htmlspecialchars($ncount[7][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[7][1])?>)</span></dd>
 
-	<dt class="c-postausgang foot <?=$ncount[8][2]?>"><a href="nachrichten.php?type=8&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" accesskey="w" title="[W]" tabindex="9">Postausgang</a></dt>
+	<dt class="c-postausgang foot <?=$ncount[8][2]?>"><a href="nachrichten.php?type=8&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Postausgang [&W][login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Postausgang [&W][login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-postausgang foot <?=$ncount[8][2]?>"><?=htmlspecialchars($ncount[8][1])?></dd>
 
-	<dt class="c-gesamt foot <?=$ges_ncount[2]?>">Gesamt</dt>
+	<dt class="c-gesamt foot <?=$ges_ncount[2]?>"><?=h(_("Gesamt"))?></dt>
 	<dd class="c-gesamt foot <?=$ges_ncount[2]?>"><?=htmlspecialchars($ges_ncount[0])?> <span class="gesamt">(<?=htmlspecialchars($ges_ncount[1])?>)</span></dd>
 </dl>
 <?php
 	}
 
-	login_gui::html_foot();
+	$gui->end();
 ?>

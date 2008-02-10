@@ -15,22 +15,16 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	import("Exception/CaptchaException");
+
 	class Captcha
 	{
-		protected static $languages = array(
-			"en_GB" => "en",
-			"en_US" => "en",
-			"de_DE" => "de"
-		);
-
 		public static $FIELDS = array("recaptcha_challenge_field", "recaptcha_response_field");
 
 		static function challenge(&$tabindex, $tabs=0)
 		{
 			$t = str_repeat("\t", $tabs);
-			$options = array("tabindex" => $tabindex++);
-			if(isset(self::$languages[language()]))
-				$options["lang"] = self::$languages[language()];
+			$options = array("tabindex" => $tabindex++, "lang" => _("[LANG]"));
 			$url_prefix = (global_setting("PROTOCOL") == "https" ? "https://api-secure" : "http://api");
 ?>
 <?=$t?><form action="<?=htmlspecialchars($_SERVER["REQUEST_URI"])?>" method="post" class="captcha">
@@ -137,17 +131,5 @@
 			if(!isset($config[$index]))
 				throw new CaptchaException("Configuration setting ".$index." missing.", CaptchaException::$CONFIG_ERROR);
 			return $config[$index];
-		}
-	}
-
-	class CaptchaException extends SuaException
-	{
-		static $HTTP_ERROR = 1;
-		static $CONFIG_ERROR = 2;
-		static $USER_ERROR = 3;
-
-		function __construct($message = null, $code = 0)
-		{
-			parent::__construct($message, $code);
 		}
 	}

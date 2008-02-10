@@ -341,7 +341,7 @@ function show_title(ev)
 { // Mouseover, Initialisieren eines JavaScript-Tooltips
 	if(!ev) ev = window.event;
 
-	el = ev.target;
+	var el = ev.target;
 	if(!el)
 		el = ev.srcElement;
 	last_show_element = el;
@@ -362,6 +362,18 @@ function show_title(ev)
 			document.getElementById('js-title').style.top = (y_val+10)+'px';
 			document.getElementById('js-title').style.left = (x_val+10)+'px';
 		}
+	}
+}
+
+function set_title(a_el, a_title)
+{
+	if(a_el.onmouseover != show_title)
+		a_el.title = a_title;
+	else
+	{
+		a_el.setAttribute("titleAttribute", a_title);
+		if(last_show_element && last_show_element == a_el)
+			document.getElementById('js-title').firstChild.data = a_title;
 	}
 }
 

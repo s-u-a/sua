@@ -17,7 +17,7 @@
 */
 	require('../include.php');
 
-	login_gui::html_head();
+	$gui->init();
 
 	if(!isset($_GET['player']) || !User::userExists($_GET['player']))
 	{
@@ -66,7 +66,7 @@
 	<dd class="c-kampferfahrung"><?=ths($user->getScores(6))?></dd>
 
 	<dt class="c-gesamt"><?=h(_("Gesamt"))?></dt>
-	<dd class="c-gesamt"><?=ths($user->getScores())?> <span class="platz"><?=h(sprintf("(Platz %s von %s)", ths($user->getRank()), ths(getUsersCount())))?></span></dd>
+	<dd class="c-gesamt"><?=ths($user->getScores())?> <span class="platz"><?=h(sprintf("(Platz %s von %s)", ths($user->getRank()), ths(User::getUsersCount())))?></span></dd>
 </dl>
 <?php
 			$show_koords = $me->maySeeKoords($user->getName());
@@ -204,5 +204,5 @@
 			}
 		}
 	}
-	login_gui::html_foot();
+	$gui->end();
 ?>

@@ -17,13 +17,13 @@
 */
 	require('include.php');
 
-	login_gui::html_head();
+	$gui->init();
 
 	$action = false;
 	if(isset($_GET['action']))
 		$action = $_GET['action'];
 
-	__autoload('Alliance');
+	import("Dataset/Alliance");
 
 	if(!$me->allianceTag() || !($alliance = Classes::Alliance($me->allianceTag())) || !$alliance->getStatus())
 	{
@@ -99,7 +99,7 @@
 ?>
 <p class="successful"><?=sprintf(h(_("Die Allianz %s wurde erfolgreich gegründet.")), htmlspecialchars($_POST['tag']))?></p>
 <?php
-					login_gui::html_foot();
+					$gui->end();
 					exit();
 				}
 			}
@@ -188,7 +188,7 @@
 ?>
 <h3 id="allianz-suchergebnisse" class="strong"><?=h(_("Suchergebnisse"))?></h3>
 <?php
-				$alliances = findAlliance($_GET['search']);
+				$alliances = Alliance::findAlliance($_GET['search']);
 
 				if(count($alliances) <= 0)
 				{
@@ -673,5 +673,5 @@
 	}
 ?>
 <?php
-	login_gui::html_foot();
+	$gui->end();
 ?>

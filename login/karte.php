@@ -19,7 +19,7 @@
 
 	# Werbung deaktivieren, weil beim vielen Herumklicken sonst das Laden ewig dauert
 	$DISABLE_ADS = true;
-	login_gui::html_head();
+	$gui->init();
 
 	$pos = $me->getPos();
 
@@ -35,10 +35,7 @@
 			$system_n = $_GET['system'];
 	}
 
-	$tabindex = 1;
-
-	__autoload('Galaxy');
-	$galaxy_count = getGalaxiesCount();
+	$galaxy_count = Galaxy::getGalaxiesCount();
 
 	$next_galaxy = $galaxy_n+1;
 	$prev_galaxy = $galaxy_n-1;
@@ -750,5 +747,5 @@
 	get_systems_around();
 </script>
 <?php
-	login_gui::html_foot();
+	$gui->end();
 ?>

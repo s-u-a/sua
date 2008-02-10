@@ -40,32 +40,30 @@
 			return 'null';
 	}
 
-	login_gui::html_head();
-
-	$tabindex = 1;
+	$gui->init();
 ?>
 <h2>Imperium</h2>
 <ul class="imperium-modi tabs">
-	<li class="c-rohstoffe<?=($action == 'ress') ? ' active' : ''?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'ress') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?>>Rohstoffe</a></li>
-	<li class="c-roboter<?=($action == 'roboter') ? ' active' : ''?>"><a href="imperium.php?action=roboter&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'roboter') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?>>Roboter</a></li>
-	<li class="c-flotte<?=($action == 'flotte') ? ' active' : ''?>"><a href="imperium.php?action=flotte&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'flotten') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?>>Flotten</a></li>
+	<li class="c-rohstoffe<?=($action == 'ress') ? ' active' : ''?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'ress') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?><?=accesskey_attr(_("Rohstoffe&[login/imperium.php|1]"))?>><?=h(_("Rohstoffe&[login/imperium.php|1]"))?></a></li>
+	<li class="c-roboter<?=($action == 'roboter') ? ' active' : ''?>"><a href="imperium.php?action=roboter&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'roboter') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?><?=accesskey_attr(_("Roboter&[login/imperium.php|1]"))?>><?=h(_("Roboter&[login/imperium.php|1]"))?></a></li>
+	<li class="c-flotte<?=($action == 'flotte') ? ' active' : ''?>"><a href="imperium.php?action=flotte&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'flotten') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?><?=accesskey_attr(_("Flotten&[login/imperium.php|1]"))?>><?=h(_("Flotten&[login/imperium.php|1]"))?></a></li>
 </ul>
 <?php
 	switch($action)
 	{
 		case 'ress':
 ?>
-<h3 id="rohstoffvorraete" class="strong">Rohstoffvorräte</h3>
+<h3 id="rohstoffvorraete" class="strong"><?=h(_("Rohstoffvorräte"))?></h3>
 <table class="imperium-tabelle imperium-rohstoffvorraete">
 	<thead>
 		<tr>
-			<th class="c-planet separator-right">Planet</th>
-			<th class="c-carbon">Carbon</th>
-			<th class="c-aluminium">Aluminium</th>
-			<th class="c-wolfram">Wolfram</th>
-			<th class="c-radium">Radium</th>
-			<th class="c-tritium">Tritium</th>
-			<th class="c-gesamt">Gesamt</th>
+			<th class="c-planet separator-right"><?=h(_("Planet"))?></th>
+			<th class="c-carbon"><?=h(_("[ress_0]"))?></th>
+			<th class="c-aluminium"><?=h(_("[ress_1]"))?></th>
+			<th class="c-wolfram"><?=h(_("[ress_2]"))?></th>
+			<th class="c-radium"><?=h(_("[ress_3]"))?></th>
+			<th class="c-tritium"><?=h(_("[ress_4]"))?></th>
+			<th class="c-gesamt"><?=h(_("Gesamt"))?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -86,7 +84,7 @@
 				$ges[5] += $this_ges;
 ?>
 		<tr<?=($planet == $active_planet) ? ' class="active"' : ''?>>
-			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=htmlspecialchars($me->getPosString())?></a></th>
+			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=htmlspecialchars($me->getPosFormatted())?></a></th>
 			<td class="c-carbon number"><?=ths($ress[0])?></td>
 			<td class="c-aluminium number"><?=ths($ress[1])?></td>
 			<td class="c-wolfram number"><?=ths($ress[2])?></td>
@@ -100,7 +98,7 @@
 	</tbody>
 	<tfoot class="gesamt">
 		<tr>
-			<th class="c-planet separator-right">Gesamt</th>
+			<th class="c-planet separator-right"><?=h(_("Gesamt"))?></th>
 			<td class="c-carbon number"><?=ths($ges[0])?></td>
 			<td class="c-aluminium number"><?=ths($ges[1])?></td>
 			<td class="c-wolfram number"><?=ths($ges[2])?></td>
@@ -110,18 +108,18 @@
 		</tr>
 	</tfoot>
 </table>
-<h3 id="rohstoffproduktion" class="strong">Rohstoffproduktion pro Stunde</h3>
+<h3 id="rohstoffproduktion" class="strong"><?=h(_("Rohstoffproduktion pro Stunde"))?></h3>
 <table class="imperium-tabelle imperium-rohstoffproduktion">
 	<thead>
 		<tr>
-			<th class="c-planet separator-right">Planet</th>
-			<th class="c-carbon">Carbon</th>
-			<th class="c-aluminium">Aluminium</th>
-			<th class="c-wolfram">Wolfram</th>
-			<th class="c-radium">Radium</th>
-			<th class="c-tritium">Tritium</th>
-			<th class="c-gesamt">Gesamt</th>
-			<th class="c-energie">Energie</th>
+			<th class="c-planet separator-right"><?=h(_("Planet"))?></th>
+			<th class="c-carbon"><?=h(_("[ress_0]"))?></th>
+			<th class="c-aluminium"><?=h(_("[ress_1]"))?></th>
+			<th class="c-wolfram"><?=h(_("[ress_2]"))?></th>
+			<th class="c-radium"><?=h(_("[ress_3]"))?></th>
+			<th class="c-tritium"><?=h(_("[ress_4]"))?></th>
+			<th class="c-gesamt"><?=h(_("Gesamt"))?></th>
+			<th class="c-energie"><?=h(_("[ress_5]"))?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -144,7 +142,7 @@
 				define_url_suffix();
 ?>
 		<tr<?=($planet == $active_planet) ? ' class="active"' : ''?>>
-			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=htmlspecialchars($me->getPosString())?></a></th>
+			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=htmlspecialchars($me->getPosFormatted())?></a></th>
 			<td class="c-carbon number <?=get_prod_class($this_prod[0])?>"><?=ths($this_prod[0])?></td>
 			<td class="c-aluminium number <?=get_prod_class($this_prod[1])?>"><?=ths($this_prod[1])?></td>
 			<td class="c-wolfram number <?=get_prod_class($this_prod[2])?>"><?=ths($this_prod[2])?></td>
@@ -169,7 +167,7 @@
 	</tbody>
 	<tfoot class="gesamt">
 		<tr class="gesamt-stuendlich">
-			<th class="c-planet separator-right">Gesamt</th>
+			<th class="c-planet separator-right"><?=h(_("Gesamt"))?></th>
 			<td class="c-carbon number <?=get_prod_class($ges[0])?>"><?=ths($ges[0])?></td>
 			<td class="c-aluminium number <?=get_prod_class($ges[1])?>"><?=ths($ges[1])?></td>
 			<td class="c-wolfram number <?=get_prod_class($ges[2])?>"><?=ths($ges[2])?></td>
@@ -179,7 +177,7 @@
 			<td class="c-energie number <?=get_prod_class($ges[5])?>"><?=ths($ges[5])?></td>
 		</tr>
 		<tr class="gesamt-taeglich">
-			<th class="c-planet separator-right">Pr<kbd>o</kbd> <input type="text" class="prod-show-days" name="show_days" id="show_days" value="<?=htmlspecialchars($show_days)?>" tabindex="<?=htmlspecialchars($tabindex++)?>" accesskey="o" onchange="recalc_perday();" onclick="recalc_perday();" onkeyup="recalc_perday();" />&nbsp;Tage</th>
+			<th class="c-planet separator-right"><?=sprintf(h(_("Pr&o %s Tage[login/imperium.php|2]")), "<input type=\"text\" class=\"prod-show-days\" name=\"show_days\" id=\"show_days\" value=\"".htmlspecialchars($show_days)."\"".accesskey_attr(_("Pr&o %s Tage[login/imperium.php|2]"))." tabindex=\"".htmlspecialchars($tabindex++)."\" onchange=\"recalc_perday();\" onclick=\"recalc_perday();\" onkeyup=\"recalc_perday();\" />")?></th>
 			<td class="c-carbon number <?=get_prod_class($show_day_prod[0])?>" id="taeglich-carbon"><?=ths($show_day_prod[0])?></td>
 			<td class="c-aluminium number <?=get_prod_class($show_day_prod[1])?>" id="taeglich-aluminium"><?=ths($show_day_prod[1])?></td>
 			<td class="c-wolfram number <?=get_prod_class($show_day_prod[2])?>" id="taeglich-wolfram"><?=ths($show_day_prod[2])?></td>
@@ -260,40 +258,40 @@
 </script>
 <h3 id="ausgegebene-rohstoffe" class="strong">Ausgegebene Rohstoffe</h3>
 <dl class="punkte">
-	<dt class="c-carbon">Carbon</dt>
+	<dt class="c-carbon"><?=h(_("[ress_0]"))?></dt>
 	<dd class="c-carbon"><?=ths($me->getSpentRess(0))?></dd>
 
-	<dt class="c-eisenerz">Aluminium</dt>
+	<dt class="c-eisenerz"><?=h(_("[ress_1]"))?></dt>
 	<dd class="c-eisenerz"><?=ths($me->getSpentRess(1))?></dd>
 
-	<dt class="c-wolfram">Wolfram</dt>
+	<dt class="c-wolfram"><?=h(_("[ress_2]"))?></dt>
 	<dd class="c-wolfram"><?=ths($me->getSpentRess(2))?></dd>
 
-	<dt class="c-radium">Radium</dt>
+	<dt class="c-radium"><?=h(_("[ress_3]"))?></dt>
 	<dd class="c-radium"><?=ths($me->getSpentRess(3))?></dd>
 
-	<dt class="c-tritium">Tritium</dt>
+	<dt class="c-tritium"><?=h(_("[ress_4]"))?></dt>
 	<dd class="c-tritium"><?=ths($me->getSpentRess(4))?></dd>
 
-	<dt class="c-gesamt">Gesamt</dt>
+	<dt class="c-gesamt"><?=h(_("Gesamt"))?></dt>
 	<dd class="c-gesamt"><?=ths($me->getSpentRess())?></dd>
 </dl>
 <?php
 			break;
 		case 'roboter':
 ?>
-<h3 id="roboterzahlen" class="strong">Roboterzahlen</h3>
+<h3 id="roboterzahlen" class="strong"><?=h(_("Roboterzahlen"))?></h3>
 <table class="imperium-tabelle imperium-roboterzahlen">
 	<thead>
 		<tr>
-			<th class="c-planet separator-right">Planet</th>
+			<th class="c-planet separator-right"><?=h(_("Planet"))?></th>
 <?php
 			$roboter = $me->getItemsList('roboter');
 			foreach($roboter as $id)
 			{
 				$item_info = $me->getItemInfo($id, 'roboter');
 ?>
-			<th class="c-<?=htmlspecialchars($id)?>"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a></th>
+			<th class="c-<?=htmlspecialchars($id)?>"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a></th>
 <?php
 			}
 ?>
@@ -313,7 +311,7 @@
 				define_url_suffix();
 ?>
 		<tr<?=($planet==$active_planet) ? ' class="active"' : ''?>>
-			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;action=roboter"><?=htmlspecialchars($me->getPosString())?></a></th>
+			<th class="c-planet separator-right" title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;action=roboter"><?=htmlspecialchars($me->getPosFormatted())?></a></th>
 <?php
 				foreach($roboter as $id)
 				{
@@ -343,7 +341,7 @@
 	</tbody>
 	<tfoot class="gesamt">
 		<tr>
-			<th class="c-planet separator-right">Gesamt</th>
+			<th class="c-planet separator-right"><?=h(_("Gesamt"))?></th>
 <?php
 			foreach($roboter as $id)
 			{
@@ -355,23 +353,23 @@
 		</tr>
 	</tfoot>
 </table>
-<h3 id="roboter-auswirkungsgrade" class="strong">Roboter-Auswirkungsgrade</h3>
+<h3 id="roboter-auswirkungsgrade" class="strong"><?=h(_("Roboter-Auswirkungsgrade"))?></h3>
 <dl class="imperium-roboter-auswirkungsgrade">
-	<dt class="c-bauroboter">Bauroboter</dt>
-	<dd class="c-bauroboter"><?=str_replace('.', ',', $me->getItemLevel('F2', 'forschung')*0.125)?>&thinsp;<abbr title="Prozent">%</abbr> pro Roboter</dd>
+	<dt class="c-bauroboter"><?=h(_("Bauroboter"))?></dt>
+	<dd class="c-bauroboter"><?=sprintf(h(_("%s % pro Roboter")), ths($me->getItemLevel('F2', 'forschung')*0.125, null, 3))?></dd>
 
-	<dt class="c-minenroboter">Minenroboter</dt>
+	<dt class="c-minenroboter"><?=h(_("Minenroboter"))?></dt>
 <?php
 			if(file_exists(global_setting("DB_USE_OLD_ROBTECH")))
 			{
 ?>
-	<dd class="c-minenroboter"><?=ths($me->getItemLevel('F2', 'forschung')*0.03125, null, 2)?>&thinsp;<abbr title="Prozent">%</abbr> pro Roboter</dd>
+	<dd class="c-minenroboter"><?=sprintf(h(_("%s % pro Roboter")), ths($me->getItemLevel('F2', 'forschung')*0.03125, null, 3))?></dd>
 <?php
 			}
 			else
 			{
 ?>
-	<dd class="c-minenroboter"><?=ths(sqrt($me->getItemLevel("F2", "forschung"))/2.5, null, 2)?> Prozentpunkte pro Roboter</dd>
+	<dd class="c-minenroboter"><?=sprintf(h(_("%s Prozentpunkte pro Roboter")), ths(sqrt($me->getItemLevel("F2", "forschung"))/2.5, null, 3))?></dd>
 <?php
 			}
 ?>
@@ -380,11 +378,11 @@
 			break;
 		case 'flotte':
 ?>
-<h3 id="stationierte-flotten" class="strong">Stationierte Flotten</h3>
+<h3 id="stationierte-flotten" class="strong"><?=h(_("Stationierte Flotten"))?></h3>
 <table class="imperium-tabelle imperium-stationierte-flotten">
 	<thead>
 		<tr>
-			<th class="c-einheit separator-right">Einheit</th>
+			<th class="c-einheit separator-right"><?=h(_("Einheit"))?></th>
 <?php
 			$planets = $me->getPlanetsList();
 			foreach($planets as $planet)
@@ -392,11 +390,11 @@
 				$me->setActivePlanet($planet);
 				define_url_suffix();
 ?>
-			<th<?=($planet==$active_planet) ? ' class="active"' : ''?> title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;action=flotte"><?=htmlspecialchars($me->getPosString())?></a></th>
+			<th<?=($planet==$active_planet) ? ' class="active"' : ''?> title="<?=htmlspecialchars($me->planetName())?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>&amp;action=flotte"><?=htmlspecialchars($me->getPosFormatted())?></a></th>
 <?php
 			}
 ?>
-			<th class="c-gesamt">Gesamt</th>
+			<th class="c-gesamt"><?=h(_("Gesamt"))?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -410,7 +408,7 @@
 				$this_ges = 0;
 ?>
 		<tr>
-			<th class="c-einheit separator-right"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a></th>
+			<th class="c-einheit separator-right"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a></th>
 <?php
 				foreach($planets as $i=>$planet)
 				{
@@ -433,7 +431,7 @@
 	</tbody>
 	<tfoot class="gesamt">
 		<tr>
-			<th class="c-einheit separator-right">Gesamt</th>
+			<th class="c-einheit separator-right"><?=h(_("Gesamt"))?></th>
 <?php
 			foreach($planets as $i=>$planet)
 			{
@@ -446,22 +444,22 @@
 		</tr>
 	</tfoot>
 </table>
-<h3 id="forschungsverbesserungen" class="strong">Forschungsverbesserungen</h3>
+<h3 id="forschungsverbesserungen" class="strong"><?=h(_("Forschungsverbesserungen"))?></h3>
 <dl class="imperium-schiffe-auswirkungsgrade">
-	<dt class="c-antriebe">Antriebe</dt>
-	<dd class="c-antriebe"><?=str_replace('.', ',', round((pow(1.025, $me->getItemLevel('F6', 'forschung'))*pow(1.05, $me->getItemLevel('F7', 'forschung'))*pow(1.5, $me->getItemLevel('F8', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dt class="c-antriebe"><?=h(_("Antriebe"))?></dt>
+	<dd class="c-antriebe"><?=ths((pow(1.025, $me->getItemLevel('F6', 'forschung'))*pow(1.05, $me->getItemLevel('F7', 'forschung'))*pow(1.5, $me->getItemLevel('F8', 'forschung'))-1)*100, null, 3)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 
-	<dt class="c-waffen">Waffen</dt>
-	<dd class="c-waffen"><?=str_replace('.', ',', round((pow(1.05, $me->getItemLevel('F4', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dt class="c-waffen"><?=h(_("Waffen"))?></dt>
+	<dd class="c-waffen"><?=ths((pow(1.05, $me->getItemLevel('F4', 'forschung'))-1)*100, null, 3)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 
-	<dt class="c-schilde">Schilde</dt>
-	<dd class="c-schilde"><?=str_replace('.', ',', round((pow(1.05, $me->getItemLevel('F5', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dt class="c-schilde"><?=h(_("Schilde"))?></dt>
+	<dd class="c-schilde"><?=ths((pow(1.05, $me->getItemLevel('F5', 'forschung'))-1)*100, null, 3)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 
-	<dt class="c-schadensminderung-durch-schilde">Schadensminderung durch Schilde</dt>
-	<dd class="c-schadensminderung-durch-schilde"><?=str_replace('.', ',', round((1-pow(.95, $me->getItemLevel('F10', 'forschung')))*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dt class="c-schadensminderung-durch-schilde"><?=h(_("Schadensminderung durch Schilde"))?></dt>
+	<dd class="c-schadensminderung-durch-schilde"><?=ths((1-pow(.95, $me->getItemLevel('F10', 'forschung')))*100, null, 3)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 
-	<dt class="c-laderaumvergroesserung">Laderaumvergrößerung</dt>
-	<dd class="c-laderaumvergroesserung"><?=str_replace('.', ',', round((pow(1.2, $me->getItemLevel('F11', 'forschung'))-1)*100, 3))?>&thinsp;<abbr title="Prozent">%</abbr></dd>
+	<dt class="c-laderaumvergroesserung"><?=h(_("Laderaumvergrößerung"))?></dt>
+	<dd class="c-laderaumvergroesserung"><?=ths((pow(1.2, $me->getItemLevel('F11', 'forschung'))-1)*100, null, 3)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 </dl>
 <?php
 	}
@@ -469,5 +467,5 @@
 	$me->setActivePlanet($active_planet);
 	define_url_suffix();
 
-	login_gui::html_foot();
+	$gui->end();
 ?>

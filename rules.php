@@ -17,7 +17,7 @@
 */
 	require('include.php');
 
-	home_gui::html_head();
+	$gui->init();
 ?>
 <h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Regeln")))?></h2>
 <h3 id="p1"><?=h(sprintf(_("§ %d: %s"), 1, _("Allgemeine Nutzungsbedingungen")))?></h3>
@@ -54,5 +54,5 @@
 <h3 id="p6"><?=h(sprintf(_("§ %d: %s"), 6, _("Änderung der Nutzungsbedingungen")))?></h3>
 <p id="p6-1"><?=h(sprintf(_("(%2\$d) %3\$s"), 6, 1, sprintf(_("Der Betreiber von %s behält sich das Recht vor, diese Nutzungsbedingungen jederzeit zu ändern. Er verpflichtet sich jedoch, dies spätestens zwei Wochen vor Inkrafttreten der Änderungen auf der Startseite anzukündigen."), _("[title_abbr]"))))?></p>
 <?php
-	home_gui::html_foot();
+	$gui->end();
 ?>

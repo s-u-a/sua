@@ -300,6 +300,16 @@ EOF
 				{
 					try
 					{
+						foreach($fleet->getUsersList() as $user)
+						{
+							$user_obj = Classes::User($user);
+							if($user_obj->umode())
+							{
+								if($pid != -1) exit(0);
+								else return;
+							}
+						}
+
 						if($fleet->getStatus() > 1)
 							throw new Exception("Status was ".$fleet->getStatus().".");
 						elseif($fleet->getNextArrival() > time())
@@ -321,6 +331,34 @@ EOF
 				if($pid != -1) exit(0);
 			}
 			else pcntl_waitpid($pid, &$status);
+		}
+
+		function reload_stack()
+		{
+			global $verbose,$errlog;
+
+			fputs($errlog, time_prefix()."Refreshing users.\n");
+
+			if(function_exists('pcntl_fork'))
+			{
+				Classes::resetInstances();
+				$pid = pcntl_fork();
+			}
+			else $pid = -1;
+
+			if(!$pid || $pid == -1)
+			{
+				$reload_stack = Classes::ReloadStack();
+				foreach($reload_stack->getLastUsers() as $user)
+				{
+					fputs($errlog, time_prefix()."Refreshing user ".$user["user"]."\n");
+					$user_obj = Classes::User($user["user"]);
+					fputs($errlog, time_prefix()."Refreshed user ".$user["user"]."\n");
+				}
+
+				Classes::resetInstances();
+				if($pid != -1) exit(0);
+			}
 		}
 
 		function walkthrough_users($send_mails=true)
@@ -521,6 +559,8 @@ EOF
 		if(date('H')*3600+date('i')*60+60 < global_setting("EVENTHANDLER_RUNTIME")) $last_walked = false;
 		else $last_walked = date('Y-m-d');
 
+		$last_reload_stack = 0;
+
 		$market_cache_refresh = global_setting('EVENTHANDLER_MARKETCACHE');
 		$market_cache = array();
 
@@ -597,6 +637,12 @@ EOF
 					}
 					if($pid != -1) exit(0);
 				}
+			}
+
+			if(time()-$last_reload_stack > global_setting("RELOAD_STACK_INTERVAL"))
+			{
+				$last_reload_stack = time();
+				reload_stack();
 			}
 
 			sleep(global_setting("EVENTHANDLER_INTERVAL"));

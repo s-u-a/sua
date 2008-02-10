@@ -16,6 +16,8 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	import("Dataset/Classes");
+
 	class Item
 	{
 		protected $item_info = false;
@@ -266,73 +268,73 @@
 			flock($fh, LOCK_UN);
 			fclose($fh);
 		}
-	}
 
-	function makeItemsString($items, $html=true, $_i=false)
-	{
-		isort($items);
-		$array = array();
-		foreach($items as $id=>$count)
+		static function makeItemsString($items, $html=true, $_i=false)
 		{
-			if($count <= 0) continue;
-			$str = sprintf(_("%s: %s"), ($_i ? "[item_".$id."]" : _("[item_".$id."]")), ths($count));
-			if($html) $str = htmlspecialchars($str);
-			$array[] = $str;
-		}
-		return implode(', ', $array);
-	}
-
-	function isort(&$items)
-	{
-		$copy = $items;
-		$items = array();
-		$items_obj = Classes::Items();
-		foreach($items_obj->getItemsList() as $id)
-		{
-			if(!isset($copy[$id])) continue;
-			$items[$id] = $copy[$id];
-			unset($copy[$id]);
-		}
-		$remaining = array_keys($copy);
-		natcasesort($remaining);
-		foreach($remaining as $id)
-			$items[$id] = $copy[$id];
-	}
-
-	function iadd($a, $b)
-	{
-		$ret = array();
-		foreach(func_get_args() as $arg)
-		{
-			foreach($arg as $id=>$count)
+			self::isort($items);
+			$array = array();
+			foreach($items as $id=>$count)
 			{
-				if(!isset($ret[$id])) $ret[$id] = 0;
-				$ret[$id] += $count;
+				if($count <= 0) continue;
+				$str = sprintf(_("%s: %s"), ($_i ? "[item_".$id."]" : _("[item_".$id."]")), ths($count));
+				if($html) $str = htmlspecialchars($str);
+				$array[] = $str;
 			}
+			return implode(', ', $array);
 		}
-		foreach($ret as $id=>$count)
-		{
-			if($count == 0)
-				unset($ret[$id]);
-		}
-		return $ret;
-	}
 
-	function makeItemList($items, $tabs=0)
-	{
-		$tabs_str = str_repeat("\t", $tabs);
+		static function isort(&$items)
+		{
+			$copy = $items;
+			$items = array();
+			$items_obj = Classes::Items();
+			foreach($items_obj->getItemsList() as $id)
+			{
+				if(!isset($copy[$id])) continue;
+				$items[$id] = $copy[$id];
+				unset($copy[$id]);
+			}
+			$remaining = array_keys($copy);
+			natcasesort($remaining);
+			foreach($remaining as $id)
+				$items[$id] = $copy[$id];
+		}
+
+		static function iadd($a, $b)
+		{
+			$ret = array();
+			foreach(func_get_args() as $arg)
+			{
+				foreach($arg as $id=>$count)
+				{
+					if(!isset($ret[$id])) $ret[$id] = 0;
+					$ret[$id] += $count;
+				}
+			}
+			foreach($ret as $id=>$count)
+			{
+				if($count == 0)
+					unset($ret[$id]);
+			}
+			return $ret;
+		}
+
+		static function makeItemList($items, $tabs=0)
+		{
+			$tabs_str = str_repeat("\t", $tabs);
 ?>
 <?=$tabs_str?><dl class="item-list">
 <?php
-		foreach($items as $id=>$count)
-		{
-			$item = Classes::Item($id);
+			foreach($items as $id=>$count)
+			{
+				$item = Classes::Item($id);
 ?>
 <?=$tabs_str?>	<dt class="c-<?=htmlspecialchars($id)?>"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item->getInfo("name"))?></a></dt>
 <?=$tabs_str?>	<dd class="c-<?=htmlspecialchars($id)?>"><?=ths($count)?></dd>
 <?php
-		}
+			}
 ?>
 <?=$tabs_str?></dl>
 <?php
+		}
 	}

@@ -15,9 +15,10 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	$LOGIN_NOT_NEEDED = true;
 	require('../include.php');
 
-	login_gui::html_head();
+	$gui->init();
 
 	$changelog = '';
 	if(is_file(global_setting("DB_CHANGELOG")) && is_readable(global_setting("DB_CHANGELOG")))
@@ -25,7 +26,7 @@
 
 	$changelog = preg_split("/\r\n|\r|\n/", $changelog);
 ?>
-<h2 id="changelog" xml:lang="en">Changelog</h2>
+<h2 id="changelog"><?=h(_("Changelog"))?></h2>
 <ol class="changelog whole-page">
 <?php
 	foreach($changelog as $log)
@@ -40,10 +41,10 @@
 		else
 		{
 ?>
-	<li><span class="zeit"><?=date('Y-m-d, H:i:s', $log[0])?>:</span> <?=htmlspecialchars($log[1])?></li>
+	<li><span class="zeit"><?=date(_('Y-m-d, H:i:s'), $log[0])?>:</span> <?=htmlspecialchars($log[1])?></li>
 <?php
 		}
 	}
 
-	login_gui::html_foot();
+	$gui->end();
 ?>

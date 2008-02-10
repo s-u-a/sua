@@ -16,6 +16,9 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	import("Dataset/SQLite");
+	import("Dataset/Classes");
+
 	class IMFile extends SQLite
 	{
 		protected $tables = array("to_check" => array("uin", "protocol", "username", "database", "checksum"), "notifications" => array("time INT", "uin", "protocol", "username", "message", "database", "special_id", "fingerprint"));

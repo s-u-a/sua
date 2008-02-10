@@ -16,6 +16,8 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	import("Dataset/*");
+
 	global $objectInstances;
 	$objectInstances = array();
 
@@ -97,6 +99,7 @@
 		static function IMFile() { return new IMFile(); }
 		static function Message($id=false){ return new Message($id); }
 		static function PublicMessage($id=false){ return new PublicMessage($id); }
+		static function ReloadStack() { return new ReloadStack(); }
 	}
 
 	register_shutdown_function(array('Classes', 'resetInstances'));

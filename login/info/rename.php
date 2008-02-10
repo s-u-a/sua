@@ -33,7 +33,7 @@
 	if(isset($_POST['password']) && !$flotte_unterwegs && count($planets) > 1)
 	{
 		if(!$me->checkPassword($_POST['password']))
-			$aufgeben_error = 'Sie haben ein falsches Passwort eingegeben.';
+			$aufgeben_error = _('Sie haben ein falsches Passwort eingegeben.');
 		else
 		{
 			$me->removePlanet($me->getActivePlanet());
@@ -55,42 +55,36 @@
 		$planets = $me->getPlanetsList();
 	}
 
-	login_gui::html_head();
+	$gui->init();
 
 	if($planet_error)
 	{
 ?>
-<p class="error">
-	Datenbankfehler.
-</p>
+<p class="error"><?=h(_("Datenbankfehler."))?></p>
 <?php
 	}
 	elseif(isset($_POST['planet_name']) && strlen($_POST['planet_name']) > 24)
 	{
 ?>
-<p class="error">
-	Der Name darf maximal 24&nbsp;Bytes lang sein.
-</p>
+<p class="error"><?=h(_("Der Name darf maximal 24 Bytes lang sein."))?></p>
 <?php
 	}
 ?>
 <form action="rename.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post">
 	<fieldset>
-		<legend>Planeten umbenennen</legend>
+		<legend><?=h(_("Planeten umbenennen"))?></legend>
 		<dl class="form">
-			<dt><label for="name"><kbd>N</kbd>euer Name</label></dt>
-			<dd><input type="text" id="name" name="planet_name" value="<?=htmlspecialchars($me->planetName())?>" maxlength="24" accesskey="n" tabindex="<?=$tabindex++?>" /></dd>
+			<dt><label for="name"><?=h(_("&Neuer Name[login/info/rename.php|1]"))?></label></dt>
+			<dd><input type="text" id="name" name="planet_name" value="<?=htmlspecialchars($me->planetName())?>" maxlength="24"<?=accesskey_attr(_("&Neuer Name[login/info/rename.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
-		<div class="button"><button type="submit" accesskey="u" tabindex="<?=$tabindex++?>"><kbd>U</kbd>mbenennen</button></div>
+		<div class="button"><button type="submit"<?=accesskey_attr(_("&Umbenennen[login/info/rename.php|1]"))?> tabindex="<?=$tabindex++?>"><?=h(_("&Umbenennen[login/info/rename.php|1]"))?></button></div>
 	</fieldset>
 </form>
 <?php
 	if($flotte_unterwegs || count($planets) <= 1)
 	{
 ?>
-<p class="planeten-nicht-aufgeben">
-	Sie können diesen Planeten derzeit nicht aufgeben, da Flottenbewegungen Ihrerseits von/zu diesem Planeten unterwegs sind oder dies Ihr einziger Planet ist.
-</p>
+<p class="planeten-nicht-aufgeben"><?=h(_("Sie können diesen Planeten derzeit nicht aufgeben, da Flottenbewegungen Ihrerseits von/zu diesem Planeten unterwegs sind oder dies Ihr einziger Planet ist."))?></p>
 <?php
 	}
 	else
@@ -98,20 +92,18 @@
 		if(isset($aufgeben_error) && trim($aufgeben_error) != '')
 		{
 ?>
-<p class="error">
-	<?=htmlspecialchars($aufgeben_error)."\n"?>
-</p>
+<p class="error"><?=htmlspecialchars($aufgeben_error)?></p>
 <?php
 		}
 ?>
 <form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/info/rename.php?'.global_setting("URL_SUFFIX"))?>" method="post">
 	<fieldset>
-		<legend>Planeten aufgeben</legend>
+		<legend><?=h(_("Planeten aufgeben"))?></legend>
 		<dl class="form">
-			<dt><label for="password">Passwort</label></dt>
-			<dd><input type="password" id="password" name="password" tabindex="<?=$tabindex++?>" /></dd>
+			<dt><label for="password"><?=h(_("Passwort&[login/info/rename.php|1]"))?></label></dt>
+			<dd><input type="password" id="password" name="password" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Passwort&[login/info/rename.php|1]"))?> /></dd>
 		</dl>
-		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>">Aufgeben</button></div>
+		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Aufgeben&[login/info/rename.php|1]"))?>><?=h(_("Aufgeben&[login/info/rename.php|1]"))?></button></div>
 	</fieldset>
 </form>
 <?php
@@ -145,7 +137,7 @@
 	{
 ?>
 <fieldset class="planeten-reihenfolge">
-	<legend>Planeten-Reihenfolge</legend>
+	<legend><?=h(_("Planeten-Reihenfolge"))?></legend>
 	<ol class="order-list">
 <?php
 		$active_planet = $me->getActivePlanet();
@@ -153,7 +145,7 @@
 		{
 			$me->setActivePlanet($planet);
 ?>
-		<li><?=htmlspecialchars($me->planetName())?> <span class="pos">(<?=htmlspecialchars($me->getPosString())?>)</span><span class="aktionen"><?php if($i != 0){?> &ndash; <a href="rename.php?up=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="hoch">[Hoch]</a><?php } if($i != count($planets)-1){?> &ndash; <a href="rename.php?down=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="runter">[Runter]</a><?php }?></span></li>
+		<li><?=htmlspecialchars(format_planet($me->getPosString(), $me->planetName()))?><span class="aktionen"><?php if($i != 0){?> &ndash; <a href="rename.php?up=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="hoch">[<?=h(_("Hoch"))?>]</a><?php } if($i != count($planets)-1){?> &ndash; <a href="rename.php?down=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="runter">[<?=h(_("Runter"))?>]</a><?php }?></span></li>
 <?php
 		}
 		$me->setActivePlanet($active_planet);
@@ -163,5 +155,5 @@
 <?php
 	}
 
-	login_gui::html_foot();
+	$gui->end();
 ?>

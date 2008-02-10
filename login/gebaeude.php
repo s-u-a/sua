@@ -102,9 +102,9 @@
 			delete_request();
 	}
 
-	login_gui::html_head();
+	$gui->init();
 ?>
-<h2>Gebäude</h2>
+<h2><?=h(_("Gebäude"))?></h2>
 <?php
 	if(($fastbuild_prev !== false || $fastbuild_next !== false) && $me->permissionToAct())
 	{
@@ -117,7 +117,7 @@
 			$me->setActivePlanet($fastbuild_prev);
 			define_url_suffix();
 ?>
-	<li class="c-prev"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Voriger unbeschäftigter Planet: &bdquo;<?=htmlspecialchars($me->planetName())?>&ldquo; (<?=htmlspecialchars($me->getPosString())?>) [U]" tabindex="<?=$tabindex++?>" accesskey="u" rel="prev">&larr;</a></li>
+	<li class="c-prev"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=sprintf(h(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"), false), htmlspecialchars(format_planet($me->getPosString(), $me->planetName())))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"))?> rel="prev"><?=h(_("←"))?></a></li>
 <?php
 		}
 		if($fastbuild_next !== false)
@@ -125,7 +125,7 @@
 			$me->setActivePlanet($fastbuild_next);
 			define_url_suffix();
 ?>
-	<li class="c-next"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Nächster unbeschäftigter Planet: &bdquo;<?=htmlspecialchars($me->planetName())?>&ldquo; (<?=htmlspecialchars($me->getPosString())?>) [Q]" tabindex="<?=$tabindex++?>" accesskey="q" rel="next">&rarr;</a></li>
+	<li class="c-next"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=sprintf(h(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"), false), htmlspecialchars(format_planet($me->getPosString(), $me->planetName())))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"))?> rel="next"><?=h(_("→"))?></a></li>
 <?php
 		}
 		$me->setActivePlanet($active_planet);
@@ -135,7 +135,6 @@
 <?php
 	}
 
-	$tabindex = 3;
 	$gebaeude = $me->getItemsList('gebaeude');
 	foreach($gebaeude as $id)
 	{
@@ -146,7 +145,7 @@
 			continue;
 ?>
 <div class="item gebaeude" id="item-<?=htmlspecialchars($id)?>">
-	<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($geb['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=ths($geb['level'])?>)</span></h3>
+	<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($geb['name'])?></a> <span class="stufe">(<?=sprintf(h(_("Stufe %s")), ths($geb['level']))?>)</span></h3>
 <?php
 		if($me->permissionToAct() && ($geb['buildable'] || $geb['debuildable']) && !($building = $me->checkBuildingThing('gebaeude')) && ($id != 'B8' || !$me->checkBuildingThing('forschung')) && ($id != 'B9' || !$me->checkBuildingThing('roboter')) && ($id != 'B10' || (!$me->checkBuildingThing('schiffe') && !$me->checkBuildingThing('verteidigung'))))
 		{
@@ -157,7 +156,7 @@
 			{
 				$enough_ress = $me->checkRess($geb['ress']);
 ?>
-		<li class="item-ausbau <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="gebaeude.php?ausbau='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?>Ausbau auf Stufe&nbsp;<?=ths($geb['level']+1)?><?=$enough_ress ? '</a>' : ''?></li>
+		<li class="item-ausbau <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="gebaeude.php?ausbau='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=sprintf(h(_("Ausbau auf Stufe %s")), ths($geb['level']+1))?><?=$enough_ress ? '</a>' : ''?></li>
 <?php
 			}
 			if($geb['debuildable'])
@@ -169,7 +168,7 @@
 				$ress[3] /= 2;
 				$enough_ress = $me->checkRess($ress);
 ?>
-		<li class="item-rueckbau <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="gebaeude.php?abbau='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'">' : ''?>Rückbau auf Stufe&nbsp;<?=ths($geb['level']-1)?><?=$enough_ress ? '</a>' : ''?></li>
+		<li class="item-rueckbau <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="gebaeude.php?abbau='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'">' : ''?><?=sprintf(h(_("Rückbau auf Stufe %s")), ths($geb['level']-1))?><?=$enough_ress ? '</a>' : ''?></li>
 <?php
 			}
 ?>
@@ -179,22 +178,27 @@
 		elseif($building && $building[0] == $id)
 		{
 ?>
-	<div class="restbauzeit" id="restbauzeit-<?=htmlspecialchars($building[0])?>">Fertigstellung: <?=date('H:i:s, Y-m-d', $building[1])?> (Serverzeit), <a href="gebaeude.php?cancel=<?=htmlspecialchars(urlencode($building[0]))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen">Abbrechen</a></div>
+	<div class="restbauzeit" id="restbauzeit-<?=htmlspecialchars($building[0])?>"><?=format_ftime($building[1], $me)?> <a href="gebaeude.php?cancel=<?=htmlspecialchars(urlencode($building[0]))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen"><?=h(_("Abbrechen"))?></a></div>
+<?php
+			if(!$me->umode())
+			{
+?>
 	<script type="text/javascript">
 		init_countdown('<?=$building[0]?>', <?=$building[1]?>);
 	</script>
 <?php
+			}
 		}
 ?>
 	<dl class="lines">
-		<dt class="item-kosten">Kosten</dt>
+		<dt class="item-kosten"><?=h(_("Kosten"))?></dt>
 		<dd class="item-kosten">
 <?php
 		echo format_ress($geb['ress'], 3, false, false, false, $me);
 ?>
 		</dd>
 
-		<dt class="item-bauzeit">Bauzeit</dt>
+		<dt class="item-bauzeit"><?=h(_("Bauzeit"))?></dt>
 		<dd class="item-bauzeit"><?=format_btime($geb['time'])?></dd>
 <?php
 		if($me->checkSetting("extended_buildings"))
@@ -202,14 +206,14 @@
 			$geb_next = $me->getItemInfo($id, "gebaeude", true, false, $geb["level"]+1);
 ?>
 
-		<dt class="item-produktion-aktuell">Produktion aktuell</dt>
+		<dt class="item-produktion-aktuell"><?=h(_("Produktion aktuell"))?></dt>
 		<dd class="item-produktion-aktuell">
 <?php
 			echo format_ress($geb["prod"], 3, true, true);
 ?>
 		</dd>
 
-		<dt class="item-produktion-naechste-stufe">Nächste Stufe</dt>
+		<dt class="item-produktion-naechste-stufe"><?=h(_("Nächste Stufe"))?></dt>
 		<dd class="item-produktion-naechste-stufe">
 <?php
 			echo format_ress($geb_next["prod"], 3, true, true);
@@ -224,5 +228,5 @@
 	}
 ?>
 <?php
-	login_gui::html_foot();
+	$gui->end();
 ?>

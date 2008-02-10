@@ -16,6 +16,8 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	import("Dataset/Classes");
+
 /*
 Format einer Galaxie-Datei:
 Jedes System ist 1655 Bytes lang, die gesamte Datei also 999*1655=1653345.
@@ -378,18 +380,18 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		{
 			if(!$this->status) return false;
 
-			return getPlanetClass($this->galaxy, $system, $planet);
+			return self::calcPlanetClass($this->galaxy, $system, $planet);
 		}
-	}
 
-	function getGalaxiesCount()
-	{
-		for($i=0; is_file(global_setting("DB_UNIVERSE").'/'.($i+1)) && is_readable(global_setting("DB_UNIVERSE").'/'.($i+1)); $i++);
-		return $i;
-	}
+		static function getGalaxiesCount()
+		{
+			for($i=0; is_file(global_setting("DB_UNIVERSE").'/'.($i+1)) && is_readable(global_setting("DB_UNIVERSE").'/'.($i+1)); $i++);
+			return $i;
+		}
 
-	function getPlanetClass($galaxy, $system, $planet)
-	{
-		$type = (((floor($system/100)+1)*(floor(($system%100)/10)+1)*(($system%10)+1))%$planet)*$planet+($system%(($galaxy+1)*$planet));
-		return $type%20+1;
+		static function calcPlanetClass($galaxy, $system, $planet)
+		{
+			$type = (((floor($system/100)+1)*(floor(($system%100)/10)+1)*(($system%10)+1))%$planet)*$planet+($system%(($galaxy+1)*$planet));
+			return $type%20+1;
+		}
 	}
