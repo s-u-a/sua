@@ -34,7 +34,7 @@
 		}
 	}
 
-	__autoload("Fleet");
+	import("Dataset/Fleet");
 	$fd = new FleetDatabase();
 	$fd->query("SELECT fleet_id FROM fleets");
 	while($r = $fd->nextResult())

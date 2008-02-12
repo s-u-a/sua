@@ -116,9 +116,9 @@ EOF
 		else $errlog = STDERR;
 		global_setting("LOG", $errlog);
 
-		__autoload('Classes');
-		__autoload('Fleet');
-		__autoload('Galaxy');
+		import('Dataset/Classes');
+		import('Dataset/Fleet');
+		import('Dataset/Galaxy');
 	}
 
 	################
@@ -534,7 +534,7 @@ EOF
 
 			# Oeffentliche Nachrichten loeschen
 
-			__autoload("PublicMessage");
+			import("Dataset/PublicMessage");
 			$pmdb = new PublicMessageDatabase();
 
 			$processed_messages_public = $pmdb->messagesCount();
