@@ -1957,7 +1957,10 @@
 		$gpg = gpg_init();
 		if(!$gpg)
 			return $text;
-		return $gpg->sign($text);
+		$return = $gpg->sign($text);
+		if($return === false)
+			return $text;
+		return $return;
 	}
 
 	/**
@@ -1972,6 +1975,8 @@
 		$gpg->addencryptkey($fingerprint);
 		$encrypted = $gpg->encryptsign($text);
 		$gpg->clearencryptkeys();
+		if($encrypted === false)
+			return $text;
 		return $encrypted;
 	}
 
