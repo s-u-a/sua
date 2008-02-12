@@ -269,10 +269,11 @@
 					$message = Classes::Message();
 					if($message->create())
 					{
+						$user_obj = Classes::User($user);
 						$message->addUser($user, $types_message_types[$type]);
-						$message->subject("Flotte zur\xc3\xbcckgerufen");
+						$message->subject($user_obj->_("Flotte zurückgerufen"));
 						$message->from($this->getName());
-						$message->text("Ihre Flotte befand sich auf dem Weg zum Planeten \xe2\x80\x9e".$this->planetName()."\xe2\x80\x9c (".$this->getPosString().", Eigent\xc3\xbcmer: ".htmlspecialchars($this->getName())."). Soeben wurde jener Planet verlassen, weshalb Ihre Flotte sich auf den R\xc3\xbcckweg zu Ihrem Planeten \xe2\x80\x9e".$this_galaxy->getPlanetName($pos[1], $pos[2])."\xe2\x80\x9c (".$pos_string.") macht.");
+						$message->text($user_obj->_("Ihre Flotte befand sich auf dem Weg zum Planeten %s. Soeben wurde jener Planet verlassen, weshalb Ihre Flotte sich auf den Rückweg zu Ihrem Planeten %s macht."), $user_obj->localise("format_planet", $this->getPosString(), $this->planetName(), $this->getName()), $this->localise("format_planet", $pos_string, $this_galaxy->getPlanetName($pos[1], $pos[2])));
 					}
 				}
 			}
@@ -2298,10 +2299,10 @@
 				if($message->create())
 				{
 					$message->addUser($user, 7);
-					$message->subject("Anfrage auf ein B\xc3\xbcndnis");
+					$message->subject($that_user->_("Anfrage auf ein Bündnis"));
 					$message->from($this->getName());
 					if(trim($text) == '')
-						$message->text("Der Spieler ".$this->getName()." hat Ihnen eine mitteilungslose B\xc3\xbcndnisanfrage gestellt.");
+						$message->text(sprintf($that_user->_("Der Spieler %s hat Ihnen eine mitteilungslose Bündnisanfrage gestellt."), $this->getName()));
 					else
 						$message->text($text);
 				}
@@ -2330,8 +2331,8 @@
 			if($message->create())
 			{
 				$message->from($this->getName());
-				$message->subject("B\xc3\xbcndnisanfrage angenommen");
-				$message->text("Der Spieler ".$this->getName()." hat Ihre B\xc3\xbcndnisanfrage angenommen.");
+				$message->subject($user_obj->_("Bündnisanfrage angenommen"));
+				$message->text(sprintf($user_obj->_("Der Spieler %s hat Ihre Bündnisanfrage angenommen."), $this->getName()));
 				$message->addUser($user, 7);
 			}
 
@@ -2354,8 +2355,8 @@
 			if($message->create())
 			{
 				$message->from($this->getName());
-				$message->subject("B\xc3\xbcndnisanfrage abgelehnt");
-				$message->text("Der Spieler ".$this->getName()." hat Ihre B\xc3\xbcndnisanfrage abgelehnt.");
+				$message->subject($user_obj->_("Bündnisanfrage abgelehnt"));
+				$message->text(sprintf($user_obj->_("Der Spieler %s hat Ihre Bündnisanfrage abgelehnt."), $this->getName()));
 				$message->addUser($user, 7);
 			}
 
@@ -2377,8 +2378,8 @@
 				if($message->create())
 				{
 					$message->from($this->getName());
-					$message->subject("B\xc3\xbcndnis gek\xc3\xbcndigt");
-					$message->text("Der Spieler ".$this->getName()." hat sein B\xc3\xbcndnis mit Ihnen gek\xc3\xbcndigt.");
+					$message->subject($user_obj->_("Bündnis gekündigt"));
+					$message->text(sprintf($user_obj->_("Der Spieler %s hat sein Bündnis mit Ihnen gekündigt."), $this->getName()));
 					$message->addUser($user, 7);
 				}
 
@@ -2445,8 +2446,8 @@
 				if($message->create())
 				{
 					$message->from($this->getName());
-					$message->subject("B\xc3\xbcndnisanfrage zur\xc3\xbcckgezogen");
-					$message->text("Der Spieler ".$this->getName()." hat seine B\xc3\xbcndnisanfrage an Sie zur\xc3\xbcckgezogen.");
+					$message->subject($user_obj->_("Bündnisanfrage zurückgezogen"));
+					$message->text(sprintf($user_obj->_("Der Spieler %s hat seine Bündnisanfrage an Sie zurückgezogen."), $this->getName()));
 					$message->addUser($user, 7);
 				}
 				$this->changed = true;
@@ -2531,15 +2532,19 @@
 				return false;
 			if($message)
 			{
-				$message_obj = Classes::Message();
-				if($message_obj->create())
+				foreach($users as $user)
 				{
-					$message_obj->from($this->getName());
-					$message_obj->subject("Allianzbewerbung zur\xc3\xbcckgezogen");
-					$message_obj->text('Der Benutzer '.$this->getName()." hat seine Bewerbung bei Ihrer Allianz zur\xc3\xbcckgezogen.");
-					$users = $alliance_obj->getUsersWithPermission(4);
-					foreach($users as $user)
-						$message_obj->addUser($user, 7);
+					$message_obj = Classes::Message();
+					if($message_obj->create())
+					{
+						$user_obj = Classes::User($user);
+						$message_obj->from($this->getName());
+						$message_obj->subject($user_obj->_("Allianzbewerbung zurückgezogen"));
+						$message_obj->text(sprintf($user_obj->_("Der Benutzer %s hat seine Bewerbung bei Ihrer Allianz zurückgezogen."),$this->getName()));
+						$users = $alliance_obj->getUsersWithPermission(4);
+						foreach($users as $user)
+							$message_obj->addUser($user, 7);
+					}
 				}
 			}
 			unset($alliance_obj);
@@ -2569,20 +2574,24 @@
 				if(!$alliance_obj->getStatus()) return false;
 				if(!$alliance_obj->newApplication($this->getName())) return false;
 
-				$message = Classes::Message();
-				if($message->create())
+				foreach($users as $user)
 				{
-					$message_text = "Der Benutzer ".$this->getName()." hat sich bei Ihrer Allianz beworben. Gehen Sie auf Ihre Allianzseite, um die Bewerbung anzunehmen oder abzulehnen.";
-					if(!trim($text))
-						$message_text .= "\n\nDer Bewerber hat keinen Bewerbungstext hinterlassen.";
-					else $message_text .= "\n\nDer Bewerber hat folgenden Bewerbungstext hinterlassen:\n\n".$text;
-					$message->text($message_text);
-					$message->from($this->getName());
-					$message->subject('Neue Allianzbewerbung');
+					$message = Classes::Message();
+					if($message->create())
+					{
+						$user_obj = Classes::User($user);
+						$message_text = sprintf($user_obj->_("Der Benutzer %s hat sich bei Ihrer Allianz beworben. Gehen Sie auf Ihre Allianzseite, um die Bewerbung anzunehmen oder abzulehnen."), $this->getName());
+						if(!trim($text))
+							$message_text .= "\n\n".$user_obj->_("Der Bewerber hat keinen Bewerbungstext hinterlassen.");
+						else $message_text .= "\n\n".$user_obj->_("Der Bewerber hat folgenden Bewerbungstext hinterlassen:")."\n\n".$text;
+						$message->text($message_text);
+						$message->from($this->getName());
+						$message->subject($user_obj->_('Neue Allianzbewerbung'));
 
-					$users = $alliance_obj->getUsersWithPermission(4);
-					foreach($users as $user)
-						$message->addUser($user, 7);
+						$users = $alliance_obj->getUsersWithPermission(4);
+						foreach($users as $user)
+							$message->addUser($user, 7);
+					}
 				}
 
 				$this->raw['alliance_bewerbung'] = $alliance;
@@ -2602,16 +2611,18 @@
 			$members = $alliance->getUsersList();
 			if($members)
 			{
-				$message = Classes::Message();
-				if($message->create())
+				foreach($members as $member)
 				{
-					$message->from($this->getName());
-					$message->subject('Benutzer aus Allianz ausgetreten');
-					$message->text('Der Benutzer '.$this->getName().' hat Ihre Allianz verlassen.');
-					foreach($members as $member)
+					$message = Classes::Message();
+					if($message->create())
+					{
+						$user = Classes::User($member);
+						$message->from($this->getName());
+						$message->subject($user->_('Benutzer aus Allianz ausgetreten'));
+						$message->text(sprintf($user->_('Der Benutzer %s hat Ihre Allianz verlassen.'), $this->getName()));
 						$message->addUser($member, 7);
+					}
 				}
-
 			}
 
 			$this->allianceTag(false);
@@ -3362,8 +3373,8 @@
 
 			if($message_obj->getStatus())
 			{
-				$message_obj->text(sprintf(_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf(_("%d:%d:%d"), $this->getPos()), Item::makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0])));
-				$message_obj->subject(sprintf(_("Fremdstationierung zurückgezogen auf %s"), vsprintf(_("%d:%d:%d"), $this->getPos())));
+				$message_obj->text(sprintf($this->_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf($this->_("%d:%d:%d"), $this->getPos()), $this->_i(Item::makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0], true, true))));
+				$message_obj->subject(sprintf($this->_("Fremdstationierung zurückgezogen auf %s"), vsprintf($this->_("%d:%d:%d"), $this->getPos())));
 				$message_obj->from($user);
 				$message_obj->addUser($this->getName(), 3);
 			}
@@ -3872,8 +3883,14 @@
 
 		function _i($message)
 		{
+			return $this->locale("_i", $message);
+		}
+
+		function localise($function)
+		{
+			$args = func_get_args();
 			$this->setLanguage();
-			$ret = _i($message);
+			$ret = call_user_func_array(array_shift($args), $args);
 			$this->restoreLanguage();
 			return $ret;
 		}
@@ -3951,7 +3968,7 @@
 				return false;
 			}
 
-			$text = "Automatisch generierte Nachricht vom ".$this->date("Y-m-d\\TH:i:s")."\n\n".$text;
+			$text = sprintf($this->_("Automatisch generierte Nachricht vom %s"), $this->date(_("Y-m-d H:i:s")))."\n\n".$text;
 
 			$mime = new Mail_mime("\n");
 			if($this->checkSetting("fingerprint"))

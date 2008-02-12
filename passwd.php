@@ -32,7 +32,7 @@
 			$that_user = Classes::User($_POST['benutzername']);
 			if(!$that_user->getStatus())
 				$error = _('Datenbankfehler.');
-			elseif(!preg_match('/^[-._=a-z0-9]+@([-_=a-z0-9ßáàâäéèêíìîóòôöúùûü]+\.)*[-_=a-z0-9ßáàâäéèêíìîóòôöúùûü]+$/i', trim($that_user->checkSetting('email'))))
+			elseif(!check_email(trim($that_user->getEMailAddress())))
 				$error = _('In diesem Account wurde keine gültige E-Mail-Adresse gespeichert.');
 			elseif($_POST["email"] == trim($that_user->getEMailAddress()) || $_POST['email'] == trim($that_user->getTemporaryEMailAddress()))
 			{

@@ -2150,3 +2150,13 @@
 
 		return sprintf(_("Fertigstellung: %s"), sprintf(_("%s (Serverzeit)"), date(_("Y-m-d H:i:s"), $time)));
 	}
+
+	/**
+	  * Überprüft die E-Mail-Adresse $email auf Gültigkeit.
+	*/
+
+	function check_email($email)
+	{
+		$reg = "(^((([A-Za-z0-9.!#$%&'*+-/=?^_`{|}~]|\\\\.){1,64})|(\"([\\x00-\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\\\\"]){1,64}\"))@((([a-zA-Z0-9][-a-zA-Z0-9]*)?[a-zA-Z0-9]\\.)*(([a-zA-Z0-9][-a-zA-Z0-9]*)?[a-zA-Z0-9]))\$)";
+		return preg_match($reg, $email);
+	}
