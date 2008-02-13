@@ -107,7 +107,7 @@
 
 			if($_GET['action'] == 'spionage')
 			{
-				$_POST['auftrag'] = array(FLEET_SPIONIEREN);
+				$_POST['auftrag'] = array(Fleet::$TYPE_SPIONIEREN);
 				$_POST['flotte'] = array('S5' => 1);
 				if($planet_owner && !$me->isVerbuendet($planet_owner))
 					$_POST['flotte']['S5'] = $me->checkSetting('sonden');
@@ -116,14 +116,14 @@
 			}
 			elseif($_GET['action'] == 'besiedeln')
 			{
-				$_POST['auftrag'] = array(FLEET_BESIEDELN);
+				$_POST['auftrag'] = array(Fleet::$TYPE_BESIEDELN);
 				$_POST['flotte'] = array('S6' => 1);
 				if($me->getItemLevel('S6', 'schiffe') < 1)
 					throw new LoginFlottenException(_("Kein Besiedelungsschiff vorhanden."), 0, LoginFlottenException::$TYPE_FLEETS);
 			}
 			elseif($_GET['action'] == 'sammeln')
 			{
-				$_POST['auftrag'] = array(FLEET_SAMMELN);
+				$_POST['auftrag'] = array(Fleet::$TYPE_SAMMELN);
 
 				$truemmerfeld = truemmerfeld::get($_GET['action_galaxy'], $_GET['action_system'], $_GET['action_planet']);
 
@@ -241,53 +241,53 @@
 					throw new LoginFlottenException(_("Diesen Planeten gibt es nicht."), 0, $i == 0 ? LoginFlottenException::$TYPE_FLEETS : LoginFlottenException::$TYPE_TYPE);
 
 				$types[$i] = array_flip($types_glob);
-				if($planet_owner[$i] && isset($types[$i][FLEET_BESIEDELN])) # Planet besetzt, Besiedeln nicht moeglich
-					unset($types[$i][FLEET_BESIEDELN]);
+				if($planet_owner[$i] && isset($types[$i][Fleet::$TYPE_BESIEDELN])) # Planet besetzt, Besiedeln nicht moeglich
+					unset($types[$i][Fleet::$TYPE_BESIEDELN]);
 				if(!$planet_owner[$i]) # Planet nicht besetzt
 				{
-					if(isset($types[$i][FLEET_ANGRIFF])) # Angriff nicht moeglich
-						unset($types[$i][FLEET_ANGRIFF]);
-					if(isset($types[$i][FLEET_TRANSPORT])) # Transport nicht moeglich
-						unset($types[$i][FLEET_TRANSPORT]);
-					if(isset($types[$i][FLEET_STATIONIEREN])) # Stationieren nicht moeglich
-						unset($types[$i][FLEET_STATIONIEREN]);
+					if(isset($types[$i][Fleet::$TYPE_ANGRIFF])) # Angriff nicht moeglich
+						unset($types[$i][Fleet::$TYPE_ANGRIFF]);
+					if(isset($types[$i][Fleet::$TYPE_TRANSPORT])) # Transport nicht moeglich
+						unset($types[$i][Fleet::$TYPE_TRANSPORT]);
+					if(isset($types[$i][Fleet::$TYPE_STATIONIEREN])) # Stationieren nicht moeglich
+						unset($types[$i][Fleet::$TYPE_STATIONIEREN]);
 
 					if(!$me->checkPlanetCount()) # Planetenlimit erreicht, Besiedeln nicht moeglich
-						unset($types[$i][FLEET_BESIEDELN]);
+						unset($types[$i][Fleet::$TYPE_BESIEDELN]);
 				}
 
 				$truemmerfeld = truemmerfeld::get($target_koords[$i][0], $target_koords[$i][1], $target_koords[$i][2]);
 				if(($truemmerfeld === false || array_sum($truemmerfeld) <= 0) && isset($types[$i][2]))
-					unset($types[$i][FLEET_SAMMELN]); # Kein Truemmerfeld, Sammeln nicht moeglich
+					unset($types[$i][Fleet::$TYPE_SAMMELN]); # Kein Truemmerfeld, Sammeln nicht moeglich
 
 				if($me->getPosString() == implode(":", $target_koords[$i]) || $planet_owner_flag[$i] == 'U')
 				{ # Selber Planet / Urlaubsmodus, nur Sammeln
 					if($truemmerfeld && isset($types[$i][2]))
-						$types[$i] = array(FLEET_SAMMELN => 0);
+						$types[$i] = array(Fleet::$TYPE_SAMMELN => 0);
 					else
 						$types[$i] = array();
 				}
 				elseif($planet_owner[$i] == $me->getName())
 				{ # Eigener Planet
-					if(isset($types[$i][FLEET_ANGRIFF])) # Angriff nicht moeglich
-						unset($types[$i][FLEET_ANGRIFF]);
-					if(isset($types[$i][FLEET_SPIONIEREN])) # Spionage nicht moeglich
-						unset($types[$i][FLEET_SPIONIEREN]);
+					if(isset($types[$i][Fleet::$TYPE_ANGRIFF])) # Angriff nicht moeglich
+						unset($types[$i][Fleet::$TYPE_ANGRIFF]);
+					if(isset($types[$i][Fleet::$TYPE_SPIONIEREN])) # Spionage nicht moeglich
+						unset($types[$i][Fleet::$TYPE_SPIONIEREN]);
 				}
 				else
 				{ # Fremder Planet
-					if(!$me->isVerbuendet($planet_owner[$i]) && isset($types[$i][FLEET_STATIONIEREN])) # Fremdstationierung nur bei Verbuendeten
-						unset($types[$i][FLEET_STATIONIEREN]);
-					if($me->isVerbuendet($planet_owner[$i]) && isset($types[$i][FLEET_ANGRIFF])) # Verbuendet, Angriff nicht moeglich
-						unset($types[$i][FLEET_ANGRIFF]);
+					if(!$me->isVerbuendet($planet_owner[$i]) && isset($types[$i][Fleet::$TYPE_STATIONIEREN])) # Fremdstationierung nur bei Verbuendeten
+						unset($types[$i][Fleet::$TYPE_STATIONIEREN]);
+					if($me->isVerbuendet($planet_owner[$i]) && isset($types[$i][Fleet::$TYPE_ANGRIFF])) # Verbuendet, Angriff nicht moeglich
+						unset($types[$i][Fleet::$TYPE_ANGRIFF]);
 				}
 
 				if(fleets_locked()) # Flottensperre
 				{
-					if($planet_owner[$i] && !$me->isVerbuendet($planet_owner[$i]) && isset($types[$i][FLEET_SPIONIEREN])) # Feindliche Spionage nicht moeglich
-						unset($types[$i][FLEET_SPIONIEREN]);
-					if(isset($types[$i][FLEET_ANGRIFF])) # Angriff nicht erlaubt
-						unset($types[$i][FLEET_ANGRIFF]);
+					if($planet_owner[$i] && !$me->isVerbuendet($planet_owner[$i]) && isset($types[$i][Fleet::$TYPE_SPIONIEREN])) # Feindliche Spionage nicht moeglich
+						unset($types[$i][Fleet::$TYPE_SPIONIEREN]);
+					if(isset($types[$i][Fleet::$TYPE_ANGRIFF])) # Angriff nicht erlaubt
+						unset($types[$i][Fleet::$TYPE_ANGRIFF]);
 				}
 
 				if(count($types[$i]) <= 0)
@@ -298,7 +298,7 @@
 				if(!$buendnisflug && $v && !in_array($v, $types[$i]))
 					throw new LoginFlottenException(_("Ungültigen Auftrag ausgewählt."), 0, LoginFlottenException::$TYPE_TYPE);
 
-				if($v == FLEET_STATIONIEREN || $v == FLEET_BESIEDELN)
+				if($v == Fleet::$TYPE_STATIONIEREN || $v == Fleet::$TYPE_BESIEDELN)
 					break;
 			}
 		}
@@ -322,7 +322,7 @@
 		{
 			$that_user[$i] = Classes::User($planet_owner[$i]);
 
-			if($planet_owner[$i] && (($auftrag == FLEET_ANGRIFF || $auftrag == FLEET_SPIONIEREN) && !$that_user[$i]->userLocked() || $auftrag == FLEET_STATIONIEREN && $planet_owner[$i] != $me->getName()) && !file_exists(global_setting("DB_NONOOBS")))
+			if($planet_owner[$i] && (($auftrag == Fleet::$TYPE_ANGRIFF || $auftrag == Fleet::$TYPE_SPIONIEREN) && !$that_user[$i]->userLocked() || $auftrag == Fleet::$TYPE_STATIONIEREN && $planet_owner[$i] != $me->getName()) && !file_exists(global_setting("DB_NONOOBS")))
 			{
 				# Anfaengerschutz ueberpruefen
 				$that_punkte = $that_user[$i]->getScores();
@@ -356,7 +356,7 @@
 
 			foreach($auftraege as $i=>$auftrag)
 				$fleet_obj->addTarget(implode(":", $target_koords[$i]), $auftrag, false);
-			if($auftrag != FLEET_STATIONIEREN && $auftrag != FLEET_BESIEDELN)
+			if($auftrag != Fleet::$TYPE_STATIONIEREN && $auftrag != Fleet::$TYPE_BESIEDELN)
 				$fleet_obj->addTarget($me->getPosString(), $auftrag, true);
 		}
 
@@ -1113,7 +1113,7 @@
 
 				if(display)
 					tritium = tritium_all[i];
-				if(document.getElementById('auftrag-'+i).value == <?=FLEET_STATIONIEREN?> || document.getElementById('auftrag-'+i).value == <?=FLEET_BESIEDELN?>)
+				if(document.getElementById('auftrag-'+i).value == <?=Fleet::$TYPE_STATIONIEREN?> || document.getElementById('auftrag-'+i).value == <?=Fleet::$TYPE_BESIEDELN?>)
 					display = false;
 				document.getElementById('target-'+(i+1)).style.display = (display ? "block" : "none");
 			}
@@ -1232,13 +1232,13 @@
 <?php
 						if($i == 0)
 						{
-							if($auftrag == FLEET_TRANSPORT && $planet_owner[$i] == $me->getName())
+							if($auftrag == Fleet::$TYPE_TRANSPORT && $planet_owner[$i] == $me->getName())
 							{
 ?>
 	<div class="handel action"><a href="info/flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($fleet_obj->getName()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Geben Sie dieser Flotte Ladung mit auf den Rückweg"))?>"<?=accesskey_attr(_("Handel&[login/flotten.php|3]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Handel&[login/flotten.php|3]"))?></a></div>
 <?php
 							}
-							if($auftrag == FLEET_ANGRIFF && !$buendnisflug)
+							if($auftrag == Fleet::$TYPE_ANGRIFF && !$buendnisflug)
 							{
 ?>
 	<div class="buendnisangriff actions"><a href="info/flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern."))?>"<?=accesskey_attr(_("Bündnisangriff&[login/flotten.php|3]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Bündnisangriff&[login/flotten.php|3]"))?></a></div>
