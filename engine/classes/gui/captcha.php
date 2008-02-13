@@ -27,14 +27,17 @@
 			$options = array("tabindex" => $tabindex++, "lang" => _("[LANG]"));
 			$url_prefix = (global_setting("PROTOCOL") == "https" ? "https://api-secure" : "http://api");
 
-			try
+			if(isset($_SERVER["REMOTE_ADDR"]) && !preg_match("/^\\d+\\.\\d+\\.\\d+\\.\\d+\$/", $_SERVER["REMOTE_ADDR"]))
 			{
-				$img_src = self::getConfig("ipv4");
+				try
+				{
+					$img_src = self::getConfig("ipv4");
 ?>
 <?=$t?><img src="<?=htmlspecialchars(global_setting("PROTOCOL")."://".$img_src)?>?session=<?=htmlspecialchars(urlencode(session_id()))?>" alt="" class="script" />
 <?php
+				}
+				catch(CaptchaException $e){}
 			}
-			catch(CaptchaException $e){}
 ?>
 <?=$t?><form action="<?=htmlspecialchars($_SERVER["REQUEST_URI"])?>" method="post" class="captcha">
 <?=$t?>	<script type="text/javascript">
