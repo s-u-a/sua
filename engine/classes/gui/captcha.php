@@ -26,6 +26,15 @@
 			$t = str_repeat("\t", $tabs);
 			$options = array("tabindex" => $tabindex++, "lang" => _("[LANG]"));
 			$url_prefix = (global_setting("PROTOCOL") == "https" ? "https://api-secure" : "http://api");
+
+			try
+			{
+				$img_src = self::getConfig("ipv4");
+?>
+<?=$t?><img src="<?=htmlspecialchars($img_src)?>?session=<?=htmlspecialchars(urlencode(session_id()))?>" alt="" class="script" />
+<?php
+			}
+			catch(CaptchaException $e){}
 ?>
 <?=$t?><form action="<?=htmlspecialchars($_SERVER["REQUEST_URI"])?>" method="post" class="captcha">
 <?=$t?>	<script type="text/javascript">
@@ -33,7 +42,6 @@
 <?=$t?>		var RecaptchaOptions = <?=aimplode_js($options)?>;
 <?=$t?>	// ]]>
 <?=$t?>	</script>
-
 <?=$t?>	<script type="text/javascript" src="<?=htmlspecialchars($url_prefix)?>.recaptcha.net/challenge?k=<?=htmlspecialchars(urlencode(self::getConfig("public")))?>"></script>
 <?=$t?>	<noscript>
 <?=$t?>		<iframe src="<?=htmlspecialchars($url_prefix)?>.recaptcha.net/noscript?k=<?=htmlspecialchars(urlencode(self::getConfig("public")))?>"></iframe><br>
@@ -57,7 +65,7 @@
 				throw new CaptchaException($errno.": ".$errstr, CaptchaException::$HTTP_ERROR);
 			$request = array(
 				"privatekey" => self::getConfig("private"),
-				"remoteip" => $_SERVER["REMOTE_ADDR"],
+				"remoteip" => isset($_SESSION["ipv4"]) ? $_SESSION["ipv4"] : $_SERVER["REMOTE_ADDR"],
 				"challenge" => $challenge,
 				"response" => $response
 			);
