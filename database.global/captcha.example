@@ -1,4 +1,4 @@
 ; Account information on recaptcha.net
 public = ABCDEFG12345-asfasdfadfASFFFSDF09090909ASDDSF
 private = ABCDEFG12345-adsfsdfasdfsdfaDFSDFSDF1212SDFDS
-;ipv4 = "http://ipv4.example.org/ipv4_image.png.php"
+;ipv4 = "ipv4.example.org/ipv4_image.png.php"

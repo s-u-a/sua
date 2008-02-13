@@ -31,7 +31,7 @@
 			{
 				$img_src = self::getConfig("ipv4");
 ?>
-<?=$t?><img src="<?=htmlspecialchars($img_src)?>?session=<?=htmlspecialchars(urlencode(session_id()))?>" alt="" class="script" />
+<?=$t?><img src="<?=htmlspecialchars(global_setting("PROTOCOL")."://".$img_src)?>?session=<?=htmlspecialchars(urlencode(session_id()))?>" alt="" class="script" />
 <?php
 			}
 			catch(CaptchaException $e){}
