@@ -123,7 +123,7 @@
 	<li><a href="index.php"<?=accesskey_attr(_("Zurück zur Startseite&[register.php|1]"))?>><?=h(_("Zurück zur Startseite&[register.php|1]"))?></a></li>
 </ul>
 <?php
-					home_gui::html_foot();
+					$gui->end();
 					exit();
 				}
 			}
