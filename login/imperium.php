@@ -356,14 +356,14 @@
 <h3 id="roboter-auswirkungsgrade" class="strong"><?=h(_("Roboter-Auswirkungsgrade"))?></h3>
 <dl class="imperium-roboter-auswirkungsgrade">
 	<dt class="c-bauroboter"><?=h(_("Bauroboter"))?></dt>
-	<dd class="c-bauroboter"><?=sprintf(h(_("%s % pro Roboter")), ths($me->getItemLevel('F2', 'forschung')*0.125, null, 3))?></dd>
+	<dd class="c-bauroboter"><?=sprintf(h(_("%s %% pro Roboter")), ths($me->getItemLevel('F2', 'forschung')*0.125, null, 3))?></dd>
 
 	<dt class="c-minenroboter"><?=h(_("Minenroboter"))?></dt>
 <?php
 			if(file_exists(global_setting("DB_USE_OLD_ROBTECH")))
 			{
 ?>
-	<dd class="c-minenroboter"><?=sprintf(h(_("%s % pro Roboter")), ths($me->getItemLevel('F2', 'forschung')*0.03125, null, 3))?></dd>
+	<dd class="c-minenroboter"><?=sprintf(h(_("%s %% pro Roboter")), ths($me->getItemLevel('F2', 'forschung')*0.03125, null, 3))?></dd>
 <?php
 			}
 			else

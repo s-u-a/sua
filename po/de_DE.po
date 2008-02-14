@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-02-12 02:50+0100\n"
+"PO-Revision-Date: 2008-02-14 21:27+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -1573,7 +1573,7 @@ msgstr "Sie haben keine Berechtigung, Flottenaufträge aufzugeben."
 #: ../login/verbuendete.php:79
 #: ../login/verbuendete.php:101
 #: ../login/verbuendete.php:129
-#: ../engine/include.php:2120
+#: ../engine/include.php:2125
 msgid "Informationen zu diesem Spieler anzeigen"
 msgstr "Informationen zu diesem Spieler anzeigen"
 
@@ -1852,7 +1852,7 @@ msgid "Ankunft"
 msgstr "Ankunft"
 
 #: ../login/info/flotten_actions.php:563
-#: ../engine/include.php:2113
+#: ../engine/include.php:2118
 msgid "Diesen Planeten in der Karte anzeigen"
 msgstr "Diesen Planeten in der Karte anzeigen"
 
@@ -1865,8 +1865,8 @@ msgstr "Diesen Planeten in der Karte anzeigen"
 #: ../login/flotten.php:781
 #: ../login/flotten.php:951
 #: ../login/flotten.php:1224
-#: ../engine/include.php:2094
-#: ../engine/include.php:2113
+#: ../engine/include.php:2099
+#: ../engine/include.php:2118
 #: ../engine/classes/gui/logingui.php:203
 #: ../engine/classes/gui/logingui.php:405
 #: ../engine/classes/dataset/user.php:237
@@ -1886,8 +1886,8 @@ msgid "%d:%d:%d"
 msgstr "%d:%d:%d"
 
 #: ../login/info/flotten_actions.php:565
-#: ../engine/include.php:2096
-#: ../engine/include.php:2115
+#: ../engine/include.php:2101
+#: ../engine/include.php:2120
 #, php-format
 msgid "%s (unbesiedelt)"
 msgstr "%s (unbesiedelt)"
@@ -1912,8 +1912,8 @@ msgstr "Genauere Informationen anzeigen"
 
 #: ../login/info/flotten_actions.php:570
 #: ../login/info/playerinfo.php:44
-#: ../engine/include.php:2102
-#: ../engine/include.php:2122
+#: ../engine/include.php:2107
+#: ../engine/include.php:2127
 #, php-format
 msgid "[%s] %s"
 msgstr "[%s] %s"
@@ -1921,8 +1921,8 @@ msgstr "[%s] %s"
 #: ../login/info/flotten_actions.php:571
 #: ../login/flotten.php:704
 #: ../login/flotten.php:1224
-#: ../engine/include.php:2103
-#: ../engine/include.php:2123
+#: ../engine/include.php:2108
+#: ../engine/include.php:2128
 #: ../engine/classes/dataset/fleet.php:1319
 #: ../engine/classes/dataset/fleet.php:1629
 #: ../engine/classes/dataset/fleet.php:1653
@@ -1957,7 +1957,7 @@ msgstr "Ankunft: %s"
 #: ../login/einstellungen.php:814
 #: ../login/einstellungen.php:820
 #: ../login/einstellungen.php:833
-#: ../engine/include.php:2151
+#: ../engine/include.php:2156
 #: ../engine/classes/gui/logingui.php:158
 #: ../engine/classes/gui/logingui.php:167
 #: ../engine/classes/gui/logingui.php:182
@@ -2078,7 +2078,7 @@ msgstr "Spielerinfo „%s“"
 #: ../login/info/playerinfo.php:44
 #: ../login/highscores.php:153
 #: ../login/highscores.php:176
-#: ../engine/include.php:2122
+#: ../engine/include.php:2127
 msgid "Informationen zu dieser Allianz anzeigen"
 msgstr "Informationen zu dieser Allianz anzeigen"
 
@@ -2182,8 +2182,8 @@ msgstr "Planeten"
 #: ../login/info/playerinfo.php:180
 #: ../login/boerse.php:138
 #: ../login/flotten.php:708
-#: ../engine/include.php:2098
-#: ../engine/include.php:2117
+#: ../engine/include.php:2103
+#: ../engine/include.php:2122
 #: ../engine/classes/gui/logingui.php:203
 #: ../engine/classes/gui/logingui.php:405
 #: ../engine/classes/dataset/fleet.php:1309
@@ -2972,8 +2972,9 @@ msgstr "Bauroboter"
 
 #: ../login/imperium.php:359
 #: ../login/imperium.php:366
-msgid "%s % pro Roboter"
-msgstr "%s % pro Roboter"
+#, php-format
+msgid "%s %% pro Roboter"
+msgstr "%s %% pro Roboter"
 
 #: ../login/imperium.php:361
 msgid "Minenroboter"
@@ -4194,57 +4195,57 @@ msgstr "Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen habe
 msgid "Eine Änderung wird aus Sicherheitsgründen nicht sofort übernommen. Die Verzögerungsdauer beträgt %s."
 msgstr "Eine Änderung wird aus Sicherheitsgründen nicht sofort übernommen. Die Verzögerungsdauer beträgt %s."
 
-#: ../login/einstellungen.php:854
+#: ../login/einstellungen.php:853
 msgid "Diese E-Mail-Adresse ist gültig."
 msgstr "Diese E-Mail-Adresse ist gültig."
 
-#: ../login/einstellungen.php:860
+#: ../login/einstellungen.php:859
 msgid "Diese E-Mail-Adresse ist ungültig."
 msgstr "Diese E-Mail-Adresse ist ungültig."
 
-#: ../login/einstellungen.php:869
+#: ../login/einstellungen.php:868
 #, php-format
 msgid "Vorläufig ist noch Ihre alte E-Mail-Adresse %s aktiv."
 msgstr "Vorläufig ist noch Ihre alte E-Mail-Adresse %s aktiv."
 
-#: ../login/einstellungen.php:877
-#: ../login/einstellungen.php:888
+#: ../login/einstellungen.php:876
+#: ../login/einstellungen.php:887
 msgid "OpenPGP-Key&[login/einstellungen.php|1]"
 msgstr "OpenPGP-Key"
 
-#: ../login/einstellungen.php:884
+#: ../login/einstellungen.php:883
 msgid "Schlüssel löschen&[login/einstellungen.php|1]"
 msgstr "Schlüssel löschen"
 
-#: ../login/einstellungen.php:890
+#: ../login/einstellungen.php:889
 msgid "Den OpenPGP-Key des Spiels herunterladen"
 msgstr "Den OpenPGP-Key des Spiels herunterladen"
 
+#: ../login/einstellungen.php:894
 #: ../login/einstellungen.php:895
-#: ../login/einstellungen.php:896
 msgid "Ben&utzerbeschreibung[login/einstellungen.php|1]"
 msgstr "Ben&utzerbeschreibung"
 
-#: ../login/einstellungen.php:899
+#: ../login/einstellungen.php:898
 msgid "Passwort ändern"
 msgstr "Passwort ändern"
 
+#: ../login/einstellungen.php:900
 #: ../login/einstellungen.php:901
-#: ../login/einstellungen.php:902
 msgid "Altes Passw&ort[login/einstellungen.php|1]"
 msgstr "Altes Passw&ort"
 
+#: ../login/einstellungen.php:903
 #: ../login/einstellungen.php:904
-#: ../login/einstellungen.php:905
 msgid "Neues Passwort&[login/einstellungen.php|1]"
 msgstr "Neues Passwort"
 
+#: ../login/einstellungen.php:906
 #: ../login/einstellungen.php:907
-#: ../login/einstellungen.php:908
 msgid "Neues Passwort wiederholen&[login/einstellungen.php|1]"
 msgstr "Neues Passwort wiederholen"
 
-#: ../login/einstellungen.php:912
+#: ../login/einstellungen.php:911
 msgid "Speicher&n"
 msgstr "Speicher&n"
 
@@ -4258,13 +4259,13 @@ msgstr "Error: Database version is %s but should be %s. Please run db_things/upd
 msgid "Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s."
 msgstr "Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s."
 
-#: ../login/include.php:167
-#: ../login/include.php:256
+#: ../login/include.php:179
+#: ../login/include.php:243
 #, php-format
 msgid "HTTP redirect: %s"
 msgstr "HTTP redirect: %s"
 
-#: ../login/include.php:217
+#: ../login/include.php:204
 msgid "Fehler beim Auswerten der Captcha-Informationen."
 msgstr "Fehler beim Auswerten der Captcha-Informationen."
 
@@ -5312,22 +5313,22 @@ msgstr ","
 msgid "[minus_sign]"
 msgstr "−"
 
-#: ../engine/include.php:2146
+#: ../engine/include.php:2151
 #, php-format
 msgid "%s d %02d:%02d:%02d"
 msgstr "%s d %02d:%02d:%02d"
 
-#: ../engine/include.php:2148
+#: ../engine/include.php:2153
 #, php-format
 msgid "%02d:%02d:%02d"
 msgstr "%02d:%02d:%02d"
 
-#: ../engine/include.php:2151
+#: ../engine/include.php:2156
 #, php-format
 msgid "Fertigstellung: %s"
 msgstr "Fertigstellung: %s"
 
-#: ../engine/include.php:2151
+#: ../engine/include.php:2156
 #: ../engine/classes/dataset/user.php:3971
 msgid "Y-m-d H:i:s"
 msgstr "Y-m-d H:i:s"
@@ -5692,11 +5693,11 @@ msgstr "&Anmelden"
 msgid "Nicht angemeldet. Bitte %serneut anmelden%s."
 msgstr "Nicht angemeldet. Bitte %serneut anmelden%s."
 
-#: ../engine/classes/gui/captcha.php:41
+#: ../engine/classes/gui/captcha.php:52
 msgid "Generierter Code"
 msgstr "Generierter Code"
 
-#: ../engine/classes/gui/captcha.php:44
+#: ../engine/classes/gui/captcha.php:55
 msgid "Okay"
 msgstr "Okay"
 
