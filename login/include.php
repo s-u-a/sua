@@ -90,24 +90,27 @@
 	# Schnellklicksperre
 	$now_time = microtime(true);
 
-	if(!isset($_SESSION['last_click_sleep']))
-		$_SESSION['last_click_sleep'] = 0;
-	if(isset($_SESSION['last_click']) && (!isset($_SESSION['last_click_ignore']) || !$_SESSION['last_click_ignore']))
+	if($loggedin)
 	{
-		$last_click_diff = $now_time-$_SESSION['last_click']-pow($_SESSION['last_click_sleep'], 1.5);
-		if($last_click_diff < global_setting("MIN_CLICK_DIFF"))
-		{
-			$_SESSION['last_click_sleep']++;
-			$sleep_time = round(pow($_SESSION['last_click_sleep'], 1.5));
-			sleep($sleep_time);
-		}
-		else
+		if(!isset($_SESSION['last_click_sleep']))
 			$_SESSION['last_click_sleep'] = 0;
-	}
+		if(isset($_SESSION['last_click']) && (!isset($_SESSION['last_click_ignore']) || !$_SESSION['last_click_ignore']))
+		{
+			$last_click_diff = $now_time-$_SESSION['last_click']-pow($_SESSION['last_click_sleep'], 1.5);
+			if($last_click_diff < global_setting("MIN_CLICK_DIFF"))
+			{
+				$_SESSION['last_click_sleep']++;
+				$sleep_time = round(pow($_SESSION['last_click_sleep'], 1.5));
+				sleep($sleep_time);
+			}
+			else
+				$_SESSION['last_click_sleep'] = 0;
+		}
 
-	if(isset($_SESSION['last_click_ignore']))
-		unset($_SESSION['last_click_ignore']);
-	$_SESSION['last_click'] = $now_time;
+		if(isset($_SESSION['last_click_ignore']))
+			unset($_SESSION['last_click_ignore']);
+		$_SESSION['last_click'] = $now_time;
+	}
 
 	$me = Classes::User($_SESSION['username']);
 	if(!$me->getStatus())
