@@ -125,6 +125,16 @@
 		$gui->fatal(sprintf(h(_("Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s.")), "<a href=\"http://".htmlspecialchars(get_default_hostname().h_root)."/index.php\">", "</a>"));
 	}
 
+	if(!isset($_GET['planet']) || !$me->planetExists($_GET['planet']))
+	{
+		$planets = $me->getPlanetsList();
+		$_GET["planet"] = array_shift($planets);
+	}
+
+	$me->setActivePlanet($_GET['planet']);
+
+	define_url_suffix();
+
 	if(isset($_SESSION['resume']) && $_SESSION['resume'])
 	{
 		$resume = true;
@@ -170,34 +180,6 @@
 		}
 		else
 			delete_request();
-	}
-
-	if(!isset($_GET['planet']) || !$me->planetExists($_GET['planet']))
-	{
-		$planets = $me->getPlanetsList();
-		$_GET["planet"] = array_shift($planets);
-	}
-
-	$me->setActivePlanet($_GET['planet']);
-
-	# URL-Appendix
-	define_url_suffix();
-	function define_url_suffix()
-	{
-		global $me;
-		$url_suffix = array(
-			session_name() => session_id(),
-			"planet" => $me->getActivePlanet()
-		);
-		$url_suffix_g = array();
-		$url_formular_g = "";
-		foreach($url_suffix as $k=>$v)
-		{
-			$url_suffix_g[] = urlencode($k)."=".urlencode($v);
-			$url_formular_g .= "<input type=\"hidden\" name=\"".htmlspecialchars($k)."\" value=\"".htmlspecialchars($v)."\" />";
-		}
-		global_setting("URL_SUFFIX", implode("&", $url_suffix_g));
-		global_setting("URL_FORMULAR", $url_formular_g);
 	}
 
 	# Captcha-Abfrage
@@ -260,4 +242,21 @@
 		header('Location: '.$url, true, 303);
 		$gui->fatal(sprintf(h(_("HTTP redirect: %s")), "<a href=\"".htmlspecialchars($url)."\">".htmlspecialchars($url)."</a>"));
 	}
-?>
+
+	function define_url_suffix()
+	{
+		global $me;
+		$url_suffix = array(
+			session_name() => session_id(),
+			"planet" => $me->getActivePlanet()
+		);
+		$url_suffix_g = array();
+		$url_formular_g = "";
+		foreach($url_suffix as $k=>$v)
+		{
+			$url_suffix_g[] = urlencode($k)."=".urlencode($v);
+			$url_formular_g .= "<input type=\"hidden\" name=\"".htmlspecialchars($k)."\" value=\"".htmlspecialchars($v)."\" />";
+		}
+		global_setting("URL_SUFFIX", implode("&", $url_suffix_g));
+		global_setting("URL_FORMULAR", $url_formular_g);
+	}
