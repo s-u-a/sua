@@ -132,39 +132,44 @@
 	}
 
 	# Wiederherstellen
-	if($resume && $last_request = $me->lastRequest())
+	if($resume)
 	{
-		$url = 'http://'.$databases[$_SESSION["database"]]["hostname"].$last_request;
+		if($last_request = $me->lastRequest())
+		{
+			$url = 'http://'.$databases[$_SESSION["database"]]["hostname"].$last_request;
 
-		$url = explode('?', $url, 2);
-		if(isset($url[1]))
-			$url[1] = explode('&', $url[1]);
-		else
-			$url[1] = array();
-		$one = false;
-		foreach($url[1] as $key=>$val)
-		{
-			$val = explode("=", $val, 2);
-			if($val[0] == urlencode(session_name()))
-			{
-				$url[1][$key] = urlencode(session_name())."=".urlencode(session_id());
-				$one = true;
-			}
-		}
-		$url2 = $url[0];
-		if(count($url[1]) > 0)
-			$url2 .= '?'.implode('&', $url[1]);
-		$url = $url2;
-		if(!$one)
-		{
-			if(strpos($url, '?') === false)
-				$url .= '?';
+			$url = explode('?', $url, 2);
+			if(isset($url[1]))
+				$url[1] = explode('&', $url[1]);
 			else
-				$url .= '&';
-			$url .= urlencode(session_name())."=".urlencode(session_id());
+				$url[1] = array();
+			$one = false;
+			foreach($url[1] as $key=>$val)
+			{
+				$val = explode("=", $val, 2);
+				if($val[0] == urlencode(session_name()))
+				{
+					$url[1][$key] = urlencode(session_name())."=".urlencode(session_id());
+					$one = true;
+				}
+			}
+			$url2 = $url[0];
+			if(count($url[1]) > 0)
+				$url2 .= '?'.implode('&', $url[1]);
+			$url = $url2;
+			if(!$one)
+			{
+				if(strpos($url, '?') === false)
+					$url .= '?';
+				else
+					$url .= '&';
+				$url .= urlencode(session_name())."=".urlencode(session_id());
+			}
+			header('Location: '.$url, true, 303);
+			$gui->fatal(sprintf(h(_("HTTP redirect: %s")), "<a href=\"".htmlspecialchars($url)."\">".htmlspecialchars($url)."</a>"));
 		}
-		header('Location: '.$url, true, 303);
-		$gui->fatal(sprintf(h(_("HTTP redirect: %s")), "<a href=\"".htmlspecialchars($url)."\">".htmlspecialchars($url)."</a>"));
+		else
+			delete_request();
 	}
 
 	if(!isset($_GET['planet']) || !$me->planetExists($_GET['planet']))
