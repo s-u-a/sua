@@ -846,18 +846,17 @@
 
 			<dt class="c-email-adresse"><label for="email"><?=h(_("E-Mail-Adresse&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-email-adresse"><input type="text" name="email" id="email"<?=accesskey_attr(_("E-Mail-Adresse&[login/einstellungen.php|1]"))?> value="<?=htmlspecialchars($me->getTemporaryEMailAddress() !== null ? $me->getTemporaryEMailAddress() : $me->getEMailAddress())?>" title="<?=h(_("Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben."))?>" tabindex="<?=$tabindex++?>" /> <?=h(sprintf(_("Eine Änderung wird aus Sicherheitsgründen nicht sofort übernommen. Die Verzögerungsdauer beträgt %s."), format_btime(global_setting("EMAIL_CHANGE_DELAY"), true)))?></dd>
-			<dd class="c-email-adresse validity">
 <?php
 	if(check_email($me->getTemporaryEMailAddress() !== null ? $me->getTemporaryEMailAddress() : $me->getEMailAddress()))
 	{
 ?>
-				<p class="successful"><?=h(_("Diese E-Mail-Adresse ist gültig."))?></p>
+				<dd class="c-email-adresse validity successful"><?=h(_("Diese E-Mail-Adresse ist gültig."))?></dd>
 <?php
 	}
 	else
 	{
 ?>
-				<p class="error"><?=h(_("Diese E-Mail-Adresse ist ungültig."))?></p>
+				<dd class="c-email-adresse validity error"><?=h(_("Diese E-Mail-Adresse ist ungültig."))?></dd>
 <?php
 	}
 ?>
