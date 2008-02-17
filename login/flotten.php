@@ -666,13 +666,13 @@
 					{
 						$fleets = array();
 						foreach($me->getForeignFleetsList($user) as $fi)
-							$fleets = Item::iadd($fleets, $fi[0]);
-						Item::isort($fleets);
+							$fleets = Items::iadd($fleets, $fi[0]);
+						Items::isort($fleets);
 ?>
 <fieldset>
 	<legend><?=htmlspecialchars($user)?></legend>
 <?php
-						Item::makeItemList($fleets, 1);
+						Items::makeItemList($fleets, 1);
 ?>
 </fieldset>
 <?php
@@ -703,7 +703,7 @@
 ?>
 	<legend><?=h(sprintf(_("„%s“ (%s, Eigentümer: %s)"), $user_obj->planetName(), vsprintf(_("%d:%d:%d"), $coords_a), $user_obj->getName()))?></legend>
 <?php
-							Item::makeItemList($fi[0], 1);
+							Items::makeItemList($fi[0], 1);
 ?>
 	<form action="flotten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>#fremdstationierungen" method="post" class="ihre-fremdstationierungen"><div class="button"><button type="submit" name="callback_foreign[<?=htmlspecialchars($coords)?>][<?=htmlspecialchars($i)?>]" tabindex="<?=$tabindex++?>"><?=h(sprintf(_("Zurückrufen zum Planeten %s"), sprintf(_("„%s“ (%s)"), $me->planetName(), vsprintf(_("%d:%d:%d"), $me->getPos()))))?></button></div></form>
 <?php

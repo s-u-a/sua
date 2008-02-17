@@ -1329,7 +1329,7 @@
 									if($target_owner == $username && array_sum($data[3][1]) > 0)
 									{
 										$target_user->setLanguage();
-										$items_string = Item::makeItemsString($data[3][1], false);
+										$items_string = Items::makeItemsString($data[3][1], false);
 										$target_user->restoreLanguage();
 										if($write_this_username) $message_text[$username] .= "\n".$items_string;
 										$message_text[$target_owner] .= $target_user->_("; ").$items_string;
@@ -1382,7 +1382,7 @@
 									{
 										if($write_this_username) $message_text[$username] .= "\n";
 										$message_text[$target_owner] .= $target_user->_("; ");
-										$items_string = Item::makeItemsString($h[1], false);
+										$items_string = Items::makeItemsString($h[1], false);
 										if($write_this_username) $message_text[$username] .= $items_string;
 										$message_text[$target_owner] .= $items_string;
 									}
@@ -1913,7 +1913,7 @@
 					if(array_sum($schiffe_own) > 0)
 					{
 						$user_obj->setLanguage();
-						$message_text .= sprintf($user_obj->_("Die Flotte besteht aus folgenden Schiffen: %s"), Item::makeItemsString($schiffe_own, false))."\n";
+						$message_text .= sprintf($user_obj->_("Die Flotte besteht aus folgenden Schiffen: %s"), Items::makeItemsString($schiffe_own, false))."\n";
 						$user_obj->restoreLanguage();
 					}
 
@@ -1923,7 +1923,7 @@
 						foreach($schiffe_other as $user=>$schiffe)
 						{
 							$user_obj->setLanguage();
-							$message_text .= sprintf($user_obj->_("%s: %s"), $user, Item::makeItemsString($schiffe, false))."\n";
+							$message_text .= sprintf($user_obj->_("%s: %s"), $user, Items::makeItemsString($schiffe, false))."\n";
 							$user_obj->restoreLanguage();
 						}
 					}
@@ -1933,7 +1933,7 @@
 					if(array_sum($robs) > 0)
 					{
 						$user_obj->setLanguage();
-						$message_text .= "\n".Item::makeItemsString($robs, false)."\n";
+						$message_text .= "\n".Items::makeItemsString($robs, false)."\n";
 						$user_obj->restoreLanguage();
 					}
 
@@ -2012,8 +2012,8 @@
 			{
 				$foreign_fleet = array();
 				foreach($target_user->getForeignFleetsList($username) as $foreign_fi)
-					$foreign_fleet = Item::iadd($foreign_fleet, $foreign_fi[0]);
-				Item::isort($foreign_fleet);
+					$foreign_fleet = Items::iadd($foreign_fleet, $foreign_fi[0]);
+				Items::isort($foreign_fleet);
 				$verteidiger[$username] = $foreign_fleet;
 			}
 

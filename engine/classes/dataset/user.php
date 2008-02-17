@@ -3373,7 +3373,7 @@
 
 			if($message_obj->getStatus())
 			{
-				$message_obj->text(sprintf($this->_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf($this->_("%d:%d:%d"), $this->getPos()), $this->_i(Item::makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0], true, true))));
+				$message_obj->text(sprintf($this->_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf($this->_("%d:%d:%d"), $this->getPos()), $this->_i(Items::makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0], true, true))));
 				$message_obj->subject(sprintf($this->_("Fremdstationierung zurückgezogen auf %s"), vsprintf($this->_("%d:%d:%d"), $this->getPos())));
 				$message_obj->from($user);
 				$message_obj->addUser($this->getName(), 3);
