@@ -116,8 +116,10 @@
 		{
 			global $jabber,$messengers;
 
-			output("Logged in. Browsing for transports.");
-			$jabber->browse();
+			output("Logged in.");
+
+			//output("Browsing for transports.");
+			//$jabber->browse();
 
 			output("Setting presence.");
 			$jabber->set_presence(true, null, null, (isset($messengers["jabber"]["priority"]) ? $messengers["jabber"]["priority"] : 100));
