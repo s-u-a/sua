@@ -19,6 +19,7 @@
 	import("Dataset/Dataset");
 	import("Dataset/Classes");
 	import("Dataset/Galaxy");
+	import("Dataset/Item");
 
 	class FleetDatabase extends SQLite
 	{
