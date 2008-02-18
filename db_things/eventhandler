@@ -262,6 +262,7 @@ EOF
 			pcntl_signal(SIGINT, "sig_handler");
 			pcntl_signal(SIGUSR1, "sig_handler");
 			pcntl_signal(SIGUSR2, "sig_handler");
+			pcntl_signal(SIGCHLD, SIG_IGN);
 			if($daemon)
 			{
 				pcntl_signal(SIGHUP, "sig_handler");
