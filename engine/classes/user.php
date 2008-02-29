@@ -3180,12 +3180,15 @@
 			$imfile = Classes::IMFile();
 			$imfile->removeMessages($this->getName(), $special_id);
 
-			$messenger_receive = $this->checkSetting('messenger_receive');
-			if(!$messenger_receive['building'][$type]) return 2;
+			$reload_stack = Classes::ReloadStack();
+			$reload_stack->reset($this->getName(), $special_id);
+
 			$building = $this->checkBuildingThing($type);
 			if(!$building) return 2;
+
+			$messenger_receive = $this->checkSetting('messenger_receive');
 			$messenger_settings = $this->getNotificationType();
-			if(!$messenger_settings) return 2;
+			$add_message = ($messenger_settings && $messenger_receive['building'][$type]);
 
 			$planet_prefix = "(".$this->planetName().", ".$this->getPosString().") ";
 
@@ -3195,48 +3198,71 @@
 					if(!$building || ($type == 'forschung' && $building[2] && $this->getActivePlanet() != $building[4]))
 						break;
 
-					$item_info = $this->getItemInfo($building[0], $type);
+					if($add_message)
+					{
+						$item_info = $this->getItemInfo($building[0], $type);
 
-					if($type == 'gebaeude')
-						$message = $planet_prefix."Gebäudebau abgeschlossen: ".$item_info['name']." (".($item_info['level']+($building[2] ? -1 : 1)).")";
-					else
-						$message = $planet_prefix."Forschung fertiggestellt: ".$item_info['name']." (".($item_info['level']+1).")";
-					$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $message, $special_id, $building[1]);
+						if($type == 'gebaeude')
+							$message = $planet_prefix."Gebäudebau abgeschlossen: ".$item_info['name']." (".($item_info['level']+($building[2] ? -1 : 1)).")";
+						else
+							$message = $planet_prefix."Forschung fertiggestellt: ".$item_info['name']." (".($item_info['level']+1).")";
+						$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $message, $special_id, $building[1]);
+					}
 					break;
 				case 'roboter': case 'schiffe': case 'verteidigung':
-					switch($type)
+					$building_number = 0;
+					$finish_time = time();
+					foreach($building as $b)
 					{
-						case 'roboter': $singular = 'Roboter'; $plural = 'Roboter'; $art = 'ein'; break;
-						case 'schiffe': $singular = 'Schiff'; $plural = 'Schiffe'; $art = 'ein'; break;
-						case 'verteidigung': $singular = 'Verteidigungsanlage'; $plural = 'Verteidigungsanlagen'; $art = 'eine'; break;
+						$building_number += $b[2];
+						while($building_number > global_setting("RELOAD_LIMIT"))
+						{
+							$building_number -= global_setting("RELOAD_LIMIT");
+							$b[2] -= global_setting("RELOAD_LIMIT");
+							if($b[2] >= 0) $finish_time += global_setting("RELOAD_LIMIT")*$b[3];
+							else $finish_time -= $b[2]*$b[3];
+							$reload_stack->addReload($this->getName(), $finish_time, $special_id);
+						}
+						if($b[2] > 0)
+							$finish_time += $b[2]*$b[3];
 					}
 
-					switch($messenger_receive['building'][$type])
+					if($add_message)
 					{
-						case 1:
-							foreach($building as $b)
-							{
-								$item_info = $this->getItemInfo($b[0], $type);
-								$time = $b[1];
-								for($i=0; $i<$b[2]; $i++)
+						switch($type)
+						{
+							case 'roboter': $singular = 'Roboter'; $plural = 'Roboter'; $art = 'ein'; break;
+							case 'schiffe': $singular = 'Schiff'; $plural = 'Schiffe'; $art = 'ein'; break;
+							case 'verteidigung': $singular = 'Verteidigungsanlage'; $plural = 'Verteidigungsanlagen'; $art = 'eine'; break;
+						}
+
+						switch($messenger_receive['building'][$type])
+						{
+							case 1:
+								foreach($building as $b)
 								{
-									$time += $b[3];
-									$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.ucfirst($art)." ".$singular." der Sorte ".$item_info['name']." wurde fertiggestellt.", $special_id, $time);
+									$item_info = $this->getItemInfo($b[0], $type);
+									$time = $b[1];
+									for($i=0; $i<$b[2]; $i++)
+									{
+										$time += $b[3];
+										$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.ucfirst($art)." ".$singular." der Sorte ".$item_info['name']." wurde fertiggestellt.", $special_id, $time);
+									}
 								}
-							}
-							break;
-						case 2:
-							foreach($building as $b)
-							{
-								$item_info = $this->getItemInfo($b[0], $type);
-								$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.$b[2]." ".($b[2]==1 ? $singular : $plural)." der Sorte ".$item_info['name']." ".($b[2]==1 ? 'wurde' : 'wurden')." fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
-							}
-							break;
-						case 3:
-							$keys = array_keys($building);
-							$b = $building[array_pop($keys)];
-							$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix."Alle ".$plural." wurden fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
-							break;
+								break;
+							case 2:
+								foreach($building as $b)
+								{
+									$item_info = $this->getItemInfo($b[0], $type);
+									$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.$b[2]." ".($b[2]==1 ? $singular : $plural)." der Sorte ".$item_info['name']." ".($b[2]==1 ? 'wurde' : 'wurden')." fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
+								}
+								break;
+							case 3:
+								$keys = array_keys($building);
+								$b = $building[array_pop($keys)];
+								$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix."Alle ".$plural." wurden fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
+								break;
+						}
 					}
 					break;
 			}

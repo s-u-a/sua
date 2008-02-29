@@ -254,6 +254,7 @@ EOF
 			pcntl_signal(SIGINT, "sig_handler");
 			pcntl_signal(SIGUSR1, "sig_handler");
 			pcntl_signal(SIGUSR2, "sig_handler");
+			pcntl_signal(SIGCHLD, SIG_IGN);
 			if($daemon)
 			{
 				pcntl_signal(SIGHUP, "sig_handler");
@@ -313,6 +314,37 @@ EOF
 				if($pid != -1) exit(0);
 			}
 			else pcntl_waitpid($pid, &$status);
+		}
+
+		function reload_stack()
+		{
+			global $verbose,$errlog;
+
+			if($verbose)
+				fputs($errlog, time_prefix()."Refreshing users.\n");
+
+			if(function_exists('pcntl_fork'))
+			{
+				Classes::resetInstances();
+				$pid = pcntl_fork();
+			}
+			else $pid = -1;
+
+			if(!$pid || $pid == -1)
+			{
+				$reload_stack = Classes::ReloadStack();
+				foreach($reload_stack->getLastUsers() as $user)
+				{
+					if($verbose)
+						fputs($errlog, time_prefix()."Refreshing user ".$user["user"]."\n");
+					$user_obj = Classes::User($user["user"]);
+					if($verbose)
+						fputs($errlog, time_prefix()."Refreshed user ".$user["user"]."\n");
+				}
+
+				Classes::resetInstances();
+				if($pid != -1) exit(0);
+			}
 		}
 
 		function walkthrough_users($send_mails=true)
@@ -619,6 +651,8 @@ EOF
 		if(date('H')*3600+date('i')*60+60 < global_setting("EVENTHANDLER_RUNTIME")) $last_walked = false;
 		else $last_walked = date('Y-m-d');
 
+		$last_reload_stack = 0;
+
 		fputs($errlog, time_prefix()."Eventhandler started.\n");
 
 		while(true)
@@ -667,6 +701,12 @@ EOF
 					}
 					if($pid != -1) exit(0);
 				}
+			}
+
+			if(time()-$last_reload_stack > global_setting("RELOAD_STACK_INTERVAL"))
+			{
+				$last_reload_stack = time();
+				reload_stack();
 			}
 
 			sleep(global_setting("EVENTHANDLER_INTERVAL"));

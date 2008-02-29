@@ -92,6 +92,8 @@
 	global_setting('MIN_BUILDING_TIME', 12); # Minimale Bauzeit in Sekunden
 	global_setting('DATABASE_VERSION', 8); # Aktuelle Datenbankversion
 	global_setting('EVENTHANDLER_RUNTIME', 16200); # Sekunden seit Tagesbeginn, wann der Eventhandler laufen soll
+	global_setting("RELOAD_LIMIT", 100); # Alle wieviel gebauten Roboter/Schiffe/Verteidigungsanlagen soll der Benutzeraccount neugeladen werden?
+	global_setting("RELOAD_STACK_INTERVAL", 120); # Alle wieviel Sekunden sollen die Benutzeraccounts neugeladen werden?
 
 	function define_globals($DB)
 	{ # Setzt diverse Spielkonstanten zu einer bestimmten Datenbank
