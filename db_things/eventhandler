@@ -338,7 +338,8 @@ EOF
 		{
 			global $verbose,$errlog;
 
-			fputs($errlog, time_prefix()."Refreshing users.\n");
+			if($verbose)
+				fputs($errlog, time_prefix()."Refreshing users.\n");
 
 			if(function_exists('pcntl_fork'))
 			{
@@ -352,9 +353,11 @@ EOF
 				$reload_stack = Classes::ReloadStack();
 				foreach($reload_stack->getLastUsers() as $user)
 				{
-					fputs($errlog, time_prefix()."Refreshing user ".$user["user"]."\n");
+					if($verbose)
+						fputs($errlog, time_prefix()."Refreshing user ".$user["user"]."\n");
 					$user_obj = Classes::User($user["user"]);
-					fputs($errlog, time_prefix()."Refreshed user ".$user["user"]."\n");
+					if($verbose)
+						fputs($errlog, time_prefix()."Refreshed user ".$user["user"]."\n");
 				}
 
 				Classes::resetInstances();
@@ -614,7 +617,7 @@ EOF
 
 			check_termination();
 
-			# Handelskurs neu berechnen und Inaktive loeschen
+			# Inaktive loeschen
 			if(date('H')*3600+date('i')*60+60 > global_setting("EVENTHANDLER_RUNTIME") && $last_walked != date('Y-m-d')) // 4:30 Uhr
 			{
 				$last_walked = date('Y-m-d');

@@ -190,7 +190,7 @@
 ?>
 			var ths_utf8 = '<?=jsentities(global_setting("THS_UTF8"))?>';
 			var h_root = '<?=jsentities(h_root)?>';
-			var last_min_chars = '<?=jsentities(global_setting("LIST_MIN_CHARS"))?>';
+			var list_min_chars = '<?=jsentities(global_setting("LIST_MIN_CHARS"))?>';
 		</script>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/login/res/javascript.js')?>"></script>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/sarissa.js')?>"></script>
