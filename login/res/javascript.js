@@ -616,7 +616,7 @@ function preload_users_list(prefix)
 			for(var i=0; i<results.length; i++)
 			{
 				v = results[i].firstChild.data;
-				users_list_cache[node.value].push(v);
+				users_list_cache[prefix].push(v);
 			}
 			users_list_cache_loading[prefix] = true;
 		}
