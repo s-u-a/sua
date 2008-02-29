@@ -83,21 +83,21 @@
 		{
 			global $jabber,$messengers;
 
-			output("Logged in. Browsing for transports.");
-			$jabber->browse();
+//			output("Logged in. Browsing for transports.");
+//			$jabber->browse();
 
 			output("Setting presence.");
 			$jabber->set_presence(true, null, null, (isset($messengers["jabber"]["priority"]) ? $messengers["jabber"]["priority"] : 100));
 
-			output("Checking transports.");
-			foreach($messengers as $id=>$messenger)
-			{
-				if($id == "jabber") continue;
+//			output("Checking transports.");
+//			foreach($messengers as $id=>$messenger)
+//			{
+//				if($id == "jabber") continue;
 
-				if(!isset($messenger["username_field"]) || !isset($messenger["password_field"]))
-					var_dump($jabber->query_service_fields($messenger["server"]));
+//				if(!isset($messenger["username_field"]) || !isset($messenger["password_field"]))
+//					var_dump($jabber->query_service_fields($messenger["server"]));
 				/* Hier muesste der Transport hinzugefuegt werden. */
-			}
+//			}
 		}
 
 		public function handleAuthFailure()

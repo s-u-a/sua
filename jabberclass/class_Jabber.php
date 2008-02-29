@@ -1450,7 +1450,7 @@ class Jabber {
 												"name"			=> $rostername,
 												"subscription"	=> $queryitem['@']['subscription'],
 												"ask"			=> $queryitem['@']['ask'],
-												"group"			=> $queryitem['#']['group'][0]['#'],
+												"group"			=> (isset($queryitem['#']['group']) ? $queryitem['#']['group'][0]['#'] : null),
 												"status"		=> $status,
 												"show"			=> $show,
 												"username"		=> $u_username,
