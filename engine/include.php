@@ -114,7 +114,7 @@
 	global_setting('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
 	global_setting('EMAIL_FROM', 'webmaster@s-u-a.net');
 	global_setting('MAX_PLANETS', 15);
-	global_setting('LIST_MIN_CHARS', 2); # Fuer Ajax-Auswahllisten
+	global_setting('LIST_MIN_CHARS', 1); # Fuer Ajax-Auswahllisten
 	global_setting('ALLIANCE_RENAME_PERIOD', 3); # Minimalabstand fuers Umbenennen von Allianzen in Tagen
 	global_setting('PROTOCOL', (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http');
 	global_setting('USE_PROTOCOL', (isset($_SESSION['use_protocol']) ? $_SESSION['use_protocol'] : (((!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl'])) ? 'https' : 'http')));

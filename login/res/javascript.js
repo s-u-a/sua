@@ -597,55 +597,63 @@ users_list_timeout = false;
 users_list = false;
 users_list_selected = false;
 users_list_cache = new Object();
+users_list_cache_loading = new Object();
 
-function activate_users_list(element)
+function preload_users_list(prefix)
+{
+	if(users_list_cache_loading[prefix]) return;
+
+	users_list_cache_loading[prefix] = true;
+	var xmlhttp = new XMLHttpRequest();
+	var request_url = h_root+'/login/res/ajax.php?action=userlist&query='+encodeURIComponent(prefix)+'&'+url_suffix+'&database='+encodeURIComponent(database_id);
+	xmlhttp.open('GET', request_url, true);
+	xmlhttp.onreadystatechange = function() {
+		if(xmlhttp.readyState == 4 && xmlhttp.status == 200)
+		{ // Request war erfolgreich
+			// <result> sind die Elemente, die die Benutzernamen enthalten
+			users_list_cache[prefix] = new Array();
+			var results = xmlhttp.responseXML.getElementsByTagName('result');
+			for(var i=0; i<results.length; i++)
+			{
+				v = results[i].firstChild.data;
+				users_list_cache[node.value].push(v);
+			}
+			users_list_cache_loading[prefix] = true;
+		}
+	}
+	xmlhttp.send(null);
+}
+
+function get_users_list(prefix)
+{
+	if(prefix.length < list_min_chars) return [ ];
+	var load_prefix = prefix.substr(0, list_min_chars).toLowerCase();
+	if(!users_list_cache[load_prefix])
+	{
+		preload_users_list(load_prefix);
+		return null;
+	}
+	else if(prefix == load_prefix)
+		return users_list_cache[load_prefix];
+	else
+	{
+		var check_prefix = prefix.toLowerCase();
+		var list = [ ];
+		for(var i=0; i<users_list_cache[load_prefix].length; i++)
+		{
+			if(users_list_cache[load_prefix][i].substr(0, prefix.length).toLowerCase() != check_prefix)
+				continue;
+			list.push(users_list_cache[load_prefix][i]);
+		}
+		return list;
+	}
+}
+
+function activate_users_list(node)
 { // Aktiviert Autocomplete fuer ein Eingabefeld
 	// Eventhandler beim Tippen
-	element.onkeypress = make_users_list;
-
-	// Autocomplete des Browsers abschalten
-	element.setAttribute('autocomplete', 'off');
-
-	// Opera fix
-	element.style.position = 'relative';
-}
-
-function make_users_list(e)
-{ // Wird beim Tippen in einem Autocomplete-Feld aufgerufen
-// Sorgt dafuer, dass 0,5 Sekunden abgewartet wird, ob weitergetippt
-// wird, bevor do_make_users_list() die Auswahlliste erzeugt
-
-	if(!e) e = window.event;
-	if(e.target) node=e.target;
-	else if(e.srcElement) node=e.srcElement;
-	else return;
-
-	// Eventuelle andere Wartevorgaenge (0,5 Sekunden) abbrechen
-	if(users_list_timeout) clearTimeout(users_list_timeout);
-
-	// Wartevorgang einleiten
-	users_list_timeout = setTimeout('do_make_users_list(node)', 1);
-
-	// Eventhandler initialisieren, die die Benutzerliste einblenden oder verschwinden lassen
-	node.onblur = function(){clearTimeout(users_list_timeout);}
-	node.onfocus = function(){make_users_list(e);}
-}
-
-function do_make_users_list(node)
-{ // Erzeugt die Autocomplete-Auswahlliste unter dem Eingabefeld, wird von make_users_list() kontrolliert
-	if(node.value.length < last_min_chars)
-	{ // Standardmaessig wird eine Auswahl erst ab zwei eingetippten Zeichen ermoeglicht
-		if(users_list)
-		{ // Eventuelle bereits vorhandene Auswahlliste entfernen
-			users_list.parentNode.removeChild(users_list);
-			users_list = false;
-			users_list_selected = false;
-		}
-		return;
-	}
-
-	// Beim Verlassen des Feldes wird die Liste ausgeblendet
-	node.onblur = function(){t=this; setTimeout('if(users_list){users_list.parentNode.removeChild(users_list);users_list=false;users_list_selected=false;}',1);}
+	node.onfocus = function(){make_users_list(node);};
+	node.onblur = function(){remove_users_list(node);};
 
 	// Wenn die Liste angezeigt wird, muss das Hoch- und Runternavigieren durch Pfeiltasten ermoeglicht werden
 	node.onkeypress = function(e)
@@ -656,18 +664,29 @@ function do_make_users_list(node)
 		{ // IE beherrscht die Hoch-Runter-Tasten nur bei onkeyup, siehe weiter unten
 			if((e.DOM_VK_DOWN && e.keyCode == e.DOM_VK_DOWN) || e.keyCode == 40)
 			{ // Runter-Taste: In der Auswahl nach unten huepfen
-				users_list_select(node, 1);
+				users_list_select(node, 1, true);
 				return false;
 			}
 			else if((e.DOM_VK_UP && e.keyCode == e.DOM_VK_UP) || e.keyCode == 38)
 			{ // Hoch-Taste: In der Auswahl nach oben huepfen
-				users_list_select(node, -1);
+				users_list_select(node, -1, true);
+				return false;
+			}
+
+			if((e.DOM_PAGE_VK_DOWN && e.keyCode == e.DOM_VK_PAGE_DOWN) || e.keyCode == 34)
+			{ // Bild-Runter-Taste
+				users_list_select(node, 10, false);
+				return false;
+			}
+			else if((e.DOM_VK_PAGE_UP && e.keyCode == e.DOM_VK_PAGE_UP) || e.keyCode == 33)
+			{ // Bild-Hoch-Taste
+				users_list_select(node, -10, false);
 				return false;
 			}
 		}
 
-		if((e.DOM_VK_RETURN && e.keyCode == e.DOM_VK_RETURN) || (e.DOM_VK_ENTER && e.keyCode == e.DOM_VK_ENTER) || e.keyCode == 13 || e.keyCode == 14)
-		{ // Bei Enter soll nicht das Formular abgesendet werden, sondern die Liste verschwinden
+		if((e.DOM_VK_RETURN && e.keyCode == e.DOM_VK_RETURN) || (e.DOM_VK_ENTER && e.keyCode == e.DOM_VK_ENTER) || (e.DOM_VK_ESCAPE && e.keyCode == e.DOM_VK_ESCAPE) || e.keyCode == 13 || e.keyCode == 14 || e.keyCode == 27)
+		{ // Bei Enter/Esc soll nicht das Formular abgesendet werden, sondern die Liste verschwinden
 			if(users_list)
 			{
 				users_list.parentNode.removeChild(users_list);
@@ -689,7 +708,8 @@ function do_make_users_list(node)
 
 		// Keine dieser Tasten? Normaler Eventhandler wie sonst auch,
 		// verzoegerte Aktualisierung der Auswahlliste einleiten
-		make_users_list(e);
+		var v = node.value;
+		setTimeout(function(){if(v != node.value) make_users_list(node);}, 1);
 	}
 
 	if(_SARISSA_IS_IE)
@@ -701,24 +721,66 @@ function do_make_users_list(node)
 			{
 				if((e.DOM_VK_DOWN && e.keyCode == e.DOM_VK_DOWN) || e.keyCode == 40)
 				{ // Runter-Taste
-					users_list_select(node, 1);
+					users_list_select(node, 1, true);
 					return false;
 				}
 				else if((e.DOM_VK_UP && e.keyCode == e.DOM_VK_UP) || e.keyCode == 38)
 				{ // Hoch-Taste
-					users_list_select(node, -1);
+					users_list_select(node, -1, true);
+					return false;
+				}
+
+				if((e.DOM_PAGE_VK_DOWN && e.keyCode == e.DOM_VK_PAGE_DOWN) || e.keyCode == 34)
+				{ // Bild-Runter-Taste
+					users_list_select(node, 10, false);
+					return false;
+				}
+				else if((e.DOM_VK_PAGE_UP && e.keyCode == e.DOM_VK_PAGE_UP) || e.keyCode == 33)
+				{ // Bild-Hoch-Taste
+					users_list_select(node, -10, false);
 					return false;
 				}
 			}
 		}
 	}
 
+	// Autocomplete des Browsers abschalten
+	node.setAttribute('autocomplete', 'off');
+
+	// Opera fix
+	node.style.position = 'relative';
+}
+
+function remove_users_list(element)
+{
+	if(users_list)
+	{ // Eventuelle bereits vorhandene Auswahlliste entfernen
+		users_list.parentNode.removeChild(users_list);
+		users_list = false;
+		users_list_selected = false;
+	}
+}
+
+function make_users_list(node, inside_timeout)
+{ // Erzeugt die Autocomplete-Auswahlliste unter dem Eingabefeld
+	if(!inside_timeout && users_list_timeout)
+		clearTimeout(users_list_timeout);
+
+	if(node.value.length < list_min_chars)
+	{ // Standardmaessig wird eine Auswahl erst ab zwei eingetippten Zeichen ermoeglicht
+		remove_users_list(node);
+		return;
+	}
+
+	var list = get_users_list(node.value);
+	if(!list)
+	{
+		users_list_timeout = setTimeout(function(){make_users_list(node, true);}, 100);
+		return;
+	}
+
 	// Eventhandlerdefinitionen fertig
 	// Nun die Liste per AJAX aktualisieren
-
-	// Wissenswert, ob schon eine Liste da ist, ob sie spaeter entfernt werden muss
-	old_l = false;
-	if(users_list) old_l = users_list;
 
 	// Listenelement heimlich erzeugen, aber erst nach vollstaendigem
 	// Laden in den DOM-Baum klatschen, damit die Liste nicht kurzzeitig
@@ -731,84 +793,41 @@ function do_make_users_list(node)
 	l.style.left = node.offsetLeft+'px';
 	l.style.width = node.offsetWidth+'px';
 
-	// Schauen, ob die Liste bereits geladen ist
-	var cache_item = '';
-	for(var i in users_list_cache)
-	{
-		if(node.value.substr(0, i.length) == i && i.length > cache_item.length)
-			cache_item = i;
-	}
-
-	if(cache_item)
-	{ // Liste ist bereits geladen, Cache benutzen
-		var c = users_list_cache[cache_item];
-		var new_list = new Array();
-		for(var i=0; i<c.length; i++)
-		{
-			if(c[i].length > node.value.length && c[i].substr(0, node.value.length) == node.value)
-				new_list.push(c[i]);
-		}
-		do_create_users_list(new_list);
-	}
-	else
-	{ // Mithilfe der Sarissa-Bibliothek AJAX-Request durchfuehren
-		var xmlhttp = new XMLHttpRequest();
-		var request_url = h_root+'/login/res/ajax.php?action=userlist&query='+encodeURIComponent(node.value)+'&'+url_suffix+'&database='+encodeURIComponent(database_id);
-		xmlhttp.open('GET', request_url, true);
-		xmlhttp.onreadystatechange = function() {
-			if(xmlhttp.readyState == 4 && xmlhttp.status == 200)
-			{ // Request war erfolgreich
-				// <result> sind die Elemente, die die Benutzernamen enthalten
-				users_list_cache[node.value] = new Array();
-				var results = xmlhttp.responseXML.getElementsByTagName('result');
-				for(var i=0; i<results.length; i++)
-				{
-					v = results[i].firstChild.data;
-					users_list_cache[node.value].push(v);
-				}
-
-				do_create_users_list(users_list_cache[node.value]);
-			}
-		}
-		xmlhttp.send(null);
-	}
-}
-
-function do_create_users_list(list)
-{
+	var id=0;
 	for(var i=0; i<list.length; i++)
 	{
+		if(list[i].length <= node.value.length || list[i].substr(0, node.value.length) != node.value)
+			continue;
+
 		// Benutzernamen in die noch nicht angezeigte Liste einfuegen
 		var next_li = document.createElement('li');
 
 		// Eventhandler einbauen, die das Auswaehlen der Benutzernamen und das Uebernehmen in die Eingabefelder ermoeglichen
-		next_li.onclick = function(){node.value = this.firstChild.data;if(users_list){users_list.parentNode.removeChild(users_list);users_list=false;users_list_selected=false;}}
-		next_li.onmouseover = function(){window.userlist_active_before_mouse=(this.className=='selected');this.className = 'selected';}
-		next_li.onmouseout = function(){if(!userlist_active_before_mouse)this.className = '';}
+		next_li.onclick = function(){node.value = this.firstChild.data; delete_users_list();};
+		next_li.onmouseover = function(){window.userlist_active_before_mouse=(this.className=='selected');this.className = 'selected';};
+		next_li.onmouseout = function(){if(!userlist_active_before_mouse)this.className = '';};
 		next_li.appendChild(document.createTextNode(list[i]));
 		l.appendChild(next_li);
 	}
 
-	if(old_l && old_l.parentNode)
-	{ // Wenn bereits eine Auswahlliste da ist, diese entfernen
-		old_l.parentNode.removeChild(users_list);
-		users_list = false;
-		users_list_selected = false;
-	}
+	remove_users_list();
+
 	var do_insert = true;
-	if(list.length <= 0) do_insert = false;
-	else if(list.length == 1 && node.value.toLowerCase() == v.toLowerCase()) do_insert = false;
+	if(list.length <= 0) do_insert = false; // Keine Eintraege gefunden
+	else if(list.length == 1 && node.value.toLowerCase() == v.toLowerCase()) do_insert = false; // Nur ein Eintrag gefunden, dieser ist schon eingegeben
 
 	if(do_insert) // Es gibt Uebereinstimmungen, die Liste enthaelt Eintraege
 	{
 		// Liste in den DOM-Baum klatschen
-		node.parentNode.insertBefore(l, node.nextSibling);
+		if(node.nextSibling)
+			node.parentNode.insertBefore(l, node.nextSibling);
+		else
+			node.parentNode.appendChild(l);
 		users_list = l;
 	}
-	else users_list = false;
 }
 
-function users_list_select(node, move_cursor) // move_cursor gibt die Anzahl der Eintraege an, um die der Cursor nach unten verschoben werden soll
+function users_list_select(node, move_cursor, other_end) // move_cursor gibt die Anzahl der Eintraege an, um die der Cursor nach unten verschoben werden soll
 { // Ermoeglicht das Auswaehlen in der Auswahlliste mithilfe der Hoch-Runter-Tasten
 	l = node.nextSibling;
 	if(!l || l.className != 'autocomplete') return; // Es existiert keine Auswahlliste
@@ -817,21 +836,39 @@ function users_list_select(node, move_cursor) // move_cursor gibt die Anzahl der
 	users_list_selected_old = users_list_selected;
 	users_list_selected += move_cursor;
 
-	if(users_list_selected < 0) users_list_selected = l.childNodes.length-1; // Vom Anfang bei Nach oben ans Ende springen
-	else if(users_list_selected >= l.childNodes.length) users_list_selected = 0; // Vom Ende bei Nach unten an den Anfang springen
+	if(users_list_selected < 0)
+	{
+		if(other_end)
+			users_list_selected = l.childNodes.length-1; // Vom Anfang bei Nach oben ans Ende springen
+		else
+			users_list_selected = 0;
+	}
+	else if(users_list_selected >= l.childNodes.length)
+	{
+		if(other_end)
+			users_list_selected = 0; // Vom Ende bei Nach unten an den Anfang springen
+		else
+			users_list_selected = l.childNodes.length-1;
+	}
 
 	// Status des vormals ausgewaehlten Punktes auf nicht ausgewaehlt setzen
 	if(users_list_selected_old >= 0 && l.childNodes[users_list_selected_old] && !userlist_active_before_keyboard)
 		l.childNodes[users_list_selected_old].className = '';
 
-	if(l.childNodes[users_list_selected])
+	var li_n = l.childNodes[users_list_selected];
+	if(li_n)
 	{
 		// Neuen Eintrag als aktiv markieren
-		window.userlist_active_before_keyboard = (l.childNodes[users_list_selected].className=='selected');
-		l.childNodes[users_list_selected].className = 'selected';
+		window.userlist_active_before_keyboard = (li_n.className=='selected');
+		li_n.className = 'selected';
 
 		// Benutzernamen ins Eingabefeld uebernehmen
-		node.value = l.childNodes[users_list_selected].firstChild.data;
+		node.value = li_n.firstChild.data;
+
+		if(li_n.offsetTop-l.scrollTop < 0)
+			l.scrollTop = li_n.offsetTop;
+		if(li_n.offsetTop+li_n.offsetHeight+3 > l.offsetHeight+l.scrollTop)
+			l.scrollTop = li_n.offsetTop+li_n.offsetHeight-l.offsetHeight+3;
 	}
 	else
 	{
@@ -946,4 +983,12 @@ function fast_action(node, action_type, galaxy, system, planet)
 		popup_message(xmlhttp.responseXML.getElementsByTagName('result')[0].firstChild.data, xmlhttp.responseXML.getElementsByTagName('classname')[0].firstChild.data, node);
 
 	return false;
+}
+
+function debug(m)
+{
+	var li = document.createElement("li");
+	li.style.color = "#f00";
+	li.appendChild(document.createTextNode(m));
+	document.getElementById("gameinfo").appendChild(li);
 }

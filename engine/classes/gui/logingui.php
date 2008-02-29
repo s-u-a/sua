@@ -53,7 +53,7 @@
 			var url_suffix = '<?=jsentities(global_setting("URL_SUFFIX"))?>';
 			var ths_utf8 = '<?=jsentities(_("[thousand_separator]"))?>';
 			var h_root = '<?=jsentities(h_root)?>';
-			var last_min_chars = '<?=jsentities(global_setting("LIST_MIN_CHARS"))?>';
+			var list_min_chars = '<?=jsentities(global_setting("LIST_MIN_CHARS"))?>';
 			var res_ids = [ 'carbon', 'aluminium', 'wolfram', 'radium', 'tritium' ];
 <?php
 			if($me)
