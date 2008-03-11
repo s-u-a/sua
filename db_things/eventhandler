@@ -337,6 +337,7 @@ EOF
 		function reload_stack()
 		{
 			global $verbose,$errlog;
+			global $databases;
 
 			if($verbose)
 				fputs($errlog, time_prefix()."Refreshing users.\n");
@@ -350,17 +351,21 @@ EOF
 
 			if(!$pid || $pid == -1)
 			{
-				$reload_stack = Classes::ReloadStack();
-				foreach($reload_stack->getLastUsers() as $user)
+				foreach($databases as $selected_database=>$dbinfo)
 				{
-					if($verbose)
-						fputs($errlog, time_prefix()."Refreshing user ".$user["user"]."\n");
-					$user_obj = Classes::User($user["user"]);
-					if($verbose)
-						fputs($errlog, time_prefix()."Refreshed user ".$user["user"]."\n");
-				}
+					define_globals($selected_database);
+					$reload_stack = Classes::ReloadStack();
+					foreach($reload_stack->getLastUsers() as $user)
+					{
+						if($verbose)
+							fputs($errlog, time_prefix()."Refreshing user ".$user["user"]." (".$selected_database.")\n");
+						$user_obj = Classes::User($user["user"]);
+						if($verbose)
+							fputs($errlog, time_prefix()."Refreshed user ".$user["user"]." (".$selected_database.")\n");
+					}
 
-				Classes::resetInstances();
+					Classes::resetInstances();
+				}
 				if($pid != -1) exit(0);
 			}
 		}
