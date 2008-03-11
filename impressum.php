@@ -62,7 +62,7 @@
 	<dd><?php if(_("[translator_email]") && _("[translator_email]") != "[translator_email]"){?><a href="mailto:<?=h(_("[translator_email]"))?>"><?php }?><?=h(_("[translator_name]"))?><?php if(_("[translator_email]") && _("[translator_email]") != "[translator_email]"){?></a><?php }?></dd>
 
 	<dt><?=h(_("Testing"))?></dt>
-	<dd>Soltari, pyr0t0n</dd>
+	<dd>Soltari, pyr0t0n, <a href="http://www.michael-busching.de/">Michael Busching</a></dd>
 </dl>
 <?php
 	$gui->end();
