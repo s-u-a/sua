@@ -2528,26 +2528,29 @@
 				return false;
 
 			$alliance_obj = Classes::Alliance($this->raw['alliance_bewerbung']);
-			if(!$alliance_obj->deleteApplication($this->getName()))
-				return false;
-			if($message)
+			if($alliance_obj->getStatus())
 			{
-				foreach($users as $user)
+				if(!$alliance_obj->deleteApplication($this->getName()))
+					return false;
+				if($message)
 				{
-					$message_obj = Classes::Message();
-					if($message_obj->create())
+					foreach($users as $user)
 					{
-						$user_obj = Classes::User($user);
-						$message_obj->from($this->getName());
-						$message_obj->subject($user_obj->_("Allianzbewerbung zurückgezogen"));
-						$message_obj->text(sprintf($user_obj->_("Der Benutzer %s hat seine Bewerbung bei Ihrer Allianz zurückgezogen."),$this->getName()));
-						$users = $alliance_obj->getUsersWithPermission(4);
-						foreach($users as $user)
-							$message_obj->addUser($user, 7);
+						$message_obj = Classes::Message();
+						if($message_obj->create())
+						{
+							$user_obj = Classes::User($user);
+							$message_obj->from($this->getName());
+							$message_obj->subject($user_obj->_("Allianzbewerbung zurückgezogen"));
+							$message_obj->text(sprintf($user_obj->_("Der Benutzer %s hat seine Bewerbung bei Ihrer Allianz zurückgezogen."),$this->getName()));
+							$users = $alliance_obj->getUsersWithPermission(4);
+							foreach($users as $user)
+								$message_obj->addUser($user, 7);
+						}
 					}
 				}
+				unset($alliance_obj);
 			}
-			unset($alliance_obj);
 			$this->raw['alliance_bewerbung'] = false;
 			$this->changed = true;
 			return true;
