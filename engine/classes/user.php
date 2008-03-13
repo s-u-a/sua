@@ -2343,21 +2343,24 @@
 			if(!$this->allianceTag()) return false;
 
 			$alliance = Classes::Alliance($this->allianceTag());
-			if(!$alliance->removeUser($this->getName())) return false;
-
-			$members = $alliance->getUsersList();
-			if($members)
+			if($alliance->getStatus())
 			{
-				$message = Classes::Message();
-				if($message->create())
-				{
-					$message->from($this->getName());
-					$message->subject('Benutzer aus Allianz ausgetreten');
-					$message->text('Der Benutzer '.$this->getName().' hat Ihre Allianz verlassen.');
-					foreach($members as $member)
-						$message->addUser($member, 7);
-				}
+				if(!$alliance->removeUser($this->getName())) return false;
 
+				$members = $alliance->getUsersList();
+				if($members)
+				{
+					$message = Classes::Message();
+					if($message->create())
+					{
+						$message->from($this->getName());
+						$message->subject('Benutzer aus Allianz ausgetreten');
+						$message->text('Der Benutzer '.$this->getName().' hat Ihre Allianz verlassen.');
+						foreach($members as $member)
+							$message->addUser($member, 7);
+					}
+
+				}
 			}
 
 			$this->allianceTag(false);
