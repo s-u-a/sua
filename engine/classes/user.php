@@ -2273,22 +2273,25 @@
 				return false;
 
 			$alliance_obj = Classes::Alliance($this->raw['alliance_bewerbung']);
-			if(!$alliance_obj->deleteApplication($this->getName()))
-				return false;
-			if($message)
+			if($alliance_obj->getStatus())
 			{
-				$message_obj = Classes::Message();
-				if($message_obj->create())
+				if(!$alliance_obj->deleteApplication($this->getName()))
+					return false;
+				if($message)
 				{
-					$message_obj->from($this->getName());
-					$message_obj->subject("Allianzbewerbung zur\xc3\xbcckgezogen");
-					$message_obj->text('Der Benutzer '.$this->getName()." hat seine Bewerbung bei Ihrer Allianz zur\xc3\xbcckgezogen.");
-					$users = $alliance_obj->getUsersWithPermission(4);
-					foreach($users as $user)
-						$message_obj->addUser($user, 7);
+					$message_obj = Classes::Message();
+					if($message_obj->create())
+					{
+						$message_obj->from($this->getName());
+						$message_obj->subject("Allianzbewerbung zur\xc3\xbcckgezogen");
+						$message_obj->text('Der Benutzer '.$this->getName()." hat seine Bewerbung bei Ihrer Allianz zur\xc3\xbcckgezogen.");
+						$users = $alliance_obj->getUsersWithPermission(4);
+						foreach($users as $user)
+							$message_obj->addUser($user, 7);
+					}
 				}
+				unset($alliance_obj);
 			}
-			unset($alliance_obj);
 			$this->raw['alliance_bewerbung'] = false;
 			$this->changed = true;
 			return true;
