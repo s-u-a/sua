@@ -433,7 +433,7 @@
 		{
 			if(!$this->status) return false;
 
-			$count = (int) $count;
+			$count = round($count);
 			if($count < 0) return false;
 
 			if(!isset($this->raw[1][$user])) return false;
@@ -444,10 +444,24 @@
 			else $this->raw[1][$user][0][$id] = $count;
 
 			if(!$first)
-				$this->raw[1][$user][2] = $this->calcTime($user, $this->raw[1][$user][1], $this->getCurrentTarget())/($this->getNextArrival()-time());
+			{
+				if($this->started())
+					$fu_time = $this->getNextArrival()-time();
+				else
+					$fu_time = $this->calcTime($this->getFirstUser(), $this->raw[1][$this->getFirstUser()][1], $this->getCurrentTarget());
+				$this->raw[1][$user][2] = $this->calcTime($user, $this->raw[1][$user][1], $this->getCurrentTarget(), true, true)/$fu_time;
+			}
 
 			$this->changed = true;
 			return true;
+		}
+
+		function getFirstUser()
+		{
+			if(!$this->status) return false;
+
+			$users = array_keys($this->raw[1]);
+			return array_shift($users);
 		}
 
 		function addUser($user, $from, $factor=1)
@@ -704,11 +718,14 @@
 			return $time;
 		}
 
-		function calcTime($user, $from, $to, $use_min_time=true)
+		function calcTime($user, $from, $to, $use_min_time=true, $ignore_factor=false)
 		{
 			if(!$this->status || !isset($this->raw[1][$user]) || count($this->raw[1][$user]) <= 0) return false;
 
-			return self::calcFleetTime($user, $from, $to, $this->raw[1][$user][0], $use_min_time)/$this->raw[1][$user][2];
+			$return = self::calcFleetTime($user, $from, $to, $this->raw[1][$user][0], $use_min_time);
+			if(!$ignore_factor)
+				$return /= $this->raw[1][$user][2];
+			return $return;
 		}
 
 		static function calcFleetTime($user, $from, $to, $fleet, $use_min_time=true)
