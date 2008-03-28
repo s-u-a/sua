@@ -796,7 +796,7 @@ function make_users_list(node, inside_timeout)
 	var id=0;
 	for(var i=0; i<list.length; i++)
 	{
-		if(list[i].length <= node.value.length || list[i].substr(0, node.value.length) != node.value)
+		if(list[i].length <= node.value.length)
 			continue;
 
 		// Benutzernamen in die noch nicht angezeigte Liste einfuegen
