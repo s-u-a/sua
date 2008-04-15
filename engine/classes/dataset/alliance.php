@@ -27,6 +27,25 @@
 	{
 		protected $datatype = 'alliance';
 
+		/** Rundmail schreiben */
+		public static $PERMISSION_MAIL = 0;
+		/** Koordinaten der Mitglieder sehen */
+		public static $PERMISSION_COORDS = 1;
+		/** Internen Bereich bearbeiten */
+		public static $PERMISSION_INTERNAL = 2;
+		/** Externen Bereich bearbeiten */
+		public static $PERMISSION_EXTERNAL = 3;
+		/** Bewerbungen annehmen oder ablehnen */
+		public static $PERMISSION_APPLICATIONS = 4;
+		/** Spieler aus der Allianz werfen */
+		public static $PERMISSION_KICK = 5;
+		/** Ränge verteilen */
+		public static $PERMISSION_RANK = 6;
+		/** Benutzerrechte verteilen */
+		public static $PERMISSION_PERMISSIONS = 7;
+		/** Allianz auflösen */
+		public static $PERMISSION_REMOVE = 8;
+
 		function __construct($name=false, $write=true)
 		{
 			$this->save_dir = global_setting("DB_ALLIANCES");

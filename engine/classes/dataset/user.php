@@ -2577,6 +2577,7 @@
 				if(!$alliance_obj->getStatus()) return false;
 				if(!$alliance_obj->newApplication($this->getName())) return false;
 
+				$users = $alliance_obj->getUsersWithPermission(Alliance::$PERMISSION_APPLICATIONS);
 				foreach($users as $user)
 				{
 					$message = Classes::Message();
