@@ -3890,7 +3890,7 @@
 
 		function _i($message)
 		{
-			return $this->locale("_i", $message);
+			return $this->localise("_i", $message);
 		}
 
 		function localise($function)
