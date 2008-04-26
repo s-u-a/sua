@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-04-26 18:14+0200\n"
+"POT-Creation-Date: 2008-04-26 18:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -785,7 +785,7 @@ msgid "Nachricht versenden"
 msgstr ""
 
 #: ../admin/usermanagement.php:71 ../admin/usermanagement.php:180
-#: ../login/info/playerinfo.php:192 ../login/nachrichten.php:218
+#: ../login/info/playerinfo.php:192 ../login/nachrichten.php:235
 #: ../public_message.php:50
 msgid "Nachricht"
 msgstr ""
@@ -1232,7 +1232,7 @@ msgstr ""
 msgid "Y-m-d, H:i:s"
 msgstr ""
 
-#: ../admin/logs.php:68 ../login/nachrichten.php:215 ../public_message.php:47
+#: ../admin/logs.php:68 ../login/nachrichten.php:232 ../public_message.php:47
 msgid "Zeit"
 msgstr ""
 
@@ -1440,8 +1440,9 @@ msgstr ""
 #: ../login/info/flotten_actions.php:86 ../login/info/playerinfo.php:122
 #: ../login/allianz.php:277 ../login/allianz.php:489
 #: ../login/highscores.php:148 ../login/nachrichten.php:205
-#: ../login/verbuendete.php:79 ../login/verbuendete.php:101
-#: ../login/verbuendete.php:129 ../engine/include.php:2131
+#: ../login/nachrichten.php:218 ../login/verbuendete.php:79
+#: ../login/verbuendete.php:101 ../login/verbuendete.php:129
+#: ../engine/include.php:2131
 msgid "Informationen zu diesem Spieler anzeigen"
 msgstr ""
 
@@ -1780,8 +1781,8 @@ msgstr ""
 #: ../login/info/flotten_actions.php:578 ../login/info/playerinfo.php:138
 #: ../login/info/playerinfo.php:155 ../login/boerse.php:141
 #: ../login/boerse.php:155 ../login/flotten.php:813 ../login/flotten.php:1230
-#: ../login/nachrichten.php:216 ../login/nachrichten.php:341
-#: ../login/nachrichten.php:483 ../public_message.php:48
+#: ../login/nachrichten.php:233 ../login/nachrichten.php:358
+#: ../login/nachrichten.php:500 ../public_message.php:48
 msgid "H:i:s, Y-m-d"
 msgstr ""
 
@@ -1798,7 +1799,7 @@ msgstr ""
 #: ../login/allianz.php:167 ../login/allianz.php:363 ../login/allianz.php:381
 #: ../login/allianz.php:654 ../login/flotten.php:96 ../login/flotten.php:216
 #: ../login/flotten.php:346 ../login/flotten.php:731 ../login/include.php:139
-#: ../login/nachrichten.php:142 ../login/nachrichten.php:322 ../passwd.php:34
+#: ../login/nachrichten.php:142 ../login/nachrichten.php:339 ../passwd.php:34
 #: ../passwd.php:68 ../passwd.php:93
 msgid "Datenbankfehler."
 msgstr ""
@@ -1905,7 +1906,7 @@ msgstr ""
 #: ../login/imperium.php:121 ../login/imperium.php:170
 #: ../login/imperium.php:276 ../login/imperium.php:344
 #: ../login/imperium.php:397 ../login/imperium.php:434
-#: ../login/nachrichten.php:588 ../engine/classes/dataset/fleet.php:2638
+#: ../login/nachrichten.php:605 ../engine/classes/dataset/fleet.php:2638
 msgid "Gesamt"
 msgstr ""
 
@@ -2852,7 +2853,7 @@ msgstr ""
 msgid "Ihr Auftrag lautet %s."
 msgstr ""
 
-#: ../login/index.php:162 ../login/index.php:207
+#: ../login/index.php:162 ../login/index.php:207 ../login/nachrichten.php:499
 msgid ", "
 msgstr ""
 
@@ -3927,7 +3928,7 @@ msgid "Fehler beim Auswerten der Captcha-Informationen."
 msgstr ""
 
 #: ../login/nachrichten.php:31 ../login/nachrichten.php:128
-#: ../login/nachrichten.php:409
+#: ../login/nachrichten.php:426
 msgid "Zurück zur Nachrichtenkategorienübersicht"
 msgstr ""
 
@@ -3935,11 +3936,11 @@ msgstr ""
 msgid "Nachrichten [&W][login/nachrichten.php|1]"
 msgstr ""
 
-#: ../login/nachrichten.php:43 ../login/nachrichten.php:307
+#: ../login/nachrichten.php:43 ../login/nachrichten.php:324
 msgid "Der Empfänger, den Sie eingegeben haben, existiert nicht."
 msgstr ""
 
-#: ../login/nachrichten.php:45 ../login/nachrichten.php:313
+#: ../login/nachrichten.php:45 ../login/nachrichten.php:330
 msgid "Sie können sich nicht selbst eine Nachricht schicken."
 msgstr ""
 
@@ -3984,9 +3985,9 @@ msgstr ""
 msgid "Zurück zur Nachrichtenübersicht: %s"
 msgstr ""
 
-#: ../login/nachrichten.php:128 ../login/nachrichten.php:409
+#: ../login/nachrichten.php:128 ../login/nachrichten.php:426
 #: ../engine/classes/gui/logingui.php:249
-#: ../engine/classes/dataset/message.php:398
+#: ../engine/classes/dataset/message.php:421
 msgid "[message_"
 msgstr ""
 
@@ -4017,134 +4018,144 @@ msgstr ""
 msgid "→"
 msgstr ""
 
-#: ../login/nachrichten.php:204 ../login/nachrichten.php:334
-#: ../public_message.php:36
+#: ../login/nachrichten.php:204 ../login/nachrichten.php:351
+#: ../login/nachrichten.php:473 ../public_message.php:36
 msgid "Absender"
 msgstr ""
 
-#: ../login/nachrichten.php:212 ../public_message.php:44
+#: ../login/nachrichten.php:212 ../login/nachrichten.php:473
+#: ../public_message.php:41
+msgid "Empfänger"
+msgstr ""
+
+#: ../login/nachrichten.php:229 ../login/nachrichten.php:472
+#: ../public_message.php:44
 msgid "Betreff"
 msgstr ""
 
-#: ../login/nachrichten.php:268
+#: ../login/nachrichten.php:285
 msgid "Zur Verbündetenseite&[login/nachrichten.php|2]"
 msgstr ""
 
-#: ../login/nachrichten.php:269
+#: ../login/nachrichten.php:286
 msgid "Zur Allianzseite&[login/nachrichten.php|2]"
 msgstr ""
 
-#: ../login/nachrichten.php:286
+#: ../login/nachrichten.php:303
 msgid "Ant&worten[login/nachrichten.php|2]"
 msgstr ""
 
-#: ../login/nachrichten.php:295
+#: ../login/nachrichten.php:312
 msgid "Lösche&n[login/nachrichten.php|2]"
 msgstr ""
 
-#: ../login/nachrichten.php:295
+#: ../login/nachrichten.php:312
 msgid "Lösche&n[login/nachrichten.php|2"
 msgstr ""
 
-#: ../login/nachrichten.php:295
+#: ../login/nachrichten.php:312
 msgid "Archivieren&[login/nachrichten.php|2]"
 msgstr ""
 
-#: ../login/nachrichten.php:331
+#: ../login/nachrichten.php:348
 msgid "Weitergeleitete Nachricht"
 msgstr ""
 
-#: ../login/nachrichten.php:341
+#: ../login/nachrichten.php:358
 #, php-format
 msgid "Sendezeit: %s"
 msgstr ""
 
-#: ../login/nachrichten.php:352
+#: ../login/nachrichten.php:369
 msgid "Die Nachricht wurde erfolgreich weitergeleitet."
 msgstr ""
 
-#: ../login/nachrichten.php:376
+#: ../login/nachrichten.php:393
 #, php-format
 msgid "Sie können diese Nachricht öffentlich verlinken: %s"
 msgstr ""
 
-#: ../login/nachrichten.php:383
+#: ../login/nachrichten.php:400
 msgid "Nachricht veröffentlichen&[login/nachrichten.php|2]"
 msgstr ""
 
-#: ../login/nachrichten.php:390
+#: ../login/nachrichten.php:407
 msgid "Nachricht weiterleiten"
 msgstr ""
 
-#: ../login/nachrichten.php:392 ../login/nachrichten.php:393
+#: ../login/nachrichten.php:409 ../login/nachrichten.php:410
 msgid "Empfänger [&X][login/nachrichten.php|2]"
 msgstr ""
 
-#: ../login/nachrichten.php:395
+#: ../login/nachrichten.php:412
 msgid "Weiterleiten&[login/nachrichten.php|2]"
 msgstr ""
 
-#: ../login/nachrichten.php:409
+#: ../login/nachrichten.php:426
 msgid "Nachrichten [&W][login/nachrichten.php|3]"
 msgstr ""
 
-#: ../login/nachrichten.php:495
+#: ../login/nachrichten.php:474
+msgid "Datum"
+msgstr ""
+
+#: ../login/nachrichten.php:512
 msgid "Auswahl umkehren [&O][login/nachrichten.php|3]"
 msgstr ""
 
-#: ../login/nachrichten.php:495
+#: ../login/nachrichten.php:512
 msgid "A[uswahl umkehren]"
 msgstr ""
 
-#: ../login/nachrichten.php:499
+#: ../login/nachrichten.php:516
 msgid "Lösche&n[login/nachrichten.php|3]"
 msgstr ""
 
-#: ../login/nachrichten.php:499
+#: ../login/nachrichten.php:516
 msgid "Als gelesen markieren [&U][login/nachrichten.php|3]"
 msgstr ""
 
-#: ../login/nachrichten.php:499
+#: ../login/nachrichten.php:516
 msgid "Archivieren&[login/nachrichten.php|3]"
 msgstr ""
 
-#: ../login/nachrichten.php:559
+#: ../login/nachrichten.php:576
 msgid "Nachrichten"
 msgstr ""
 
-#: ../login/nachrichten.php:561
+#: ../login/nachrichten.php:578
 msgid "&Neue Nachricht[login/nachrichten.php|4]"
 msgstr ""
 
-#: ../login/nachrichten.php:564
+#: ../login/nachrichten.php:581
 msgid "K&ämpfe[login/nachrichten.php|4]"
 msgstr ""
 
-#: ../login/nachrichten.php:567
+#: ../login/nachrichten.php:584
 msgid "Spi&onage[login/nachrichten.php|4]"
 msgstr ""
 
-#: ../login/nachrichten.php:570
+#: ../login/nachrichten.php:587
 msgid "Transport [&J][login/nachrichten.php|4]"
 msgstr ""
 
-#: ../login/nachrichten.php:573
+#: ../login/nachrichten.php:590
 msgid "Sammeln [&Q][login/nachrichten.php|4]"
 msgstr ""
 
-#: ../login/nachrichten.php:576
+#: ../login/nachrichten.php:593
 msgid "Besiedel&ung[login/nachrichten.php|4]"
 msgstr ""
 
-#: ../login/nachrichten.php:579
+#: ../login/nachrichten.php:596
 msgid "Benut&zernachrichten[login/nachrichten.php|4]"
 msgstr ""
 
-#: ../login/nachrichten.php:582
+#: ../login/nachrichten.php:599
 msgid "Verb&ündete[login/nachrichten.php|4]"
 msgstr ""
 
-#: ../login/nachrichten.php:585
+#: ../login/nachrichten.php:602
 msgid "Postausgang [&W][login/nachrichten.php|4]"
 msgstr ""
 
@@ -5702,14 +5713,14 @@ msgstr ""
 msgid "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 msgstr ""
 
-#: ../engine/classes/dataset/message.php:398
+#: ../engine/classes/dataset/message.php:421
 #, php-format
 msgid ""
 "Sie haben eine neue Nachricht der Sorte %s von %s erhalten. Der Betreff "
 "lautet: %s"
 msgstr ""
 
-#: ../engine/classes/dataset/message.php:398
+#: ../engine/classes/dataset/message.php:421
 #, php-format
 msgid ""
 "Sie haben eine neue Nachricht der Sorte %s erhalten. Der Betreff lautet: %3$s"
@@ -6596,10 +6607,6 @@ msgstr ""
 
 #: ../public_message.php:26
 msgid "Die gewünschte Nachricht existiert nicht."
-msgstr ""
-
-#: ../public_message.php:41
-msgid "Empfänger"
 msgstr ""
 
 #: ../passwd.php:29

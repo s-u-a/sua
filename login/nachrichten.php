@@ -206,6 +206,23 @@
 
 <?php
 					}
+					if($_GET["type"] == Message::$TYPE_POSTAUSGANG && $message->getRecipients())
+					{
+?>
+	<dt class="c-empfaenger"><?=h(_("Empfänger"))?></dt>
+	<dd class="c-empfaenger"><ul>
+<?php
+						foreach($message->getRecipients() as $recipient)
+						{
+?>
+		<li><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($recipient)."&".global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($recipient)?></a></dd>
+<?php
+						}
+?>
+	</ul></dd>
+<?php
+					}
+
 					$subject = trim($message->subject());
 					if(strlen($subject) <= 0) $subject = "Kein Betreff";
 ?>
@@ -452,9 +469,9 @@
 		<thead>
 			<tr>
 				<th class="c-auswaehlen"></th>
-				<th class="c-betreff">Betreff</th>
-				<th class="c-absender">Absender</th>
-				<th class="c-datum">Datum</th>
+				<th class="c-betreff"><?=h(_("Betreff"))?></th>
+				<th class="c-<?=$_GET["type"] == Message::$TYPE_POSTAUSGANG ? "empfaenger" : "absender"?>"><?=$_GET["type"] == Message::$TYPE_POSTAUSGANG ? h(_("Empfänger")) : h(_("Absender"))?></th>
+				<th class="c-datum"><?=h(_("Datum"))?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -479,7 +496,7 @@
 			<tr class="<?=$class?>">
 				<td class="c-auswaehlen"><input type="checkbox" name="message[<?=htmlspecialchars($message_id)?>]" tabindex="<?=$tabindex_save++?>" /></td>
 				<td class="c-betreff"><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($message_id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"><?=htmlspecialchars($subject)?></a></td>
-				<td class="c-absender"><?=htmlspecialchars($message->from())?></td>
+				<td class="c-<?=$_GET["type"] == Message::$TYPE_POSTAUSGANG ? "empfaenger" : "absender"?>"><?=htmlspecialchars($_GET["type"] == Message::$TYPE_POSTAUSGANG ? implode(_(", "), $message->getRecipients()) : $message->from())?></td>
 				<td class="c-datum"><?=date(_('H:i:s, Y-m-d'), $message->getTime())?></td>
 			</tr>
 <?php

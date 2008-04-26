@@ -21,7 +21,7 @@
 
 	class MessageDatabase extends SQLite
 	{
-		protected $tables = array("messages" => array("message_id PRIMARY KEY", "time INT", "text", "parsed_text", "sender", "users", "subject", "html INT"));
+		protected $tables = array("messages" => array("message_id PRIMARY KEY", "time INT", "text", "parsed_text", "sender", "users", "subject", "html INT"), "messages_recipients" => array("message_id", "recipient"));
 
 		function setField($message_id, $field_name, $field_value)
 		{
@@ -203,9 +203,24 @@
 					$this->transactionQuery("UPDATE messages SET ".implode(", ", $set)." WHERE message_id = ".$this->escape($message['message_id']).";");
 				}
 			}
+			$this->transactionQuery("UPDATE messages_recipients SET recipient = ".$this->escape($new_name)." WHERE recipient = ".$this->escape($old_name).";");
 			$this->endTransaction();
 
 			return true;
+		}
+
+		function getRecipients($message_id)
+		{
+			$this->query("SELECT recipient FROM messages_recipients WHERE message_id = ".$this->escape($message_id).";");
+			$return = array();
+			while($res = $this->nextResult())
+				$return[] = $res["recipient"];
+			return $return;
+		}
+
+		function addRecipient($message_id, $recipient)
+		{
+			return $this->query("INSERT INTO messages_recipients ( message_id, recipient ) VALUES ( ".$this->escape($message_id).", ".$this->escape($recipient)." );");
 		}
 	}
 
@@ -314,7 +329,10 @@
 			unset($user_obj);
 
 			if($type != 8)
+			{
 				$this->im_check_notify[$user] = $type;
+				self::$database->addRecipient($this->name, $user);
+			}
 
 			return true;
 		}
@@ -380,6 +398,11 @@
 				$return[] = $l[0];
 			}
 			return $return;
+		}
+
+		function getRecipients()
+		{
+			return self::$database->getRecipients($this->name);
 		}
 
 		function __destruct()
