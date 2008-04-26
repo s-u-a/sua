@@ -1349,15 +1349,13 @@
 			return $this->items[$type][$id];
 		}
 
-		function changeItemLevel($id, $value=1, $type=false, $time=false, &$actions=false)
+		function changeItemLevel($id, $value=1, $type=false, $time=false)
 		{
 			if(!$this->status) return false;
 
 			if($value == 0) return true;
 
 			if($time === false) $time = time();
-
-			if($actions === false) $actions = array();
 
 			$recalc = array(
 				'gebaeude' => 0,
@@ -1441,23 +1439,6 @@
 						$this->planet_info['building']['gebaeude'][1] = $time+$new_remaining;
 					}
 
-					# Auch in $actions schauen
-					$one = false;
-					foreach($actions as $i=>$action2)
-					{
-						if(!$action2) continue;
-
-						if($action2[4] != $this->getActivePlanet()) continue;
-						$this_item = Classes::Item($action2[1]);
-						if($this_item->getType() == 'gebaeude')
-						{
-							$remaining = ($action2[0]-$time)*pow(1-0.00125*$this->getItemLevel('F2', 'forschung', false), $value);
-							$actions[$i][0] = $time+$remaining;
-							$one = true;
-						}
-					}
-					if($one) usort($actions, array("User", 'sortEventhandlerActions'));
-
 					break;*/
 
 				# Roboterbautechnik: Auswirkungen der Bauroboter aendern
@@ -1476,28 +1457,6 @@
 							$f_2 = pow(1-0.00125*$this->getItemLevel('F2', false, false), $robs);
 							$remaining = ($building[1]-$time)*$f_2/$f_1;
 							$this->raw['building']['gebaeude'][1] = $time+$remaining;
-						}
-
-						# Auch in $actions schauen
-						if($actions !== false && $planet == $active_planet)
-						{
-							$one = false;
-							foreach($actions as $i=>$action2)
-							{
-								if(!$action2) continue;
-
-								if($action2[4] != $this->getActivePlanet()) continue;
-								$this_item = Classes::Item($action2[1]);
-								if($this_item->getType() == 'gebaeude')
-								{
-									$f_1 = pow(1-0.00125*($this->getItemLevel('F2', false, false)-$value), $robs);
-									$f_2 = pow(1-0.00125*$this->getItemLevel('F2', false, false), $robs);
-									$remaining = ($action2[0]-$time)*$f_2/$f_1;
-									$actions[$i][0] = $action2[0]+$remaining;
-									$one = true;
-								}
-							}
-							if($one) usort($actions, array("User", 'sortEventhandlerActions'));
 						}
 					}
 					$this->setActivePlanet($active_planet);
@@ -2000,8 +1959,67 @@
 		function eventhandler($check_id=false, $check_gebaeude=true, $check_forschung=true, $check_roboter=true, $check_schiffe=true, $check_verteidigung=true)
 		{ /* Dummy function */ }
 
+		/**
+		  * Event handler helper function: returns the earliest item of type $type that has been built but not yet dealt with. Removes this item.
+		  * @param $type String One of gebaeude, forschung, roboter, schiffe, verteidigung
+		*/
+
+		function getNextBuiltThing($type)
+		{
+			if(!$this->status) return false;
+
+			$building = $this->checkBuildingThing($type, false);
+
+			switch($type)
+			{
+				case "gebaeude":
+				case "forschung":
+				{
+					if($building !== false && $building[1] <= time() && $this->removeBuildingThing($type, false))
+					{
+						$stufen = 1;
+						if($type == "gebaeude" && $building[2]) $stufen = -1;
+						$this->changed = true;
+						return array($building[1], $building[0], $stufen, true);
+					}
+					break;
+				}
+				case "roboter":
+				case "schiffe":
+				case "verteidigung":
+				{
+					if($building && count($building) > 0)
+					{
+						$keys = array_keys($building);
+						$first_key = array_shift($keys);
+						$time = $building[$first_key][1]+$building[$first_key][3];
+						if($time <= time())
+						{
+							$this->planet_info["building"][$type][$first_key][2]--;
+							if($this->planet_info["building"][$type][$first_key][2] <= 0)
+								unset($this->planet_info["building"][$type][$first_key]);
+							else
+								$this->planet_info["building"][$type][$first_key][1] = $time;
+							$this->changed = true;
+							return array($time, $building[$first_key][0], 1, $type == "roboter");
+						}
+					}
+					break;
+				}
+			}
+			return null;
+		}
+
 		function realEventhandler()
 		{
+			/* Array
+			(
+				[0] => Zeit
+				[1] => ID
+				[2] => Stufen hinzuzaehlen
+				[3] => Rohstoffe neu berechnen?
+			)*/
+
 			if(!$this->raw) return false;
 
 			if($this->umode())
@@ -2009,150 +2027,55 @@
 
 			$active_planet = $this->getActivePlanet();
 
-			foreach($this->getPlanetsList() as $planet)
+			$min = null;
+			$planets = $this->getPlanetsList();
+			$next = array();
+
+			foreach($planets as $planet)
 			{
-				$actions_gebaeude = array();
-				$actions_forschung = array();
-				$actions_roboter = array();
-				$actions_schiffe = array();
-				$actions_verteidigung = array();
-
-				/* Array
-				(
-					[0] => Zeit
-					[1] => ID
-					[2] => Stufen hinzuzaehlen
-					[3] => Rohstoffe neu berechnen?
-					[4] => Planet
-				)*/
-
 				$this->setActivePlanet($planet);
+				$next[$planet] = array(
+					"gebaeude" => $this->getNextBuiltThing("gebaeude"),
+					"forschung" => $this->getNextBuiltThing("forschung"),
+					"roboter" => $this->getNextBuiltThing("roboter"),
+					"schiffe" => $this->getNextBuiltThing("schiffe"),
+					"verteidigung" => $this->getNextBuiltThing("verteidigung")
+				);
+			}
 
-				$building = $this->checkBuildingThing('gebaeude', false);
-				if($building !== false && $building[1] <= time() && $this->removeBuildingThing('gebaeude', false))
+			while(true)
+			{
+				foreach($planets as $planet)
 				{
-					$stufen = 1;
-					if($building[2]) $stufen = -1;
-					$actions_gebaeude[] = array($building[1], $building[0], $stufen, true, $planet);
-				}
-
-				$building = $this->checkBuildingThing('forschung', false);
-				if($building !== false && $building[1] <= time() && $this->removeBuildingThing('forschung', false))
-				{
-					$actions_forschung[] = array($building[1], $building[0], 1, true, $planet);
-				}
-
-				$building = $this->checkBuildingThing('roboter', false);
-				foreach($building as $j=>$items)
-				{
-					$info = $this->getItemInfo($items[0], 'roboter', false);
-					if(!$info) continue;
-					$time = $items[1];
-					for($i=0; $i<$items[2]; $i++)
+					foreach($next[$planet] as $i=>$arr)
 					{
-						$time += $items[3];
-						if($time <= time())
-						{
-							$actions_roboter[] = array($time, $items[0], 1, true, $planet);
-
-							# Roboter entfernen
-							$this->planet_info['building']['roboter'][$j][2]--;
-							if($this->planet_info['building']['roboter'][$j][2] <= 0)
-							{
-								unset($this->planet_info['building']['roboter'][$j]);
-								break;
-							}
-							else $this->planet_info['building']['roboter'][$j][1] = $time;
-						}
-						else
-							break 2;
+						if($arr !== null && ($min === null || $arr[0] < $next[$min[0]][$min[1]][0]))
+							$min = array($planet, $i);
 					}
 				}
 
-				$building = $this->checkBuildingThing('schiffe', false);
-				foreach($building as $j=>$items)
-				{
-					$info = $this->getItemInfo($items[0], 'schiffe', false);
-					if(!$info) continue;
-					$time = $items[1];
-					for($i=0; $i<$items[2]; $i++)
-					{
-						$time += $items[3];
-						if($time <= time())
-						{
-							$actions_schiffe[] = array($time, $items[0], 1, false, $planet);
+				if($min === null)
+					break;
 
-							# Schiff entfernen
-							$this->planet_info['building']['schiffe'][$j][2]--;
-							if($this->planet_info['building']['schiffe'][$j][2] <= 0)
-							{
-								unset($this->planet_info['building']['schiffe'][$j]);
-								break;
-							}
-							else $this->planet_info['building']['schiffe'][$j][1] = $time;
-						}
-						else
-							break 2;
-					}
-				}
+				$action = &$next[$min[0]][$min[1]];
 
+				$this->setActivePlanet($min[0]);
 
-				$building = $this->checkBuildingThing('verteidigung', false);
-				foreach($building as $j=>$items)
-				{
-					$info = $this->getItemInfo($items[0], 'verteidigung', false);
-					if(!$info) continue;
-					$time = $items[1];
-					for($i=0; $i<$items[2]; $i++)
-					{
-						$time += $items[3];
-						if($time <= time())
-						{
-							$actions_verteidigung[] = array($time, $items[0], 1, false, $planet);
+				if($action[3])
+					$this->refreshRess($action[0]);
 
-							# Schiff entfernen
-							$this->planet_info['building']['verteidigung'][$j][2]--;
-							if($this->planet_info['building']['verteidigung'][$j][2] <= 0)
-							{
-								unset($this->planet_info['building']['verteidigung'][$j]);
-								break;
-							}
-							else $this->planet_info['building']['verteidigung'][$j][1] = $time;
-						}
-						else
-							break 2;
-					}
-				}
+				$this->changeItemLevel($action[1], $action[2], false, $action[0]);
 
-				self::mergeEventhandlerActions(&$actions, array(&$actions_gebaeude, &$actions_forschung, &$actions_roboter, &$actions_schiffe, &$actions_verteidigung));
+				if(isset($this->cache['getProduction']))
+					unset($this->cache['getProduction']);
+				if(isset($this->cache['getItemInfo']))
+					unset($this->cache['getItemInfo']);
 
-				unset($actions_gebaeude);
-				unset($actions_forschung);
-				unset($actions_roboter);
-				unset($actions_schiffe);
-				unset($actions_verteidigung);
+				$next[$min[0]][$min[1]] = $this->getNextBuiltThing($min[1]);
 
-				if(count($actions) > 0)
-				{
-					foreach($actions as $k=>$action)
-					{
-						$this->setActivePlanet($action[4]);
+				$min = null;
 
-						if($action[3])
-							$this->refreshRess($action[0]);
-
-						$this->changeItemLevel($action[1], $action[2], false, $action[0], $actions);
-
-						if(isset($this->cache['getProduction']))
-							unset($this->cache['getProduction']);
-						if(isset($this->cache['getItemInfo']))
-							unset($this->cache['getItemInfo']);
-
-						$actions[$k] = null;
-					}
-
-					$this->changed = true;
-				}
+				$this->changed = true;
 			}
 
 			$this->setActivePlanet($active_planet);
@@ -4036,43 +3959,6 @@
 		{
 			$highscores = Classes::Highscores();
 			return $highscores->getCount('users');
-		}
-
-		static function sortEventhandlerActions($a, $b)
-		{
-			if($a[0] < $b[0]) return -1;
-			elseif($a[0] > $b[0]) return 1;
-			else return 0;
-		}
-
-		static function mergeEventhandlerActions(&$actions, $pa)
-		{
-			$count = array(count($pa[0]), count($pa[1]), count($pa[2]), count($pa[3]), count($pa[4]));
-			$count_g = array_sum($count);
-
-			$next = array(0, 0, 0, 0, 0);
-
-			$tnext = array(null, null, null, null, null);
-
-			if($next[0] < $count[0]) $tnext[0] = $pa[0][$next[0]][0];
-			if($next[1] < $count[1]) $tnext[1] = $pa[1][$next[1]][0];
-			if($next[2] < $count[2]) $tnext[2] = $pa[2][$next[2]][0];
-			if($next[3] < $count[3]) $tnext[3] = $pa[3][$next[3]][0];
-			if($next[4] < $count[4]) $tnext[4] = $pa[4][$next[4]][0];
-
-			$actions = array();
-			array_pad($actions, $count_g, null);
-
-			for($i = 0; $i<$count_g; $i++)
-			{
-				$m = min_index($tnext);
-				$actions[$i] = &$pa[$m][$next[$m]];
-				$next[$m]++;
-				if($next[$m] >= $count[$m])
-					$tnext[$m] = null;
-				else
-					$tnext[$m] = $pa[$m][$next[$m]][0];
-			}
 		}
 
 		static function getIngtechFactor()
