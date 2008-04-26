@@ -121,7 +121,7 @@
 					<legend><?=h(_("Optionen"))?></legend>
 					<dl>
 						<dt class="c-javascript"><label for="i-javascript"><?=h(_("JavaScript deaktivieren"))?></label></dt>
-						<dd class="c-javascript"><input class="checkbox" type="checkbox" name="options[javascript]" id="i-javascript" title="<?=h(_("Mit diese Option können Sie alle fortwährenden JavaScript-Änderungen (zum Beispiel die Uhr) deaktivieren. Nützlich an langsamen Terminals."))?>" /></dd>
+						<dd class="c-javascript"><input class="checkbox" type="checkbox" name="options[javascript]" id="i-javascript" title="<?=h(_("Mit dieser Option können Sie alle fortwährenden JavaScript-Änderungen (zum Beispiel die Uhr) deaktivieren. Nützlich an langsamen Terminals."))?>" /></dd>
 
 						<dt class="c-ipschutz"><label for="i-ipcheck"><?=h(_("IP-Schutz abschalten"))?></label></dt>
 						<dd class="c-ipschutz"><input class="checkbox" type="checkbox" name="options[ipcheck]" id="i-ipcheck" title="<?=h(_("Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)"))?>" /></dd>
