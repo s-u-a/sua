@@ -54,7 +54,11 @@
 		die(sprintf(h(_("Please use SSL: %s")), "<a href=\"".htmlspecialchars($url)."\">".htmlspecialchars($url)."</a>"));
 	}
 
+	if(isset($_COOKIE[global_setting("SESSION_NAME")]))
+		session_id($_COOKIE[global_setting("SESSION_NAME")]);
 	session_start();
+	if(!isset($_COOKIE[global_setting("SESSION_NAME")]) || $_COOKIE[global_setting("SESSION_NAME")] != session_id())
+		setcookie(global_setting("SESSION_NAME"), session_id(), 0, h_root.'/admin/');
 
 	if((isset($_SESSION['ip']) && $_SESSION['ip'] != $_SERVER['REMOTE_ADDR']) || (isset($_GET['logout']) && $_GET['logout']) || (isset($_SESSION['last_admin_access']) && time()-$_SESSION['last_admin_access'] > 600))
 	{
