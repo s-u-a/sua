@@ -1795,11 +1795,11 @@
 			$settings = array('skin' => false, 'schrift' => true,
 				'sonden' => 1, 'ress_refresh' => 0,
 				'fastbuild' => false, 'shortcuts' => false,
-				'tooltips' => false, 'ipcheck' => true,
+				'tooltips' => false,
 				'noads' => false, 'show_extern' => false,
 				'notify' => false,
 				"extended_buildings" => false,
-				'performance' => true, 'fastbuild_full' => false,
+				'fastbuild_full' => false,
 				'receive' => array(
 					1 => array(true, true),
 					2 => array(true, false),

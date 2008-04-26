@@ -89,14 +89,12 @@
 		$me->setSetting('fastbuild', isset($_POST['fastbuild']));
 		$me->setSetting('shortcuts', isset($_POST['shortcuts']));
 		$me->setSetting('tooltips', isset($_POST['tooltips']));
-		$me->setSetting('ipcheck', isset($_POST['ipcheck']));
 		$me->setSetting('noads', isset($_POST['noads']));
 		$me->setSetting('show_extern', isset($_POST['show_extern']));
 		$me->setSetting('notify', isset($_POST['notify']));
 		$me->setSetting('fastbuild_full', isset($_POST['fastbuild_full']));
 		$me->setSetting("gpg_im", isset($_POST["gpg_im"]));
 		$me->setSetting("extended_buildings", isset($_POST["extended_buildings"]));
-		$me->setSetting("performance", !isset($_POST["performance"]));
 
 		if(!isset($_POST['im-receive']) || !isset($_POST['im-receive']['messages']))
 			$messenger_receive['messages'] = array(1=>false, 2=>false, 3=>false, 4=>false, 5=>false, 6=>false, 7=>false);
@@ -470,9 +468,6 @@
 			<dt class="c-externe-navigationslinks"><label for="show-extern"><?=h(_("Externe Navigationslinks&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-externe-navigationslinks"><input type="checkbox" name="show_extern" id="show-extern"<?=accesskey_attr(_("Externe Navigationslinks&[login/einstellungen.php|1]"))?><?=$me->checkSetting('show_extern') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option aktiviert ist, werden in der Navigation Links auf spielexterne Seiten wie das Board angezeigt."))?>" tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-javascript-performance"><label for="performance"><?=h(_("JavaScript-Änderungen deaktivieren&[login/einstellungen.php|1]"))?></label></dt>
-			<dd class="c-javascript-performance"><input type="checkbox" id="performance" name="performance"<?=accesskey_attr(_("JavaScript-Änderungen deaktivieren&[login/einstellungen.php|1]"))?><?=$me->checkSetting("performance") <= 0 ? " checked=\"checked\"" : ""?> title="<?=h(_("Mit diese Option können Sie alle fortwährenden JavaScript-Änderungen (zum Beispiel die Uhr) deaktivieren. Nützlich an langsamen Terminals."))?>" tabindex="<?=$tabindex++?>" /></dd>
-
 			<dt class="c-erweiterte-gebaeudeansicht"><label for="i-erweiterte-gebaeudeansicht"><?=h(_("Erweiterte Gebäudeansicht&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-erweiterte-gebaeudeansicht"><input type="checkbox" name="extended_buildings" id="i-erweiterte-gebaeudeansicht"<?=accesskey_attr(_("Erweiterte Gebäudeansicht&[login/einstellungen.php|1]"))?><?=$me->checkSetting("extended_buildings") ? " checked=\"checked\"" : ""?> title="<?=h(_("In der Gebäudeansicht wird zusätzlich der Produktionsunterschied zur nächsten Stufe angezeigt."))?>" tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
@@ -841,9 +836,6 @@
 	<fieldset class="benutzeraccount" id="fieldset-<?=$fieldset++?>">
 		<legend><a accesskey="<?=accesskey_attr(_("Benutzeraccount&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=h(_("Benutzeraccount&[login/einstellungen.php|1]"))?></a></legend>
 		<dl class="form">
-			<dt class="c-ip-schutz"><label for="ipcheck"><?=h(_("IP-Schutz&[login/einstellungen.php|1]"))?></label></dt>
-			<dd class="c-ip-schutz"><input type="checkbox" name="ipcheck" id="ipcheck"<?=accesskey_attr(_("IP-Schutz&[login/einstellungen.php|1]"))?><?=$me->checkSetting('ipcheck') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)"))?>" tabindex="<?=$tabindex++?>" /></dd>
-
 			<dt class="c-email-adresse"><label for="email"><?=h(_("E-Mail-Adresse&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-email-adresse"><input type="text" name="email" id="email"<?=accesskey_attr(_("E-Mail-Adresse&[login/einstellungen.php|1]"))?> value="<?=htmlspecialchars($me->getTemporaryEMailAddress() !== null ? $me->getTemporaryEMailAddress() : $me->getEMailAddress())?>" title="<?=h(_("Ihre E-Mail-Adresse wird benötigt, wenn Sie Ihr Passwort vergessen haben."))?>" tabindex="<?=$tabindex++?>" /> <?=h(sprintf(_("Eine Änderung wird aus Sicherheitsgründen nicht sofort übernommen. Die Verzögerungsdauer beträgt %s."), format_btime(global_setting("EMAIL_CHANGE_DELAY"), true)))?></dd>
 <?php

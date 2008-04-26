@@ -62,15 +62,19 @@ body { min-height:100%; width:100%; }
 
 
 #login-form { text-align:center; }
-#login-form fieldset { border-style:none; padding:0; }
-#login-form legend { display:none; }
-#login-form dt { display:none; }
-#login-form dd,#login-form li,#login-form div,#login-form dl { display:inline; margin:0; }
-#login-form input,#login-form button,#login-form select { width:90px; display:inline; color:#919193; }
+#login-form-data { border-style:none; padding:0; }
+#login-form-data legend { display:none; }
+#login-form-data dt { display:none; }
+#login-form-data dd,#login-form-data li,#login-form-data div,#login-form-data dl { display:inline; margin:0; }
+#login-form input,#login-form button,#login-form select { display:inline; color:#919193; }
+#login-form-data input,#login-form-data button,#login-form-data select { width:90px; }
 #login-form input:hover,#login-form input:focus,#login-form button:hover,#login-form button:focus,#login-form select:hover,#login-form select:focus { color:#b1b1b3; }
 #login-form ul { list-style-type:none; margin:0; padding:0; }
 #login-form a { color:#888; }
 #login-form a:hover,#login-form a:focus { color:#aaa; }
+#login-form-options { width:80%; margin:0 auto; }
+#login-form-options dt { text-align:right; width:50%; display:block; float:left; margin:0; padding:0; }
+#login-form-options dd { display:block; text-align:left; }
 
 * html #login-form ul { margin-top:6px; }
 

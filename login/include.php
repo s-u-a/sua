@@ -90,10 +90,13 @@
 		{
 			# Session aktualisieren
 			$_SESSION['username'] = $_REQUEST['username'];
-			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+			if(!isset($_POST["options"]) || !isset($_POST["options"]["ipcheck"]))
+				$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
 			$_SESSION['database'] = $_REQUEST['database'];
 			$_SESSION['use_protocol'] = global_setting("USE_PROTOCOL");
 			$_SESSION["init"] = time();
+			if(isset($_POST["options"]) && isset($_POST["options"]["javascript"]))
+				$_SESSION["disable_javascript"] = true;
 			if(!isset($_REQUEST["dontresume"]))
 				$resume = true;
 			$del_email_passwd = true;
@@ -140,7 +143,7 @@
 	date_default_timezone_set($me->checkSetting("timezone"));
 	$gui->setOption("user", $me);
 
-	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] && $me->checkSetting('ipcheck'))
+	if(isset($_SESSION["ip"]) && $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
 	{
 		if(isset($_COOKIE[global_setting("SESSION_NAME")]))
 			setcookie(global_setting("SESSION_NAME"), '', 0, h_root."/");

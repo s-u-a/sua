@@ -73,7 +73,7 @@
 		<div id="content3-0"><div id="content3-1"><div id="content3-2"><div id="content3-3">
 		<div id="content4-1"><div id="content4-2"><div id="content4-3">
 			<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
-				<fieldset>
+				<fieldset id="login-form-data">
 					<legend><?=h(_("Anmelden"))?></legend>
 					<dl>
 						<dt class="c-runde"><label for="login-runde"><?=h(_("Runde&[include.php|2]"))?></label></dt>
@@ -117,7 +117,34 @@
 						<li class="c-ssl-zertifikat-installieren"><a href="http://www.cacert.org/certs/root.crt"<?=accesskey_attr(_("SSL-Zertifikat installieren&[include.php|3]"))?>><?=h(_("SSL-Zertifikat installieren&[include.php|3]"))?></a></li>
 					</ul>
 				</fieldset>
+				<fieldset id="login-form-options">
+					<legend><?=h(_("Optionen"))?></legend>
+					<dl>
+						<dt class="c-javascript"><label for="i-javascript"><?=h(_("JavaScript deaktivieren"))?></label></dt>
+						<dd class="c-javascript"><input class="checkbox" type="checkbox" name="options[javascript]" id="i-javascript" title="<?=h(_("Mit diese Option können Sie alle fortwährenden JavaScript-Änderungen (zum Beispiel die Uhr) deaktivieren. Nützlich an langsamen Terminals."))?>" /></dd>
+
+						<dt class="c-ipschutz"><label for="i-ipcheck"><?=h(_("IP-Schutz abschalten"))?></label></dt>
+						<dd class="c-ipschutz"><input class="checkbox" type="checkbox" name="options[ipcheck]" id="i-ipcheck" title="<?=h(_("Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-Adressen gleichzeitig genutzt werden. (Unsicher!)"))?>" /></dd>
+					</dl>
+				</fieldset>
 			</form>
+			<script type="text/javascript">
+			// <![CDATA[
+				function toggleOptions()
+				{
+					if(document.getElementById("login-form-options").style.display == "block")
+						document.getElementById("login-form-options").style.display = "none";
+					else
+						document.getElementById("login-form-options").style.display = "block";
+				}
+
+				document.getElementById("login-form-options").style.display = "none";
+				var l = document.createElement("a");
+				l.href = "javascript:toggleOptions()";
+				l.appendChild(document.createTextNode('<?=jsentities(_("Optionen"))?>'));
+				document.getElementById("login-form-data").getElementsByTagName("ul")[0].appendChild(l);
+			// ]]>
+			</script>
 			<div id="innercontent1-1"><div id="innercontent1-2"><div id="innercontent1-3">
 			<div id="innercontent2-1"><div id="innercontent2-2">
 			<div id="innercontent3">

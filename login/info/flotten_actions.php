@@ -368,7 +368,7 @@
 ?>
 		</table>
 <?php
-				if($me->checkSetting("performance") && $me->checkSetting("ress_refresh") > 0)
+				if((!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"]) && $me->checkSetting("ress_refresh") > 0)
 				{
 					$prod = $me->getProduction();
 					$limit = $me->getProductionLimit();

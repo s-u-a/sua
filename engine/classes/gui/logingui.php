@@ -60,7 +60,7 @@
 			{
 ?>
 			var res_now = { 'ress' : [ <?=implode(", ", $me->getRess())?> ] };
-			var slow_terminal = <?=$me->checkSetting("performance") ? "false" : "true"?>;
+			var slow_terminal = <?=(!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"]) ? "false" : "true"?>;
 			var database_id = '<?=jsentities($_SESSION["database"])?>';
 			var umode = <?=$me->umode() ? "true" : "false"?>
 <?php
@@ -69,7 +69,7 @@
 		</script>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root."/login/res/javascript.js")?>"></script>
 <?php
-			if($me && $me->checkSetting('performance') && $me->checkSetting('ajax'))
+			if($me && (!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"]) && $me->checkSetting('ajax'))
 			{
 ?>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/sarissa.js')?>"></script>
@@ -295,7 +295,7 @@
 			<div id="werbung">
 <?php
 			global $DISABLE_ADS;
-			if((!$me || $me->checkSetting('performance')) && (!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http') # Per https keine Werbung einblenden, da Google nur http unterstuetzt und dann eine Sicherheitswarnung kommt
+			if((!$me || (!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"])) && (!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http') # Per https keine Werbung einblenden, da Google nur http unterstuetzt und dann eine Sicherheitswarnung kommt
 			{
 ?>
 				<div class="google-params" id="google-color-border-red"></div>
@@ -474,7 +474,7 @@
 			<dd id="time-server"><?=date(_("H:i:s"), time()+1)?></dd>
 		</dl>
 <?php
-			if(!$me || $me->checkSetting('performance'))
+			if(!$me || (!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"]))
 			{
 ?>
 		<script type="text/javascript">
@@ -550,7 +550,7 @@
 		</div></div></div></div></div></div></div></div>
 		<div id="css-4"></div>
 <?php
-			if($me && $me->checkSetting('performance'))
+			if($me && (!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"]))
 			{
 				if($me->checkSetting('tooltips') || $me->checkSetting('shortcuts') || $me->checkSetting('ress_refresh') > 0)
 				{
