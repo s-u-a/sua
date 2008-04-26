@@ -46,7 +46,7 @@
 	if(substr($document_root, -1) == '/')
 		$document_root = substr($document_root, 0, -1);
 	$document_root = realpath($document_root);
-	define('h_root', substr(s_root, strlen($document_root)));
+	define('h_root', "".substr(s_root, strlen($document_root)));
 
 	# Locale eintragen
 	bindtextdomain("sua", s_root."/locale");
@@ -62,15 +62,20 @@
 	{
 		if($_GET['nossl'] && (!isset($_COOKIE['use_ssl']) || $_COOKIE['use_ssl']))
 		{
-			setcookie('use_ssl', '0', time()+4838400, h_root);
+			setcookie('use_ssl', '0', time()+4838400, h_root."/");
 			$_COOKIE['use_ssl'] = '0';
 		}
 		elseif(!$_GET['nossl'] && isset($_COOKIE['use_ssl']) && !$_COOKIE['use_ssl'])
 		{
-			setcookie('use_ssl', '1', time()+4838400, h_root);
+			setcookie('use_ssl', '1', time()+4838400, h_root."/");
 			$_COOKIE['use_ssl'] = '1';
 		}
 	}
+
+	# Cookies testen
+	if(!isset($_COOKIE["use_cookies"]))
+		setcookie("use_cookies", "1", time()+4838400, h_root."/");
+	ini_set("session.use_cookies", "0");
 
 	/**
 	  * Liest oder setzt eine globale Einstellung.
@@ -137,6 +142,7 @@
 	global_setting("RELOAD_STACK_INTERVAL", 120); # Alle wieviel Sekunden sollen die Benutzeraccounts neugeladen werden?
 	global_setting("SESSION_TIMEOUT", 1800); # Wieviele Sekunden Inaktivität sollen zur Zerstörung der Session führen?
 	global_setting("CLASSES", dirname(__FILE__)."/classes");
+	global_setting("SESSION_NAME", "session"); # Name des URL-Parameters mit der Session-ID
 
 	import("Exception/ClassException");
 	import("Exception/IOException");

@@ -22,7 +22,24 @@
 
 	$resume = false;
 	$del_email_passwd = false;
-	session_start();
+	if(isset($_GET[global_setting("SESSION_NAME")]))
+	{
+		session_id($_GET[global_setting("SESSION_NAME")]);
+		session_start();
+	}
+	elseif(isset($_COOKIE[global_setting("SESSION_NAME")]) && !isset($_REQUEST["username"]))
+	{
+		session_id($_COOKIE[global_setting("SESSION_NAME")]);
+		session_start();
+		if(!isset($_SESSION["username"]))
+		{
+			setcookie(global_setting("SESSION_NAME"), "", 0, h_root."/");
+			session_regenerate_id(true);
+		}
+	}
+	else
+		session_start();
+
 	header('Cache-Control: no-cache', true);
 
 	$databases = get_databases();
@@ -80,6 +97,11 @@
 			if(!isset($_REQUEST["dontresume"]))
 				$resume = true;
 			$del_email_passwd = true;
+			if(isset($_COOKIE["use_cookies"]) && $_COOKIE["use_cookies"] && (!isset($_COOKIE[global_setting("SESSION_NAME")]) || !$_COOKIE[global_setting("SESSION_NAME")]))
+			{
+				setcookie(global_setting("SESSION_NAME"), session_id(), 0, h_root."/");
+				$_SESSION["cookie"] = true;
+			}
 		}
 	}
 
@@ -120,8 +142,8 @@
 
 	if($_SESSION['ip'] != $_SERVER['REMOTE_ADDR'] && $me->checkSetting('ipcheck'))
 	{
-		if(isset($_COOKIE[session_name()]))
-			setcookie(session_name(), '');
+		if(isset($_COOKIE[global_setting("SESSION_NAME")]))
+			setcookie(global_setting("SESSION_NAME"), '', 0, h_root."/");
 		$gui->fatal(sprintf(h(_("Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s.")), "<a href=\"http://".htmlspecialchars(get_default_hostname().h_root)."/index.php\">", "</a>"));
 	}
 
@@ -142,7 +164,7 @@
 	}
 
 	# Wiederherstellen
-	if($resume)
+	if($resume && false)
 	{
 		if($last_request = $me->lastRequest())
 		{
@@ -153,28 +175,15 @@
 				$url[1] = explode('&', $url[1]);
 			else
 				$url[1] = array();
-			$one = false;
 			foreach($url[1] as $key=>$val)
 			{
 				$val = explode("=", $val, 2);
-				if($val[0] == urlencode(session_name()))
-				{
-					$url[1][$key] = urlencode(session_name())."=".urlencode(session_id());
-					$one = true;
-				}
+				if($val[0] == urlencode(global_setting("SESSION_NAME")))
+					unset($url[1][$key]);
 			}
-			$url2 = $url[0];
-			if(count($url[1]) > 0)
-				$url2 .= '?'.implode('&', $url[1]);
-			$url = $url2;
-			if(!$one)
-			{
-				if(strpos($url, '?') === false)
-					$url .= '?';
-				else
-					$url .= '&';
-				$url .= urlencode(session_name())."=".urlencode(session_id());
-			}
+			if(strlen(global_setting("URL_SESSION_SUFFIX")) > 0)
+				$url[1][] = global_setting("URL_SESSION_SUFFIX");
+			$url = $url[0].(count($url[1]) > 0 ? "?".implode("&", $url[1]) : "");
 			header('Location: '.$url, true, 303);
 			$gui->fatal(sprintf(h(_("HTTP redirect: %s")), "<a href=\"".htmlspecialchars($url)."\">".htmlspecialchars($url)."</a>"));
 		}
@@ -247,16 +256,26 @@
 	{
 		global $me;
 		$url_suffix = array(
-			session_name() => session_id(),
 			"planet" => $me->getActivePlanet()
 		);
+		$url_session_suffix = array();
+		if(!isset($_SESSION["cookie"]) || !$_SESSION["cookie"])
+		{
+			$url_suffix[global_setting("SESSION_NAME")] = session_id();
+			$url_session_suffix[global_setting("SESSION_NAME")] = session_id();
+		}
+
 		$url_suffix_g = array();
+		$url_session_suffix_g = array();
 		$url_formular_g = "";
 		foreach($url_suffix as $k=>$v)
 		{
 			$url_suffix_g[] = urlencode($k)."=".urlencode($v);
 			$url_formular_g .= "<input type=\"hidden\" name=\"".htmlspecialchars($k)."\" value=\"".htmlspecialchars($v)."\" />";
 		}
+		foreach($url_session_suffix as $k=>$v)
+			$url_session_suffix_g[] = urlencode($k)."=".urlencode($v);
 		global_setting("URL_SUFFIX", implode("&", $url_suffix_g));
 		global_setting("URL_FORMULAR", $url_formular_g);
+		global_setting("URL_SESSION_SUFFIX", implode("&", $url_session_suffix_g));
 	}

@@ -58,16 +58,16 @@
 
 	if((isset($_SESSION['ip']) && $_SESSION['ip'] != $_SERVER['REMOTE_ADDR']) || (isset($_GET['logout']) && $_GET['logout']) || (isset($_SESSION['last_admin_access']) && time()-$_SESSION['last_admin_access'] > 600))
 	{
-		if(isset($_COOKIE[session_name()]))
-			setcookie(session_name(), '', 0, h_root.'/admin/');
+		if(isset($_COOKIE[global_setting("SESSION_NAME")]))
+			setcookie(global_setting("SESSION_NAME"), '', 0, h_root.'/admin/');
 		unset($_SESSION);
 		$_SESSION = array();
 	}
 	if((isset($_GET['logout']) && $_GET['logout']) || (isset($_SESSION['last_admin_access']) && time()-$_SESSION['last_admin_access'] > 600))
 	{
 		session_destroy();
-		if(isset($_COOKIE[session_name()]))
-			setcookie(session_name(), '', 0, h_root.'/admin/');
+		if(isset($_COOKIE[global_setting("SESSION_NAME")]))
+			setcookie(global_setting("SESSION_NAME"), '', 0, h_root.'/admin/');
 	}
 
 	$databases = get_databases();
@@ -179,7 +179,7 @@
 		<title><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Adminbereich")))?></title>
 		<link rel="stylesheet" href="<?=htmlspecialchars(h_root.'/admin/style.css')?>" type="text/css" />
 		<script type="text/javascript">
-			var url_suffix = '<?=urlencode(session_name())."=".urlencode(session_id())?>';
+			var url_suffix = '<?=urlencode(global_setting("SESSION_NAME"))."=".urlencode(session_id())?>';
 <?php
 			if(isset($_SESSION['database']))
 			{

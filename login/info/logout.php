@@ -17,11 +17,16 @@
 */
 	require('../../engine/include.php');
 
+	if(isset($_GET[global_setting("SESSION_NAME")]))
+		session_id($_GET[global_setting("SESSION_NAME")]);
+	elseif(isset($_COOKIE[global_setting("SESSION_NAME")]))
+		session_id($_COOKIE[global_setting("SESSION_NAME")]);
 	session_start();
 
+
 	$_SESSION = array();
-	if(isset($_COOKIE[session_name()]))
-		setcookie(session_name(), '');
+	if(isset($_COOKIE[global_setting("SESSION_NAME")]) && $_COOKIE[global_setting("SESSION_NAME")] == session_id())
+		setcookie(global_setting("SESSION_NAME"), '', 0, h_root."/");
 	session_destroy();
 
 	$url = explode('/', $_SERVER['PHP_SELF']);
@@ -29,4 +34,3 @@
 	$url = 'http://'.$_SERVER['HTTP_HOST'].implode('/', $url).'/index.php';
 	header('Location: '.$url);
 	die('Logged out successfully. <a href="'.htmlspecialchars($url).'">Back to home page</a>.');
-?>
