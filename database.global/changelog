@@ -1,3 +1,6 @@
+1209228692	Neuer Eventhandler-Algorithmus: Das Fertigstellen vieler gebauter Dinge sollte schneller gehen.
+1209228663	Bei Nachrichten im Postausgang wird endlich auch der Empfänger angezeigt.
+1209228647	Anmeldung wird nun standardmäßig mit Cookies durchgeführt, die Session-ID steht also nicht mehr in der URL.
 1202525797	Im Urlaubsmodus wird alles, was fertiggestellt werden muss, pausiert.
 1202521721	Urlaubsmodus ist nicht mehr möglich, wenn Flotten zu fremden Planeten unterwegs sind.
 1202520478	Kampferfahrungspunkte werden im Vergleich zu vorher 10-fach gewertet: einen Punkt pro 100 zerstörte Punkte.
