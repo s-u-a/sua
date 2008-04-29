@@ -73,7 +73,7 @@
 	}
 
 	# Cookies testen
-	if(!isset($_COOKIE["use_cookies"]))
+	if(!isset($_COOKIE["use_cookies"]) && !headers_sent())
 		setcookie("use_cookies", "1", time()+4838400, h_root."/");
 	ini_set("session.use_cookies", "0");
 
@@ -215,7 +215,6 @@
 		global_setting('DB_NO_ATTS', $DB_DIR.'/no_atts');
 		global_setting("DB_SQLITE", $DB_DIR."/sqlite");
 		global_setting("LOG", fopen("php://stderr", "w"));
-
 		return true;
 	}
 
