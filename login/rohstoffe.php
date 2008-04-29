@@ -59,6 +59,7 @@
 
 	$ges_prod = $me->getProduction();
 	$gebaeude = $me->getItemsList('gebaeude');
+	$energie_prod = 0;
 	foreach($gebaeude as $id)
 	{
 		$item_info = $me->getItemInfo($id, 'gebaeude');
@@ -66,6 +67,9 @@
 		if($item_info['level'] <= 0 || !$item_info['has_prod'])
 			continue; # Es wird nichts produziert, also nicht anzeigen
 		$prod = $me->checkProductionFactor($id);
+
+		if($item_info["prod"][5] > 0)
+			$energie_prod += $item_info["prod"][5];
 ?>
 			<tr>
 				<th class="c-gebaeude"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=htmlspecialchars($item_info['level'])?>)</span></th>
@@ -142,7 +146,7 @@
 				<td class="c-wolfram number<?=$limit[2] < $ress[2] ? " voll" : ""?>"><?=ths($limit[2])?></td>
 				<td class="c-radium number<?=$limit[3] < $ress[3] ? " voll" : ""?>"><?=ths($limit[3])?></td>
 				<td class="c-tritium number<?=$limit[4] < $ress[4] ? " voll" : ""?>"><?=ths($limit[4])?></td>
-				<td class="c-energie number<?=$limit[5] < $ress[5] ? " voll" : ""?>"><?=ths($limit[5])?></td>
+				<td class="c-energie number<?=$limit[5] < $energie_prod ? " voll" : ""?>"><?=ths($limit[5])?></td>
 				<td class="c-produktion empty"></td>
 			</tr>
 		</tfoot>
