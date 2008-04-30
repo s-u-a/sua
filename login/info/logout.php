@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	require('../../engine/include.php');
+	require('../../engine.php');
 
 	if(isset($_GET[global_setting("SESSION_NAME")]))
 		session_id($_GET[global_setting("SESSION_NAME")]);

@@ -1,4 +1,4 @@
 <?php
-	require("engine/include.php");
+	require("engine.php");
 	language("de_DE");
 	phpinfo();

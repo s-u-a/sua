@@ -18,7 +18,7 @@
 	chdir(dirname(__FILE__));
 
 	$USE_OB = false;
-	require('../engine/include.php');
+	require('../engine.php');
 
 	set_time_limit(0);
 

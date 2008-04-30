@@ -16,7 +16,7 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 	$__FILE__ = str_replace("\\", "/", __FILE__);
-	$include_filename = dirname($__FILE__).'/engine/include.php';
+	$include_filename = dirname($__FILE__).'/engine.php';
 	require_once($include_filename);
 
 	language("de_DE", true);

@@ -27,7 +27,7 @@
 	language("de_DE");
 
 	# s_root ermitteln: Absoluter Pfad zum Spielverzeichnis
-	$this_filename = '/engine/include.php';
+	$this_filename = '/engine.php';
 	$__FILE__ = str_replace('\\', '/', __FILE__);
 	if(substr($__FILE__, -strlen($this_filename)) !== $this_filename)
 	{
