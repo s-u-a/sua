@@ -493,24 +493,32 @@
 		<p class="successful imserver"><?=h(_("Der Instant-Messaging-Bot ist gestartet."))?></p>
 <?php
 		}
+
+		if($messenger_settings && isset($messengers[$messenger_settings[1]]) && isset($messengers[$messenger_settings[1]]["uin"]))
+		{
+?>
+		<p id="im-uin" class="infobox"><?=sprintf(h(_("Die UIN des IM-Bots lautet %s.")), "<strong>".htmlspecialchars($messengers[$messenger_settings[1]]["uin"])."</strong>")?></p>
+<?php
+		}
 	}
 ?>
-		<dl class="form">
+		<dl class="form" id="form-benachrichtigung-1">
 			<dt class="c-nachrichteninformierung"><label for="notify"><?=h(_("Nachrichten auf jeder Seite&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-nachrichteninformierung"><input type="checkbox" name="notify" id="notify"<?=accesskey_attr(_("Nachrichten auf jeder Seite&[login/einstellungen.php|1]"))?><?=$me->checkSetting('notify') ? ' checked="checked"' : ''?> title="<?=h(_("Wenn diese Option aktiviert ist, wird nicht nur in der Übersicht angezeigt, dass Sie eine neue Nachricht erhalten haben, sondern auf allen Seiten."))?>" tabindex="<?=$tabindex++?>" /></dd>
 <?php
 	if($show_im)
 	{
 ?>
-
 			<dt class="c-im-account"><label for="i-im-protocol"><?=h(_("IM-Account&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-im-account">
-				<select name="im-protocol" id="i-im-protocol"<?=accesskey_attr(_("IM-Account&[login/einstellungen.php|1]"))?> onchange="document.getElementById('i-im-uin').disabled = !this.value;" onkeyup="this.onchange();" tabindex="<?=$tabindex++?>">
+				<select name="im-protocol" id="i-im-protocol"<?=accesskey_attr(_("IM-Account&[login/einstellungen.php|1]"))?> onchange="if(update_imaddr) update_imaddr();" onkeyup="this.onchange();" tabindex="<?=$tabindex++?>">
 					<option value=""><?=h(_("Deaktiviert"))?></option>
 <?php
+		$im_addrs_js = array();
 		foreach($messengers as $protocol=>$minfo)
 		{
 			$name = (isset($minfo['name']) ? $minfo['name'] : $protocol);
+			$im_addrs_js[] = "'".jsentities($protocol)."' : '".jsentities($minfo["uin"])."'";
 ?>
 					<option value="<?=htmlspecialchars($protocol)?>"<?=($messenger_settings && $messenger_settings[1] == $protocol) ? ' selected="selected"' : ''?>><?=htmlspecialchars($name)?></option>
 <?php
@@ -528,7 +536,38 @@
 	{
 ?>
 		<script type="text/javascript">
-			document.getElementById('i-im-uin').disabled = !document.getElementById('i-im-protocol').value;
+			var im_addrs = { <?=implode(", ", $im_addrs_js)?> };
+			function update_imaddr()
+			{
+				document.getElementById('i-im-uin').disabled = !document.getElementById('i-im-protocol').value;
+
+				if(!document.getElementById('im-uin'))
+				{
+					var p = document.createElement("p");
+					p.id = "im-uin";
+					p.className = "infobox";
+					document.getElementById('form-benachrichtigung-1').parentNode.insertBefore(p, document.getElementById('form-benachrichtigung-1'));
+				}
+
+				var el = document.getElementById('im-uin');
+				while(el.firstChild) el.removeChild(el.firstChild);
+
+				if(im_addrs[document.getElementById('i-im-protocol').value])
+				{
+					var strong_uin = document.createElement("strong");
+					strong_uin.appendChild(document.createTextNode(im_addrs[document.getElementById('i-im-protocol').value]));
+<?php
+		echo "\t\t\t\t\tel.appendChild(document.createTextNode('".sprintf(jsentities(_("Die UIN des IM-Bots lautet %s.")), "'));\n\t\t\t\t\tel.appendChild(strong_uin);\n\t\t\t\t\tel.appendChild(document.createTextNode('")."'));\n";
+?>
+					el.style.visibility = "visible";
+				}
+				else
+				{
+					el.style.visibility = "hidden";
+					el.appendChild(document.createTextNode(" "));
+				}
+			}
+			update_imaddr();
 		</script>
 <?php
 	}

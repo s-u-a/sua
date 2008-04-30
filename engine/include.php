@@ -1472,6 +1472,8 @@
 				{
 					if(!is_array($v) || !isset($v['server']) || !isset($v['username']) || !isset($v['server']))
 						unset($messenger_parsed_file[$k]);
+					$messenger_parsed_file[$k]["uin"] = $v["username"];
+					if($k == "jabber") $messenger_parsed_file[$k]["uin"] .= "@".$v["server"];
 				}
 			}
 		}
