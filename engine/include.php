@@ -18,7 +18,7 @@
 	define('start_mtime', microtime(true));
 
 	error_reporting(4095);
-	ignore_user_abort(true);
+	//ignore_user_abort(true);
 
 	# 10 Minuten sollten wohl auch bei hoher Serverlast genuegen
 	set_time_limit(600);
@@ -270,8 +270,8 @@
 	if(!isset($_SERVER["SCRIPT_FILENAME"]) && substr($_SERVER["PHP_SELF"], 0, strlen(h_root)) == $_SERVER["PHP_SELF"])
 		$_SERVER["SCRIPT_FILENAME"] = s_root.substr($_SERVER["PHP_SELF"], strlen(h_root));
 
-	if(!isset($USE_OB) || $USE_OB)
-		ob_start('ob_gzhandler');
+	//if(!isset($USE_OB) || $USE_OB)
+	//	ob_start('ob_gzhandler');
 
 	$tabindex = 1;
 
@@ -2169,4 +2169,30 @@
 	{
 		$reg = "(^((([A-Za-z0-9.!#$%&'*+-/=?^_`{|}~]|\\\\.){1,64})|(\"([\\x00-\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\\\\"]){1,64}\"))@((([a-zA-Z0-9][-a-zA-Z0-9]*)?[a-zA-Z0-9]\\.)*(([a-zA-Z0-9][-a-zA-Z0-9]*)?[a-zA-Z0-9]))\$)";
 		return preg_match($reg, $email);
+	}
+
+	/**
+	  * Debug-Ausgabe im Format $string:Zeit:wievielter Aufruf mit $string:Zeit seit letztem Aufruf mit $string:wievielter Aufruf überhaupt:Zeit seit letztem Aufruf überhaupt
+	*/
+
+	function debug_time($string="", $max=null)
+	{
+		static $times;
+		if(!isset($times)) $times = array();
+		$time = round(microtime(true)*1000, 3);
+		if($max === null || !isset($times[$string]) || $times[$string][0] <= $max)
+		{
+			echo htmlspecialchars($string).":".$time;
+			if(isset($times[$string]))
+				echo ":".$times[$string][0].":".($time-$times[$string][1]);
+			if(isset($times[""]))
+				echo ":".$times[""][0].":".($time-$times[""][1]);
+			echo "<br />\n";
+		}
+		if(!isset($times[$string])) $times[$string] = array(0);
+		if(!isset($times[""])) $times[""] = array(0);
+		$times[$string][0]++;
+		$times[$string][1] = $time;
+		$times[""][0]++;
+		$times[""][1] = $time;
 	}

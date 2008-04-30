@@ -71,4 +71,9 @@
 		{
 			return $this->items_instance->getItemType($this->item);
 		}
+
+		static function getItemType($id)
+		{
+			return Classes::Items()->getItemType($id);
+		}
 	}

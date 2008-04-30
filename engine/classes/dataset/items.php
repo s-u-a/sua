@@ -43,25 +43,27 @@
 				$this->refreshItemDatabase();
 
 			$this->elements = unserialize(file_get_contents(global_setting("DB_ITEM_DB")));
-			$this->elements['ids'] = array();
-			foreach($this->elements as $type=>$elements)
-			{
-				foreach($elements as $id=>$info)
-					$this->elements['ids'][$id] = & $this->elements[$type][$id];
-			}
 		}
 
-		function getItemsList($type=false)
+		function getItemsList($type=null)
 		{
-			if($type === false) $type = 'ids';
+			if($type === false || $type === null)
+			{
+				return array_merge($this->getItemsList("gebaeude"),
+				                   $this->getItemsList("forschung"),
+				                   $this->getItemsList("roboter"),
+				                   $this->getItemsList("schiffe"),
+				                   $this->getItemsList("verteidigung"));
+			}
 
 			if(!isset($this->elements[$type])) return false;
 			return array_keys($this->elements[$type]);
 		}
 
-		function getItemInfo($id, $type=false)
+		function getItemInfo($id, $type=null)
 		{
-			if($type === false) $type = 'ids';
+			if($type === false || $type === null)
+				$type = $this->getItemType($id);
 
 			if(!isset($this->elements[$type]) || !isset($this->elements[$type][$id]))
 				return false;
@@ -75,7 +77,6 @@
 		{
 			foreach($this->elements as $type=>$elements)
 			{
-				if($type == 'ids') continue;
 				if(isset($elements[$id])) return $type;
 			}
 			return false;
@@ -93,7 +94,7 @@
 
 		function refreshItemDatabase()
 		{
-			$items = array('gebaeude' => array(), 'forschung' => array(), 'roboter' => array(), 'schiffe' => array(), 'verteidigung' => array(), 'ids' => array());
+			$items = array('gebaeude' => array(), 'forschung' => array(), 'roboter' => array(), 'schiffe' => array(), 'verteidigung' => array());
 			if(is_file(global_setting("DB_ITEMS").'/gebaeude') && is_readable(global_setting("DB_ITEMS").'/gebaeude'))
 			{
 				$fh = fopen(global_setting("DB_ITEMS").'/gebaeude', 'r');

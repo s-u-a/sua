@@ -992,3 +992,20 @@ function debug(m)
 	li.appendChild(document.createTextNode(m));
 	document.getElementById("gameinfo").appendChild(li);
 }
+
+function smoothResize(element, to_height, interval, factor, start_height, css_diff, cur_y)
+{ // Funktioniert noch nicht
+	if(typeof start_height == "undefined")
+	{
+		start_height = element.offsetHeight;
+		element.style.height = start_height+"px";
+		css_diff = element.offsetHeight-start_height;
+		cur_y = 1;
+	}
+
+	cur_y += factor * cur_y * (to_height - start_height - cur_y);
+	element.style.height = (start_height + cur_y - css_diff)+"px";
+
+	if(Math.abs(cur_y - (to_height - start_height)) >= 0.5)
+		setTimeout(function(){smoothResize(element, to_height, interval, factor, start_height, css_diff, cur_y);}, interval);
+}

@@ -83,38 +83,13 @@
 			if(!isset($this->raw['planets'][$planet]))
 				return false;
 
-			if(isset($this->planet_info))
-			{
-				if(isset($this->items['gebaeude'])) $this->planet_info['gebaeude'] = $this->items['gebaeude'];
-				if(isset($this->items['roboter'])) $this->planet_info['roboter'] = $this->items['roboter'];
-				if(isset($this->items['schiffe'])) $this->planet_info['schiffe'] = $this->items['schiffe'];
-				if(isset($this->items['verteidigung'])) $this->planet_info['verteidigung'] = $this->items['verteidigung'];
-				if(isset($this->ress)) $this->planet_info['ress'] = $this->ress;
-			}
-
 			$this->active_planet = $planet;
 			$this->planet_info = &$this->raw['planets'][$planet];
 
-			if(isset($this->cache['getPos'])) unset($this->cache['getPos']);
-
-			$this->items['gebaeude'] = $this->planet_info['gebaeude'];
-			$this->items['roboter'] = $this->planet_info['roboter'];
-			$this->items['schiffe'] = $this->planet_info['schiffe'];
-			$this->items['verteidigung'] = $this->planet_info['verteidigung'];
-
-			$this->items['ids'] = array();
-			foreach($this->items['gebaeude'] as $id=>$level)
-				$this->items['ids'][$id] = & $this->items['gebaeude'][$id];
-			foreach($this->items['forschung'] as $id=>$level)
-				$this->items['ids'][$id] = & $this->items['forschung'][$id];
-			foreach($this->items['roboter'] as $id=>$level)
-				$this->items['ids'][$id] = & $this->items['roboter'][$id];
-			foreach($this->items['schiffe'] as $id=>$level)
-				$this->items['ids'][$id] = & $this->items['schiffe'][$id];
-			foreach($this->items['verteidigung'] as $id=>$level)
-				$this->items['ids'][$id] = & $this->items['verteidigung'][$id];
-
-			$this->ress = $this->planet_info['ress'];
+			$this->items['gebaeude'] = &$this->planet_info['gebaeude'];
+			$this->items['roboter'] = &$this->planet_info['roboter'];
+			$this->items['schiffe'] = &$this->planet_info['schiffe'];
+			$this->items['verteidigung'] = &$this->planet_info['verteidigung'];
 
 			return true;
 		}
@@ -544,7 +519,7 @@
 			if($refresh)
 				$this->refreshRess();
 
-			$ress = $this->ress;
+			$ress = $this->planet_info["ress"];
 
 			if($refresh)
 			{
@@ -561,11 +536,11 @@
 
 			if(!is_array($ress)) return false;
 
-			if(isset($ress[0])) $this->ress[0] += $ress[0];
-			if(isset($ress[1])) $this->ress[1] += $ress[1];
-			if(isset($ress[2])) $this->ress[2] += $ress[2];
-			if(isset($ress[3])) $this->ress[3] += $ress[3];
-			if(isset($ress[4])) $this->ress[4] += $ress[4];
+			if(isset($ress[0])) $this->planet_info["ress"][0] += $ress[0];
+			if(isset($ress[1])) $this->planet_info["ress"][1] += $ress[1];
+			if(isset($ress[2])) $this->planet_info["ress"][2] += $ress[2];
+			if(isset($ress[3])) $this->planet_info["ress"][3] += $ress[3];
+			if(isset($ress[4])) $this->planet_info["ress"][4] += $ress[4];
 
 			if(isset($this->cache['getItemInfo']) && isset($this->cache['getItemInfo'][$this->getActivePlanet()])) unset($this->cache['getItemInfo'][$this->getActivePlanet()]);
 
@@ -580,11 +555,11 @@
 
 			if(!is_array($ress)) return false;
 
-			if(isset($ress[0])){ $this->ress[0] -= $ress[0]; if($make_scores) $this->raw['punkte'][7] += $ress[0]; }
-			if(isset($ress[1])){ $this->ress[1] -= $ress[1]; if($make_scores) $this->raw['punkte'][8] += $ress[1]; }
-			if(isset($ress[2])){ $this->ress[2] -= $ress[2]; if($make_scores) $this->raw['punkte'][9] += $ress[2]; }
-			if(isset($ress[3])){ $this->ress[3] -= $ress[3]; if($make_scores) $this->raw['punkte'][10] += $ress[3]; }
-			if(isset($ress[4])){ $this->ress[4] -= $ress[4]; if($make_scores) $this->raw['punkte'][11] += $ress[4]; }
+			if(isset($ress[0])){ $this->planet_info["ress"][0] -= $ress[0]; if($make_scores) $this->raw['punkte'][7] += $ress[0]; }
+			if(isset($ress[1])){ $this->planet_info["ress"][1] -= $ress[1]; if($make_scores) $this->raw['punkte'][8] += $ress[1]; }
+			if(isset($ress[2])){ $this->planet_info["ress"][2] -= $ress[2]; if($make_scores) $this->raw['punkte'][9] += $ress[2]; }
+			if(isset($ress[3])){ $this->planet_info["ress"][3] -= $ress[3]; if($make_scores) $this->raw['punkte'][10] += $ress[3]; }
+			if(isset($ress[4])){ $this->planet_info["ress"][4] -= $ress[4]; if($make_scores) $this->raw['punkte'][11] += $ress[4]; }
 
 			if($make_scores && isset($this->cache['getSpentRess'])) unset($this->cache['getSpentRess']);
 
@@ -599,11 +574,11 @@
 
 			if(!is_array($ress)) return false;
 
-			if(isset($ress[0]) && $ress[0] > $this->ress[0]) return false;
-			if(isset($ress[1]) && $ress[1] > $this->ress[1]) return false;
-			if(isset($ress[2]) && $ress[2] > $this->ress[2]) return false;
-			if(isset($ress[3]) && $ress[3] > $this->ress[3]) return false;
-			if(isset($ress[4]) && $ress[4] > $this->ress[4]) return false;
+			if(isset($ress[0]) && $ress[0] > $this->planet_info["ress"][0]) return false;
+			if(isset($ress[1]) && $ress[1] > $this->planet_info["ress"][1]) return false;
+			if(isset($ress[2]) && $ress[2] > $this->planet_info["ress"][2]) return false;
+			if(isset($ress[3]) && $ress[3] > $this->planet_info["ress"][3]) return false;
+			if(isset($ress[4]) && $ress[4] > $this->planet_info["ress"][4]) return false;
 
 			return true;
 		}
@@ -1336,26 +1311,26 @@
 			return $this->cache['getItemInfo'][$this_planet][$id];
 		}
 
-		function getItemLevel($id, $type=false, $run_eventhandler=true)
+		function getItemLevel($id, $type=null, $run_eventhandler=true)
 		{
 			if(!$this->status) return false;
 
 			if($run_eventhandler) $this->eventhandler($id,0,0,0,0,0);
 
-			if($type === false)
-				$type = 'ids';
+			if($type === false || $type === null)
+				$type = Item::getItemType($id);
 			if(!isset($this->items[$type]) || !isset($this->items[$type][$id]))
 				return 0;
 			return $this->items[$type][$id];
 		}
 
-		function changeItemLevel($id, $value=1, $type=false, $time=false)
+		function changeItemLevel($id, $value=1, $type=null, $time=null)
 		{
 			if(!$this->status) return false;
 
 			if($value == 0) return true;
 
-			if($time === false) $time = time();
+			if($time === false || $time === null) $time = time();
 
 			$recalc = array(
 				'gebaeude' => 0,
@@ -1365,28 +1340,12 @@
 				'verteidigung' => 4
 			);
 
-			if($type !== false && $type != 'ids')
-			{
-				if(!isset($this->items[$type])) $this->items[$type] = array();
-				if(isset($this->items[$type][$id])) $this->items[$type][$id] += $value;
-				else
-				{
-					$this->items[$type][$id] = $value;
-					$this->items['ids'][$id] = &$this->items[$type][$id];
-				}
-			}
-			else
-			{
-				$item = Classes::Item($id);
-				$type = $item->getType();
-				if(isset($this->items['ids'][$id])) $this->items['ids'][$id] += $value;
-				else
-				{
-					if(!isset($this->items[$type])) $this->items[$type] = array();
-					$this->items[$type][$id] = $value;
-					$this->items['ids'][$id] = &$this->items[$type][$id];
-				}
-			}
+			if($type === false || $type === null)
+				$type = Item::getItemType($id);
+
+			if(!isset($this->items[$type])) $this->items[$type] = array();
+			if(isset($this->items[$type][$id])) $this->items[$type][$id] += $value;
+			else $this->items[$type][$id] = $value;
 
 			$this->recalc_highscores[$recalc[$type]] = true;
 
@@ -1413,7 +1372,7 @@
 					$this->setActivePlanet($active_planet);
 					break;
 
-				# Bauroboter: Laufende Bauzeit verkuerzen
+				# Bauroboter: Laufende Bauzeit verkuerzen (TODO?)
 				/*case 'R01':
 					$max_rob_limit = floor($this->getBasicFields()/2);
 					$counting_after = $this->items[$type][$id];
@@ -1488,11 +1447,11 @@
 
 			for($i=0; $i<=4; $i++)
 			{
-				if($this->ress[$i] >= $limit[$i])
+				if($this->planet_info["ress"][$i] >= $limit[$i])
 					continue;
-				$this->ress[$i] += $prod[$i]*$f;
-				if($this->ress[$i] > $limit[$i])
-					$this->ress[$i] = $limit[$i];
+				$this->planet_info["ress"][$i] += $prod[$i]*$f;
+				if($this->planet_info["ress"][$i] > $limit[$i])
+					$this->planet_info["ress"][$i] = $limit[$i];
 			}
 
 			$this->planet_info['last_refresh'] = $time;
@@ -1835,10 +1794,7 @@
 				$this->settings['messenger_receive']['building'] = array('gebaeude' => 1, 'forschung' => 1, 'roboter' => 3, 'schiffe' => 3, 'verteidigung' => 3);
 
 			$this->items = array();
-			$this->items['forschung'] = $this->raw['forschung'];
-			$this->items['ids'] = array();
-			foreach($this->items['forschung'] as $id=>$level)
-				$this->items['ids'][$id] = &$this->items['forschung'][$id];
+			$this->items['forschung'] = &$this->raw['forschung'];
 
 			$this->name = $this->raw['username'];
 
@@ -1861,7 +1817,6 @@
 				$this->planet_info['roboter'] = $this->items['roboter'];
 				$this->planet_info['schiffe'] = $this->items['schiffe'];
 				$this->planet_info['verteidigung'] = $this->items['verteidigung'];
-				$this->planet_info['ress'] = $this->ress;
 			}
 		}
 
@@ -2064,7 +2019,7 @@
 				if($action[3])
 					$this->refreshRess($action[0]);
 
-				$this->changeItemLevel($action[1], $action[2], false, $action[0]);
+				$this->changeItemLevel($action[1], $action[2], $min[1], $action[0]);
 
 				if(isset($this->cache['getProduction']))
 					unset($this->cache['getProduction']);
