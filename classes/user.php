@@ -969,7 +969,7 @@
 			foreach($item_info["deps"] as $dep)
 			{
 				$dep = explode("-", $dep, 2);
-				$dep_info = $this->getItemInfo($dep[0], array("level"));
+				$dep_info = $this->getItemInfo($dep[0], null, array("level"));
 				if(!$dep_info) continue;
 				if(!isset($deps[$dep[0]]) || $deps[$dep[0]] < $dep[1])
 					$deps[$dep[0]] = $dep[1];
