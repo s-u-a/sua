@@ -1908,6 +1908,7 @@
 				return null;
 			$gpg = new gnupg();
 			$gpg->seterrormode(gnupg::ERROR_WARNING);
+			$gpg->setsignmode(gnupg::SIG_MODE_CLEAR);
 			if(isset($config["gpghome"]))
 				putenv("GNUPGHOME=".$config["gpghome"]);
 			if(!$gpg->addsignkey($config["fingerprint"]))
@@ -1932,6 +1933,17 @@
 		if($return === false)
 			return $text;
 		return $return;
+	}
+
+	function gpg_smallsign($text)
+	{
+		$gpg = gpg_init();
+		if(!$gpg) return false;
+
+		$signed = $gpg->sign($text);
+		if(!preg_match("/(^|\n)-----BEGIN PGP SIGNATURE-----\r?\n.*?\r?\n\r?\n(.*?)\r?\n-----END PGP SIGNATURE-----(\r?\n|\$)/s", $signed, $m))
+			return false;
+		return $m[2];
 	}
 
 	/**

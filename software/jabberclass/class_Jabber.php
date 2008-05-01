@@ -461,7 +461,7 @@ class Jabber {
 		$xml = "<presence";
 		$xml .= ($to) ? " to='$to'" : '';
 		$xml .= ($type) ? " type='$type'" : '';
-		$xml .= ($status || $show || $priority) ? ">\n" : " />\n";
+		$xml .= ($status || $show || $priority || $sign) ? ">\n" : " />\n";
 
 		$xml .= ($status) ? "	<status>$status</status>\n" : '';
 		$xml .= ($show) ? "	<show>$show</show>\n" : '';
@@ -469,7 +469,7 @@ class Jabber {
 
 		$xml .= ($sign) ? "	<x xmlns='jabber:x:signed'>$sign</x>\n" : ''; // http://www.xmpp.org/extensions/xep-0027.html#signing
 
-		$xml .= ($status || $show || $priority) ? "</presence>\n" : '';
+		$xml .= ($status || $show || $priority || $sign) ? "</presence>\n" : '';
 
 		if ($this->_send($xml)) {
 			return true;
