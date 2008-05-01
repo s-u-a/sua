@@ -23,7 +23,7 @@
 	require("engine.php");
 
 	error_reporting(7);
-	require_once("jabberclass/class_Jabber.php");
+	require_once("software/jabberclass/class_Jabber.php");
 
 	set_time_limit(0);
 
