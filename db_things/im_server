@@ -41,6 +41,15 @@
 
 	ftruncate($fh_pid, 0);
 
+	$messengers = get_messenger_info();
+	$databases = get_databases();
+
+	if(!$messengers || !isset($messengers["jabber"]))
+	{
+		fputs(STDERR, "No jabber account is configured.\n");
+		exit(1);
+	}
+
 	# Forken, wenn moeglich
 	if(!function_exists("pcntl_fork"))
 		$fork = -1;
@@ -65,14 +74,6 @@
 	$jabber->terminated = true;
 	$imserver = new IMServer();
 	$imfile = new IMFile();
-	$messengers = get_messenger_info();
-	$databases = get_databases();
-
-	if(!$messengers || !isset($messengers["jabber"]))
-	{
-		fputs(STDERR, "No jabber account is configured.\n");
-		exit(1);
-	}
 
 	$unrecognised_limits = array();
 
