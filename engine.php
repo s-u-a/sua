@@ -1899,7 +1899,7 @@
 			if(!is_file(global_setting("DB_GPG"))) return null;
 			$config = parse_ini_file(global_setting("DB_GPG"));
 		}
-		if(!$config || !isset($config["fingerprint"]) || !isset($config["password"]))
+		if(!$config || !isset($config["fingerprint"]))
 			return null;
 
 		if(!isset($gpg))
@@ -1910,7 +1910,7 @@
 			$gpg->seterrormode(gnupg::ERROR_WARNING);
 			if(isset($config["gpghome"]))
 				putenv("GNUPGHOME=".$config["gpghome"]);
-			if(!$gpg->addsignkey($config["fingerprint"], $config["password"]))
+			if(!$gpg->addsignkey($config["fingerprint"]))
 				return null;
 		}
 		if($return_public_key)
