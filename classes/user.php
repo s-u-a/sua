@@ -963,13 +963,13 @@
 
 			if(!isset($deps)) $deps = array();
 
-			$item_info = $this->getItemInfo($id);
+			$item_info = $this->getItemInfo($id, null, array("deps", "level"));
 			if(!$item_info) return false;
 
 			foreach($item_info["deps"] as $dep)
 			{
 				$dep = explode("-", $dep, 2);
-				$dep_info = $this->getItemInfo($dep[0]);
+				$dep_info = $this->getItemInfo($dep[0], array("level"));
 				if(!$dep_info) continue;
 				if(!isset($deps[$dep[0]]) || $deps[$dep[0]] < $dep[1])
 					$deps[$dep[0]] = $dep[1];
@@ -1030,7 +1030,7 @@
 			return array($calc, $fields);
 		}
 
-		function getItemInfo($id, $type=false, $fields=null, $run_eventhandler=null, $level=null)
+		function getItemInfo($id, $type=null, $fields=null, $run_eventhandler=null, $level=null)
 		{
 			if(!$this->status) return false;
 
@@ -1040,7 +1040,7 @@
 
 			$this_planet = $this->getActivePlanet();
 			$item = Classes::Item($id);
-			if($type === false) $type = $item->getType();
+			if($type === null) $type = $item->getType();
 			$info = $item->getInfo($fields);
 			if(!$info) return false;
 			if($calc["type"])
@@ -1439,7 +1439,7 @@
 			# Felder belegen
 			if($type == 'gebaeude')
 			{
-				$item_info = $this->getItemInfo($id, 'gebaeude');
+				$item_info = $this->getItemInfo($id, 'gebaeude', array("fields"));
 				if($item_info['fields'] > 0)
 					$this->changeUsedFields($item_info['fields']*$value);
 			}
@@ -1560,7 +1560,7 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 
-			if(!$this->getItemInfo($gebaeude, 'gebaeude')) return false;
+			if(!$this->getItemInfo($gebaeude, 'gebaeude', array(false))) return false;
 
 			$factor = (float) $factor;
 
@@ -1570,11 +1570,6 @@
 			$this->planet_info['prod'][$gebaeude] = $factor;
 			$this->changed = true;
 
-			if(isset($this->cache['getProduction']) && isset($this->cache['getProduction'][$this->getActivePlanet()]))
-				unset($this->cache['getProduction'][$this->getActivePlanet()]);
-			if(isset($this->cache['getItemInfo']) && isset($this->cache['getItemInfo'][$this->getActivePlanet()]) && isset($this->cache['getItemInfo'][$this->getActivePlanet()][$gebaeude]))
-				unset($this->cache['getItemInfo'][$this->getActivePlanet()][$gebaeude]);
-
 			return true;
 		}
 
@@ -1582,68 +1577,63 @@
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
 
-			if(!isset($this->cache['getProduction'])) $this->cache['getProduction'] = array();
 			$planet = $this->getActivePlanet();
-			if(!isset($this->cache['getProduction'][$planet]))
+			$prod = array(0,0,0,0,0,0,0,false);
+			if($this->permissionToAct())
 			{
-				$prod = array(0,0,0,0,0,0,0,false);
-				if($this->permissionToAct())
+				$gebaeude = $this->getItemsList('gebaeude');
+
+				$energie_prod = 0;
+				$energie_need = 0;
+				foreach($gebaeude as $id)
 				{
-					$gebaeude = $this->getItemsList('gebaeude');
+					$item = $this->getItemInfo($id, 'gebaeude', null, false);
+					if($item['prod'][5] < 0) $energie_need -= $item['prod'][5];
+					elseif($item['prod'][5] > 0) $energie_prod += $item['prod'][5];
 
-					$energie_prod = 0;
-					$energie_need = 0;
-					foreach($gebaeude as $id)
-					{
-						$item = $this->getItemInfo($id, 'gebaeude', null, false);
-						if($item['prod'][5] < 0) $energie_need -= $item['prod'][5];
-						elseif($item['prod'][5] > 0) $energie_prod += $item['prod'][5];
-
-						$prod[0] += $item['prod'][0];
-						$prod[1] += $item['prod'][1];
-						$prod[2] += $item['prod'][2];
-						$prod[3] += $item['prod'][3];
-						$prod[4] += $item['prod'][4];
-					}
-
-					$limit = $this->getProductionLimit($run_eventhandler);
-					if($energie_prod > $limit[5])
-					{
-						$energie_prod = $limit[5];
-						$prod[7] = true;
-					}
-
-					$f = 1;
-					if($energie_need > $energie_prod) # Nicht genug Energie
-					{
-						$f = $energie_prod/$energie_need;
-						$prod[0] *= $f;
-						$prod[1] *= $f;
-						$prod[2] *= $f;
-						$prod[3] *= $f;
-						$prod[4] *= $f;
-					}
-
-					$prod[5] = $energie_prod-$energie_need;
-
-					foreach(global_setting("MIN_PRODUCTION") as $k=>$v)
-					{
-						if(!isset($prod[$k])) $prod[$k] = 0;
-						if($prod[$k] < $v) $prod[$k] = $v;
-					}
-
-					stdround($prod[0]);
-					stdround($prod[1]);
-					stdround($prod[2]);
-					stdround($prod[3]);
-					stdround($prod[4]);
-					stdround($prod[5]);
-
-					$prod[6] = $f;
+					$prod[0] += $item['prod'][0];
+					$prod[1] += $item['prod'][1];
+					$prod[2] += $item['prod'][2];
+					$prod[3] += $item['prod'][3];
+					$prod[4] += $item['prod'][4];
 				}
-				$this->cache['getProduction'][$planet] = $prod;
+
+				$limit = $this->getProductionLimit($run_eventhandler);
+				if($energie_prod > $limit[5])
+				{
+					$energie_prod = $limit[5];
+					$prod[7] = true;
+				}
+
+				$f = 1;
+				if($energie_need > $energie_prod) # Nicht genug Energie
+				{
+					$f = $energie_prod/$energie_need;
+					$prod[0] *= $f;
+					$prod[1] *= $f;
+					$prod[2] *= $f;
+					$prod[3] *= $f;
+					$prod[4] *= $f;
+				}
+
+				$prod[5] = $energie_prod-$energie_need;
+
+				foreach(global_setting("MIN_PRODUCTION") as $k=>$v)
+				{
+					if(!isset($prod[$k])) $prod[$k] = 0;
+					if($prod[$k] < $v) $prod[$k] = $v;
+				}
+
+				stdround($prod[0]);
+				stdround($prod[1]);
+				stdround($prod[2]);
+				stdround($prod[3]);
+				stdround($prod[4]);
+				stdround($prod[5]);
+
+				$prod[6] = $f;
 			}
-			return $this->cache['getProduction'][$planet];
+			return $prod;
 		}
 
 		function getProductionLimit($run_eventhandler=true)
@@ -1771,9 +1761,6 @@
 					$galaxy_obj->setPlanetOwnerFlag($pos[1], $pos[2], $flag);
 				}
 				$this->setActivePlanet($planet);
-
-				if(isset($this->cache['getProduction'])) # Produktion wird auf 0 gefahren
-					unset($this->cache['getProduction']);
 
 				return true;
 			}
@@ -1975,7 +1962,6 @@
 						$this->raw['punkte'][9] -= $this->planet_info['building'][$type][3][2];
 						$this->raw['punkte'][10] -= $this->planet_info['building'][$type][3][3];
 						$this->raw['punkte'][11] -= $this->planet_info['building'][$type][3][4];
-						if(isset($this->cache['getSpentRess'])) unset($this->cache['getSpentRess']);
 					}
 
 					unset($this->planet_info['building'][$type]);
@@ -2107,11 +2093,6 @@
 					$this->refreshRess($action[0]);
 
 				$this->changeItemLevel($action[1], $action[2], $min[1], $action[0]);
-
-				if(isset($this->cache['getProduction']))
-					unset($this->cache['getProduction']);
-				if(isset($this->cache['getItemInfo']))
-					unset($this->cache['getItemInfo']);
 
 				$next[$min[0]][$min[1]] = $this->getNextBuiltThing($min[1]);
 
@@ -3128,8 +3109,6 @@
 						}
 					}
 				}
-
-				if(isset($this->cache['getScores'])) unset($this->cache['getScores']);
 			}
 
 			$highscores = Classes::Highscores();
