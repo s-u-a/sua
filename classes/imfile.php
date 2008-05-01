@@ -78,7 +78,7 @@
 			$fingerprint = null;
 			$user = Classes::User($username);
 			if($user->getStatus())
-				$fingerprint = $user->setSetting("fingerprint", false);
+				$fingerprint = $user->checkSetting("fingerprint");
 			return $this->query("INSERT INTO notifications ( uin, time, protocol, username, message, database, special_id, fingerprint ) VALUES ( ".$this->escape($uin).", ".$this->escape($time).", ".$this->escape($protocol).", ".$this->escape($username).", ".$this->escape($message).", ".$this->escape(global_setting("DB")).", ".$this->escape($special_id).", ".$this->escape($fingerprint)." );");
 		}
 
