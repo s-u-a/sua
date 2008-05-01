@@ -244,7 +244,7 @@
 			{
 				if(!isset($unrecognised_limits[$from]) || time()-$unrecognised_limits[$from][1] >= global_setting("IM_UNRECOGNISED_TIME"))
 					$unrecognised_limits[$from] = array(0);
-				if($unrecognised_limits[$from][0] < global_setting("IM_UNRECOGNISED_NUMER"))
+				if($unrecognised_limits[$from][0] < global_setting("IM_UNRECOGNISED_NUMBER"))
 				{
 					$this->sendSigned($from, 'Unrecognised command');
 					$unrecognised_limits[$from][0]++;
