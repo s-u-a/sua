@@ -26,7 +26,7 @@
 
 	if(!$popup)
 	{
-		$gui->setOption("base", "http://".$_SERVER["HTTP_HOST"].h_root."/chat/");
+		$gui->setOption("base", "http://".$_SERVER["HTTP_HOST"].h_root."/software/chat/");
 		$gui->init();
 ?>
 <h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Chat")))?></h2>
@@ -103,7 +103,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=h(_("[LANG]"))?>">
 	<head>
 		<title><?=h($channels[$_REQUEST['channel']][0])?></title>
-		<base href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/chat/')?>" />
+		<base href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/software/chat/')?>" />
 		<style type="text/css">
 			html,body,#chat-applet { width:100%; height:100%; margin:0; padding:0; border-style:none; }
 		</style>

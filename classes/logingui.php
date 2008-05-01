@@ -70,7 +70,7 @@
 			if($me && (!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"]) && $me->checkSetting('ajax'))
 			{
 ?>
-		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/sarissa.js')?>"></script>
+		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/software/sarissa.js')?>"></script>
 <?php
 			}
 ?>

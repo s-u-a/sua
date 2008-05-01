@@ -197,7 +197,7 @@
 			var list_min_chars = '<?=jsentities(global_setting("LIST_MIN_CHARS"))?>';
 		</script>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/login/res/javascript.js')?>"></script>
-		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/sarissa.js')?>"></script>
+		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/software/sarissa.js')?>"></script>
 	</head>
 	<body>
 		<h1><a href="<?=htmlspecialchars(h_root.'/admin/index.php')?>"<?=accesskey_attr(_("Adminbereich&[admin/include.php|2]"))?>><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Adminbereich&[admin/include.php|2]")))?></a> [<a href="?logout=1"<?=accesskey_attr(_("Abmelden nicht vergessen&[admin/include.php|2]"))?>><?=h(_("Abmelden nicht vergessen&[admin/include.php|2]"))?></a>]</h1>
