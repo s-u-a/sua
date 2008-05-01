@@ -176,10 +176,16 @@
 				$message = "Automatische Benachrichtigung von http://".get_default_hostname()."/, ".$databases[$next_notification['database']]['name'].", ".$next_notification['username'].":\n";
 				$message .= $next_notification['message'];
 
-				if($next_notification["fingerprint"])
-					$message = gpg_encrypt($message, $next_notification["fingerprint"]);
+				$payload = "";
+				if($next_notification["fingerprint"] && $encrypted = gpg_smallencrypt($message, $next_notification["fingerprint"]))
+				{
+					$payload .= "<x xmlns='jabber:x:encrypted'>".$encrypted."</x>";
+					$message = "Verschlüsselte Nachricht.";
+				}
+				if($signed = gpg_smallsign($message, $next_notification["fingerprint"]))
+					$payload .= "<x xmlns='jabber:x:signed'>".$signed."</x>";
 
-				$jabber->message($to, "normal", null, $message);
+				$jabber->message($to, "normal", null, $message, null, null, $payload);
 			}
 		}
 

@@ -1935,6 +1935,11 @@
 		return $return;
 	}
 
+	/**
+	  * Signiert den Text, gibt aber nur die Signatur, ohne Header, zurück.
+	  * @return false Bei Fehlschlag
+	*/
+
 	function gpg_smallsign($text)
 	{
 		$gpg = gpg_init();
@@ -1961,6 +1966,19 @@
 		if($encrypted === false)
 			return $text;
 		return $encrypted;
+	}
+
+	/**
+	  * Verschlüsselt und signiert $text für $fingerprint, gibt aber nur den verschlüsselten Text ohne Header zurück.
+	  * @return false Bei Fehlschlag.
+	*/
+
+	function gpg_smallencrypt($text, $fingerprint)
+	{
+		$signed = gpg_encrypt($text, $fingerprint);
+		if(!preg_match("/(^|\n)-----BEGIN PGP MESSAGE-----\r?\n.*?\r?\n\r?\n(.*?)\r?\n-----END PGP MESSAGE-----(\r?\n|\$)/s", $signed, $m))
+			return false;
+		return $m[2];
 	}
 
 	/**
