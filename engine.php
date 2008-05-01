@@ -143,6 +143,8 @@
 	global_setting("SESSION_TIMEOUT", 1800); # Wieviele Sekunden Inaktivität sollen zur Zerstörung der Session führen?
 	global_setting("CLASSES", dirname(__FILE__)."/classes");
 	global_setting("SESSION_NAME", "session"); # Name des URL-Parameters mit der Session-ID
+	global_setting("IM_UNRECOGNISED_NUMBER", 10); # Wieviele „Unrecognised Command“-Fehler sollen maximal an einen Benutzer hintereinander vom IM-Bot verschickt werden?
+	global_setting("IM_UNRECOGNISED_TIME", 300); # Wieviel Zeit muss vergehen, damit dieses Limit zurückgesetzt wird?
 
 	/**
 	  * Initialisiert die Standardwerte fuer die globalen Einstellungen.

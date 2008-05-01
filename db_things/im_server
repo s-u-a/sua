@@ -20,7 +20,7 @@
 
 	$USE_OB = false;
 
-	require("engine/include.php");
+	require("engine.php");
 
 	error_reporting(7);
 	require_once("jabberclass/class_Jabber.php");
@@ -73,6 +73,8 @@
 		fputs(STDERR, "No jabber account is configured.\n");
 		exit(1);
 	}
+
+	$unrecognised_limits = array();
 
 	$jabber->set_handler("connected", $imserver, "handleConnected");
 	$jabber->set_handler("authenticated", $imserver, "handleAuthenticated");
@@ -182,7 +184,7 @@
 
 		function handleMessage($from, $to, $message)
 		{
-			global $jabber,$messengers,$imfile;
+			global $jabber,$messengers,$imfile,$unrecognised_limits;
 
 			$transport = 'jabber';
 			list($from_cut) = explode("/", $from);
@@ -221,7 +223,17 @@
 				unset($user);
 				Classes::resetInstances();
 			}
-			else $jabber->message($from, 'normal', null, 'Unrecognised command');
+			else
+			{
+				if(!isset($unrecognised_limits[$from]) || time()-$unrecognised_limits[$from][1] >= global_setting("IM_UNRECOGNISED_TIME"))
+					$unrecognised_limits[$from] = array(0);
+				if($unrecognised_limits[$from][0] < global_setting("IM_UNRECOGNISED_NUMER"))
+				{
+					$jabber->message($from, 'normal', null, 'Unrecognised command');
+					$unrecognised_limits[$from][0]++;
+					$unrecognised_limits[$from][1] = time();
+				}
+			}
 		}
 
 		function handleSubscribe($packet)
