@@ -253,7 +253,6 @@
 		if($type == 'schiffe')
 		{
 			$trans = $item->getInfo('trans');
-			$item_info = $me->getItemInfo($_GET["id"]);
 ?>
 	<div class="desc-values">
 		<h3 class="strong"><?=h(_("Eigenschaften"))?></h3>

@@ -984,7 +984,7 @@
 		{
 			static $calc_items,$calc_deps;
 			if(!isset($calc_items))
-				$calc_items = array("type", "buildable", "debuildable", "deps-okay", "level", "prod", "has_prod", "time", "scores", "ress", "fields", "limit_factor", "time_local", "time_global", "limit_factor_local", "limit_factor_global", "simple_scores", "att", "def", "trans", "speed");
+				$calc_items = array("type", "buildable", "debuildable", "deps-okay", "level", "prod", "has_prod", "time", "scores", "ress", "fields", "limit_factor", "time_local", "time_global", "limit_factor_local", "limit_factor_global", "simple_scores", "att", "def", "trans", "speed", "name");
 			if(!isset($calc_deps))
 				$calc_deps = array("has_prod" => array("prod", "level"),
 				                   "prod" => array("level"),
@@ -1042,7 +1042,7 @@
 			$item = Classes::Item($id);
 			if($type === null) $type = $item->getType();
 			$info = $item->getInfo($fields);
-			if(!$info) return false;
+			if($info === false) return false;
 			if($calc["type"])
 				$info['type'] = $type;
 			if($calc["buildable"])
@@ -1051,6 +1051,8 @@
 				$info['deps-okay'] = $item->checkDependencies($this, $run_eventhandler);
 			if($calc["level"])
 				$info['level'] = ($level !== null ? $level : $this->getItemLevel($id, $type, $run_eventhandler));
+			if($calc["name"])
+				$info["name"] = $this->_("[item_".$id."]");
 
 			# Bauzeit als Anteil der Punkte des ersten Platzes
 			/*if(isset($info['time']))
@@ -2599,7 +2601,7 @@
 			if($id == 'B9' && $this->checkBuildingThing('roboter')) return false;
 			if($id == 'B10' && ($this->checkBuildingThing('schiffe') || $this->checkBuildingThing('verteidigung'))) return false;
 
-			$item_info = $this->getItemInfo($id, 'gebaeude');
+			$item_info = $this->getItemInfo($id, 'gebaeude', array("buildable", "debuildable", "ress", "time", "limit_factor"));
 			if($item_info && ((!$rueckbau && $item_info['buildable']) || ($rueckbau && $item_info['debuildable'])))
 			{
 				# Rohstoffkosten
@@ -2655,7 +2657,7 @@
 			}
 			$this->setActivePlanet($active_planet);
 
-			$item_info = $this->getItemInfo($id, 'forschung');
+			$item_info = $this->getItemInfo($id, 'forschung', array("buildable", "ress", "time_global", "time_local"));
 			if($item_info && $item_info['buildable'] && $this->checkRess($item_info['ress']))
 			{
 				$build_array = array($id, time()+$item_info['time_'.($global ? 'global' : 'local')], $global, $item_info['ress']);
@@ -2693,7 +2695,7 @@
 
 			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B9') return false;
 
-			$item_info = $this->getItemInfo($id, 'roboter');
+			$item_info = $this->getItemInfo($id, 'roboter', array("buildable", "ress", "time"));
 			if(!$item_info || !$item_info['buildable']) return false;
 
 			$ress = $item_info['ress'];
@@ -2762,7 +2764,7 @@
 
 			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B10') return false;
 
-			$item_info = $this->getItemInfo($id, 'schiffe');
+			$item_info = $this->getItemInfo($id, 'schiffe', array("buildable", "ress", "time"));
 			if(!$item_info || !$item_info['buildable']) return false;
 
 			$ress = $item_info['ress'];
@@ -2831,7 +2833,7 @@
 
 			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B10') return false;
 
-			$item_info = $this->getItemInfo($id, 'verteidigung');
+			$item_info = $this->getItemInfo($id, 'verteidigung', array("buildable", "ress", "time"));
 			if(!$item_info || !$item_info['buildable']) return false;
 
 			$ress = $item_info['ress'];
@@ -2988,7 +2990,7 @@
 						$items = $this->getItemsList('gebaeude');
 						foreach($items as $item)
 						{
-							$item_info = $this->getItemInfo($item, 'gebaeude');
+							$item_info = $this->getItemInfo($item, 'gebaeude', array("scores"));
 							$this->raw['punkte'][0] += $item_info['scores'];
 						}
 					}
@@ -2998,7 +3000,7 @@
 						$items = $this->getItemsList('roboter');
 						foreach($items as $item)
 						{
-							$item_info = $this->getItemInfo($item, 'roboter');
+							$item_info = $this->getItemInfo($item, 'roboter', array("scores"));
 							$this->raw['punkte'][2] += $item_info['scores'];
 						}
 					}
@@ -3008,7 +3010,7 @@
 						$items = $this->getItemsList('schiffe');
 						foreach($items as $item)
 						{
-							$item_info = $this->getItemInfo($item, 'schiffe');
+							$item_info = $this->getItemInfo($item, 'schiffe', array("scores"));
 							$this->raw['punkte'][3] += $item_info['scores'];
 						}
 					}
@@ -3018,7 +3020,7 @@
 						$items = $this->getItemsList('verteidigung');
 						foreach($items as $item)
 						{
-							$item_info = $this->getItemInfo($item, 'verteidigung');
+							$item_info = $this->getItemInfo($item, 'verteidigung', array("scores"));
 							$this->raw['punkte'][4] += $item_info['scores'];
 						}
 					}
@@ -3030,7 +3032,7 @@
 					$items = $this->getItemsList('forschung');
 					foreach($items as $item)
 					{
-						$item_info = $this->getItemInfo($item, 'forschung');
+						$item_info = $this->getItemInfo($item, 'forschung', array("scores"));
 						$this->raw['punkte'][1] += $item_info['scores'];
 					}
 				}
@@ -3049,7 +3051,7 @@
 						{
 							foreach($fleets[0] as $id=>$count)
 							{
-								$item_info = $this->getItemInfo($id, "schiffe");
+								$item_info = $this->getItemInfo($id, "schiffe", array("simple_scores"));
 								$this->raw["punkte"][3] += $count*$item_info["simple_scores"];
 							}
 						}
@@ -3071,7 +3073,7 @@
 								{
 									foreach($schiffe as $id=>$count)
 									{
-										$item_info = $this->getItemInfo($id, 'schiffe');
+										$item_info = $this->getItemInfo($id, 'schiffe', array("simple_scores"));
 										$this->raw['punkte'][3] += $count*$item_info['simple_scores'];
 									}
 								}
@@ -3083,7 +3085,7 @@
 								{
 									foreach($transport[1] as $id=>$count)
 									{
-										$item_info = $this->getItemInfo($id, 'roboter');
+										$item_info = $this->getItemInfo($id, 'roboter', array("simple_scores"));
 										$this->raw['punkte'][2] += $count*$item_info['simple_scores'];
 									}
 								}
@@ -3101,7 +3103,7 @@
 								{
 									foreach($handel[1] as $id=>$count)
 									{
-										$item_info = $this->getItemInfo($id, 'roboter');
+										$item_info = $this->getItemInfo($id, 'roboter', array("simple_scores"));
 										$this->raw['punkte'][2] += $count*$item_info['simple_scores'];
 									}
 								}
@@ -3669,7 +3671,7 @@
 
 					if($add_message)
 					{
-						$item_info = $this->getItemInfo($building[0], $type);
+						$item_info = $this->getItemInfo($building[0], $type, array("name", "level"));
 
 						if($type == 'gebaeude')
 							$message = $planet_prefix."Gebäudebau abgeschlossen: ".$item_info['name']." (".($item_info['level']+($building[2] ? -1 : 1)).")";
@@ -3710,7 +3712,7 @@
 							case 1:
 								foreach($building as $b)
 								{
-									$item_info = $this->getItemInfo($b[0], $type);
+									$item_info = $this->getItemInfo($b[0], $type, array("name"));
 									$time = $b[1];
 									for($i=0; $i<$b[2]; $i++)
 									{
@@ -3722,7 +3724,7 @@
 							case 2:
 								foreach($building as $b)
 								{
-									$item_info = $this->getItemInfo($b[0], $type);
+									$item_info = $this->getItemInfo($b[0], $type, array("name"));
 									$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.$b[2]." ".($b[2]==1 ? $singular : $plural)." der Sorte ".$item_info['name']." ".($b[2]==1 ? 'wurde' : 'wurden')." fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
 								}
 								break;

@@ -340,7 +340,6 @@
 				{
 					foreach($me->getItemsList('roboter') as $id)
 					{
-						$item_info = $me->getItemInfo($id, 'roboter');
 						$h = 0;
 						if(isset($handel[1][$id])) $h = $handel[1][$id];
 ?>

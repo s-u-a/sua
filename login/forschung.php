@@ -61,7 +61,7 @@
 <?php
 	foreach($forschungen as $id)
 	{
-		$item_info = $me->getItemInfo($id, 'forschung');
+		$item_info = $me->getItemInfo($id, 'forschung', array("deps-okay", "level", "buildable", "ress", "level", "name", "time_local", "time_global"));
 
 		if(!$item_info['deps-okay'] && $item_info['level'] <= 0 && (!$building || $building[0] != $id))
 			continue;

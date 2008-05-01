@@ -128,7 +128,7 @@
 				if($truemmerfeld !== false)
 				{
 					# Transportkapazitaet eines Sammlers
-					$sammler_info = $me->getItemInfo('S3', 'schiffe');
+					$sammler_info = $me->getItemInfo('S3', 'schiffe', array("trans"));
 					$transport = $sammler_info['trans'][0];
 
 					$anzahl = ceil(array_sum($truemmerfeld)/$transport);
@@ -156,7 +156,7 @@
 		foreach($_POST['flotte'] as $id=>$anzahl)
 		{
 			$_POST['flotte'][$id] = $anzahl = (int) $anzahl;
-			$item_info = $me->getItemInfo($id, 'schiffe');
+			$item_info = $me->getItemInfo($id, 'schiffe', array("level", "types"));
 			if(!$item_info)
 			{
 				unset($_POST['flotte'][$id]);
@@ -189,7 +189,7 @@
 			$ges_count = 0;
 			foreach($_POST['flotte'] as $id=>$anzahl)
 			{
-				$item_info = $me->getItemInfo($id);
+				$item_info = $me->getItemInfo($id, array("speed", "trans"));
 				if($speed == 0 || ($item_info['speed'] != 0 && $item_info['speed'] < $speed))
 					$speed = $item_info['speed'];
 
@@ -621,7 +621,7 @@
 				foreach($me->getItemsList('schiffe') as $id)
 				{
 					if($me->getItemLevel($id, 'schiffe') < 1) continue;
-					$item_info = $me->getItemInfo($id, 'schiffe');
+					$item_info = $me->getItemInfo($id, 'schiffe', array("level", "name"));
 ?>
 			<dt><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a> <a onclick="document.getElementById('i-flotte-<?=jsentities($id)?>').value=<?=$item_info["level"]?>;" class="vorhanden">(<?=h(sprintf(_("%s vorhanden"), ths($item_info['level'])))?>)</a></dt>
 			<dd><input type="text" name="flotte[<?=htmlspecialchars($id)?>]" id="i-flotte-<?=htmlspecialchars($id)?>" value="<?=htmlspecialchars(isset($_POST["flotte"]) && isset($_POST["flotte"][$id]) ? $_POST["flotte"][$id] : 0)?>" class="number number-items" tabindex="<?=$tabindex++?>"<?=($my_flotten >= $max_flotten || !$me->permissionToAct()) ? ' readonly="readonly"' : ''?> /></dd>
@@ -874,7 +874,7 @@
 
 								foreach($me->getItemsList('roboter') as $rob)
 								{
-									$item_info = $me->getItemInfo($rob, 'roboter');
+									$item_info = $me->getItemInfo($rob, 'roboter', array("name", "level"));
 ?>
 					<dt><label for="rtransport-<?=htmlspecialchars($rob)?>"><?=htmlspecialchars($item_info['name'])?></label></dt>
 					<dd><input type="text" name="rtransport[<?=htmlspecialchars($rob)?>]" id="rtransport-<?=htmlspecialchars($rob)?>" value="<?=(isset($_POST["rtransport"]) && isset($_POST["rtransport"][$rob])) ? htmlspecialchars($_POST["rtransport"][$rob]) : "0"?>" onchange="recalc_values();" tabindex="<?=$tabindex++?>" onkeyup="recalc_values();" onclick="recalc_values();" class="number number-ress" /> <a onclick="document.getElementById('rtransport-<?=jsentities($rob)?>').value=<?=$item_info["level"]?>; recalc_values();" class="max"><?=ths($item_info["level"])?></a></dd>

@@ -26,19 +26,6 @@
 			delete_request();
 	}
 
-	function makeFleetString($user, $fleet)
-	{
-		$user = Classes::User($user);
-		$flotte_string = array();
-		foreach($fleet as $id=>$anzahl)
-		{
-			if($anzahl > 0 && ($item_info = $user->getItemInfo($id, 'schiffe')))
-				$flotte_string[] = htmlspecialchars($item_info['name']).': '.ths($anzahl);
-		}
-		$flotte_string = implode('; ', $flotte_string);
-		return $flotte_string;
-	}
-
 	$flotten = $me->getFleetsList();
 
 	$gui->setOption("notify", true);
@@ -82,7 +69,7 @@
 			}
 			else $first_user = array_shift($users);
 
-			$part1 = sprintf(h($me_in_users !== false ? _("Ihre %sFlotte%s") : _("Eine %sFlotte%s")), "<span class=\"beschreibung schiffe\" title=\"".makeFleetString($first_user, $fl->getFleetList($first_user))."\">", "</span>");
+			$part1 = sprintf(h($me_in_users !== false ? _("Ihre %sFlotte%s") : _("Eine %sFlotte%s")), "<span class=\"beschreibung schiffe\" title=\"".Items::makeItemsString($first_user, $fl->getFleetList($first_user))."\">", "</span>");
 
 			$part2 = "";
 			if(count($users) > 0)
@@ -98,7 +85,7 @@
 						$this_message = _(" und einer %sFlotte%s vom Planeten %s");
 					else
 						$this_message = _(", einer %sFlotte%s vom Planeten %s");
-					$part2 .= sprintf(h($this_message), "<span class=\"beschreibung schiffe\" title=\"".makeFleetString($user, $fl->getFleetList($user))."\">", "</span>", htmlspecialchars(format_planet($from_pos, $from_galaxy->getPlanetName($from_array[1], $from_array[2]), $user)));
+					$part2 .= sprintf(h($this_message), "<span class=\"beschreibung schiffe\" title=\"".Items::makeItemsString($user, $fl->getFleetList($user))."\">", "</span>", htmlspecialchars(format_planet($from_pos, $from_galaxy->getPlanetName($from_array[1], $from_array[2]), $user)));
 				}
 			}
 
@@ -156,7 +143,7 @@
 			}
 			foreach($ress[1] as $id=>$anzahl)
 			{
-				if($anzahl > 0 && ($item_info = $me->getItemInfo($id, 'roboter')))
+				if($anzahl > 0)
 					$ress_string[] = sprintf(_("%s: %s"), _("[item_".$id."]"), ths($anzahl));
 			}
 			$string .= " ".sprintf(h($fl->isFlyingBack() ? _("Ihr Auftrag lautete %s.") : _("Ihr Auftrag lautet %s.")), "<span class=\"beschreibung transport\"".(count($ress_string) > 0 ? " title=\"".h(implode(_(", "), $ress_string))."\"" : "").">".h(_("[fleet_".$fl->getCurrentType()."]"))."</span>");
@@ -201,7 +188,7 @@
 				}
 				foreach($handel[1] as $id=>$anzahl)
 				{
-					if($anzahl > 0 && ($item_info = $me->getItemInfo($id, 'roboter')))
+					if($anzahl > 0)
 						$ress_string[] = sprintf(_("%s: %s"), _("[item_".$id."]"), ths($anzahl));
 				}
 				$string .= " ".sprintf(h(_("Es wird ein %sHandel%s durchgeführt werden.")), "<span class=\"beschreibung handel\" title=\"".implode(_(", "), $ress_string)."\">", "</span>");
@@ -295,9 +282,8 @@
 			$building_gebaeude = $me->checkBuildingThing('gebaeude');
 			if($building_gebaeude)
 			{
-				$item_info = $me->getItemInfo($building_gebaeude[0], 'gebaeude');
 ?>
-			<dd class="c-gebaeudebau"><?=htmlspecialchars($item_info['name'])?> <span class="restbauzeit" id="restbauzeit-ge-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($building_gebaeude[1], $me))?></span></dd>
+			<dd class="c-gebaeudebau"><?=h(_("[item_".$building_gebaeude[0]."]"))?> <span class="restbauzeit" id="restbauzeit-ge-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($building_gebaeude[1], $me))?></span></dd>
 <?php
 				$countdowns[] = array('ge-'.$planet, $building_gebaeude[1], h_root."/login/gebaeude.php?".global_setting("URL_SUFFIX"));
 			}
@@ -324,9 +310,8 @@
 			$building_forschung = $me->checkBuildingThing('forschung');
 			if($building_forschung)
 			{
-				$item_info = $me->getItemInfo($building_forschung[0], 'forschung');
 ?>
-			<dd class="c-forschung"><?=htmlspecialchars($item_info['name'])?> <span id="restbauzeit-fo-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($building_forschung[1], $me))?></span></dd>
+			<dd class="c-forschung"><?=h(_("[item_".$building_forschung[0]."]"))?> <span id="restbauzeit-fo-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($building_forschung[1], $me))?></span></dd>
 <?php
 				$countdowns[] = array('fo-'.$planet, $building_forschung[1], h_root."/login/forschung.php?".global_setting("URL_SUFFIX"));
 			}
@@ -351,26 +336,23 @@
 				{
 					case 3:
 						$last_building = array_pop($building);
-						$item_info = $me->getItemInfo($last_building[0], 'roboter');
 						$finishing_time = $last_building[1]+$last_building[2]*$last_building[3];
 ?>
-			<dd class="c-roboter">(<?=htmlspecialchars($item_info['name'])?>) <span id="restbauzeit-ro-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
+			<dd class="c-roboter">(<?=h(_("[item_".$last_building[0]."]"))?>) <span id="restbauzeit-ro-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
 <?php
 						break;
 					case 2:
 						$first_building = array_shift($building);
-						$item_info = $me->getItemInfo($first_building[0], 'roboter');
 						$finishing_time = $first_building[1]+$first_building[2]*$first_building[3];
 ?>
-			<dd class="c-roboter"><?=htmlspecialchars($item_info['name'])?> <span class="anzahl">(<?=ths($first_building[2])?>)</span> <span id="restbauzeit-ro-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
+			<dd class="c-roboter"><?=h(_("[item_".$first_building[0]."]"))?> <span class="anzahl">(<?=ths($first_building[2])?>)</span> <span id="restbauzeit-ro-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
 <?php
 						break;
 					case 1:
 						$first_building = array_shift($building);
-						$item_info = $me->getItemInfo($first_building[0], 'roboter');
 						$finishing_time = $first_building[1]+$first_building[3];
 ?>
-			<dd class="c-roboter"><?=htmlspecialchars($item_info['name'])?> <span id="restbauzeit-ro-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
+			<dd class="c-roboter"><?=h(_("[item_".$first_building[0]."]"))?> <span id="restbauzeit-ro-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
 <?php
 						break;
 				}
@@ -397,26 +379,23 @@
 				{
 					case 3:
 						$last_building = array_pop($building);
-						$item_info = $me->getItemInfo($last_building[0], 'schiffe');
 						$finishing_time = $last_building[1]+$last_building[2]*$last_building[3];
 ?>
-			<dd class="c-schiffe">(<?=htmlspecialchars($item_info['name'])?>) <span id="restbauzeit-sc-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
+			<dd class="c-schiffe">(<?=h(_("[item_".$last_building[0]."]"))?>) <span id="restbauzeit-sc-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
 <?php
 						break;
 					case 2:
 						$first_building = array_shift($building);
-						$item_info = $me->getItemInfo($first_building[0], 'schiffe');
 						$finishing_time = $first_building[1]+$first_building[2]*$first_building[3];
 ?>
-			<dd class="c-schiffe"><?=htmlspecialchars($item_info['name'])?> <span class="anzahl">(<?=ths($first_building[2])?>)</span> <span id="restbauzeit-sc-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
+			<dd class="c-schiffe"><?=h(_("[item_".$first_building[0]."]"))?> <span class="anzahl">(<?=ths($first_building[2])?>)</span> <span id="restbauzeit-sc-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
 <?php
 						break;
 					case 1:
 						$first_building = array_shift($building);
-						$item_info = $me->getItemInfo($first_building[0], 'schiffe');
 						$finishing_time = $first_building[1]+$first_building[3];
 ?>
-			<dd class="c-schiffe"><?=htmlspecialchars($item_info['name'])?> <span id="restbauzeit-sc-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
+			<dd class="c-schiffe"><?=h(_("[item_".$first_building[0]."]"))?> <span id="restbauzeit-sc-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
 <?php
 						break;
 				}
@@ -443,26 +422,23 @@
 				{
 					case 3:
 						$last_building = array_pop($building);
-						$item_info = $me->getItemInfo($last_building[0], 'verteidigung');
 						$finishing_time = $last_building[1]+$last_building[2]*$last_building[3];
 ?>
-			<dd class="c-verteidigung">(<?=htmlspecialchars($item_info['name'])?>) <span id="restbauzeit-ve-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
+			<dd class="c-verteidigung">(<?=h(_("[item_".$last_building[0]."]"))?>) <span id="restbauzeit-ve-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
 <?php
 						break;
 					case 2:
 						$first_building = array_shift($building);
-						$item_info = $me->getItemInfo($first_building[0], 'verteidigung');
 						$finishing_time = $first_building[1]+$first_building[2]*$first_building[3];
 ?>
-			<dd class="c-verteidigung"><?=htmlspecialchars($item_info['name'])?> <span class="anzahl">(<?=ths($first_building[2])?>)</span> <span id="restbauzeit-ve-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
+			<dd class="c-verteidigung"><?=h(_("[item_".$first_building[0]."]"))?> <span class="anzahl">(<?=ths($first_building[2])?>)</span> <span id="restbauzeit-ve-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
 <?php
 						break;
 					case 1:
 						$first_building = array_shift($building);
-						$item_info = $me->getItemInfo($first_building[0], 'verteidigung');
 						$finishing_time = $first_building[1]+$first_building[3];
 ?>
-			<dd class="c-verteidigung"><?=htmlspecialchars($item_info['name'])?> <span id="restbauzeit-ve-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
+			<dd class="c-verteidigung"><?=h(_("[item_".$first_building[0]."]"))?> <span id="restbauzeit-ve-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span></dd>
 <?php
 						break;
 				}

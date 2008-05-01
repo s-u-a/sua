@@ -62,7 +62,7 @@
 	$energie_prod = 0;
 	foreach($gebaeude as $id)
 	{
-		$item_info = $me->getItemInfo($id, 'gebaeude');
+		$item_info = $me->getItemInfo($id, 'gebaeude', array("level", "has_prod", "prod", "name"));
 
 		if($item_info['level'] <= 0 || !$item_info['has_prod'])
 			continue; # Es wird nichts produziert, also nicht anzeigen

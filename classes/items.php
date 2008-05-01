@@ -66,8 +66,6 @@
 			if(!isset($this->elements[$type]) || !isset($this->elements[$type][$id]))
 				return false;
 			$ret = $this->elements[$type][$id];
-			$ret["name"] = _("[item_".$id."]");
-			$ret["caption"] = _("[itemdesc_".$id."]");
 			return $ret;
 		}
 

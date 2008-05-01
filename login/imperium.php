@@ -289,9 +289,8 @@
 			$roboter = $me->getItemsList('roboter');
 			foreach($roboter as $id)
 			{
-				$item_info = $me->getItemInfo($id, 'roboter');
 ?>
-			<th class="c-<?=htmlspecialchars($id)?>"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a></th>
+			<th class="c-<?=htmlspecialchars($id)?>"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=h(_("[item_".$id."]"))?></a></th>
 <?php
 			}
 ?>
@@ -404,11 +403,10 @@
 			$einheiten = array_merge($me->getItemsList('schiffe'), $me->getItemsList('verteidigung'));
 			foreach($einheiten as $id)
 			{
-				$item_info = $me->getItemInfo($id);
 				$this_ges = 0;
 ?>
 		<tr>
-			<th class="c-einheit separator-right"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a></th>
+			<th class="c-einheit separator-right"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=h(_("[item_".$id."]"))?></a></th>
 <?php
 				foreach($planets as $i=>$planet)
 				{

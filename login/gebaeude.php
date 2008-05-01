@@ -138,7 +138,7 @@
 	$gebaeude = $me->getItemsList('gebaeude');
 	foreach($gebaeude as $id)
 	{
-		$geb = $me->getItemInfo($id, 'gebaeude');
+		$geb = $me->getItemInfo($id, 'gebaeude', array("deps-okay", "level", "buildable", "debuildable", "name", "ress", "time", "prod"));
 		$building = false;
 
 		if(!$geb['deps-okay'] && $geb['level'] <= 0) # Abhaengigkeiten nicht erfuellt
@@ -203,7 +203,7 @@
 <?php
 		if($me->checkSetting("extended_buildings"))
 		{
-			$geb_next = $me->getItemInfo($id, "gebaeude", null, null, $geb["level"]+1);
+			$geb_next = $me->getItemInfo($id, "gebaeude", array("prod"), null, $geb["level"]+1);
 ?>
 
 		<dt class="item-produktion-aktuell"><?=h(_("Produktion aktuell"))?></dt>

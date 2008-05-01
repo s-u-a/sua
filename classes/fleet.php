@@ -499,7 +499,7 @@
 			$user_object = Classes::User($user);
 			foreach($this->raw[1][$user][0] as $id=>$count)
 			{
-				$item_info = $user_object->getItemInfo($id, 'schiffe');
+				$item_info = $user_object->getItemInfo($id, 'schiffe', array("trans"));
 				$trans[0] += $item_info['trans'][0]*$count;
 				$trans[1] += $item_info['trans'][1]*$count;
 			}
@@ -670,7 +670,7 @@
 			$user_obj = Classes::User($user);
 			foreach($this->raw[1][$user][0] as $id=>$count)
 			{
-				$item_info = $user_obj->getItemInfo($id, 'schiffe');
+				$item_info = $user_obj->getItemInfo($id, 'schiffe', array("mass"));
 				$mass += $item_info['mass']*$count;
 			}
 
@@ -729,7 +729,7 @@
 			$user_obj = Classes::User($user);
 			foreach($fleet as $id=>$count)
 			{
-				$item_info = $user_obj->getItemInfo($id, 'schiffe');
+				$item_info = $user_obj->getItemInfo($id, 'schiffe', array("speed"));
 				$speeds[] = $item_info['speed'];
 			}
 			$speed = min($speeds)/1000000;
@@ -1212,7 +1212,7 @@
 								$this_user = Classes::User($username);
 								foreach($info[0] as $id=>$count)
 								{
-									$item_info = $this_user->getItemInfo($id, 'schiffe');
+									$item_info = $this_user->getItemInfo($id, 'schiffe', array("trans", "types"));
 									$this_trans = $item_info['trans'][0]*$count;
 									$this_trans_total += $this_trans;
 									if(in_array(2, $item_info['types']))
@@ -1536,8 +1536,7 @@
 										foreach($target_user->getItemsList('roboter') as $id)
 										{
 											if($target_user->getItemLevel($id, 'roboter') <= 0) continue;
-											$item_info = $target_user->getItemInfo($id, 'roboter');
-											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".ths($item_info['level']).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".ths($target_user->getItemLevel($id, "roboter")).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1550,8 +1549,7 @@
 										foreach($target_user->getItemsList('forschung') as $id)
 										{
 											if($target_user->getItemLevel($id, 'forschung') <= 0) continue;
-											$item_info = $target_user->getItemInfo($id, 'forschung');
-											$next .= "\t\t\t<li>[item_".$id."] <span class=\"stufe\">(Level&nbsp;".ths($item_info['level']).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"stufe\">(Level&nbsp;".ths($target_user->getItemLevel($id, "forschung")).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1585,10 +1583,7 @@
 										}
 
 										foreach($schiffe as $id=>$count)
-										{
-											$item_info = $target_user->getItemInfo($id, 'schiffe');
 											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".ths($count).")</span></li>\n";
-										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
 										$next .= "\t<div id=\"spionage-verteidigung\">\n";
@@ -1597,8 +1592,7 @@
 										foreach($target_user->getItemsList('verteidigung') as $id)
 										{
 											if($target_user->getItemLevel($id, 'verteidigung') <= 0) continue;
-											$item_info = $target_user->getItemInfo($id, 'verteidigung');
-											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".ths($item_info['level']).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".ths($target_user->getItemLevel($id, "verteidigung")).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1611,8 +1605,7 @@
 										foreach($target_user->getItemsList('gebaeude') as $id)
 										{
 											if($target_user->getItemLevel($id, 'gebaeude') <= 0) continue;
-											$item_info = $target_user->getItemInfo($id, 'gebaeude');
-											$next .= "\t\t\t<li>[item_".$id."] <span class=\"stufe\">(Stufe&nbsp;".ths($item_info['level']).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"stufe\">(Stufe&nbsp;".ths($target_user->getItemLevel($id, "gebaeude")).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1794,7 +1787,7 @@
 						$this->raw[1][$first_user][0]['S6']--;
 						$active_planet = $user_obj->getActivePlanet();
 						$user_obj->setActivePlanet($user_obj->getPlanetByPos($next_target_nt));
-						$item_info = $user_obj->getItemInfo('S6', 'schiffe');
+						$item_info = $user_obj->getItemInfo('S6', 'schiffe', array("ress"));
 						$besiedelung_ress = $item_info['ress'];
 						$besiedelung_ress[0] *= .4;
 						$besiedelung_ress[1] *= .4;
@@ -2084,7 +2077,7 @@
 				$this_ges_anzahl = $this_ges_staerke = $this_ges_schild = 0;
 				foreach($flotten as $id=>$anzahl)
 				{
-					$item_info = $users_angreifer[$name]->getItemInfo($id);
+					$item_info = $users_angreifer[$name]->getItemInfo($id, null, array("att", "def"));
 
 					$staerke = $item_info['att']*$anzahl;
 					$schild = $item_info['def']*$anzahl;
@@ -2152,7 +2145,7 @@
 				$one = false;
 				foreach($flotten as $id=>$anzahl)
 				{
-					$item_info = $users_verteidiger[$name]->getItemInfo($id);
+					$item_info = $users_verteidiger[$name]->getItemInfo($id, null, array("att", "def"));
 
 					$staerke = $item_info['att']*$anzahl;
 					$schild = $item_info['def']*$anzahl;
@@ -2285,7 +2278,7 @@
 				{
 					foreach($items as $id=>$anzahl)
 					{
-						$item_info = $a_objs[$name]->getItemInfo($id);
+						$item_info = $a_objs[$name]->getItemInfo($id, null, array("att"));
 						if(!$item_info) continue;
 						$staerke += $item_info['att']*$anzahl;
 					}
@@ -2309,7 +2302,7 @@
 					$att_user = array_rand($d);
 					$att_id = array_rand($d[$att_user]);
 
-					$item_info = ${'users_'.$runde_anderer}[$att_user]->getItemInfo($att_id);
+					$item_info = ${'users_'.$runde_anderer}[$att_user]->getItemInfo($att_id, null, array("def"));
 					$this_shield = $item_info['def']*$d[$att_user][$att_id];
 
 					$schild_f = pow(0.95, ${'users_'.$runde_anderer}[$att_user]->getItemLevel('F10', 'forschung'));
@@ -2423,7 +2416,7 @@
 				$one = false;
 				foreach($flotten as $id=>$old_anzahl)
 				{
-					$item_info = $users_angreifer[$name]->getItemInfo($id);
+					$item_info = $users_angreifer[$name]->getItemInfo($id, null, array("ress", "simple_scores", "att", "def"));
 
 					if(isset($angreifer[$name]) && isset($angreifer[$name][$id]))
 						$anzahl = $angreifer[$name][$id];
@@ -2517,7 +2510,7 @@
 				$one = false;
 				foreach($flotten as $id=>$anzahl_old)
 				{
-					$item_info = $users_verteidiger[$name]->getItemInfo($id);
+					$item_info = $users_verteidiger[$name]->getItemInfo($id, null, array("type", "ress", "simple_scores", "att", "def"));
 
 					if(isset($verteidiger[$name]) && isset($verteidiger[$name][$id]))
 						$anzahl = $verteidiger[$name][$id];
@@ -2697,7 +2690,7 @@
 					$this_user = Classes::User($username);
 					foreach($fleet as $id=>$count)
 					{
-						$item_info = $this_user->getItemInfo($id, 'schiffe');
+						$item_info = $this_user->getItemInfo($id, 'schiffe', array("trans"));
 						$this_trans = $item_info['trans'][0]*$count;
 						$trans[$username] += $this_trans;
 						$trans_total += $this_trans;

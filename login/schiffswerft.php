@@ -44,7 +44,7 @@
 	$building_possible = (!($building_gebaeude = $me->checkBuildingThing('gebaeude')) || $building_gebaeude[0] != 'B10');
 	foreach($schiffe as $id)
 	{
-		$item_info = $me->getItemInfo($id);
+		$item_info = $me->getItemInfo($id, "schiffe", array("buildable", "level", "name", "ress", "time"));
 
 		if(!$item_info['buildable'] && $item_info['level'] <= 0)
 			continue;
@@ -100,9 +100,8 @@
 		$first_building[1] += $first_building[3];
 		$first_building[2]--;
 		if($first_building[2] <= 0) array_shift($building_schiffe);
-		$first_info = $me->getItemInfo($first[0]);
 ?>
-	<li class="<?=htmlspecialchars($first[0])?> active<?=(count($building_schiffe) <= 0) ? ' last' : ''?>"><strong><?=htmlspecialchars($first_info['name'])?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>"><?=htmlspecialchars(format_ftime($first[1], $me))?></span></strong></li>
+	<li class="<?=htmlspecialchars($first[0])?> active<?=(count($building_schiffe) <= 0) ? ' last' : ''?>"><strong><?=h(_("[item_".$first[0]."]"))?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>"><?=htmlspecialchars(format_ftime($first[1], $me))?></span></strong></li>
 <?php
 		if(count($building_schiffe) > 0)
 		{
@@ -111,9 +110,8 @@
 			foreach($building_schiffe as $key=>$bau)
 			{
 				$finishing_time = $bau[1]+$bau[2]*$bau[3];
-				$item_info = $me->getItemInfo($bau[0]);
 ?>
-	<li class="<?=htmlspecialchars($bau[0])?><?=($key == $last) ? ' last' : ''?>"><?=htmlspecialchars($item_info['name'])?> &times; <?=$bau[2]?><?php if($key == $last){?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span><?php }?></li>
+	<li class="<?=htmlspecialchars($bau[0])?><?=($key == $last) ? ' last' : ''?>"><?=h(_("[item_".$bau[0]."]"))?> &times; <?=$bau[2]?><?php if($key == $last){?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span><?php }?></li>
 <?php
 			}
 		}
