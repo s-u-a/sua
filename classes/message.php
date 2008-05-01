@@ -16,9 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	import("Dataset/SQLite");
-	import("Dataset/Classes");
-
 	class MessageDatabase extends SQLite
 	{
 		protected $tables = array("messages" => array("message_id PRIMARY KEY", "time INT", "text", "parsed_text", "sender", "users", "subject", "html INT"), "messages_recipients" => array("message_id", "recipient"));

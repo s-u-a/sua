@@ -16,11 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	import("Dataset/Dataset");
-	import("Dataset/Classes");
-	import("Dataset/Galaxy");
-	import("Dataset/Item");
-
 	class FleetDatabase extends SQLite
 	{
 		protected $tables = array("fleets" => array("fleet_id PRIMARY KEY", "targets", "users", "start INT", "finished" ));
@@ -1029,8 +1024,6 @@
 
 		static function getDistance($start, $target)
 		{
-			import("Dataset/Galaxy");
-
 			if(substr($start, -1) == "T") $start = substr($start, 0, -1);
 			if(substr($target, -1) == "T") $target = substr($target, 0, -1);
 			$this_pos = explode(':', $start);

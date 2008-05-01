@@ -16,9 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	import("Dataset/SQLite");
-	import("Dataset/Classes");
-
 	class Highscores extends SQLite
 	{
 		protected $tables = array("highscores_users" => array("username", "alliance", "scores_0 INT", "scores_1 INT", "scores_2 INT", "scores_3 INT", "scores_4 INT", "scores_5 INT", "scores_6 INT", "changed INT"), "highscores_alliances" => array("tag", "scores_average INT", "scores_total INT", "members_count INT", "changed INT"));

@@ -37,7 +37,6 @@
 	$eventfile = Classes::EventFile();
 	$eventfile->_empty();
 
-	import("Dataset/Fleet");
 	$fd = new FleetDatabase();
 	$fd->query("SELECT fleet_id FROM fleets");
 	while($r = $fd->nextResult())

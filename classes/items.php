@@ -16,8 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	import("Dataset/Classes");
-
 	class Items
 	{
 		private $elements = array();

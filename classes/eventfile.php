@@ -16,9 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	import("Dataset/Dataset");
-	import("Dataset/Classes");
-
 	class EventFile extends SQLite
 	{
 		protected $tables = array("events" => array("time INT", "fleet"));

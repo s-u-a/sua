@@ -16,9 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	import("Dataset/SQLite");
-	import("Dataset/Classes");
-
 	class ReloadStack extends SQLite
 	{
 		protected $tables = array("reload_stack" => array("time", "user", "type"));

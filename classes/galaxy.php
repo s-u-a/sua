@@ -16,8 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	import("Dataset/Classes");
-
 /*
 Format einer Galaxie-Datei:
 Jedes System ist 1655 Bytes lang, die gesamte Datei also 999*1655=1653345.

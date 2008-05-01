@@ -35,7 +35,6 @@
 	}
 
 	// Reset all planets
-	import("Dataset/Galaxy");
 	for($galaxy = 1; $galaxy <= getGalaxiesCount(); $galaxy++)
 	{
 		$g_obj = Classes::Galaxy($galaxy);

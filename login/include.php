@@ -46,9 +46,6 @@
 	if(isset($_SESSION['database']) && isset($databases[$_SESSION['database']]) && ($databases[$_SESSION['database']]['enabled'] || isset($_SESSION['admin_username'])))
 		define_globals($_SESSION['database']);
 
-	import("Dataset/Classes");
-	import("Gui/LoginGui");
-
 	# Skins bekommen
 	$skins = get_skins();
 
@@ -195,7 +192,6 @@
 	}
 
 	# Captcha-Abfrage
-	import("Gui/Captcha");
 	while($me->challengeNeeded())
 	{
 		$error = null;

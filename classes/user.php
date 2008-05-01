@@ -16,9 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	import("Dataset/Dataset");
-	import("Dataset/Classes");
-
 	class User extends Dataset
 	{
 		protected $active_planet = null;
@@ -612,7 +609,6 @@
 				$eventfile = Classes::EventFile();
 				foreach($this->raw['flotten'] as $i=>$flotte)
 				{
-					import('Dataset/Fleet');
 					if(!Fleet::fleetExists($flotte))
 					{
 						unset($this->raw['flotten'][$i]);
@@ -2340,7 +2336,6 @@
 
 			if($tag === '')
 			{
-				import('Dataset/Alliance');
 				if(!isset($this->raw['alliance']) || trim($this->raw['alliance']) == '' || !Alliance::allianceExists($this->raw['alliance']))
 					return false;
 				else return trim($this->raw['alliance']);
@@ -3101,7 +3096,6 @@
 			$this->setActivePlanet($active_planet);
 
 			# Nachrichtenabsender aendern
-			import("Dataset/Message");
 			$message_db = new MessageDatabase();
 			$message_db->renameUser($this->name, $new_name);
 			unset($message_db);

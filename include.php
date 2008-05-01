@@ -20,6 +20,5 @@
 	require_once($include_filename);
 
 	language("de_DE", true);
-	import("Gui/HomeGui");
 	$gui = new HomeGui();
 ?>

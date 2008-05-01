@@ -16,8 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	import("Exception/SuaException");
-
 	class CaptchaException extends SuaException
 	{
 		static $HTTP_ERROR = 1;

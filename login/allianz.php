@@ -23,8 +23,6 @@
 	if(isset($_GET['action']))
 		$action = $_GET['action'];
 
-	import("Dataset/Alliance");
-
 	if(!$me->allianceTag() || !($alliance = Classes::Alliance($me->allianceTag())) || !$alliance->getStatus())
 	{
 		$application = $me->allianceApplication();

@@ -17,8 +17,6 @@
 */
 	require('include.php');
 
-	import('Dataset/User');
-
 	if($admin_array['permissions'][1] && isset($_POST['ghost_username']) && User::userExists(trim($_POST['ghost_username'])))
 	{
 		# Als Geist als ein Benutzer anmelden

@@ -21,9 +21,6 @@
 	$max_flotten = $me->getMaxParallelFleets();
 	$my_flotten = $me->getCurrentParallelFleets();
 
-	import('Dataset/Fleet');
-	import('Dataset/Galaxy');
-
 	class LoginFlottenException extends SuaException
 	{
 		protected $type = 0;

@@ -43,7 +43,6 @@
 		{
 			$_POST['username'] = str_replace("\x0a", ' ', trim($_POST['username'])); # nbsp
 
-			import('Dataset/User');
 			if(User::UserExists($_POST['username']))
 				$error = _('Dieser Spieler existiert bereits. Bitte wählen Sie einen anderen Namen.');
 			elseif(substr($_POST['username'], -4) == ' (U)')

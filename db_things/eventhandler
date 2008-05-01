@@ -115,10 +115,6 @@ EOF
 		if($daemon) $errlog = fopen(global_setting("DB_EVENTHANDLER_LOG"), 'a');
 		else $errlog = STDERR;
 		global_setting("LOG", $errlog);
-
-		import('Dataset/Classes');
-		import('Dataset/Fleet');
-		import('Dataset/Galaxy');
 	}
 
 	################
@@ -543,7 +539,6 @@ EOF
 
 			# Oeffentliche Nachrichten loeschen
 
-			import("Dataset/PublicMessage");
 			$pmdb = new PublicMessageDatabase();
 
 			$processed_messages_public = $pmdb->messagesCount();

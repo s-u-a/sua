@@ -18,7 +18,7 @@
 	define('start_mtime', microtime(true));
 
 	error_reporting(4095);
-	//ignore_user_abort(true);
+	ignore_user_abort(true);
 
 	# 10 Minuten sollten wohl auch bei hoher Serverlast genuegen
 	set_time_limit(600);
@@ -144,9 +144,6 @@
 	global_setting("CLASSES", dirname(__FILE__)."/classes");
 	global_setting("SESSION_NAME", "session"); # Name des URL-Parameters mit der Session-ID
 
-	import("Exception/ClassException");
-	import("Exception/IOException");
-
 	/**
 	  * Initialisiert die Standardwerte fuer die globalen Einstellungen.
 	  * Kann mehrmals aufgerufen werden, zum Beispiel, um auf eine andere
@@ -218,44 +215,11 @@
 		return true;
 	}
 
-	function get_includes($dirn=null)
+	function __autoload($classname)
 	{
-		if(!isset($dirn))
-			static $includes;
-		if(!isset($includes))
-		{
-			if(!isset($dirn)) $dirn = global_setting("CLASSES");
-
-			$includes = array();
-			$dir = dir($dirn);
-			if(!$dir) throw new IOException("Could not open directory ".$dirn.".");
-			while(($fname = $dir->read()) !== false)
-			{
-				if($fname[0] == '.') continue;
-				if(is_file($dirn."/".$fname) && is_readable($dirn."/".$fname))
-					$includes[] = substr($dirn."/".$fname, strlen(global_setting("CLASSES")."/"));
-				elseif(is_dir($dirn."/".$fname))
-					$includes = array_merge($includes, get_includes($dirn."/".$fname));
-			}
-		}
-		return $includes;
-	}
-
-	function import($class)
-	{
-		$matches = 0;
-		$class_pattern = "/^".str_replace(array("\\?", "\\*"), array(".", ".*"), preg_quote($class, "/"))."\\.php\$/i";
-		foreach(get_includes() as $include)
-		{
-			if(preg_match($class_pattern, $include))
-			{
-				require_once(global_setting("CLASSES")."/".$include);
-				$matches++;
-			}
-		}
-
-		if($matches < 1)
-			throw new ClassException("Could not load class ".$class.".");
+		$fname = global_setting("CLASSES")."/".strtolower($classname).".php";
+		if(!is_file($fname)) return false;
+		include_once($fname);
 	}
 
 	// TODO: Get rid of document.write and innerHTML
@@ -270,8 +234,8 @@
 	if(!isset($_SERVER["SCRIPT_FILENAME"]) && substr($_SERVER["PHP_SELF"], 0, strlen(h_root)) == $_SERVER["PHP_SELF"])
 		$_SERVER["SCRIPT_FILENAME"] = s_root.substr($_SERVER["PHP_SELF"], strlen(h_root));
 
-	//if(!isset($USE_OB) || $USE_OB)
-	//	ob_start('ob_gzhandler');
+	if(!isset($USE_OB) || $USE_OB)
+		ob_start('ob_gzhandler');
 
 	$tabindex = 1;
 
@@ -283,8 +247,6 @@
 
 	# TODO: Die folgenden Dinge in eine globale Einstellung auslagern
 
-	import("Dataset/Fleet");
-	import("Dataset/Message");
 	# Maximales Alter in Tagen der Nachrichtensorten
 	$message_type_times = array (
 		Message::$TYPE_KAEMPFE => 3,
