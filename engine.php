@@ -1916,6 +1916,7 @@
 				putenv("GNUPGHOME=".$config["gpghome"]);
 			if(!$gpg->addsignkey($config["fingerprint"]))
 				return null;
+			if($gpg->adddecryptkey($config["fingerprint"]))
 		}
 		if($return_public_key)
 			return $gpg->export($config["fingerprint"]);
@@ -1982,6 +1983,16 @@
 		if(!preg_match("/(^|\n)-----BEGIN PGP MESSAGE-----\r?\n.*?\r?\n\r?\n(.*?)\r?\n-----END PGP MESSAGE-----(\r?\n|\$)/s", $signed, $m))
 			return false;
 		return $m[2];
+	}
+
+	/**
+	  * Entschlüsselt den Text.
+	*/
+
+	function gpg_decrypt($text)
+	{
+		$gpg = gpg_init();
+		return $gpg->decrypt($text);
 	}
 
 	/**

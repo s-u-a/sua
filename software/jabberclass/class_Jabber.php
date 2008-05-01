@@ -966,7 +966,7 @@ class Jabber {
 					}
 				}
 				elseif ($element['@']['xmlns']=="jabber:x:encrypted") {
-					var_dump($element["@"]["xmlns"]);
+					$encrypted = $element["#"];
 				}
 			}
 		}

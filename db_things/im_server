@@ -196,9 +196,13 @@
 			$jabber->message($to, "normal", null, $message, null, null, $payload);
 		}
 
-		function handleMessage($from, $to, $message)
+		function handleMessage($from, $to, $message, $bla1, $bla2, $bla3, $bla4, $bla5, $encrypted)
 		{
 			global $jabber,$messengers,$imfile,$unrecognised_limits;
+
+			if($encrypted && $decrypted = gpg_decrypt($encrypted))
+				$message = $decrypted;
+			var_dump($decrypted);
 
 			$transport = 'jabber';
 			list($from_cut) = explode("/", $from);
