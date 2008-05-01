@@ -452,12 +452,12 @@ class Jabber {
 
 	// sets a user's presence (when simply used to set your availability, it's more convenient
 	// to call this way, as usually only the first 2 fields are necessary)
-	function set_presence($show = NULL, $status = NULL, $to = NULL, $priority = NULL) {
-		return $this->send_presence(NULL,$to,$show,$status,$priority);
+	function set_presence($show = NULL, $status = NULL, $to = NULL, $priority = NULL, $sign = NULL) {
+		return $this->send_presence(NULL,$to,$show,$status,$priority, $sign);
 	}
 
 	// sends presence to another contact/entity
-	function send_presence($type = NULL, $to = NULL, $show = NULL, $status = NULL, $priority = NULL) {
+	function send_presence($type = NULL, $to = NULL, $show = NULL, $status = NULL, $priority = NULL, $sign = NULL) {
 		$xml = "<presence";
 		$xml .= ($to) ? " to='$to'" : '';
 		$xml .= ($type) ? " type='$type'" : '';
@@ -466,6 +466,8 @@ class Jabber {
 		$xml .= ($status) ? "	<status>$status</status>\n" : '';
 		$xml .= ($show) ? "	<show>$show</show>\n" : '';
 		$xml .= ($priority) ? "	<priority>$priority</priority>\n" : '';
+
+		$xml .= ($sign) ? "	<x xmlns='jabber:x:signed'>$sign</x>\n" : ''; // http://www.xmpp.org/extensions/xep-0027.html#signing
 
 		$xml .= ($status || $show || $priority) ? "</presence>\n" : '';
 
