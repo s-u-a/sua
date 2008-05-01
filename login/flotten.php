@@ -189,7 +189,7 @@
 			$ges_count = 0;
 			foreach($_POST['flotte'] as $id=>$anzahl)
 			{
-				$item_info = $me->getItemInfo($id, array("speed", "trans"));
+				$item_info = $me->getItemInfo($id, null, array("speed", "trans"));
 				if($speed == 0 || ($item_info['speed'] != 0 && $item_info['speed'] < $speed))
 					$speed = $item_info['speed'];
 
@@ -219,6 +219,7 @@
 		else
 		{
 			$types = $auftraege = $galaxy_obj = $planet_owner = $planet_owner_flag = $target_koords = array();
+			reset($_POST["auftrag"]);
 			for($i=0; list($k,$v) = each($_POST["auftrag"]); $i++)
 			{
 				if(!isset($_POST["galaxie"][$k]) || !isset($_POST["system"][$k]) || !isset($_POST["planet"][$k]) || !preg_match("/^[1-9]([0-9]*)$/", $_POST['galaxie'][$k]) || !preg_match("/^[1-9]([0-9]*)$/", $_POST['system'][$k]) || !preg_match("/^[1-9]([0-9]*)$/", $_POST['planet'][$k]))

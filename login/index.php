@@ -69,7 +69,7 @@
 			}
 			else $first_user = array_shift($users);
 
-			$part1 = sprintf(h($me_in_users !== false ? _("Ihre %sFlotte%s") : _("Eine %sFlotte%s")), "<span class=\"beschreibung schiffe\" title=\"".Items::makeItemsString($first_user, $fl->getFleetList($first_user))."\">", "</span>");
+			$part1 = sprintf(h($me_in_users !== false ? _("Ihre %sFlotte%s") : _("Eine %sFlotte%s")), "<span class=\"beschreibung schiffe\" title=\"".Items::makeItemsString($fl->getFleetList($first_user))."\">", "</span>");
 
 			$part2 = "";
 			if(count($users) > 0)
@@ -85,7 +85,7 @@
 						$this_message = _(" und einer %sFlotte%s vom Planeten %s");
 					else
 						$this_message = _(", einer %sFlotte%s vom Planeten %s");
-					$part2 .= sprintf(h($this_message), "<span class=\"beschreibung schiffe\" title=\"".Items::makeItemsString($user, $fl->getFleetList($user))."\">", "</span>", htmlspecialchars(format_planet($from_pos, $from_galaxy->getPlanetName($from_array[1], $from_array[2]), $user)));
+					$part2 .= sprintf(h($this_message), "<span class=\"beschreibung schiffe\" title=\"".Items::makeItemsString($fl->getFleetList($user))."\">", "</span>", htmlspecialchars(format_planet($from_pos, $from_galaxy->getPlanetName($from_array[1], $from_array[2]), $user)));
 				}
 			}
 
