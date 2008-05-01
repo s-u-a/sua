@@ -1916,7 +1916,7 @@
 				putenv("GNUPGHOME=".$config["gpghome"]);
 			if(!$gpg->addsignkey($config["fingerprint"]))
 				return null;
-			if($gpg->adddecryptkey($config["fingerprint"]))
+			$gpg->adddecryptkey($config["fingerprint"]);
 		}
 		if($return_public_key)
 			return $gpg->export($config["fingerprint"]);
