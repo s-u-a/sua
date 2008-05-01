@@ -182,6 +182,8 @@
 
 		function sendSigned($to, $message, $fingerprint = null)
 		{
+			global $jabber;
+
 			$payload = "";
 			if(isset($fingerprint) && $encrypted = gpg_smallencrypt($message, $fingerprint))
 			{
