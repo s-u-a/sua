@@ -203,7 +203,7 @@
 <?php
 		if($me->checkSetting("extended_buildings"))
 		{
-			$geb_next = $me->getItemInfo($id, "gebaeude", true, false, $geb["level"]+1);
+			$geb_next = $me->getItemInfo($id, "gebaeude", null, null, $geb["level"]+1);
 ?>
 
 		<dt class="item-produktion-aktuell"><?=h(_("Produktion aktuell"))?></dt>

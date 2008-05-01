@@ -2423,7 +2423,7 @@
 				$one = false;
 				foreach($flotten as $id=>$old_anzahl)
 				{
-					$item_info = $users_angreifer[$name]->getItemInfo($id, false, true, true);
+					$item_info = $users_angreifer[$name]->getItemInfo($id);
 
 					if(isset($angreifer[$name]) && isset($angreifer[$name][$id]))
 						$anzahl = $angreifer[$name][$id];
@@ -2517,7 +2517,7 @@
 				$one = false;
 				foreach($flotten as $id=>$anzahl_old)
 				{
-					$item_info = $users_verteidiger[$name]->getItemInfo($id, false, true, true);
+					$item_info = $users_verteidiger[$name]->getItemInfo($id);
 
 					if(isset($verteidiger[$name]) && isset($verteidiger[$name][$id]))
 						$anzahl = $verteidiger[$name][$id];

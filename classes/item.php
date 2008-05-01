@@ -28,12 +28,22 @@
 			$this->item_info = $this->items_instance->getItemInfo($this->item);
 		}
 
-		function getInfo($field=false)
+		function getInfo($field=null)
 		{
 			if($this->item_info === false) return false;
 
-			if($field === false)
+			if($field === false || $field === null || $field === array())
 				return $this->item_info;
+			elseif(is_array($field))
+			{
+				$ret = array();
+				foreach($field as $f)
+				{
+					if(isset($this->item_info[$f]))
+						$ret[$f] = $this->item_info[$f];
+				}
+				return $ret;
+			}
 			elseif(isset($this->item_info[$field]))
 				return $this->item_info[$field];
 			return false;

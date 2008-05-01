@@ -135,9 +135,7 @@
 		{
 			if(!$this->status) return false;
 
-			if(!isset($this->cache['getPlanetsList']))
-				$this->cache['getPlanetsList'] = array_keys($this->raw['planets']);
-			return $this->cache['getPlanetsList'];
+			return array_keys($this->raw['planets']);
 		}
 
 		function getTotalFields()
@@ -310,8 +308,6 @@
 			# Highscores neu berechnen
 			$this->recalcHighscores(true, true, true, true, true);
 
-			if(isset($this->cache['getPlanetsList'])) unset($this->cache['getPlanetsList']);
-
 			return true;
 		}
 
@@ -359,8 +355,6 @@
 				'name' => $planet_name,
 				"foreign_fleets" => array() # Enthaelt ein Array aus Arrays, von wem welche Flotten stationiert sind
 			);
-
-			if(isset($this->cache['getPlanetsList'])) unset($this->cache['getPlanetsList']);
 
 			$this->changed = true;
 
@@ -421,8 +415,6 @@
 
 			if($new_active_planet != $planet2) $this->setActivePlanet($new_active_planet);
 
-			if(isset($this->cache['getPlanetsList'])) unset($this->cache['getPlanetsList']);
-
 			return true;
 		}
 
@@ -431,11 +423,7 @@
 			if(!$this->status) return false;
 
 			if($i === false)
-			{
-				if(!isset($this->cache['getScores']))
-					$this->cache['getScores'] = $this->raw['punkte'][0]+$this->raw['punkte'][1]+$this->raw['punkte'][2]+$this->raw['punkte'][3]+$this->raw['punkte'][4]+$this->raw['punkte'][5]+$this->raw['punkte'][6];
-				return $this->cache['getScores'];
-			}
+				return $this->raw['punkte'][0]+$this->raw['punkte'][1]+$this->raw['punkte'][2]+$this->raw['punkte'][3]+$this->raw['punkte'][4]+$this->raw['punkte'][5]+$this->raw['punkte'][6];
 			elseif(!isset($this->raw['punkte'][$i]))
 				return 0;
 			else
@@ -450,7 +438,6 @@
 				$this->raw['punkte'][$i] = $scores;
 			else $this->raw['punkte'][$i] += $scores;
 
-			if(isset($this->cache['getScores'])) $this->cache['getScores'] += $scores;
 			$this->recalc_highscores[$i] = true;
 			$this->changed = true;
 			return true;
@@ -462,9 +449,7 @@
 
 			if($i === false)
 			{
-				if(!isset($this->cache['getSpentRess']))
-					$this->cache['getSpentRess'] = $this->getScores(7)+$this->getScores(8)+$this->getScores(9)+$this->getScores(10)+$this->getScores(11);
-				return $this->cache['getSpentRess'];
+				return $this->getScores(7)+$this->getScores(8)+$this->getScores(9)+$this->getScores(10)+$this->getScores(11);
 			}
 			else return $this->getScores($i+7);
 		}
@@ -539,8 +524,6 @@
 			if(isset($ress[3])) $this->planet_info["ress"][3] += $ress[3];
 			if(isset($ress[4])) $this->planet_info["ress"][4] += $ress[4];
 
-			if(isset($this->cache['getItemInfo']) && isset($this->cache['getItemInfo'][$this->getActivePlanet()])) unset($this->cache['getItemInfo'][$this->getActivePlanet()]);
-
 			$this->changed = true;
 
 			return true;
@@ -557,8 +540,6 @@
 			if(isset($ress[2])){ $this->planet_info["ress"][2] -= $ress[2]; if($make_scores) $this->raw['punkte'][9] += $ress[2]; }
 			if(isset($ress[3])){ $this->planet_info["ress"][3] -= $ress[3]; if($make_scores) $this->raw['punkte'][10] += $ress[3]; }
 			if(isset($ress[4])){ $this->planet_info["ress"][4] -= $ress[4]; if($make_scores) $this->raw['punkte'][11] += $ress[4]; }
-
-			if($make_scores && isset($this->cache['getSpentRess'])) unset($this->cache['getSpentRess']);
 
 			$this->changed = true;
 
@@ -780,27 +761,20 @@
 		{
 			if(!$this->status) return false;
 
-			if(!isset($this->cache['getMessagesList'])) $this->cache['getMessagesList'] = array();
-			if(!isset($this->cache['getMessagesList'][$type]))
-			{
-				if(!isset($this->raw['messages']) || !isset($this->raw['messages'][$type])) $this->cache['getMessagesList'][$type] = array();
-				else $this->cache['getMessagesList'][$type] = array_reverse(array_keys($this->raw['messages'][$type]));
-			}
-			return $this->cache['getMessagesList'][$type];
+			if(!isset($this->raw['messages']) || !isset($this->raw['messages'][$type]))
+				return array();
+			else return array_reverse(array_keys($this->raw['messages'][$type]));
 		}
 
 		function getMessageCategoriesList()
 		{
 			if(!$this->status) return false;
 
-			if(!isset($this->cache['getMessageCategoriesList']))
-			{
-				if(!isset($this->raw['messages'])) $this->cache['getMessageCategoriesList'] = array();
-				elseif(!isset($this->raw['messages'])) $this->cache['getMessageCategoriesList'] = array();
-				else $this->cache['getMessageCategoriesList'] = array_keys($this->raw['messages']);
-				sort($this->cache['getMessageCategoriesList'], SORT_NUMERIC);
-			}
-			return $this->cache['getMessageCategoriesList'];
+			if(!isset($this->raw['messages'])) $return = array();
+			elseif(!isset($this->raw['messages'])) $return = array();
+			else $return = array_keys($this->raw['messages']);
+			sort($return, SORT_NUMERIC);
+			return $return;
 		}
 
 		function addMessage($message_id, $type)
@@ -813,8 +787,6 @@
 				$this->raw['messages'][$type] = array();
 			$this->raw['messages'][$type][$message_id] = 1;
 			$this->changed = true;
-
-			if(isset($this->cache['getMessagesList']) && isset($this->cache['getMessagesList'][$type])) unset($this->cache['getMessagesList'][$type]);
 		}
 
 		function removeMessage($message_id, $type, $edit_message=true)
@@ -825,8 +797,6 @@
 				return 2;
 			unset($this->raw['messages'][$type][$message_id]);
 			$this->changed = true;
-
-			if(isset($this->cache['getMessagesList'])) unset($this->cache['getMessagesList']);
 
 			if($edit_message)
 			{
@@ -1010,64 +980,123 @@
 			return $deps;
 		}
 
-		function getItemInfo($id, $type=false, $run_eventhandler=true, $calc_scores=false, $level=null)
+		function _itemInfoFields($fields)
+		{
+			static $calc_items,$calc_deps;
+			if(!isset($calc_items))
+				$calc_items = array("type", "buildable", "debuildable", "deps-okay", "level", "prod", "has_prod", "time", "scores", "ress", "fields", "limit_factor", "time_local", "time_global", "limit_factor_local", "limit_factor_global", "simple_scores", "att", "def", "trans", "speed");
+			if(!isset($calc_deps))
+				$calc_deps = array("has_prod" => array("prod", "level"),
+				                   "prod" => array("level"),
+				                   "scores" => array("level", "ress", "simple_scores"),
+				                   "simple_scores" => array("ress"),
+				                   "ress" => array("level"),
+				                   "buildable" => array("fields"),
+				                   "debuildable" => array("fields"),
+				                   "limit_factor" => array("time", "level"),
+				                   "time" => array("level"),
+				                   "time_local" => array("time", "level"),
+				                   "time_global" => array("time_local", "time", "level"),
+				                   "limit_factor_local" => array("time_local", "time", "level"),
+				                   "limit_factor_global" => array("time_global", "time_local", "time", "level")
+				);
+			$calc = array();
+			if(!$fields)
+			{
+				foreach($calc_items as $c)
+					$calc[$c] = true;
+			}
+			else
+			{
+				foreach($calc_items as $c)
+					$calc[$c] = false;
+				foreach($fields as $f)
+					$calc[$f] = true;
+			}
+			foreach($calc_deps as $f=>$deps)
+			{
+				if($calc[$f])
+				{
+					foreach($deps as $dep)
+					{
+						if(!$calc[$dep])
+						{
+							$calc[$dep] = true;
+							$fields[] = $dep;
+						}
+					}
+				}
+			}
+			return array($calc, $fields);
+		}
+
+		function getItemInfo($id, $type=false, $fields=null, $run_eventhandler=null, $level=null)
 		{
 			if(!$this->status) return false;
 
+			if($run_eventhandler === null) $run_eventhandler = true;
+
+			list($calc, $fields) = $this->_itemInfoFields($fields);
+
 			$this_planet = $this->getActivePlanet();
-			if(!isset($this->cache['getItemInfo'])) $this->cache['getItemInfo'] = array();
-			if(!isset($this->cache['getItemInfo'][$this_planet])) $this->cache['getItemInfo'][$this_planet] = array();
-			if(!isset($this->cache['getItemInfo'][$this_planet][$id]) || ($calc_scores && !isset($this->cache['getItemInfo'][$this_planet][$id]['scores'])) || $level !== null)
-			{
-				$item = Classes::Item($id);
-				if($type === false) $type = $item->getType();
-				$info = $item->getInfo();
-				if(!$info) return false;
+			$item = Classes::Item($id);
+			if($type === false) $type = $item->getType();
+			$info = $item->getInfo($fields);
+			if(!$info) return false;
+			if($calc["type"])
 				$info['type'] = $type;
-				$info['buildable'] = $info['deps-okay'] = $item->checkDependencies($this, $run_eventhandler);
+			if($calc["buildable"])
+				$info['buildable'] = $item->checkDependencies($this, $run_eventhandler);
+			if($calc["deps-okay"])
+				$info['deps-okay'] = $item->checkDependencies($this, $run_eventhandler);
+			if($calc["level"])
 				$info['level'] = ($level !== null ? $level : $this->getItemLevel($id, $type, $run_eventhandler));
 
-				# Bauzeit als Anteil der Punkte des ersten Platzes
-				/*if(isset($info['time']))
+			# Bauzeit als Anteil der Punkte des ersten Platzes
+			/*if(isset($info['time']))
+			{
+				$highscores = Classes::Highscores();
+				if($highscores->getStatus() && ($first = $highscores->getList('users', 1, 1)))
 				{
-					$highscores = Classes::Highscores();
-					if($highscores->getStatus() && ($first = $highscores->getList('users', 1, 1)))
-					{
-						list($best_rank) = $first;
-						if($best_rank['scores'] == 0) $f = 1;
-						else $f = $this->getScores()/$best_rank['scores'];
-						if($f < .5) $f = .5;
-						$info['time'] *= $f;
-					}
-				}*/
-
-				$global_factors = get_global_factors();
-
-				if(isset($info['time']))
-					$info['time'] *= $global_factors['time'];
-				if(isset($info['prod']))
-				{
-					$info['prod'][0] *= $global_factors['prod'];
-					$info['prod'][1] *= $global_factors['prod'];
-					$info['prod'][2] *= $global_factors['prod'];
-					$info['prod'][3] *= $global_factors['prod'];
-					$info['prod'][4] *= $global_factors['prod'];
-					$info['prod'][5] *= $global_factors['prod'];
+					list($best_rank) = $first;
+					if($best_rank['scores'] == 0) $f = 1;
+					else $f = $this->getScores()/$best_rank['scores'];
+					if($f < .5) $f = .5;
+					$info['time'] *= $f;
 				}
-				if(isset($info['ress']))
-				{
-					$info['ress'][0] *= $global_factors['cost'];
-					$info['ress'][1] *= $global_factors['cost'];
-					$info['ress'][2] *= $global_factors['cost'];
-					$info['ress'][3] *= $global_factors['cost'];
-				}
+			}*/
 
-				switch($type)
-				{
-					case 'gebaeude':
+			$global_factors = get_global_factors();
+
+			if(isset($info['time']))
+				$info['time'] *= $global_factors['time'];
+			if(isset($info['prod']))
+			{
+				$info['prod'][0] *= $global_factors['prod'];
+				$info['prod'][1] *= $global_factors['prod'];
+				$info['prod'][2] *= $global_factors['prod'];
+				$info['prod'][3] *= $global_factors['prod'];
+				$info['prod'][4] *= $global_factors['prod'];
+				$info['prod'][5] *= $global_factors['prod'];
+			}
+			if(isset($info['ress']))
+			{
+				$info['ress'][0] *= $global_factors['cost'];
+				$info['ress'][1] *= $global_factors['cost'];
+				$info['ress'][2] *= $global_factors['cost'];
+				$info['ress'][3] *= $global_factors['cost'];
+			}
+
+			switch($type)
+			{
+				case 'gebaeude':
+					if($calc["prod"] || $calc["time"])
 						$max_rob_limit = floor($this->getBasicFields()/2);
 
+					if($calc["has_prod"])
 						$info['has_prod'] = ($info['prod'][0] > 0 || $info['prod'][1] > 0 || $info['prod'][2] > 0 || $info['prod'][3] > 0 || $info['prod'][4] > 0 || $info['prod'][5] > 0);
+					if($calc["prod"])
+					{
 						$level_f = pow($info['level'], 2);
 						$percent_f = $this->checkProductionFactor($id);
 						$info['prod'][0] *= $level_f*$percent_f;
@@ -1126,52 +1155,72 @@
 							else
 								$info['prod'][4] *= 1+$minen_rob*$rob;
 						}
+					}
 
+					if($calc["time"])
+					{
 						$info['time'] *= pow($info['level']+1, 1.5);
 						$baurob = 1-0.00125*$this->getItemLevel('F2', 'forschung', $run_eventhandler);
 						$rob = $this->getItemLevel('R01', 'roboter', $run_eventhandler);
 						if($rob > $max_rob_limit) $rob = $max_rob_limit;
 						$info['time'] *= pow($baurob, $rob);
+					}
 
-						if($calc_scores)
-						{
-							$ress = array_sum($info['ress']);
-							$scores = 0;
-							for($i=1; $i<=$info['level']; $i++)
-								$scores += $ress*pow($i, 2.4);
-							$info['scores'] = $scores/1000;
-						}
+					if($calc["scores"])
+					{
+						$ress = array_sum($info['ress']);
+						$scores = 0;
+						for($i=1; $i<=$info['level']; $i++)
+							$scores += $ress*pow($i, 2.4);
+						$info['scores'] = $scores/1000;
+					}
 
+					if($calc["ress"])
+					{
 						$ress_f = pow($info['level']+1, 2.4);
 						$info['ress'][0] *= $ress_f;
 						$info['ress'][1] *= $ress_f;
 						$info['ress'][2] *= $ress_f;
 						$info['ress'][3] *= $ress_f;
+					}
 
-						if($info['buildable'] && $info['fields'] > $this->getRemainingFields())
-							$info['buildable'] = false;
+					if($calc["buildable"] && $info['buildable'] && $info['fields'] > $this->getRemainingFields())
+						$info['buildable'] = false;
+					if($calc["debuildable"])
 						$info['debuildable'] = ($info['level'] >= 1 && -$info['fields'] <= $this->getRemainingFields());
 
+					if($calc["limit_factor"])
+					{
 						if($info['time'] < global_setting("MIN_BUILDING_TIME"))
 							$info['limit_factor'] = $info['time']/global_setting("MIN_BUILDING_TIME");
 						else
 							$info['limit_factor'] = 1;
+					}
 
-						# Runden
+					# Runden
+					if($calc["prod"])
+					{
 						stdround($info['prod'][0]);
 						stdround($info['prod'][1]);
 						stdround($info['prod'][2]);
 						stdround($info['prod'][3]);
 						stdround($info['prod'][4]);
 						stdround($info['prod'][5]);
+					}
+					if($calc["time"])
 						stdround($info['time']);
+					if($calc["ress"])
+					{
 						stdround($info['ress'][0]);
 						stdround($info['ress'][1]);
 						stdround($info['ress'][2]);
 						stdround($info['ress'][3]);
 						stdround($info['ress'][4]);
-						break;
-					case 'forschung':
+					}
+					break;
+				case 'forschung':
+					if($calc["time"])
+					{
 						$info['time'] *= pow($info['level']+1, 2);
 
 						$local_labs = 0;
@@ -1186,125 +1235,167 @@
 						}
 						$this->setActivePlanet($active_planet);
 
-						$info['time_local'] = $info['time']*pow(0.95, $local_labs);
-						unset($info['time']);
-						$info['time_global'] = $info['time_local']*pow(0.975, $global_labs);
+						if($calc["time_local"])
+							$info['time_local'] = $info['time']*pow(0.95, $local_labs);
+						unset($info["time"]);
+						if($calc["time_global"])
+							$info['time_global'] = $info['time_local']*pow(0.975, $global_labs);
+					}
 
-						if($calc_scores)
-						{
-							$ress = array_sum($info['ress']);
-							$scores = 0;
-							for($i=1; $i<=$info['level']; $i++)
-								$scores += $ress*pow($i, 3);
-							$info['scores'] = $scores/1000;
-						}
+					if($calc["scores"])
+					{
+						$ress = array_sum($info['ress']);
+						$scores = 0;
+						for($i=1; $i<=$info['level']; $i++)
+							$scores += $ress*pow($i, 3);
+						$info['scores'] = $scores/1000;
+					}
 
+					if($calc["ress"])
+					{
 						$ress_f = pow($info['level']+1, 3);
 						$info['ress'][0] *= $ress_f;
 						$info['ress'][1] *= $ress_f;
 						$info['ress'][2] *= $ress_f;
 						$info['ress'][3] *= $ress_f;
+					}
 
+					if($calc["limit_factor_local"])
+					{
 						if($info['time_local'] < global_setting("MIN_BUILDING_TIME"))
 							$info['limit_factor_local'] = $info['time_local']/global_setting("MIN_BUILDING_TIME");
 						else
 							$info['limit_factor_local'] = 1;
+					}
+					if($calc["limit_factor_global"])
+					{
 						if($info['time_global'] < global_setting("MIN_BUILDING_TIME"))
 							$info['limit_factor_global'] = $info['time_global']/global_setting("MIN_BUILDING_TIME");
 						else
 							$info['limit_factor_global'] = 1;
+					}
 
-						# Runden
+					# Runden
+					if($calc["time_local"])
 						stdround($info['time_local']);
+					if($calc["time_global"])
 						stdround($info['time_global']);
+					if($calc["ress"])
+					{
 						stdround($info['ress'][0]);
 						stdround($info['ress'][1]);
 						stdround($info['ress'][2]);
 						stdround($info['ress'][3]);
 						stdround($info['ress'][4]);
-						break;
-					case 'roboter':
+					}
+					break;
+				case 'roboter':
+					if($calc["time"])
 						$info['time'] *= pow(0.95, $this->getItemLevel('B9', 'gebaeude', $run_eventhandler));
 
-						if($calc_scores)
-						{
-							$info['simple_scores'] = array_sum($info['ress'])/1000;
-							$info['scores'] = $info['simple_scores']*$info['level'];
-						}
+					if($calc["simple_scores"])
+						$info['simple_scores'] = array_sum($info['ress'])/1000;
+					if($calc["scores"])
+						$info['scores'] = $info['simple_scores']*$info['level'];
 
+					if($calc["limit_factor"])
+					{
 						if($info['time'] < global_setting("MIN_BUILDING_TIME"))
 							$info['limit_factor'] = $info['time']/global_setting("MIN_BUILDING_TIME");
 						else
 							$info['limit_factor'] = 1;
+					}
 
+					if($calc["time"])
 						stdround($info['time']);
-						break;
-					case 'schiffe':
+					break;
+				case 'schiffe':
+					if($calc["att"])
 						$info['att'] *= pow(1.05, $this->getItemLevel('F4', 'forschung', $run_eventhandler));
+					if($calc["def"])
 						$info['def'] *= pow(1.05, $this->getItemLevel('F5', 'forschung', $run_eventhandler));
+					if($calc["trans"])
+					{
 						$lad_f = pow(1.2, $this->getItemLevel('F11', 'forschung', $run_eventhandler));
 						$info['trans'][0] *= $lad_f;
 						$info['trans'][1] *= $lad_f;
+					}
+					if($calc["time"])
 						$info['time'] *= pow(0.95, $this->getItemLevel('B10', 'gebaeude', $run_eventhandler));
+					if($calc["speed"])
+					{
 						$info['speed'] *= pow(1.025, $this->getItemLevel('F6', 'forschung', $run_eventhandler));
 						$info['speed'] *= pow(1.05, $this->getItemLevel('F7', 'forschung', $run_eventhandler));
 						$info['speed'] *= pow(1.5, $this->getItemLevel('F8', 'forschung', $run_eventhandler));
+					}
 
-						if($calc_scores)
-						{
-							$info['simple_scores'] = array_sum($info['ress'])/1000;
-							$info['scores'] = $info['simple_scores']*$info['level'];
-						}
+					if($calc["simple_scores"])
+						$info['simple_scores'] = array_sum($info['ress'])/1000;
+					if($calc["scores"])
+						$info['scores'] = $info['simple_scores']*$info['level'];
 
+					if($calc["limit_factor"])
+					{
 						if($info['time'] < global_setting("MIN_BUILDING_TIME"))
 							$info['limit_factor'] = $info['time']/global_setting("MIN_BUILDING_TIME");
 						else
 							$info['limit_factor'] = 1;
+					}
 
-						# Runden
+					# Runden
+					if($calc["att"])
 						stdround($info['att']);
+					if($calc["def"])
 						stdround($info['def']);
+					if($calc["trans"])
+					{
 						stdround($info['trans'][0]);
 						stdround($info['trans'][1]);
+					}
+					if($calc["time"])
 						stdround($info['time']);
+					if($calc["speed"])
 						stdround($info['speed']);
-						break;
-					case 'verteidigung':
+					break;
+				case 'verteidigung':
+					if($calc["att"])
 						$info['att'] *= pow(1.05, $this->getItemLevel('F4', 'forschung', $run_eventhandler));
+					if($calc["def"])
 						$info['def'] *= pow(1.05, $this->getItemLevel('F5', 'forschung', $run_eventhandler));
+					if($calc["time"])
 						$info['time'] *= pow(0.95, $this->getItemLevel('B10', 'gebaeude', $run_eventhandler));
 
-						if($calc_scores)
-						{
-							$info['simple_scores'] = array_sum($info['ress'])/1000;
-							$info['scores'] = $info['simple_scores']*$info['level'];
-						}
+					if($calc["simple_scores"])
+						$info['simple_scores'] = array_sum($info['ress'])/1000;
+					if($calc["scores"])
+						$info['scores'] = $info['simple_scores']*$info['level'];
 
+					if($calc["limit_factor"])
+					{
 						if($info['time'] < global_setting("MIN_BUILDING_TIME"))
 							$info['limit_factor'] = $info['time']/global_setting("MIN_BUILDING_TIME");
 						else
 							$info['limit_factor'] = 1;
+					}
 
+					if($calc["att"])
 						stdround($info['att']);
+					if($calc["def"])
 						stdround($info['def']);
+					if($calc["time"])
 						stdround($info['time']);
-						break;
-				}
-
-				# Mindestbauzeit zwoelf Sekunden aufgrund von Serverbelastung
-				if($type == 'forschung')
-				{
-					if($info['time_local'] < global_setting("MIN_BUILDING_TIME")) $info['time_local'] = global_setting("MIN_BUILDING_TIME");
-					if($info['time_global'] < global_setting("MIN_BUILDING_TIME")) $info['time_global'] = global_setting("MIN_BUILDING_TIME");
-				}
-				elseif($info['time'] < global_setting("MIN_BUILDING_TIME")) $info['time'] = global_setting("MIN_BUILDING_TIME");
-
-				if($level !== null)
-					return $info;
-				$this->cache['getItemInfo'][$this_planet][$id] = $info;
+					break;
 			}
 
-			return $this->cache['getItemInfo'][$this_planet][$id];
+			# Mindestbauzeit zwoelf Sekunden aufgrund von Serverbelastung
+			if($type == 'forschung')
+			{
+				if($calc["time_local"] && $info['time_local'] < global_setting("MIN_BUILDING_TIME")) $info['time_local'] = global_setting("MIN_BUILDING_TIME");
+				if($calc["time_global"] && $info['time_global'] < global_setting("MIN_BUILDING_TIME")) $info['time_global'] = global_setting("MIN_BUILDING_TIME");
+			}
+			elseif($calc["time"] && $info['time'] < global_setting("MIN_BUILDING_TIME")) $info['time'] = global_setting("MIN_BUILDING_TIME");
+
+			return $info;
 		}
 
 		function getItemLevel($id, $type=null, $run_eventhandler=true)
@@ -1504,7 +1595,7 @@
 					$energie_need = 0;
 					foreach($gebaeude as $id)
 					{
-						$item = $this->getItemInfo($id, 'gebaeude', false);
+						$item = $this->getItemInfo($id, 'gebaeude', null, false);
 						if($item['prod'][5] < 0) $energie_need -= $item['prod'][5];
 						elseif($item['prod'][5] > 0) $energie_prod += $item['prod'][5];
 
@@ -2916,7 +3007,7 @@
 						$items = $this->getItemsList('gebaeude');
 						foreach($items as $item)
 						{
-							$item_info = $this->getItemInfo($item, 'gebaeude', true, true);
+							$item_info = $this->getItemInfo($item, 'gebaeude');
 							$this->raw['punkte'][0] += $item_info['scores'];
 						}
 					}
@@ -2926,7 +3017,7 @@
 						$items = $this->getItemsList('roboter');
 						foreach($items as $item)
 						{
-							$item_info = $this->getItemInfo($item, 'roboter', true, true);
+							$item_info = $this->getItemInfo($item, 'roboter');
 							$this->raw['punkte'][2] += $item_info['scores'];
 						}
 					}
@@ -2936,7 +3027,7 @@
 						$items = $this->getItemsList('schiffe');
 						foreach($items as $item)
 						{
-							$item_info = $this->getItemInfo($item, 'schiffe', true, true);
+							$item_info = $this->getItemInfo($item, 'schiffe');
 							$this->raw['punkte'][3] += $item_info['scores'];
 						}
 					}
@@ -2946,7 +3037,7 @@
 						$items = $this->getItemsList('verteidigung');
 						foreach($items as $item)
 						{
-							$item_info = $this->getItemInfo($item, 'verteidigung', true, true);
+							$item_info = $this->getItemInfo($item, 'verteidigung');
 							$this->raw['punkte'][4] += $item_info['scores'];
 						}
 					}
@@ -2958,7 +3049,7 @@
 					$items = $this->getItemsList('forschung');
 					foreach($items as $item)
 					{
-						$item_info = $this->getItemInfo($item, 'forschung', true, true);
+						$item_info = $this->getItemInfo($item, 'forschung');
 						$this->raw['punkte'][1] += $item_info['scores'];
 					}
 				}
@@ -2999,7 +3090,7 @@
 								{
 									foreach($schiffe as $id=>$count)
 									{
-										$item_info = $this->getItemInfo($id, 'schiffe', true, true);
+										$item_info = $this->getItemInfo($id, 'schiffe');
 										$this->raw['punkte'][3] += $count*$item_info['simple_scores'];
 									}
 								}
@@ -3011,7 +3102,7 @@
 								{
 									foreach($transport[1] as $id=>$count)
 									{
-										$item_info = $this->getItemInfo($id, 'roboter', true, true);
+										$item_info = $this->getItemInfo($id, 'roboter');
 										$this->raw['punkte'][2] += $count*$item_info['simple_scores'];
 									}
 								}
@@ -3029,7 +3120,7 @@
 								{
 									foreach($handel[1] as $id=>$count)
 									{
-										$item_info = $this->getItemInfo($id, 'roboter', true, true);
+										$item_info = $this->getItemInfo($id, 'roboter');
 										$this->raw['punkte'][2] += $count*$item_info['simple_scores'];
 									}
 								}
