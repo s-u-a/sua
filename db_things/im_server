@@ -176,17 +176,22 @@
 				$message = "Automatische Benachrichtigung von http://".get_default_hostname()."/, ".$databases[$next_notification['database']]['name'].", ".$next_notification['username'].":\n";
 				$message .= $next_notification['message'];
 
-				$payload = "";
-				if($next_notification["fingerprint"] && $encrypted = gpg_smallencrypt($message, $next_notification["fingerprint"]))
-				{
-					$payload .= "<x xmlns='jabber:x:encrypted'>".$encrypted."</x>";
-					$message = "Verschlüsselte Nachricht.";
-				}
-				if($signed = gpg_smallsign($message, $next_notification["fingerprint"]))
-					$payload .= "<x xmlns='jabber:x:signed'>".$signed."</x>";
-
-				$jabber->message($to, "normal", null, $message, null, null, $payload);
+				$this->sendSigned($to, $message, $next_notification["fingerprint"]);
 			}
+		}
+
+		function sendSigned($to, $message, $fingerprint = null)
+		{
+			$payload = "";
+			if(isset($fingerprint) && $encrypted = gpg_smallencrypt($message, $fingerprint))
+			{
+				$payload .= "<x xmlns='jabber:x:encrypted'>".$encrypted."</x>";
+				$message = "Verschlüsselte Nachricht.";
+			}
+			if($signed = gpg_smallsign($message))
+				$payload .= "<x xmlns='jabber:x:signed'>".$signed."</x>";
+
+			$jabber->message($to, "normal", null, $message, null, null, $payload);
 		}
 
 		function handleMessage($from, $to, $message)
@@ -225,7 +230,7 @@
 						}
 					}
 
-					$jabber->message($from, 'normal', null, 'Accepted');
+					$this->sendSigned($from, "Accepted", $payload);
 				}
 				unset($user);
 				Classes::resetInstances();
@@ -236,7 +241,7 @@
 					$unrecognised_limits[$from] = array(0);
 				if($unrecognised_limits[$from][0] < global_setting("IM_UNRECOGNISED_NUMER"))
 				{
-					$jabber->message($from, 'normal', null, 'Unrecognised command');
+					$this->sendSigned($from, 'Unrecognised command');
 					$unrecognised_limits[$from][0]++;
 					$unrecognised_limits[$from][1] = time();
 				}
