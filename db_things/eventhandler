@@ -92,7 +92,7 @@ EOF
 		require('engine.php');
 
 		# TODO: Rausnehmen
-		language("de_DE");
+		l::language("de_DE");
 
 		set_time_limit(0);
 
@@ -110,7 +110,7 @@ EOF
 
 		ftruncate($fh_pid, 0);
 
-		$databases = get_databases();
+		$databases = Config::get_databases();
 
 		if($daemon) $errlog = fopen(global_setting("DB_EVENTHANDLER_LOG"), 'a');
 		else $errlog = STDERR;
@@ -233,7 +233,7 @@ EOF
 
 					fputs($errlog, time_prefix()."Rescanning databases... ");
 					global $databases;
-					$databases = get_databases(true);
+					$databases = Config::get_databases(true);
 					fputs($errlog, "Done\n");
 
 					break;

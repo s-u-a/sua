@@ -128,23 +128,23 @@
 ?>
 	<dt><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($name)?></a></dt>
 	<dd><ul>
-		<li><a href="verbuendete.php?kuendigen=<?=htmlspecialchars(urlencode($name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="return confirm('<?=jsentities(sprintf(_("Wollen Sie das Bündnis mit dem Spieler %s wirklich kündigen?"), $name))?>');"><?=h(_("Kündigen"))?></a></li>
+		<li><a href="verbuendete.php?kuendigen=<?=htmlspecialchars(urlencode($name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="return confirm('<?=JS::jsentities(sprintf(_("Wollen Sie das Bündnis mit dem Spieler %s wirklich kündigen?"), $name))?>');"><?=h(_("Kündigen"))?></a></li>
 	</ul></dd>
 <?php
 		}
 ?>
 </dl>
-<form action="verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="buendnisse-rundschreiben" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=jsentities(_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?"))?>\');');">
+<form action="verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="buendnisse-rundschreiben" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=JS::jsentities(_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?"))?>\');');">
 	<fieldset>
 		<legend><?=h(_("Bündnisrundschreiben"))?></legend>
 		<dl class="form">
 			<dt class="c-betreff"><label for="betreff-input"><?=h(_("Betreff [&J][login/verbuendete.php|1]"))?></label></dt>
-			<dd class="c-betreff"><input type="text" name="betreff" id="betreff-input" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Betreff [&J][login/verbuendete.php|1]"))?> /></dd>
+			<dd class="c-betreff"><input type="text" name="betreff" id="betreff-input" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Betreff [&J][login/verbuendete.php|1]"))?> /></dd>
 
 			<dt class="c-text"><label for="text-textarea"><?=h(_("Te&xt[login/verbuendete.php|1]"))?></label></dt>
-			<dd class="c-text"><textarea name="rundschreiben" id="text-textarea" rows="6" cols="35"<?=accesskey_attr(_("Te&xt[login/verbuendete.php|1]"))?> tabindex="<?=$tabindex++?>"></textarea></dd>
+			<dd class="c-text"><textarea name="rundschreiben" id="text-textarea" rows="6" cols="35"<?=l::accesskey_attr(_("Te&xt[login/verbuendete.php|1]"))?> tabindex="<?=$tabindex++?>"></textarea></dd>
 		</dl>
-		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("R&undschreiben verschicken[login/verbuendete.php|1]"))?>><?=h(_("R&undschreiben verschicken[login/verbuendete.php|1]"))?></button></div>
+		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("R&undschreiben verschicken[login/verbuendete.php|1]"))?>><?=h(_("R&undschreiben verschicken[login/verbuendete.php|1]"))?></button></div>
 	</fieldset>
 </form>
 <?php
@@ -164,12 +164,12 @@
 <form action="verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="buendnisse-eingehen">
 	<dl class="form">
 		<dt class="c-spieler"><label for="spieler-input"><?=h(_("Spieler [&Z][login/verbuendete.php|1]"))?></label></dt>
-		<dd class="c-spieler"><input type="text" name="empfaenger" id="spieler-input" value="<?=(isset($_POST['empfaenger']) ? htmlspecialchars($_POST['empfaenger']) : '')?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Spieler [&Z][login/verbuendete.php|1]"))?> /></dd>
+		<dd class="c-spieler"><input type="text" name="empfaenger" id="spieler-input" value="<?=(isset($_POST['empfaenger']) ? htmlspecialchars($_POST['empfaenger']) : '')?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Spieler [&Z][login/verbuendete.php|1]"))?> /></dd>
 
 		<dt class="c-mitteilung"><label for="mitteilung-textarea"><?=h(_("Mitteilung [&O][login/verbuendete.php|1]"))?></label></dt>
-		<dd class="c-mitteilung"><textarea rows="5" cols="30" name="mitteilung" id="mitteilung-textarea" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Mitteilung [&O][login/verbuendete.php|1]"))?>><?=(isset($_POST['mitteilung']) ? preg_replace("/[\t\r\n]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($_POST['mitteilung'])) : '')?></textarea></dd>
+		<dd class="c-mitteilung"><textarea rows="5" cols="30" name="mitteilung" id="mitteilung-textarea" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Mitteilung [&O][login/verbuendete.php|1]"))?>><?=(isset($_POST['mitteilung']) ? preg_replace("/[\t\r\n]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($_POST['mitteilung'])) : '')?></textarea></dd>
 	</dl>
-	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("A&nfrage absenden[login/verbuendete.php|1]"))?>><?=h(_("A&nfrage absenden[login/verbuendete.php|1]"))?></button></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("A&nfrage absenden[login/verbuendete.php|1]"))?>><?=h(_("A&nfrage absenden[login/verbuendete.php|1]"))?></button></div>
 </form>
 <script type="text/javascript">
 	activate_users_list(document.getElementById('spieler-input'));

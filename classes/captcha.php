@@ -41,7 +41,7 @@
 <?=$t?><form action="<?=htmlspecialchars($_SERVER["REQUEST_URI"])?>" method="post" class="captcha">
 <?=$t?>	<script type="text/javascript">
 <?=$t?>	// <![CDATA[
-<?=$t?>		var RecaptchaOptions = <?=aimplode_js($options)?>;
+<?=$t?>		var RecaptchaOptions = <?=JS::aimplode_js($options)?>;
 <?=$t?>	// ]]>
 <?=$t?>	</script>
 <?=$t?>	<script type="text/javascript" src="<?=htmlspecialchars($url_prefix)?>.recaptcha.net/challenge?k=<?=htmlspecialchars(urlencode(self::getConfig("public")))?>"></script>
@@ -54,7 +54,7 @@
 <?=$t?>		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"><?=h(_("Okay"))?></button><input type="hidden" name="recaptcha_response_field" value="manual_challenge"></button>
 <?=$t?>	</noscript>
 <?php
-			make_hidden_fields($_POST, $tabs+1);
+			F::make_hidden_fields($_POST, $tabs+1);
 ?>
 <?=$t?></form>
 <?php
@@ -71,7 +71,7 @@
 				"challenge" => $challenge,
 				"response" => $response
 			);
-			$query_string = aimplode_url($request);
+			$query_string = JS::aimplode_url($request);
 
 			fwrite($fh, "POST /verify HTTP/1.0\r\n");
 			fwrite($fh, "Host: api-verify.recaptcha.net\r\n");

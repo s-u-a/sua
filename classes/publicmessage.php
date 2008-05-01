@@ -144,7 +144,7 @@
 			if($this->html())
 				self::$database->setField($this->name, "parsed", self::$database->getField($this->name, "text"));
 			else
-				self::$database->setField($this->name, "parsed", parse_html(self::$database->getField($this->name, "text")));
+				self::$database->setField($this->name, "parsed", F::parse_html(self::$database->getField($this->name, "text")));
 			return true;
 		}
 

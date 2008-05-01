@@ -73,12 +73,12 @@
 ?>
 			<tr>
 				<th class="c-gebaeude"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=htmlspecialchars($item_info['level'])?>)</span></th>
-				<td class="c-carbon number <?=get_prod_class($item_info['prod'][0])?>"><?=ths($item_info['prod'][0]*$ges_prod[6])?></td>
-				<td class="c-aluminium number <?=get_prod_class($item_info['prod'][1])?>"><?=ths($item_info['prod'][1]*$ges_prod[6])?></td>
-				<td class="c-wolfram number <?=get_prod_class($item_info['prod'][2])?>"><?=ths($item_info['prod'][2]*$ges_prod[6])?></td>
-				<td class="c-radium number <?=get_prod_class($item_info['prod'][3])?>"><?=ths($item_info['prod'][3]*$ges_prod[6])?></td>
-				<td class="c-tritium number <?=get_prod_class($item_info['prod'][4])?>"><?=ths($item_info['prod'][4]*$ges_prod[6])?></td>
-				<td class="c-energie number <?=get_prod_class($item_info['prod'][5])?>"><?=ths($item_info['prod'][5])?></td>
+				<td class="c-carbon number <?=get_prod_class($item_info['prod'][0])?>"><?=F::ths($item_info['prod'][0]*$ges_prod[6])?></td>
+				<td class="c-aluminium number <?=get_prod_class($item_info['prod'][1])?>"><?=F::ths($item_info['prod'][1]*$ges_prod[6])?></td>
+				<td class="c-wolfram number <?=get_prod_class($item_info['prod'][2])?>"><?=F::ths($item_info['prod'][2]*$ges_prod[6])?></td>
+				<td class="c-radium number <?=get_prod_class($item_info['prod'][3])?>"><?=F::ths($item_info['prod'][3]*$ges_prod[6])?></td>
+				<td class="c-tritium number <?=get_prod_class($item_info['prod'][4])?>"><?=F::ths($item_info['prod'][4]*$ges_prod[6])?></td>
+				<td class="c-energie number <?=get_prod_class($item_info['prod'][5])?>"><?=F::ths($item_info['prod'][5])?></td>
 				<td class="c-produktion">
 					<select name="prod[<?=htmlspecialchars($id)?>]" onchange="this.form.submit();" tabindex="<?=$tabindex?>"<?=($tabindex == 1) ? ' accesskey="u"' : ''?>>
 <?php
@@ -108,12 +108,12 @@
 		<tfoot class="gesamt">
 			<tr class="c-stunde">
 				<th>Gesamt pro Stunde</th>
-				<td class="c-carbon number <?=get_prod_class($ges_prod[0])?>"><?=ths($ges_prod[0])?></td>
-				<td class="c-aluminium number <?=get_prod_class($ges_prod[1])?>"><?=ths($ges_prod[1])?></td>
-				<td class="c-wolfram number <?=get_prod_class($ges_prod[2])?>"><?=ths($ges_prod[2])?></td>
-				<td class="c-radium number <?=get_prod_class($ges_prod[3])?>"><?=ths($ges_prod[3])?></td>
-				<td class="c-tritium number <?=get_prod_class($ges_prod[4])?>"><?=ths($ges_prod[4])?></td>
-				<td class="c-energie number <?=get_prod_class($ges_prod[5])?>"><?=ths($ges_prod[5])?></td>
+				<td class="c-carbon number <?=get_prod_class($ges_prod[0])?>"><?=F::ths($ges_prod[0])?></td>
+				<td class="c-aluminium number <?=get_prod_class($ges_prod[1])?>"><?=F::ths($ges_prod[1])?></td>
+				<td class="c-wolfram number <?=get_prod_class($ges_prod[2])?>"><?=F::ths($ges_prod[2])?></td>
+				<td class="c-radium number <?=get_prod_class($ges_prod[3])?>"><?=F::ths($ges_prod[3])?></td>
+				<td class="c-tritium number <?=get_prod_class($ges_prod[4])?>"><?=F::ths($ges_prod[4])?></td>
+				<td class="c-energie number <?=get_prod_class($ges_prod[5])?>"><?=F::ths($ges_prod[5])?></td>
 				<td class="c-produktion number"></td>
 			</tr>
 			<tr class="c-tag">
@@ -128,11 +128,11 @@
 	$show_day_prod[4] *= $show_days;
 ?>
 				<th>Gesamt pr<kbd>o</kbd> <input type="text" class="prod-show-days" name="show_days" id="show_days" value="<?=htmlspecialchars($show_days)?>" tabindex="<?=$tabindex?>" accesskey="o" onchange="recalc_perday();" onclick="recalc_perday();" onkeyup="recalc_perday();" />&nbsp;Tage</th>
-				<td class="c-carbon number <?=get_prod_class($show_day_prod[0])?>" id="taeglich-carbon"><?=ths($show_day_prod[0])?></td>
-				<td class="c-aluminium number <?=get_prod_class($show_day_prod[1])?>" id="taeglich-aluminium"><?=ths($show_day_prod[1])?></td>
-				<td class="c-wolfram number <?=get_prod_class($show_day_prod[2])?>" id="taeglich-wolfram"><?=ths($show_day_prod[2])?></td>
-				<td class="c-radium number <?=get_prod_class($show_day_prod[3])?>" id="taeglich-radium"><?=ths($show_day_prod[3])?></td>
-				<td class="c-tritium number <?=get_prod_class($show_day_prod[4])?>" id="taeglich-tritium"><?=ths($show_day_prod[4])?></td>
+				<td class="c-carbon number <?=get_prod_class($show_day_prod[0])?>" id="taeglich-carbon"><?=F::ths($show_day_prod[0])?></td>
+				<td class="c-aluminium number <?=get_prod_class($show_day_prod[1])?>" id="taeglich-aluminium"><?=F::ths($show_day_prod[1])?></td>
+				<td class="c-wolfram number <?=get_prod_class($show_day_prod[2])?>" id="taeglich-wolfram"><?=F::ths($show_day_prod[2])?></td>
+				<td class="c-radium number <?=get_prod_class($show_day_prod[3])?>" id="taeglich-radium"><?=F::ths($show_day_prod[3])?></td>
+				<td class="c-tritium number <?=get_prod_class($show_day_prod[4])?>" id="taeglich-tritium"><?=F::ths($show_day_prod[4])?></td>
 				<td class="c-speichern" colspan="2" class="button"><button type="submit" tabindex="<?=$tabindex+1?>" accesskey="n">Speicher<kbd>n</kbd></button></td>
 			</tr>
 <?php
@@ -141,12 +141,12 @@
 ?>
 			<tr class="c-speicher">
 				<th>Speicher</th>
-				<td class="c-carbon number<?=$limit[0] < $ress[0] ? " voll" : ""?>"><?=ths($limit[0])?></td>
-				<td class="c-aluminium number<?=$limit[1] < $ress[1] ? " voll" : ""?>"><?=ths($limit[1])?></td>
-				<td class="c-wolfram number<?=$limit[2] < $ress[2] ? " voll" : ""?>"><?=ths($limit[2])?></td>
-				<td class="c-radium number<?=$limit[3] < $ress[3] ? " voll" : ""?>"><?=ths($limit[3])?></td>
-				<td class="c-tritium number<?=$limit[4] < $ress[4] ? " voll" : ""?>"><?=ths($limit[4])?></td>
-				<td class="c-energie number<?=$limit[5] < $energie_prod ? " voll" : ""?>"><?=ths($limit[5])?></td>
+				<td class="c-carbon number<?=$limit[0] < $ress[0] ? " voll" : ""?>"><?=F::ths($limit[0])?></td>
+				<td class="c-aluminium number<?=$limit[1] < $ress[1] ? " voll" : ""?>"><?=F::ths($limit[1])?></td>
+				<td class="c-wolfram number<?=$limit[2] < $ress[2] ? " voll" : ""?>"><?=F::ths($limit[2])?></td>
+				<td class="c-radium number<?=$limit[3] < $ress[3] ? " voll" : ""?>"><?=F::ths($limit[3])?></td>
+				<td class="c-tritium number<?=$limit[4] < $ress[4] ? " voll" : ""?>"><?=F::ths($limit[4])?></td>
+				<td class="c-energie number<?=$limit[5] < $energie_prod ? " voll" : ""?>"><?=F::ths($limit[5])?></td>
 				<td class="c-produktion empty"></td>
 			</tr>
 		</tfoot>
@@ -176,11 +176,11 @@
 			tritium = <?=floor($day_prod[4])?>*show_days;
 		}
 
-		document.getElementById('taeglich-carbon').firstChild.data = ths(carbon);
-		document.getElementById('taeglich-aluminium').firstChild.data = ths(aluminium);
-		document.getElementById('taeglich-wolfram').firstChild.data = ths(wolfram);
-		document.getElementById('taeglich-radium').firstChild.data = ths(radium);
-		document.getElementById('taeglich-tritium').firstChild.data = ths(tritium);
+		document.getElementById('taeglich-carbon').firstChild.data = F::ths(carbon);
+		document.getElementById('taeglich-aluminium').firstChild.data = F::ths(aluminium);
+		document.getElementById('taeglich-wolfram').firstChild.data = F::ths(wolfram);
+		document.getElementById('taeglich-radium').firstChild.data = F::ths(radium);
+		document.getElementById('taeglich-tritium').firstChild.data = F::ths(tritium);
 
 		var carbon_class,aluminium_class,wolfram_class,radium_class,tritium_class;
 

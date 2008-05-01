@@ -157,7 +157,7 @@
 
 	if($admin_array['permissions'][13] && isset($_POST['lock']))
 	{
-		if($_POST['lock'] && !database_locked())
+		if($_POST['lock'] && !Config::database_locked())
 		{
 			# Bei allen Benutzern den Eventhandler ausfuehren
 
@@ -195,7 +195,7 @@
 				fclose($fh);
 			}
 		}
-		elseif(!$_POST['lock'] && database_locked())
+		elseif(!$_POST['lock'] && Config::database_locked())
 		{
 			# Bei allen Benutzern den Eventhandler ausfuehren
 
@@ -216,7 +216,7 @@
 
 	if($admin_array['permissions'][15] && isset($_POST['flock']))
 	{
-		if($_POST['flock'] && !fleets_locked())
+		if($_POST['flock'] && !Config::fleets_locked())
 		{
 			($fh = fopen(global_setting("DB_NO_ATTS"), "w")) and protocol("15.1");
 			if($fh)
@@ -241,7 +241,7 @@
 				fclose($fh);
 			}
 		}
-		elseif(!$_POST['flock'] && fleets_locked())
+		elseif(!$_POST['flock'] && Config::fleets_locked())
 		{
 			unlink(global_setting("DB_NO_ATTS")) && protocol("15.2");
 		}
@@ -253,23 +253,23 @@
 <p><?=sprintf(h(_("Denken Sie immer daran: %sBenutzen Sie niemals Dinge aus dem Adminbereich zu Ihrem eigenen Vorteil im Spiel und geben Sie keine Informationen an Personen weiter, die sich diese Informationen nicht selbst beschaffen könnten.%s")), "<strong>", "</strong>")?></p>
 <hr />
 <ol>
-	<li><a href="#passwort-aendern"<?=accesskey_attr(_("Adminpasswort ändern&[admin/index.php|1]"))?>><?=h(_("Adminpasswort ändern&[admin/index.php|1]"))?></a></li>
-<?php if($admin_array['permissions'][0]){?>	<li><a href="#action-0"<?=accesskey_attr(_("Benutzerliste einsehen&[admin/index.php|1]"))?>><?=h(_("Benutzerliste einsehen&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][1]){?>	<li><a href="#action-1"<?=accesskey_attr(_("Als Geist als ein Benutzer anmelden&[admin/index.php|1]"))?>><?=h(_("Als Geist als ein Benutzer anmelden&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][2]){?>	<li><a href="#action-2"<?=accesskey_attr(_("Das Passwort eines Benutzers ändern&[admin/index.php|1]"))?>><?=h(_("Das Passwort eines Benutzers ändern&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][3]){?>	<li><a href="#action-3"<?=accesskey_attr(_("Die Passwörter zweier Benutzer vergleichen&[admin/index.php|1]"))?>><?=h(_("Die Passwörter zweier Benutzer vergleichen&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][4]){?>	<li><a href="#action-4"<?=accesskey_attr(_("Einen Benutzer löschen&[admin/index.php|1]"))?>><?=h(_("Einen Benutzer löschen&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][5]){?>	<li><a href="#action-5"<?=accesskey_attr(_("Einen Benutzer sperren / entsperren&[admin/index.php|1]"))?>><?=h(_("Einen Benutzer sperren / entsperren&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][6]){?>	<li><a href="#action-6"<?=accesskey_attr(_("Einen Benutzer umbenennen&[admin/index.php|1]"))?>><?=h(_("Einen Benutzer umbenennen&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][7]){?>	<li><a href="#action-7"<?=accesskey_attr(_("Anfängerschutz ein-/ausschalten&[admin/index.php|1]"))?>><?=h(_("Anfängerschutz ein-/ausschalten&[admin/index.php|1]"))?></a></li>
+	<li><a href="#passwort-aendern"<?=l::accesskey_attr(_("Adminpasswort ändern&[admin/index.php|1]"))?>><?=h(_("Adminpasswort ändern&[admin/index.php|1]"))?></a></li>
+<?php if($admin_array['permissions'][0]){?>	<li><a href="#action-0"<?=l::accesskey_attr(_("Benutzerliste einsehen&[admin/index.php|1]"))?>><?=h(_("Benutzerliste einsehen&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][1]){?>	<li><a href="#action-1"<?=l::accesskey_attr(_("Als Geist als ein Benutzer anmelden&[admin/index.php|1]"))?>><?=h(_("Als Geist als ein Benutzer anmelden&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][2]){?>	<li><a href="#action-2"<?=l::accesskey_attr(_("Das Passwort eines Benutzers ändern&[admin/index.php|1]"))?>><?=h(_("Das Passwort eines Benutzers ändern&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][3]){?>	<li><a href="#action-3"<?=l::accesskey_attr(_("Die Passwörter zweier Benutzer vergleichen&[admin/index.php|1]"))?>><?=h(_("Die Passwörter zweier Benutzer vergleichen&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][4]){?>	<li><a href="#action-4"<?=l::accesskey_attr(_("Einen Benutzer löschen&[admin/index.php|1]"))?>><?=h(_("Einen Benutzer löschen&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][5]){?>	<li><a href="#action-5"<?=l::accesskey_attr(_("Einen Benutzer sperren / entsperren&[admin/index.php|1]"))?>><?=h(_("Einen Benutzer sperren / entsperren&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][6]){?>	<li><a href="#action-6"<?=l::accesskey_attr(_("Einen Benutzer umbenennen&[admin/index.php|1]"))?>><?=h(_("Einen Benutzer umbenennen&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][7]){?>	<li><a href="#action-7"<?=l::accesskey_attr(_("Anfängerschutz ein-/ausschalten&[admin/index.php|1]"))?>><?=h(_("Anfängerschutz ein-/ausschalten&[admin/index.php|1]"))?></a></li>
 <?php }if($admin_array['permissions'][8]){?>	<li><a href="#action-8"><?=h(_("Changelog bearbeiten&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][9]){?>	<li><a href="#action-9"<?=accesskey_attr(_("Nachricht versenden&[admin/index.php|1]"))?>><?=h(_("Nachricht versenden&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][9]){?>	<li><a href="#action-9"<?=l::accesskey_attr(_("Nachricht versenden&[admin/index.php|1]"))?>><?=h(_("Nachricht versenden&[admin/index.php|1]"))?></a></li>
 <?php }if($admin_array['permissions'][10]){?>	<li><a href="#action-10"><?=h(_("Admin-Logdateien einsehen&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][11]){?>	<li><a href="#action-11"<?=accesskey_attr(_("Benutzerverwaltung&[admin/index.php|1]"))?>><?=h(_("Benutzerverwaltung&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][12]){?>	<li><a href="#action-12"<?=accesskey_attr(_("Wartungsarbeiten&[admin/index.php|1]"))?>><?=h(_("Wartungsarbeiten&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][13]){?>	<li><a href="#action-13"<?=accesskey_attr(_("Spiel sperren&[admin/index.php|1]"))?>><?=h(_("Spiel sperren&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][15]){?>	<li><a href="#action-15"<?=accesskey_attr(_("Flottensperre&[admin/index.php|1]"))?>><?=h(_("Flottensperre&[admin/index.php|1]"))?></a></li>
-<?php }if($admin_array['permissions'][14]){?>	<li><a href="#action-14"<?=accesskey_attr(_("News bearbeiten&[admin/index.php|1]"))?>><?=h(_("News bearbeiten&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][11]){?>	<li><a href="#action-11"<?=l::accesskey_attr(_("Benutzerverwaltung&[admin/index.php|1]"))?>><?=h(_("Benutzerverwaltung&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][12]){?>	<li><a href="#action-12"<?=l::accesskey_attr(_("Wartungsarbeiten&[admin/index.php|1]"))?>><?=h(_("Wartungsarbeiten&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][13]){?>	<li><a href="#action-13"<?=l::accesskey_attr(_("Spiel sperren&[admin/index.php|1]"))?>><?=h(_("Spiel sperren&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][15]){?>	<li><a href="#action-15"<?=l::accesskey_attr(_("Flottensperre&[admin/index.php|1]"))?>><?=h(_("Flottensperre&[admin/index.php|1]"))?></a></li>
+<?php }if($admin_array['permissions'][14]){?>	<li><a href="#action-14"<?=l::accesskey_attr(_("News bearbeiten&[admin/index.php|1]"))?>><?=h(_("News bearbeiten&[admin/index.php|1]"))?></a></li>
 <?php }?></ol>
 <hr />
 <h2 id="passwort-aendern"><?=h(_("Adminpasswort ändern"))?></h2>
@@ -291,7 +291,7 @@
 		else
 		{
 			$admin_array['password'] = md5($_POST['new_password']);
-			write_admin_list($admins);
+			Config::write_admin_list($admins);
 ?>
 <p class="successful"><strong><?=h(_("Das Passwort wurde erfolgreich geändert."))?></strong></p>
 <?php
@@ -301,15 +301,15 @@
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="old-password-input"><?=h(_("Altes Passwort&[admin/index.php|2]"))?></label></dt>
-		<dd><input type="password" name="old_password" id="old-password-input"<?=accesskey_attr(_("Altes Passwort&[admin/index.php|2]"))?> /></dd>
+		<dd><input type="password" name="old_password" id="old-password-input"<?=l::accesskey_attr(_("Altes Passwort&[admin/index.php|2]"))?> /></dd>
 
 		<dt><label for="new-password-input"><?=h(_("Neues Passwort&[admin/index.php|2]"))?></label></dt>
-		<dd><input type="password" name="new_password" id="new-password-input"<?=accesskey_attr(_("Neues Passwort&[admin/index.php|2]"))?> /></dd>
+		<dd><input type="password" name="new_password" id="new-password-input"<?=l::accesskey_attr(_("Neues Passwort&[admin/index.php|2]"))?> /></dd>
 
 		<dt><label for="new-password2-input"><?=h(_("Neues Passwort wiederholen&[admin/index.php|2]"))?></label></dt>
-		<dd><input type="password" name="new_password2" id="new-password2-input"<?=accesskey_attr(_("Neues Passwort wiederholen&[admin/index.php|2]"))?> /></dd>
+		<dd><input type="password" name="new_password2" id="new-password2-input"<?=l::accesskey_attr(_("Neues Passwort wiederholen&[admin/index.php|2]"))?> /></dd>
 	</dl>
-	<div><button type="submit"<?=accesskey_attr(_("Passwort ändern&[admin/index.php|2]"))?>><?=h(_("Passwort ändern&[admin/index.php|2]"))?></button></div>
+	<div><button type="submit"<?=l::accesskey_attr(_("Passwort ändern&[admin/index.php|2]"))?>><?=h(_("Passwort ändern&[admin/index.php|2]"))?></button></div>
 </form>
 <?php
 	if($admin_array['permissions'][0])
@@ -319,8 +319,8 @@
 <h2 id="action-0"><?=h(_("Benutzerliste einsehen"))?></h2>
 <form action="userlist.php" method="get">
 	<ul>
-		<li><button type="submit"<?=accesskey_attr(_("Unsortiert&[admin/index.php|3]"))?>><?=h(_("Unsortiert&[admin/index.php|3]"))?></button></li>
-		<li><button type="submit" name="sort" value="1"<?=accesskey_attr(_("Sortiert&[admin/index.php|3]"))?>><?=h(_("Sortiert&[admin/index.php|3]"))?></button></li>
+		<li><button type="submit"<?=l::accesskey_attr(_("Unsortiert&[admin/index.php|3]"))?>><?=h(_("Unsortiert&[admin/index.php|3]"))?></button></li>
+		<li><button type="submit" name="sort" value="1"<?=l::accesskey_attr(_("Sortiert&[admin/index.php|3]"))?>><?=h(_("Sortiert&[admin/index.php|3]"))?></button></li>
 	</ul>
 </form>
 <?php
@@ -334,9 +334,9 @@
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="ghost-input"><?=h(_("Benutzername&[admin/index.php|4]"))?></label></dt>
-		<dd><input type="text" name="ghost_username" id="ghost-input"<?=accesskey_attr(_("Benutzername&[admin/index.php|4]"))?> /></dd>
+		<dd><input type="text" name="ghost_username" id="ghost-input"<?=l::accesskey_attr(_("Benutzername&[admin/index.php|4]"))?> /></dd>
 	</dl>
-	<div><button type="submit"<?=accesskey_attr(_("Anmelden&[admin/index.php|4]"))?>><?=h(_("Anmelden&[admin/index.php|4]"))?></button></div>
+	<div><button type="submit"<?=l::accesskey_attr(_("Anmelden&[admin/index.php|4]"))?>><?=h(_("Anmelden&[admin/index.php|4]"))?></button></div>
 </form>
 <script type="text/javascript">
 	// Autocompletion
@@ -353,12 +353,12 @@
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="passwd-name-input"><?=h(_("Benutzername&[admin/index.php|5]"))?></label></dt>
-		<dd><input type="text" name="passwd_username" id="passwd-name-input"<?=accesskey_attr(_("Benutzername&[admin/index.php|5]"))?> /></dd>
+		<dd><input type="text" name="passwd_username" id="passwd-name-input"<?=l::accesskey_attr(_("Benutzername&[admin/index.php|5]"))?> /></dd>
 
 		<dt><label for="passwd-passwd-input"><?=h(_("Passwort&[admin/index.php|5]"))?></label></dt>
-		<dd><input type="text" name="passwd_password" id="passwd-passwd-input"<?=accesskey_attr(_("Passwort&[admin/index.php|5]"))?> /></dd>
+		<dd><input type="text" name="passwd_password" id="passwd-passwd-input"<?=l::accesskey_attr(_("Passwort&[admin/index.php|5]"))?> /></dd>
 	</dl>
-	<div><button type="submit"<?=accesskey_attr(_("Passwort ändern&[admin/index.php|5]"))?>><?=h(_("Passwort ändern&[admin/index.php|5]"))?></button></div>
+	<div><button type="submit"<?=l::accesskey_attr(_("Passwort ändern&[admin/index.php|5]"))?>><?=h(_("Passwort ändern&[admin/index.php|5]"))?></button></div>
 </form>
 <script type="text/javascript">
 	// Autocompletion
@@ -397,10 +397,10 @@
 ?>
 <form action="index.php#action-3" method="post">
 	<ul>
-		<li><input type="text" name="compare_1" id="i-compare-1"<?=accesskey_attr(_("Die Passwörter zweier Benutzer vergleichen&[admin/index.php|6]"))?> /></li>
+		<li><input type="text" name="compare_1" id="i-compare-1"<?=l::accesskey_attr(_("Die Passwörter zweier Benutzer vergleichen&[admin/index.php|6]"))?> /></li>
 		<li><input type="text" name="compare_2" id="i-compare-2" /></li>
 	</ul>
-	<div><button type="submit"<?=accesskey_attr(_("Vergleichen&[admin/index.php|6]"))?>><?=h(_("Vergleichen&[admin/index.php|6]"))?></button></div>
+	<div><button type="submit"<?=l::accesskey_attr(_("Vergleichen&[admin/index.php|6]"))?>><?=h(_("Vergleichen&[admin/index.php|6]"))?></button></div>
 </form>
 <script type="text/javascript">
 	// Autocompletion
@@ -419,9 +419,9 @@
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="delete-input"><?=h(_("Benutzername&[admin/index.php|7]"))?></label></dt>
-		<dd><input type="text" name="delete_username" id="delete-input"<?=accesskey_attr(_("Benutzername&[admin/index.php|7]"))?> /></dd>
+		<dd><input type="text" name="delete_username" id="delete-input"<?=l::accesskey_attr(_("Benutzername&[admin/index.php|7]"))?> /></dd>
 	</dl>
-	<div><button type="submit"<?=accesskey_attr(_("Löschen&[admin/index.php|7]"))?>><?=h(_("Löschen&[admin/index.php|7]"))?></button></div>
+	<div><button type="submit"<?=l::accesskey_attr(_("Löschen&[admin/index.php|7]"))?>><?=h(_("Löschen&[admin/index.php|7]"))?></button></div>
 </form>
 <script type="text/javascript">
 	// Autocompletion
@@ -438,12 +438,12 @@
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="user-lock-input"><?=h(_("Benutzername&[admin/index.php|8]"))?></label></dt>
-		<dd><input type="text" name="lock_username" id="user-lock-input"<?=accesskey_attr(_("Benutzername&[admin/index.php|8]"))?> /></dd>
+		<dd><input type="text" name="lock_username" id="user-lock-input"<?=l::accesskey_attr(_("Benutzername&[admin/index.php|8]"))?> /></dd>
 
 		<dt><label for="user-lock-period-input"><?=h(_("Dauer der Sperre&[admin/index.php|8]"))?></label></dt>
-		<dd><input type="text" name="user_lock_period" id="user-lock-period-input"<?=accesskey_attr(_("Dauer der Sperre&[admin/index.php|8]"))?>> <select name="user_lock_period_unit"><option value="min"><?=h(_("Minuten"))?></option><option value="h"><?=h(_("Stunden"))?></option><option value="d"><?=h(_("Tage"))?></option></select></dd>
+		<dd><input type="text" name="user_lock_period" id="user-lock-period-input"<?=l::accesskey_attr(_("Dauer der Sperre&[admin/index.php|8]"))?>> <select name="user_lock_period_unit"><option value="min"><?=h(_("Minuten"))?></option><option value="h"><?=h(_("Stunden"))?></option><option value="d"><?=h(_("Tage"))?></option></select></dd>
 	</dl>
-	<div><button type="submit"<?=accesskey_attr(_("Sperren / Entsperren&[admin/index.php|8]"))?>><?=h(_("Sperren / Entsperren&[admin/index.php|8]"))?></button></div>
+	<div><button type="submit"<?=l::accesskey_attr(_("Sperren / Entsperren&[admin/index.php|8]"))?>><?=h(_("Sperren / Entsperren&[admin/index.php|8]"))?></button></div>
 </form>
 <script type="text/javascript">
 	// Autocompletion
@@ -460,12 +460,12 @@
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="rename-from"><?=h(_("Alter Name&[admin/index.php|9]"))?></label></dt>
-		<dd><input type="text" name="rename_old" id="rename-from"<?=accesskey_attr(_("Alter Name&[admin/index.php|9]"))?> /></dd>
+		<dd><input type="text" name="rename_old" id="rename-from"<?=l::accesskey_attr(_("Alter Name&[admin/index.php|9]"))?> /></dd>
 
 		<dt><label for="rename-to"><?=h(_("Neuer Name&[admin/index.php|9]"))?></label></dt>
-		<dd><input type="text" name="rename_new" id="rename-to"<?=accesskey_attr(_("Neuer Name&[admin/index.php|9]"))?> /></dd>
+		<dd><input type="text" name="rename_new" id="rename-to"<?=l::accesskey_attr(_("Neuer Name&[admin/index.php|9]"))?> /></dd>
 	</dl>
-	<div><button type="submit"<?=accesskey_attr(_("Umbenennen&[admin/index.php|9]"))?>><?=h(_("Umbenennen&[admin/index.php|9]"))?></button></div>
+	<div><button type="submit"<?=l::accesskey_attr(_("Umbenennen&[admin/index.php|9]"))?>><?=h(_("Umbenennen&[admin/index.php|9]"))?></button></div>
 </form>
 <script type="text/javascript">
 	// Autocompletion
@@ -484,7 +484,7 @@
 		{
 ?>
 <form action="index.php" method="post">
-        <div><input type="hidden" name="noob" value="0" /><button type="submit"<?=accesskey_attr(_("Anfängerschutz einschalten&[admin/index.php|10]"))?>><?=h(_("Anfängerschutz einschalten&[admin/index.php|10]"))?></button></div>
+        <div><input type="hidden" name="noob" value="0" /><button type="submit"<?=l::accesskey_attr(_("Anfängerschutz einschalten&[admin/index.php|10]"))?>><?=h(_("Anfängerschutz einschalten&[admin/index.php|10]"))?></button></div>
 </form>
 <?php
 		}
@@ -492,7 +492,7 @@
 		{
 ?>
 <form action="index.php" method="post">
-        <div><input type="hidden" name="noob" value="1" /><button type="submit"<?=accesskey_attr(_("Anfängerschutz ausschalten&[admin/index.php|10]"))?>><?=h(_("Anfängerschutz ausschalten&[admin/index.php|10]"))?></button></div>
+        <div><input type="hidden" name="noob" value="1" /><button type="submit"<?=l::accesskey_attr(_("Anfängerschutz ausschalten&[admin/index.php|10]"))?>><?=h(_("Anfängerschutz ausschalten&[admin/index.php|10]"))?></button></div>
 </form>
 <?php
 		}
@@ -502,7 +502,7 @@
 	{
 ?>
 <hr />
-<h2 id="action-8"><a href="edit_changelog.php"<?=accesskey_attr(_("Changelog bearbeiten&[admin/index.php|1]"))?>><?=h(_("Changelog bearbeiten&[admin/index.php|1]"))?></a></h2>
+<h2 id="action-8"><a href="edit_changelog.php"<?=l::accesskey_attr(_("Changelog bearbeiten&[admin/index.php|1]"))?>><?=h(_("Changelog bearbeiten&[admin/index.php|1]"))?></a></h2>
 <?php
 	}
 
@@ -514,21 +514,21 @@
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="message-absender-input"><?=h(_("Absender&[admin/index.php|11]"))?></label></dt>
-		<dd><input type="text" name="message_from" id="message-absender-input"<?=accesskey_attr(_("Absender&[admin/index.php|11]"))?> /></dd>
+		<dd><input type="text" name="message_from" id="message-absender-input"<?=l::accesskey_attr(_("Absender&[admin/index.php|11]"))?> /></dd>
 
 		<dt><label for="message-empfaenger-textarea"><?=h(_("Empfänger&[admin/index.php|11]"))?></label></dt>
-		<dd><textarea cols="20" rows="4" name="message_to" id="message-empfaenger-textarea"<?=accesskey_attr(_("Empfänger&[admin/index.php|11]"))?>></textarea> Bleibt dieses Feld leer, wird an alle Benutzer verschickt.</dd>
+		<dd><textarea cols="20" rows="4" name="message_to" id="message-empfaenger-textarea"<?=l::accesskey_attr(_("Empfänger&[admin/index.php|11]"))?>></textarea> Bleibt dieses Feld leer, wird an alle Benutzer verschickt.</dd>
 
 		<dt><label for="message-betreff-input"><?=h(_("Betreff&[admin/index.php|11]"))?></label></dt>
 		<dd><input type="text" name="message_subject" id="message-betreff-input"<?=h(_("Betreff&[admin/index.php|11]"))?> /></dd>
 
 		<dt><label for="message-html-checkbox"><?=h(_("HTML?&[admin/index.php|11]"))?></label></dt>
-		<dd><input type="checkbox" name="message_html" id="message-html-checkbox"<?=accesskey_attr(_("HTML?&[admin/index.php|11]"))?> /></dd>
+		<dd><input type="checkbox" name="message_html" id="message-html-checkbox"<?=l::accesskey_attr(_("HTML?&[admin/index.php|11]"))?> /></dd>
 
 		<dt><label for="message-text-textarea"><?=h(_("Text&[admin/index.php|11]"))?></label></dt>
-		<dd><textarea cols="50" rows="10" name="message_text" id="message-text-textarea"<?=accesskey_attr(_("Text&[admin/index.php|11]"))?>></textarea></dd>
+		<dd><textarea cols="50" rows="10" name="message_text" id="message-text-textarea"<?=l::accesskey_attr(_("Text&[admin/index.php|11]"))?>></textarea></dd>
 	</dl>
-	<div><button type="submit"<?=accesskey_attr(_("Absenden&[admin/index.php|11]"))?>><?=h(_("Absenden&[admin/index.php|11]"))?></button></div>
+	<div><button type="submit"<?=l::accesskey_attr(_("Absenden&[admin/index.php|11]"))?>><?=h(_("Absenden&[admin/index.php|11]"))?></button></div>
 </form>
 <?php
 	}
@@ -537,7 +537,7 @@
 	{
 ?>
 <hr />
-<h2 id="action-10"><a href="logs.php"<?=accesskey_attr(_("Admin-Logdateien einsehen&[admin/index.php|1]"))?>><?=h(_("Admin-Logdateien einsehen&[admin/index.php|1]"))?></a></h2>
+<h2 id="action-10"><a href="logs.php"<?=l::accesskey_attr(_("Admin-Logdateien einsehen&[admin/index.php|1]"))?>><?=h(_("Admin-Logdateien einsehen&[admin/index.php|1]"))?></a></h2>
 <?php
 	}
 
@@ -547,8 +547,8 @@
 <hr />
 <h2 id="action-11"><?=h(_("Benutzerverwaltung"))?></h2>
 <ul>
-	<li><a href="usermanagement.php?action=edit"<?=accesskey_attr(_("Bestehende Benutzer bearbeiten&[admin/index.php|12]"))?>><?=h(_("Bestehende Benutzer bearbeiten&[admin/index.php|12]"))?></a></li>
-	<li><a href="usermanagement.php?action=add"<?=accesskey_attr(_("Neuen Benutzer anlegen&[admin/index.php|12]"))?>><?=h(_("Neuen Benutzer anlegen&[admin/index.php|12]"))?></a></li>
+	<li><a href="usermanagement.php?action=edit"<?=l::accesskey_attr(_("Bestehende Benutzer bearbeiten&[admin/index.php|12]"))?>><?=h(_("Bestehende Benutzer bearbeiten&[admin/index.php|12]"))?></a></li>
+	<li><a href="usermanagement.php?action=add"<?=l::accesskey_attr(_("Neuen Benutzer anlegen&[admin/index.php|12]"))?>><?=h(_("Neuen Benutzer anlegen&[admin/index.php|12]"))?></a></li>
 </ul>
 <?php
 	}
@@ -563,7 +563,7 @@
 		{
 ?>
 <form action="index.php" method="post">
-	<div><input type="hidden" name="wartungsarbeiten" value="0" /><button type="submit"<?=accesskey_attr(_("Wartungsarbeiten deaktivieren&[admin/index.php|13]"))?>><?=h(_("Wartungsarbeiten deaktivieren&[admin/index.php|13]"))?></button></div>
+	<div><input type="hidden" name="wartungsarbeiten" value="0" /><button type="submit"<?=l::accesskey_attr(_("Wartungsarbeiten deaktivieren&[admin/index.php|13]"))?>><?=h(_("Wartungsarbeiten deaktivieren&[admin/index.php|13]"))?></button></div>
 </form>
 <?php
 		}
@@ -571,7 +571,7 @@
 		{
 ?>
 <form action="index.php" method="post">
-	<div><input type="hidden" name="wartungsarbeiten" value="1" /><button type="submit"<?=accesskey_attr(_("Wartungsarbeiten aktivieren&[admin/index.php|13]"))?>><?=h(_("Wartungsarbeiten aktivieren&[admin/index.php|13]"))?></button></div>
+	<div><input type="hidden" name="wartungsarbeiten" value="1" /><button type="submit"<?=l::accesskey_attr(_("Wartungsarbeiten aktivieren&[admin/index.php|13]"))?>><?=h(_("Wartungsarbeiten aktivieren&[admin/index.php|13]"))?></button></div>
 </form>
 <?php
 		}
@@ -579,13 +579,13 @@
 
 	if($admin_array['permissions'][13])
 	{
-		if(database_locked())
+		if(Config::database_locked())
 		{
 ?>
 <hr />
 <h2 id="action-13"><?=h(_("Spiel entsperren"))?></h2>
 <form action="index.php" method="post">
-	<div><input type="hidden" name="lock" value="0" /><button type="submit"<?=accesskey_attr(_("Entsperren&[admin/index.php|14]"))?>><?=h(_("Entsperren&[admin/index.php|14]"))?></button></div>
+	<div><input type="hidden" name="lock" value="0" /><button type="submit"<?=l::accesskey_attr(_("Entsperren&[admin/index.php|14]"))?>><?=h(_("Entsperren&[admin/index.php|14]"))?></button></div>
 </form>
 <?php
 		}
@@ -597,9 +597,9 @@
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="lock-period-input"><?=h(_("Dauer der Sperre&[admin/index.php|14]"))?></label></dt>
-		<dd><input type="text" name="lock_period" id="lock-period-input"<?=accesskey_attr(_("Dauer der Sperre&[admin/index.php|14]"))?> /> <select name="lock_period_unit"><option value="min"><?=h(_("Minuten"))?></option><option value="h"><?=h(_("Stunden"))?></option><option value="d"><?=h(_("Tage"))?></option></select></dd>
+		<dd><input type="text" name="lock_period" id="lock-period-input"<?=l::accesskey_attr(_("Dauer der Sperre&[admin/index.php|14]"))?> /> <select name="lock_period_unit"><option value="min"><?=h(_("Minuten"))?></option><option value="h"><?=h(_("Stunden"))?></option><option value="d"><?=h(_("Tage"))?></option></select></dd>
 	</dl>
-	<div><input type="hidden" name="lock" value="1" /><button type="submit"<?=accesskey_attr(_("Sperren&[admin/index.php|14]"))?>><?=h(_("Sperren&[admin/index.php|14]"))?></button></div>
+	<div><input type="hidden" name="lock" value="1" /><button type="submit"<?=l::accesskey_attr(_("Sperren&[admin/index.php|14]"))?>><?=h(_("Sperren&[admin/index.php|14]"))?></button></div>
 </form>
 
 
@@ -609,13 +609,13 @@
 
 	if($admin_array['permissions'][15])
 	{
-		if(fleets_locked())
+		if(Config::fleets_locked())
 		{
 ?>
 <hr />
 <h2 id="action-15"><?=h(_("Flottensperre"))?></h2>
 <form action="index.php" method="post">
-	<div><input type="hidden" name="flock" value="0" /><button type="submit"<?=accesskey_attr(_("Aufheben&[admin/index.php|15]"))?>><?=h(_("Aufheben&[admin/index.php|15]"))?></button></div>
+	<div><input type="hidden" name="flock" value="0" /><button type="submit"<?=l::accesskey_attr(_("Aufheben&[admin/index.php|15]"))?>><?=h(_("Aufheben&[admin/index.php|15]"))?></button></div>
 </form>
 <?php
 		}
@@ -627,9 +627,9 @@
 <form action="index.php" method="post">
 	<dl>
 		<dt><label for="flock-period-input"><?=h(_("Dauer der Flottensperre&[admin/index.php|15]"))?></label></dt>
-		<dd><input type="text" name="flock_period" id="lock-period-input"<?=accesskey_attr(_("Dauer der Flottensperre&[admin/index.php|15]"))?> /> <select name="flock_period_unit"><option value="min"><?=h(_("Minuten"))?></option><option value="h"><?=h(_("Stunden"))?></option><option value="d"><?=h(_("Tage"))?></option></select></dd>
+		<dd><input type="text" name="flock_period" id="lock-period-input"<?=l::accesskey_attr(_("Dauer der Flottensperre&[admin/index.php|15]"))?> /> <select name="flock_period_unit"><option value="min"><?=h(_("Minuten"))?></option><option value="h"><?=h(_("Stunden"))?></option><option value="d"><?=h(_("Tage"))?></option></select></dd>
 	</dl>
-	<div><input type="hidden" name="flock" value="1" /><button type="submit"<?=accesskey_attr(_("Setzen&[admin/index.php|15]"))?>><?=h(_("Setzen&[admin/index.php|15]"))?></button></div>
+	<div><input type="hidden" name="flock" value="1" /><button type="submit"<?=l::accesskey_attr(_("Setzen&[admin/index.php|15]"))?>><?=h(_("Setzen&[admin/index.php|15]"))?></button></div>
 </form>
 
 
@@ -641,7 +641,7 @@
 	{
 ?>
 <hr />
-<h2 id="action-14"><a href="news.php"<?=accesskey_attr(_("News bearbeiten&[admin/index.php|16]"))?>><?=h(_("News bearbeiten&[admin/index.php|16]"))?></a></h2>
+<h2 id="action-14"><a href="news.php"<?=l::accesskey_attr(_("News bearbeiten&[admin/index.php|16]"))?>><?=h(_("News bearbeiten&[admin/index.php|16]"))?></a></h2>
 <?php
 	}
 

@@ -75,9 +75,9 @@
 		<legend><?=h(_("Planeten umbenennen"))?></legend>
 		<dl class="form">
 			<dt><label for="name"><?=h(_("&Neuer Name[login/info/rename.php|1]"))?></label></dt>
-			<dd><input type="text" id="name" name="planet_name" value="<?=htmlspecialchars($me->planetName())?>" maxlength="24"<?=accesskey_attr(_("&Neuer Name[login/info/rename.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
+			<dd><input type="text" id="name" name="planet_name" value="<?=htmlspecialchars($me->planetName())?>" maxlength="24"<?=l::accesskey_attr(_("&Neuer Name[login/info/rename.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
-		<div class="button"><button type="submit"<?=accesskey_attr(_("&Umbenennen[login/info/rename.php|1]"))?> tabindex="<?=$tabindex++?>"><?=h(_("&Umbenennen[login/info/rename.php|1]"))?></button></div>
+		<div class="button"><button type="submit"<?=l::accesskey_attr(_("&Umbenennen[login/info/rename.php|1]"))?> tabindex="<?=$tabindex++?>"><?=h(_("&Umbenennen[login/info/rename.php|1]"))?></button></div>
 	</fieldset>
 </form>
 <?php
@@ -101,9 +101,9 @@
 		<legend><?=h(_("Planeten aufgeben"))?></legend>
 		<dl class="form">
 			<dt><label for="password"><?=h(_("Passwort&[login/info/rename.php|1]"))?></label></dt>
-			<dd><input type="password" id="password" name="password" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Passwort&[login/info/rename.php|1]"))?> /></dd>
+			<dd><input type="password" id="password" name="password" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Passwort&[login/info/rename.php|1]"))?> /></dd>
 		</dl>
-		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Aufgeben&[login/info/rename.php|1]"))?>><?=h(_("Aufgeben&[login/info/rename.php|1]"))?></button></div>
+		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Aufgeben&[login/info/rename.php|1]"))?>><?=h(_("Aufgeben&[login/info/rename.php|1]"))?></button></div>
 	</fieldset>
 </form>
 <?php
@@ -128,7 +128,7 @@
 		if($foreign > 0)
 		{
 ?>
-<p><strong><?=sprintf(h(ngettext("Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn Sie den Planeten auflösen, wird diese Flotte zerstört werden.", "Achtung! Von diesem Planeten sind noch %s Fremdstationierungen aktiv. Wenn Sie den Planeten auflösen, werden diese Flotten zerstört werden.", $foreign)), ths($foreign))?></strong></p>
+<p><strong><?=sprintf(h(ngettext("Achtung! Von diesem Planeten ist noch eine Fremdstationierung aktiv. Wenn Sie den Planeten auflösen, wird diese Flotte zerstört werden.", "Achtung! Von diesem Planeten sind noch %s Fremdstationierungen aktiv. Wenn Sie den Planeten auflösen, werden diese Flotten zerstört werden.", $foreign)), F::ths($foreign))?></strong></p>
 <?php
 		}
 	}
@@ -145,7 +145,7 @@
 		{
 			$me->setActivePlanet($planet);
 ?>
-		<li><?=htmlspecialchars(format_planet($me->getPosString(), $me->planetName()))?><span class="aktionen"><?php if($i != 0){?> &ndash; <a href="rename.php?up=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="hoch">[<?=h(_("Hoch"))?>]</a><?php } if($i != count($planets)-1){?> &ndash; <a href="rename.php?down=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="runter">[<?=h(_("Runter"))?>]</a><?php }?></span></li>
+		<li><?=htmlspecialchars(F::format_planet($me->getPosString(), $me->planetName()))?><span class="aktionen"><?php if($i != 0){?> &ndash; <a href="rename.php?up=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="hoch">[<?=h(_("Hoch"))?>]</a><?php } if($i != count($planets)-1){?> &ndash; <a href="rename.php?down=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="runter">[<?=h(_("Runter"))?>]</a><?php }?></span></li>
 <?php
 		}
 		$me->setActivePlanet($active_planet);

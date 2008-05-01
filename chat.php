@@ -39,7 +39,7 @@
 <form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/chat.php')?>" method="get" id="chat-form">
 	<dl>
 		<dt class="c-kanal"><label for="i-kanal"><?=h(_("Kanal&[chat.php|1]"))?></label></dt>
-		<dd class="c-kanal"><select name="channel" id="i-kanal"<?=accesskey_attr(_("Kanal&[chat.php|1]"))?>>
+		<dd class="c-kanal"><select name="channel" id="i-kanal"<?=l::accesskey_attr(_("Kanal&[chat.php|1]"))?>>
 <?php
 		foreach($channels as $id=>$info)
 		{
@@ -51,9 +51,9 @@
 		</select></dd>
 
 		<dt class="c-spitzname"><label for="i-spitzname"><?=h(_("Spitzname&[chat.php|1]"))?></label></dt>
-		<dd class="c-spitzname"><input type="text" name="nickname" id="i-spitzname"<?=accesskey_attr(_("Spitzname&[chat.php|1]"))?> /></dd>
+		<dd class="c-spitzname"><input type="text" name="nickname" id="i-spitzname"<?=l::accesskey_attr(_("Spitzname&[chat.php|1]"))?> /></dd>
 	</dl>
-	<div><button type="submit"<?=accesskey_attr(_("Verbinden&[chat.php|1]"))?>><?=h(_("Verbinden&[chat.php|1]"))?></button></div>
+	<div><button type="submit"<?=l::accesskey_attr(_("Verbinden&[chat.php|1]"))?>><?=h(_("Verbinden&[chat.php|1]"))?></button></div>
 </form>
 <script type="text/javascript">
 // <![CDATA[
@@ -61,7 +61,7 @@
 	dt_el.className = 'c-neues-fenster';
 	dt_el.appendChild(label_el = document.createElement('label'));
 	label_el.setAttribute('for', 'i-neues-fenster');
-	label_el.appendChild(document.createTextNode('<?=jsentities(_("Chat in neuem Fenster öffnen"))?>'));
+	label_el.appendChild(document.createTextNode('<?=JS::jsentities(_("Chat in neuem Fenster öffnen"))?>'));
 	dt_el.parentNode.appendChild(dd_el = document.createElement('dd'));
 	input_el = document.createElement('input');
 	input_el.type = 'checkbox';

@@ -161,17 +161,17 @@
 				$u = explode("\t", $u);
 				if(count($u) < 10) continue;
 				$this->raw[1][$u[0]] = array(
-					decode_item_list($u[1]),
+					Items::decodeList($u[1]),
 					$u[2],
 					(float)$u[3],
 					array(
-						decode_ress_list($u[4]),
-						decode_item_list($u[5]),
+						Functions::decodeRessList($u[4]),
+						Items::decodeList($u[5]),
 						(float)$u[6]
 					),
 					array(
-						decode_ress_list($u[7]),
-						decode_item_list($u[8]),
+						Functions::decodeRessList($u[7]),
+						Items::decodeList($u[8]),
 						(float)$u[10]
 					),
 					(float)$u[9]
@@ -214,7 +214,7 @@
 
 			$users = array();
 			foreach($this->raw[1] as $k=>$v)
-				$users[] = $k."\t".encode_item_list($v[0])."\t".$v[1]."\t".$v[2]."\t".encode_ress_list($v[3][0])."\t".encode_item_list($v[3][1])."\t".$v[3][2]."\t".encode_ress_list($v[4][0])."\t".encode_item_list($v[4][1])."\t".$v[5]."\t".$v[4][2];
+				$users[] = $k."\t".Items::encodeList($v[0])."\t".$v[1]."\t".$v[2]."\t".Functions::encodeRessList($v[3][0])."\t".Items::encodeList($v[3][1])."\t".$v[3][2]."\t".Functions::encodeRessList($v[4][0])."\t".Items::encodeList($v[4][1])."\t".$v[5]."\t".$v[4][2];
 			self::$database->setField($this->name, "users", implode("\n", $users));
 
 			self::$database->setField($this->name, "start", $this->raw[2]);
@@ -515,7 +515,7 @@
 			$max_robs -= array_sum($this->raw[1][$user][3][1]);
 			if($ress)
 			{
-				$ress = fit_to_max($ress, $max_ress);
+				$ress = Functions::fitToMax($ress, $max_ress);
 				$this->raw[1][$user][3][0][0] += $ress[0];
 				$this->raw[1][$user][3][0][1] += $ress[1];
 				$this->raw[1][$user][3][0][2] += $ress[2];
@@ -525,7 +525,7 @@
 
 			if($robs)
 			{
-				$robs = fit_to_max($robs, $max_robs);
+				$robs = Functions::fitToMax($robs, $max_robs);
 				foreach($robs as $i=>$rob)
 				{
 					if(!isset($this->raw[1][$user][3][1][$i]))
@@ -554,7 +554,7 @@
 			}
 			if($ress)
 			{
-				$ress = fit_to_max($ress, $max_ress);
+				$ress = Functions::fitToMax($ress, $max_ress);
 				$this->raw[1][$user][4][0][0] += $ress[0];
 				$this->raw[1][$user][4][0][1] += $ress[1];
 				$this->raw[1][$user][4][0][2] += $ress[2];
@@ -564,7 +564,7 @@
 
 			if($robs)
 			{
-				$robs = fit_to_max($robs, $max_robs);
+				$robs = Functions::fitToMax($robs, $max_robs);
 				foreach($robs as $i=>$rob)
 				{
 					if(!isset($this->raw[1][$user][4][1][$i]))
@@ -596,8 +596,8 @@
 
 			if($give !== null && !$give)
 			{
-				$this->raw[1][$user][4][0] = fit_to_max($this->raw[1][$user][4][0], $max_ress);
-				$this->raw[1][$user][4][1] = fit_to_max($this->raw[1][$user][4][1], $max_robs);
+				$this->raw[1][$user][4][0] = Functions::fitToMax($this->raw[1][$user][4][0], $max_ress);
+				$this->raw[1][$user][4][1] = Functions::fitToMax($this->raw[1][$user][4][1], $max_robs);
 			}
 
 			if($ress !== false && is_array($ress))
@@ -608,13 +608,13 @@
 				if(!isset($ress[3])) $ress[3] = 0;
 				if(!isset($ress[4])) $ress[4] = 0;
 
-				$ress = fit_to_max($ress, $max_ress);
+				$ress = Functions::fitToMax($ress, $max_ress);
 
 				$this->raw[1][$user][4][0] = $ress;
 			}
 			if($robs !== false && is_array($robs))
 			{
-				$robs = fit_to_max($robs, $max_robs);
+				$robs = Functions::fitToMax($robs, $max_robs);
 				$this->raw[1][$user][4][1] = $robs;
 			}
 
@@ -674,7 +674,7 @@
 				$mass += $item_info['mass']*$count;
 			}
 
-			$global_factors = get_global_factors();
+			$global_factors = Config::get_global_factors();
 			$add_factor = 1;
 			if($factor) $add_factor = $this->raw[1][$user][2];
 
@@ -736,7 +736,7 @@
 
 			$time = sqrt(self::getDistance($from, $to)/$speed)*2;
 
-			$global_factors = get_global_factors();
+			$global_factors = Config::get_global_factors();
 			$time *= $global_factors['time'];
 
 			if($use_min_time && $time < global_setting("MIN_BUILDING_TIME"))
@@ -1037,7 +1037,7 @@
 					if($this_pos[2] == $that_pos[2]) # Selber Planet
 						$distance = 0.001;
 					else # Anderer Planet
-						$distance = 0.1*diff($this_pos[2], $that_pos[2]);
+						$distance = 0.1*Functions::diff($this_pos[2], $that_pos[2]);
 				}
 				else
 				{
@@ -1057,9 +1057,9 @@
 					$that_x_value /= 100;
 					$that_y_value /= 10;
 
-					$x_diff = diff($this_x_value, $that_x_value);
-					$y_diff = diff($this_y_value, $that_y_value);
-					$z_diff = diff($this_z_value, $that_z_value);
+					$x_diff = Functions::diff($this_x_value, $that_x_value);
+					$y_diff = Functions::diff($this_y_value, $that_y_value);
+					$z_diff = Functions::diff($this_z_value, $that_z_value);
 
 					$distance = sqrt(pow($x_diff, 2)+pow($y_diff, 2)+pow($z_diff, 2));
 				}
@@ -1068,9 +1068,9 @@
 			{
 				$galaxy_count = Galaxy::getGalaxiesCount();
 
-				$galaxy_diff_1 = diff($this_pos[0], $that_pos[0]);
-				$galaxy_diff_2 = diff($this_pos[0]+$galaxy_count, $that_pos[0]);
-				$galaxy_diff_3 = diff($this_pos[0], $that_pos[0]+$galaxy_count);
+				$galaxy_diff_1 = Functions::diff($this_pos[0], $that_pos[0]);
+				$galaxy_diff_2 = Functions::diff($this_pos[0]+$galaxy_count, $that_pos[0]);
+				$galaxy_diff_3 = Functions::diff($this_pos[0], $that_pos[0]+$galaxy_count);
 				$galaxy_diff = min($galaxy_diff_1, $galaxy_diff_2, $galaxy_diff_3);
 
 				$radius = (30*$galaxy_count)/(2*pi());
@@ -1197,7 +1197,7 @@
 					{
 						case 2: # Sammeln
 						{
-							$ress_max = truemmerfeld::get($target[0], $target[1], $target[2]);
+							$ress_max = $target_galaxy->truemmerfeldGet($target[1], $target[2]);
 							$ress_max_total = array_sum($ress_max);
 
 							# Transportkapazitaeten
@@ -1269,9 +1269,9 @@
 							}
 
 							# Aus dem Truemmerfeld abziehen
-							truemmerfeld::sub($target[0], $target[1], $target[2], $ress_max[0], $ress_max[1], $ress_max[2], $ress_max[3]);
+							$target_galaxy->truemmerfeldSub($target[1], $target[2], $ress_max[0], $ress_max[1], $ress_max[2], $ress_max[3]);
 
-							$tr_verbl = truemmerfeld::get($target[0], $target[1], $target[2]);
+							$tr_verbl = $target_galaxy->truemmerfeldGet($target[1], $target[2]);
 
 							# Nachrichten versenden
 							foreach($got_ress as $username=>$rtrans)
@@ -1280,7 +1280,7 @@
 								$message = Classes::Message();
 								if(!$message->create()) continue;
 								$message->subject(sprintf($user_obj->_("Abbau auf %s"), $next_target_nt));
-								$message->text(sprintf("<div class=\"nachricht-sammeln\">\n\t<p>".sprintf(h($user_obj->_("Ihre Flotte erreicht das Trümmerfeld auf %s und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s.")), htmlspecialchars($next_target_nt), ths($trans_total), h(sprintf($user_obj->_("%1\$s %5\$s, %2\$s %6\$s, %3\$s %7\$s und %4s %8\$s"), ths($rtrans[0]), ths($rtrans[1]), ths($rtrans[2]), ths($rtrans[3]), $user_obj->_("[ress_0]"), $user_obj->_("[ress_1]"), $user_obj->_("[ress_2]"), $user_obj->_("[ress_3]"))))."</p>\n\t<h3 class=\"strong\">".h(_("Verbleibende Rohstoffe im Trümmerfeld"))."</h3>\n".$user_obj->_i(format_ress($tr_verbl, 1, false, false, true, false, "ress-block"))."</div>"));
+								$message->text(sprintf("<div class=\"nachricht-sammeln\">\n\t<p>".sprintf(h($user_obj->_("Ihre Flotte erreicht das Trümmerfeld auf %s und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s.")), htmlspecialchars($next_target_nt), F::ths($trans_total), h(sprintf($user_obj->_("%1\$s %5\$s, %2\$s %6\$s, %3\$s %7\$s und %4s %8\$s"), F::ths($rtrans[0]), F::ths($rtrans[1]), F::ths($rtrans[2]), F::ths($rtrans[3]), $user_obj->_("[ress_0]"), $user_obj->_("[ress_1]"), $user_obj->_("[ress_2]"), $user_obj->_("[ress_3]"))))."</p>\n\t<h3 class=\"strong\">".h(_("Verbleibende Rohstoffe im Trümmerfeld"))."</h3>\n".$user_obj->_i(F::format_ress($tr_verbl, 1, false, false, true, false, "ress-block"))."</div>"));
 								$message->addUser($username, 4);
 								$message->html(true);
 							}
@@ -1333,8 +1333,8 @@
 								{
 									$target_user->addRess($data[3][0]);
 									$this->raw[1][$username][3][0] = array(0,0,0,0,0);
-									if($write_this_username) $message_text[$username] .= sprintf($user_obj->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $user_obj->_("[ress_0]"), ths($data[3][0][0], true), $user_obj->_("[ress_1]"), ths($data[3][0][1], true), $user_obj->_("[ress_2]"), ths($data[3][0][2], true), $user_obj->_("[ress_3]"), ths($data[3][0][3], true), $user_obj->_("[ress_4]"), ths($data[3][0][4], true));
-									$message_text[$target_owner] .= sprintf($target_user->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $target_user->_("[ress_0]"), ths($data[3][0][0], true), $target_user->_("[ress_1]"), ths($data[3][0][1], true), $target_user->_("[ress_2]"), ths($data[3][0][2], true), $target_user->_("[ress_3]"), ths($data[3][0][3], true), $target_user->_("[ress_4]"), ths($data[3][0][4], true));
+									if($write_this_username) $message_text[$username] .= sprintf($user_obj->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $user_obj->_("[ress_0]"), F::ths($data[3][0][0], true), $user_obj->_("[ress_1]"), F::ths($data[3][0][1], true), $user_obj->_("[ress_2]"), F::ths($data[3][0][2], true), $user_obj->_("[ress_3]"), F::ths($data[3][0][3], true), $user_obj->_("[ress_4]"), F::ths($data[3][0][4], true));
+									$message_text[$target_owner] .= sprintf($target_user->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $target_user->_("[ress_0]"), F::ths($data[3][0][0], true), $target_user->_("[ress_1]"), F::ths($data[3][0][1], true), $target_user->_("[ress_2]"), F::ths($data[3][0][2], true), $target_user->_("[ress_3]"), F::ths($data[3][0][3], true), $target_user->_("[ress_4]"), F::ths($data[3][0][4], true));
 
 									if($target_owner == $username && array_sum($data[3][1]) > 0)
 									{
@@ -1385,9 +1385,9 @@
 									if($write_this_username)
 									{
 										$message_text[$username] .= "\n".$user_obj->_("Folgender Handel wird durchgeführt:")."\n";
-										$message_text[$username] .= sprintf($user_obj->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $user_obj->_("[ress_0]"), ths($h[0][0], true), $user_obj->_("[ress_1]"), ths($h[0][1], true), $user_obj->_("[ress_2]"), ths($h[0][2], true), $user_obj->_("[ress_3]"), ths($h[0][3], true), $user_obj->_("[ress_4]"), ths($h[0][4], true));
+										$message_text[$username] .= sprintf($user_obj->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $user_obj->_("[ress_0]"), F::ths($h[0][0], true), $user_obj->_("[ress_1]"), F::ths($h[0][1], true), $user_obj->_("[ress_2]"), F::ths($h[0][2], true), $user_obj->_("[ress_3]"), F::ths($h[0][3], true), $user_obj->_("[ress_4]"), F::ths($h[0][4], true));
 									}
-									$message_text[$target_owner] .= sprintf($target_user->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $target_user->_("[ress_0]"), ths($h[0][0], true), $target_user->_("[ress_1]"), ths($h[0][1], true), $target_user->_("[ress_2]"), ths($h[0][2], true), $target_user->_("[ress_3]"), ths($h[0][3], true), $target_user->_("[ress_4]"), ths($h[0][4], true));
+									$message_text[$target_owner] .= sprintf($target_user->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $target_user->_("[ress_0]"), F::ths($h[0][0], true), $target_user->_("[ress_1]"), F::ths($h[0][1], true), $target_user->_("[ress_2]"), F::ths($h[0][2], true), $target_user->_("[ress_3]"), F::ths($h[0][3], true), $target_user->_("[ress_4]"), F::ths($h[0][4], true));
 									if(array_sum($h[1]) > 0)
 									{
 										if($write_this_username) $message_text[$username] .= "\n";
@@ -1445,7 +1445,7 @@
 								$message_text .= "\t\t<h4 class=\"strong\">%2\$s</h4>\n";
 								$message_text .= "\t\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
 								$message_text .= "\t\t\t<dt class=\"c-felder\">%3\$s</dt>\n";
-								$message_text .= "\t\t\t<dd class=\"c-felder\">".ths($target_galaxy->getPlanetSize($target[1], $target[2]))."</dd>\n";
+								$message_text .= "\t\t\t<dd class=\"c-felder\">".F::ths($target_galaxy->getPlanetSize($target[1], $target[2]))."</dd>\n";
 								$message_text .= "\t\t</dl>\n";
 								$message_text .= "\t</div>\n";
 
@@ -1521,7 +1521,7 @@
 								$message_text .= "\t\t<h4 class=\"strong\">%2\$s</h4>\n";
 								$message_text .= "\t\t<dl class=\"planet_".$target_galaxy->getPlanetClass($target[1], $target[2])."\">\n";
 								$message_text .= "\t\t\t<dt class=\"c-felder\">%3\$s</dt>\n";
-								$message_text .= "\t\t\t<dd class=\"c-felder\">".ths($target_user->getTotalFields())."</dd>\n";
+								$message_text .= "\t\t\t<dd class=\"c-felder\">".F::ths($target_user->getTotalFields())."</dd>\n";
 								$message_text .= "\t\t</dl>\n";
 								$message_text .= "\t</div>\n";
 
@@ -1536,7 +1536,7 @@
 										foreach($target_user->getItemsList('roboter') as $id)
 										{
 											if($target_user->getItemLevel($id, 'roboter') <= 0) continue;
-											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".ths($target_user->getItemLevel($id, "roboter")).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".F::ths($target_user->getItemLevel($id, "roboter")).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1549,7 +1549,7 @@
 										foreach($target_user->getItemsList('forschung') as $id)
 										{
 											if($target_user->getItemLevel($id, 'forschung') <= 0) continue;
-											$next .= "\t\t\t<li>[item_".$id."] <span class=\"stufe\">(Level&nbsp;".ths($target_user->getItemLevel($id, "forschung")).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"stufe\">(Level&nbsp;".F::ths($target_user->getItemLevel($id, "forschung")).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1583,7 +1583,7 @@
 										}
 
 										foreach($schiffe as $id=>$count)
-											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".ths($count).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".F::ths($count).")</span></li>\n";
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
 										$next .= "\t<div id=\"spionage-verteidigung\">\n";
@@ -1592,7 +1592,7 @@
 										foreach($target_user->getItemsList('verteidigung') as $id)
 										{
 											if($target_user->getItemLevel($id, 'verteidigung') <= 0) continue;
-											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".ths($target_user->getItemLevel($id, "verteidigung")).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".F::ths($target_user->getItemLevel($id, "verteidigung")).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1605,7 +1605,7 @@
 										foreach($target_user->getItemsList('gebaeude') as $id)
 										{
 											if($target_user->getItemLevel($id, 'gebaeude') <= 0) continue;
-											$next .= "\t\t\t<li>[item_".$id."] <span class=\"stufe\">(Stufe&nbsp;".ths($target_user->getItemLevel($id, "gebaeude")).")</span></li>\n";
+											$next .= "\t\t\t<li>[item_".$id."] <span class=\"stufe\">(Stufe&nbsp;".F::ths($target_user->getItemLevel($id, "gebaeude")).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
 										$next .= "\t</div>\n";
@@ -1614,7 +1614,7 @@
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-rohstoffe\">\n";
 										$next .= "\t\t<h4 class=\"strong\">%12\$s</h4>\n";
-										$next .= format_ress($target_user->getRess(), 2, true, false, true, null, "ress-block");
+										$next .= F::format_ress($target_user->getRess(), 2, true, false, true, null, "ress-block");
 										$next .= "\t</div>\n";
 										unset($next);
 								}
@@ -1632,7 +1632,7 @@
 									$from_galaxy = Classes::Galaxy($from_pos[0]);
 									$first_user_text = sprintf($target_user->_("Eine fremde Flotte vom Planeten %s wurde von Ihrem Planeten %s aus bei der Spionage gesichtet."), sprintf($target_user->_("„%s“ (%s, Eigentümer: %s)"), $from_galaxy->getPlanetName($from_pos[1], $from_pos[2]), $from_pos_str, $first_user), sprintf($target_user->_("„%s“ (%s)"), $target_user->planetName(), $next_target_nt));
 									if(array_sum($destroyed) > 0)
-										$first_user_text .= "\n\n".sprintf($target_user->ngettext("Durch Spionageabwehr haben Sie eine Spionagesonde zerstört.", "Durch Spionageabwehr haben Sie %s Spionagesonden zerstört.", array_sum($destroyed)), ths(array_sum($destroyed)));
+										$first_user_text .= "\n\n".sprintf($target_user->ngettext("Durch Spionageabwehr haben Sie eine Spionagesonde zerstört.", "Durch Spionageabwehr haben Sie %s Spionagesonden zerstört.", array_sum($destroyed)), F::ths(array_sum($destroyed)));
 									$message->text($first_user_text);
 									$message->from($first_user);
 									$message->addUser($target_owner, $types_message_types[$type]);
@@ -1664,7 +1664,7 @@
 										));
 
 										if(isset($destroyed[$username]) && $destroyed[$username] > 0)
-											$text .= "<hr />\n<p>".h(sprintf($u->ngettext("Die Spionageabwehr des Planeten hat eine Ihrer Spionagesonden zerstört.", "Die Spionageabwehr des Planeten hat %s Ihrer Spionagesonden zerstört.", $destroyed[$username]), ths($destroyed[$username])))."</p>\n";
+											$text .= "<hr />\n<p>".h(sprintf($u->ngettext("Die Spionageabwehr des Planeten hat eine Ihrer Spionagesonden zerstört.", "Die Spionageabwehr des Planeten hat %s Ihrer Spionagesonden zerstört.", $destroyed[$username]), F::ths($destroyed[$username])))."</p>\n";
 
 										$message->text($text);
 										$message->html(true);
@@ -1672,7 +1672,7 @@
 									elseif(isset($destroyed[$username]) && $destroyed[$username] > 0)
 									{
 										$message->subject(sprintf($u->_("Spionage des Planeten %s abgewehrt"), $next_target_nt));
-										$message->text(sprintf($u->ngettext("Ihre Flotte erreichte den Planeten %s, um diesen auszuspionieren.\n\nJedoch zerstörte die Spionageabwehr Ihre Spionagesonde, bevor diese einen Bericht übertragen konnte.", "Ihre Flotte erreichte den Planeten %s, um diesen auszuspionieren.\n\nJedoch zerstörte die Spionageabwehr des Planeten alle Ihrer %s Spionagesonden, bevor diese einen Bericht übertragen konnten.", $destroyed[$username]), sprintf($u->_("„%s“ (%s, Eigentümer: %s)"), $target_user->planetName(), vsprintf($u->_("%d:%d:%d"), $target_user->getPos()), $target_user->getName()), ths($destroyed[$username])));
+										$message->text(sprintf($u->ngettext("Ihre Flotte erreichte den Planeten %s, um diesen auszuspionieren.\n\nJedoch zerstörte die Spionageabwehr Ihre Spionagesonde, bevor diese einen Bericht übertragen konnte.", "Ihre Flotte erreichte den Planeten %s, um diesen auszuspionieren.\n\nJedoch zerstörte die Spionageabwehr des Planeten alle Ihrer %s Spionagesonden, bevor diese einen Bericht übertragen konnten.", $destroyed[$username]), sprintf($u->_("„%s“ (%s, Eigentümer: %s)"), $target_user->planetName(), vsprintf($u->_("%d:%d:%d"), $target_user->getPos()), $target_user->getName()), F::ths($destroyed[$username])));
 									}
 									else
 									{
@@ -1907,7 +1907,7 @@
 					{
 						$message_text .= sprintf($user_obj->_("Ihre Flotte erreicht den Planeten %s und beginnt mit seiner Besiedelung."), $next_target_nt);
 						if(isset($besiedelung_ress))
-							$message_text .= " ".sprintf($user_obj->_(" Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe wiederhergestellt werden: %s."), sprintf($user_obj->_("%s %s, %s %s, %s %s, %s %s"), ths($besiedelung_ress[0], true), $user_obj->_("[ress_0]"), ths($besiedelung_ress[1], true), $user_obj->_("[ress_1]"), ths($besiedelung_ress[2], true), $user_obj->_("[ress_2]"), ths($besiedelung_ress[3], true), $user_obj->_("[ress_3]")));
+							$message_text .= " ".sprintf($user_obj->_(" Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe wiederhergestellt werden: %s."), sprintf($user_obj->_("%s %s, %s %s, %s %s, %s %s"), F::ths($besiedelung_ress[0], true), $user_obj->_("[ress_0]"), F::ths($besiedelung_ress[1], true), $user_obj->_("[ress_1]"), F::ths($besiedelung_ress[2], true), $user_obj->_("[ress_2]"), F::ths($besiedelung_ress[3], true), $user_obj->_("[ress_3]")));
 						$message_text .= "\n";
 					}
 					else
@@ -1932,7 +1932,7 @@
 					}
 
 					$message_text .= "\n".$user_obj->_("Folgende Güter werden abgeliefert:")."\n";
-					$message_text .= sprintf($user_obj->_("%s %s, %s %s, %s %s, %s %s, %s %s."), ths($ress[0], true), $user_obj->_("[ress_0]"), ths($ress[1], true), $user_obj->_("[ress_1]"), ths($ress[2], true), $user_obj->_("[ress_2]"), ths($ress[3], true), $user_obj->_("[ress_3]"), ths($ress[4], true), $user_obj->_("[ress_4]"));
+					$message_text .= sprintf($user_obj->_("%s %s, %s %s, %s %s, %s %s, %s %s."), F::ths($ress[0], true), $user_obj->_("[ress_0]"), F::ths($ress[1], true), $user_obj->_("[ress_1]"), F::ths($ress[2], true), $user_obj->_("[ress_2]"), F::ths($ress[3], true), $user_obj->_("[ress_3]"), F::ths($ress[4], true), $user_obj->_("[ress_4]"));
 					if(array_sum($robs) > 0)
 					{
 						$user_obj->setLanguage();
@@ -1941,7 +1941,7 @@
 					}
 
 					if($this->raw[1][$first_user][3][2] > 0)
-						$message_text .= "\n\n".sprintf($user_obj->_("Folgender überschüssiger Treibstoff wird abgeliefert: %s."), sprintf($user_obj->_("%s %s"), ths($this->raw[1][$first_user][3][2], true), $user_obj->_("[ress_4]")));
+						$message_text .= "\n\n".sprintf($user_obj->_("Folgender überschüssiger Treibstoff wird abgeliefert: %s."), sprintf($user_obj->_("%s %s"), F::ths($this->raw[1][$first_user][3][2], true), $user_obj->_("[ress_4]")));
 
 					$message_obj = Classes::Message();
 					if($message_obj->create())
@@ -2084,9 +2084,9 @@
 
 					$nachrichten_text .= "\t\t\t<tr>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"info/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".F::ths($anzahl)."</td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".F::ths($staerke)."</td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".F::ths($schild)."</td>\n";
 					$nachrichten_text .= "\t\t\t</tr>\n";
 
 					$this_ges_anzahl += $anzahl;
@@ -2096,9 +2096,9 @@
 
 				$nachrichten_text .= "\t\t\t<tr class=\"gesamt\">\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".F::ths($this_ges_anzahl)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".F::ths($this_ges_staerke)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".F::ths($this_ges_schild)."</td>\n";
 				$nachrichten_text .= "\t\t\t</tr>\n";
 
 				$ges_anzahl += $this_ges_anzahl;
@@ -2113,9 +2113,9 @@
 				$nachrichten_text .= "\t\t<tfoot>\n";
 				$nachrichten_text .= "\t\t\t<tr>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".F::ths($ges_anzahl)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".F::ths($ges_staerke)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".F::ths($ges_schild)."</td>\n";
 				$nachrichten_text .= "\t\t\t</tr>\n";
 				$nachrichten_text .= "\t\t</tfoot>\n";
 			}
@@ -2154,9 +2154,9 @@
 					{
 						$nachrichten_text .= "\t\t\t<tr>\n";
 						$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"info/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
-						$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
-						$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
-						$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
+						$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".F::ths($anzahl)."</td>\n";
+						$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".F::ths($staerke)."</td>\n";
+						$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".F::ths($schild)."</td>\n";
 						$nachrichten_text .= "\t\t\t</tr>\n";
 						$one = true;
 					}
@@ -2176,9 +2176,9 @@
 				{
 					$nachrichten_text .= "\t\t\t<tr class=\"gesamt\">\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".F::ths($this_ges_anzahl)."</td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".F::ths($this_ges_staerke)."</td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".F::ths($this_ges_schild)."</td>\n";
 					$nachrichten_text .= "\t\t\t</tr>\n";
 				}
 
@@ -2194,9 +2194,9 @@
 				$nachrichten_text .= "\t\t<tfoot>\n";
 				$nachrichten_text .= "\t\t\t<tr>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".F::ths($ges_anzahl)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".F::ths($ges_staerke)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".F::ths($ges_schild)."</td>\n";
 				$nachrichten_text .= "\t\t\t</tr>\n";
 				$nachrichten_text .= "\t\t</tfoot>\n";
 			}
@@ -2293,7 +2293,7 @@
 						$nachrichten_runden[$name][$runde] .= "\t\t<h3>".h(sprintf($user_obj->_("Runde %s"), ($runde+1)/2))."</h3>\n";
 					}
 
-					$nachrichten_runden[$name][$runde] .= "\t\t<h4>".h(sprintf($runde_starter == "angreifer" ? $user_obj->ngettext("Der Angreifer ist am Zug (Gesamtstärke %s)", "Die Angreifer sind am Zug (Gesamtstärke %s)", count($angreifer)) : $user_obj->ngettext("Der Verteidiger ist am Zug (Gesamtstärke %s)", "Die Verteidiger sind am Zug (Gesamtstärke %s)", count($verteidiger)), ths(round($staerke)))).")</h4>\n";
+					$nachrichten_runden[$name][$runde] .= "\t\t<h4>".h(sprintf($runde_starter == "angreifer" ? $user_obj->ngettext("Der Angreifer ist am Zug (Gesamtstärke %s)", "Die Angreifer sind am Zug (Gesamtstärke %s)", count($angreifer)) : $user_obj->ngettext("Der Verteidiger ist am Zug (Gesamtstärke %s)", "Die Verteidiger sind am Zug (Gesamtstärke %s)", count($verteidiger)), F::ths(round($staerke)))).")</h4>\n";
 					$nachrichten_runden[$name][$runde] .= "\t\t<ol>\n";
 				}
 
@@ -2321,7 +2321,7 @@
 							if($floor_diff <= 0)
 								$nachrichten_runden[$name][$runde] .= sprintf(h($user_obj->_("Eine Einheit des Typs %s (%s) wird angeschossen.")), h($user_obj->_("[item_".$att_id."]")), "<span class=\"".$runde_anderer."-name\">".htmlspecialchars($att_user)."</span>")."</li>\n";
 							else
-								$nachrichten_runden[$name][$runde] .= sprintf(h($user_obj->ngettext("%s Einheit des Typs %s (%s) wird zerstört.", "%s Einheiten des Typs %s (%s) werden zerstört.", $floor_diff)), ths($floor_diff), htmlspecialchars($item_info["name"]), "<span class=\"".$runde_anderer."-name\">".htmlspecialchars($att_user)."</span>")." ".h(sprintf($user_obj->ngettext("%s verbleibt.", "%s verbleiben.", ceil($d[$att_user][$att_id])), ths(ceil($d[$att_user][$att_id]))))."</li>\n";
+								$nachrichten_runden[$name][$runde] .= sprintf(h($user_obj->ngettext("%s Einheit des Typs %s (%s) wird zerstört.", "%s Einheiten des Typs %s (%s) werden zerstört.", $floor_diff)), F::ths($floor_diff), htmlspecialchars($item_info["name"]), "<span class=\"".$runde_anderer."-name\">".htmlspecialchars($att_user)."</span>")." ".h(sprintf($user_obj->ngettext("%s verbleibt.", "%s verbleiben.", ceil($d[$att_user][$att_id])), F::ths(ceil($d[$att_user][$att_id]))))."</li>\n";
 						}
 
 						$staerke = 0;
@@ -2329,7 +2329,7 @@
 					else
 					{
 						foreach($users_all as $name=>$user_obj)
-							$nachrichten_runden[$name][$runde] .= "\t\t\t<li>".sprintf(h($user_obj->_("Alle Einheiten des Typs %s (%s) (%s) werden zerstört.")), $user_obj->_("[item_".$att_id."]"), ths(ceil($d[$att_user][$att_id])), "<span class=\"".$runde_anderer."-name\">".htmlspecialchars($att_user)."</span>")."</li>\n";
+							$nachrichten_runden[$name][$runde] .= "\t\t\t<li>".sprintf(h($user_obj->_("Alle Einheiten des Typs %s (%s) (%s) werden zerstört.")), $user_obj->_("[item_".$att_id."]"), F::ths(ceil($d[$att_user][$att_id])), "<span class=\"".$runde_anderer."-name\">".htmlspecialchars($att_user)."</span>")."</li>\n";
 						$aff_staerke = $this_shield;
 						unset($d[$att_user][$att_id]);
 						if(count($d[$att_user]) <= 0) unset($d[$att_user]);
@@ -2437,9 +2437,9 @@
 					{
 						$nachrichten_text .= "\t\t\t<tr>\n";
 						$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"info/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
-						$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
-						$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
-						$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
+						$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".F::ths($anzahl)."</td>\n";
+						$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".F::ths($staerke)."</td>\n";
+						$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".F::ths($schild)."</td>\n";
 						$nachrichten_text .= "\t\t\t</tr>\n";
 						$one = true;
 					}
@@ -2458,9 +2458,9 @@
 				{
 					$nachrichten_text .= "\t\t\t<tr class=\"gesamt\">\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".F::ths($this_ges_anzahl)."</td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".F::ths($this_ges_staerke)."</td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".F::ths($this_ges_schild)."</td>\n";
 					$nachrichten_text .= "\t\t\t</tr>\n";
 				}
 
@@ -2476,9 +2476,9 @@
 				$nachrichten_text .= "\t\t<tfoot>\n";
 				$nachrichten_text .= "\t\t\t<tr>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".F::ths($ges_anzahl)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".F::ths($ges_staerke)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".F::ths($ges_schild)."</td>\n";
 				$nachrichten_text .= "\t\t\t</tr>\n";
 				$nachrichten_text .= "\t\t</tfoot>\n";
 			}
@@ -2541,9 +2541,9 @@
 					{
 						$nachrichten_text .= "\t\t\t<tr>\n";
 						$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"info/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
-						$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($anzahl)."</td>\n";
-						$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($staerke)."</td>\n";
-						$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($schild)."</td>\n";
+						$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".F::ths($anzahl)."</td>\n";
+						$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".F::ths($staerke)."</td>\n";
+						$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".F::ths($schild)."</td>\n";
 						$nachrichten_text .= "\t\t\t</tr>\n";
 						$one = true;
 					}
@@ -2563,9 +2563,9 @@
 				{
 					$nachrichten_text .= "\t\t\t<tr class=\"gesamt\">\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($this_ges_anzahl)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($this_ges_staerke)."</td>\n";
-					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($this_ges_schild)."</td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".F::ths($this_ges_anzahl)."</td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".F::ths($this_ges_staerke)."</td>\n";
+					$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".F::ths($this_ges_schild)."</td>\n";
 					$nachrichten_text .= "\t\t\t</tr>\n";
 				}
 
@@ -2581,9 +2581,9 @@
 				$nachrichten_text .= "\t\t<tfoot>\n";
 				$nachrichten_text .= "\t\t\t<tr>\n";
 				$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\">%7\$s</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".ths($ges_anzahl)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".ths($ges_staerke)."</td>\n";
-				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".ths($ges_schild)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-anzahl\">".F::ths($ges_anzahl)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtstaerke\">".F::ths($ges_staerke)."</td>\n";
+				$nachrichten_text .= "\t\t\t\t<td class=\"c-gesamtschild\">".F::ths($ges_schild)."</td>\n";
 				$nachrichten_text .= "\t\t\t</tr>\n";
 				$nachrichten_text .= "\t\t</tfoot>\n";
 			}
@@ -2630,8 +2630,8 @@
 					h($u->ngettext("Der Kampf ist vorüber. Gewinner ist der Verteidiger.", "Der Kampf ist vorüber. Gewinner sind die Verteidiger.", count($verteidiger_anfang))),
 					h($u->ngettext("Der Kampf ist vorüber. Gewinner ist der Angreifer.", "Der Kampf ist vorüber. Gewinner sind die Angreifer.", count($angreifer_anfang))),
 					h($u->_("Der Kampf ist vorüber. Er endet unentschieden.")),
-					h(sprintf($u->ngettext("Der Angreifer hat %s Kampferfahrungspunkte gesammelt.", "Die Angreifer haben %s Kampferfahrungspunkte gesammelt.", count($angreifer_anfang)), ths($angreifer_new_erfahrung))),
-					h(sprintf($u->ngettext("Der Verteidiger hat %s Kampferfahrungspunkte gesammelt.", "Die Verteidiger haben %s Kampferfahrungspunkte gesammelt.", count($verteidiger_anfang)), ths($verteidiger_new_erfahrung)))
+					h(sprintf($u->ngettext("Der Angreifer hat %s Kampferfahrungspunkte gesammelt.", "Die Angreifer haben %s Kampferfahrungspunkte gesammelt.", count($angreifer_anfang)), F::ths($angreifer_new_erfahrung))),
+					h(sprintf($u->ngettext("Der Verteidiger hat %s Kampferfahrungspunkte gesammelt.", "Die Verteidiger haben %s Kampferfahrungspunkte gesammelt.", count($verteidiger_anfang)), F::ths($verteidiger_new_erfahrung)))
 				));
 
 				$nachrichten[$n] .= "\t<ul class=\"angreifer-punkte\">\n";
@@ -2639,7 +2639,7 @@
 				{
 					$p = 0;
 					if(isset($angreifer_punkte[$a])) $p = $angreifer_punkte[$a];
-					$nachrichten[$n] .= "\t\t<li>".sprintf(h($u->_("Der Angreifer %s hat %s Punkte verloren.")), "<span class=\"koords\">".htmlspecialchars($a)."</span>", ths($p))."</li>\n";
+					$nachrichten[$n] .= "\t\t<li>".sprintf(h($u->_("Der Angreifer %s hat %s Punkte verloren.")), "<span class=\"koords\">".htmlspecialchars($a)."</span>", F::ths($p))."</li>\n";
 				}
 				$nachrichten[$n] .= "\t</ul>\n";
 				$nachrichten[$n] .= "\t<ul class=\"verteidiger-punkte\">\n";
@@ -2647,20 +2647,20 @@
 				{
 					$p = 0;
 					if(isset($verteidiger_punkte[$v])) $p = $verteidiger_punkte[$v];
-					$nachrichten[$n] .= "\t\t<li>".sprintf(h($u->_("Der Verteidiger %s hat %s Punkte verloren.")), "<span class=\"koords\">".htmlspecialchars($v)."</span>", ths($p))."</li>\n";
+					$nachrichten[$n] .= "\t\t<li>".sprintf(h($u->_("Der Verteidiger %s hat %s Punkte verloren.")), "<span class=\"koords\">".htmlspecialchars($v)."</span>", F::ths($p))."</li>\n";
 				}
 				$nachrichten[$n] .= "\t</ul>\n";
 
 				if(array_sum($truemmerfeld) > 0)
 				{
 					$nachrichten[$n] .= "\t<p>\n";
-					$nachrichten[$n] .= "\t\t".h(sprintf($u->_("Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: %s."), sprintf($u->_("%s %s, %s %s, %s %s und %s %s"), ths($truemmerfeld[0]), $u->_("[ress_0]"), ths($truemmerfeld[1]), $u->_("[ress_1]"), ths($truemmerfeld[2]), $u->_("[ress_2]"), ths($truemmerfeld[3]), $u->_("[ress_3]"))))."\n";
+					$nachrichten[$n] .= "\t\t".h(sprintf($u->_("Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn des Planeten gelangt: %s."), sprintf($u->_("%s %s, %s %s, %s %s und %s %s"), F::ths($truemmerfeld[0]), $u->_("[ress_0]"), F::ths($truemmerfeld[1]), $u->_("[ress_1]"), F::ths($truemmerfeld[2]), $u->_("[ress_2]"), F::ths($truemmerfeld[3]), $u->_("[ress_3]"))))."\n";
 					$nachrichten[$n] .= "\t</p>\n";
 				}
 			}
 
 			if(array_sum($truemmerfeld) > 0)
-				truemmerfeld::add($target[0], $target[1], $target[2], $truemmerfeld[0], $truemmerfeld[1], $truemmerfeld[2], $truemmerfeld[3]);
+				$target_galaxy->truemmerfeldAdd($target[1], $target[2], $truemmerfeld[0], $truemmerfeld[1], $truemmerfeld[2], $truemmerfeld[3]);
 
 			$angreifer_return = array();
 			foreach($angreifer as $username=>$fleet)
@@ -2733,7 +2733,7 @@
 					$angreifer_return[$username][1][3] += ($rtrans[3] = floor($ress_max[3]*$p));
 					$angreifer_return[$username][1][4] += ($rtrans[4] = floor($ress_max[4]*$p));
 
-					$nachrichten[$username] .= "\n\t<p class=\"rohstoffe-erbeutet selbst\">".h(sprintf($users_all[$username]->_("Sie haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."), ths($rtrans[0]), $users_all[$username]->_("[ress_0]"), ths($rtrans[1]), $users_all[$username]->_("[ress_1]"), ths($rtrans[2]), $users_all[$username]->_("[ress_2]"), ths($rtrans[3]), $users_all[$username]->_("[ress_3]"), ths($rtrans[4]), $users_all[$username]->_("[ress_4]")))."</p>\n";
+					$nachrichten[$username] .= "\n\t<p class=\"rohstoffe-erbeutet selbst\">".h(sprintf($users_all[$username]->_("Sie haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."), F::ths($rtrans[0]), $users_all[$username]->_("[ress_0]"), F::ths($rtrans[1]), $users_all[$username]->_("[ress_1]"), F::ths($rtrans[2]), $users_all[$username]->_("[ress_2]"), F::ths($rtrans[3]), $users_all[$username]->_("[ress_3]"), F::ths($rtrans[4]), $users_all[$username]->_("[ress_4]")))."</p>\n";
 				}
 
 				$target_user->subtractRess($ress_max, false);
@@ -2741,12 +2741,12 @@
 				foreach($users_all as $username=>$u)
 				{
 					if(isset($angreifer2[$username])) continue;
-					$nachrichten[$username] .= "\n\t<p class=\"rohstoffe-erbeutet andere\">".h(sprintf($u->_("Die überlebenden Angreifer haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."), ths($ress_max[0]), $u->_("[ress_0]"), ths($ress_max[1]), $u->_("[ress_1]"), ths($ress_max[2]), $u->_("[ress_2]"), ths($ress_max[3]), $u->_("[ress_3]"), ths($ress_max[4]), $u->_("[ress_4]")))."</p>\n";
+					$nachrichten[$username] .= "\n\t<p class=\"rohstoffe-erbeutet andere\">".h(sprintf($u->_("Die überlebenden Angreifer haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."), F::ths($ress_max[0]), $u->_("[ress_0]"), F::ths($ress_max[1]), $u->_("[ress_1]"), F::ths($ress_max[2]), $u->_("[ress_2]"), F::ths($ress_max[3]), $u->_("[ress_3]"), F::ths($ress_max[4]), $u->_("[ress_4]")))."</p>\n";
 				}
 			}
 
 			if(isset($verteidiger_ress[$target_owner]))
-				$nachrichten[$target_owner] .= "\n\t<p class=\"verteidigung-wiederverwertung\">".h(sprintf($target_user->_("Durch Wiederverwertung konnten folgende Rohstoffe aus den Trümmern der zerstörten Verteidigungsanlagen wiederhergestellt werden: %s"), sprintf($target_user->_("%s %s, %s %s, %s %s und %s %s"), ths($verteidiger_ress[$target_owner][0]), $target_user->_("[ress_0]"), ths($verteidiger_ress[$target_owner][1]), $target_user->_("[ress_1]"), ths($verteidiger_ress[$target_owner][2]), $target_user->_("[ress_2]"), ths($verteidiger_ress[$target_owner][3]), $target_user->_("[ress_3]"))))."</p>\n";
+				$nachrichten[$target_owner] .= "\n\t<p class=\"verteidigung-wiederverwertung\">".h(sprintf($target_user->_("Durch Wiederverwertung konnten folgende Rohstoffe aus den Trümmern der zerstörten Verteidigungsanlagen wiederhergestellt werden: %s"), sprintf($target_user->_("%s %s, %s %s, %s %s und %s %s"), F::ths($verteidiger_ress[$target_owner][0]), $target_user->_("[ress_0]"), F::ths($verteidiger_ress[$target_owner][1]), $target_user->_("[ress_1]"), F::ths($verteidiger_ress[$target_owner][2]), $target_user->_("[ress_2]"), F::ths($verteidiger_ress[$target_owner][3]), $target_user->_("[ress_3]"))))."</p>\n";
 
 			# Nachrichten zustellen
 			foreach($nachrichten as $username=>$text)

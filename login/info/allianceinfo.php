@@ -53,10 +53,10 @@
 	<dd class="c-mitglieder"><?=htmlspecialchars($members)?></dd>
 
 	<dt class="c-punkteschnitt"><?=h(_("Punkteschnitt"))?></dt>
-	<dd class="c-punkteschnitt"><?=ths($average)?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), ths($alliance->getRankAverage()), ths(Alliance::getAlliancesCount())))?>)</span></dd>
+	<dd class="c-punkteschnitt"><?=F::ths($average)?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), F::ths($alliance->getRankAverage()), F::ths(Alliance::getAlliancesCount())))?>)</span></dd>
 
 	<dt class="c-gesamtpunkte"><?=h(_("Gesamtpunkte"))?></dt>
-	<dd class="c-gesamtpunkte"><?=ths($overall)?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), ths($alliance->getRankTotal()), ths(Alliance::getAlliancesCount())))?></span></dd>
+	<dd class="c-gesamtpunkte"><?=F::ths($overall)?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), F::ths($alliance->getRankTotal()), F::ths(Alliance::getAlliancesCount())))?></span></dd>
 </dl>
 <h3 id="allianzbeschreibung" class="strong"><?=h(_("Allianzbeschreibung"))?></h3>
 <div class="allianz-externes">
@@ -71,7 +71,7 @@
 				{
 ?>
 <ul class="allianz-bewerben possibilities">
-	<li><a href="../allianz.php?action=apply&amp;for=<?=htmlspecialchars(urlencode($alliance->getName()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Bei dieser Allianz bewerben&[login/info/allianceinfo.php|1]"))?>><?=h(_("Bei dieser Allianz bewerben&[login/info/allianceinfo.php|1]"))?></a></li>
+	<li><a href="../allianz.php?action=apply&amp;for=<?=htmlspecialchars(urlencode($alliance->getName()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Bei dieser Allianz bewerben&[login/info/allianceinfo.php|1]"))?>><?=h(_("Bei dieser Allianz bewerben&[login/info/allianceinfo.php|1]"))?></a></li>
 </ul>
 <?php
 				}

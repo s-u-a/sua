@@ -20,7 +20,7 @@
 	$players = 0;
 	$alliances = 0;
 	$databases_count = 0;
-	$databases = get_databases();
+	$databases = Config::get_databases();
 	foreach($databases as $dbid=>$database)
 	{
 		if(!$database['enabled'] || $database['dummy']) continue;
@@ -34,18 +34,18 @@
 
 	$items = Classes::Items();
 
-	$messengers = get_messenger_info();
+	$messengers = Config::get_messenger_info();
 	$show_im = isset($messengers['jabber']);
 
 	$gui->init();
 ?>
 <h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Features")))?></h2>
 <ul>
-	<li><?=h(sprintf(ngettext("%s Gebäudetyp", "%s Gebäudetypen", count($items->getItemsList('gebaeude'))), ths(count($items->getItemsList('gebaeude')))))?></li>
-	<li><?=h(sprintf(ngettext("%s Forschungsmöglichkeit", "%s Forschungsmöglichkeiten", count($items->getItemsList('forschung'))), ths(count($items->getItemsList('forschung')))))?></li>
-	<li><?=h(sprintf(ngettext("%s Roboter", "%s verschiedene Roboter", count($items->getItemsList('roboter'))), ths(count($items->getItemsList('roboter')))))?></li>
-	<li><?=h(sprintf(ngettext("%s Raumschiffklasse", "%s Raumschiffklassen", count($items->getItemsList('schiffe'))), ths(count($items->getItemsList('schiffe')))))?></li>
-	<li><?=h(sprintf(ngettext("%s Verteidigungsanlage", "%s Verteidigungsanlagen", count($items->getItemsList('verteidigung'))), ths(count($items->getItemsList('verteidigung')))))?></li>
+	<li><?=h(sprintf(ngettext("%s Gebäudetyp", "%s Gebäudetypen", count($items->getItemsList('gebaeude'))), F::ths(count($items->getItemsList('gebaeude')))))?></li>
+	<li><?=h(sprintf(ngettext("%s Forschungsmöglichkeit", "%s Forschungsmöglichkeiten", count($items->getItemsList('forschung'))), F::ths(count($items->getItemsList('forschung')))))?></li>
+	<li><?=h(sprintf(ngettext("%s Roboter", "%s verschiedene Roboter", count($items->getItemsList('roboter'))), F::ths(count($items->getItemsList('roboter')))))?></li>
+	<li><?=h(sprintf(ngettext("%s Raumschiffklasse", "%s Raumschiffklassen", count($items->getItemsList('schiffe'))), F::ths(count($items->getItemsList('schiffe')))))?></li>
+	<li><?=h(sprintf(ngettext("%s Verteidigungsanlage", "%s Verteidigungsanlagen", count($items->getItemsList('verteidigung'))), F::ths(count($items->getItemsList('verteidigung')))))?></li>
 	<li><?=h(_("Das Spiel läuft in Echtzeit, es gibt keine lästigen Eventhandler-Wartezeiten."))?></li>
 	<li><?=h(_("Forschung lässt sich global oder lokal durchführen."))?></li>
 	<li><?=h(_("Ausgeklügeltes Allianzsystem"))?></li>
@@ -73,7 +73,7 @@
 	if($databases_count > 1)
 	{
 ?>
-	<li><?=h(sprintf(ngettext("derzeit %s Runde", "derzeit %s verschiedene Runden", $databases_count), ths($databases_count)))?></li>
+	<li><?=h(sprintf(ngettext("derzeit %s Runde", "derzeit %s verschiedene Runden", $databases_count), F::ths($databases_count)))?></li>
 <?php
 	}
 ?>

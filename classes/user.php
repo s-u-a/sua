@@ -49,7 +49,7 @@
 				'foreign_fleets' => array(),
 				'foreign_coords' => array(),
 				'alliance' => false,
-				'lang' => language()
+				'lang' => l::language()
 			);
 
 			$highscores = Classes::Highscores();
@@ -243,7 +243,7 @@
 						$message->addUser($user, $types_message_types[$type]);
 						$message->subject($user_obj->_("Flotte zurückgerufen"));
 						$message->from($this->getName());
-						$message->text($user_obj->_("Ihre Flotte befand sich auf dem Weg zum Planeten %s. Soeben wurde jener Planet verlassen, weshalb Ihre Flotte sich auf den Rückweg zu Ihrem Planeten %s macht."), $user_obj->localise("format_planet", $this->getPosString(), $this->planetName(), $this->getName()), $this->localise("format_planet", $pos_string, $this_galaxy->getPlanetName($pos[1], $pos[2])));
+						$message->text($user_obj->_("Ihre Flotte befand sich auf dem Weg zum Planeten %s. Soeben wurde jener Planet verlassen, weshalb Ihre Flotte sich auf den Rückweg zu Ihrem Planeten %s macht."), $user_obj->localise(array("f", "format_planet"), $this->getPosString(), $this->planetName(), $this->getName()), $this->localise(array("f", "format_planet"), $pos_string, $this_galaxy->getPlanetName($pos[1], $pos[2])));
 					}
 				}
 			}
@@ -876,7 +876,7 @@
 			{
 				if(!isset($this->raw['description_parsed']))
 				{
-					$this->raw['description_parsed'] = parse_html($this->raw['description']);
+					$this->raw['description_parsed'] = F::parse_html($this->raw['description']);
 					$this->changed = true;
 				}
 				return $this->raw['description_parsed'];
@@ -894,7 +894,7 @@
 			if($description != $this->raw['description'])
 			{
 				$this->raw['description'] = $description;
-				$this->raw['description_parsed'] = parse_html($this->raw['description']);
+				$this->raw['description_parsed'] = F::parse_html($this->raw['description']);
 				$this->changed = true;
 
 				return true;
@@ -1068,7 +1068,7 @@
 				}
 			}*/
 
-			$global_factors = get_global_factors();
+			$global_factors = Config::get_global_factors();
 
 			if(isset($info['time']))
 				$info['time'] *= $global_factors['time'];
@@ -1202,22 +1202,22 @@
 					# Runden
 					if($calc["prod"])
 					{
-						stdround($info['prod'][0]);
-						stdround($info['prod'][1]);
-						stdround($info['prod'][2]);
-						stdround($info['prod'][3]);
-						stdround($info['prod'][4]);
-						stdround($info['prod'][5]);
+						Functions::stdround($info['prod'][0]);
+						Functions::stdround($info['prod'][1]);
+						Functions::stdround($info['prod'][2]);
+						Functions::stdround($info['prod'][3]);
+						Functions::stdround($info['prod'][4]);
+						Functions::stdround($info['prod'][5]);
 					}
 					if($calc["time"])
-						stdround($info['time']);
+						Functions::stdround($info['time']);
 					if($calc["ress"])
 					{
-						stdround($info['ress'][0]);
-						stdround($info['ress'][1]);
-						stdround($info['ress'][2]);
-						stdround($info['ress'][3]);
-						stdround($info['ress'][4]);
+						Functions::stdround($info['ress'][0]);
+						Functions::stdround($info['ress'][1]);
+						Functions::stdround($info['ress'][2]);
+						Functions::stdround($info['ress'][3]);
+						Functions::stdround($info['ress'][4]);
 					}
 					break;
 				case 'forschung':
@@ -1279,16 +1279,16 @@
 
 					# Runden
 					if($calc["time_local"])
-						stdround($info['time_local']);
+						Functions::stdround($info['time_local']);
 					if($calc["time_global"])
-						stdround($info['time_global']);
+						Functions::stdround($info['time_global']);
 					if($calc["ress"])
 					{
-						stdround($info['ress'][0]);
-						stdround($info['ress'][1]);
-						stdround($info['ress'][2]);
-						stdround($info['ress'][3]);
-						stdround($info['ress'][4]);
+						Functions::stdround($info['ress'][0]);
+						Functions::stdround($info['ress'][1]);
+						Functions::stdround($info['ress'][2]);
+						Functions::stdround($info['ress'][3]);
+						Functions::stdround($info['ress'][4]);
 					}
 					break;
 				case 'roboter':
@@ -1309,7 +1309,7 @@
 					}
 
 					if($calc["time"])
-						stdround($info['time']);
+						Functions::stdround($info['time']);
 					break;
 				case 'schiffe':
 					if($calc["att"])
@@ -1346,18 +1346,18 @@
 
 					# Runden
 					if($calc["att"])
-						stdround($info['att']);
+						Functions::stdround($info['att']);
 					if($calc["def"])
-						stdround($info['def']);
+						Functions::stdround($info['def']);
 					if($calc["trans"])
 					{
-						stdround($info['trans'][0]);
-						stdround($info['trans'][1]);
+						Functions::stdround($info['trans'][0]);
+						Functions::stdround($info['trans'][1]);
 					}
 					if($calc["time"])
-						stdround($info['time']);
+						Functions::stdround($info['time']);
 					if($calc["speed"])
-						stdround($info['speed']);
+						Functions::stdround($info['speed']);
 					break;
 				case 'verteidigung':
 					if($calc["att"])
@@ -1381,11 +1381,11 @@
 					}
 
 					if($calc["att"])
-						stdround($info['att']);
+						Functions::stdround($info['att']);
 					if($calc["def"])
-						stdround($info['def']);
+						Functions::stdround($info['def']);
 					if($calc["time"])
-						stdround($info['time']);
+						Functions::stdround($info['time']);
 					break;
 			}
 
@@ -1626,12 +1626,12 @@
 					if($prod[$k] < $v) $prod[$k] = $v;
 				}
 
-				stdround($prod[0]);
-				stdround($prod[1]);
-				stdround($prod[2]);
-				stdround($prod[3]);
-				stdround($prod[4]);
-				stdround($prod[5]);
+				Functions::stdround($prod[0]);
+				Functions::stdround($prod[1]);
+				Functions::stdround($prod[2]);
+				Functions::stdround($prod[3]);
+				Functions::stdround($prod[4]);
+				Functions::stdround($prod[5]);
 
 				$prod[6] = $f;
 			}
@@ -1822,7 +1822,7 @@
 
 		function permissionToAct()
 		{
-			return !database_locked() && !$this->userLocked() && !$this->umode();
+			return !Config::database_locked() && !$this->userLocked() && !$this->umode();
 		}
 
 		protected function getDataFromRaw()
@@ -1854,7 +1854,7 @@
 					'messages' => array(1=>true, 2=>true, 3=>true, 4=>true, 5=>true, 6=>true, 7=>true),
 					'building' => array('gebaeude' => 1, 'forschung' => 1, 'roboter' => 3, 'schiffe' => 3, 'verteidigung' => 3)
 				),
-				'lang' => language(),
+				'lang' => l::language(),
 				'fingerprint' => false,
 				'gpg_im' => false,
 				'timezone' => date_default_timezone_get()
@@ -3806,8 +3806,8 @@
 			$lang = $this->checkSetting("lang");
 			if($lang && $lang != -1)
 			{
-				$this->language_cache = language();
-				language($lang);
+				$this->language_cache = l::language();
+				l::language($lang);
 				return 1;
 			}
 			return 2;
@@ -3817,7 +3817,7 @@
 		{
 			if($this->language_cache)
 			{
-				language($this->language_cache);
+				l::language($this->language_cache);
 				$this->language_cache = null;
 				return 1;
 			}
@@ -3834,7 +3834,7 @@
 
 		function _i($message)
 		{
-			return $this->localise("_i", $message);
+			return $this->localise(array("l", "_i"), $message);
 		}
 
 		function localise($function)
@@ -3925,7 +3925,7 @@
 			if($this->checkSetting("fingerprint"))
 				$mime->setTXTBody(gpg_encrypt($text, $this->checkSetting("fingerprint")));
 			else
-				$mime->setTXTBody(gpg_sign($text));
+				$mime->setTXTBody(GPG::sign($text));
 
 			$body = $mime->get(array("text_charset" => "utf-8", "html_charset" => "utf-8", "head_charset" => "utf-8"));
 			$hdrs = $mime->headers(array("From" => "\"".$this->_("[title_full]")."\" <".global_setting("EMAIL_FROM").">", "Subject" => $subject));

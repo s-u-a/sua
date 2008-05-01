@@ -17,7 +17,7 @@
 */
 	require('include.php');
 
-	$databases = get_databases();
+	$databases = Config::get_databases();
 
 	if(isset($_POST['benutzername']) && isset($_POST['email']) && isset($_POST['database']) && isset($databases[$_POST['database']]) && $databases[$_POST['database']]['enabled'])
 	{
@@ -32,7 +32,7 @@
 			$that_user = Classes::User($_POST['benutzername']);
 			if(!$that_user->getStatus())
 				$error = _('Datenbankfehler.');
-			elseif(!check_email(trim($that_user->getEMailAddress())))
+			elseif(!Functions::check_email(trim($that_user->getEMailAddress())))
 				$error = _('In diesem Account wurde keine gültige E-Mail-Adresse gespeichert.');
 			elseif($_POST["email"] == trim($that_user->getEMailAddress()) || $_POST['email'] == trim($that_user->getTemporaryEMailAddress()))
 			{
@@ -109,12 +109,12 @@
 <form action="passwd.php?name=<?=htmlspecialchars(urlencode($_GET['name']).'&id='.urlencode($_GET['id']).'&database='.urlencode($_GET['database']))?>" method="post">
 	<dl>
 		<dt><label for="neues-passwort-input"><?=h(_("Neues Passwort&[passwd.php|1]"))?></label></dt>
-		<dd><input type="password" name="new_password" id="neues-passwort-input"<?=accesskey_attr(_("Neues Passwort&[passwd.php|1]"))?> /></dd>
+		<dd><input type="password" name="new_password" id="neues-passwort-input"<?=l::accesskey_attr(_("Neues Passwort&[passwd.php|1]"))?> /></dd>
 
 		<dt><label for="neues-passwort-wiederholen-input"><?=h(_("Neues Passwort wiederholen&[passwd.php|1]"))?></label></dt>
-		<dd><input type="password" name="new_password2" id="neues-passwort-wiederholen-input"<?=accesskey_attr(_("Neues Passwort wiederholen&[passwd.php|1]"))?> /></dd>
+		<dd><input type="password" name="new_password2" id="neues-passwort-wiederholen-input"<?=l::accesskey_attr(_("Neues Passwort wiederholen&[passwd.php|1]"))?> /></dd>
 	</dl>
-	<div><button type="submit"<?=accesskey_attr(_("Passwort ändern&[passwd.php|1]"))?>><?=h(_("Passwort ändern&[passwd.php|1]"))?></button></div>
+	<div><button type="submit"<?=l::accesskey_attr(_("Passwort ändern&[passwd.php|1]"))?>><?=h(_("Passwort ändern&[passwd.php|1]"))?></button></div>
 </form>
 <?php
 				}
@@ -147,7 +147,7 @@
 <form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/passwd.php')?>" method="post">
 	<dl>
 		<dt><label for="runde-select"><?=h(_("Runde&[passwd.php|2]"))?></label></dt>
-		<dd><select name="database" id="runde-select"<?=accesskey_attr(_("Runde&[passwd.php|2]"))?>>
+		<dd><select name="database" id="runde-select"<?=l::accesskey_attr(_("Runde&[passwd.php|2]"))?>>
 <?php
 		foreach($databases as $id=>$info)
 		{
@@ -160,12 +160,12 @@
 		</select></dd>
 
 		<dt><label for="benutzername-input"><?=h(_("Benutzername&[passwd.php|2]"))?></label></dt>
-		<dd><input type="text" name="benutzername" id="benutzername-input"<?=accesskey_attr(_("Benutzername&[passwd.php|2]"))?> /></dd>
+		<dd><input type="text" name="benutzername" id="benutzername-input"<?=l::accesskey_attr(_("Benutzername&[passwd.php|2]"))?> /></dd>
 
 		<dt><label for="email-input"><?=h(_("E-Mail-Adresse&[passwd.php|2]"))?></label></dt>
-		<dd><input type="text" name="email" id="email-input"<?=accesskey_attr(_("E-Mail-Adresse&[passwd.php|2]"))?> /></dd>
+		<dd><input type="text" name="email" id="email-input"<?=l::accesskey_attr(_("E-Mail-Adresse&[passwd.php|2]"))?> /></dd>
 	</dl>
-	<div><button type="submit"<?=accesskey_attr(_("Absenden&[passwd.php|2]"))?>><?=h(_("Absenden&[passwd.php|2]"))?></button></div>
+	<div><button type="submit"<?=l::accesskey_attr(_("Absenden&[passwd.php|2]"))?>><?=h(_("Absenden&[passwd.php|2]"))?></button></div>
 </form>
 <?php
 	}

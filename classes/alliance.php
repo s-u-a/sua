@@ -597,7 +597,7 @@
 			{
 				if(!isset($this->raw['description_parsed']))
 				{
-					$this->raw['description_parsed'] = parse_html($this->getExternalDescription(false));
+					$this->raw['description_parsed'] = F::parse_html($this->getExternalDescription(false));
 					$this->changed = true;
 				}
 				return $this->raw['description_parsed'];
@@ -619,7 +619,7 @@
 			if($this->status != 1) return false;
 
 			$this->raw['description'] = $description;
-			$this->raw['description_parsed'] = parse_html($description);
+			$this->raw['description_parsed'] = F::parse_html($description);
 			$this->changed = true;
 			return true;
 		}
@@ -634,7 +634,7 @@
 			if($this->status != 1) return false;
 
 			$this->raw['inner_description'] = $description;
-			$this->raw['inner_description_parsed'] = parse_html($description);
+			$this->raw['inner_description_parsed'] = F::parse_html($description);
 			$this->changed = true;
 			return true;
 		}
@@ -653,7 +653,7 @@
 			{
 				if(!isset($this->raw['inner_description_parsed']))
 				{
-					$this->raw['inner_description_parsed'] = parse_html($this->getInternalDescription(false));
+					$this->raw['inner_description_parsed'] = F::parse_html($this->getInternalDescription(false));
 					$this->changed = true;
 				}
 				return $this->raw['inner_description_parsed'];

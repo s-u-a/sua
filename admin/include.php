@@ -17,7 +17,7 @@
 */
 	require('../engine.php');
 
-	language("de_DE", true);
+	l::language("de_DE", true);
 
 	$actions = array(
 		"0" => _("%s hat sich angemeldet."),
@@ -74,11 +74,11 @@
 			setcookie(global_setting("SESSION_NAME"), '', 0, h_root.'/admin/');
 	}
 
-	$databases = get_databases();
+	$databases = Config::get_databases();
 	if(isset($_SESSION['database']) && isset($databases[$_SESSION['database']]))
 	{
 		define_globals($_SESSION['database']);
-		$admins = get_admin_list();
+		$admins = Config::get_admin_list();
 	}
 
 	if(!isset($_SESSION['admin_username']) || !isset($admins) || !isset($admins[$_SESSION['admin_username']]))
@@ -87,7 +87,7 @@
 		if(isset($_POST['admin_username']) && isset($_POST['admin_password']) && isset($_POST['database']) && isset($databases[$_POST['database']]))
 		{
 			define_globals($_POST['database']);
-			$admins = get_admin_list();
+			$admins = Config::get_admin_list();
 
 			if(isset($admins[$_POST['admin_username']]) && md5($_POST['admin_password']) == $admins[$_POST['admin_username']]['password'])
 			{
@@ -121,7 +121,7 @@
 <form action="<?=htmlspecialchars($request_uri)?>" method="post">
 	<dl>
 		<dt><label for="admin-runde-select"><?=h(_("Runde&[admin/include.php|1]"))?></label></dt>
-		<dd><select name="database"<?=accesskey_attr(_("Runde&[admin/include.php|1]"))?>>
+		<dd><select name="database"<?=l::accesskey_attr(_("Runde&[admin/include.php|1]"))?>>
 <?php
 			foreach($databases as $id=>$info)
 			{
@@ -134,15 +134,15 @@
 		</select></dd>
 
 		<dt><label for="admin-benutzername-input"><?=h(_("Benutzername&[admin/include.php|1]"))?></label></dt>
-		<dd><input type="text" name="admin_username" id="admin-benutzername-input"<?=accesskey_attr(_("Benutzername&[admin/include.php|1]"))?> /></dd>
+		<dd><input type="text" name="admin_username" id="admin-benutzername-input"<?=l::accesskey_attr(_("Benutzername&[admin/include.php|1]"))?> /></dd>
 
 		<dt><label for="admin-passwort-input"><?=h(_("Passwort&[admin/include.php|1]"))?></label></dt>
-		<dd><input type="password" name="admin_password" id="admin-passwort-input"<?=accesskey_attr(_("Passwort&[admin/include.php|1]"))?> /></dd>
+		<dd><input type="password" name="admin_password" id="admin-passwort-input"<?=l::accesskey_attr(_("Passwort&[admin/include.php|1]"))?> /></dd>
 	</dl>
-	<div><button type="submit"<?=accesskey_attr(_("Anmelden&[admin/include.php|1]"))?>><?=h(_("Anmelden&[admin/include.php|1]"))?></button></div>
+	<div><button type="submit"<?=l::accesskey_attr(_("Anmelden&[admin/include.php|1]"))?>><?=h(_("Anmelden&[admin/include.php|1]"))?></button></div>
 </form>
 <ul>
-	<li><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/index.php"<?=accesskey_attr(_("Zurück zum Spiel&[admin/include.php|1]"))?>><?=h(_("Zurück zum Spiel&[admin/include.php|1]"))?></a></li>
+	<li><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/index.php"<?=l::accesskey_attr(_("Zurück zum Spiel&[admin/include.php|1]"))?>><?=h(_("Zurück zum Spiel&[admin/include.php|1]"))?></a></li>
 </ul>
 <?php
 			admin_gui::html_foot();
@@ -192,15 +192,15 @@
 <?php
 			}
 ?>
-			var ths_utf8 = '<?=jsentities(global_setting("THS_UTF8"))?>';
-			var h_root = '<?=jsentities(h_root)?>';
-			var list_min_chars = '<?=jsentities(global_setting("LIST_MIN_CHARS"))?>';
+			var ths_utf8 = '<?=JS::jsentities(global_setting("THS_UTF8"))?>';
+			var h_root = '<?=JS::jsentities(h_root)?>';
+			var list_min_chars = '<?=JS::jsentities(global_setting("LIST_MIN_CHARS"))?>';
 		</script>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/login/res/javascript.js')?>"></script>
 		<script type="text/javascript" src="<?=htmlspecialchars(h_root.'/software/sarissa.js')?>"></script>
 	</head>
 	<body>
-		<h1><a href="<?=htmlspecialchars(h_root.'/admin/index.php')?>"<?=accesskey_attr(_("Adminbereich&[admin/include.php|2]"))?>><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Adminbereich&[admin/include.php|2]")))?></a> [<a href="?logout=1"<?=accesskey_attr(_("Abmelden nicht vergessen&[admin/include.php|2]"))?>><?=h(_("Abmelden nicht vergessen&[admin/include.php|2]"))?></a>]</h1>
+		<h1><a href="<?=htmlspecialchars(h_root.'/admin/index.php')?>"<?=l::accesskey_attr(_("Adminbereich&[admin/include.php|2]"))?>><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Adminbereich&[admin/include.php|2]")))?></a> [<a href="?logout=1"<?=l::accesskey_attr(_("Abmelden nicht vergessen&[admin/include.php|2]"))?>><?=h(_("Abmelden nicht vergessen&[admin/include.php|2]"))?></a>]</h1>
 <?php
 		}
 

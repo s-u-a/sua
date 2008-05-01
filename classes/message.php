@@ -65,7 +65,7 @@
 
 				$return = $return && $this->setField($message_id, "text", $text);
 				if(!$this->messageIsHTML($message_id))
-					$return = $return && $this->setField($message_id, "parsed_text", parse_html($text));
+					$return = $return && $this->setField($message_id, "parsed_text", F::parse_html($text));
 				return $return;
 			}
 		}
@@ -113,7 +113,7 @@
 				}
 				elseif(!$this->messageIsHTML($message_id) && $is_html)
 				{
-					$return = $return && $this->setField($message_id, "parsed_text", parse_html($this->getField($message_id, "text")));
+					$return = $return && $this->setField($message_id, "parsed_text", F::parse_html($this->getField($message_id, "text")));
 					$return = $return && $this->setField($message_id, "html", "1");
 				}
 				return $return;
@@ -316,7 +316,7 @@
 
 		function addUser($user, $type=6)
 		{
-			$users = explode0("\n", self::$database->messageUsers($this->name));
+			$users = Functions::explode0("\n", self::$database->messageUsers($this->name));
 			$users[] = $user."\r".$type;
 			self::$database->messageUsers($this->name, implode("\n", $users));
 

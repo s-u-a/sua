@@ -45,28 +45,28 @@
 <h3 id="punkte" class="strong"><?=h(_("Punkte"))?></h3>
 <dl class="punkte">
 	<dt class="c-gebaeude"><?=h(_("[scores_0]"))?></dt>
-	<dd class="c-gebaeude"><?=ths($user->getScores(0))?></dd>
+	<dd class="c-gebaeude"><?=F::ths($user->getScores(0))?></dd>
 
 	<dt class="c-forschung"><?=h(_("[scores_1]"))?></dt>
-	<dd class="c-forschung"><?=ths($user->getScores(1))?></dd>
+	<dd class="c-forschung"><?=F::ths($user->getScores(1))?></dd>
 
 	<dt class="c-roboter"><?=h(_("[scores_2]"))?></dt>
-	<dd class="c-roboter"><?=ths($user->getScores(2))?></dd>
+	<dd class="c-roboter"><?=F::ths($user->getScores(2))?></dd>
 
 	<dt class="c-flotte"><?=h(_("[scores_3]"))?></dt>
-	<dd class="c-flotte"><?=ths($user->getScores(3))?></dd>
+	<dd class="c-flotte"><?=F::ths($user->getScores(3))?></dd>
 
 	<dt class="c-verteidigung"><?=h(_("[scores_4]"))?></dt>
-	<dd class="c-verteidigung"><?=ths($user->getScores(4))?></dd>
+	<dd class="c-verteidigung"><?=F::ths($user->getScores(4))?></dd>
 
 	<dt class="c-flugerfahrung"><?=h(_("[scores_5]"))?></dt>
-	<dd class="c-flugerfahrung"><?=ths($user->getScores(5))?></dd>
+	<dd class="c-flugerfahrung"><?=F::ths($user->getScores(5))?></dd>
 
 	<dt class="c-kampferfahrung"><?=h(_("[scores_6]"))?></dt>
-	<dd class="c-kampferfahrung"><?=ths($user->getScores(6))?></dd>
+	<dd class="c-kampferfahrung"><?=F::ths($user->getScores(6))?></dd>
 
 	<dt class="c-gesamt"><?=h(_("Gesamt"))?></dt>
-	<dd class="c-gesamt"><?=ths($user->getScores())?> <span class="platz"><?=h(sprintf("(Platz %s von %s)", ths($user->getRank()), ths(User::getUsersCount())))?></span></dd>
+	<dd class="c-gesamt"><?=F::ths($user->getScores())?> <span class="platz"><?=h(sprintf("(Platz %s von %s)", F::ths($user->getRank()), F::ths(User::getUsersCount())))?></span></dd>
 </dl>
 <?php
 			$show_koords = $me->maySeeKoords($user->getName());
@@ -76,22 +76,22 @@
 <h3 id="ausgegebene-rohstoffe" class="strong"><?=h(_("Ausgegebene Rohstoffe"))?></h3>
 <dl class="punkte">
 	<dt class="c-carbon"><?=h(_("[ress_0]"))?></dt>
-	<dd class="c-carbon"><?=ths($user->getSpentRess(0))?></dd>
+	<dd class="c-carbon"><?=F::ths($user->getSpentRess(0))?></dd>
 
 	<dt class="c-eisenerz"><?=h(_("[ress_1]"))?></dt>
-	<dd class="c-eisenerz"><?=ths($user->getSpentRess(1))?></dd>
+	<dd class="c-eisenerz"><?=F::ths($user->getSpentRess(1))?></dd>
 
 	<dt class="c-wolfram"><?=h(_("[ress_2]"))?></dt>
-	<dd class="c-wolfram"><?=ths($user->getSpentRess(2))?></dd>
+	<dd class="c-wolfram"><?=F::ths($user->getSpentRess(2))?></dd>
 
 	<dt class="c-radium"><?=h(_("[ress_3]"))?></dt>
-	<dd class="c-radium"><?=ths($user->getSpentRess(3))?></dd>
+	<dd class="c-radium"><?=F::ths($user->getSpentRess(3))?></dd>
 
 	<dt class="c-tritium"><?=h(_("[ress_4]"))?></dt>
-	<dd class="c-tritium"><?=ths($user->getSpentRess(4))?></dd>
+	<dd class="c-tritium"><?=F::ths($user->getSpentRess(4))?></dd>
 
 	<dt class="c-gesamt"><?=h(_("Gesamt"))?></dt>
-	<dd class="c-gesamt"><?=ths($user->getSpentRess())?></dd>
+	<dd class="c-gesamt"><?=F::ths($user->getSpentRess())?></dd>
 </dl>
 <?php
 			}
@@ -193,12 +193,12 @@
 <form action="../nachrichten.php?to=&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="playerinfo-nachricht" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?")?>\');');">
 	<dl class="form">
 		<dt class="c-betreff"><label for="betreff-input"><?=h(_("Betreff&[login/info/playerinfo.php|1]"))?></label></dt>
-		<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" maxlength="30" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Betreff&[login/info/playerinfo.php|1]"))?> /></dd>
+		<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" maxlength="30" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Betreff&[login/info/playerinfo.php|1]"))?> /></dd>
 
 		<dt class="c-inhalt"><label for="inhalt-input"><?=h(_("Inhalt&[login/info/playerinfo.php|1]"))?></label></dt>
-		<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Inhalt&[login/info/playerinfo.php|1]"))?>></textarea></dd>
+		<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Inhalt&[login/info/playerinfo.php|1]"))?>></textarea></dd>
 	</dl>
-	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("&Nachricht absenden[login/info/playerinfo.php|1]"))?>><?=h(_("&Nachricht absenden[login/info/playerinfo.php|1]"))?></button><input type="hidden" name="empfaenger" value="<?=htmlspecialchars($user->getName())?>" /></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("&Nachricht absenden[login/info/playerinfo.php|1]"))?>><?=h(_("&Nachricht absenden[login/info/playerinfo.php|1]"))?></button><input type="hidden" name="empfaenger" value="<?=htmlspecialchars($user->getName())?>" /></div>
 </form>
 <?php
 			}

@@ -17,7 +17,7 @@
 */
 	require('engine.php');
 
-	$databases = get_databases();
+	$databases = Config::get_databases();
 	if(isset($_GET['database']) && isset($databases[$_GET['database']]))
 		define_globals($_GET['database']);
 

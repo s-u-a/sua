@@ -26,7 +26,7 @@
 	{
 		$sessions = array();
 		$fh = fopen(global_setting("DB_ADMIN_LOGFILE"), 'r');
-		fancy_flock($fh, LOCK_SH);
+		Functions::fancyFlock($fh, LOCK_SH);
 
 		while(($line = fgets($fh)) !== false)
 		{
@@ -58,7 +58,7 @@
 		protocol("10", $_GET['session']);
 
 		$fh = fopen(global_setting("DB_ADMIN_LOGFILE"), 'r');
-		fancy_flock($fh, LOCK_SH);
+		Functions::fancyFlock($fh, LOCK_SH);
 
 		if(isset($_GET['start'])) fseek($fh, $_GET['start']);
 ?>

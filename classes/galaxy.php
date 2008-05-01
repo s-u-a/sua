@@ -50,14 +50,14 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 				if($write && is_writeable($this->filename))
 				{
 					$this->file_pointer = fopen($this->filename, 'r+');
-					if(!fancy_flock($this->file_pointer, LOCK_EX))
+					if(!Functions::fancyFlock($this->file_pointer, LOCK_EX))
 						$this->status = false;
 					else $this->status = 1;
 				}
 				else
 				{
 					$this->file_pointer = fopen($this->filename, 'r');
-					fancy_flock($this->file_pointer, LOCK_SH);
+					Functions::fancyFlock($this->file_pointer, LOCK_SH);
 					$this->status = 2;
 				}
 			}
@@ -391,5 +391,176 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		{
 			$type = (((floor($system/100)+1)*(floor(($system%100)/10)+1)*(($system%10)+1))%$planet)*$planet+($system%(($galaxy+1)*$planet));
 			return $type%20+1;
+		}
+
+		/**
+		  * Liest das Truemmerfeld an den gegebenen Koordinaten aus.
+		  * @return Array mit den Rohstoffen
+		*/
+
+		function truemmerfeldGet($system, $planet)
+		{
+			# Bekommt die Groesse eines Truemmerfelds
+
+			if(!is_file(global_setting("DB_TRUEMMERFELDER").'/'.$this->galaxy.'_'.$system.'_'.$planet))
+				return array(0, 0, 0, 0);
+			elseif(!is_readable(global_setting("DB_TRUEMMERFELDER").'/'.$this->galaxy.'_'.$system.'_'.$planet))
+				return false;
+			else
+			{
+				$string = file_get_contents(global_setting("DB_TRUEMMERFELDER").'/'.$this->galaxy.'_'.$system.'_'.$planet);
+
+				$rohstoffe = array('', '', '', '');
+
+				$index = 0;
+				for($i = 0; $i < strlen($string); $i++)
+				{
+					$bin = F::add_nulls(decbin(ord($string[$i])), 8);
+					$rohstoffe[$index] .= substr($bin, 0, -1);
+					if(!substr($bin, -1)) # Naechste Zahl
+						$index++;
+				}
+				for($rohstoff = 0; $rohstoff < 4; $rohstoff++)
+				{
+					if($rohstoffe[$rohstoff] == '')
+						$rohstoffe[$rohstoff] = 0;
+					else
+						$rohstoffe[$rohstoff] = base_convert($rohstoffe[$rohstoff], 2, 10);
+				}
+
+				return array($rohstoffe[0], $rohstoffe[1], $rohstoffe[2], $rohstoffe[3]);
+			}
+		}
+
+		/**
+		  * Fuegt dem Truemmerfeld Rohstoffe hinzu.
+		*/
+
+		function truemmerfeldAdd($system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
+		{
+			# Fuegt einem Truemmerfeld Rohstoffe hinzu
+			$old = $this->truemmerfeldGet($system, $planet);
+			if($old === false)
+				return false;
+			$old[0] += $carbon;
+			$old[1] += $aluminium;
+			$old[2] += $wolfram;
+			$old[3] += $radium;
+
+			return $this->truemmerfeldSet($system, $planet, $old[0], $old[1], $old[2], $old[3]);
+		}
+
+		/**
+		  * Zieht dem Truemmerfeld Rohstoffe ab.
+		*/
+
+		function truemmerfeldSub($system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
+		{
+			# Zieht einem Truemmerfeld Rohstoffe ab
+			$old = $this->truemmerfeldGet($system, $planet);
+			if($old === false)
+				return false;
+			$old[0] -= $carbon;
+			$old[1] -= $aluminium;
+			$old[2] -= $wolfram;
+			$old[3] -= $radium;
+
+			if($old[0] < 0)
+				$old[0] = 0;
+			if($old[1] < 0)
+				$old[1] = 0;
+			if($old[2] < 0)
+				$old[2] = 0;
+			if($old[3] < 0)
+				$old[3] = 0;
+
+			return $this->truemmerfeldSet($system, $planet, $old[0], $old[1], $old[2], $old[3]);
+		}
+
+		/**
+		  * Setzt die Rohstoffe des Truemmerfelds neu.
+		*/
+
+		function truemmerfeldSet($system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
+		{
+			if($carbon <= 0 && $aluminium <= 0 && $wolfram <= 0 && $radium <= 0)
+			{
+				if(is_file(global_setting("DB_TRUEMMERFELDER").'/'.$this->galaxy.'_'.$system.'_'.$planet))
+					return unlink(global_setting("DB_TRUEMMERFELDER").'/'.$this->galaxy.'_'.$system.'_'.$planet);
+				else
+					return true;
+			}
+
+			$new = array(
+				base_convert($carbon, 10, 2),
+				base_convert($aluminium, 10, 2),
+				base_convert($wolfram, 10, 2),
+				base_convert($radium, 10, 2)
+			);
+
+			$string = '';
+
+			for($i = 0; $i < 4; $i++)
+			{
+				if(strlen($new[$i])%7)
+					$new[$i] = str_repeat('0', 7-strlen($new[$i])%7).$new[$i];
+
+				$strlen = strlen($new[$i]);
+				for($j = 0; $j < $strlen; $j+=7)
+				{
+					if($j == $strlen-7)
+						$suf = '0';
+					else
+						$suf = '1';
+					$string .= chr(bindec(substr($new[$i], $j, 7).$suf));
+				}
+			}
+
+			unset($new);
+
+			# Schreiben
+			$fh = fopen(global_setting("DB_TRUEMMERFELDER").'/'.$this->galaxy.'_'.$system.'_'.$planet, 'w');
+			if(!$fh)
+				return false;
+			flock($fh, LOCK_EX);
+			fwrite($fh, $string);
+			flock($fh, LOCK_UN);
+			fclose($fh);
+
+			return true;
+		}
+
+		/**
+		* Callback-Funktion fuer usort() zum Sortieren von Koordinaten nach Galaxie, System und Planet.
+		* @return 1 wenn $a > $b
+		* @return -1 wenn $a < $b
+		* @return 0 wenn $a == $b
+		*/
+
+		static function usort($a, $b)
+		{
+			$a_expl = explode(':', $a);
+			$b_expl = explode(':', $b);
+
+			if($a_expl[0] > $b_expl[0])
+				return 1;
+			elseif($a_expl[0] < $b_expl[0])
+				return -1;
+			else
+			{
+				if($a_expl[1] > $b_expl[1])
+					return 1;
+				elseif($a_expl[1] < $b_expl[1])
+					return -1;
+				else
+				{
+					if($a_expl[2] > $b_expl[2])
+						return 1;
+					elseif($a_expl[2] < $b_expl[2])
+						return -1;
+					else
+						return 0;
+				}
+			}
 		}
 	}

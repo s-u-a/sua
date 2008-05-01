@@ -57,10 +57,10 @@
 						if($this->file_pointer = fopen($this->location, 'rb'))
 						{
 							$this->status = 2;
-							fancy_flock($this->file_pointer, LOCK_SH);
+							Functions::fancyFlock($this->file_pointer, LOCK_SH);
 						}
 					}
-					elseif(($this->file_pointer = fopen($this->location, 'r+b')) && fancy_flock($this->file_pointer, LOCK_EX))
+					elseif(($this->file_pointer = fopen($this->location, 'r+b')) && Functions::fancyFlock($this->file_pointer, LOCK_EX))
 						$this->status = 1;
 					if($this->status)
 						$this->read();
@@ -109,7 +109,7 @@
 			{
 				if(!($this->file_pointer = fopen($this->location, 'a+')))
 					return false;
-				if(!fancy_flock($this->file_pointer, LOCK_EX))
+				if(!Functions::fancyFlock($this->file_pointer, LOCK_EX))
 					return false;
 			}
 

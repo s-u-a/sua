@@ -65,12 +65,12 @@
 			<dt class="item-kosten"><?=h(_("Kosten"))?></dt>
 			<dd class="item-kosten">
 <?php
-		echo format_ress($item_info['ress'], 4, false, false, false, $me);
+		echo F::format_ress($item_info['ress'], 4, false, false, false, $me);
 ?>
 			</dd>
 
 			<dt class="item-bauzeit"><?=h(_("Bauzeit"))?></dt>
-			<dd class="item-bauzeit"><?=format_btime($item_info['time'])?></dd>
+			<dd class="item-bauzeit"><?=F::format_btime($item_info['time'])?></dd>
 		</dl>
 	</div>
 <?php
@@ -79,7 +79,7 @@
 	if($tabindex > 1)
 	{
 ?>
-	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("In A&uftrag geben[login/roboter.php|1]"))?>><?=h(_("In A&uftrag geben[login/roboter.php|1]"))?></button></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("In A&uftrag geben[login/roboter.php|1]"))?>><?=h(_("In A&uftrag geben[login/roboter.php|1]"))?></button></div>
 <?php
 	}
 ?>
@@ -101,7 +101,7 @@
 		$first_building[2]--;
 		if($first_building[2] <= 0) array_shift($building_roboter);
 ?>
-	<li class="<?=htmlspecialchars($first[0])?> active<?=(count($building_roboter) <= 0) ? ' last' : ''?>"><strong><?=h(_("[item_".$first[0]."]"))?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>"><?=htmlspecialchars(format_ftime($first[1], $me))?></span></strong></li>
+	<li class="<?=htmlspecialchars($first[0])?> active<?=(count($building_roboter) <= 0) ? ' last' : ''?>"><strong><?=h(_("[item_".$first[0]."]"))?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>"><?=htmlspecialchars(F::format_ftime($first[1], $me))?></span></strong></li>
 <?php
 		if(count($building_roboter) > 0)
 		{
@@ -111,7 +111,7 @@
 			{
 				$finishing_time = $bau[1]+$bau[2]*$bau[3];
 ?>
-	<li class="<?=htmlspecialchars($bau[0])?><?=($key == $last) ? ' last' : ''?>"><?=h(_("[item_".$bau[0]."]"))?> &times; <?=$bau[2]?><?php if($key == $last){?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>"><?=htmlspecialchars(format_ftime($finishing_time, $me))?></span><?php }?></li>
+	<li class="<?=htmlspecialchars($bau[0])?><?=($key == $last) ? ' last' : ''?>"><?=h(_("[item_".$bau[0]."]"))?> &times; <?=$bau[2]?><?php if($key == $last){?> <span class="restbauzeit" id="restbauzeit-<?=$i++?>"><?=htmlspecialchars(F::format_ftime($finishing_time, $me))?></span><?php }?></li>
 <?php
 			}
 		}
@@ -137,7 +137,7 @@
 ?>
 <form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/roboter.php?'.global_setting("URL_SUFFIX"))?>" method="post" class="alle-abbrechen">
 	<p><?=sprintf(h(_("Geben Sie hier Ihr Passwort ein, um alle im Bau befindlichen Roboter %sohne Kostenrückerstattung%s abzubrechen.")), "<strong>", "</strong>")?></p>
-	<div><input type="password" name="cancel-all-roboter" /><input type="submit" value="<?=h(_("Alle abbrechen&[login/roboter.php|1]"), false)?>"<?=accesskey_attr(_("Alle abbrechen&[login/roboter.php|1]"))?> /></div>
+	<div><input type="password" name="cancel-all-roboter" /><input type="submit" value="<?=h(_("Alle abbrechen&[login/roboter.php|1]"), false)?>"<?=l::accesskey_attr(_("Alle abbrechen&[login/roboter.php|1]"))?> /></div>
 </form>
 <?php
 	}

@@ -94,7 +94,7 @@
 			if(is_file(global_setting("DB_ITEMS").'/gebaeude') && is_readable(global_setting("DB_ITEMS").'/gebaeude'))
 			{
 				$fh = fopen(global_setting("DB_ITEMS").'/gebaeude', 'r');
-				fancy_flock($fh, LOCK_SH);
+				Functions::fancyFlock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
@@ -116,7 +116,7 @@
 			if(is_file(global_setting("DB_ITEMS").'/forschung') && is_readable(global_setting("DB_ITEMS").'/forschung'))
 			{
 				$fh = fopen(global_setting("DB_ITEMS").'/forschung', 'r');
-				fancy_flock($fh, LOCK_SH);
+				Functions::fancyFlock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
@@ -136,7 +136,7 @@
 			if(is_file(global_setting("DB_ITEMS").'/roboter') && is_readable(global_setting("DB_ITEMS").'/roboter'))
 			{
 				$fh = fopen(global_setting("DB_ITEMS").'/roboter', 'r');
-				fancy_flock($fh, LOCK_SH);
+				Functions::fancyFlock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
@@ -156,7 +156,7 @@
 			if(is_file(global_setting("DB_ITEMS").'/schiffe') && is_readable(global_setting("DB_ITEMS").'/schiffe'))
 			{
 				$fh = fopen(global_setting("DB_ITEMS").'/schiffe', 'r');
-				fancy_flock($fh, LOCK_SH);
+				Functions::fancyFlock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
@@ -180,7 +180,7 @@
 			if(is_file(global_setting("DB_ITEMS").'/verteidigung') && is_readable(global_setting("DB_ITEMS").'/verteidigung'))
 			{
 				$fh = fopen(global_setting("DB_ITEMS").'/verteidigung', 'r');
-				fancy_flock($fh, LOCK_SH);
+				Functions::fancyFlock($fh, LOCK_SH);
 				while($item = preg_replace("/^(.*)(\r\n|\r|\n)$/", "$1", fgets($fh, 65536)))
 				{
 					$item = explode("\t", $item);
@@ -201,7 +201,7 @@
 
 			$fh = fopen(global_setting("DB_ITEM_DB"), 'a+');
 			if(!$fh) return false;
-			if(!fancy_flock($fh, LOCK_EX)) return false;
+			if(!Functions::fancyFlock($fh, LOCK_EX)) return false;
 
 			fseek($fh, 0, SEEK_SET);
 			ftruncate($fh, 0);
@@ -218,7 +218,7 @@
 			foreach($items as $id=>$count)
 			{
 				if($count <= 0) continue;
-				$str = sprintf(_("%s: %s"), ($_i ? "[item_".$id."]" : _("[item_".$id."]")), ths($count));
+				$str = sprintf(_("%s: %s"), ($_i ? "[item_".$id."]" : _("[item_".$id."]")), F::ths($count));
 				if($html) $str = htmlspecialchars($str);
 				$array[] = $str;
 			}
@@ -272,11 +272,36 @@
 				$item = Classes::Item($id);
 ?>
 <?=$tabs_str?>	<dt class="c-<?=htmlspecialchars($id)?>"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item->getInfo("name"))?></a></dt>
-<?=$tabs_str?>	<dd class="c-<?=htmlspecialchars($id)?>"><?=ths($count)?></dd>
+<?=$tabs_str?>	<dd class="c-<?=htmlspecialchars($id)?>"><?=F::ths($count)?></dd>
 <?php
 			}
 ?>
 <?=$tabs_str?></dl>
 <?php
+		}
+
+		/**
+		* Konvertiert ein Array, das Items eine Anzahl zuweist, in einen String. Format: (Item-ID ' ' Anzahl ( ' ' Item-ID ' ' Anzahl)* )?
+		*/
+
+		static function encodeList($list)
+		{
+			$ret = array();
+			foreach($list as $k=>$v)
+				$ret[] = $k." ".$v;
+			return implode(" ", $ret);
+		}
+
+		/**
+		* Konvertiert einen mit encodeList() kodierten String zurueck einem Array ( Item-ID => Anzahl ).
+		*/
+
+		static function decodeList($encoded)
+		{
+			$list = array();
+			$encoded_sp = (strlen($encoded) > 0 ? explode(" ", $encoded) : array());
+			for($i=0; $i<count($encoded_sp); $i++)
+				$list[$encoded_sp[$i]] = (float)$encoded_sp[++$i];
+			return $list;
 		}
 	}

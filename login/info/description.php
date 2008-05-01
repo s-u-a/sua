@@ -37,7 +37,7 @@
 			$lvl = "%s";
 ?>
 <div class="desc desc-<?=htmlspecialchars($_GET['id'])?> desc-<?=htmlspecialchars($type)?>">
-	<h2><?=h(sprintf($lvl, _("[item_".$_GET["id"]."]"), ths($me->getItemLevel($_GET["id"]))))?></h2>
+	<h2><?=h(sprintf($lvl, _("[item_".$_GET["id"]."]"), F::ths($me->getItemLevel($_GET["id"]))))?></h2>
 	<div class="desc-desc">
 <?php
 		function repl_nl($nls)
@@ -51,7 +51,7 @@
 				return "\n\t\t</p>\n\t\t".str_repeat('<br />', $len-2)."\n\t\t<p>\n\t\t\t";
 		}
 
-		$desc = "\t\t<p>\n\t\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', _i(h(_("[itemdesc_".$_GET["id"]."]")), true))."\n\t\t</p>\n";
+		$desc = "\t\t<p>\n\t\t\t".preg_replace('/[\n]+/e', 'repl_nl(\'$0\');', l::_i(h(_("[itemdesc_".$_GET["id"]."]")), true))."\n\t\t</p>\n";
 
 		print($desc);
 ?>
@@ -65,7 +65,7 @@
 		<dt class="item-kosten"><?=h(_("Kosten"))?></dt>
 		<dd class="item-kosten">
 <?php
-			echo format_ress($item_info['ress'], 3, false, false, false, $me);
+			echo F::format_ress($item_info['ress'], 3, false, false, false, $me);
 ?>
 		</dd>
 
@@ -74,17 +74,17 @@
 			{
 ?>
 		<dt class="item-bauzeit forschung-lokal"><?=h(_("Bauzeit lokal"))?></dt>
-		<dd class="item-bauzeit forschung-lokal"><?=format_btime($item_info['time_local'])?></dd>
+		<dd class="item-bauzeit forschung-lokal"><?=F::format_btime($item_info['time_local'])?></dd>
 
 		<dt class="item-bauzeit forschung-global"><?=h(_("Bauzeit global"))?></dt>
-		<dd class="item-bauzeit forschung-global"><?=format_btime($item_info['time_global'])?></dd>
+		<dd class="item-bauzeit forschung-global"><?=F::format_btime($item_info['time_global'])?></dd>
 <?php
 			}
 			else
 			{
 ?>
 		<dt class="item-bauzeit"><?=h(_("Bauzeit"))?></dt>
-		<dd class="item-bauzeit"><?=format_btime($item_info['time'])?></dd>
+		<dd class="item-bauzeit"><?=F::format_btime($item_info['time'])?></dd>
 	</dl>
 <?php
 			}
@@ -102,7 +102,7 @@
 			foreach($deps as $id=>$level)
 			{
 ?>
-			<li class="deps-<?=htmlspecialchars($id)?> deps-<?=($me->getItemLevel($id) >= $level) ? "ja" : "nein"?>"><?=sprintf(h(_("%s (Stufe %s)")), "<a href=\"description.php?id=".htmlspecialchars(urlencode($id)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Genauere Informationen anzeigen"))."\">".h(_("[item_".$id."]"))."</a>", ths($level))?></li>
+			<li class="deps-<?=htmlspecialchars($id)?> deps-<?=($me->getItemLevel($id) >= $level) ? "ja" : "nein"?>"><?=sprintf(h(_("%s (Stufe %s)")), "<a href=\"description.php?id=".htmlspecialchars(urlencode($id)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Genauere Informationen anzeigen"))."\">".h(_("[item_".$id."]"))."</a>", F::ths($level))?></li>
 <?php
 			}
 ?>
@@ -126,7 +126,7 @@
 			<tbody>
 				<tr>
 					<th><?=h(_("Benötigte Felderzahl"))?></th>
-					<td><?=ths($item->getInfo('fields'))?></td>
+					<td><?=F::ths($item->getInfo('fields'))?></td>
 				</tr>
 			</tbody>
 		</table>
@@ -183,7 +183,7 @@
 			</thead>
 			<tbody>
 <?php
-				$global_factors = get_global_factors();
+				$global_factors = Config::get_global_factors();
 				$prod[0] *= $global_factors['prod'];
 				$prod[1] *= $global_factors['prod'];
 				$prod[2] *= $global_factors['prod'];
@@ -200,42 +200,42 @@
 					$act_lvl = $start_lvl+$x;
 ?>
 				<tr<?=($act_lvl == $me->getItemLevel($_GET["id"])) ? ' class="active"' : ''?>>
-					<th><?=ths($act_lvl)?></th>
+					<th><?=F::ths($act_lvl)?></th>
 <?php
 					if($prod[0] != 0)
 					{
 ?>
-					<td class="c-carbon"><?=ths($prod[0]*pow($act_lvl, 2))?></td>
+					<td class="c-carbon"><?=F::ths($prod[0]*pow($act_lvl, 2))?></td>
 <?php
 					}
 					if($prod[1] != 0)
 					{
 ?>
-					<td class="c-aluminium"><?=ths($prod[1]*pow($act_lvl, 2))?></td>
+					<td class="c-aluminium"><?=F::ths($prod[1]*pow($act_lvl, 2))?></td>
 <?php
 					}
 					if($prod[2] != 0)
 					{
 ?>
-					<td class="c-wolfram"><?=ths($prod[2]*pow($act_lvl, 2))?></td>
+					<td class="c-wolfram"><?=F::ths($prod[2]*pow($act_lvl, 2))?></td>
 <?php
 					}
 					if($prod[3] != 0)
 					{
 ?>
-					<td class="c-radium"><?=ths($prod[3]*pow($act_lvl, 2))?></td>
+					<td class="c-radium"><?=F::ths($prod[3]*pow($act_lvl, 2))?></td>
 <?php
 					}
 					if($prod[4] != 0)
 					{
 ?>
-					<td class="c-tritium"><?=ths($prod[4]*pow($act_lvl, 2))?></td>
+					<td class="c-tritium"><?=F::ths($prod[4]*pow($act_lvl, 2))?></td>
 <?php
 					}
 					if($prod[5] != 0)
 					{
 ?>
-					<td class="c-energie"><?=ths($prod[5]*pow($act_lvl, 2))?></td>
+					<td class="c-energie"><?=F::ths($prod[5]*pow($act_lvl, 2))?></td>
 <?php
 					}
 ?>
@@ -267,23 +267,23 @@
 			<tbody>
 				<tr>
 					<th><?=h(_("Transportkapazität"))?></th>
-					<td><?=h(sprintf(_("%s Tonnen, %s Roboter"), ths($trans[0]), ths($trans[1])))?></td>
-					<td><?=h(sprintf(_("%s Tonnen, %s Roboter"), ths($item_info["trans"][0]), ths($item_info["trans"][1])))?></td>
+					<td><?=h(sprintf(_("%s Tonnen, %s Roboter"), F::ths($trans[0]), F::ths($trans[1])))?></td>
+					<td><?=h(sprintf(_("%s Tonnen, %s Roboter"), F::ths($item_info["trans"][0]), F::ths($item_info["trans"][1])))?></td>
 				</tr>
 				<tr>
 					<th><?=h(_("Angriffsstärke"))?></th>
-					<td><?=ths($item->getInfo('att'))?></td>
-					<td><?=ths($item_info["att"])?></td>
+					<td><?=F::ths($item->getInfo('att'))?></td>
+					<td><?=F::ths($item_info["att"])?></td>
 				</tr>
 				<tr>
 					<th><?=h(_("Schild"))?></th>
-					<td><?=ths($item->getInfo('def'))?></td>
-					<td><?=ths($item_info["def"])?></td>
+					<td><?=F::ths($item->getInfo('def'))?></td>
+					<td><?=F::ths($item_info["def"])?></td>
 				</tr>
 				<tr>
 					<th><?=h(_("Antriebsstärke"))?></th>
-					<td><?=ths($item->getInfo('speed'))?><?=h(_("[unit_separator]"))?><abbr title="<?=h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $item->getInfo("speed")))?>"><?=h(_("µOr⁄s²"))?></abbr></td>
-					<td><?=ths($item_info["speed"])?><?=h(_("[unit_separator]"))?><abbr title="<?=h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $item->getInfo("speed")))?>"><?=h(_("µOr⁄s²"))?></abbr></td>
+					<td><?=F::ths($item->getInfo('speed'))?><?=h(_("[unit_separator]"))?><abbr title="<?=h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $item->getInfo("speed")))?>"><?=h(_("µOr⁄s²"))?></abbr></td>
+					<td><?=F::ths($item_info["speed"])?><?=h(_("[unit_separator]"))?><abbr title="<?=h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $item->getInfo("speed")))?>"><?=h(_("µOr⁄s²"))?></abbr></td>
 				</tr>
 				<tr>
 					<th><?=h(_("Unterstützte Auftragsarten"))?></th>
@@ -322,13 +322,13 @@
 			<tbody>
 				<tr>
 					<th><?=h(_("Angriffsstärke"))?></th>
-					<td><?=ths($item->getInfo('att'))?></td>
-					<td><?=ths($item_info["att"])?></td>
+					<td><?=F::ths($item->getInfo('att'))?></td>
+					<td><?=F::ths($item_info["att"])?></td>
 				</tr>
 				<tr>
 					<th><?=h(_("Schild"))?></th>
-					<td><?=ths($item->getInfo('def'))?></td>
-					<td><?=ths($item_info["def"])?></td>
+					<td><?=F::ths($item->getInfo('def'))?></td>
+					<td><?=F::ths($item_info["def"])?></td>
 				</tr>
 			</tbody>
 		</table>

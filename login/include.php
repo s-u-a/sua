@@ -42,12 +42,12 @@
 
 	header('Cache-Control: no-cache', true);
 
-	$databases = get_databases();
+	$databases = Config::get_databases();
 	if(isset($_SESSION['database']) && isset($databases[$_SESSION['database']]) && ($databases[$_SESSION['database']]['enabled'] || isset($_SESSION['admin_username'])))
 		define_globals($_SESSION['database']);
 
 	# Skins bekommen
-	$skins = get_skins();
+	$skins = Config::get_skins();
 
 	$gui = new LoginGui();
 
@@ -106,7 +106,7 @@
 	}
 
 	# Ueberpruefen, ob Datenbank aktuell ist
-	if(($_cv = get_database_version()) < ($_sv = global_setting("DATABASE_VERSION")))
+	if(($_cv = Config::get_database_version()) < ($_sv = global_setting("DATABASE_VERSION")))
 		$gui->fatal(h(sprintf(_("Error: Database version is %s but should be %s. Please run db_things/update_database.\n"), $_cv, $_sv)));
 
 	# Schnellklicksperre
@@ -136,7 +136,7 @@
 		$gui->fatal(h(_("Datenbankfehler.")));
 
 	$_SESSION['username'] = $me->getName();
-	language($me->checkSetting("lang"));
+	l::language($me->checkSetting("lang"));
 	date_default_timezone_set($me->checkSetting("timezone"));
 	$gui->setOption("user", $me);
 
@@ -144,7 +144,7 @@
 	{
 		if(isset($_COOKIE[global_setting("SESSION_NAME")]))
 			setcookie(global_setting("SESSION_NAME"), '', 0, h_root."/");
-		$gui->fatal(sprintf(h(_("Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s.")), "<a href=\"http://".htmlspecialchars(get_default_hostname().h_root)."/index.php\">", "</a>"));
+		$gui->fatal(sprintf(h(_("Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s.")), "<a href=\"http://".htmlspecialchars(Config::get_default_hostname().h_root)."/index.php\">", "</a>"));
 	}
 
 	if(!isset($_GET['planet']) || !$me->planetExists($_GET['planet']))

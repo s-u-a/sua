@@ -46,7 +46,7 @@ EOF;
 	if(!isset($_GET['action'])) $_GET['action'] = null;
 	else
 	{
-		$databases = get_databases();
+		$databases = Config::get_databases();
 		if(!isset($_GET['database']) || !isset($databases[$_GET['database']])) $_GET['action'] = false;
 		else define_globals($_GET['database']);
 	}
@@ -103,7 +103,7 @@ EOF;
 					echo "\t\t\t<name>".htmlspecialchars($galaxy_obj->getPlanetName($system[1], $i))."</name>\n";
 					echo "\t\t\t<alliance>".htmlspecialchars($galaxy_obj->getPlanetOwnerAlliance($system[1], $i))."</alliance>\n";
 					echo "\t\t\t<flag>".htmlspecialchars($galaxy_obj->getPlanetOwnerFlag($system[1], $i))."</flag>\n";
-					$truemmerfeld = truemmerfeld::get($system[0], $system[1], $i);
+					$truemmerfeld = $galaxy_obj->truemmerfeldGet($system[1], $i);
 					if(array_sum($truemmerfeld) > 0)
 						echo "\t\t\t<truemmerfeld carbon=\"".htmlspecialchars($truemmerfeld[0])."\" aluminium=\"".htmlspecialchars($truemmerfeld[1])."\" wolfram=\"".htmlspecialchars($truemmerfeld[2])."\" radium=\"".htmlspecialchars($truemmerfeld[3])."\" />\n";
 					echo "\t\t</planet>\n";

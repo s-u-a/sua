@@ -31,7 +31,7 @@
 			if($action == 'cancel' && $me->cancelAllianceApplication())
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z[login/allianz.php|0]"))?>><?=h(_("Allian&z[login/allianz.php|0]"))?></a></h2>
+<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|0]"))?>><?=h(_("Allian&z[login/allianz.php|0]"))?></a></h2>
 <p class="successful"><?=h(_("Ihre Bewerbung wurde erfolgreich zurückgezogen."))?></p>
 <?php
 			}
@@ -41,7 +41,7 @@
 <h2><?=h(_("Allianz"))?></h2>
 <p class="allianz-laufende-bewerbung successful"><?=sprintf(h(_("Sie haben derzeit eine laufende Bewerbung bei der Allianz %s.")), "<a href=\"info/allianceinfo.php?alliance=".htmlspecialchars(urlencode($application)."&".global_setting("URL_SUFFIX"))."\">".htmlspecialchars($application)."</a>")?></p>
 <ul class="allianz-laufende-bewerbung-aktionen possibilities">
-	<li><a href="allianz.php?action=cancel&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=accesskey_attr(_("Bewerbung zurückziehen&[login/allianz.php|1]"))?>><?=h(_("Bewerbung zurückziehen&[login/allianz.php|1]"))?></a></li>
+	<li><a href="allianz.php?action=cancel&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Bewerbung zurückziehen&[login/allianz.php|1]"))?>><?=h(_("Bewerbung zurückziehen&[login/allianz.php|1]"))?></a></li>
 </ul>
 <?php
 			}
@@ -49,7 +49,7 @@
 		elseif($action == 'gruenden')
 		{
 ?>
-<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z[login/allianz.php|2]"))?>><?=h(_("Allian&z[login/allianz.php|2]"))?></a></h2>
+<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|2]"))?>><?=h(_("Allian&z[login/allianz.php|2]"))?></a></h2>
 <?php
 			if(isset($_POST['tag']) && isset($_POST['name']))
 			{
@@ -105,12 +105,12 @@
 <form action="allianz.php?action=gruenden&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="allianz-gruenden-form">
 	<dl class="form">
 		<dt><label for="allianztag-input"><?=h(_("Allianztag&[login/allianz.php|2]"))?></label></dt>
-		<dd><input type="text" name="tag" id="allianztag-input" value="<?=isset($_POST['tag']) ? htmlspecialchars($_POST['tag']) : ''?>" title="<?=h(_("Das Allianztag wird in der Karte und in den Highscores vor dem Benutzernamen angezeigt."))?>" maxlength="6" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allianztag&[login/allianz.php|1]"))?> /></dd>
+		<dd><input type="text" name="tag" id="allianztag-input" value="<?=isset($_POST['tag']) ? htmlspecialchars($_POST['tag']) : ''?>" title="<?=h(_("Das Allianztag wird in der Karte und in den Highscores vor dem Benutzernamen angezeigt."))?>" maxlength="6" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allianztag&[login/allianz.php|1]"))?> /></dd>
 
 		<dt><label for="allianzname-input"><?=h(_("Allianzname&[login/allianz.php|2]"))?></label></dt>
-		<dd><input type="text" name="name" id="allianzname-input" value="<?=isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allianzname&[login/allianz.php|1]"))?> /></dd>
+		<dd><input type="text" name="name" id="allianzname-input" value="<?=isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allianzname&[login/allianz.php|1]"))?> /></dd>
 	</dl>
-	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z gründen[login/allianz.php|2]"))?>><?=h(_("Allian&z gründen[login/allianz.php|2]"))?></button></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z gründen[login/allianz.php|2]"))?>><?=h(_("Allian&z gründen[login/allianz.php|2]"))?></button></div>
 </form>
 <?php
 		}
@@ -121,7 +121,7 @@
 			if(!Alliance::allianceExists($_GET['for']))
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z[login/allianz.php|3]"))?>><?=h(_("Allian&z[login/allianz.php|3]"))?></a></h2>
+<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|3]"))?>><?=h(_("Allian&z[login/allianz.php|3]"))?></a></h2>
 <p class="error"><?=h(_("Diese Allianz gibt es nicht."))?></p>
 <?php
 			}
@@ -131,27 +131,27 @@
 				if(!$alliance->allowApplications())
 				{
 ?>
-<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z[login/allianz.php|4]"))?>><?=h(_("Allian&z[login/allianz.php|4]"))?></a></h2>
+<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|4]"))?>><?=h(_("Allian&z[login/allianz.php|4]"))?></a></h2>
 <p class="error"><?=h(_("Diese Allianz akzeptiert keine neuen Bewerbungen."))?></p>
 <?php
 				}
 				elseif(!isset($_POST['text']))
 				{
 ?>
-<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z[login/allianz.php|5]"))?>><?=h(_("Allian&z[login/allianz.php|5]"))?></a></h2>
+<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|5]"))?>><?=h(_("Allian&z[login/allianz.php|5]"))?></a></h2>
 <form action="allianz.php?action=apply&amp;for=<?=htmlspecialchars(urlencode($_GET['for']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="allianz-bewerben-form">
 	<dl class="form">
 		<dt><label for="bewerbungstext-textarea"><?=h(_("Bewerbungste&xt[login/allianz.php|5]"))?></label></dt>
-		<dd><textarea name="text" id="bewerbungstext-textarea" cols="50" rows="17" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Bewerbungste&xt[login/allianz.php|5]"))?>></textarea></dd>
+		<dd><textarea name="text" id="bewerbungstext-textarea" cols="50" rows="17" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Bewerbungste&xt[login/allianz.php|5]"))?>></textarea></dd>
 	</dl>
-	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Bewerbu&ng absenden[login/allianz.php|5]"))?>><?=h(_("Bewerbu&ng absenden[login/allianz.php|5]"))?></button></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Bewerbu&ng absenden[login/allianz.php|5]"))?>><?=h(_("Bewerbu&ng absenden[login/allianz.php|5]"))?></button></div>
 </form>
 <?php
 				}
 				else
 				{
 ?>
-<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z[login/allianz.php|6]"))?>><?=h(_("Allian&z[login/allianz.php|6]"))?></a></h2>
+<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|6]"))?>><?=h(_("Allian&z[login/allianz.php|6]"))?></a></h2>
 <?php
 					if($me->allianceApplication($_GET['for'], $_POST['text']))
 					{
@@ -175,8 +175,8 @@
 <p class="allianz-keine error"><?=h(_("Sie gehören derzeit keiner Allianz an."))?></p>
 <form action="allianz.php" method="get" class="allianz-moeglichkeiten">
 	<ul class="possibilities">
-		<li><a href="allianz.php?action=gruenden&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex+2?>"<?=accesskey_attr(_("Eigene Allian&z gründen[login/allianz.php|7]"))?>><?=h(_("Eigene Allian&z gründen[login/allianz.php|7]"))?></a></li>
-		<li><input type="text" name="search" value="<?=(isset($_GET['search'])) ? htmlspecialchars($_GET['search']) : ''?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allia&nz suchen[login/allianz.php|7]"))?> /> <button type="submit" tabindex="<?=$tabindex++?>"><?=h(_("Allia&nz suchen[login/allianz.php|7]"))?></button><?=global_setting("URL_FORMULAR")?></li>
+		<li><a href="allianz.php?action=gruenden&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex+2?>"<?=l::accesskey_attr(_("Eigene Allian&z gründen[login/allianz.php|7]"))?>><?=h(_("Eigene Allian&z gründen[login/allianz.php|7]"))?></a></li>
+		<li><input type="text" name="search" value="<?=(isset($_GET['search'])) ? htmlspecialchars($_GET['search']) : ''?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allia&nz suchen[login/allianz.php|7]"))?> /> <button type="submit" tabindex="<?=$tabindex++?>"><?=h(_("Allia&nz suchen[login/allianz.php|7]"))?></button><?=global_setting("URL_FORMULAR")?></li>
 	</ul>
 </form>
 <?php
@@ -222,7 +222,7 @@
 			else
 				$invert = '';
 ?>
-<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z[login/allianz.php|8]"))?>><?=h(_("Allian&z[login/allianz.php|8]"))?></a></h2>
+<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|8]"))?>><?=h(_("Allian&z[login/allianz.php|8]"))?></a></h2>
 <?php
 			if($alliance->checkUserPermissions($me->getName(), 6) || $alliance->checkUserPermissions($me->getName(), 5) || $alliance->checkUserPermissions($me->getName(), 4))
 			{
@@ -242,10 +242,10 @@
 <table class="allianz-liste">
 	<thead>
 		<tr>
-			<th class="c-name"><a href="allianz.php?action=liste<?=$sort ? '' : $invert?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Nach Namen sortieren"))?>"<?=accesskey_attr(_("Name&[login/allianz.php|8]"))?>><?=h(_("Name&[login/allianz.php|8]"))?></a></th>
-			<th class="c-rang"><a href="allianz.php?action=liste&amp;sortby=rang<?=($sort && $_GET['sortby'] == 'rang') ? $invert : ''?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Nach Rang sortieren"))?>"<?=accesskey_attr(_("Rang&[login/allianz.php|8]"))?>><?=h(_("Rang&[login/allianz.php|8]"))?></a></th>
-			<th class="c-punkte"><a href="allianz.php?action=liste&amp;sortby=punkte<?=($sort && $_GET['sortby'] == 'punkte') ? $invert : ''?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Nach Punkten sortieren"))?>"<?=accesskey_attr(_("P&unkte[login/allianz.php|8]"))?>><?=h(_("P&unkte[login/allianz.php|8]"))?></a></th>
-			<th class="c-aufnahmezeit"><a href="allianz.php?action=liste&amp;sortby=time<?=($sort && $_GET['sortby'] == 'time') ? $invert : ''?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Nach Aufnahmezeit sortieren"))?>"<?=accesskey_attr(_("Auf&nahmezeit[login/allianz.php|8]"))?>><?=h(_("Auf&nahmezeit[login/allianz.php|8]"))?></a></th>
+			<th class="c-name"><a href="allianz.php?action=liste<?=$sort ? '' : $invert?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Nach Namen sortieren"))?>"<?=l::accesskey_attr(_("Name&[login/allianz.php|8]"))?>><?=h(_("Name&[login/allianz.php|8]"))?></a></th>
+			<th class="c-rang"><a href="allianz.php?action=liste&amp;sortby=rang<?=($sort && $_GET['sortby'] == 'rang') ? $invert : ''?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Nach Rang sortieren"))?>"<?=l::accesskey_attr(_("Rang&[login/allianz.php|8]"))?>><?=h(_("Rang&[login/allianz.php|8]"))?></a></th>
+			<th class="c-punkte"><a href="allianz.php?action=liste&amp;sortby=punkte<?=($sort && $_GET['sortby'] == 'punkte') ? $invert : ''?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Nach Punkten sortieren"))?>"<?=l::accesskey_attr(_("P&unkte[login/allianz.php|8]"))?>><?=h(_("P&unkte[login/allianz.php|8]"))?></a></th>
+			<th class="c-aufnahmezeit"><a href="allianz.php?action=liste&amp;sortby=time<?=($sort && $_GET['sortby'] == 'time') ? $invert : ''?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Nach Aufnahmezeit sortieren"))?>"<?=l::accesskey_attr(_("Auf&nahmezeit[login/allianz.php|8]"))?>><?=h(_("Auf&nahmezeit[login/allianz.php|8]"))?></a></th>
 <?php
 			if($alliance->checkUserPermissions($me->getName(), 5))
 			{
@@ -291,13 +291,13 @@
 					$kick_tabindex = $tabindex++;
 				}
 ?>
-			<td class="c-punkte"><?=ths($alliance->getUserScores($member_name))?></td>
+			<td class="c-punkte"><?=F::ths($alliance->getUserScores($member_name))?></td>
 			<td class="c-aufnahmezeit"><?=date(_('Y-m-d, H:i:s'), $alliance->getUserJoiningTime($member_name))?></td>
 <?php
 				if($alliance->checkUserPermissions($me->getName(), 5))
 				{
 ?>
-			<td class="c-kick"><input type="checkbox" name="kick[<?=htmlspecialchars($i)?>]" onchange="if(!kick_warned){ kick_warned=true; alert('<?=jsentities(_("Die ausgewählten Benutzer werden beim Speichern der Änderungen aus der Allianz geworfen."))?>'); }"<?=($member_name == $me->getName()) ? ' disabled="disabled"' : ''?> tabindex="<?=$kick_tabindex?>" /></td>
+			<td class="c-kick"><input type="checkbox" name="kick[<?=htmlspecialchars($i)?>]" onchange="if(!kick_warned){ kick_warned=true; alert('<?=JS::jsentities(_("Die ausgewählten Benutzer werden beim Speichern der Änderungen aus der Allianz geworfen."))?>'); }"<?=($member_name == $me->getName()) ? ' disabled="disabled"' : ''?> tabindex="<?=$kick_tabindex?>" /></td>
 <?php
 				}
 ?>
@@ -319,7 +319,7 @@
 			if($alliance->checkUserPermissions($me->getName(), 6) || $alliance->checkUserPermissions($me->getName(), 5) || $alliance->checkUserPermissions($me->getName(), 4))
 			{
 ?>
-	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Ä&nderungen speichern[login/allianz.php|8]"))?>><?=h(_("Ä&nderungen speichern[login/allianz.php|8]"))?></button></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Ä&nderungen speichern[login/allianz.php|8]"))?>><?=h(_("Ä&nderungen speichern[login/allianz.php|8]"))?></button></div>
 </form>
 <?php
 			}
@@ -347,7 +347,7 @@
 			if($alliance->checkUserPermissions($me->getName(), 8) && $action == 'aufloesen')
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z[login/allianz.php|9]"))?>><?=h(_("Allian&z[login/allianz.php|9]"))?></a></h2>
+<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|9]"))?>><?=h(_("Allian&z[login/allianz.php|9]"))?></a></h2>
 <?php
 				if($alliance->destroy($me->getName()))
 				{
@@ -365,7 +365,7 @@
 			elseif($austreten && $action == 'austreten')
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z[login/allianz.php|10]"))?>><?=h(_("Allian&z[login/allianz.php|10]"))?></a></h2>
+<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|10]"))?>><?=h(_("Allian&z[login/allianz.php|10]"))?></a></h2>
 <?php
 				if($me->quitAlliance())
 				{
@@ -385,13 +385,13 @@
 				if(isset($_POST['intern-text']))
 					$alliance->setInternalDescription($_POST['intern-text']);
 ?>
-<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z[login/allianz.php|11]"))?>><?=h(_("Allian&z[login/allianz.php|11]"))?></a></h2>
+<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|11]"))?>><?=h(_("Allian&z[login/allianz.php|11]"))?></a></h2>
 <form action="allianz.php?action=intern&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="allianz-intern-form">
 	<dl class="form">
 		<dt><label for="allianz-intern-textarea"><?=h(_("Interner Allianzte&xt[login/allianz.php|11]"))?></label></dt>
-		<dd><textarea name="intern-text" id="allianz-intern-textarea" cols="50" rows="17" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Interner Allianzte&xt[login/allianz.php|11]"))?>><?=preg_replace("/[\t\r\n]/e", "'&#'.ord('\$0').';'", htmlspecialchars($alliance->getInternalDescription(false)))?></textarea></dd>
+		<dd><textarea name="intern-text" id="allianz-intern-textarea" cols="50" rows="17" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Interner Allianzte&xt[login/allianz.php|11]"))?>><?=preg_replace("/[\t\r\n]/e", "'&#'.ord('\$0').';'", htmlspecialchars($alliance->getInternalDescription(false)))?></textarea></dd>
 	</dl>
-	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Speicher&n[login/allianz.php|11]"))?>><?=h(_("Speicher&n[login/allianz.php|11]"))?></button></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Speicher&n[login/allianz.php|11]"))?>><?=h(_("Speicher&n[login/allianz.php|11]"))?></button></div>
 </form>
 <?php
 				$tabindex++;
@@ -399,7 +399,7 @@
 			elseif($alliance->checkUserPermissions($me->getName(), 3) && $action == 'extern')
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z[login/allianz.php|12]"))?>><?=h(_("Allian&z[login/allianz.php|12]"))?></a></h2>
+<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|12]"))?>><?=h(_("Allian&z[login/allianz.php|12]"))?></a></h2>
 <?php
 				if(isset($_POST['extern-text']))
 					$alliance->setExternalDescription($_POST['extern-text']);
@@ -431,15 +431,15 @@
 <form action="allianz.php?action=extern&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="allianz-extern-form">
 	<dl class="form">
 		<dt class="c-tag"><label for="i-allianz-tag"><?=h(_("Allianztag&[login/allianz.php|12]"))?></label></dt>
-		<dd class="c-tag"><input type="text" name="extern-tag" id="i-allianz-tag" value="<?=htmlspecialchars($alliance->getName())?>" tabindex="<?=$tabindex+3?>"<?=accesskey_attr(_("Allianztag&[login/allianz.php|12]"))?><?php if(!$alliance->renameAllowed()){?> disabled="disabled"<?php }?> /> <span class="allianztag-aendern-hinweis"><?=h(sprintf(ngettext("Das Allianztag kann einmal am Tag geändert werden.", "Das Allianztag kann alle %s Tage geändert werden.", global_setting("ALLIANCE_RENAME_PERIOD")), global_setting("ALLIANCE_RENAME_PERIOD")))?></span></dd>
+		<dd class="c-tag"><input type="text" name="extern-tag" id="i-allianz-tag" value="<?=htmlspecialchars($alliance->getName())?>" tabindex="<?=$tabindex+3?>"<?=l::accesskey_attr(_("Allianztag&[login/allianz.php|12]"))?><?php if(!$alliance->renameAllowed()){?> disabled="disabled"<?php }?> /> <span class="allianztag-aendern-hinweis"><?=h(sprintf(ngettext("Das Allianztag kann einmal am Tag geändert werden.", "Das Allianztag kann alle %s Tage geändert werden.", global_setting("ALLIANCE_RENAME_PERIOD")), global_setting("ALLIANCE_RENAME_PERIOD")))?></span></dd>
 
 		<dt class="c-name"><label for="allianz-name-input"><?=h(_("Allianzname&[login/allianz.php|12]"))?></label></dt>
-		<dd class="c-name"><input type="text" name="extern-name" id="allianz-name-input" value="<?=htmlspecialchars($alliance->name())?>" tabindex="<?=$tabindex+4?>"<?=accesskey_attr(_("Allianzname&[login/allianz.php|12]"))?> /></dd>
+		<dd class="c-name"><input type="text" name="extern-name" id="allianz-name-input" value="<?=htmlspecialchars($alliance->name())?>" tabindex="<?=$tabindex+4?>"<?=l::accesskey_attr(_("Allianzname&[login/allianz.php|12]"))?> /></dd>
 
 		<dt class="c-text"><label for="allianz-extern-textarea"><?=h(_("E&xterner Allianztext[login/allianz.php|12]"))?></label></dt>
-		<dd class="c-text"><textarea name="extern-text" id="allianz-extern-textarea" cols="50" rows="17" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("E&xterner Allianztext[login/allianz.php|12]"))?>><?=preg_replace("/[\t\r\n]/e", "'&#'.ord('\$0').';'", htmlspecialchars($alliance->getExternalDescription(false)))?></textarea></dd>
+		<dd class="c-text"><textarea name="extern-text" id="allianz-extern-textarea" cols="50" rows="17" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("E&xterner Allianztext[login/allianz.php|12]"))?>><?=preg_replace("/[\t\r\n]/e", "'&#'.ord('\$0').';'", htmlspecialchars($alliance->getExternalDescription(false)))?></textarea></dd>
 	</dl>
-	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Speicher&n[login/allianz.php|12]"))?>><?=h(_("Speicher&n[login/allianz.php|12]"))?></button></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Speicher&n[login/allianz.php|12]"))?>><?=h(_("Speicher&n[login/allianz.php|12]"))?></button></div>
 </form>
 <?php
 				$tabindex += 3;
@@ -447,7 +447,7 @@
 			elseif($alliance->checkUserPermissions($me->getName(), 7) && $action == 'permissions')
 			{
 ?>
-<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Allian&z[login/allianz.php|13]"))?>><?=h(_("Allian&z[login/allianz.php|13]"))?></a></h2>
+<h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|13]"))?>><?=h(_("Allian&z[login/allianz.php|13]"))?></a></h2>
 <form action="allianz.php?action=permissions&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="allianz-rechte-form">
 	<table>
 		<thead>
@@ -500,7 +500,7 @@
 ?>
 		</tbody>
 	</table>
-	<div class="button"><button type="submit"<?=accesskey_attr(_("Speichern&[login/allianz.php|13]"))?>><?=h(_("Speichern&[login/allianz.php|13]"))?></button></div>
+	<div class="button"><button type="submit"<?=l::accesskey_attr(_("Speichern&[login/allianz.php|13]"))?>><?=h(_("Speichern&[login/allianz.php|13]"))?></button></div>
 </form>
 <?php
 			}
@@ -529,7 +529,7 @@
 	<dt><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=htmlspecialchars($bewerbung)?></a></dt>
 	<dd><ul>
 		<li><a href="allianz.php?action=annehmen&amp;which=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=h(_("Annehmen"))?></a></li>
-		<li><a href="allianz.php?action=ablehnen&amp;which=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="return confirm('<?=jsentities(sprintf(_("Sind Sie sicher, dass Sie die Bewerbung des Benutzers %s ablehnen wollen?"), $bewerbung))?>');"><?=h(_("Ablehnen"))?></a></li>
+		<li><a href="allianz.php?action=ablehnen&amp;which=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="return confirm('<?=JS::jsentities(sprintf(_("Sind Sie sicher, dass Sie die Bewerbung des Benutzers %s ablehnen wollen?"), $bewerbung))?>');"><?=h(_("Ablehnen"))?></a></li>
 	</ul></dd>
 <?php
 						}
@@ -556,10 +556,10 @@
 	<dd class="c-mitglieder"><?=htmlspecialchars($alliance->getMembersCount())?> <span class="liste">(<a href="allianz.php?action=liste&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Mitgliederliste der Allianz einsehen [Z]" tabindex="<?=$tabindex++?>" accesskey="z">Liste</a>)</span></dd>
 
 	<dt class="c-punkteschnitt"><?=h(_("Punkteschnitt"))?></dt>
-	<dd class="c-punkteschnitt"><?=h(sprintf(_("%s (Platz %s von %s)"), ths($average), ths($alliance->getRankAverage()), ths(Alliance::getAlliancesCount())))?></dd>
+	<dd class="c-punkteschnitt"><?=h(sprintf(_("%s (Platz %s von %s)"), F::ths($average), F::ths($alliance->getRankAverage()), F::ths(Alliance::getAlliancesCount())))?></dd>
 
 	<dt class="c-gesamtpunkte"><?=h(_("Gesamtpunkte"))?></dt>
-	<dd class="c-gesamtpunkte"><?=h(sprintf(_("%s (Platz %s von %s)"), ths($overall), ths($alliance->getRankTotal()), ths(Alliance::getAlliancesCount())))?></dd>
+	<dd class="c-gesamtpunkte"><?=h(sprintf(_("%s (Platz %s von %s)"), F::ths($overall), F::ths($alliance->getRankTotal()), F::ths(Alliance::getAlliancesCount())))?></dd>
 </dl>
 <?php
 				if($alliance->checkUserPermissions($me->getName(), 8) || $austreten || $alliance->checkUserPermissions($me->getName(), 2) || $alliance->checkUserPermissions($me->getName(), 3) || $alliance->checkUserPermissions($me->getName(), 7))
@@ -571,31 +571,31 @@
 					if($austreten)
 					{
 ?>
-	<li class="c-austreten"><a href="allianz.php?action=austreten&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="return confirm('<?=jsentities(_("Wollen Sie wirklich aus der Allianz austreten?"))?>');"<?=accesskey_attr(_("Aus der Allianz austreten&[login/allianz.php|13]"))?>><?=h(_("Aus der Allianz austreten&[login/allianz.php|13]"))?></a></li>
+	<li class="c-austreten"><a href="allianz.php?action=austreten&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="return confirm('<?=JS::jsentities(_("Wollen Sie wirklich aus der Allianz austreten?"))?>');"<?=l::accesskey_attr(_("Aus der Allianz austreten&[login/allianz.php|13]"))?>><?=h(_("Aus der Allianz austreten&[login/allianz.php|13]"))?></a></li>
 <?php
 					}
 					if($alliance->checkUserPermissions($me->getName(), 8))
 					{
 ?>
-	<li class="c-aufloesen"><a href="allianz.php?action=aufloesen&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="if(confirm('<?=jsentities(_("Sind Sie sicher, dass Sie diese Allianz komplett auflösen und allen Mitgliedern die Mitgliedschaft kündigen wollen?"))?>')) return !confirm('<?=jsentities(_("Haben Sie es sich doch noch anders überlegt?"))?>'); else return false;"<?=accesskey_attr(_("Allianz auflösen&[login/allianz.php|13]"))?>><?=h(_("Allianz auflösen&[login/allianz.php|13]"))?></a></li>
+	<li class="c-aufloesen"><a href="allianz.php?action=aufloesen&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="if(confirm('<?=JS::jsentities(_("Sind Sie sicher, dass Sie diese Allianz komplett auflösen und allen Mitgliedern die Mitgliedschaft kündigen wollen?"))?>')) return !confirm('<?=JS::jsentities(_("Haben Sie es sich doch noch anders überlegt?"))?>'); else return false;"<?=l::accesskey_attr(_("Allianz auflösen&[login/allianz.php|13]"))?>><?=h(_("Allianz auflösen&[login/allianz.php|13]"))?></a></li>
 <?php
 					}
 					if($alliance->checkUserPermissions($me->getName(), 2))
 					{
 ?>
-	<li class="c-interner-bereich"><a href="allianz.php?action=intern&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("I&nternen Bereich bearbeiten[login/allianz.php|13]"))?>><?=h(_("I&nternen Bereich bearbeiten[login/allianz.php|13]"))?></a></li>
+	<li class="c-interner-bereich"><a href="allianz.php?action=intern&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("I&nternen Bereich bearbeiten[login/allianz.php|13]"))?>><?=h(_("I&nternen Bereich bearbeiten[login/allianz.php|13]"))?></a></li>
 <?php
 					}
 					if($alliance->checkUserPermissions($me->getName(), 3))
 					{
 ?>
-	<li class="c-externer-bereich"><a href="allianz.php?action=extern&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("E&xternen Bereich bearbeiten[login/alliance.php|13]"))?>><?=h(_("E&xternen Bereich bearbeiten[login/alliance.php|13]"))?></a></li>
+	<li class="c-externer-bereich"><a href="allianz.php?action=extern&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("E&xternen Bereich bearbeiten[login/alliance.php|13]"))?>><?=h(_("E&xternen Bereich bearbeiten[login/alliance.php|13]"))?></a></li>
 <?php
 					}
 					if($alliance->checkUserPermissions($me->getName(), 7))
 					{
 ?>
-	<li class="c-benutzerrechte"><a href="allianz.php?action=permissions&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Benutzerrechte ver&walten[login/alliance.php|3]"))?>><?=h(_("Benutzerrechte ver&walten[login/alliance.php|3]"))?></a></li>
+	<li class="c-benutzerrechte"><a href="allianz.php?action=permissions&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Benutzerrechte ver&walten[login/alliance.php|3]"))?>><?=h(_("Benutzerrechte ver&walten[login/alliance.php|3]"))?></a></li>
 <?php
 					}
 ?>
@@ -657,12 +657,12 @@
 <form action="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>#allianzrundschreiben" method="post" class="allianz-rundschreiben-form">
 	<dl class="form">
 		<dt class="c-betreff"><label for="allianz-rundschreiben-betreff-input"><?=h(_("Betreff&[login/allianz.php|13]"))?></label></dt>
-		<dd class="c-betreff"><input type="text" name="rundschreiben-betreff" id="allianz-rundschreiben-betreff-input"<?=accesskey_attr(_("Betreff&[login/allianz.php|13]"))?> /></dd>
+		<dd class="c-betreff"><input type="text" name="rundschreiben-betreff" id="allianz-rundschreiben-betreff-input"<?=l::accesskey_attr(_("Betreff&[login/allianz.php|13]"))?> /></dd>
 
 		<dt class="c-text"><label for="allianz-rundschreiben-text-textarea"><?=h(_("Text&[login/allianz.php|13]"))?></label></dt>
-		<dd class="c-text"><textarea name="rundschreiben-text" id="allianz-rundschreiben-text-textarea" cols="50" rows="17"<?=accesskey_attr(_("Text&[login/allianz.php|13]"))?>></textarea></dd>
+		<dd class="c-text"><textarea name="rundschreiben-text" id="allianz-rundschreiben-text-textarea" cols="50" rows="17"<?=l::accesskey_attr(_("Text&[login/allianz.php|13]"))?>></textarea></dd>
 	</dl>
-	<div class="button"><button type="submit"<?=accesskey_attr(_("Allianzrundschreiben verschicken&[login/allianz.php|13]"))?>><?=h(_("Allianzrundschreiben verschicken&[login/allianz.php|13]"))?></button></div>
+	<div class="button"><button type="submit"<?=l::accesskey_attr(_("Allianzrundschreiben verschicken&[login/allianz.php|13]"))?>><?=h(_("Allianzrundschreiben verschicken&[login/allianz.php|13]"))?></button></div>
 </form>
 <?php
 				}

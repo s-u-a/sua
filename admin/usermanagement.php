@@ -54,7 +54,7 @@
 				for($i=0; $i<=15; $i++)
 					$admins[$_POST['new_admin'][0]]['permissions'][$i] = (isset($_POST['new_admin'][$i+2]) ? '1' : '0');
 
-				write_admin_list($admins) && protocol("11.1", $_POST['new_admin'][0]);
+				Config::write_admin_list($admins) && protocol("11.1", $_POST['new_admin'][0]);
 			}
 			else
 			{
@@ -104,7 +104,7 @@
 		</tbody>
 		<tfoot>
 			<tr>
-				<td colspan="18"><button type="submit"<?=accesskey_attr(_("Hinzufügen&[admin/usermanagement.php|1]"))?>><?=h(_("Hinzufügen&[admin/usermanagement.php|1]"))?></button></td>
+				<td colspan="18"><button type="submit"<?=l::accesskey_attr(_("Hinzufügen&[admin/usermanagement.php|1]"))?>><?=h(_("Hinzufügen&[admin/usermanagement.php|1]"))?></button></td>
 			</tr>
 		</tfoot>
 	</table>
@@ -118,7 +118,7 @@
 			if(isset($_GET['delete']) && isset($admin_keys[$_GET['delete']]) && $admin_keys[$_GET['delete']] != $_SESSION['admin_username'])
 			{
 				unset($admins[$admin_keys[$_GET['delete']]]);
-				write_admin_list($admins) && protocol("11.4", $_GET['delete']);
+				Config::write_admin_list($admins) && protocol("11.4", $_GET['delete']);
 			}
 
 		case 'edit':
@@ -165,7 +165,7 @@
 					if($prot) protocol("11.2", $this_name);
 					$new_admins[$_SESSION['admin_username']]['permissions'][11] = '1';
 				}
-				write_admin_list($new_admins);
+				Config::write_admin_list($new_admins);
 				$admins = $new_admins;
 			}
 ?>

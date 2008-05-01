@@ -19,6 +19,6 @@
 	$include_filename = dirname($__FILE__).'/engine.php';
 	require_once($include_filename);
 
-	language("de_DE", true);
+	l::language("de_DE", true);
 	$gui = new HomeGui();
 ?>

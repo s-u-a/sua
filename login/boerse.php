@@ -69,11 +69,11 @@
 			s_el.options[i] = null;
 
 		var i=0;
-		if(req != "1") s_el.options[i++] = new Option('<?=jsentities(_("[ress_0]"))?>', "1", old_v == "1", old_v == "1");
-		if(req != "2") s_el.options[i++] = new Option('<?=jsentities(_("[ress_1]"))?>', "2", old_v == "2", old_v == "2");
-		if(req != "3") s_el.options[i++] = new Option('<?=jsentities(_("[ress_2]"))?>', "3", old_v == "3", old_v == "3");
-		if(req != "4") s_el.options[i++] = new Option('<?=jsentities(_("[ress_3]"))?>', "4", old_v == "4", old_v == "4");
-		if(req != "5") s_el.options[i++] = new Option('<?=jsentities(_("[ress_4]"))?>', "5", old_v == "5", old_v == "5");
+		if(req != "1") s_el.options[i++] = new Option('<?=JS::jsentities(_("[ress_0]"))?>', "1", old_v == "1", old_v == "1");
+		if(req != "2") s_el.options[i++] = new Option('<?=JS::jsentities(_("[ress_1]"))?>', "2", old_v == "2", old_v == "2");
+		if(req != "3") s_el.options[i++] = new Option('<?=JS::jsentities(_("[ress_2]"))?>', "3", old_v == "3", old_v == "3");
+		if(req != "4") s_el.options[i++] = new Option('<?=JS::jsentities(_("[ress_3]"))?>', "4", old_v == "4", old_v == "4");
+		if(req != "5") s_el.options[i++] = new Option('<?=JS::jsentities(_("[ress_4]"))?>', "5", old_v == "5", old_v == "5");
 	}
 
 	function refresh_costs()
@@ -136,8 +136,8 @@
 ?>
 		<tr class="gebot-<?=htmlspecialchars($order['offered_resource'])?> ertrag-<?=htmlspecialchars($order['requested_resource'])?>">
 			<td class="c-planet"><a href="boerse.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"><?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), "<span class=\"koords\">".htmlspecialchars($me->getPosString())."</span>")?></td>
-			<td class="c-gebot"><span class="zahl"><?=ths($order['amount'])?></span> <?=h(_("[ress_".($order['offered_resource']-1)."]"))?></td>
-			<td class="c-mindestertrag"><span class="zahl"><?=ths($order['amount']*$order['min_price'])?></span> <?=h(_("[ress_".($order['requested_resource']-1)."]"))?></td>
+			<td class="c-gebot"><span class="zahl"><?=F::ths($order['amount'])?></span> <?=h(_("[ress_".($order['offered_resource']-1)."]"))?></td>
+			<td class="c-mindestertrag"><span class="zahl"><?=F::ths($order['amount']*$order['min_price'])?></span> <?=h(_("[ress_".($order['requested_resource']-1)."]"))?></td>
 			<td class="c-gueltigkeit" id="restbauzeit-boerse-<?=htmlspecialchars($i)?>"><?=sprintf(h(_("%s (Serverzeit)")), htmlspecialchars(date(_('H:i:s, Y-m-d'), $order['expiration'])))?></td>
 <?php
 			$countdowns["boerse-".$i] = $order['expiration'];
@@ -187,7 +187,7 @@
 		<dl class="form">
 			<dt class="c-angebot"><label for="i-angebot-rohstoff"><?=h(_("Angeb&ot[login/boerse.php|1]"))?></label></dt>
 			<dd class="c-angebot">
-				<select name="res_offered" id="i-angebot-rohstoff" onchange="refresh_offers(); refresh_costs();" onkeypress="onchange()" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Angebot&[login/boerse.php|1]"))?>>
+				<select name="res_offered" id="i-angebot-rohstoff" onchange="refresh_offers(); refresh_costs();" onkeypress="onchange()" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Angebot&[login/boerse.php|1]"))?>>
 					<option value="1"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 1){?> selected="selected"<?php }?>><?=h(_("[ress_0]"))?></option>
 					<option value="2"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 2){?> selected="selected"<?php }?>><?=h(_("[ress_1]"))?></option>
 					<option value="3"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 3){?> selected="selected"<?php }?>><?=h(_("[ress_2]"))?></option>
@@ -199,7 +199,7 @@
 
 			<dt class="c-gewuenschter-rohstoff"><label for="i-gewuenschter-rohstoff"><?=h(_("Gewünschter Rohstoff&[login/boerse.php|1]"))?></label></dt>
 			<dd class="c-gewuenschter-rohstoff">
-				<select name="res_requested" id="i-gewuenschter-rohstoff" onchange="refresh_costs();" onkeypress="onchange();" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Gewünschter Rohstoff&[login/boerse.php|1]"))?>>
+				<select name="res_requested" id="i-gewuenschter-rohstoff" onchange="refresh_costs();" onkeypress="onchange();" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Gewünschter Rohstoff&[login/boerse.php|1]"))?>>
 					<option value="1"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 1){?> selected="selected"<?php }?>><?=h(_("[ress_0]"))?></option>
 					<option value="2"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 2){?> selected="selected"<?php }?>><?=h(_("[ress_1]"))?></option>
 					<option value="3"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 3){?> selected="selected"<?php }?>><?=h(_("[ress_2]"))?></option>
@@ -209,11 +209,11 @@
 			</dd>
 
 			<dt class="c-minimale-menge"><label for="i-minimale-menge"><?=h(_("Minimale Menge&[login/boerse.php|1]"))?></label></dt>
-			<dd class="c-minimale-menge"><input type="text" id="i-minimale-menge" name="min_price" value="<?=isset($_POST['min_price']) ? htmlspecialchars($_POST['min_price']) : 0?>" onchange="refresh_costs();" onkeypress="onchange();" onclick="onchange();" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Minimale Menge&[login/boerse.php|1]"))?> /></dd>
+			<dd class="c-minimale-menge"><input type="text" id="i-minimale-menge" name="min_price" value="<?=isset($_POST['min_price']) ? htmlspecialchars($_POST['min_price']) : 0?>" onchange="refresh_costs();" onkeypress="onchange();" onclick="onchange();" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Minimale Menge&[login/boerse.php|1]"))?> /></dd>
 
 			<dt class="c-angebotsdauer"><label for="i-angebotsdauer"><?=h(_("Angebotsdauer&[login/boerse.php|1]"))?></label></dt>
 			<dd class="c-angebotsdauer">
-				<select name="duration" id="i-angebotsdauer" onchange="refresh_costs();" onkeypress="onchange();" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Angebotsdauer&[login/boerse.php|1]"))?>>
+				<select name="duration" id="i-angebotsdauer" onchange="refresh_costs();" onkeypress="onchange();" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Angebotsdauer&[login/boerse.php|1]"))?>>
 					<option value="1"<?php if(isset($_POST['duration']) && $_POST['duration'] == 1){?> selected="selected"<?php }?>><?=sprintf(h(_("Eine Stunde (%s %%)")), 5)?></option>
 					<option value="12"<?php if(isset($_POST['duration']) && $_POST['duration'] == 12){?> selected="selected"<?php }?>><?=sprintf(h(_("Zwölf Stunden (%s %%)")), 10)?></option>
 					<option value="24"<?php if(isset($_POST['duration']) && $_POST['duration'] == 24){?> selected="selected"<?php }?>><?=sprintf(h(_("Einen Tag (%s %%)")), 15)?></option>
@@ -230,7 +230,7 @@
 			<dt class="c-zusaetzliche-gebuehren"><?=h(_("Zusätzliche Gebühren"))?></dt>
 			<dd class="c-zusaetzliche-gebuehren" id="zusaetzliche-gebuehren">0</dd>
 		</dl>
-		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=accesskey_attr(_("Auftrag aufgeben&[login/boerse.php|1]"))?>><?=h(_("Auftrag aufgeben&[login/boerse.php|1]"))?></button></div>
+		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Auftrag aufgeben&[login/boerse.php|1]"))?>><?=h(_("Auftrag aufgeben&[login/boerse.php|1]"))?></button></div>
 	</fieldset>
 </form>
 <?php
@@ -259,41 +259,41 @@
 		<tr class="r-carbon">
 			<th class="c-von"><?=h(_("[ress_0]"))?></th>
 			<td class="c-carbon disabled"><?=h(_("—"))?></td>
-			<td class="c-aluminium"><?=ths($market->getRate(1, 2), 2)?></td>
-			<td class="c-wolfram"><?=ths($market->getRate(1, 3), 2)?></td>
-			<td class="c-radium"><?=ths($market->getRate(1, 4), 2)?></td>
-			<td class="c-tritium"><?=ths($market->getRate(1, 5), 2)?></td>
+			<td class="c-aluminium"><?=F::ths($market->getRate(1, 2), 2)?></td>
+			<td class="c-wolfram"><?=F::ths($market->getRate(1, 3), 2)?></td>
+			<td class="c-radium"><?=F::ths($market->getRate(1, 4), 2)?></td>
+			<td class="c-tritium"><?=F::ths($market->getRate(1, 5), 2)?></td>
 		</tr>
 		<tr class="r-aluminium">
 			<th class="c-von"><?=h(_("[ress_1]"))?></th>
-			<td class="c-carbon"><?=ths($market->getRate(2, 1), 2)?></td>
+			<td class="c-carbon"><?=F::ths($market->getRate(2, 1), 2)?></td>
 			<td class="c-aluminium disabled"><?=h(_("—"))?></td>
-			<td class="c-wolfram"><?=ths($market->getRate(2, 3), 2)?></td>
-			<td class="c-radium"><?=ths($market->getRate(2, 4), 2)?></td>
-			<td class="c-tritium"><?=ths($market->getRate(2, 5), 2)?></td>
+			<td class="c-wolfram"><?=F::ths($market->getRate(2, 3), 2)?></td>
+			<td class="c-radium"><?=F::ths($market->getRate(2, 4), 2)?></td>
+			<td class="c-tritium"><?=F::ths($market->getRate(2, 5), 2)?></td>
 		</tr>
 		<tr class="r-wolfram">
 			<th class="c-von"><?=h(_("[ress_2]"))?>m</th>
-			<td class="c-carbon"><?=ths($market->getRate(3, 1), 2)?></td>
-			<td class="c-aluminium"><?=ths($market->getRate(3, 2), 2)?></td>
+			<td class="c-carbon"><?=F::ths($market->getRate(3, 1), 2)?></td>
+			<td class="c-aluminium"><?=F::ths($market->getRate(3, 2), 2)?></td>
 			<td class="c-wolfram disabled"><?=h(_("—"))?></td>
-			<td class="c-radium"><?=ths($market->getRate(3, 4), 2)?></td>
-			<td class="c-tritium"><?=ths($market->getRate(3, 5), 2)?></td>
+			<td class="c-radium"><?=F::ths($market->getRate(3, 4), 2)?></td>
+			<td class="c-tritium"><?=F::ths($market->getRate(3, 5), 2)?></td>
 		</tr>
 		<tr class="r-radium">
 			<th class="c-von"><?=h(_("[ress_3]"))?></th>
-			<td class="c-carbon"><?=ths($market->getRate(4, 1), 2)?></td>
-			<td class="c-aluminium"><?=ths($market->getRate(4, 2), 2)?></td>
-			<td class="c-wolfram"><?=ths($market->getRate(4, 3), 2)?></td>
+			<td class="c-carbon"><?=F::ths($market->getRate(4, 1), 2)?></td>
+			<td class="c-aluminium"><?=F::ths($market->getRate(4, 2), 2)?></td>
+			<td class="c-wolfram"><?=F::ths($market->getRate(4, 3), 2)?></td>
 			<td class="c-radium disabled"><?=h(_("—"))?></td>
-			<td class="c-tritium"><?=ths($market->getRate(4, 5), 2)?></td>
+			<td class="c-tritium"><?=F::ths($market->getRate(4, 5), 2)?></td>
 		</tr>
 		<tr class="r-tritium">
 			<th class="c-von"><?=h(_("[ress_4]"))?></th>
-			<td class="c-carbon"><?=ths($market->getRate(5, 1), 2)?></td>
-			<td class="c-aluminium"><?=ths($market->getRate(5, 2), 2)?></td>
-			<td class="c-wolfram"><?=ths($market->getRate(5, 3), 2)?></td>
-			<td class="c-radium"><?=ths($market->getRate(5, 4), 2)?></td>
+			<td class="c-carbon"><?=F::ths($market->getRate(5, 1), 2)?></td>
+			<td class="c-aluminium"><?=F::ths($market->getRate(5, 2), 2)?></td>
+			<td class="c-wolfram"><?=F::ths($market->getRate(5, 3), 2)?></td>
+			<td class="c-radium"><?=F::ths($market->getRate(5, 4), 2)?></td>
 			<td class="c-tritium disabled"><?=h(_("—"))?></td>
 		</tr>
 	</tbody>

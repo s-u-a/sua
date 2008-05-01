@@ -41,8 +41,8 @@
 
 	ftruncate($fh_pid, 0);
 
-	$messengers = get_messenger_info();
-	$databases = get_databases();
+	$messengers = Config::get_messenger_info();
+	$databases = Config::get_databases();
 
 	if(!$messengers || !isset($messengers["jabber"]))
 	{
@@ -125,7 +125,7 @@
 			//$jabber->browse();
 
 			output("Setting presence.");
-			$jabber->set_presence(true, null, null, (isset($messengers["jabber"]["priority"]) ? $messengers["jabber"]["priority"] : 100), gpg_smallsign(""));
+			$jabber->set_presence(true, null, null, (isset($messengers["jabber"]["priority"]) ? $messengers["jabber"]["priority"] : 100), GPG::smallsign(""));
 
 			//output("Checking transports.");
 			//foreach($messengers as $id=>$messenger)
@@ -185,12 +185,12 @@
 			global $jabber;
 
 			$payload = "";
-			if(isset($fingerprint) && $encrypted = gpg_smallencrypt($message, $fingerprint))
+			if(isset($fingerprint) && $encrypted = GPG::smallencrypt($message, $fingerprint))
 			{
 				$payload .= "<x xmlns='jabber:x:encrypted'>".$encrypted."</x>";
 				$message = "Verschlüsselte Nachricht.";
 			}
-			if($signed = gpg_smallsign($message))
+			if($signed = GPG::smallsign($message))
 				$payload .= "<x xmlns='jabber:x:signed'>".$signed."</x>";
 
 			$jabber->message($to, "normal", null, $message, null, null, $payload);
@@ -200,7 +200,7 @@
 		{
 			global $jabber,$messengers,$imfile,$unrecognised_limits;
 
-			if($encrypted && $decrypted = gpg_decrypt("-----BEGIN PGP MESSAGE-----\n".$encrypted."-----END PGP MESSAGE-----\n"))
+			if($encrypted && $decrypted = GPG::decrypt("-----BEGIN PGP MESSAGE-----\n".$encrypted."-----END PGP MESSAGE-----\n"))
 				$message = $decrypted;
 
 			$transport = 'jabber';

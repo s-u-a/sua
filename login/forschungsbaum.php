@@ -64,7 +64,7 @@
 				{
 					$dep = explode('-', $dep, 2);
 ?>
-					<li class="deps-<?=($me->getItemLevel($dep[0]) >= $dep[1]) ? 'ja' : 'nein'?>"><?=sprintf(h(_("%s (Stufe %s)")), "<a href=\"#deps-".htmlspecialchars($dep[0])."\" title=\"".h(_("Zu diesem Gegenstand scrollen"))."\">".h(_("[item_".$dep[0]."]"))."</a>", ths($dep[1]))?></li>
+					<li class="deps-<?=($me->getItemLevel($dep[0]) >= $dep[1]) ? 'ja' : 'nein'?>"><?=sprintf(h(_("%s (Stufe %s)")), "<a href=\"#deps-".htmlspecialchars($dep[0])."\" title=\"".h(_("Zu diesem Gegenstand scrollen"))."\">".h(_("[item_".$dep[0]."]"))."</a>", F::ths($dep[1]))?></li>
 <?php
 				}
 ?>

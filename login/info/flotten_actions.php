@@ -151,7 +151,7 @@
 					if($type == 'set') $max = $trans;
 					else $max = $remaining_trans;
 
-					$new_handel = array(fit_to_max($new_handel[0], $max[0]), fit_to_max($new_handel[1], $max[1]));
+					$new_handel = array(Functions::fitToMax($new_handel[0], $max[0]), Functions::fitToMax($new_handel[1], $max[1]));
 
 					if($type == 'set') $fleet->setHandel($_POST['handel_username'], $new_handel[0], $new_handel[1]);
 					else $fleet->addHandel($_POST['handel_username'], $new_handel[0], $new_handel[1]);
@@ -236,7 +236,7 @@
 		<input type="hidden" name="handel_username" value="<?=htmlspecialchars($username)?>" />
 		<input type="hidden" name="handel_type" value="<?=$input_name?>" />
 		<p><?=htmlspecialchars($mess1)?></p>
-		<p><?php printf($mess2, ths($trans[0]), ths($trans[1]), ths($remaining_trans[0]), ths($remaining_trans[1]))?></p>
+		<p><?php printf($mess2, F::ths($trans[0]), F::ths($trans[1]), F::ths($remaining_trans[0]), F::ths($remaining_trans[1]))?></p>
 <?php
 				if($me->getName() == $fleet->getFleetOwner())
 				{
@@ -276,11 +276,11 @@
 					if(!$verb)
 					{
 ?>
-					<td class="c-bereits-eingelagert"><?=ths($handel[0][0])?></td>
+					<td class="c-bereits-eingelagert"><?=F::ths($handel[0][0])?></td>
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-0').value=Math.floor(res_now['handel-<?=$no?>'][0]);" id="handel-<?=$no?>-carbon"><?=ths($available_ress[0])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-0').value=Math.floor(res_now['handel-<?=$no?>'][0]);" id="handel-<?=$no?>-carbon"><?=F::ths($available_ress[0])?></a></td>
 				</tr>
 				<tr class="c-aluminium">
 					<th class="c-gut"><label for="handel-<?=$no?>-0-1"><?=h(_("[ress_1]"))?></label></th>
@@ -289,11 +289,11 @@
 					if(!$verb)
 					{
 ?>
-					<td class="c-bereits-eingelagert"><?=ths($handel[0][1])?></td>
+					<td class="c-bereits-eingelagert"><?=F::ths($handel[0][1])?></td>
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-1').value=Math.floor(res_now['handel-<?=$no?>'][1]);" id="handel-<?=$no?>-aluminium"><?=ths($available_ress[1])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-1').value=Math.floor(res_now['handel-<?=$no?>'][1]);" id="handel-<?=$no?>-aluminium"><?=F::ths($available_ress[1])?></a></td>
 				</tr>
 				<tr class="c-wolfram">
 					<th class="c-gut"><label for="handel-<?=$no?>-0-2"><?=h(_("[ress_2]"))?></label></th>
@@ -302,11 +302,11 @@
 					if(!$verb)
 					{
 ?>
-					<td class="c-bereits-eingelagert"><?=ths($handel[0][2])?></td>
+					<td class="c-bereits-eingelagert"><?=F::ths($handel[0][2])?></td>
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-2').value=Math.floor(res_now['handel-<?=$no?>'][2]);" id="handel-<?=$no?>-wolfram"><?=ths($available_ress[2])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-2').value=Math.floor(res_now['handel-<?=$no?>'][2]);" id="handel-<?=$no?>-wolfram"><?=F::ths($available_ress[2])?></a></td>
 				</tr>
 				<tr class="c-radium">
 					<th class="c-gut"><label for="handel-<?=$no?>-0-3"><?=h(_("[ress_3]"))?></label></th>
@@ -315,11 +315,11 @@
 					if(!$verb)
 					{
 ?>
-					<td class="c-bereits-eingelagert"><?=ths($handel[0][3])?></td>
+					<td class="c-bereits-eingelagert"><?=F::ths($handel[0][3])?></td>
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-3').value=Math.floor(res_now['handel-<?=$no?>'][3]);" id="handel-<?=$no?>-radium"><?=ths($available_ress[3])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-3').value=Math.floor(res_now['handel-<?=$no?>'][3]);" id="handel-<?=$no?>-radium"><?=F::ths($available_ress[3])?></a></td>
 				</tr>
 				<tr class="c-tritium">
 					<th class="c-gut"><label for="handel-<?=$no?>-0-4"><?=h(_("[ress_4]"))?></label></th>
@@ -328,11 +328,11 @@
 					if(!$verb)
 					{
 ?>
-					<td class="c-bereits-eingelagert"><?=ths($handel[0][4])?></td>
+					<td class="c-bereits-eingelagert"><?=F::ths($handel[0][4])?></td>
 <?php
 					}
 ?>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-4').value=Math.floor(res_now['handel-<?=$no?>'][4]);" id="handel-<?=$no?>-tritium"><?=ths($available_ress[4])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-4').value=Math.floor(res_now['handel-<?=$no?>'][4]);" id="handel-<?=$no?>-tritium"><?=F::ths($available_ress[4])?></a></td>
 				</tr>
 <?php
 				}
@@ -346,7 +346,7 @@
 				<tr class="c-ro-<?=htmlspecialchars($id)?>">
 					<th class="c-gut"><label for="handel-<?=$no?>-1-<?=$id?>"><?=h(_("[item_".$id."]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[1][<?=$id?>]" id="handel-<?=$no?>-1-<?=$id?>" value="<?=htmlspecialchars($h)?>" /></td>
-					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-1-<?=jsentities($id)?>').value=<?=$available_robs[$id]?>"><?=ths($available_robs[$id])?></a></td>
+					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-1-<?=JS::jsentities($id)?>').value=<?=$available_robs[$id]?>"><?=F::ths($available_robs[$id])?></a></td>
 				</tr>
 <?php
 					}
@@ -500,9 +500,9 @@
 <form action="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.global_setting("URL_SUFFIX"))?>" method="post" class="buendnisangriff">
 	<dl class="form">
 		<dt><label for="i-flottenpasswort"><?=h(_("Flottenpasswort&[login/info/flotten_actions.php|1]"))?></label></dt>
-		<dd><input type="text" name="fleet_passwd"<?php if($passwd !== null){?> value="<?=htmlspecialchars($passwd)?>"<?php }?><?=accesskey_attr(_("Flottenpasswort&[login/info/flotten_actions.php|1]"))?> /></dd>
+		<dd><input type="text" name="fleet_passwd"<?php if($passwd !== null){?> value="<?=htmlspecialchars($passwd)?>"<?php }?><?=l::accesskey_attr(_("Flottenpasswort&[login/info/flotten_actions.php|1]"))?> /></dd>
 	</dl>
-	<div class="button"><button type="submit"<?=accesskey_attr(_("Speichern&[login/info/flotten_actions.php|1]"))?>><?=h(_("Speichern&[login/info/flotten_actions.php|1]"))?></button></div>
+	<div class="button"><button type="submit"<?=l::accesskey_attr(_("Speichern&[login/info/flotten_actions.php|1]"))?>><?=h(_("Speichern&[login/info/flotten_actions.php|1]"))?></button></div>
 </form>
 <?php
 			break;
@@ -588,7 +588,7 @@
 			foreach($countdowns as $i=>$time)
 			{
 ?>
-	init_countdown('<?=jsentities($i)?>', <?=$time?>, false, undefined, undefined, function(){var el1=document.getElementById('target-<?=$i?>');el1.className=el1.className.replace(/(\s|^)active(\s|$)/, "$1type-weak$2");var el2=document.getElementById('target-<?=$i+1?>');if(el2)el2.className+=" active";});
+	init_countdown('<?=JS::jsentities($i)?>', <?=$time?>, false, undefined, undefined, function(){var el1=document.getElementById('target-<?=$i?>');el1.className=el1.className.replace(/(\s|^)active(\s|$)/, "$1type-weak$2");var el2=document.getElementById('target-<?=$i+1?>');if(el2)el2.className+=" active";});
 <?php
 			}
 ?>

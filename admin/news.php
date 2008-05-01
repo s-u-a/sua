@@ -49,7 +49,7 @@
 			if(isset($news[0]))
 				$news_array[$i]['title'] = $news[0];
 			$news_array[$i]['text'] = $news[1];
-			$news_array[$i]['text_parsed'] = parse_html($news_array[$i]['text']);
+			$news_array[$i]['text_parsed'] = F::parse_html($news_array[$i]['text']);
 		}
 		$news_array = array_values($news_array);
 		$fh = fopen(global_setting("DB_NEWS"), 'w');
@@ -69,13 +69,13 @@
 		<legend><?=h(_("Neuigkeit hinzufügen"))?></legend>
 		<dl>
 			<dt><label for="heading-<?=count($news_array)?>-input"><?=h(_("Überschrift&[admin/news.php|1]"))?></label></dt>
-			<dd><input type="text" name="news[<?=count($news_array)?>][0]" id="heading-<?=count($news_array)?>-input"<?=accesskey_attr(_("Überschrift&[admin/news.php|1]"))?> /></dd>
+			<dd><input type="text" name="news[<?=count($news_array)?>][0]" id="heading-<?=count($news_array)?>-input"<?=l::accesskey_attr(_("Überschrift&[admin/news.php|1]"))?> /></dd>
 
 			<dt><label for="text-<?=count($news_array)?>-textarea"><?=h(_("Text&[admin/news.php|1]"))?></label></dt>
-			<dd><textarea name="news[<?=count($news_array)?>][1]" id="text-<?=count($news_array)?>-textarea" rows="15" cols="50"<?=accesskey_attr(_("Text&[admin/news.php|1]"))?>></textarea></dd>
+			<dd><textarea name="news[<?=count($news_array)?>][1]" id="text-<?=count($news_array)?>-textarea" rows="15" cols="50"<?=l::accesskey_attr(_("Text&[admin/news.php|1]"))?>></textarea></dd>
 		</dl>
 		<ul>
-			<li><button type="submit"<?=accesskey_attr(_("Speichern&[admin/news.php|1]"))?>><?=h(_("Speichern&[admin/news.php|1]"))?></button></li>
+			<li><button type="submit"<?=l::accesskey_attr(_("Speichern&[admin/news.php|1]"))?>><?=h(_("Speichern&[admin/news.php|1]"))?></button></li>
 		</ul>
 	</fieldset>
 </form>

@@ -12,74 +12,6 @@
     <item url="admin/style.css" uploadstatus="1" />
     <item url="admin/userlist.php" uploadstatus="1" />
     <item url="admin/usermanagement.php" uploadstatus="1" />
-    <item url="chat/" uploadstatus="1" />
-    <item url="chat/img/" uploadstatus="1" />
-    <item url="chat/img/ange.gif" uploadstatus="1" />
-    <item url="chat/img/arbre.gif" uploadstatus="1" />
-    <item url="chat/img/argh.gif" uploadstatus="1" />
-    <item url="chat/img/ballon.gif" uploadstatus="1" />
-    <item url="chat/img/biere.gif" uploadstatus="1" />
-    <item url="chat/img/bombe.gif" uploadstatus="1" />
-    <item url="chat/img/bouche.gif" uploadstatus="1" />
-    <item url="chat/img/bouqin.gif" uploadstatus="1" />
-    <item url="chat/img/cadeau.gif" uploadstatus="1" />
-    <item url="chat/img/chien.gif" uploadstatus="1" />
-    <item url="chat/img/clin-oeuil.gif" uploadstatus="1" />
-    <item url="chat/img/clin-oeuil-langue.gif" uploadstatus="1" />
-    <item url="chat/img/coeur-brise.gif" uploadstatus="1" />
-    <item url="chat/img/coeur.gif" uploadstatus="1" />
-    <item url="chat/img/comprends-pas.gif" uploadstatus="1" />
-    <item url="chat/img/content.gif" uploadstatus="1" />
-    <item url="chat/img/cool.gif" uploadstatus="1" />
-    <item url="chat/img/diable.gif" uploadstatus="1" />
-    <item url="chat/img/dwchat.gif" uploadstatus="1" />
-    <item url="chat/img/enerve1.gif" uploadstatus="1" />
-    <item url="chat/img/enerve2.gif" uploadstatus="1" />
-    <item url="chat/img/femme.gif" uploadstatus="1" />
-    <item url="chat/img/fille.gif" uploadstatus="1" />
-    <item url="chat/img/fleur.gif" uploadstatus="1" />
-    <item url="chat/img/fume.gif" uploadstatus="1" />
-    <item url="chat/img/garcon.gif" uploadstatus="1" />
-    <item url="chat/img/grognon.gif" uploadstatus="1" />
-    <item url="chat/img/halloween.gif" uploadstatus="1" />
-    <item url="chat/img/hamburger.gif" uploadstatus="1" />
-    <item url="chat/img/homme.gif" uploadstatus="1" />
-    <item url="chat/img/langue.gif" uploadstatus="1" />
-    <item url="chat/img/lettre.gif" uploadstatus="1" />
-    <item url="chat/img/lit.gif" uploadstatus="1" />
-    <item url="chat/img/love.gif" uploadstatus="1" />
-    <item url="chat/img/lune.gif" uploadstatus="1" />
-    <item url="chat/img/mecontent.gif" uploadstatus="1" />
-    <item url="chat/img/newbie.gif" uploadstatus="1" />
-    <item url="chat/img/OH-1.gif" uploadstatus="1" />
-    <item url="chat/img/OH-2.gif" uploadstatus="1" />
-    <item url="chat/img/OH-3.gif" uploadstatus="1" />
-    <item url="chat/img/ordi.gif" uploadstatus="1" />
-    <item url="chat/img/pere-noel.gif" uploadstatus="1" />
-    <item url="chat/img/pleure.gif" uploadstatus="1" />
-    <item url="chat/img/poisson.gif" uploadstatus="1" />
-    <item url="chat/img/pomme.gif" uploadstatus="1" />
-    <item url="chat/img/portable.gif" uploadstatus="1" />
-    <item url="chat/img/pouce-non.gif" uploadstatus="1" />
-    <item url="chat/img/pouce-oui.gif" uploadstatus="1" />
-    <item url="chat/img/roll-eyes.gif" uploadstatus="1" />
-    <item url="chat/img/rouge.gif" uploadstatus="1" />
-    <item url="chat/img/sapin.gif" uploadstatus="1" />
-    <item url="chat/img/sleep.gif" uploadstatus="1" />
-    <item url="chat/img/soleil.gif" uploadstatus="1" />
-    <item url="chat/img/sourire.gif" uploadstatus="1" />
-    <item url="chat/img/terre.gif" uploadstatus="1" />
-    <item url="chat/img/triste.gif" uploadstatus="1" />
-    <item url="chat/img/verre-eau.gif" uploadstatus="1" />
-    <item url="chat/img/verre-vin.gif" uploadstatus="1" />
-    <item url="chat/img/yinyang.gif" uploadstatus="1" />
-    <item url="chat/english.lng" uploadstatus="1" />
-    <item url="chat/IRCApplet.class" uploadstatus="1" />
-    <item url="chat/irc.cab" uploadstatus="1" />
-    <item url="chat/irc.jar" uploadstatus="1" />
-    <item url="chat/pixx.cab" uploadstatus="1" />
-    <item url="chat/pixx-english.lng" uploadstatus="1" />
-    <item url="chat/pixx.jar" uploadstatus="1" />
     <item url="database.global/" uploadstatus="1" />
     <item url="database.global/changelog" uploadstatus="1" />
     <item url="database.global/databases" uploadstatus="1" />
@@ -91,14 +23,12 @@
     <item url="database.global/gpg" uploadstatus="1" />
     <item url="database.global/gpg.example" uploadstatus="1" />
     <item url="database.global/hostname" uploadstatus="1" />
-    <item url="database.global/items2xml" uploadstatus="1" />
     <item url="database.global/messengers" uploadstatus="1" />
     <item url="database.global/messengers.example" uploadstatus="1" />
     <item url="database.global/mirrors" uploadstatus="1" />
     <item url="database.global/mirrors.example" uploadstatus="1" />
     <item url="database.global/mirrors.state" uploadstatus="1" />
     <item url="database.global/notifications" uploadstatus="1" />
-    <item url="database.global/notifications.sav" uploadstatus="1" />
     <item url="database.global/revision" uploadstatus="1" />
     <item url="database.global/roboter" uploadstatus="1" />
     <item url="database.global/schiffe" uploadstatus="1" />
@@ -124,9 +54,6 @@
     <item url="db_things/schiffe" uploadstatus="1" />
     <item url="db_things/update_database" uploadstatus="1" />
     <item url="db_things/verteidigung" uploadstatus="1" />
-    <item url="engine/" uploadstatus="1" />
-    <item url="engine/classes/" uploadstatus="1" />
-    <item url="engine/include.php" uploadstatus="1" />
     <item url="images/" uploadstatus="1" />
     <item url="images/screenshots/" uploadstatus="1" />
     <item url="images/screenshots/preview_01.jpg" uploadstatus="1" />
@@ -178,14 +105,6 @@
     <item url="images/navigation_button.png" uploadstatus="1" />
     <item url="images/navigation_top.png" uploadstatus="1" />
     <item url="images/separator.png" uploadstatus="1" />
-    <item url="jabberclass/" uploadstatus="1" />
-    <item url="jabberclass/class_ConnectionSocket.php" uploadstatus="1" />
-    <item url="jabberclass/class_Jabber.php" uploadstatus="1" />
-    <item url="jabberclass/class_SHA1Library.php" uploadstatus="1" />
-    <item url="jabberclass/class_XMLParser.php" uploadstatus="1" />
-    <item url="jabberclass/jabber_example.php" uploadstatus="1" />
-    <item url="jabberclass/LICENSE" uploadstatus="1" />
-    <item url="jabberclass/README" uploadstatus="1" />
     <item url="locale/" uploadstatus="1" />
     <item url="locale/de_DE/" uploadstatus="1" />
     <item url="locale/de_DE/LC_MESSAGES/" uploadstatus="1" />
@@ -303,12 +222,10 @@
     <item url="register.php" uploadstatus="1" />
     <item url="robots.txt" uploadstatus="1" />
     <item url="rules.php" uploadstatus="1" />
-    <item url="sarissa.js" uploadstatus="1" />
     <item url="style.css" uploadstatus="1" />
     <item url="sua.kbabel" uploadstatus="1" />
     <item url="sua.kdevelop" uploadstatus="1" />
     <item url="sua.kdevses" uploadstatus="1" />
-    <item url="test.html" uploadstatus="1" />
     <item url="UPDATING" uploadstatus="1" />
     <item url="" uploadstatus="1" />
     <templates>templates/</templates>
@@ -334,31 +251,6 @@
     <item url="database.global/imserver.pid" uploadstatus="1" />
     <item url="doc/" uploadstatus="1" />
     <item url="doc/api/" uploadstatus="1" />
-    <item url="engine/classes/dataset/" uploadstatus="1" />
-    <item url="engine/classes/dataset/alliance.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/classes.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/dataset.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/eventfile.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/fleet.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/galaxy.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/highscores.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/imfile.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/item.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/market.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/message.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/publicmessage.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/reloadstack.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/sqlite.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/user.php" uploadstatus="1" />
-    <item url="engine/classes/exception/" uploadstatus="1" />
-    <item url="engine/classes/exception/suaexception.php" uploadstatus="1" />
-    <item url="engine/classes/gui/" uploadstatus="1" />
-    <item url="engine/classes/gui/captcha.php" uploadstatus="1" />
-    <item url="engine/classes/gui/gui.php" uploadstatus="1" />
-    <item url="engine/classes/gui/homegui.php" uploadstatus="1" />
-    <item url="engine/classes/gui/logingui.php" uploadstatus="1" />
-    <item url="engine/classes/gui/setupgui.php" uploadstatus="1" />
-    <item url="login/info/flotten_actions.php.18569.backup" uploadstatus="1" />
     <item url="login/res/style/default.cur/" uploadstatus="1" />
     <item url="login/res/style/default.cur/images/" uploadstatus="1" />
     <item url="login/res/style/default.cur/images/planets/" uploadstatus="1" />
@@ -430,12 +322,116 @@
     <item url=".project" uploadstatus="1" />
     <item url="sua.session" uploadstatus="1" />
     <item url="sua.webprj" uploadstatus="1" />
-    <item url="svnchanges" uploadstatus="1" />
-    <item url="test" uploadstatus="1" />
-    <item url="engine/classes/exception/captchaexception.php" uploadstatus="1" />
-    <item url="engine/classes/exception/classexception.php" uploadstatus="1" />
-    <item url="engine/classes/exception/ioexception.php" uploadstatus="1" />
-    <item url="engine/classes/dataset/items.php" />
-    <item url="engine.php" />
+    <item url="engine.php" uploadstatus="1" />
+    <item url="classes/" uploadstatus="1" />
+    <item url="classes/alliance.php" uploadstatus="1" />
+    <item url="classes/captcha.php" uploadstatus="1" />
+    <item url="classes/captchaexception.php" uploadstatus="1" />
+    <item url="classes/classes.php" uploadstatus="1" />
+    <item url="classes/classexception.php" uploadstatus="1" />
+    <item url="classes/dataset.php" uploadstatus="1" />
+    <item url="classes/eventfile.php" uploadstatus="1" />
+    <item url="classes/fleet.php" uploadstatus="1" />
+    <item url="classes/galaxy.php" uploadstatus="1" />
+    <item url="classes/gui.php" uploadstatus="1" />
+    <item url="classes/highscores.php" uploadstatus="1" />
+    <item url="classes/homegui.php" uploadstatus="1" />
+    <item url="classes/imfile.php" uploadstatus="1" />
+    <item url="classes/ioexception.php" uploadstatus="1" />
+    <item url="classes/item.php" uploadstatus="1" />
+    <item url="classes/items.php" uploadstatus="1" />
+    <item url="classes/logingui.php" uploadstatus="1" />
+    <item url="classes/market.php" uploadstatus="1" />
+    <item url="classes/message.php" uploadstatus="1" />
+    <item url="classes/publicmessage.php" uploadstatus="1" />
+    <item url="classes/reloadstack.php" uploadstatus="1" />
+    <item url="classes/setupgui.php" uploadstatus="1" />
+    <item url="classes/sqlite.php" uploadstatus="1" />
+    <item url="classes/suaexception.php" uploadstatus="1" />
+    <item url="classes/user.php" uploadstatus="1" />
+    <item url="software/" uploadstatus="1" />
+    <item url="software/chat/" uploadstatus="1" />
+    <item url="software/jabberclass/" uploadstatus="1" />
+    <item url="software/sarissa.js" uploadstatus="1" />
+    <item url="software/chat/english.lng" uploadstatus="1" />
+    <item url="software/chat/img/" uploadstatus="1" />
+    <item url="software/chat/irc.cab" uploadstatus="1" />
+    <item url="software/chat/irc.jar" uploadstatus="1" />
+    <item url="software/chat/IRCApplet.class" uploadstatus="1" />
+    <item url="software/chat/pixx-english.lng" uploadstatus="1" />
+    <item url="software/chat/pixx.cab" uploadstatus="1" />
+    <item url="software/chat/pixx.jar" uploadstatus="1" />
+    <item url="software/chat/img/ange.gif" uploadstatus="1" />
+    <item url="software/chat/img/arbre.gif" uploadstatus="1" />
+    <item url="software/chat/img/argh.gif" uploadstatus="1" />
+    <item url="software/chat/img/ballon.gif" uploadstatus="1" />
+    <item url="software/chat/img/biere.gif" uploadstatus="1" />
+    <item url="software/chat/img/bombe.gif" uploadstatus="1" />
+    <item url="software/chat/img/bouche.gif" uploadstatus="1" />
+    <item url="software/chat/img/bouqin.gif" uploadstatus="1" />
+    <item url="software/chat/img/cadeau.gif" uploadstatus="1" />
+    <item url="software/chat/img/chien.gif" uploadstatus="1" />
+    <item url="software/chat/img/clin-oeuil-langue.gif" uploadstatus="1" />
+    <item url="software/chat/img/clin-oeuil.gif" uploadstatus="1" />
+    <item url="software/chat/img/coeur-brise.gif" uploadstatus="1" />
+    <item url="software/chat/img/coeur.gif" uploadstatus="1" />
+    <item url="software/chat/img/comprends-pas.gif" uploadstatus="1" />
+    <item url="software/chat/img/content.gif" uploadstatus="1" />
+    <item url="software/chat/img/cool.gif" uploadstatus="1" />
+    <item url="software/chat/img/diable.gif" uploadstatus="1" />
+    <item url="software/chat/img/dwchat.gif" uploadstatus="1" />
+    <item url="software/chat/img/enerve1.gif" uploadstatus="1" />
+    <item url="software/chat/img/enerve2.gif" uploadstatus="1" />
+    <item url="software/chat/img/femme.gif" uploadstatus="1" />
+    <item url="software/chat/img/fille.gif" uploadstatus="1" />
+    <item url="software/chat/img/fleur.gif" uploadstatus="1" />
+    <item url="software/chat/img/fume.gif" uploadstatus="1" />
+    <item url="software/chat/img/garcon.gif" uploadstatus="1" />
+    <item url="software/chat/img/grognon.gif" uploadstatus="1" />
+    <item url="software/chat/img/halloween.gif" uploadstatus="1" />
+    <item url="software/chat/img/hamburger.gif" uploadstatus="1" />
+    <item url="software/chat/img/homme.gif" uploadstatus="1" />
+    <item url="software/chat/img/langue.gif" uploadstatus="1" />
+    <item url="software/chat/img/lettre.gif" uploadstatus="1" />
+    <item url="software/chat/img/lit.gif" uploadstatus="1" />
+    <item url="software/chat/img/love.gif" uploadstatus="1" />
+    <item url="software/chat/img/lune.gif" uploadstatus="1" />
+    <item url="software/chat/img/mecontent.gif" uploadstatus="1" />
+    <item url="software/chat/img/newbie.gif" uploadstatus="1" />
+    <item url="software/chat/img/OH-1.gif" uploadstatus="1" />
+    <item url="software/chat/img/OH-2.gif" uploadstatus="1" />
+    <item url="software/chat/img/OH-3.gif" uploadstatus="1" />
+    <item url="software/chat/img/ordi.gif" uploadstatus="1" />
+    <item url="software/chat/img/pere-noel.gif" uploadstatus="1" />
+    <item url="software/chat/img/pleure.gif" uploadstatus="1" />
+    <item url="software/chat/img/poisson.gif" uploadstatus="1" />
+    <item url="software/chat/img/pomme.gif" uploadstatus="1" />
+    <item url="software/chat/img/portable.gif" uploadstatus="1" />
+    <item url="software/chat/img/pouce-non.gif" uploadstatus="1" />
+    <item url="software/chat/img/pouce-oui.gif" uploadstatus="1" />
+    <item url="software/chat/img/roll-eyes.gif" uploadstatus="1" />
+    <item url="software/chat/img/rouge.gif" uploadstatus="1" />
+    <item url="software/chat/img/sapin.gif" uploadstatus="1" />
+    <item url="software/chat/img/sleep.gif" uploadstatus="1" />
+    <item url="software/chat/img/soleil.gif" uploadstatus="1" />
+    <item url="software/chat/img/sourire.gif" uploadstatus="1" />
+    <item url="software/chat/img/terre.gif" uploadstatus="1" />
+    <item url="software/chat/img/triste.gif" uploadstatus="1" />
+    <item url="software/chat/img/verre-eau.gif" uploadstatus="1" />
+    <item url="software/chat/img/verre-vin.gif" uploadstatus="1" />
+    <item url="software/chat/img/yinyang.gif" uploadstatus="1" />
+    <item url="software/jabberclass/class_ConnectionSocket.php" uploadstatus="1" />
+    <item url="software/jabberclass/class_Jabber.php" uploadstatus="1" />
+    <item url="software/jabberclass/class_SHA1Library.php" uploadstatus="1" />
+    <item url="software/jabberclass/class_XMLParser.php" uploadstatus="1" />
+    <item url="software/jabberclass/jabber_example.php" uploadstatus="1" />
+    <item url="software/jabberclass/LICENSE" uploadstatus="1" />
+    <item url="software/jabberclass/README" uploadstatus="1" />
+    <item url="classes/functions.php" uploadstatus="1" />
+    <item url="classes/config.php" uploadstatus="1" />
+    <item url="classes/f.php" uploadstatus="1" />
+    <item desc="" url="classes/l.php" uploadstatus="1" />
+    <item url="classes/js.php" uploadstatus="1" />
+    <item url="classes/gpg.php" />
   </project>
 </webproject>

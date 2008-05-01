@@ -17,7 +17,7 @@
 */
 	require("engine.php");
 
-	$public_key = gpg_init(true);
+	$public_key = GPG::init(true);
 	if($public_key)
 	{
 		header("Content-type: application/pgp");

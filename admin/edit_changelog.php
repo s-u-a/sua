@@ -20,7 +20,7 @@
 	if(!$admin_array['permissions'][8])
 		die(h(_('No access.')));
 
-	$old_version = $version = explode('.', get_version(), 3);
+	$old_version = $version = explode('.', Config::get_version(), 3);
 	if(!isset($version[0])) $version[0] = '0';
 	if(!isset($version[1])) $version[1] = '0';
 	if(!isset($version[2])) $version[2] = '0';
@@ -120,12 +120,12 @@
 	<fieldset>
 		<legend><?=h(_("Version"))?></legend>
 		<p><input name="version[0]" value="<?=htmlspecialchars($version[0])?>" size="3" /><input type="submit" value="" style="display:none;" /><input type="submit" name="increase_version[0]" value="&uarr;" />&nbsp;.&nbsp;<input name="version[1]" value="<?=htmlspecialchars($version[1])?>" size="3" /><input type="submit" value="" style="display:none;" /><input type="submit" name="increase_version[1]" value="&uarr;" />&nbsp;.&nbsp;<input name="version[2]" value="<?=htmlspecialchars($version[2])?>" size="3" /><input type="submit" value="" style="display:none;" /><input type="submit" name="increase_version[2]" value="&uarr;" /></p>
-		<div><button type="submit"<?=accesskey_attr(_("Speichern&[admin/edit_changelog.php|1]"))?>><?=h(_("Speichern&[admin/edit_changelog.php|1]"))?></button></div>
+		<div><button type="submit"<?=l::accesskey_attr(_("Speichern&[admin/edit_changelog.php|1]"))?>><?=h(_("Speichern&[admin/edit_changelog.php|1]"))?></button></div>
 	</fieldset>
 </form>
 <form action="edit_changelog.php" method="post">
 	<ul>
-		<li><input type="text" name="add" value="" /> <button type="submit"<?=accesskey_attr(_("Hinzufügen&[admin/edit_changelog.php|1]"))?>><?=h(_("Hinzufügen&[admin/edit_changelog.php|1]"))?></button></li>
+		<li><input type="text" name="add" value="" /> <button type="submit"<?=l::accesskey_attr(_("Hinzufügen&[admin/edit_changelog.php|1]"))?>><?=h(_("Hinzufügen&[admin/edit_changelog.php|1]"))?></button></li>
 <?php
 	$changelog = '';
 	if(is_file(global_setting("DB_CHANGELOG")) && is_readable(global_setting("DB_CHANGELOG")))
@@ -143,7 +143,7 @@
 			echo htmlspecialchars($log[0]);
 		else
 			echo date('Y-m-d, H:i:s', $log[0]).': '.htmlspecialchars($log[1]);
-		echo " [<a href=\"edit_changelog.php?delete=".htmlspecialchars(urlencode(count($changelog)-$i))."\"".accesskey_attr(_("Löschen&[admin/edit_changelog.php|1]")).">".h(_("Löschen&[admin/edit_changelog.php|1]"))."</a>]</li>\n";
+		echo " [<a href=\"edit_changelog.php?delete=".htmlspecialchars(urlencode(count($changelog)-$i))."\"".l::accesskey_attr(_("Löschen&[admin/edit_changelog.php|1]")).">".h(_("Löschen&[admin/edit_changelog.php|1]"))."</a>]</li>\n";
 	}
 ?>
 	</ul>
