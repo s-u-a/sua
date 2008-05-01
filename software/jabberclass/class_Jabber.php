@@ -950,6 +950,7 @@ class Jabber {
 		$extended = false;
 		$extended_id = NULL;
 		$x = $packet['message']['#']['x'];
+		$encrypted = null;
 
 		if (is_array($x)) {
 			foreach ($x as $key=>$element) {
@@ -963,6 +964,9 @@ class Jabber {
 							if (!$extended) $extended = array();
 						}
 					}
+				}
+				elseif ($element['@']['xmlns']=="jabber:x:encrypted") {
+					var_dump($element["@"]["xmlns"]);
 				}
 			}
 		}
@@ -1007,7 +1011,7 @@ class Jabber {
 			default:
 				if ($this->roster[$from_jid]["composing"]) $this->roster[$from_jid]["composing"] = false;
 				if (($type!="chat") && ($type!="normal")) $type = "normal";
-				$this->_call_handler("message_$type",$from,$to,$body,$subject,$thread,$id,$extended,$packet);
+				$this->_call_handler("message_$type",$from,$to,$body,$subject,$thread,$id,$extended,$packet,$encrypted);
 				break;
 
 		}
