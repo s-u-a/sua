@@ -125,7 +125,7 @@
 			//$jabber->browse();
 
 			output("Setting presence.");
-			$jabber->set_presence(true, null, null, (isset($messengers["jabber"]["priority"]) ? $messengers["jabber"]["priority"] : 100), gpg_shortsign(""));
+			$jabber->set_presence(true, null, null, (isset($messengers["jabber"]["priority"]) ? $messengers["jabber"]["priority"] : 100), gpg_smallsign(""));
 
 			//output("Checking transports.");
 			//foreach($messengers as $id=>$messenger)
