@@ -75,7 +75,11 @@
 			if(!$this->status) return false;
 
 			if($time === false) $time = time();
-			return $this->query("INSERT INTO notifications ( uin, time, protocol, username, message, database, special_id ) VALUES ( ".$this->escape($uin).", ".$this->escape($time).", ".$this->escape($protocol).", ".$this->escape($username).", ".$this->escape($message).", ".$this->escape(global_setting("DB")).", ".$this->escape($special_id)." );");
+			$fingerprint = null;
+			$user = Classes::User($username);
+			if($user->getStatus())
+				$fingerprint = $user->setSetting("fingerprint", false);
+			return $this->query("INSERT INTO notifications ( uin, time, protocol, username, message, database, special_id, fingerprint ) VALUES ( ".$this->escape($uin).", ".$this->escape($time).", ".$this->escape($protocol).", ".$this->escape($username).", ".$this->escape($message).", ".$this->escape(global_setting("DB")).", ".$this->escape($special_id).", ".$this->escape($fingerprint)." );");
 		}
 
 		function renameUser($old_username, $new_username)
