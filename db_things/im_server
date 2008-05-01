@@ -200,9 +200,8 @@
 		{
 			global $jabber,$messengers,$imfile,$unrecognised_limits;
 
-			if($encrypted && $decrypted = gpg_decrypt($encrypted))
+			if($encrypted && $decrypted = gpg_decrypt("-----BEGIN PGP MESSAGE-----\n".$encrypted."-----END PGP MESSAGE-----\n"))
 				$message = $decrypted;
-			var_dump($decrypted);
 
 			$transport = 'jabber';
 			list($from_cut) = explode("/", $from);
