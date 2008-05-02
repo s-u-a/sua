@@ -11,3 +11,9 @@ AddOutputFilter DEFLATE css html js
 AddCharset UTF-8 html css js
 
 ErrorDocument 503 /503.html
+
+<Files config.xml>
+	Order Deny,Allow
+	Deny From All
+	Allow From None
+</Files>

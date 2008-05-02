@@ -102,15 +102,12 @@
 	global_setting('DB_CHANGELOG', $GDB_DIR.'/changelog');
 	global_setting('DB_VERSION', $GDB_DIR.'/version');
 	global_setting('DB_REVISION', $GDB_DIR.'/revision');
-	global_setting('DB_MESSENGERS', $GDB_DIR.'/messengers');
+	global_setting("DB_CONFIG", $GDB_DIR."/config.xml");
+	global_setting("DB_CONFIG_CACHE", $GDB_DIR."/config.db");
 	global_setting('DB_NOTIFICATIONS', $GDB_DIR.'/notifications');
 	global_setting('DB_EVENTHANDLER_LOG', $GDB_DIR.'/eventhandler.log');
 	global_setting('DB_EVENTHANDLER_PIDFILE', $GDB_DIR.'/eventhandler.pid');
 	global_setting("DB_IMSERVER_PIDFILE", $GDB_DIR."/imserver.pid");
-	global_setting('DB_DATABASES', $GDB_DIR.'/databases');
-	global_setting('DB_HOSTNAME', $GDB_DIR.'/hostname');
-	global_setting('DB_GPG', $GDB_DIR.'/gpg');
-	global_setting("DB_CAPTCHA", $GDB_DIR."/captcha");
 	global_setting('EVENTHANDLER_INTERVAL', 2);
 	global_setting('EVENTHANDLER_MARKETCACHE', 10); # Wieviele Eventhandler-Intervalle sollen aus der Boersendatenbank gecacht werden?
 	global_setting('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
@@ -236,8 +233,8 @@
 	if(!isset($_SERVER["SCRIPT_FILENAME"]) && substr($_SERVER["PHP_SELF"], 0, strlen(h_root)) == $_SERVER["PHP_SELF"])
 		$_SERVER["SCRIPT_FILENAME"] = s_root.substr($_SERVER["PHP_SELF"], strlen(h_root));
 
-	if(!isset($USE_OB) || $USE_OB)
-		ob_start('ob_gzhandler');
+	#if(!isset($USE_OB) || $USE_OB)
+	#	ob_start('ob_gzhandler');
 
 	$tabindex = 1;
 
@@ -303,5 +300,7 @@
 		print file_get_contents($_SERVER["SCRIPT_FILENAME"]);
 		exit(0);
 	}
+
+	Config::getConfig();
 
 	function h(){ $args = func_get_args(); return call_user_func_array(array("l", "h"), $args); }

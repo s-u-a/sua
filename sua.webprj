@@ -433,5 +433,14 @@
     <item desc="" url="classes/l.php" uploadstatus="1" />
     <item url="classes/js.php" uploadstatus="1" />
     <item url="classes/gpg.php" />
+    <item url="db_things/callback_atts.phpc" />
+    <item url="db_things/eventhandler.phpc" />
+    <item url="db_things/fix_verbuendet_relations.phpc" />
+    <item url="db_things/im_server.phpc" />
+    <item url="db_things/refill_fleets.phpc" />
+    <item url="db_things/refill_universe.phpc" />
+    <item url="db_things/regen_highscores.phpc" />
+    <item url="db_things/reset_foreign_fleets.phpc" />
+    <item url="db_things/update_database.phpc" />
   </project>
 </webproject>

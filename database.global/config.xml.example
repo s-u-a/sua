@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!DOCTYPE config [
+	<!ELEMENT settings (section*,setting*)>
+	<!ELEMENT section (setting*)>
+	<!ATTLIST section
+		name CDATA #REQUIRED
+	>
+	<!ELEMENT setting (#PCDATA)>
+	<!ATTLIST setting
+		name CDATA #REQUIRED
+	>
+]>
+<config>
+	<setting name="hostname">localhost</setting>
+	<section name="captcha">
+		<setting name="public">ABCDEFG12345-asfasdfadfASFFFSDF09090909ASDDSF</setting>
+		<setting name="private">ABCDEFG12345-adsfsdfasdfsdfaDFSDFSDF1212SDFDS</setting>
+		<setting name="ipv4">ipv4.example.org/ipv4_image.png.php</setting>
+	</section>
+	<section name="databases">
+		<section name="default">
+			<setting name="directory">../sua.db</setting>
+			<setting name="name">Runde 1</setting>
+			<setting name="hostname">runde1.localhost</setting>
+		</section>
+		<section name="old">
+			<!--Alte Datenbank, existiert nur noch wegen der oeffentlichen Nachrichten-->
+			<setting name="directory">../sua.db.old</setting>
+			<setting name="name">Alte Datenbank</setting>
+			<setting name="hostname">old.localhost</setting>
+			<setting name="enabled">false</setting>
+		</section>
+	</section>
+	<section name="gpg">
+		<setting name="fingerprint">AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHHIIIIJJJJ</setting>
+		<setting name="gpghome">/var/www/.gnupg/</setting>
+	</section>
+	<section name="instantmessaging">
+		<section name="jabber">
+			<setting name="name">Jabber</setting>
+			<setting name="server">jabber.org.uk</setting>
+			<setting name="username">suabot</setting>
+			<setting name="password">foo</setting>
+			<setting name="blocked">suabot,suabot2</setting>
+		</section>
+		<section name="icq">
+			<setting name="name">ICQ</setting>
+			<setting name="server">icq.amessage.info</setting>
+			<setting name="username">123456789</setting>
+			<setting name="password">foo</setting>
+			<setting name="blocked">123456789</setting>
+			<setting name="username_field">username</setting>
+			<setting name="password_field">password</setting>
+		</section>
+	</section>
+</config>

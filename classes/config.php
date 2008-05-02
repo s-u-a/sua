@@ -18,6 +18,58 @@
 
 	class Config
 	{
+		static function getConfig()
+		{
+			static $config;
+			if(!isset($config))
+			{
+				if(true || !is_file(global_setting("DB_CONFIG_CACHE")) || !is_readable(global_setting("DB_CONFIG_CACHE")) || filemtime(global_setting("DB_CONFIG_CACHE")) < filemtime(global_setting("DB_CONFIG")))
+				{
+					$dom = new DOMDocument();
+					$dom->load(global_setting("DB_CONFIG"), LIBXML_DTDVALID | LIBXML_NOCDATA);
+					$config = array();
+					$cur_conf = &$config;
+					$p = array();
+					$el = $dom->firstChild->nextSibling->firstChild;
+					while($el->nodeType != 1) $el = $el->nextSibling;
+					while(true)
+					{
+						$name = $el->getAttribute("name");
+						if($el->nodeName == "setting")
+							$cur_conf[$name] = $el->firstChild ? $el->firstChild->data : "";
+						elseif($el->nodeName == "section")
+							$cur_conf[$name] = array();
+
+						if($el->nodeName == "section" && $el->firstChild)
+						{
+							$p[] = &$cur_conf;
+							$cur_conf = &$cur_conf[$name];
+							$el = $el->firstChild;
+						}
+
+						if($el->nodeName != "section" || $el->nodeType != 1)
+						{
+							do
+							{
+								while(!$el->nextSibling)
+								{
+									if(count($p) == 0) break 3;
+									$cur_conf = &$p[count($p)-1];
+									array_pop($p);
+									$el = $el->parentNode;
+								}
+								$el = $el->nextSibling;
+							} while($el->nodeType != 1);
+						}
+					}
+					file_put_contents(global_setting("DB_CONFIG_CACHE"), serialize($config));
+				}
+				else
+					$config = unserialize(file_get_contents(global_setting("DB_CONFIG_CACHE")));
+			}
+			return $config;
+		}
+
 		/**
 		* Sucht nach installierten Skins und liefert ein Array des folgenden
 		* Formats zurueck:
@@ -124,10 +176,10 @@
 
 			if(!isset($databases) || $force_reload)
 			{
-				if(!is_file(global_setting("DB_DATABASES")) || !is_readable(global_setting("DB_DATABASES")))
+				$config = self::getConfig();
+				if(!isset($config["databases"]))
 					return false;
-
-				$databases_raw = parse_ini_file(global_setting("DB_DATABASES"), true);
+				$databases_raw = $config["databases"];
 
 				$aliases_cache = array();
 				$databases = array();
@@ -171,7 +223,8 @@
 
 		static function get_default_hostname()
 		{
-			if(is_file(global_setting("DB_HOSTNAME")) && !is_readable(global_setting("DB_HOSTNAME")) && strlen($hostname = trim(file_get_contents(global_setting("DB_HOSTNAME")))) > 0) return $hostname;
+			$config = self::getConfig();
+			if(isset($config["hostname"])) return $config["hostname"];
 			elseif(isset($_SERVER["HTTP_HOST"])) return $_SERVER["HTTP_HOST"];
 			else return null;
 		}
@@ -249,10 +302,11 @@
 
 			if(!isset($messenger_parsed_file) || $force_reload)
 			{
-				if(!is_file(global_setting("DB_MESSENGERS")) || !is_readable(global_setting("DB_MESSENGERS"))) $messenger_parsed_file = false;
+				$config = self::getConfig();
+				if(!isset($config["instantmessaging"])) $messenger_parsed_file = false;
 				else
 				{
-					$messenger_parsed_file = parse_ini_file(global_setting("DB_MESSENGERS"), true);
+					$messenger_parsed_file = &$config["instantmessaging"];
 					foreach($messenger_parsed_file as $k=>$v)
 					{
 						if(!is_array($v) || !isset($v['server']) || !isset($v['username']) || !isset($v['server']))
