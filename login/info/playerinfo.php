@@ -42,6 +42,16 @@
 			elseif($user->umode()) $suf = h(_("%s (U)"));
 ?>
 <h2><?=sprintf(h(_("Spielerinfo „%s“")), sprintf($suf, ($at ? sprintf(h(_("[%s] %s")), "<a href=\"allianceinfo.php?alliance=".htmlspecialchars(urlencode($at).'&'.global_setting("URL_SUFFIX"))."\" title=\"".h(_("Informationen zu dieser Allianz anzeigen"))."\">".htmlspecialchars($at)."</a>", htmlspecialchars($user->getName())) : htmlspecialchars($user->getName()))))?></h2>
+<?php
+			if(isset($_SESSION["admin_username"]) && $user->getName() != $me->getName())
+			{
+?>
+<ul class="spieler-wechseln possibilities">
+	<li><a href="playerinfo.php?<?=htmlspecialchars("player=".urlencode($_GET["player"])."&switch_user=".urlencode($_GET["player"])."&".global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spieler wechseln&[login/info/playerinfo.php|2]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Spieler wechseln&[login/info/playerinfo.php|2]"))?></a></li>
+</ul>
+<?php
+			}
+?>
 <h3 id="punkte" class="strong"><?=h(_("Punkte"))?></h3>
 <dl class="punkte">
 	<dt class="c-gebaeude"><?=h(_("[scores_0]"))?></dt>
@@ -70,7 +80,7 @@
 </dl>
 <?php
 			$show_koords = $me->maySeeKoords($user->getName());
-			if($show_koords)
+			if($show_koords || isset($_SESSION["admin_username"]))
 			{
 ?>
 <h3 id="ausgegebene-rohstoffe" class="strong"><?=h(_("Ausgegebene Rohstoffe"))?></h3>
@@ -164,7 +174,7 @@
 ?>
 </dl>
 <?php
-			if($show_koords)
+			if($show_koords || isset($_SESSION["admin_username"]))
 			{
 ?>
 <h3 id="planeten" class="strong"><?=h(_("Planeten"))?></h3>

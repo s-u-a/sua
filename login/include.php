@@ -49,6 +49,9 @@
 	# Skins bekommen
 	$skins = Config::get_skins();
 
+	if(isset($_SESSION["admin_username"]) && isset($_SESSION["username"]) && isset($_REQUEST["switch_user"]))
+		$_SESSION["username"] = $_REQUEST["switch_user"];
+
 	$gui = new LoginGui();
 
 	if(!isset($_SESSION['username']) || !isset($_SESSION['database']) || isset($_SESSION["last_click"]) && time()-$_SESSION["last_click"] > global_setting("SESSION_TIMEOUT") || (isset($_SESSION['database']) && (!isset($databases[$_SESSION['database']]) || (!$databases[$_SESSION['database']]['enabled'] && !isset($_SESSION['admin_username'])) || !User::userExists($_SESSION['username']))))

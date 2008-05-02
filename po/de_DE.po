@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sua\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2008-05-02 03:40+0100\n"
+"PO-Revision-Date: 2008-05-02 03:50+0100\n"
 "Last-Translator: Candid Dauth <webmaster@cdauth.de>\n"
 "Language-Team: Candid Dauth\n"
 "MIME-Version: 1.0\n"
@@ -825,7 +825,7 @@ msgstr "Nachricht versenden"
 
 #: ../admin/usermanagement.php:71
 #: ../admin/usermanagement.php:180
-#: ../login/info/playerinfo.php:192
+#: ../login/info/playerinfo.php:202
 #: ../login/nachrichten.php:261
 #: ../public_message.php:50
 msgid "Nachricht"
@@ -1565,7 +1565,7 @@ msgid "Sie haben keine Berechtigung, Flottenaufträge aufzugeben."
 msgstr "Sie haben keine Berechtigung, Flottenaufträge aufzugeben."
 
 #: ../login/info/flotten_actions.php:86
-#: ../login/info/playerinfo.php:122
+#: ../login/info/playerinfo.php:132
 #: ../login/allianz.php:275
 #: ../login/allianz.php:488
 #: ../login/highscores.php:148
@@ -1626,7 +1626,7 @@ msgid "Verfügbar"
 msgstr "Verfügbar"
 
 #: ../login/info/flotten_actions.php:273
-#: ../login/info/playerinfo.php:78
+#: ../login/info/playerinfo.php:88
 #: ../login/info/description.php:149
 #: ../login/imperium.php:61
 #: ../login/imperium.php:116
@@ -1652,7 +1652,7 @@ msgid "[ress_0]"
 msgstr "Carbon"
 
 #: ../login/info/flotten_actions.php:286
-#: ../login/info/playerinfo.php:81
+#: ../login/info/playerinfo.php:91
 #: ../login/info/description.php:155
 #: ../login/imperium.php:62
 #: ../login/imperium.php:117
@@ -1678,7 +1678,7 @@ msgid "[ress_1]"
 msgstr "Aluminium"
 
 #: ../login/info/flotten_actions.php:299
-#: ../login/info/playerinfo.php:84
+#: ../login/info/playerinfo.php:94
 #: ../login/info/description.php:161
 #: ../login/imperium.php:63
 #: ../login/imperium.php:118
@@ -1704,7 +1704,7 @@ msgid "[ress_2]"
 msgstr "Wolfram"
 
 #: ../login/info/flotten_actions.php:312
-#: ../login/info/playerinfo.php:87
+#: ../login/info/playerinfo.php:97
 #: ../login/info/description.php:167
 #: ../login/imperium.php:64
 #: ../login/imperium.php:119
@@ -1730,7 +1730,7 @@ msgid "[ress_3]"
 msgstr "Radium"
 
 #: ../login/info/flotten_actions.php:325
-#: ../login/info/playerinfo.php:90
+#: ../login/info/playerinfo.php:100
 #: ../login/info/description.php:173
 #: ../login/imperium.php:65
 #: ../login/imperium.php:120
@@ -1877,7 +1877,7 @@ msgid "Diesen Planeten in der Karte anzeigen"
 msgstr "Diesen Planeten in der Karte anzeigen"
 
 #: ../login/info/flotten_actions.php:562
-#: ../login/info/playerinfo.php:180
+#: ../login/info/playerinfo.php:190
 #: ../login/karte.php:589
 #: ../login/flotten.php:521
 #: ../login/flotten.php:702
@@ -1969,8 +1969,8 @@ msgid "Ankunft: %s"
 msgstr "Ankunft: %s"
 
 #: ../login/info/flotten_actions.php:577
-#: ../login/info/playerinfo.php:138
-#: ../login/info/playerinfo.php:155
+#: ../login/info/playerinfo.php:148
+#: ../login/info/playerinfo.php:165
 #: ../login/boerse.php:141
 #: ../login/boerse.php:155
 #: ../login/flotten.php:811
@@ -1986,8 +1986,8 @@ msgid "%s (Serverzeit)"
 msgstr "%s (Serverzeit)"
 
 #: ../login/info/flotten_actions.php:577
-#: ../login/info/playerinfo.php:138
-#: ../login/info/playerinfo.php:155
+#: ../login/info/playerinfo.php:148
+#: ../login/info/playerinfo.php:165
 #: ../login/boerse.php:141
 #: ../login/boerse.php:155
 #: ../login/flotten.php:811
@@ -2020,7 +2020,7 @@ msgstr "Diese Allianz gibt es nicht."
 #: ../login/flotten.php:213
 #: ../login/flotten.php:344
 #: ../login/flotten.php:729
-#: ../login/include.php:136
+#: ../login/include.php:139
 #: ../login/nachrichten.php:168
 #: ../login/nachrichten.php:365
 #: ../passwd.php:34
@@ -2102,48 +2102,52 @@ msgstr "Spielerinfo „%s“"
 msgid "Informationen zu dieser Allianz anzeigen"
 msgstr "Informationen zu dieser Allianz anzeigen"
 
-#: ../login/info/playerinfo.php:45
+#: ../login/info/playerinfo.php:50
+msgid "Spieler wechseln&[login/info/playerinfo.php|2]"
+msgstr "Spieler wechseln"
+
+#: ../login/info/playerinfo.php:55
 #: ../login/index.php:483
 msgid "Punkte"
 msgstr "Punkte"
 
-#: ../login/info/playerinfo.php:47
+#: ../login/info/playerinfo.php:57
 #: ../login/index.php:485
 msgid "[scores_0]"
 msgstr "Gebäude"
 
-#: ../login/info/playerinfo.php:50
+#: ../login/info/playerinfo.php:60
 #: ../login/index.php:488
 msgid "[scores_1]"
 msgstr "Forschung"
 
-#: ../login/info/playerinfo.php:53
+#: ../login/info/playerinfo.php:63
 #: ../login/index.php:491
 msgid "[scores_2]"
 msgstr "Roboter"
 
-#: ../login/info/playerinfo.php:56
+#: ../login/info/playerinfo.php:66
 #: ../login/index.php:494
 msgid "[scores_3]"
 msgstr "Flotte"
 
-#: ../login/info/playerinfo.php:59
+#: ../login/info/playerinfo.php:69
 #: ../login/index.php:497
 msgid "[scores_4]"
 msgstr "Verteidigung"
 
-#: ../login/info/playerinfo.php:62
+#: ../login/info/playerinfo.php:72
 #: ../login/index.php:500
 msgid "[scores_5]"
 msgstr "Flugerfahrung"
 
-#: ../login/info/playerinfo.php:65
+#: ../login/info/playerinfo.php:75
 #: ../login/index.php:503
 msgid "[scores_6]"
 msgstr "Kampferfahrung"
 
-#: ../login/info/playerinfo.php:68
-#: ../login/info/playerinfo.php:93
+#: ../login/info/playerinfo.php:78
+#: ../login/info/playerinfo.php:103
 #: ../login/imperium.php:66
 #: ../login/imperium.php:101
 #: ../login/imperium.php:121
@@ -2157,49 +2161,49 @@ msgstr "Kampferfahrung"
 msgid "Gesamt"
 msgstr "Gesamt"
 
-#: ../login/info/playerinfo.php:76
+#: ../login/info/playerinfo.php:86
 msgid "Ausgegebene Rohstoffe"
 msgstr "Ausgegebene Rohstoffe"
 
-#: ../login/info/playerinfo.php:99
+#: ../login/info/playerinfo.php:109
 msgid "Benutzerbeschreibung"
 msgstr "Benutzerbeschreibung"
 
-#: ../login/info/playerinfo.php:105
+#: ../login/info/playerinfo.php:115
 #: ../login/verbuendete.php:112
 msgid "Bündnisse"
 msgstr "Bündnisse"
 
-#: ../login/info/playerinfo.php:111
+#: ../login/info/playerinfo.php:121
 msgid "Dieser Benutzer ist derzeit in keinem Bündnis."
 msgstr "Dieser Benutzer ist derzeit in keinem Bündnis."
 
-#: ../login/info/playerinfo.php:130
+#: ../login/info/playerinfo.php:140
 msgid "Daten"
 msgstr "Daten"
 
-#: ../login/info/playerinfo.php:132
+#: ../login/info/playerinfo.php:142
 msgid "Letzte Aktivität"
 msgstr "Letzte Aktivität"
 
-#: ../login/info/playerinfo.php:144
+#: ../login/info/playerinfo.php:154
 msgid "Nie"
 msgstr "Nie"
 
-#: ../login/info/playerinfo.php:149
+#: ../login/info/playerinfo.php:159
 msgid "Registrierung"
 msgstr "Registrierung"
 
-#: ../login/info/playerinfo.php:161
+#: ../login/info/playerinfo.php:171
 msgid "Unbekannt"
 msgstr "Unbekannt"
 
-#: ../login/info/playerinfo.php:170
+#: ../login/info/playerinfo.php:180
 #: ../login/index.php:258
 msgid "Planeten"
 msgstr "Planeten"
 
-#: ../login/info/playerinfo.php:180
+#: ../login/info/playerinfo.php:190
 #: ../login/boerse.php:138
 #: ../login/flotten.php:706
 #: ../classes/f.php:592
@@ -2212,27 +2216,27 @@ msgstr "Planeten"
 msgid "„%s“ (%s)"
 msgstr "„%s“ (%s)"
 
-#: ../login/info/playerinfo.php:180
+#: ../login/info/playerinfo.php:190
 msgid "Jenes Sonnensystem in der Karte ansehen"
 msgstr "Jenes Sonnensystem in der Karte ansehen"
 
-#: ../login/info/playerinfo.php:193
+#: ../login/info/playerinfo.php:203
 #: ../login/nachrichten.php:95
 #: ../login/verbuendete.php:137
 msgid "Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?"
 msgstr "Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?"
 
-#: ../login/info/playerinfo.php:195
-#: ../login/info/playerinfo.php:196
+#: ../login/info/playerinfo.php:205
+#: ../login/info/playerinfo.php:206
 msgid "Betreff&[login/info/playerinfo.php|1]"
 msgstr "Betreff"
 
-#: ../login/info/playerinfo.php:198
-#: ../login/info/playerinfo.php:199
+#: ../login/info/playerinfo.php:208
+#: ../login/info/playerinfo.php:209
 msgid "Inhalt&[login/info/playerinfo.php|1]"
 msgstr "Inhalt"
 
-#: ../login/info/playerinfo.php:201
+#: ../login/info/playerinfo.php:211
 msgid "&Nachricht absenden[login/info/playerinfo.php|1]"
 msgstr "&Nachricht absenden"
 
@@ -4294,23 +4298,23 @@ msgstr "Benutzer löschen"
 msgid "Speicher&n"
 msgstr "Speicher&n"
 
-#: ../login/include.php:110
+#: ../login/include.php:113
 #, php-format
 msgid "Error: Database version is %s but should be %s. Please run db_things/update_database.\n"
 msgstr "Error: Database version is %s but should be %s. Please run db_things/update_database.\n"
 
-#: ../login/include.php:147
+#: ../login/include.php:150
 #, php-format
 msgid "Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s."
 msgstr "Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s."
 
-#: ../login/include.php:188
-#: ../login/include.php:251
+#: ../login/include.php:191
+#: ../login/include.php:254
 #, php-format
 msgid "HTTP redirect: %s"
 msgstr "HTTP redirect: %s"
 
-#: ../login/include.php:212
+#: ../login/include.php:215
 msgid "Fehler beim Auswerten der Captcha-Informationen."
 msgstr "Fehler beim Auswerten der Captcha-Informationen."
 
