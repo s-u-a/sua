@@ -520,13 +520,6 @@
 			<li class="version"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root)?>/login/info/changelog.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Changelog anzeigen&[login/include.php|4]"), false)?>"<?=l::accesskey_attr(_("Changelog anzeigen&[login/include.php|4]"))?>><?=sprintf(h(_("Version %s")), htmlspecialchars(VERSION))?></a></li>
 <?php
 			}
-
-			if(($rev = Config::get_revision()) !== false)
-			{
-?>
-			<li class="revision"><?=sprintf(h(_("Revision %s")), htmlspecialchars($rev))?></li>
-<?php
-			}
 ?>
 		</ul>
 

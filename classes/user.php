@@ -2926,6 +2926,22 @@
 			}
 
 			# Aus der Allianz austreten
+			if($this->allianceTag())
+			{
+				$alliance_obj = Classes::Alliance($this->allianceTag());
+				if(count($alliance_obj->getUsersList()) < 2)
+					$alliance_obj->destroy();
+				elseif($alliance_obj->checkUserPermissions($this->getName(), Alliance::$PERMISSION_PERMISSIONS))
+				{
+					$bosses = 0;
+					foreach($alliance_obj->getUsersList() as $member)
+					{
+						if($alliance_obj->checkUserPermissions($member, Alliance::$PERMISSION_PERMISSIONS))
+							$bosses++;
+					}
+					if($bosses < 2) $alliance_obj->destroy();
+				}
+			}
 			$this->allianceTag(false);
 
 			# Flotten zurueckrufen

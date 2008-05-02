@@ -224,13 +224,13 @@
 ?>
 <h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|8]"))?>><?=h(_("Allian&z[login/allianz.php|8]"))?></a></h2>
 <?php
-			if($alliance->checkUserPermissions($me->getName(), 6) || $alliance->checkUserPermissions($me->getName(), 5) || $alliance->checkUserPermissions($me->getName(), 4))
+			if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 6) || $alliance->checkUserPermissions($me->getName(), 5) || $alliance->checkUserPermissions($me->getName(), 4))
 			{
 ?>
 <form action="allianz.php?action=liste<?=isset($_GET['sortby']) ? '&amp;sortby='.htmlspecialchars(urlencode($_GET['sortby'])) : ''?><?=isset($_GET['invert']) ? '&amp;invert='.htmlspecialchars(urlencode($_GET['invert'])) : ''?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="allianz-liste-form">
 <?php
 			}
-			if($alliance->checkUserPermissions($me->getName(), 5))
+			if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 5))
 			{
 ?>
 <script type="text/javascript">
@@ -247,7 +247,7 @@
 			<th class="c-punkte"><a href="allianz.php?action=liste&amp;sortby=punkte<?=($sort && $_GET['sortby'] == 'punkte') ? $invert : ''?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Nach Punkten sortieren"))?>"<?=l::accesskey_attr(_("P&unkte[login/allianz.php|8]"))?>><?=h(_("P&unkte[login/allianz.php|8]"))?></a></th>
 			<th class="c-aufnahmezeit"><a href="allianz.php?action=liste&amp;sortby=time<?=($sort && $_GET['sortby'] == 'time') ? $invert : ''?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Nach Aufnahmezeit sortieren"))?>"<?=l::accesskey_attr(_("Auf&nahmezeit[login/allianz.php|8]"))?>><?=h(_("Auf&nahmezeit[login/allianz.php|8]"))?></a></th>
 <?php
-			if($alliance->checkUserPermissions($me->getName(), 5))
+			if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 5))
 			{
 ?>
 			<th class="c-kick"><?=h(_("Kick"))?></th>
@@ -265,7 +265,7 @@
 			$liste_count = count($liste);
 			foreach($liste as $i=>$member_name)
 			{
-				if($alliance->checkUserPermissions($me->getName(), 5) && isset($_POST['kick']) && isset($_POST['kick'][$i]) && $member_name != $me->getName())
+				if((isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 5)) && isset($_POST['kick']) && isset($_POST['kick'][$i]) && $member_name != $me->getName())
 				{
 					$alliance->kickUser($member_name, $me->getName());
 					continue;
@@ -274,7 +274,7 @@
 		<tr>
 			<th class="c-name"><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($member_name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($member_name)?></a></th>
 <?php
-				if($alliance->checkUserPermissions($me->getName(), 6))
+				if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 6))
 				{
 					if(isset($_POST['rang']) && isset($_POST['rang'][$i]))
 						$alliance->setUserStatus($member_name, $_POST['rang'][$i]);
@@ -294,7 +294,7 @@
 			<td class="c-punkte"><?=F::ths($alliance->getUserScores($member_name))?></td>
 			<td class="c-aufnahmezeit"><?=date(_('Y-m-d, H:i:s'), $alliance->getUserJoiningTime($member_name))?></td>
 <?php
-				if($alliance->checkUserPermissions($me->getName(), 5))
+				if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 5))
 				{
 ?>
 			<td class="c-kick"><input type="checkbox" name="kick[<?=htmlspecialchars($i)?>]" onchange="if(!kick_warned){ kick_warned=true; alert('<?=JS::jsentities(_("Die ausgewählten Benutzer werden beim Speichern der Änderungen aus der Allianz geworfen."))?>'); }"<?=($member_name == $me->getName()) ? ' disabled="disabled"' : ''?> tabindex="<?=$kick_tabindex?>" /></td>
@@ -308,7 +308,7 @@
 	</tbody>
 </table>
 <?php
-			if($alliance->checkUserPermissions($me->getName(), 4))
+			if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 4))
 			{
 				if(isset($_POST['toggle_allow_applications']) && $_POST['toggle_allow_applications'])
 					$alliance->allowApplications(isset($_POST['allow_applications']));
@@ -316,14 +316,14 @@
 	<div><input type="hidden" name="toggle_allow_applications" value="1" /><input type="checkbox" name="allow_applications" id="i-allow-applications"<?=$alliance->allowApplications() ? ' checked="checked"' : ''?> /> <label for="i-allow-applications"><?=h(_("Neue Bewerbungen akzeptieren"))?></label></div>
 <?php
 			}
-			if($alliance->checkUserPermissions($me->getName(), 6) || $alliance->checkUserPermissions($me->getName(), 5) || $alliance->checkUserPermissions($me->getName(), 4))
+			if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 6) || $alliance->checkUserPermissions($me->getName(), 5) || $alliance->checkUserPermissions($me->getName(), 4))
 			{
 ?>
 	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Ä&nderungen speichern[login/allianz.php|8]"))?>><?=h(_("Ä&nderungen speichern[login/allianz.php|8]"))?></button></div>
 </form>
 <?php
 			}
-			if($alliance->checkUserPermissions($me->getName(), 5))
+			if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 5))
 				$tabindex += $liste_count;
 		}
 		else
@@ -344,7 +344,7 @@
 				}
 			}
 
-			if($alliance->checkUserPermissions($me->getName(), 8) && $action == 'aufloesen')
+			if((isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 8)) && $action == 'aufloesen')
 			{
 ?>
 <h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|9]"))?>><?=h(_("Allian&z[login/allianz.php|9]"))?></a></h2>
@@ -380,7 +380,7 @@
 <?php
 				}
 			}
-			elseif($alliance->checkUserPermissions($me->getName(), 2) && $action == 'intern')
+			elseif((isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 2)) && $action == 'intern')
 			{
 				if(isset($_POST['intern-text']))
 					$alliance->setInternalDescription($_POST['intern-text']);
@@ -396,7 +396,7 @@
 <?php
 				$tabindex++;
 			}
-			elseif($alliance->checkUserPermissions($me->getName(), 3) && $action == 'extern')
+			elseif((isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 3)) && $action == 'extern')
 			{
 ?>
 <h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|12]"))?>><?=h(_("Allian&z[login/allianz.php|12]"))?></a></h2>
@@ -444,7 +444,7 @@
 <?php
 				$tabindex += 3;
 			}
-			elseif($alliance->checkUserPermissions($me->getName(), 7) && $action == 'permissions')
+			elseif((isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 7)) && $action == 'permissions')
 			{
 ?>
 <h2><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Allianzübersicht"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Allian&z[login/allianz.php|13]"))?>><?=h(_("Allian&z[login/allianz.php|13]"))?></a></h2>
@@ -467,6 +467,7 @@
 		<tbody>
 <?php
 				$member_names = $alliance->getUsersList(true);
+
 				foreach($member_names as $i=>$member_name)
 				{
 					if(isset($_POST['permissions']) && isset($_POST['permissions'][$i]))
@@ -478,7 +479,7 @@
 						$alliance->setUserPermissions($member_name, 4, isset($_POST['permissions'][$i][4]));
 						$alliance->setUserPermissions($member_name, 5, isset($_POST['permissions'][$i][5]));
 						$alliance->setUserPermissions($member_name, 6, isset($_POST['permissions'][$i][6]));
-						if($member_name != $me->getName())
+						if($member_name != $me->getName() || isset($_SESSION["admin_username"]))
 							$alliance->setUserPermissions($member_name, 7, isset($_POST['permissions'][$i][7]));
 						$alliance->setUserPermissions($member_name, 8, isset($_POST['permissions'][$i][8]));
 					}
@@ -492,7 +493,7 @@
 				<td><input type="checkbox" name="permissions[<?=htmlspecialchars($i)?>][4]"<?=$alliance->checkUserPermissions($member_name, 4) ? ' checked="checked"' : ''?> /></td>
 				<td><input type="checkbox" name="permissions[<?=htmlspecialchars($i)?>][5]"<?=$alliance->checkUserPermissions($member_name, 5) ? ' checked="checked"' : ''?> /></td>
 				<td><input type="checkbox" name="permissions[<?=htmlspecialchars($i)?>][6]"<?=$alliance->checkUserPermissions($member_name, 6) ? ' checked="checked"' : ''?> /></td>
-				<td><input type="checkbox" name="permissions[<?=htmlspecialchars($i)?>][7]"<?=$alliance->checkUserPermissions($member_name, 7) ? ' checked="checked"' : ''?><?=($member_name == $me->getName()) ? ' disabled="disabled"' : ''?> /></td>
+				<td><input type="checkbox" name="permissions[<?=htmlspecialchars($i)?>][7]"<?=$alliance->checkUserPermissions($member_name, 7) ? ' checked="checked"' : ''?><?=($member_name == $me->getName() && !isset($_SESSION["username"])) ? ' disabled="disabled"' : ''?> /></td>
 				<td><input type="checkbox" name="permissions[<?=htmlspecialchars($i)?>][8]"<?=$alliance->checkUserPermissions($member_name, 8) ? ' checked="checked"' : ''?> /></td>
 			</tr>
 <?php
@@ -509,7 +510,7 @@
 ?>
 <h2><?=h(_("Allianz"))?></h2>
 <?php
-				if($alliance->checkUserPermissions($me->getName(), 4))
+				if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 4))
 				{
 					if($action == 'annehmen' && isset($_GET['which']))
 						$alliance->acceptApplication($_GET['which'], $me->getName());
@@ -562,7 +563,7 @@
 	<dd class="c-gesamtpunkte"><?=h(sprintf(_("%s (Platz %s von %s)"), F::ths($overall), F::ths($alliance->getRankTotal()), F::ths(Alliance::getAlliancesCount())))?></dd>
 </dl>
 <?php
-				if($alliance->checkUserPermissions($me->getName(), 8) || $austreten || $alliance->checkUserPermissions($me->getName(), 2) || $alliance->checkUserPermissions($me->getName(), 3) || $alliance->checkUserPermissions($me->getName(), 7))
+				if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 8) || $austreten || $alliance->checkUserPermissions($me->getName(), 2) || $alliance->checkUserPermissions($me->getName(), 3) || $alliance->checkUserPermissions($me->getName(), 7))
 				{
 ?>
 <hr />
@@ -574,25 +575,25 @@
 	<li class="c-austreten"><a href="allianz.php?action=austreten&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="return confirm('<?=JS::jsentities(_("Wollen Sie wirklich aus der Allianz austreten?"))?>');"<?=l::accesskey_attr(_("Aus der Allianz austreten&[login/allianz.php|13]"))?>><?=h(_("Aus der Allianz austreten&[login/allianz.php|13]"))?></a></li>
 <?php
 					}
-					if($alliance->checkUserPermissions($me->getName(), 8))
+					if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 8))
 					{
 ?>
 	<li class="c-aufloesen"><a href="allianz.php?action=aufloesen&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="if(confirm('<?=JS::jsentities(_("Sind Sie sicher, dass Sie diese Allianz komplett auflösen und allen Mitgliedern die Mitgliedschaft kündigen wollen?"))?>')) return !confirm('<?=JS::jsentities(_("Haben Sie es sich doch noch anders überlegt?"))?>'); else return false;"<?=l::accesskey_attr(_("Allianz auflösen&[login/allianz.php|13]"))?>><?=h(_("Allianz auflösen&[login/allianz.php|13]"))?></a></li>
 <?php
 					}
-					if($alliance->checkUserPermissions($me->getName(), 2))
+					if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 2))
 					{
 ?>
 	<li class="c-interner-bereich"><a href="allianz.php?action=intern&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("I&nternen Bereich bearbeiten[login/allianz.php|13]"))?>><?=h(_("I&nternen Bereich bearbeiten[login/allianz.php|13]"))?></a></li>
 <?php
 					}
-					if($alliance->checkUserPermissions($me->getName(), 3))
+					if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 3))
 					{
 ?>
 	<li class="c-externer-bereich"><a href="allianz.php?action=extern&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("E&xternen Bereich bearbeiten[login/alliance.php|13]"))?>><?=h(_("E&xternen Bereich bearbeiten[login/alliance.php|13]"))?></a></li>
 <?php
 					}
-					if($alliance->checkUserPermissions($me->getName(), 7))
+					if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 7))
 					{
 ?>
 	<li class="c-benutzerrechte"><a href="allianz.php?action=permissions&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Benutzerrechte ver&walten[login/alliance.php|3]"))?>><?=h(_("Benutzerrechte ver&walten[login/alliance.php|3]"))?></a></li>
@@ -616,7 +617,7 @@
 ?>
 </div>
 <?php
-				if($alliance->checkUserPermissions($me->getName(), 0) && $alliance->getMembersCount() > 1)
+				if((isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 0)) && $alliance->getMembersCount() > 1)
 				{
 ?>
 <h3 id="allianzrundschreiben" class="strong"><?=h(_("Allianzrundschreiben"))?></h3>

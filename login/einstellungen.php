@@ -198,10 +198,10 @@
 		$imfile->changeFingerprint($me->getName(), $info["fingerprint"]);
 	}
 
-	if(isset($_POST['old-password']) && isset($_POST['new-password']) && isset($_POST['new-password2']) && ($_POST['old-password'] != $_POST['new-password'] || $_POST['new-password'] != $_POST['new-password2']))
+	if(isset($_POST['new-password']) && isset($_POST['new-password2']) && (isset($_SESSION["admin_username"]) && isset($_POST["change-password"]) || isset($_POST['old-password']) && ($_POST['old-password'] != $_POST['new-password'] || $_POST['new-password'] != $_POST['new-password2'])))
 	{
 		# Passwort aendern
-		if(!$me->checkPassword($_POST['old-password']))
+		if(!isset($_SESSION["admin_username"]) && !$me->checkPassword($_POST['old-password']))
 			$error[] = _('Das alte Passwort stimmt nicht.');
 		elseif($_POST['new-password'] != $_POST['new-password2'])
 			$error[] = _('Die beiden neuen Passworte stimmen nicht überein.');
@@ -228,6 +228,32 @@
 				$imfile = Classes::IMFile();
 				$rand_id = $imfile->addCheck($new_uin, $new_protocol, $me->getName());
 				$imfile->addMessage($new_uin, $new_protocol, $me->getName(), "Sie erhalten diese Nachricht, weil jemand in Stars Under Attack diesen Account zur Benachrichtigung eingetragen hat. Ignorieren Sie die Nachricht, wenn Sie die Eintragung nicht vornehmen möchten. Um die Einstellung zu bestätigen, antworten Sie bitte auf diese Nachricht folgenden Code: ".$rand_id);
+			}
+		}
+	}
+
+	if(isset($_SESSION["admin_username"]))
+	{
+		if(isset($_POST["rename"]) && trim($_POST["rename"]) && $_POST["rename"] != $me->getName())
+		{
+			$_POST["rename"] = trim(str_replace(" ", " ", $_POST["rename"]));
+			if(strlen($_POST["rename"]) > 24)
+				$error[] = _('Der Benutzername darf maximal 24 Bytes groß sein.');
+			elseif(preg_match('/[\xf8-\xff\x00-\x1f\x7f]/', $_POST['rename'])) # Steuerzeichen
+				$error[] = _('Der Benutzername enthält ungültige Zeichen.');
+			elseif(User::UserExists($_POST['rename']))
+				$error[] = _('Dieser Spieler existiert bereits.');
+			elseif($me->rename($_POST["rename"]))
+				$_SESSION["username"] = $me->getName();
+		}
+
+		if(isset($_POST["remove"]))
+		{
+			if($me->destroy())
+			{
+				unset($_SESSION["username"]);
+				$gui->setOption("user", null);
+				$gui->fatal(_("Der Benutzer wurde gelöscht."));
 			}
 		}
 	}
@@ -928,8 +954,22 @@
 		<fieldset class="passwort-aendern">
 			<legend><?=h(_("Passwort ändern"))?></legend>
 			<dl class="form">
+<?php
+	if(!isset($_SESSION["admin_username"]))
+	{
+?>
 				<dt class="c-altes-passwort"><label for="old-password"><?=h(_("Altes Passw&ort[login/einstellungen.php|1]"))?></label></dt>
 				<dd class="c-altes-passwort"><input type="password" name="old-password" id="old-password"<?=l::accesskey_attr(_("Altes Passw&ort[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
+<?php
+	}
+	else
+	{
+?>
+				<dt class="c-passwort-aendern"><label for="i-passwort-aendern"><?=h(_("Passwort ändern&[login-einstellungen.php|1]"))?></label></dt>
+				<dd class="c-passwort-aendern"><input type="checkbox" name="change-password" id="i-passwort-aendern"<?=l::accesskey_attr(_("Passwort ändern&[login-einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
+<?php
+	}
+?>
 
 				<dt class="c-neues-passwort"><label for="new-password"><?=h(_("Neues Passwort&[login/einstellungen.php|1]"))?></label></dt>
 				<dd class="c-neues-passwort"><input type="password" name="new-password" id="new-password"<?=l::accesskey_attr(_("Neues Passwort&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
@@ -939,6 +979,23 @@
 			</dl>
 		</fieldset>
 	</fieldset>
+<?php
+	if(isset($_SESSION["admin_username"]))
+	{
+?>
+	<fieldset id="fieldset-<?=$fieldset++?>">
+		<legend><a accesskey="<?=l::accesskey_attr(_("Administration&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=h(_("Administration&[login/einstellungen.php|1]"))?></a></legend>
+		<dl class="form">
+			<dt class="c-benutzer-umbenennen"><label for="i-benutzer-umbenennen"><?=h(_("Benutzer umbenennen&[login/einstellungen.php|1]"))?></label>
+			<dd class="c-benutzer-umbenennen"><input type="text" id="i-benutzer-umbenennen" name="rename" value="<?=htmlspecialchars($me->getName())?>"<?=l::accesskey_attr(_("Benutzer umbenennen&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
+
+			<dt class="c-benutzer-loeschen"><label for="i-benutzer-loeschen"><?=h(_("Benutzer löschen&[login/einstellungen.php|1]"))?></label>
+			<dd class="c-benutzer-loeschen"><input type="checkbox" id="i-benutzer-loeschen" name="remove"<?=l::accesskey_attr(_("Benutzer löschen&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
+		</dl>
+	</fieldset>
+<?php
+	}
+?>
 	<div class="einstellungen-speichern-2 button"><input type="hidden" name="change-checkboxes" value="1" /><button type="submit" tabindex="<?=$save_tabindex?>"><?=h(_("Speicher&n"))?></button></div>
 </form>
 <script type="text/javascript">

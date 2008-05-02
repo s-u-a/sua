@@ -18,17 +18,17 @@
 
 	class Config
 	{
+		static private $config;
 		static function getConfig()
 		{
-			static $config;
-			if(!isset($config))
+			if(!isset(self::$config))
 			{
-				if(true || !is_file(global_setting("DB_CONFIG_CACHE")) || !is_readable(global_setting("DB_CONFIG_CACHE")) || filemtime(global_setting("DB_CONFIG_CACHE")) < filemtime(global_setting("DB_CONFIG")))
+				if(!is_file(global_setting("DB_CONFIG_CACHE")) || !is_readable(global_setting("DB_CONFIG_CACHE")) || filemtime(global_setting("DB_CONFIG_CACHE")) < filemtime(global_setting("DB_CONFIG")))
 				{
 					$dom = new DOMDocument();
 					$dom->load(global_setting("DB_CONFIG"), LIBXML_DTDVALID | LIBXML_NOCDATA);
-					$config = array();
-					$cur_conf = &$config;
+					self::$config = array();
+					$cur_conf = &self::$config;
 					$p = array();
 					$el = $dom->firstChild->nextSibling->firstChild;
 					while($el->nodeType != 1) $el = $el->nextSibling;
@@ -62,12 +62,12 @@
 							} while($el->nodeType != 1);
 						}
 					}
-					file_put_contents(global_setting("DB_CONFIG_CACHE"), serialize($config));
+					file_put_contents(global_setting("DB_CONFIG_CACHE"), serialize(self::$config));
 				}
 				else
-					$config = unserialize(file_get_contents(global_setting("DB_CONFIG_CACHE")));
+					self::$config = unserialize(file_get_contents(global_setting("DB_CONFIG_CACHE")));
 			}
-			return $config;
+			return self::$config;
 		}
 
 		/**
@@ -116,50 +116,6 @@
 			if(is_file(global_setting("DB_VERSION")) && is_readable(global_setting("DB_VERSION")))
 				$version = trim(file_get_contents(global_setting("DB_VERSION")));
 			return $version;
-		}
-
-		/**
-		* Liefert die aktuell geladene SVN-Revision des Spielverzeichnisses zurueck.
-		* @return false, wenn keine Revision ermittelt werden kann
-		*/
-
-		static function get_revision()
-		{
-			# Aktuell laufende Revision herausfinden
-
-			if(!is_dir(s_root.'/.svn')) return false;
-
-			$revision_file = global_setting("DB_REVISION");
-			$entries_file = s_root.'/.svn/entries';
-
-			if(!is_file($revision_file) && !is_file($entries_file)) return false;
-
-			if(is_file($entries_file))
-			{
-				if(!is_file($revision_file) || filemtime($entries_file) > filemtime($revision_file))
-				{
-					# Update revision file
-					if(!function_exists('simplexml_load_file')) return false;
-					$entries_xml = new DomDocument;
-					@$entries_xml->loadXML(file_get_contents($entries_file), LIBXML_NSCLEAN);
-					if(!$entries_xml) return false;
-
-					$new_revision = false;
-					foreach($entries_xml->getElementsByTagName('entry') as $e)
-					{
-						if($e->hasAttribute('name') && $e->getAttribute('name') == '' && $e->hasAttribute('revision'))
-						{
-							$new_revision = $e->getAttribute('revision');
-							break;
-						}
-					}
-					if($new_revision === false) return false;
-
-					file_put_contents($revision_file, $new_revision, LOCK_EX);
-				}
-			}
-
-			return floor(file_get_contents($revision_file));
 		}
 
 		/**

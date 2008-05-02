@@ -653,7 +653,7 @@ function activate_users_list(node)
 { // Aktiviert Autocomplete fuer ein Eingabefeld
 	// Eventhandler beim Tippen
 	node.onfocus = function(){make_users_list(node);};
-	node.onblur = function(){remove_users_list(node);};
+	node.onblur = function(){setTimeout(function(){remove_users_list(node);}, 100);}; // Warten, damit onclick auf ein Feld seine Wirkung zeigen kann
 
 	// Wenn die Liste angezeigt wird, muss das Hoch- und Runternavigieren durch Pfeiltasten ermoeglicht werden
 	node.onkeypress = function(e)

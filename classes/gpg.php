@@ -120,7 +120,7 @@
 		* Entschlüsselt den Text.
 		*/
 
-		static function self::decrypt($text)
+		static function decrypt($text)
 		{
 			$gpg = self::init();
 			return $gpg->decrypt($text);

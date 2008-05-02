@@ -39,11 +39,11 @@
 
 			$_POST['empfaenger'] = trim($_POST['empfaenger']);
 
-			if(!User::userExists($_POST['empfaenger']))
+			if(!isset($_SESSION["admin_username"]) && !User::userExists($_POST['empfaenger']))
 				$error = _('Der Empfänger, den Sie eingegeben haben, existiert nicht.');
-			elseif(strtolower($_POST['empfaenger']) == strtolower($me->getName()))
+			elseif(!isset($_SESSION["admin_username"]) && strtolower($_POST['empfaenger']) == strtolower($me->getName()))
 				$error = _('Sie können sich nicht selbst eine Nachricht schicken.');
-			elseif(strlen($_POST['betreff']) > 30)
+			elseif(!isset($_SESSION["admin_username"]) && strlen($_POST['betreff']) > 30)
 				$error = _('Der Betreff darf maximal 30 Bytes lang sein.');
 			elseif(strlen($_POST['inhalt']) <= 0)
 				$error = _('Sie müssen eine Nachricht eingeben.');
@@ -59,8 +59,19 @@
 					$message->subject($_POST['betreff']);
 					$message->from($me->getName());
 
-					$message->addUser(User::resolveName($_POST['empfaenger']), 6);
-					$message->addUser($me->getName(), 8);
+					if(isset($_SESSION["admin_username"]))
+					{
+						foreach(preg_split("/\r?\n/", $_POST["empfaenger"]) as $empf)
+						{
+							if(User::userExists($empf))
+								$message->addUser($empf, 6);
+						}
+					}
+					else
+					{
+						$message->addUser(User::resolveName($_POST['empfaenger']), 6);
+						$message->addUser($me->getName(), 8);
+					}
 ?>
 <p class="successful"><?=h(_("Die Nachricht wurde erfolgreich versandt."))?></p>
 <?php
@@ -95,8 +106,19 @@
 				$betreff = $_GET['subject'];
 			if(isset($_POST['betreff']))
 				$betreff = $_POST['betreff'];
+			if(!isset($_SESSION["admin_username"]))
+			{
 ?>
 			<dd class="c-empfaenger"><input type="text" id="empfaenger-input" name="empfaenger" value="<?=htmlspecialchars($empfaenger)?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Empfänger [&Z][login/nachrichten.php|1]"))?> /></dd>
+<?php
+			}
+			else
+			{
+?>
+			<dd class="c-empfaenger"><textarea id="empfaenger-input" name="empfaenger" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Empfänger [&Z][login/nachrichten.php|1]"))?>><?=htmlspecialchars($empfaenger)?></textarea></dd>
+<?php
+			}
+?>
 
 			<dt class="c-betreff"><label for="betreff-input"><?=h(_("Betreff [&J][login/nachrichten.php|1]"))?></label></dt>
 			<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" value="<?=htmlspecialchars($betreff)?>" maxlength="30" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Betreff [&J][login/nachrichten.php|1]"))?> /></dd>
@@ -109,12 +131,16 @@
 </form>
 <?php
 			$tabindex++; # Oben für den Back-Link verwendet
+
+			if(!isset($_SESSION["admin_username"]))
+			{ # Autocomplete geht im Moment nicht in Textareas
 ?>
 <script type="text/javascript">
 	// Autocompletion des Empfaengers
 	activate_users_list(document.getElementById('empfaenger-input'));
 </script>
 <?php
+			}
 		}
 	}
 	elseif(isset($_GET['type']))
