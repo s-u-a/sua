@@ -68,64 +68,75 @@
 		}
 	}
 
-	class PublicMessage
+	class PublicMessage extends SQLiteSet
 	{
-		protected static $database = false;
-		protected $name = false;
+		protected $tables = array("public_messages" => array("message_id PRIMARY KEY", "last_view INT", "sender", "text", "parsed", "subject", "html INT", "receiver", "time", "type"));
 
-		static protected function databaseInstance()
+		static function create($name=null)
 		{
-			if(!self::$database)
-				self::$database = new PublicMessageDatabase();
+			$name = self::datasetName($name);
+			if(self::exists($name))
+				throw new DatasetException("Dataset already exists.");
+
+			self::$sqlite->query("INSERT INTO public_messages ( message_id, last_view ) VALUES ( ".self::$sqlite->escape($message_id).", ".self::$sqlite->escape(time())." );");
+			return $name;
 		}
 
-		static function publicMessageExists($name)
-		{
-			self::databaseInstance();
-
-			return self::$database->messageExists($name);
-		}
-
-		function create()
-		{
-			self::$database->createNewMessage($this->name);
-			return true;
-		}
-
-		function __construct($name=false)
-		{
-			self::databaseInstance();
-
-			if(!$name)
-				$name = self::$database->getNewName();
-			$this->name = $name;
-		}
+		/**
+		 * Veröffentlicht die Nachricht $message.
+		 * @param $message Message
+		 * @return string Die ID des PublicMessage-Objekts
+		*/
 
 		function createFromMessage($message)
 		{
-			if(!$this->create()) return false;
-
-			$html = $message->html();
-			$this->html($html);
-			$text = $message->rawText();
-			$this->text($text);
-
-			$this->subject($message->subject());
-			$this->time($message->getTime());
-			$this->from($message->from());
-
-			return true;
+			$pm = Classes::PublicMessage(self::create());
+			$pm->html($message->html());
+			$pm->text($message->text());
+			$pm->subject($message->subject());
+			$pm->time($message->getTime());
+			$pm->from($message->from());
+			return $pm->getName();
 		}
+
+		/**
+		 * Die Nachricht wird vom Benutzer betrachtet, also wird die Zeit der letzten Betrachtung erneuert.
+		 * Wichtig für automatische Löschung.
+		 * @return null
+		*/
+
+		protected function _read()
+		{
+			$this->setMainField("last_view", time());
+		}
+
+		/**
+		 * Gibt zurück, wann die Nachricht zuletzt betrachtet wurde, also wann zuletzt _read() ausgeführt wurde.
+		 * @return integer
+		*/
+
+		function getLastViewTime()
+		{
+			return $this->getMainField("last_view");
+		}
+
+		/**
+		 * Setzt oder liest den Text der Nachricht.
+		 * @param $text string Der neue Text der Nachricht, oder null, wenn der aktuelle zurückgegeben werden soll
+		 * @param $filter boolean Sollen Angreifer- und Verteidigerkoordinaten herausgefiltert werden? (Nur sinnvoll, wenn $text null ist)
+		 * @return null Wenn $text gesetzt ist.
+		 * @return String Der Text, wenn $text nicht null ist.
+		*/
 
 		function text($text=false, $filter=true)
 		{
 			// last_view erneuern
 			$this->_read();
 
-			if($text === false)
-			{
-				$text = self::$database->getField($this->name, "parsed");
-				if($this->html() && $filter)
+			if(!isset($text))
+			{ // Text zurückgeben
+				$text = $this->getMainField("parsed");
+				if($filter)
 				{
 					$text = preg_replace('/ ?<span class="koords">.*?<\\/span>/', '', $text);
 					$text = preg_replace('/ ?<span class="angreifer-name">.*?<\\/span>/', 'Ein Angreifer', $text);
@@ -134,82 +145,102 @@
 				return $text;
 			}
 
-			self::$database->setField($this->name, "text", $text);
+			// Text setzen
+			$this->setMainField("text", $text);
 			$this->_createParsed();
-			return true;
-		}
-
-		protected function _createParsed()
-		{
 			if($this->html())
-				self::$database->setField($this->name, "parsed", self::$database->getField($this->name, "text"));
+				$this->setMainField("parsed", $text);
 			else
-				self::$database->setField($this->name, "parsed", F::parse_html(self::$database->getField($this->name, "text")));
-			return true;
+				$this->setMainField("parsed", F::parse_html($text));
 		}
 
-		function from($from=false)
+		/**
+		 * Liest oder setzt den Absender der Nachricht.
+		 * @param $from string Der neue Absender. Wenn null, wird der aktuelle zurückgegeben.
+		 * @return null Wenn $from übergeben wurde.
+		 * @return string Wenn $from null ist, wird der Absender zurückgegeben.
+		*/
+
+		function from($from=null)
 		{
-			if($from === false)
-				return self::$database->getField($this->name, "sender");
-
-			self::$database->setField($this->name, "sender", $from);
-			return true;
+			if(!isset($from))
+				return $this->getMainField("sender");
+			else
+				$this->setMainField("sender", $from);
 		}
+
+		/**
+		 * Liest oder setzt den Betreff der Nachricht.
+		 * @param $subject string Der neue Betreff oder null, wenn der Betreff ausgelesen werden soll.
+		 * @return null Wenn $subject gesetzt ist
+		 * @return string Der Betreff, wenn $subject null ist.
+		*/
 
 		function subject($subject=false)
 		{
-			if($subject === false)
-				return self::$database->getField($this->name, "subject");
-
-			self::$database->setField($this->name, "subject", $subject);
-			return true;
+			if(!isset($subject))
+				return $this->getMainField("subject");
+			else
+				$this->setMainField("subject", $subject);
 		}
 
-		function html($html=-1)
-		{
-			if($html === -1)
-				return (self::$database->getField($this->name, "html") == true);
+		/**
+		 * Gibt zurück oder stellt ein, ob der Nachrichtentext im HTML-Format gespeichert wurde.
+		 * @param $html boolean Ist die Nachricht eine HTML-Nachricht?
+		 * @return null Wenn $html gesetzt ist.
+		 * @return boolean Wenn $html null ist, ob die Nachricht eine HTML-Nachricht ist.
+		*/
 
-			self::$database->setField($this->name, "html", $html);
-			return true;
+		function html($html=null)
+		{
+			if(!isset($html))
+				return (true && $this->getMainField("html"));
+			else
+				$this->setMainField("html", $html ? 1 : 0);
 		}
 
-		protected function _read()
+		/**
+		 * Gibt den Nachrichtentyp (Message::$TYPE_*) zurück oder setzt diesen.
+		 * @param $type integer Der Nachrichtentyp (Message::$TYPE_*) oder null, wenn der Typ zurückgegeben werden soll.
+		 * @return integer Message::$TYPE_*, wenn $type null ist.
+		 * @return null Wenn $type gesetzt ist.
+		*/
+
+		function type($type=null)
 		{
-			self::$database->setField($this->name, "last_view", time());
-			return true;
+			if(!isset($type))
+				return $this->getMainField("type");
+			else
+				$this->setMainField("type", $type);
 		}
 
-		function type($type=false)
-		{
-			if($type === false)
-				return self::$database->getField($this->name, "type");
+		/**
+		 * Setzt oder liest die Sendezeit der Nachricht.
+		 * @param $time integer Die Sendezeit, oder null, wenn sie zurückgegeben werden soll
+		 * @return integer Wenn $time null ist
+		 * @return null Wenn $time gesetzt ist
+		*/
 
-			self::$database->setField($this->name, "type", $type);
-			return true;
+		function time($time=null)
+		{
+			if(!isset($type))
+				return $this->getMainField("time");
+			else
+				$this->setMainField("time", $time);
 		}
 
-		function time($time=false)
+		/**
+		 * Setzt oder liest den Empfänger der Nachricht (also den, der sie veröffentlich hat).
+		 * @param $to string Der Empfänger, oder null, wenn er zurückgegeben werden soll
+		 * @return string Wenn $to null ist
+		 * @return null Wenn $to gesetzt ist
+		*/
+
+		function to($to=null)
 		{
-			if($time === false)
-				return self::$database->getField($this->name, "time");
-
-			self::$database->setField($this->name, "time", $time);
-			return true;
-		}
-
-		function to($to=false)
-		{
-			if($to === false)
-				return self::$database->getField($this->name, "receiver");
-
-			self::$database->setField($this->name, "receiver", $to);
-			return true;
-		}
-
-		function getLastViewTime()
-		{
-			return self::$database->getField($this->name, "last_view");
+			if(!isset($to))
+				return $this->getMainField("receiver");
+			else
+				$this->setMainField("receiver", $to);
 		}
 	}

@@ -83,6 +83,7 @@
 				throw new DatasetException("Dataset already exists.");
 
 			self::$sqlite->query("INSERT INTO messages ( message_id, time ) VALUES ( ".$this->escape($name).", ".$this->escape(time())." );");
+			return $name;
 		}
 
 		/**
@@ -99,6 +100,20 @@
 			}
 
 			self::$sqlite->query("DELETE FROM messages WHERE message_id = ".$this->escape($message_id).";");
+		}
+
+		/**
+		 * Wird aufgerufen, wenn ein Benutzer seinen Namen ändert. Ersetzt den Benutzernamen in allen Feldern, wo dieser steht (Absender, Empfänger, berechtigte Benutzer).
+		 * @param $old_name string Der bisherige Name des Benutzers.
+		 * @param $new_name string Der neue Benutzername.
+		 * @return null
+		*/
+
+		function renameUser($old_name, $new_name)
+		{
+			self::$sqlite->query("UPDATE messages_users SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($old_name).";");
+			self::$sqlite->query("UPDATE message_recipients SET recipient = ".self::$sqlite->quote($new_name)." WHERE recipient = ".self::$sqlite->quote($old_name).";");
+			self::$sqlite->query("UPDATE messages SET sender = ".self::$sqlite->quote($new_name)." WHERE sender = ".self::$sqlite->quote($old_name).";");
 		}
 
 		/**
@@ -143,20 +158,6 @@
 				return $this->getMainField("sender");
 			else
 				$this->setMainField("sender", $from);
-		}
-
-		/**
-		 * Wird aufgerufen, wenn ein Benutzer seinen Namen ändert. Ersetzt den Benutzernamen in allen Feldern, wo dieser steht (Absender, Empfänger, berechtigte Benutzer).
-		 * @param $old_name string Der bisherige Name des Benutzers.
-		 * @param $new_name string Der neue Benutzername.
-		 * @return null
-		*/
-
-		function renameUser($old_name, $new_name)
-		{
-			self::$sqlite->query("UPDATE messages_users SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($old_name).";");
-			self::$sqlite->query("UPDATE message_recipients SET recipient = ".self::$sqlite->quote($new_name)." WHERE recipient = ".self::$sqlite->quote($old_name).";");
-			self::$sqlite->query("UPDATE messages SET sender = ".self::$sqlite->quote($new_name)." WHERE sender = ".self::$sqlite->quote($old_name).";");
 		}
 
 		/**
