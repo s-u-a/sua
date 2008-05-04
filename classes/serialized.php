@@ -16,10 +16,9 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	abstract class Dataset
+	abstract class Serialized implements Singleton
 	{
-		protected $datatype = 'dataset';
-		protected $save_dir = false;
+		protected static $save_dir = false;
 		protected $name = false;
 		protected $filename = false;
 		protected $changed = false;
@@ -30,15 +29,51 @@
 		protected $location = false;
 		protected $readonly = true;
 
-		abstract function create();
-
-		function __construct($name=false, $write=true)
+		function getName()
 		{
-			if($name === false)
+			return $this->name;
+		}
+
+		static function datasetName($name=null)
+		{
+			if(!isset($name))
 			{
-				do $name = substr(md5(rand()), 0, 16); while(file_exists($this->save_dir.'/'.$name));
+				do $name = substr(md5(rand()), 0, 16); while(file_exists(self::$save_dir.'/'.$name));
 			}
 
+			$name = preg_replace("/[\x00-\x7f]/e", "strtolower('$0')", $name);
+		}
+
+		static function nameToFilename($name)
+		{
+			return self::$save_dir."/".strtolower(urlencode($name));
+		}
+
+		static function filenameToName($fname)
+		{
+			return urldecode(basename($fname));
+		}
+
+		static function getList()
+		{
+			$list = array();
+			$dir = dir(self::$save_dir);
+			while(($fname = $dir->read()) !== false)
+			{
+				if(!is_file(self::$save_dir."/".$fname))
+					continue;
+				$list[] = self::filenameToName($fname);
+			}
+			return $list;
+		}
+
+		static function exists($name)
+		{
+			return file_exists(self::nameToFilename($name));
+		}
+
+		function __construct($name, $write=true)
+		{
 			$this->readonly = !$write;
 
 			if($this->save_dir === false)
@@ -46,7 +81,7 @@
 			else
 			{
 				$this->name = $name;
-				$this->filename = $this->save_dir.'/'.strtolower(urlencode($this->name));
+				$this->filename = self::nameToFilename(self::datasetName($this->name));
 				$this->location = $this->filename;
 				if(!is_file($this->filename) || !is_readable($this->filename))
 					$this->status = 0;
@@ -82,6 +117,16 @@
 			}
 		}
 
+		static function encode($raw)
+		{
+			return bzcompress(serialize($raw));
+		}
+
+		static function decode($data)
+		{
+			return unserialize(bzdecompress($data));
+		}
+
 		function read($force=false)
 		{
 			if(!$this->status) return false;
@@ -90,7 +135,7 @@
 			clearstatcache();
 			$filesize = filesize($this->filename);
 			fseek($this->file_pointer, 0, SEEK_SET);
-			$this->raw = unserialize(bzdecompress(fread($this->file_pointer, $filesize)));
+			$this->raw = self::decode(fread($this->file_pointer, $filesize));
 			$this->getDataFromRaw();
 			return true;
 		}
@@ -114,7 +159,7 @@
 			}
 
 			fseek($this->file_pointer, 0, SEEK_SET);
-			$new_data = bzcompress(serialize($this->raw));
+			$new_data = self::encode($this->raw);
 
 			$act_filesize = filesize($this->filename);
 			$new_filesize = strlen($new_data);
@@ -144,11 +189,6 @@
 		function getStatus()
 		{
 			return $this->status;
-		}
-
-		function getName()
-		{
-			return $this->name;
 		}
 
 		function readonly() { return $this->readonly; }

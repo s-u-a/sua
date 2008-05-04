@@ -20,10 +20,8 @@
 	  * Repraesentiert eine Allianz im Spiel.
 	*/
 
-	class Alliance extends Dataset
+	class Alliance extends Serialized
 	{
-		protected $datatype = 'alliance';
-
 		/** Rundmail schreiben */
 		public static $PERMISSION_MAIL = 0;
 		/** Koordinaten der Mitglieder sehen */
@@ -43,16 +41,19 @@
 		/** Allianz auflösen */
 		public static $PERMISSION_REMOVE = 8;
 
-		function __construct($name=false, $write=true)
+		static
 		{
-			$this->save_dir = global_setting("DB_ALLIANCES");
-			parent::__construct($name, $write);
+			self::$save_dir = Classes::Database()->getDirectory()."/alliances";
 		}
 
-		function create()
+		static function create($name)
 		{
-			if(file_exists($this->filename)) return false;
-			$this->raw = array(
+			$name = self::datasetName($name);
+			$fname = self::nameToFilename($name);
+
+			if(file_exists($fname)) return false;
+
+			$raw = array(
 				'tag' => $this->name,
 				'members' => array(),
 				'name' => '',
@@ -62,12 +63,12 @@
 				'inner_description_parsed' => ''
 			);
 
+			file_put_contents($fname, self::encode($raw));
+
 			$highscores = Classes::Highscores();
 			$highscores->updateAlliance($this->name, 0, 0, 0);
 
-			$this->write(true, false);
-			$this->__construct($this->name, !$this->readonly);
-			return true;
+			return Classes::Alliance($name);
 		}
 
 		function destroy($by_whom=false)

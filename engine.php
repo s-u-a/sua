@@ -139,77 +139,7 @@
 	global_setting("SESSION_NAME", "session"); # Name des URL-Parameters mit der Session-ID
 	global_setting("IM_UNRECOGNISED_NUMBER", 10); # Wieviele „Unrecognised Command“-Fehler sollen maximal an einen Benutzer hintereinander vom IM-Bot verschickt werden?
 	global_setting("IM_UNRECOGNISED_TIME", 300); # Wieviel Zeit muss vergehen, damit dieses Limit zurückgesetzt wird?
-
-	/**
-	  * Initialisiert die Standardwerte fuer die globalen Einstellungen.
-	  * Kann mehrmals aufgerufen werden, zum Beispiel, um auf eine andere
-	  * Datenbank umzustellen.
-	  * @param $DB Datenbank-ID, auf die die Pfade eingestellt werden sollen
-	*/
-
-	function define_globals($DB)
-	{ # Setzt diverse Spielkonstanten zu einer bestimmten Datenbank
-		static $instances_cache;
-
-		if(!isset($instances_cache)) $instances_cache = array();
-
-		$databases = Config::get_databases(false, $databases_aliases);
-
-		$had = array(); # Um Endlosschleifen zu vermeiden
-		while(!isset($databases[$DB]))
-		{
-			if(isset($databases_aliases[$DB]) && !in_array($databases_aliases[$DB], $had))
-			{
-				$DB = $databases_aliases[$DB];
-				$had[] = $DB;
-			}
-			else return false;
-		}
-
-		// Instanzen-Cache auslagern, damit keine Konflikte entstehen
-		$old_db = global_setting('DB');
-		if($old_db && isset($GLOBALS['objectInstances']) && $GLOBALS['objectInstances'])
-		{
-			$instances[$old_db] = &$GLOBALS['objectInstances'];
-			unset($GLOBALS['objectInstances']);
-		}
-
-		if(isset($instances[$DB]))
-			$GLOBALS['objectInstances'] = &$instances[$DB];
-		else
-			$GLOBALS['objectInstances'] = array();
-
-		global_setting('DB', $DB);
-
-		$DB_DIR = $databases[$DB]['directory'];
-		if(substr($DB_DIR, 0, 1) != '/')
-			$DB_DIR = s_root.'/'.$DB_DIR;
-
-		global_setting('DB_DIR', $DB_DIR);
-
-		global_setting('DB_LOCKED', $DB_DIR.'/locked');
-		global_setting('DB_ALLIANCES', $DB_DIR.'/alliances');
-		global_setting('DB_PLAYERS', $DB_DIR.'/players');
-		global_setting('DB_UNIVERSE', $DB_DIR.'/universe');
-		global_setting('DB_ITEMS', $DB_DIR.'/items');
-		global_setting('DB_ITEM_DB', $DB_DIR.'/items.db');
-		global_setting('DB_TRUEMMERFELDER', $DB_DIR.'/truemmerfelder');
-		global_setting('DB_HANDEL', $DB_DIR.'/handel');
-		global_setting('DB_HANDELSKURS', $DB_DIR.'/handelskurs');
-		global_setting('DB_ADMINS', $DB_DIR.'/admins');
-		global_setting('DB_NONOOBS', $DB_DIR.'/nonoobs');
-		global_setting('DB_ADMIN_LOGFILE', $DB_DIR.'/admin_logfile');
-		global_setting('DB_NO_STRICT_ROB_LIMITS', $DB_DIR.'/no_strict_rob_limits');
-		global_setting('DB_GLOBAL_TIME_FACTOR', $DB_DIR.'/global_time_factor');
-		global_setting('DB_GLOBAL_PROD_FACTOR', $DB_DIR.'/global_prod_factor');
-		global_setting('DB_GLOBAL_COST_FACTOR', $DB_DIR.'/global_cost_factor');
-		global_setting('DB_USE_OLD_INGTECH', $DB_DIR.'/use_old_ingtech');
-		global_setting('DB_USE_OLD_ROBTECH', $DB_DIR.'/use_old_robtech');
-		global_setting('DB_NO_ATTS', $DB_DIR.'/no_atts');
-		global_setting("DB_SQLITE", $DB_DIR."/sqlite");
-		global_setting("LOG", fopen("php://stderr", "w"));
-		return true;
-	}
+	global_setting("LOG", fopen("php://stderr", "w"));
 
 	function __autoload($classname)
 	{

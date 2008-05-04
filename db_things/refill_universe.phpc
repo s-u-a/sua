@@ -26,10 +26,14 @@
 	}
 	else
 	{
-		$databases = Config::get_databases();
-		if(!define_globals($_SERVER['argv'][1]))
+		try
 		{
-			fputs(STDERR, "Unknown database.\n");
+			global_setting("DB", $_SERVER["argv"][1]);
+			$db_obj = Classes::Database();
+		}
+		catch(DatabaseException $e)
+		{
+			fputs(STDERR, $e->getMessage()."\n");
 			exit(1);
 		}
 	}
@@ -49,7 +53,7 @@
 		}
 	}
 
-	$dh = opendir(global_setting("DB_PLAYERS"));
+	$dh = opendir($db_obj->getDirectory()."/players");
 	while(($fname = readdir($dh)) !== false)
 	{
 		if($fname == '.' || $fname == '..') continue;

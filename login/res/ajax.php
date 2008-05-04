@@ -61,7 +61,7 @@ EOF;
 			if($query_length < global_setting("LIST_MIN_CHARS")) break;
 
 			$results = array();
-			$dh = opendir(global_setting("DB_PLAYERS"));
+			$dh = opendir(Classes::Database(global_setting("DB"))->getDirectory()."/players");
 			while(($fname = readdir($dh)) !== false)
 			{
 				if($fname == '.' || $fname == '..') continue;

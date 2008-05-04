@@ -53,4 +53,8 @@
 			<setting name="password_field">password</setting>
 		</section>
 	</section>
+	<section name="admin">
+	<!-- Die Einstellung enthält die SHA1-Summe des Passworts. -->
+		<setting name="user">5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8</setting>
+	</section>
 </config>

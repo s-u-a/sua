@@ -1,3 +1,4 @@
+<?php
 /*
     This file is part of Stars Under Attack.
 
@@ -15,7 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-.autocomplete { margin:0 -1px; padding:0; overflow:auto; border:1px solid #000; background-color:Window; color:WindowText; list-style-type:none; z-index:100000; max-height:12em; }
-.autocomplete li { cursor:pointer; padding:0 2px; }
-.autocomplete li.selected { background-color:Highlight; color:HighlightText; }
-* html form { position:relative; }
+	class DatabaseException extends SuaException
+	{
+	}

@@ -26,10 +26,14 @@
 	}
 	else
 	{
-		$databases = Config::get_databases();
-		if(!define_globals($_SERVER['argv'][1]))
+		try
 		{
-			echo "Unknown database.\n";
+			global_setting("DB", $_SERVER["argv"][1]);
+			$db_obj = Classes::Database();
+		}
+		catch(DatabaseException $e)
+		{
+			fputs(STDERR, $e->getMessage()."\n");
 			exit(1);
 		}
 	}
@@ -37,10 +41,10 @@
 	$highscores_obj = Classes::Highscores();
 	$highscores_obj->destroy();
 
-	$dh = opendir(global_setting("DB_PLAYERS"));
+	$dh = opendir($database->getDirectory()."/players");
 	while(($fname = readdir($dh)) !== false)
 	{
-		if(!is_file(global_setting("DB_PLAYERS").'/'.$fname) || !is_readable(global_setting("DB_PLAYERS").'/'.$fname))
+		if(!is_file($database->getDirectory()."/players".'/'.$fname) || !is_readable($database->getDirectory()."/players".'/'.$fname))
 			continue;
 
 		$this_user = Classes::User(urldecode($fname));
@@ -53,10 +57,10 @@
 	}
 	closedir($dh);
 
-	$dh = opendir(global_setting("DB_ALLIANCES"));
+	$dh = opendir($database->getDirectory()."/alliances");
 	while(($fname = readdir($dh)) !== false)
 	{
-		if(!is_file(global_setting("DB_ALLIANCES").'/'.$fname) || !is_readable(global_setting("DB_ALLIANCES").'/'.$fname))
+		if(!is_file($database->getDirectory()."/alliances".'/'.$fname) || !is_readable($database->getDirectory()."/alliances".'/'.$fname))
 			continue;
 
 		$this_alliance = Classes::Alliance(urldecode($fname));

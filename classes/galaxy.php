@@ -29,7 +29,7 @@ Dann (ab Byte 755) 30 Planetennamen à 24 Bytes.
 Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 */
 
-	class Galaxy
+	class Galaxy implements Singleton
 	{
 		private $status = false;
 		private $file_pointer = false;
@@ -41,7 +41,7 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 
 		function __construct($galaxy, $write=true)
 		{
-			$this->filename = global_setting("DB_UNIVERSE").'/'.$galaxy;
+			$this->filename = Classes::Database()->getDirectory()."/universe/".$galaxy;
 			$this->galaxy = $galaxy;
 			$this->readonly = !$write;
 			if(is_file($this->filename) && is_readable($this->filename))
@@ -383,7 +383,8 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 
 		static function getGalaxiesCount()
 		{
-			for($i=0; is_file(global_setting("DB_UNIVERSE").'/'.($i+1)) && is_readable(global_setting("DB_UNIVERSE").'/'.($i+1)); $i++);
+			$db_dir = Classes::Database()->getDirectory()."/universe/";
+			for($i=0; is_file($db_dir.($i+1)) && is_readable($db_dir.($i+1)); $i++);
 			return $i;
 		}
 

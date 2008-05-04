@@ -15,19 +15,13 @@
     <item url="database.global/" uploadstatus="1" />
     <item url="database.global/changelog" uploadstatus="1" />
     <item url="database.global/databases" uploadstatus="1" />
-    <item url="database.global/databases.example" uploadstatus="1" />
     <item url="database.global/eventhandler.log" uploadstatus="1" />
     <item url="database.global/eventhandler.pid" uploadstatus="1" />
     <item url="database.global/forschung" uploadstatus="1" />
     <item url="database.global/gebaeude" uploadstatus="1" />
     <item url="database.global/gpg" uploadstatus="1" />
-    <item url="database.global/gpg.example" uploadstatus="1" />
     <item url="database.global/hostname" uploadstatus="1" />
     <item url="database.global/messengers" uploadstatus="1" />
-    <item url="database.global/messengers.example" uploadstatus="1" />
-    <item url="database.global/mirrors" uploadstatus="1" />
-    <item url="database.global/mirrors.example" uploadstatus="1" />
-    <item url="database.global/mirrors.state" uploadstatus="1" />
     <item url="database.global/notifications" uploadstatus="1" />
     <item url="database.global/revision" uploadstatus="1" />
     <item url="database.global/roboter" uploadstatus="1" />
@@ -35,24 +29,13 @@
     <item url="database.global/version" uploadstatus="1" />
     <item url="database.global/verteidigung" uploadstatus="1" />
     <item url="db_things/" uploadstatus="1" />
-    <item url="db_things/callback_atts" uploadstatus="1" />
     <item url="db_things/create_database" uploadstatus="1" />
     <item url="db_things/create_galaxy" uploadstatus="1" />
     <item url="db_things/create_galaxy.cpp" uploadstatus="1" />
-    <item url="db_things/eventhandler" uploadstatus="1" />
-    <item url="db_things/fix_bug_109" uploadstatus="1" />
-    <item url="db_things/fix_verbuendet_relations" uploadstatus="1" />
     <item url="db_things/forschung" uploadstatus="1" />
     <item url="db_things/gebaeude" uploadstatus="1" />
-    <item url="db_things/im_server" uploadstatus="1" />
-    <item url="db_things/print_events" uploadstatus="1" />
-    <item url="db_things/refill_fleets" uploadstatus="1" />
-    <item url="db_things/refill_universe" uploadstatus="1" />
-    <item url="db_things/regen_highscores" uploadstatus="1" />
-    <item url="db_things/reset_foreign_fleets" uploadstatus="1" />
     <item url="db_things/roboter" uploadstatus="1" />
     <item url="db_things/schiffe" uploadstatus="1" />
-    <item url="db_things/update_database" uploadstatus="1" />
     <item url="db_things/verteidigung" uploadstatus="1" />
     <item url="images/" uploadstatus="1" />
     <item url="images/screenshots/" uploadstatus="1" />
@@ -246,7 +229,6 @@
     <item url="admin/.htaccess" uploadstatus="1" />
     <item url=".cache/" uploadstatus="1" />
     <item url=".cache/.dataModel" uploadstatus="1" />
-    <item url="database.global/captcha.example" uploadstatus="1" />
     <item url="database.global/.htaccess" uploadstatus="1" />
     <item url="database.global/imserver.pid" uploadstatus="1" />
     <item url="doc/" uploadstatus="1" />
@@ -432,15 +414,22 @@
     <item url="classes/f.php" uploadstatus="1" />
     <item desc="" url="classes/l.php" uploadstatus="1" />
     <item url="classes/js.php" uploadstatus="1" />
-    <item url="classes/gpg.php" />
-    <item url="db_things/callback_atts.phpc" />
-    <item url="db_things/eventhandler.phpc" />
-    <item url="db_things/fix_verbuendet_relations.phpc" />
-    <item url="db_things/im_server.phpc" />
-    <item url="db_things/refill_fleets.phpc" />
-    <item url="db_things/refill_universe.phpc" />
-    <item url="db_things/regen_highscores.phpc" />
-    <item url="db_things/reset_foreign_fleets.phpc" />
-    <item url="db_things/update_database.phpc" />
+    <item url="classes/gpg.php" uploadstatus="1" />
+    <item url="db_things/callback_atts.phpc" uploadstatus="1" />
+    <item url="db_things/eventhandler.phpc" uploadstatus="1" />
+    <item url="db_things/fix_verbuendet_relations.phpc" uploadstatus="1" />
+    <item url="db_things/im_server.phpc" uploadstatus="1" />
+    <item url="db_things/refill_fleets.phpc" uploadstatus="1" />
+    <item url="db_things/refill_universe.phpc" uploadstatus="1" />
+    <item url="db_things/regen_highscores.phpc" uploadstatus="1" />
+    <item url="db_things/reset_foreign_fleets.phpc" uploadstatus="1" />
+    <item url="db_things/update_database.phpc" uploadstatus="1" />
+    <item url="classes/database.php" />
+    <item url="classes/singleton.php" />
+    <item url="classes/databaseexception.php" />
+    <item url="classes/serialized.php" />
+    <item url="database.global/config.db" />
+    <item url="database.global/config.xml" />
+    <item url="database.global/config.xml.example" />
   </project>
 </webproject>

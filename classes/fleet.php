@@ -74,7 +74,7 @@
   * Handel: [ ( Rohstoffnummer => Menge ), ( Roboter-ID => Anzahl ), Rohstoffe abliefern? ]
 */
 
-	class Fleet
+	class Fleet implements Singleton
 	{
 		protected static $database = false;
 		protected $status = false;
@@ -674,11 +674,13 @@
 				$mass += $item_info['mass']*$count;
 			}
 
-			$global_factors = Config::get_global_factors();
 			$add_factor = 1;
 			if($factor) $add_factor = $this->raw[1][$user][2];
+			$database_config = Classes::Database(global_setting("DB"))->getConfig();
+			if(isset($database_config["global_factors"]) && isset($database_config["global_factors"]["costs"]))
+				$add_factor *= $database_config["global_factors"]["costs"];
 
-			return $add_factor*$global_factors['cost']*self::getDistance($from, $to)*$mass/1000000;
+			return $add_factor*self::getDistance($from, $to)*$mass/1000000;
 		}
 
 		function getScores($user, $from, $to)
@@ -736,8 +738,9 @@
 
 			$time = sqrt(self::getDistance($from, $to)/$speed)*2;
 
-			$global_factors = Config::get_global_factors();
-			$time *= $global_factors['time'];
+			$database_config = Classes::Database(global_setting("DB"))->getConfig();
+			if(isset($database_config["global_factors"]) && isset($database_config["global_factors"]["time"]))
+				$time *= $database_config["global_factors"]["time"];
 
 			if($use_min_time && $time < global_setting("MIN_BUILDING_TIME"))
 				$time = global_setting("MIN_BUILDING_TIME");

@@ -183,13 +183,16 @@
 			</thead>
 			<tbody>
 <?php
-				$global_factors = Config::get_global_factors();
-				$prod[0] *= $global_factors['prod'];
-				$prod[1] *= $global_factors['prod'];
-				$prod[2] *= $global_factors['prod'];
-				$prod[3] *= $global_factors['prod'];
-				$prod[4] *= $global_factors['prod'];
-				$prod[5] *= $global_factors['prod'];
+				$database_config = Classes::Database(global_setting("DB"))->getConfig();
+				if(isset($database_config["global_factors"]) && isset($database_config["global_factors"]["production"]))
+				{
+					$prod[0] *= $database_config["global_factors"]["production"];
+					$prod[1] *= $database_config["global_factors"]["production"];
+					$prod[2] *= $database_config["global_factors"]["production"];
+					$prod[3] *= $database_config["global_factors"]["production"];
+					$prod[4] *= $database_config["global_factors"]["production"];
+					$prod[5] *= $database_config["global_factors"]["production"];
+				}
 
 				$start_lvl = $me->getItemLevel($_GET["id"])-3;
 				if($start_lvl < 1)

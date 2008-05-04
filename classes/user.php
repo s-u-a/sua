@@ -16,18 +16,17 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	class User extends Dataset
+	class User extends Serialized
 	{
 		protected $active_planet = null;
 		protected $active_planet_cache = array();
-		protected $datatype = 'user';
 		protected $recalc_highscores = array(false,false,false,false,false,false,false);
 		protected $last_eventhandler_run = array();
 		protected $language_cache = null;
 
 		function __construct($name=false, $write=true)
 		{
-			$this->save_dir = global_setting("DB_PLAYERS");
+			$this->save_dir = Classes::Database()->getDirectory()."/players";
 			parent::__construct($name, $write);
 		}
 
@@ -62,7 +61,7 @@
 
 		static function userExists($user)
 		{
-			$filename = global_setting("DB_PLAYERS").'/'.strtolower(urlencode($user));
+			$filename = Classes::Database()->getDirectory()."/players/".strtolower(urlencode($user));
 			return (is_file($filename) && is_readable($filename));
 		}
 
@@ -1068,25 +1067,26 @@
 				}
 			}*/
 
-			$global_factors = Config::get_global_factors();
+			$database_config = Classes::Database(global_setting("DB"))->getConfig();
+			$global_factors = isset($database_config["global_factors"]) ? $database_config["global_factors"] : array();
 
-			if(isset($info['time']))
+			if(isset($info['time']) && isset($global_factors["time"]))
 				$info['time'] *= $global_factors['time'];
-			if(isset($info['prod']))
+			if(isset($info['prod']) && isset($global_factors["production"]))
 			{
-				$info['prod'][0] *= $global_factors['prod'];
-				$info['prod'][1] *= $global_factors['prod'];
-				$info['prod'][2] *= $global_factors['prod'];
-				$info['prod'][3] *= $global_factors['prod'];
-				$info['prod'][4] *= $global_factors['prod'];
-				$info['prod'][5] *= $global_factors['prod'];
+				$info['prod'][0] *= $global_factors['production'];
+				$info['prod'][1] *= $global_factors['production'];
+				$info['prod'][2] *= $global_factors['production'];
+				$info['prod'][3] *= $global_factors['production'];
+				$info['prod'][4] *= $global_factors['production'];
+				$info['prod'][5] *= $global_factors['production'];
 			}
-			if(isset($info['ress']))
+			if(isset($info['ress']) && isset($global_factors["costs"]))
 			{
-				$info['ress'][0] *= $global_factors['cost'];
-				$info['ress'][1] *= $global_factors['cost'];
-				$info['ress'][2] *= $global_factors['cost'];
-				$info['ress'][3] *= $global_factors['cost'];
+				$info['ress'][0] *= $global_factors['costs'];
+				$info['ress'][1] *= $global_factors['costs'];
+				$info['ress'][2] *= $global_factors['costs'];
+				$info['ress'][3] *= $global_factors['costs'];
 			}
 
 			switch($type)

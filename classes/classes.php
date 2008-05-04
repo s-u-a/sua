@@ -21,24 +21,22 @@
 
 	class Classes
 	{
-		static function Dataset($classname, $p1=false, $write=true)
+		static function Singleton($classname, $p1=false, $write=true)
 		{
 			global $objectInstances;
 
 			if(!isset($objectInstances)) $objectInstances = array();
 			if(!isset($objectInstances[$classname])) $objectInstances[$classname] = array();
-			$p1_lower = preg_replace('/[\x00-\x7f]/e', 'strtolower("$0")', $p1);
-			if(!isset($objectInstances[$classname][$p1_lower]))
+			$p1 = $classname::datasetName($p1);
+			if(!isset($objectInstances[$classname][$p1]))
 			{
 				$instance = new $classname($p1, $write);
-				$p1 = $instance->getName();
-				$p1_lower = preg_replace('/[\x00-\x7f]/e', 'strtolower("$0")', $p1);
-				$objectInstances[$classname][$p1_lower] = $instance;
+				$objectInstances[$classname][$p1] = $instance;
 			}
-			elseif($write && $objectInstances[$classname][$p1_lower]->readonly())
+			elseif($write && $objectInstances[$classname][$p1]->readonly())
 			{ # Von Readonly auf Read and write schalten
-				$objectInstances[$classname][$p1_lower]->__destruct();
-				$objectInstances[$classname][$p1_lower]->__construct($p1, $write);
+				$objectInstances[$classname][$p1]->__destruct();
+				$objectInstances[$classname][$p1]->__construct($p1, $write);
 			}
 
 			return $objectInstances[$classname][$p1_lower];
@@ -77,19 +75,19 @@
 		}
 
 		# Serialize mit Instanzen und Locking
-		static function User($p1=false, $write=true){ return self::Dataset('User', $p1, $write); }
-		static function Alliance($p1=false, $write=true){ return self::Dataset('Alliance', $p1, $write); }
+		static function User($p1=false, $write=true){ return self::Singleton('User', $p1, $write); }
+		static function Alliance($p1=false, $write=true){ return self::Singleton('Alliance', $p1, $write); }
 		static function Fleet($p1=false) {
 			if($p1 === false) $p1 = str_replace('.', '-', microtime(true));
-			return self::Dataset('Fleet', $p1);
+			return self::Singleton('Fleet', $p1);
 		}
 
 		# Serialize
-		static function Items(){ return self::Dataset('Items', 'items'); }
-		static function Item($id){ return new Item($id); }
+		static function Items(){ return self::Singleton('Items', 'items'); }
+		static function Item($id){ return self::Singleton("Item", $id); }
 
 		# Eigenes Binaerformat
-		static function Galaxy($p1, $write=true){ return self::Dataset('Galaxy', $p1, $write); }
+		static function Galaxy($p1, $write=true){ return self::Singleton('Galaxy', $p1, $write); }
 
 		# SQLite
 		static function EventFile() { return new EventFile(); }

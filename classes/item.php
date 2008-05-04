@@ -16,8 +16,9 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	class Item
+	class Item implements Singleton
 	{
+		protected $item;
 		protected $item_info = false;
 		protected $items_instance = false;
 		function __construct($id)
@@ -26,6 +27,11 @@
 			$this->item = $id;
 
 			$this->item_info = $this->items_instance->getItemInfo($this->item);
+		}
+
+		function getName()
+		{
+			return $this->item;
 		}
 
 		function getInfo($field=null)

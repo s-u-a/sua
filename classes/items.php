@@ -16,7 +16,7 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	class Items
+	class Items implements Singleton
 	{
 		private $elements = array();
 		private $instance = false;

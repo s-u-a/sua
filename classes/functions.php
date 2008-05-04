@@ -471,4 +471,9 @@
 			$times[""][0]++;
 			$times[""][1] = $time;
 		}
+
+		static function string2boolean($string)
+		{
+			return $string && !in_array($string, array("no", "false", "disabled", "disable", "off", "nein", "n"));
+		}
 	}

@@ -110,7 +110,7 @@ EOF
 
 		ftruncate($fh_pid, 0);
 
-		$databases = Config::get_databases();
+		$databases = Database::getList();
 
 		if($daemon) $errlog = fopen(global_setting("DB_EVENTHANDLER_LOG"), 'a');
 		else $errlog = STDERR;
@@ -230,21 +230,19 @@ EOF
 					break;
 				case SIGUSR1:
 					fputs($errlog, time_prefix()."SIGUSR1 (".SIGUSR1.")\n");
-
-					fputs($errlog, time_prefix()."Rescanning databases... ");
-					global $databases;
-					$databases = Config::get_databases(true);
-					fputs($errlog, "Done\n");
-
 					break;
 				case SIGUSR2:
 					fputs($errlog, time_prefix()."SIGUSR2 (".SIGUSR2.")\n");
-					foreach($databases as $selected_database=>$dbinfo)
+					foreach($databases as $database)
 					{
-						if(!is_dir($dbinfo['directory']) || /*!$dbinfo['enabled'] ||*/ $dbinfo['dummy']) continue;
+						$database_obj = Classes::Database($database);
+						if($database_obj->alias() != $database)
+							continue;
 
-						define_globals($selected_database);
-						walkthrough_users($dbinfo['enabled']);
+						$conf = $database_obj->getConfig();
+						Classes::resetInstances();
+						global_setting("DB", $database);
+						walkthrough_users(!isset($conf["enabled"]) || Functions::string2boolean($conf["enabled"]));
 						check_termination();
 						Classes::resetInstances();
 					}
@@ -347,20 +345,19 @@ EOF
 
 			if(!$pid || $pid == -1)
 			{
-				foreach($databases as $selected_database=>$dbinfo)
+				foreach($databases as $database)
 				{
-					define_globals($selected_database);
+					Classes::resetInstances();
+					global_setting("DB", $database);
 					$reload_stack = Classes::ReloadStack();
 					foreach($reload_stack->getLastUsers() as $user)
 					{
 						if($verbose)
-							fputs($errlog, time_prefix()."Refreshing user ".$user["user"]." (".$selected_database.")\n");
+							fputs($errlog, time_prefix()."Refreshing user ".$user["user"]." (".$database.")\n");
 						$user_obj = Classes::User($user["user"]);
 						if($verbose)
-							fputs($errlog, time_prefix()."Refreshed user ".$user["user"]." (".$selected_database.")\n");
+							fputs($errlog, time_prefix()."Refreshed user ".$user["user"]." (".$database.")\n");
 					}
-
-					Classes::resetInstances();
 				}
 				if($pid != -1) exit(0);
 			}
@@ -386,10 +383,11 @@ EOF
 			$max_ages = $message_type_times;
 			foreach($max_ages as $k=>$v) $max_ages[$k] *= 86400;
 
-			$dh = opendir(global_setting("DB_PLAYERS"));
+			$db_obj = Classes::Database(global_setting("DB"));
+			$dh = opendir($db_obj->getDirectory()."/players");
 			while(($filename = readdir($dh)) !== false)
 			{
-				if(!is_file(global_setting("DB_PLAYERS").'/'.$filename))
+				if(!is_file($db_obj->getDirectory()."/players/".$filename))
 					continue;
 
 				if($verbose) fputs($errlog, time_prefix()."Processing user ".urldecode($filename)."\n");
@@ -418,7 +416,7 @@ EOF
 							if($verbose) fputs($errlog, time_prefix()."  User is inactive. ");
 							if($send_mails)
 							{
-								if(!$user->sendMail("Accountinaktivität in ".$user->_("[title_abbr]"), "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben zwei Wochen Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), $today))
+								if(!$user->sendMail("Accountinaktivität in ".$user->_("[title_abbr]"), "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$db_obj->getTitle()." angemeldet haben. Sie haben zwei Wochen Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), $today))
 									fputs($errlog, "  Could not send mail to user ".$user->getName().".\n");
 								elseif($verbose) fputs($errlog, "  Sent mail.\n");
 							}
@@ -440,7 +438,7 @@ EOF
 							if($verbose) fputs($errlog, time_prefix()."  User is inactive. ");
 							if($send_mails)
 							{
-								if(!$user->sendMail("Accountinaktivität in ".$user->_("[title_abbr]"), "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben ".(($days == 34) ? 'einen Tag' : 'zwei Wochen')." Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), $today))
+								if(!$user->sendMail("Accountinaktivität in ".$user->_("[title_abbr]"), "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$db_obj->getTitle()." angemeldet haben. Sie haben ".(($days == 34) ? 'einen Tag' : 'zwei Wochen')." Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), $today))
 									fputs($errlog, "  Could not send mail to user ".$user->getName().".\n");
 								elseif($verbose) fputs($errlog, "  Sent mail.\n");
 							}
@@ -461,7 +459,7 @@ EOF
 					if($verbose) fputs($errlog, time_prefix()."  User is inactive. ");
 					if($send_mails && $user->checkSetting('email'))
 					{
-						if(!$user->sendMail("Accountinaktivität in ".$user->_("[title_abbr]"), "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$databases[global_setting("DB")]['name']." angemeldet haben. Sie haben eine Woche Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), $today))
+						if(!$user->sendMail("Accountinaktivität in ".$user->_("[title_abbr]"), "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in Stars Under Attack in ".$db_obj->getTitle()." angemeldet haben. Sie haben eine Woche Zeit, sich anzumelden, danach wird Ihr Account einer automatischen L\xc3\xb6schung unterzogen.\n\nDas Spiel erreichen Sie unter http://s-u-a.net/ \xe2\x80\x93 Ihr Benutzername lautet ".$user->getName(), $today))
 							fputs($errlog, "  Could not send mail to user ".$user->getName().".\n");
 						elseif($verbose) fputs($errlog, "  Sent mail.\n");
 					}
@@ -557,7 +555,7 @@ EOF
 	#################
 
 	{
-		$hostname = get_default_hostname();
+		$hostname = Config::getDefaultHostname();
 		$fposition = 0;
 
 		if(date('H')*3600+date('i')*60+60 < global_setting("EVENTHANDLER_RUNTIME")) $last_walked = false;
@@ -585,11 +583,14 @@ EOF
 				$market_cache_run++;
 
 			# Flotten ankommen lassen
-			foreach($databases as $selected_database=>$dbinfo)
+			foreach($databases as $database)
 			{
-				if(!is_dir($dbinfo['directory']) || /*!$dbinfo['enabled'] ||*/ $dbinfo['dummy']) continue;
+				$database_obj = Classes::Database($database);
+				if($database_obj->alias() != $database)
+					continue;
 
-				define_globals($selected_database);
+				Classes::resetInstances();
+				global_setting("DB", $database);
 
 				$event_obj = Classes::EventFile();
 				while($process = $event_obj->removeNextFleet())
@@ -611,8 +612,6 @@ EOF
 						break;
 					check_termination();
 				}
-
-				Classes::resetInstances();
 			}
 
 			check_termination();
@@ -630,14 +629,16 @@ EOF
 
 				if(!$pid || $pid == -1)
 				{
-					foreach($databases as $selected_database=>$dbinfo)
+					foreach($databases as $database)
 					{
-						if(!is_dir($dbinfo['directory']) || /*!$dbinfo['enabled'] ||*/ $dbinfo['dummy']) continue;
+						$database_obj = Classes::Database($database);
+						if($database_obj->alias() != $database)
+							continue;
 
-						define_globals($selected_database);
+						Classes::resetInstances();
+						global_setting("DB", $database);
 						walkthrough_users($dbinfo['enabled']);
 						check_termination();
-						Classes::resetInstances();
 					}
 					if($pid != -1) exit(0);
 				}
