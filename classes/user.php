@@ -788,9 +788,22 @@
 			$this->changed = true;
 		}
 
-		function removeMessage($message_id, $type, $edit_message=true)
+		function removeMessage($message_id, $type=null, $edit_message=true)
 		{
 			if(!$this->status) return false;
+
+			if(!isset($type) && isset($this->raw["messages"]))
+			{
+				foreach($this->raw["messages"] as $type=>$messages)
+				{
+					if(isset($messages[$message_id]))
+					{
+						unset($this->raw["messages"][$type][$message_id]);
+						$this->changed = true;
+					}
+				}
+				return true;
+			}
 
 			if(!isset($this->raw['messages']) || !isset($this->raw['messages'][$type]) || !isset($this->raw['messages'][$type][$message_id]))
 				return 2;

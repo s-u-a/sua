@@ -16,9 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	interface Singleton
+	class SQLiteException extends SuaException
 	{
-		abstract public function getName();
-		abstract public static function datasetName($name=null);
-		abstract public function readonly();
 	}

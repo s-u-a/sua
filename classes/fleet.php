@@ -74,7 +74,7 @@
   * Handel: [ ( Rohstoffnummer => Menge ), ( Roboter-ID => Anzahl ), Rohstoffe abliefern? ]
 */
 
-	class Fleet implements Singleton
+	class Fleet implements Singleton,Dataset
 	{
 		protected static $database = false;
 		protected $status = false;
@@ -89,10 +89,13 @@
 		static $TYPE_SPIONIEREN = 5;
 		static $TYPE_STATIONIEREN = 6;
 
+		static
+		{
+			self::$database = new FleetDatabase();
+		}
+
 		static protected function databaseInstance()
 		{
-			if(!self::$database)
-				self::$database = new FleetDatabase();
 		}
 
 		function __construct($name=false)
@@ -124,18 +127,37 @@
 			return false;
 		}
 
+		static function datasetName($name)
+		{
+			if(!isset($name))
+			{
+				do $name = str_replace(".", "-", microtime(true)); while(self::exists($name));
+			}
+			return $name;
+		}
+
+
 		function __destruct()
 		{
 			$this->write();
 		}
 
-		function create()
+		static function create($name=null)
 		{
-			self::$database->createNewFleet($this->name);
-			$this->raw = array(array(), array(), false, array());
-			$this->changed = true;
-			$this->status = 1;
-			return true;
+			$name = self::datasetName($name);
+			self::$database->createNewFleet($name);
+			return Classes::Fleet($name);
+		}
+
+		static function exists($name)
+		{
+			$name = self::datasetName($name);
+			return self::$database->fleetExists($name);
+		}
+
+		static function getList()
+		{
+			return self::$database->getList();
 		}
 
 		function read($force=false)

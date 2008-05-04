@@ -16,393 +16,261 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	class MessageDatabase extends SQLite
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage storage
+	*/
+
+	/**
+	 * Repräsentiert eine Nachricht des internen Benutzer-Nachrichten-Systems.
+	 * Eine Nachricht kann mehrere Empfänger haben, die unabhängig voneinander die Nachricht in ihrem Postfach
+	 * erhalten. Löscht ein Benutzer die Nachricht aus seinem Postfach, so muss Message::removeUser()
+	 * ausgeführt werden. Damit wird die Leseberechtigung des Benutzers auf die Nachricht entfernt, versucht
+	 * er also, sie abzurufen, soll er eine Fehlermeldung erhalten. Erst wenn kein Benutzer mehr Leseberechtigung
+	 * auf die Nachricht hat, wird sie aus der Datenbank entfernt.
+	 * @author Candid Dauth
+	*/
+
+	class Message extends SQLiteSet
 	{
-		protected $tables = array("messages" => array("message_id PRIMARY KEY", "time INT", "text", "parsed_text", "sender", "users", "subject", "html INT"), "messages_recipients" => array("message_id", "recipient"));
+		protected static $tables = array("messages" => array("message_id PRIMARY KEY", "time INT", "text", "parsed_text", "sender", "users", "subject", "html INT"), "messages_recipients" => array("message_id", "recipient"), "messages_users" => array("message_id", "user"));
+		protected static $id_field = "message_id";
 
-		function setField($message_id, $field_name, $field_value)
-		{
-			if(!$this->messageExists($message_id)) return false;
-
-			return $this->query("UPDATE messages SET ".$field_name." = ".$this->escape($field_value)." WHERE message_id = ".$this->escape($message_id).";");
-		}
-
-		function getField($message_id, $field_name)
-		{
-			if(!$this->messageExists($message_id)) return false;
-
-			$result = $this->singleQuery("SELECT ".$field_name." FROM messages WHERE message_id = ".$this->escape($message_id)." LIMIT 1;");
-			if($result) $result = $result[$field_name];
-			return $result;
-		}
-
-		function getNewName()
-		{
-			do $name = substr(md5(rand()), 0, 16);
-				while($this->messageExists($name));
-			return $name;
-		}
-
-		function createNewMessage($message_id, $time=null)
-		{
-			if($this->messageExists($message_id)) return false;
-
-			return $this->query("INSERT INTO messages ( message_id, time ) VALUES ( ".$this->escape($message_id).", ".$this->escape($time)." );");
-		}
-
-		function messageText($message_id, $text=null)
-		{
-			if($text === null)
-			{
-				if($this->messageIsHTML($message_id))
-					return $this->getField($message_id, "text");
-				else
-					return $this->getField($message_id, "parsed_text");
-			}
-			else
-			{
-				$return = true;
-
-				$return = $return && $this->setField($message_id, "text", $text);
-				if(!$this->messageIsHTML($message_id))
-					$return = $return && $this->setField($message_id, "parsed_text", F::parse_html($text));
-				return $return;
-			}
-		}
-
-		function messageFrom($message_id, $from=null)
-		{
-			if($from === null)
-				return $this->getField($message_id, "sender");
-			else
-				return $this->setField($message_id, "sender", $from);
-		}
-
-		function messageSubject($message_id, $subject=null)
-		{
-			if($subject === null)
-				return $this->getField($message_id, "subject");
-			else
-				return $this->setField($message_id, "subject", $subject);
-		}
-
-		function messageUsers($message_id, $users=null)
-		{
-			if($users === null)
-				return $this->getField($message_id, "users");
-			else
-				return $this->setField($message_id, "users", $users);
-		}
-
-		function messageRawText($message_id)
-		{
-			return $this->getField($message_id, "text");
-		}
-
-		function messageIsHTML($message_id, $is_html=null)
-		{
-			if($is_html === null)
-				return (bool) $this->getField($message_id, 'html');
-			else
-			{
-				$return = true;
-				if($this->messageIsHTML($message_id) && !$is_html)
-				{
-					$return = $return && $this->setField($message_id, "parsed_text", "");
-					$return = $return && $this->setField($message_id, "html", "0");
-				}
-				elseif(!$this->messageIsHTML($message_id) && $is_html)
-				{
-					$return = $return && $this->setField($message_id, "parsed_text", F::parse_html($this->getField($message_id, "text")));
-					$return = $return && $this->setField($message_id, "html", "1");
-				}
-				return $return;
-			}
-		}
-
-		function messageExists($message_id)
-		{
-			return ($this->singleField("SELECT COUNT(*) FROM messages WHERE message_id = ".$this->escape($message_id)." LIMIT 1;") > 0);
-		}
-
-		function messagesCount()
-		{
-			return ($this->singleField("SELECT COUNT(*) FROM messages;"));
-		}
-
-		function messageTime($message_id, $time=null)
-		{
-			if($time === null)
-				return $this->getField($message_id, "time");
-			else
-				return $this->setField($message_id, "time", $time);
-		}
-
-		function removeMessage($message_id)
-		{
-			return $this->query("DELETE FROM messages WHERE message_id = ".$this->escape($message_id).";");
-		}
-
-		function cleanUp(&$message_ids)
-		{
-			$this->query("SELECT message_id FROM messages;");
-			$count = 0;
-
-			while(($f = $this->nextResult()) !== false)
-			{
-				$message_id = &$f['message_id'];
-				if(!isset($message_ids[$message_id]))
-				{
-					$this->transactionQuery("DELETE FROM messages WHERE message_id = ".$this->escape($message_id).";");
-					$count++;
-				}
-			}
-			$this->endTransaction();
-
-			return $count;
-		}
-
-		function renameUser($old_name, $new_name)
-		{
-			$this->query("SELECT message_id,users,sender FROM messages WHERE users LIKE ".$this->escape("%".$old_name."\r%")." OR sender = ".$this->escape($old_name).";");
-			while($message = $this->nextResult())
-			{
-				$users = explode("\n", $message['users']);
-				$users_changed = false;
-				$sender_changed = false;
-
-				if($message['sender'] == $old_name)
-				{
-					$message['sender'] = $new_name;
-					$sender_changed = true;
-				}
-
-				foreach($users as $k=>$u)
-				{
-					$u = explode("\r", $u);
-					if($u[0] == $old_name)
-					{
-						$u[0] = $new_name;
-						$users[$k] = implode("\r", $u);
-						$users_changed = true;
-					}
-				}
-				if($users_changed)
-					$message['users'] = implode("\n", $users);
-
-				if($users_changed || $sender_changed)
-				{
-					$set = array();
-					if($users_changed)
-						$set[] = "users = ".$this->escape($message['users']);
-					if($sender_changed)
-						$set[] = "sender = ".$this->escape($message['sender']);
-					$this->transactionQuery("UPDATE messages SET ".implode(", ", $set)." WHERE message_id = ".$this->escape($message['message_id']).";");
-				}
-			}
-			$this->transactionQuery("UPDATE messages_recipients SET recipient = ".$this->escape($new_name)." WHERE recipient = ".$this->escape($old_name).";");
-			$this->endTransaction();
-
-			return true;
-		}
-
-		function getRecipients($message_id)
-		{
-			$this->query("SELECT recipient FROM messages_recipients WHERE message_id = ".$this->escape($message_id).";");
-			$return = array();
-			while($res = $this->nextResult())
-				$return[] = $res["recipient"];
-			return $return;
-		}
-
-		function addRecipient($message_id, $recipient)
-		{
-			return $this->query("INSERT INTO messages_recipients ( message_id, recipient ) VALUES ( ".$this->escape($message_id).", ".$this->escape($recipient)." );");
-		}
-	}
-
-	class Message
-	{
+		/** Array nach dem Schema ( Benutzername => Nachrichtentyp (Message::$TYPE_*) ). Beim Zerstören des
+		Nachrichtenobjekts werden an die Benutzer IM-Nachrichten verschickt, wenn sie es wünschen. Der Grund,
+		warum dies nicht sofort gemacht wird, ist, dass möglicherweise addUser() ausgeführt wird, bevor Dinge
+		wie der Betreff oder der Absender gesetzt sind. */
 		protected $im_check_notify = array();
-		protected static $database = false;
-		protected $name = false;
 
+		/** Nachricht des Typs Kampfbericht */
 		static $TYPE_KAEMPFE = 1;
+		/** Nachricht des Typs Spionagebericht */
 		static $TYPE_SPIONAGE = 2;
+		/** Nachricht des Typs Transportbenachrichtigung */
 		static $TYPE_TRANSPORT = 3;
+		/** Nachricht des Typs Sammelbenachrichtigung */
 		static $TYPE_SAMMELN = 4;
+		/** Nachricht des Typs Besiedelungsbenachrichtigung */
 		static $TYPE_BESIEDELUNG = 5;
+		/** Typ Benutzernachricht */
 		static $TYPE_BENUTZERNACHRICHTEN = 6;
+		/** Typ Bündnis- oder Allianznachricht */
 		static $TYPE_VERBUENDETE = 7;
+		/** Nachricht im Postausgang */
 		static $TYPE_POSTAUSGANG = 8;
 
-		static protected function databaseInstance()
-		{
-			if(!self::$database)
-				self::$database = new MessageDatabase();
-		}
+		/**
+		 * Gibt die Zahl der gespeicherten Nachrichten zurück.
+		 * @return integer
+		*/
 
 		static function getMessagesCount()
 		{
-			self::databaseInstance();
-
-			return self::$database->messagesCount();
+			return (self::$sqlite->singleField("SELECT COUNT(*) FROM messages;"));
 		}
 
-		function __construct($name=false)
+		/**
+		 * Erzeugt die Nachricht mit der ID $name. Implementiert Dataset::create().
+		 * @param $name string Die ID der Nachricht oder null für eine zufällige.
+		 * @return null
+		*/
+
+		static function create($name=null)
 		{
-			self::databaseInstance();
+			$name = self::datasetName($name);
+			if(self::exists($name))
+				throw new DatasetException("Dataset already exists.");
 
-			if(!$name)
-				$name = self::$database->getNewName();
-			$this->name = $name;
+			self::$sqlite->query("INSERT INTO messages ( message_id, time ) VALUES ( ".$this->escape($name).", ".$this->escape(time())." );");
 		}
 
-		function create()
+		/**
+		 * Entfernt die Nachricht aus der Datenbank. Implementiert Dataset::destroy().
+		 * @return null
+		*/
+
+		function destroy()
 		{
-			return self::$database->createNewMessage($this->name, time());
+			foreach($this->getUsersList() as $l)
+			{
+				$user = Classes::User($l);
+				$user->removeMessage($this->name, null, false);
+			}
+
+			self::$sqlite->query("DELETE FROM messages WHERE message_id = ".$this->escape($message_id).";");
 		}
 
-		function text($text=false)
+		/**
+		 * Liest oder schreibt den Nachrichtentext.
+		 * @param $text Wird als neuer Nachrichtentext gesetzt. Null für Rückgabe des aktuellen Textes. Sollte nur HTML-Code enthalten, wenn die Nachricht als HTML-Nachricht definiert wurde (Message::html()).
+		 * @return null Wenn $text definiert wird
+		 * @return string Wenn $text null ist: der aktuelle Nachrichtentext als HTML-Code
+		*/
+
+		function text($text=null)
 		{
-			if($text === false) $text = null;
-			return self::$database->messageText($this->name, $text);
+			if(!isset($text))
+				return $this->getMainField($this->html() ? "text" : "parsed_text");
+			else
+			{
+				$this->setMainField("text", $text);
+				if(!$this->html())
+					$this->setMainField("parsed_text", F::parse_html($text));
+			}
 		}
+
+		/**
+		 * Gibt den eingegebenen Nachrichtentext zurück, ohne diesen mit HTML zu formatieren.
+		 * @return string
+		*/
 
 		function rawText()
 		{
-			return self::$database->messageRawText($this->name);
+			return $this->getMainField("text");
 		}
 
-		function from($from=false)
+		/**
+		 * Liest oder setzt den Absender der Nachricht.
+		 * @param $from string Der neue Absender. Wenn null, wird der aktuelle zurückgegeben.
+		 * @return null Wenn $from übergeben wurde.
+		 * @return string Wenn $from null ist, wird der Absender zurückgegeben.
+		*/
+
+		function from($from=null)
 		{
-			if($from === false) $from = null;
-			return self::$database->messageFrom($this->name, $from);
+			if(!isset($from))
+				return $this->getMainField("sender");
+			else
+				$this->setMainField("sender", $from);
 		}
+
+		/**
+		 * Wird aufgerufen, wenn ein Benutzer seinen Namen ändert. Ersetzt den Benutzernamen in allen Feldern, wo dieser steht (Absender, Empfänger, berechtigte Benutzer).
+		 * @param $old_name string Der bisherige Name des Benutzers.
+		 * @param $new_name string Der neue Benutzername.
+		 * @return null
+		*/
 
 		function renameUser($old_name, $new_name)
 		{
-			$changed = false;
-			$users = explode("\n", self::$database->messageUsers($this->name));
-			foreach($users as $k=>$l)
-			{
-				$l = explode("\r", $l);
-				if($l[0] == $old_name)
-				{
-					$l[0] = $new_name;
-					$users[$k] = implode("\r", $l);
-					$changed = true;
-				}
-			}
-
-			if($changed)
-			{
-				self::$database->messageUsers($this->name, implode("\n", $users));
-			}
-			return true;
+			self::$sqlite->query("UPDATE messages_users SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($old_name).";");
+			self::$sqlite->query("UPDATE message_recipients SET recipient = ".self::$sqlite->quote($new_name)." WHERE recipient = ".self::$sqlite->quote($old_name).";");
+			self::$sqlite->query("UPDATE messages SET sender = ".self::$sqlite->quote($new_name)." WHERE sender = ".self::$sqlite->quote($old_name).";");
 		}
+
+		/**
+		 * Liest oder setzt den Betreff der Nachricht.
+		 * @param $subject string Der neue Betreff oder null, wenn der Betreff ausgelesen werden soll.
+		 * @return null Wenn $subject gesetzt ist
+		 * @return string Der Betreff, wenn $subject null ist.
+		*/
 
 		function subject($subject=false)
 		{
-			if($subject === false) $subject = null;
-			return self::$database->messageSubject($this->name, $subject);
+			if(!isset($subject))
+				return $this->getMainField("subject");
+			else
+				$this->setMainField("subject", $subject);
 		}
 
-		function html($html=-1)
+		/**
+		 * Gibt zurück oder stellt ein, ob der Nachrichtentext im HTML-Format gespeichert wurde.
+		 * @param $html boolean Ist die Nachricht eine HTML-Nachricht?
+		 * @return null Wenn $html gesetzt ist.
+		 * @return boolean Wenn $html null ist, ob die Nachricht eine HTML-Nachricht ist.
+		*/
+
+		function html($html=null)
 		{
-			if($html === -1) $html = null;
-			return self::$database->messageIsHTML($this->name, $html);
+			if(!isset($html))
+				return (true && $this->getMainField("html"));
+			else
+				$this->setMainField("html", $html ? 1 : 0);
 		}
+
+		/**
+		 * Fügt einen Benutzer zur Liste leseberechtigter Benutzer der Nachricht hinzu. Benachrichtigt ihn wenn gewünscht per Instant Messaging über den Eingang.
+		 * @param $user string Der Benutzername
+		 * @param $type integer Der Nachrichtentyp (Message::$TYPE_*). Benötigt für die Benachrichtigung.
+		*/
 
 		function addUser($user, $type=6)
 		{
-			$users = Functions::explode0("\n", self::$database->messageUsers($this->name));
-			$users[] = $user."\r".$type;
-			self::$database->messageUsers($this->name, implode("\n", $users));
+			self::$sqlite->query("INSERT INTO messages_users ( message_id, user ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user)." );");
 
 			$user_obj = Classes::User($user);
-			if(!$user_obj->getStatus()) return false;
 			$user_obj->addMessage($this->name, $type);
 			unset($user_obj);
 
-			if($type != 8)
+			if($type != self::$TYPE_POSTAUSGANG)
 			{
+				self::$sqlite->query("INSERT INTO messages_recipients ( message_id, recipient ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user)." );");
+
+				// IM-Benachrichtung, siehe __destroy()
 				$this->im_check_notify[$user] = $type;
-				self::$database->addRecipient($this->name, $user);
 			}
 
 			return true;
 		}
 
+		/**
+		 * Löscht die Leseberechtigung eines Nutzers, normalerweise, weil dieser die Nachricht aus seinem Postfach löscht.
+		 * Wenn keine Benutzer mehr eine Leseberechtigung haben, wird die Nachricht gelöscht.
+		 * @param $user string Der Benutzername, der entfernt werden soll.
+		 * @param $edit_user boolean Soll der Benutzeraccount bearbeitet werden und dort die Nachricht aus dem Postfach entfernt werden? (Standard: true)
+		 * @return null
+		*/
+
 		function removeUser($user, $edit_user=true)
 		{
-			$users = explode("\n", self::$database->messageUsers($this->name));
-			$new_users = array();
-			$remove_type = false;
-
-			foreach($users as $l)
-			{
-				$le = explode("\r", $l);
-				if($le[0] == $user)
-				{
-					$remove_type = $le[1];
-					continue;
-				}
-				$new_users[] = $l;
-			}
-
-			if(count($new_users) == 0)
-				$return = self::$database->removeMessage($this->name);
-			else
-				$return = self::$database->messageUsers(implode("\n", $users));
+			self::$sqlite->query("DELETE FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+			if(self::$sqlite->singleQuery("SELECT COUNT(*) FROM message_users WHERE message_id = ".self::$sqlite->quote($this->getName()).";") < 1)
+				$this->destroy();
 
 			if($edit_user)
 			{
 				$user = Classes::User($user);
-				if(!$remove_type)
-					$remove_type = $user->findMessageType($this->name);
-				$user->removeMessage($this->name, $remove_type, false);
+				$user->removeMessage($this->name, null, false);
 			}
-
-			return $return;
 		}
+
+		/**
+		 * Gibt die Zeit zurück, zu der die Nachricht versandt wurde.
+		 * @return integer
+		*/
 
 		function getTime()
 		{
-			return self::$database->messageTime($this->name);
+			return $this->getMainField("time");
 		}
 
-		function destroy()
-		{
-			$users = explode("\n", self::$database->getMessageUsers($this->name));
-			foreach($users as $l)
-			{
-				$l = explode("\r", $l);
-				$user = Classes::User($l[0]);
-				$user->removeMessage($this->name, $l[1], false);
-			}
-
-			return self::$database->removeMessage($this->name);
-		}
+		/**
+		 * Gibt ein Array der Benutzer zurück, die Leseberechtigung auf die Nachricht haben.
+		 * @return array(string)
+		*/
 
 		function getUsersList()
 		{
-			$return = array();
-			$users = explode("\n", self::$database->getMessageUsers($this->name));
-			foreach($users as $l)
-			{
-				$l = explode("\r", $l);
-				$return[] = $l[0];
-			}
-			return $return;
+			return self::$sqlite->columnQuery("SELECT user FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName()).";");
 		}
+
+		/**
+		 * Gibt ein Array der Benutzer zurück, an die die Nachricht gesandt wurde.
+		 * @return array(string)
+		*/
 
 		function getRecipients()
 		{
-			return self::$database->getRecipients($this->name);
+			return self::$sqlite->columnQuery("SELECT recipient FROM messages_recipients WHERE message_id = ".self::$sqlite->quote($this->getName()).";");
 		}
 
-		function __destruct()
+		/**
+		 * Benachrichtigt die per addUser() hinzugefügten Benutzer auf Wunsch per Instant Messaging über den Eingang der Nachricht.
+		 * @return null
+		*/
+
+		private function IMNotify()
 		{
 			if(count($this->im_check_notify) > 0)
 			{
@@ -422,8 +290,13 @@
 			}
 		}
 
-		function getStatus()
+		/**
+		 * Die IM-Benachrichtung soll erst „zum Schluss“ erfolgen, wenn sicher ist, dass alle Werte wie from() und subject() gesetzt wurden.
+		*/
+
+		function __destruct()
 		{
-			return self::$database->messageExists($this->name);
+			$this->IMNotify();
 		}
+
 	}

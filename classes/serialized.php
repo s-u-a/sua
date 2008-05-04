@@ -16,7 +16,7 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	abstract class Serialized implements Singleton
+	abstract class Serialized implements Singleton,Dataset
 	{
 		protected static $save_dir = false;
 		protected $name = false;
@@ -38,7 +38,7 @@
 		{
 			if(!isset($name))
 			{
-				do $name = substr(md5(rand()), 0, 16); while(file_exists(self::$save_dir.'/'.$name));
+				do $name = Functions::randomID(); while(file_exists(static::$save_dir.'/'.$name));
 			}
 
 			$name = preg_replace("/[\x00-\x7f]/e", "strtolower('$0')", $name);
@@ -46,7 +46,7 @@
 
 		static function nameToFilename($name)
 		{
-			return self::$save_dir."/".strtolower(urlencode($name));
+			return static::$save_dir."/".strtolower(urlencode($name));
 		}
 
 		static function filenameToName($fname)
@@ -57,19 +57,19 @@
 		static function getList()
 		{
 			$list = array();
-			$dir = dir(self::$save_dir);
+			$dir = dir(static::$save_dir);
 			while(($fname = $dir->read()) !== false)
 			{
-				if(!is_file(self::$save_dir."/".$fname))
+				if(!is_file(static::$save_dir."/".$fname))
 					continue;
-				$list[] = self::filenameToName($fname);
+				$list[] = static::filenameToName($fname);
 			}
 			return $list;
 		}
 
 		static function exists($name)
 		{
-			return file_exists(self::nameToFilename($name));
+			return file_exists(static::nameToFilename($name));
 		}
 
 		function __construct($name, $write=true)
@@ -81,7 +81,7 @@
 			else
 			{
 				$this->name = $name;
-				$this->filename = self::nameToFilename(self::datasetName($this->name));
+				$this->filename = static::nameToFilename(static::datasetName($this->name));
 				$this->location = $this->filename;
 				if(!is_file($this->filename) || !is_readable($this->filename))
 					$this->status = 0;

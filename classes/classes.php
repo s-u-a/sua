@@ -90,6 +90,7 @@
 		static function Galaxy($p1, $write=true){ return self::Singleton('Galaxy', $p1, $write); }
 
 		# SQLite
+		static function SQLite() { return new SQLite(); }
 		static function EventFile() { return new EventFile(); }
 		static function Highscores() { return new Highscores(); }
 		static function IMFile() { return new IMFile(); }

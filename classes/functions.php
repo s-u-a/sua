@@ -476,4 +476,16 @@
 		{
 			return $string && !in_array($string, array("no", "false", "disabled", "disable", "off", "nein", "n"));
 		}
+
+		static function first($array)
+		{
+			$keys = array_keys($array);
+			if(!isset($keys[0])) return null;
+			return $keys[0];
+		}
+
+		static function randomID()
+		{
+			return substr(md5(rand()), 0, 16);
+		}
 	}

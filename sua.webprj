@@ -431,5 +431,9 @@
     <item url="database.global/config.db" />
     <item url="database.global/config.xml" />
     <item url="database.global/config.xml.example" />
+    <item url="classes/sqliteset.php" />
+    <item url="classes/sqlitesetexception.php" />
+    <item url="classes/datasetexception.php" />
+    <item url="classes/sqliteexception.php" />
   </project>
 </webproject>

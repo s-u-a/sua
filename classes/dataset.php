@@ -16,9 +16,13 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	interface Singleton
+	interface Dataset
 	{
 		abstract public function getName();
 		abstract public static function datasetName($name=null);
-		abstract public function readonly();
+		abstract static public function create($name=null);
+		abstract public function destroy();
+		abstract static public function getList();
+		abstract static public function exists($name);
+		abstract public function __construct($name=null);
 	}
