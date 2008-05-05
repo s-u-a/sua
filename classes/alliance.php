@@ -73,7 +73,7 @@
 		/**
 		 * Entfernt die Allianz aus der Datenbank, aus den Highscores und setzt die Allianztags der Mitglieder auf nichts.
 		 * Sendet Nachrichten an die Mitglieder, die über die Auflösung informieren.
-		 * @param $by_whom string Der Benutzername des Benutzers, der die Auflösung verursacht hat, für die Nachrichten.
+		 * @param string $by_whom Der Benutzername des Benutzers, der die Auflösung verursacht hat, für die Nachrichten.
 		 * @return null
 		*/
 
@@ -194,9 +194,9 @@
 		  * 6: Raenge verteilen
 		  * 7: Benutzerrechte verteilen
 		  * 8: Bündnis aufloesen
-		  * @param $user string Benutzername
-		  * @param $key integer Alliance::$PERMISSION_*
-		  * @param $permission boolean Soll Berechtigung erteilt werden?
+		  * @param string $user Benutzername
+		  * @param integer $key Alliance::$PERMISSION_*
+		  * @param boolean $permission Soll Berechtigung erteilt werden?
 		  * @return null
 		*/
 
@@ -212,7 +212,7 @@
 
 		/**
 		  * Setzt oder liest die Eigenschaft der Allianz, ob neue Bewerbungen erlaubt sind.
-		  * @param $allow boolean Null, wenn die Eigenschaft ausgelesen werden soll
+		  * @param boolean $allow Null, wenn die Eigenschaft ausgelesen werden soll
 		  * @return null Wenn $allow gesetzt ist
 		*/
 
@@ -226,8 +226,8 @@
 
 		/**
 		  * Ueberprueft, ob das Mitglied $user die Berechtigung $key (Alliance::$PERMISSION_*) besitzt.
-		  * @param $user string
-		  * @param $key integer
+		  * @param string $user
+		  * @param integer $key
 		  * @return boolean
 		*/
 
@@ -239,8 +239,8 @@
 
 		/**
 		  * Aktualisiert den gecachten Punktestand eines Mitglieds.
-		  * @param $user string
-		  * @param $scores integer
+		  * @param string $user
+		  * @param integer $scores
 		  * @return null
 		*/
 
@@ -262,7 +262,7 @@
 
 		/**
 		  * Gibt die Beitrittszeit eines Mitglieds zurueck.
-		  * @param $user string
+		  * @param string $user
 		  * @return integer
 		*/
 
@@ -274,8 +274,8 @@
 		/**
 		  * Gibt die Mitgliederliste des Arrays zurueck.
 		  * ( Benutzername => [ 'time' => Beitrittszeit; 'rang' => Benutzerrang; 'punkte' => Punkte-Cache; 'permissions' => ( Berechtigungsnummer, siehe setUserPermissions() => Berechtigung? ) ] )
-		  * @param $sortby string Sortierfeld (Alliance::$SORTBY_*)
-		  * @param $invert boolean Sortierung umkehren?
+		  * @param string $sortby Sortierfeld (Alliance::$SORTBY_*)
+		  * @param boolean $invert Sortierung umkehren?
 		  * @return array
 		*/
 
@@ -294,7 +294,7 @@
 
 		/**
 		  * Gibt ein Array aller Mitglieder zurueck, die eine bestimmte Berechtigung haben. Fuer die Bedeutung der Berechtigungen siehe setUserPermission().
-		  * @param $permission integer Alliance::$PERMISSION_*
+		  * @param integer $permission Alliance::$PERMISSION_*
 		  * @return array(string)
 		*/
 
@@ -305,8 +305,8 @@
 
 		/**
 		  * Setzt den Rang eines Benutzers.
-		  * @param $user string
-		  * @param $rank string
+		  * @param string $user
+		  * @param string $rank
 		  * @return null
 		*/
 
@@ -317,7 +317,7 @@
 
 		/**
 		  * Gibt den Rang eines Mitglieds zurueck.
-		  * @param $user string
+		  * @param string $user
 		  * @return boolean
 		*/
 
@@ -329,8 +329,8 @@
 		/**
 		  * Nimmt einen Benutzer in die Allianz auf. Rang ist 'Neuling', keinerlei Rechte.
 		  * Stellt die Allianz beim Benutzer <strong>nicht</strong> ein.
-		  * @param $user string
-		  * @param $punkte integer
+		  * @param string $user
+		  * @param integer $punkte
 		  * @return null
 		*/
 
@@ -344,7 +344,7 @@
 		/**
 		  * Entfernt einen Benutzer aus einer Allianz. Entfernt die Allianz <strong>nicht</strong> aus dem Benutzer-Array.
 		  * Ist dies der letzte Benutzer, wird die Allianz aufgeloest.
-		  * @param $user String
+		  * @param String $user
 		  * @return null
 		*/
 
@@ -359,7 +359,7 @@
 
 		/**
 		  * Fuegt eine neue Bewerbung des Benutzers $user hinzu. Veraendert das User-Array <strong>nicht</strong>.
-		  * @param $user string
+		  * @param string $user
 		  * @return null
 		*/
 
@@ -373,7 +373,7 @@
 
 		/**
 		  * Entfernt die Bewerbung des Benutzers $user wieder. Veraendert das User-Array <strong>nicht</strong>.
-		  * @param $user string
+		  * @param string $user
 		  * @return null
 		*/
 
@@ -394,7 +394,7 @@
 
 		/**
 		  * Setzt oder liest den Allianznamen.
-		  * @param $name Der Name oder null, wenn er zurückgeliefert werden soll.
+		  * @param Der $name Name oder null, wenn er zurückgeliefert werden soll.
 		  * @return string Wenn $name null ist
 		  * @return null Wenn $name gesetzt ist
 		*/
@@ -409,8 +409,8 @@
 
 		/**
 		  * Wirft einen Benutzer aus der Allianz. Die Allianz wird aus dem Benutzerprofil entfernt und eine Benachrichtigung erfolgt.
-		  * @param $user string
-		  * @param $by_whom string Der Benutzer, der den Kick ausführt. Als Absender der Benachrichtigung.
+		  * @param string $user
+		  * @param string $by_whom Der Benutzer, der den Kick ausführt. Als Absender der Benachrichtigung.
 		  * @return (boolean) Erfolg
 		*/
 
@@ -449,7 +449,7 @@
 
 		/**
 		  * Liefert die externe Allianzbeschreibung zurueck.
-		  * @param $parsed Bestimmt, ob der HTML-Code gefiltert sein soll (fuer die Ausgabe).
+		  * @param Bestimmt, $parsed ob der HTML-Code gefiltert sein soll (fuer die Ausgabe).
 		  * @return string
 		*/
 
@@ -460,7 +460,7 @@
 
 		/**
 		  * Veraendert die externe Allianzbeschreibung.
-		  * @param $description string
+		  * @param string $description
 		  * @return null
 		*/
 
@@ -472,7 +472,7 @@
 
 		/**
 		  * Setzt die interne Allianzbeschreibung.
-		  * @param $description string
+		  * @param string $description
 		  * @return null
 		*/
 
@@ -484,7 +484,7 @@
 
 		/**
 		  * Gibt die interne Allianzbeschreibung zurück.
-		  * @param $parsed Bestimmt, ob der HTML-Code gefiltert sein soll (fuer die Ausgabe)
+		  * @param Bestimmt, $parsed ob der HTML-Code gefiltert sein soll (fuer die Ausgabe)
 		  * @return string
 		*/
 
@@ -495,8 +495,8 @@
 
 		/**
 		  * Nimmt eine Bewerbung an und fuegt den Benutzer zur Allianz hinzu. Die Allianz wird ins Benutzerprofil eingetragen und eine Benachrichtigung erfolgt.
-		  * @param $user string
-		  * @param $by_whom string Der Benutzername des annehmenden Benutzers als Absender für die Benachrichtigungen
+		  * @param string $user
+		  * @param string $by_whom Der Benutzername des annehmenden Benutzers als Absender für die Benachrichtigungen
 		  * @return null
 		*/
 
@@ -529,8 +529,8 @@
 
 		/**
 		  * Weist eine Bewerbung zurueck. Das Benutzerprofil wird aktualisiert, eine Benachrichtigung erfolgt.
-		  * @param $user string
-		  * @param $by_whom string Der Name des ablehnenden Benutzers als Absender für die Benachrichtigungen.
+		  * @param string $user
+		  * @param string $by_whom Der Name des ablehnenden Benutzers als Absender für die Benachrichtigungen.
 		  * @return null
 		*/
 
@@ -565,8 +565,8 @@
 
 		/**
 		  * Aktualisiert die Mitgliederliste, wenn ein Benutzer umbenannt wird.
-		  * @param $old_name string
-		  * @param $new_name string
+		  * @param string $old_name
+		  * @param string $new_name
 		  * @return null
 		*/
 
@@ -590,7 +590,7 @@
 
 		/**
 		  * Benennt die Allianz um. Aktualisiert die Highscores und Profile der Mitglieder.
-		  * @param $new_name string
+		  * @param string $new_name
 		  * @return null
 		*/
 

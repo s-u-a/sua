@@ -40,26 +40,57 @@
 		protected static $id_field = "message_id";
 
 		/** Array nach dem Schema ( Benutzername => Nachrichtentyp (Message::$TYPE_*) ). Beim Zerstören des
-		Nachrichtenobjekts werden an die Benutzer IM-Nachrichten verschickt, wenn sie es wünschen. Der Grund,
-		warum dies nicht sofort gemacht wird, ist, dass möglicherweise addUser() ausgeführt wird, bevor Dinge
-		wie der Betreff oder der Absender gesetzt sind. */
+		 * Nachrichtenobjekts werden an die Benutzer IM-Nachrichten verschickt, wenn sie es wünschen. Der Grund,
+		 * warum dies nicht sofort gemacht wird, ist, dass möglicherweise addUser() ausgeführt wird, bevor Dinge
+		 * wie der Betreff oder der Absender gesetzt sind. */
 		protected $im_check_notify = array();
 
-		/** Nachricht des Typs Kampfbericht */
+		/**
+		 * Nachricht des Typs Kampfbericht
+		 * @var integer
+		*/
 		static $TYPE_KAEMPFE = 1;
-		/** Nachricht des Typs Spionagebericht */
+
+		/**
+		 * Nachricht des Typs Spionagebericht
+		 * @var integer
+		*/
 		static $TYPE_SPIONAGE = 2;
-		/** Nachricht des Typs Transportbenachrichtigung */
+
+		/**
+		 * Nachricht des Typs Transportbenachrichtigung
+		 * @var integer
+		*/
 		static $TYPE_TRANSPORT = 3;
-		/** Nachricht des Typs Sammelbenachrichtigung */
+
+		/**
+		 * Nachricht des Typs Sammelbenachrichtigung
+		 * @var integer
+		*/
 		static $TYPE_SAMMELN = 4;
-		/** Nachricht des Typs Besiedelungsbenachrichtigung */
+
+		/**
+		 * Nachricht des Typs Besiedelungsbenachrichtigung
+		 * @var integer
+		*/
 		static $TYPE_BESIEDELUNG = 5;
-		/** Typ Benutzernachricht */
+
+		/**
+		 * Typ Benutzernachricht
+		 * @var integer
+		*/
 		static $TYPE_BENUTZERNACHRICHTEN = 6;
-		/** Typ Bündnis- oder Allianznachricht */
+
+		/**
+		 * Typ Bündnis- oder Allianznachricht
+		 * @var integer
+		*/
 		static $TYPE_VERBUENDETE = 7;
-		/** Nachricht im Postausgang */
+
+		/**
+		 * Nachricht im Postausgang
+		 * @var integer
+		*/
 		static $TYPE_POSTAUSGANG = 8;
 
 		/**
@@ -74,7 +105,7 @@
 
 		/**
 		 * Erzeugt die Nachricht mit der ID $name. Implementiert Dataset::create().
-		 * @param $name string Die ID der Nachricht oder null für eine zufällige.
+		 * @param string $name Die ID der Nachricht oder null für eine zufällige.
 		 * @return null
 		*/
 
@@ -106,8 +137,8 @@
 
 		/**
 		 * Wird aufgerufen, wenn ein Benutzer seinen Namen ändert. Ersetzt den Benutzernamen in allen Feldern, wo dieser steht (Absender, Empfänger, berechtigte Benutzer).
-		 * @param $old_name string Der bisherige Name des Benutzers.
-		 * @param $new_name string Der neue Benutzername.
+		 * @param string $old_name Der bisherige Name des Benutzers.
+		 * @param string $new_name Der neue Benutzername.
 		 * @return null
 		*/
 
@@ -120,7 +151,7 @@
 
 		/**
 		 * Liest oder schreibt den Nachrichtentext.
-		 * @param $text Wird als neuer Nachrichtentext gesetzt. Null für Rückgabe des aktuellen Textes. Sollte nur HTML-Code enthalten, wenn die Nachricht als HTML-Nachricht definiert wurde (Message::html()).
+		 * @param Wird $text als neuer Nachrichtentext gesetzt. Null für Rückgabe des aktuellen Textes. Sollte nur HTML-Code enthalten, wenn die Nachricht als HTML-Nachricht definiert wurde (Message::html()).
 		 * @return null Wenn $text definiert wird
 		 * @return string Wenn $text null ist: der aktuelle Nachrichtentext als HTML-Code
 		*/
@@ -149,7 +180,7 @@
 
 		/**
 		 * Liest oder setzt den Absender der Nachricht.
-		 * @param $from string Der neue Absender. Wenn null, wird der aktuelle zurückgegeben.
+		 * @param string $from Der neue Absender. Wenn null, wird der aktuelle zurückgegeben.
 		 * @return null Wenn $from übergeben wurde.
 		 * @return string Wenn $from null ist, wird der Absender zurückgegeben.
 		*/
@@ -164,7 +195,7 @@
 
 		/**
 		 * Liest oder setzt den Betreff der Nachricht.
-		 * @param $subject string Der neue Betreff oder null, wenn der Betreff ausgelesen werden soll.
+		 * @param string $subject Der neue Betreff oder null, wenn der Betreff ausgelesen werden soll.
 		 * @return null Wenn $subject gesetzt ist
 		 * @return string Der Betreff, wenn $subject null ist.
 		*/
@@ -179,7 +210,7 @@
 
 		/**
 		 * Gibt zurück oder stellt ein, ob der Nachrichtentext im HTML-Format gespeichert wurde.
-		 * @param $html boolean Ist die Nachricht eine HTML-Nachricht?
+		 * @param boolean $html Ist die Nachricht eine HTML-Nachricht?
 		 * @return null Wenn $html gesetzt ist.
 		 * @return boolean Wenn $html null ist, ob die Nachricht eine HTML-Nachricht ist.
 		*/
@@ -194,8 +225,8 @@
 
 		/**
 		 * Fügt einen Benutzer zur Liste leseberechtigter Benutzer der Nachricht hinzu. Benachrichtigt ihn wenn gewünscht per Instant Messaging über den Eingang.
-		 * @param $user string Der Benutzername
-		 * @param $type integer Der Nachrichtentyp (Message::$TYPE_*). Benötigt für die Benachrichtigung.
+		 * @param string $user Der Benutzername
+		 * @param integer $type Der Nachrichtentyp (Message::$TYPE_*). Benötigt für die Benachrichtigung.
 		*/
 
 		function addUser($user, $type=6)
@@ -220,8 +251,8 @@
 		/**
 		 * Löscht die Leseberechtigung eines Nutzers, normalerweise, weil dieser die Nachricht aus seinem Postfach löscht.
 		 * Wenn keine Benutzer mehr eine Leseberechtigung haben, wird die Nachricht gelöscht.
-		 * @param $user string Der Benutzername, der entfernt werden soll.
-		 * @param $edit_user boolean Soll der Benutzeraccount bearbeitet werden und dort die Nachricht aus dem Postfach entfernt werden? (Standard: true)
+		 * @param string $user Der Benutzername, der entfernt werden soll.
+		 * @param boolean $edit_user Soll der Benutzeraccount bearbeitet werden und dort die Nachricht aus dem Postfach entfernt werden? (Standard: true)
 		 * @return null
 		*/
 

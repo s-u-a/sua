@@ -95,7 +95,7 @@
 
 		/**
 		 * Veröffentlicht die Nachricht $message.
-		 * @param $message Message
+		 * @param Message $message
 		 * @return string Die ID des PublicMessage-Objekts
 		*/
 
@@ -133,8 +133,8 @@
 
 		/**
 		 * Setzt oder liest den Text der Nachricht.
-		 * @param $text string Der neue Text der Nachricht, oder null, wenn der aktuelle zurückgegeben werden soll
-		 * @param $filter boolean Sollen Angreifer- und Verteidigerkoordinaten herausgefiltert werden? (Nur sinnvoll, wenn $text null ist)
+		 * @param string $text Der neue Text der Nachricht, oder null, wenn der aktuelle zurückgegeben werden soll
+		 * @param boolean $filter Sollen Angreifer- und Verteidigerkoordinaten herausgefiltert werden? (Nur sinnvoll, wenn $text null ist)
 		 * @return null Wenn $text gesetzt ist.
 		 * @return String Der Text, wenn $text nicht null ist.
 		*/
@@ -167,7 +167,7 @@
 
 		/**
 		 * Liest oder setzt den Absender der Nachricht.
-		 * @param $from string Der neue Absender. Wenn null, wird der aktuelle zurückgegeben.
+		 * @param string $from Der neue Absender. Wenn null, wird der aktuelle zurückgegeben.
 		 * @return null Wenn $from übergeben wurde.
 		 * @return string Wenn $from null ist, wird der Absender zurückgegeben.
 		*/
@@ -182,7 +182,7 @@
 
 		/**
 		 * Liest oder setzt den Betreff der Nachricht.
-		 * @param $subject string Der neue Betreff oder null, wenn der Betreff ausgelesen werden soll.
+		 * @param string $subject Der neue Betreff oder null, wenn der Betreff ausgelesen werden soll.
 		 * @return null Wenn $subject gesetzt ist
 		 * @return string Der Betreff, wenn $subject null ist.
 		*/
@@ -197,7 +197,7 @@
 
 		/**
 		 * Gibt zurück oder stellt ein, ob der Nachrichtentext im HTML-Format gespeichert wurde.
-		 * @param $html boolean Ist die Nachricht eine HTML-Nachricht?
+		 * @param boolean $html Ist die Nachricht eine HTML-Nachricht?
 		 * @return null Wenn $html gesetzt ist.
 		 * @return boolean Wenn $html null ist, ob die Nachricht eine HTML-Nachricht ist.
 		*/
@@ -212,7 +212,7 @@
 
 		/**
 		 * Gibt den Nachrichtentyp (Message::$TYPE_*) zurück oder setzt diesen.
-		 * @param $type integer Der Nachrichtentyp (Message::$TYPE_*) oder null, wenn der Typ zurückgegeben werden soll.
+		 * @param integer $type Der Nachrichtentyp (Message::$TYPE_*) oder null, wenn der Typ zurückgegeben werden soll.
 		 * @return integer Message::$TYPE_*, wenn $type null ist.
 		 * @return null Wenn $type gesetzt ist.
 		*/
@@ -227,7 +227,7 @@
 
 		/**
 		 * Setzt oder liest die Sendezeit der Nachricht.
-		 * @param $time integer Die Sendezeit, oder null, wenn sie zurückgegeben werden soll
+		 * @param integer $time Die Sendezeit, oder null, wenn sie zurückgegeben werden soll
 		 * @return integer Wenn $time null ist
 		 * @return null Wenn $time gesetzt ist
 		*/
@@ -242,7 +242,7 @@
 
 		/**
 		 * Setzt oder liest den Empfänger der Nachricht (also den, der sie veröffentlich hat).
-		 * @param $to string Der Empfänger, oder null, wenn er zurückgegeben werden soll
+		 * @param string $to Der Empfänger, oder null, wenn er zurückgegeben werden soll
 		 * @return string Wenn $to null ist
 		 * @return null Wenn $to gesetzt ist
 		*/
