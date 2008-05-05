@@ -34,7 +34,9 @@
 
 	class Message extends SQLiteSet
 	{
-		protected static $tables = array("messages" => array("message_id PRIMARY KEY", "time INT", "text", "parsed_text", "sender", "users", "subject", "html INT"), "messages_recipients" => array("message_id", "recipient"), "messages_users" => array("message_id", "user"));
+		protected static $tables = array("messages" => array("message_id TEXT PRIMARY KEY", "time INTEGER", "text TEXT", "parsed_text TEXT", "sender TEXT", "subject TEXT", "html INTEGER"),
+		                                 "messages_recipients" => array("message_id TEXT", "recipient TEXT"),
+		                                 "messages_users" => array("message_id TEXT", "user TEXT"));
 		protected static $id_field = "message_id";
 
 		/** Array nach dem Schema ( Benutzername => Nachrichtentyp (Message::$TYPE_*) ). Beim Zerstören des

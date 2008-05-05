@@ -17,10 +17,16 @@
 */
 
 	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage storage
+	*/
+
+	/**
 	  * Repraesentiert eine Allianz im Spiel.
 	*/
 
-	class Alliance extends Serialized
+	class Alliance extends SQLiteSet
 	{
 		/** Rundmail schreiben */
 		public static $PERMISSION_MAIL = 0;
@@ -41,54 +47,53 @@
 		/** Allianz auflösen */
 		public static $PERMISSION_REMOVE = 8;
 
-		static
-		{
-			self::$save_dir = Classes::Database()->getDirectory()."/alliances";
-		}
+		/** Nach Punktzahl sortieren */
+		public static $SORTBY_PUNKTE = 1;
+		/** Nach Rang sortieren */
+		public static $SORTBY_RANG = 2;
+		/** Nach Beitrittszeit sortieren */
+		public static $SORTBY_ZEIT = 3;
 
-		static function create($name)
+		protected static $tables = array("alliances" => array("tag TEXT PRIMARY KEY", "name TEXT", "description TEXT", "description_parsed TEXT", "inner_description TEXT", "inner_description_parsed TEXT", "last_rename INTEGER"),
+		                                 "alliances_members" => array("tag TEXT", "member TEXT UNIQUE", "score REAL", "rank TEXT", "time INTEGER", "permissions INTEGER")
+		                                 "alliances_applications" => array("tag TEXT", "user TEXT UNIQUE"));
+		protected static $id_field = "tag";
+
+		static function create($name=null)
 		{
 			$name = self::datasetName($name);
-			$fname = self::nameToFilename($name);
-
-			if(file_exists($fname)) return false;
-
-			$raw = array(
-				'tag' => $this->name,
-				'members' => array(),
-				'name' => '',
-				'description' => '',
-				'description_parsed' => '',
-				'inner_description' => '',
-				'inner_description_parsed' => ''
-			);
-
-			file_put_contents($fname, self::encode($raw));
+			self::$sqlite->query("INSERT INTO alliances ( tag ) VALUES ( ".self::$sqlite->quote($name)." );");
 
 			$highscores = Classes::Highscores();
 			$highscores->updateAlliance($this->name, 0, 0, 0);
 
-			return Classes::Alliance($name);
+			return $name;
 		}
 
-		function destroy($by_whom=false)
-		{
-			if($this->status != 1) return false;
+		/**
+		 * Entfernt die Allianz aus der Datenbank, aus den Highscores und setzt die Allianztags der Mitglieder auf nichts.
+		 * Sendet Nachrichten an die Mitglieder, die über die Auflösung informieren.
+		 * @param $by_whom string Der Benutzername des Benutzers, der die Auflösung verursacht hat, für die Nachrichten.
+		 * @return null
+		*/
 
+		function destroy($by_whom=null)
+		{
 			if($this->getMembersCount() > 0)
 			{
 				$members = $this->getUsersList();
 				foreach($members as $member)
 				{
 					$user = Classes::User($member);
-					$message = Classes::Message();
-					if($user->getStatus() && $message->create())
+					$message = Classes::Message(Message::create());
+					if($user->getStatus())
 					{
 						$message->subject($user->_("Allianz aufgelöst"));
 						$message->text(sprintf($user->_("Die Allianz %s wurde aufgelöst."), $this->getName()));
 						if($by_whom) $message->from($by_whom);
-						$message->addUser($member, 7);
+						$message->addUser($member, Message::$MESSAGE_VERBUENDETE);
 					}
+					$this_user->allianceTag(false);
 				}
 
 				$applicants = $this->getApplicationsList();
@@ -97,143 +102,88 @@
 					foreach($applicants as $applicant)
 					{
 						$user = Classes::User($applicant);
-						$message = Classes::Message();
-						if($user->getStatus() && $message->create())
+						$message = Classes::Message(Message::create());
+						if($user->getStatus())
 						{
 							$message->subject($user->_("Allianz aufgelöst"));
 							$message->text(sprintf($user->_("Die Allianz %s wurde aufgelöst. Ihre Bewerbung wurde deshalb zurückgewiesen."), $this->getName()));
-							$message->addUser($applicant, 7);
+							$message->addUser($applicant, Message::$MESSAGE_VERBUENDETE);
 						}
+						$user_obj->cancelAllianceApplication(false);
 					}
-				}
-
-				foreach($applicants as $applicant)
-				{
-					$user = Classes::User($applicant);
-					$user_obj->cancelAllianceApplication(false);
-				}
-
-				$i = count($members);
-				foreach($members as $member)
-				{
-					$this_user = Classes::User($member);
-					if($i > 1) $this_user->allianceTag(false);
-					else return $this_user->allianceTag(false);
-					$i--;
 				}
 			}
 
 			# Aus den Allianz-Highscores entfernen
 			$highscores = Classes::Highscores();
 			$highscores->removeEntry('alliances', $this->getName());
-
-			$status = (unlink($this->filename) || chmod($this->filename, 0));
-			if($status)
-			{
-				$this->status = 0;
-				$this->changed = false;
-				return true;
-			}
-			else return false;
-		}
-
-		/**
-		  * Prueft, ob die Allianz mit dem Tag $alliance existiert.
-		*/
-
-		static function allianceExists($alliance)
-		{
-			$filename = global_setting("DB_ALLIANCES").'/'.strtolower(urlencode($alliance));
-			return (is_file($filename) && is_readable($filename));
 		}
 
 		/**
 		  * Gibt den Punkteschnitt der Mitglieder zurueck.
-		  * @return false bei Fehlschlag
+		  * @return integer
 		*/
 
 		function getAverageScores()
 		{
-			if(!$this->status) return false;
-
 			return floor($this->getTotalScores()/$this->getMembersCount());
 		}
 
 		/**
 		  * Gibt die Anzahl der Mitglieder zurueck.
-		  * @return false bei Fehlschlag
+		  * @return integer
 		*/
 
 		function getMembersCount()
 		{
-			if(!$this->status) return false;
-
-			return count($this->raw['members']);
+			return self::$sqlite->singleQuery("SELECT COUNT(*) FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName()).";");
 		}
 
 		/**
 		  * Gibt die Punktesumme der Mitglieder zurueck.
-		  * @return false bei Fehlschlag
+		  * @return integer
 		*/
 
 		function getTotalScores()
 		{
-			if(!$this->status) return false;
-
-			$overall = 0;
-			foreach($this->raw['members'] as $member)
-				$overall += $member['punkte'];
-			return $overall;
+			return self::$sqlite->singleQuery("SELECT SUM(score) FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName()).";");
 		}
 
 		/**
 		  * Verrechnet die Punktzahlen der Mitglieder neu und aktualisiert den Eintrag in den Allianzhighscores.
-		  * @return (boolean) Erfolg
+		  * @return null
 		*/
 
 		function recalcHighscores()
 		{
-			if($this->status != 1) return false;
-
-			$overall = 0;
-			foreach($this->raw['members'] as $member)
-				$overall += $member['punkte'];
-			$members = count($this->raw['members']);
-			$average = floor($overall/$members);
 			$highscores = Classes::Highscores();
-			$highscores->updateAlliance($this->getName(), $average, $overall, $members);
-
-			return true;
+			$highscores->updateAlliance($this->getName(), $this->getAverageScores(), $this->getTotalScores(), $this->getMembersCount());
 		}
 
 		/**
 		  * Gibt die Platzierung in den Allianzhighscores hinsichtlich des durchschnittlichen Punktestands zurueck.
-		  * @return false bei Fehlschlag
+		  * @return integer
 		*/
 
 		function getRankAverage()
 		{
-			if(!$this->status) return false;
-
 			$highscores = Classes::Highscores();
 			return $highscores->getPosition('alliances', $this->getName(), 'scores_average');
 		}
 
 		/**
 		  * Gibt die Platzierung in den Allianzhighscores hinsichtlich der Punktesumme der Mitglieder zurueck.
-		  * @return false bei Fehlschlag
+		  * @return integer
 		*/
 
 		function getRankTotal()
 		{
-			if(!$this->status) return false;
-
 			$highscores = Classes::Highscores();
 			return $highscores->getPosition('alliances', $this->getName(), 'scores_total');
 		}
 
 		/**
-		  * Setzt die Erlaubnis fuer das Mitglied $user, die Aktion $key durchzufueren.
+		  * Setzt die Erlaubnis (Alliance::$PERMISSION_*) fuer das Mitglied $user, die Aktion $key durchzufueren.
 		  * Folgende Aktionen sind moeglich:
 		  * 0: Rundschreiben verfassen
 		  * 1: Koordinaten der Mitglieder einsehen
@@ -244,316 +194,230 @@
 		  * 6: Raenge verteilen
 		  * 7: Benutzerrechte verteilen
 		  * 8: Bündnis aufloesen
-		  * @return (boolean) Erfolg
+		  * @param $user string Benutzername
+		  * @param $key integer Alliance::$PERMISSION_*
+		  * @param $permission boolean Soll Berechtigung erteilt werden?
+		  * @return null
 		*/
 
 		function setUserPermissions($user, $key, $permission)
 		{
-			if($this->status != 1) return false;
-
-			if(!isset($this->raw['members'][$user])) return false;
-			$this->raw['members'][$user]['permissions'][$key] = (bool) $permission;
-			$this->changed = true;
-			return true;
+			$permissions = self::$sqlite->singleQuery("SELECT permissions FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName())." AND member = ".self::$sqlite->quote($user).";");
+			if($permission)
+				$permissions |= 1 << $key;
+			elseif($permission & (1 << $key))
+				$permissions ^= 1 << $key;
+			self::$sqlite->query("UPDATE alliances_members SET permissions = ".self::$sqlite->quote($permissions)." WHERE tag = ".self::$sqlite->quote($this->getName())." AND member = ".self::$sqlite->quote($user).";");
 		}
 
 		/**
 		  * Setzt oder liest die Eigenschaft der Allianz, ob neue Bewerbungen erlaubt sind.
-		  * @return (boolean) Den Erfolg des Setzens
-		  * @return (boolean) Den aktuellen Status, wenn $allow nicht oder auf -1 gesetzt ist
+		  * @param $allow boolean Null, wenn die Eigenschaft ausgelesen werden soll
+		  * @return null Wenn $allow gesetzt ist
 		*/
 
-		function allowApplications($allow=-1)
+		function allowApplications($allow=null)
 		{
-			if(!$this->status) return false;
-
-			if($allow === -1)
-				return (!isset($this->raw['allow_applications']) || $this->raw['allow_applications']);
-
-			$this->raw['allow_applications'] = ($allow == true);
-			$this->changed = true;
-			return true;
+			if(!isset($allow))
+				return (true && $this->getMainField("allow_applications"));
+			else
+				$this->setMainField("allow_applications", $allow ? 1 : 0);
 		}
 
 		/**
-		  * Ueberprueft, ob das Mitglied $user die Berechtigung $key besitzt. Siehe setUserPermissions() fuer die Liste der Berechtigungen.
+		  * Ueberprueft, ob das Mitglied $user die Berechtigung $key (Alliance::$PERMISSION_*) besitzt.
+		  * @param $user string
+		  * @param $key integer
+		  * @return boolean
 		*/
 
 		function checkUserPermissions($user, $key)
 		{
-			if(!$this->status) return false;
-
-			if(!isset($this->raw['members'][$user])) return false;
-			if(!isset($this->raw['members'][$user]['permissions'][$key])) return false;
-			return $this->raw['members'][$user]['permissions'][$key];
+			$permissions = self::$sqlite->singleQuery("SELECT permissions FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName())." AND member = ".self::$sqlite->quote($user).";");
+			return (true && ($permissions & (1 << $key)));
 		}
 
 		/**
 		  * Aktualisiert den gecachten Punktestand eines Mitglieds.
-		  * @return (boolean) Erfolg
+		  * @param $user string
+		  * @param $scores integer
+		  * @return null
 		*/
 
 		function setUserScores($user, $scores)
 		{
-			if($this->status != 1) return false;
-
-			if(!isset($this->raw['members'][$user])) return false;
-			$this->raw['members'][$user]['punkte'] = $scores;
-			$this->changed = true;
-
+			self::$sqlite->query("UPDATE alliances_members SET score = ".self::$sqlite->quote($scores)." WHERE tag = ".self::$sqlite->quote($this->getName())." AND member = ".self::$sqlite->quote($user).";");
 			$this->recalcHighscores();
-
-			return true;
 		}
 
 		/**
 		  * Liefert den gecachten Punktestand eines Mitglieds zurueck.
-		  * @return false bei Fehlschlag
+		  * @return integer
 		*/
 
 		function getUserScores($user)
 		{
-			if(!$this->status) return false;
-			if(!isset($this->raw['members'][$user])) return false;
-
-			return $this->raw['members'][$user]['punkte'];
+			return self::$sqlite->singleQuery("SELECT score FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName())." AND member = ".self::$sqlite->quote($user).";");
 		}
 
 		/**
 		  * Gibt die Beitrittszeit eines Mitglieds zurueck.
-		  * @return false bei Fehlschlag
+		  * @param $user string
+		  * @return integer
 		*/
 
 		function getUserJoiningTime($user)
 		{
-			if(!$this->status) return false;
-			if(!isset($this->raw['members'][$user])) return false;
-
-			return $this->raw['members'][$user]['time'];
+			return self::$sqlite->singleQuery("SELECT time FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName())." AND member = ".self::$sqlite->quote($user).";");
 		}
 
 		/**
 		  * Gibt die Mitgliederliste des Arrays zurueck.
 		  * ( Benutzername => [ 'time' => Beitrittszeit; 'rang' => Benutzerrang; 'punkte' => Punkte-Cache; 'permissions' => ( Berechtigungsnummer, siehe setUserPermissions() => Berechtigung? ) ] )
-		  * @return false bei Fehlschlag
+		  * @param $sortby string Sortierfeld (Alliance::$SORTBY_*)
+		  * @param $invert boolean Sortierung umkehren?
+		  * @return array
 		*/
 
-		function getUsersList($sortby=false, $invert=false)
+		function getUsersList($sortby=null, $invert=false)
 		{
-			if(!$this->status) return false;
-
-			if($sortby) $sortby = ''.$sortby;
-
-			if($sortby && ('punkte'==$sortby || 'rang'==$sortby || 'time'==$sortby))
+			switch($sortby)
 			{
-				global $sortAllianceMembersBy;
-				global $sortAllianceMembersInvert;
-				$sortAllianceMembersBy = $sortby;
-				$sortAllianceMembersInvert = $invert;
-
-				$members_raw = $this->raw['members'];
-				uasort($members_raw, array("Alliance", 'sortAllianceMembersList'));
-				$members = array_keys($members_raw);
+				case Alliance::$SORTBY_PUNKTE: $order = "score"; break;
+				case Alliance::$SORTBY_RANG: $order = "rank"; break;
+				case Alliance::$SORTBY_ZEIT: $order = "time"; break;
+				default: $oder = "member"; break;
 			}
-			else
-			{
-				$members = array_keys($this->raw['members']);
-				if($sortby)
-				{
-					natcasesort($members);
-					if($invert) $members = array_reverse($members);
-				}
-			}
-
-			return $members;
+			$oder .= " ".($invert ? "DESC" : "ASC");
+			return self::$sqlite->columnQuery("SELECT member FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName())." ORDER BY ".$order.";")
 		}
 
 		/**
 		  * Gibt ein Array aller Mitglieder zurueck, die eine bestimmte Berechtigung haben. Fuer die Bedeutung der Berechtigungen siehe setUserPermission().
-		  * @return false bei Fehlschlag
+		  * @param $permission integer Alliance::$PERMISSION_*
+		  * @return array(string)
 		*/
 
 		function getUsersWithPermission($permission)
 		{
-			if(!$this->status) return false;
-
-			$users = array();
-
-			foreach($this->raw['members'] as $name=>$member)
-			{
-				if(isset($member['permissions'][$permission]) && $member['permissions'][$permission])
-					$users[] = $name;
-			}
-			return $users;
+			return self::$sqlite->columnQuery("SELECT member FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName())." AND ( permissions | ".(1 << $permission)." ) == 1;");
 		}
 
 		/**
 		  * Setzt den Rang eines Benutzers.
-		  * @return (boolean) Erfolg
+		  * @param $user string
+		  * @param $rank string
+		  * @return null
 		*/
 
-		function setUserStatus($user, $status)
+		function setUserStatus($user, $rank)
 		{
-			if($this->status != 1) return false;
-
-			if(!isset($this->raw['members'][$user])) return false;
-			$this->raw['members'][$user]['rang'] = $status;
-			$this->changed = true;
-			return true;
+			self::$sqlite->query("UPDATE alliances_members SET rank = ".self::$sqlite->quote($rank)." WHERE tag = ".self::$sqlite->quote($tag)." AND member = ".self::$sqlite->quote($user).";");
 		}
 
 		/**
 		  * Gibt den Rang eines Mitglieds zurueck.
-		  * @return false bei Fehlschlag
+		  * @param $user string
+		  * @return boolean
 		*/
 
 		function getUserStatus($user)
 		{
-			if(!$this->status) return false;
-
-			if(!isset($this->raw['members'][$user])) return false;
-			return $this->raw['members'][$user]['rang'];
+			return self::$sqlite->singleQuery("SELECT rank FROM alliances_members WHERE tag = ".self::$sqlite->quote($tag)." AND member = ".self::$sqlite->quote($user).";");
 		}
 
 		/**
 		  * Nimmt einen Benutzer in die Allianz auf. Rang ist 'Neuling', keinerlei Rechte.
 		  * Stellt die Allianz beim Benutzer <strong>nicht</strong> ein.
-		  * @return (boolean) Erfolg
+		  * @param $user string
+		  * @param $punkte integer
+		  * @return null
 		*/
 
 		function addUser($user, $punkte=0)
 		{
-			if($this->status != 1) return false;
-
-			if(isset($this->raw['members'][$user])) return false;
-
 			$user_obj = Classes::User($user);
-
-			$this->raw['members'][$user] = array (
-				'punkte' => $punkte,
-				'rang' => $user_obj->_("Neuling"),
-				'time' => time(),
-				'permissions' => array(false, false, false, false, false, false, false, false, false)
-			);
-			$this->changed = true;
-
+			self::$sqlite->query("INSERT INTO alliances_members ( tag, member, punkte, rank, time, permissions ) VALUES ( ".self::$sqlite->quote($tag).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($user_obj->_("Neuling")).", ".self::$sqlite->quote(time()).", 0 );");
 			$this->recalcHighscores();
-			return true;
 		}
 
 		/**
 		  * Entfernt einen Benutzer aus einer Allianz. Entfernt die Allianz <strong>nicht</strong> aus dem Benutzer-Array.
 		  * Ist dies der letzte Benutzer, wird die Allianz aufgeloest.
-		  * @return (boolean) Erfolg
+		  * @param $user String
+		  * @return null
 		*/
 
 		function removeUser($user)
 		{
-			if($this->status != 1) return false;
-
-			if(!isset($this->raw['members'][$user])) return true;
-
-			unset($this->raw['members'][$user]);
-			$this->changed = true;
-
-			if(count($this->raw['members']) <= 0)
-			{
+			self::$sqlite->query("DELETE FROM alliances_members WHERE tag = ".self::$sqlite->quote($tag)." AND member = ".self::$sqlite->quote($user).";");
+			if($this->singleQuery("SELECT COUNT(*) FROM alliances_members WHERE tag = ".self::$sqlite->quote($tag).";") < 1)
 				$this->destroy();
-				return true;
-			}
-
-			$this->recalcHighscores();
-			return true;
+			else
+				$this->recalcHighscores();
 		}
 
 		/**
 		  * Fuegt eine neue Bewerbung des Benutzers $user hinzu. Veraendert das User-Array <strong>nicht</strong>.
-		  * @return (boolean) Erfolg
+		  * @param $user string
+		  * @return null
 		*/
 
 		function newApplication($user)
 		{
-			if($this->status != 1) return false;
-			if(!$this->allowApplications()) return false;
+			if(!$this->allowApplications())
+				throw new AllianceException("This alliance does not accept applications.");
 
-			if(!isset($this->raw['bewerbungen'])) $this->raw['bewerbungen'] = array();
-			if(in_array($user, $this->raw['bewerbungen'])) return false;
-
-			$this->raw['bewerbungen'][] = $user;
-			$this->changed = true;
-
-			return true;
+			self::$sqlite->query("INSERT INTO alliances_applications ( tag, user ) VALUES ( ".self::$sqlite->quote($this->getName).", ".self::$sqlite->quote($user)." );");
 		}
 
 		/**
 		  * Entfernt die Bewerbung des Benutzers $user wieder. Veraendert das User-Array <strong>nicht</strong>.
-		  * @return (boolean) Erfolg
+		  * @param $user string
+		  * @return null
 		*/
 
 		function deleteApplication($user)
 		{
-			if($this->status != 1) return false;
-			if(!isset($this->raw['bewerbungen'])) return true;
-
-			$key = array_search($user, $this->raw['bewerbungen']);
-			if($key === false) return true;
-
-			unset($this->raw['bewerbungen'][$key]);
-
-			$this->changed = true;
-			return true;
+			self::$sqlite->query("DELETE FROM alliances_applications WHERE tag = ".self::$sqlite->quote($tag)." AND user = ".self::$sqlite->quote($user).";");
 		}
 
 		/**
 		  * Gibt die Liste der bewerbenden Benutzer zurueck.
-		  * @return false bei Fehlschlag
+		  * @return array(string)
 		*/
 
 		function getApplicationsList()
 		{
-			if(!$this->status) return false;
-
-			if(!isset($this->raw['bewerbungen'])) return array();
-			return $this->raw['bewerbungen'];
+			return self::$sqlite->columnQuery("SELECT user FROM alliances_applications WHERE tag = ".self::$sqlite->quote($tag).";");
 		}
 
 		/**
 		  * Setzt oder liest den Allianznamen.
-		  * @return false bei Fehlschlag
-		  * @return Allianzname, wenn $name nicht oder auf false gesetzt
-		  * @return (boolean) Erfolg
+		  * @param $name Der Name oder null, wenn er zurückgeliefert werden soll.
+		  * @return string Wenn $name null ist
+		  * @return null Wenn $name gesetzt ist
 		*/
 
-		function name($name=false)
+		function name($name=null)
 		{
-			if(!$this->status) return false;
-
-			if(!trim($name))
-			{
-				if(!isset($this->raw['name'])) return '';
-				return $this->raw['name'];
-			}
+			if(!isset($name))
+				return $this->getMainField("name");
 			else
-			{
-				if($this->status != 1) return false;
-				$this->raw['name'] = $name;
-				$this->changed = true;
-				return true;
-			}
+				$this->setMainField("name", $name);
 		}
 
 		/**
 		  * Wirft einen Benutzer aus der Allianz. Die Allianz wird aus dem Benutzerprofil entfernt und eine Benachrichtigung erfolgt.
+		  * @param $user string
+		  * @param $by_whom string Der Benutzer, der den Kick ausführt. Als Absender der Benachrichtigung.
 		  * @return (boolean) Erfolg
 		*/
 
-		function kickUser($user, $by_whom=false)
+		function kickUser($user, $by_whom=null)
 		{
-			if($this->status != 1) return false;
-			if(!isset($this->raw['members'][$user])) return false;
-
 			$user_obj = Classes::User($user);
-			if(!$user_obj->allianceTag(false)) return false;
+			$user_obj->allianceTag(false);
 
 			$this->removeUser($user);
 
@@ -581,126 +445,79 @@
 					$message->addUser($member, 7);
 				}
 			}
-			return true;
 		}
 
 		/**
 		  * Liefert die externe Allianzbeschreibung zurueck.
 		  * @param $parsed Bestimmt, ob der HTML-Code gefiltert sein soll (fuer die Ausgabe).
-		  * @return false bei Fehlschlag
+		  * @return string
 		*/
 
 		function getExternalDescription($parsed=true)
 		{
-			if(!$this->status) return false;
-
-			if($parsed)
-			{
-				if(!isset($this->raw['description_parsed']))
-				{
-					$this->raw['description_parsed'] = F::parse_html($this->getExternalDescription(false));
-					$this->changed = true;
-				}
-				return $this->raw['description_parsed'];
-			}
-			else
-			{
-				if(!isset($this->raw['description'])) return '';
-				return $this->raw['description'];
-			}
+			return $this->getMainField($parsed ? "description_parsed" : "description");
 		}
 
 		/**
 		  * Veraendert die externe Allianzbeschreibung.
-		  * @return (boolean) Erfolg
+		  * @param $description string
+		  * @return null
 		*/
 
 		function setExternalDescription($description)
 		{
-			if($this->status != 1) return false;
-
-			$this->raw['description'] = $description;
-			$this->raw['description_parsed'] = F::parse_html($description);
-			$this->changed = true;
-			return true;
+			$this->setMainField("description", $description);
+			$this->setMainField("description_parsed", F::parse_html($description));
 		}
 
 		/**
 		  * Setzt die interne Allianzbeschreibung.
-		  * @return (boolean) Erfolg
+		  * @param $description string
+		  * @return null
 		*/
 
 		function setInternalDescription($description)
 		{
-			if($this->status != 1) return false;
-
-			$this->raw['inner_description'] = $description;
-			$this->raw['inner_description_parsed'] = F::parse_html($description);
-			$this->changed = true;
-			return true;
+			$this->setMainField("inner_description", $description);
+			$this->setMainField("inner_description_parsed", F::parse_html($description));
 		}
 
 		/**
-		  * Setzt die interne Allianzbeschreibung.
+		  * Gibt die interne Allianzbeschreibung zurück.
 		  * @param $parsed Bestimmt, ob der HTML-Code gefiltert sein soll (fuer die Ausgabe)
-		  * @return false bei Fehlschlag
+		  * @return string
 		*/
 
 		function getInternalDescription($parsed=true)
 		{
-			if(!$this->status) return false;
-
-			if($parsed)
-			{
-				if(!isset($this->raw['inner_description_parsed']))
-				{
-					$this->raw['inner_description_parsed'] = F::parse_html($this->getInternalDescription(false));
-					$this->changed = true;
-				}
-				return $this->raw['inner_description_parsed'];
-			}
-			else
-			{
-				if(!isset($this->raw['inner_description'])) return '';
-				return $this->raw['inner_description'];
-			}
+			return $this->getMainField($parsed ? "inner_description_parsed" : "inner_description");
 		}
 
 		/**
 		  * Nimmt eine Bewerbung an und fuegt den Benutzer zur Allianz hinzu. Die Allianz wird ins Benutzerprofil eingetragen und eine Benachrichtigung erfolgt.
-		  * @return (boolean) Erfolg
+		  * @param $user string
+		  * @param $by_whom string Der Benutzername des annehmenden Benutzers als Absender für die Benachrichtigungen
+		  * @return null
 		*/
 
-		function acceptApplication($user, $by_whom=false)
+		function acceptApplication($user, $by_whom=null)
 		{
-			if($this->status != 1) return false;
-
-			$key = array_search($user, $this->raw['bewerbungen']);
-			if($key === false) return false;
-
-			$members = $this->getUsersList();
-
 			$user_obj = Classes::User($user);
-			if(!$user_obj->allianceTag($this->getName())) return false;
-			unset($this->raw['bewerbungen'][$key]);
-			$this->changed = true;
+			$user_obj->allianceTag($this->getName()); // Fügt den Benutzer zur Allianz hinzu und löscht die Bewerbung
 
-			$message = Classes::Message();
-			if($message->create())
-			{
-				$message->subject($user_obj->_('Allianzbewerbung angenommen'));
-				$message->text(sprintf($user_obj->_('Ihre Bewerbung bei der Allianz %s wurde angenommen.'), $this->getName()));
-				if($by_whom) $message->from($by_whom);
-				$message->addUser($user, 7);
-			}
+			$message = Classes::Message(Message::create());
+			$message->subject($user_obj->_('Allianzbewerbung angenommen'));
+			$message->text(sprintf($user_obj->_('Ihre Bewerbung bei der Allianz %s wurde angenommen.'), $this->getName()));
+			if(isset($by_whom)) $message->from($by_whom);
+			$message->addUser($user, 7);
 
-			foreach($members as $member)
+			foreach($this->getUsersList() as $member)
 			{
 				if($member == $by_whom) continue;
 
 				$user_obj = Classes::User($user);
-				$message = Classes::Message();
-				if($user_obj->getStatus() && $message->create())
+				$message = Classes::Message(Message::create());
+				if($user_obj->getStatus())
 				{
 					$message->subject($user_obj->_('Neues Allianzmitglied'));
 					$message->text(sprintf($user_obj->_("Ein neues Mitglied wurde in Ihre Allianz aufgenommen: %s"), $user));
@@ -708,23 +525,19 @@
 					$message->addUser($member, 7);
 				}
 			}
-
-			return true;
 		}
 
 		/**
 		  * Weist eine Bewerbung zurueck. Das Benutzerprofil wird aktualisiert, eine Benachrichtigung erfolgt.
-		  * @return (boolean) Erfolg
+		  * @param $user string
+		  * @param $by_whom string Der Name des ablehnenden Benutzers als Absender für die Benachrichtigungen.
+		  * @return null
 		*/
 
-		function rejectApplication($user, $by_whom=false)
+		function rejectApplication($user, $by_whom=null)
 		{
-			if($this->status != 1) return false;
-
-			if(!in_array($user, $this->raw['bewerbungen'])) return false;
-
 			$user_obj = Classes::User($user);
-			if(!$user_obj->cancelAllianceApplication(false)) return false;
+			$user_obj->cancelAllianceApplication(false); // Löscht auch die Bewerbung aus der Allianz
 
 			$message = Classes::Message();
 			if($message->create())
@@ -748,71 +561,49 @@
 					$message->addUser($member, 7);
 				}
 			}
-
-			return true;
-		}
-
-		protected function getDataFromRaw()
-		{
-			$this->name = $this->raw['tag'];
-		}
-		protected function getRawFromData(){}
-
-		static function resolveName($name)
-		{
-			$instance = Classes::Alliance($name);
-			return $instance->getName();
 		}
 
 		/**
 		  * Aktualisiert die Mitgliederliste, wenn ein Benutzer umbenannt wird.
-		  * @return (boolean) Erfolg
+		  * @param $old_name string
+		  * @param $new_name string
+		  * @return null
 		*/
 
 		function renameUser($old_name, $new_name)
 		{
-			if(!$this->status) return false;
-			if($old_name == $new_name) return 2;
-			if(!isset($this->raw['members'][$old_name])) return true;
-
-			$this->raw['members'][$new_name] = $this->raw['members'][$old_name];
-			unset($this->raw['members'][$old_name]);
-			$this->changed = true;
-			return true;
+			self::$sqlite->query("UPDATE alliances_members SET member = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($tag)." AND member = ".self::$sqlite->quote($user).";");
+			self::$sqlite->query("UPDATE alliances_applications SET member = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($tag)." AND user = ".self::$sqlite->quote($user).";");
 		}
 
 		/**
 		  * Gibt zurueck, ob eine Umbenennung des Allianztags moeglich ist. Es muss mindestens die globale Einstellung ALLIANCE_RENAME_PERIOD in Tagen vergangen sein, damit eine erneute Umbenennung moeglich ist.
+		  * @return boolean
 		*/
 
 		function renameAllowed()
 		{
-			if(!$this->status) return false;
-
-			if(!isset($this->raw['last_rename'])) return true;
-			return (time()-$this->raw['last_rename'] >= global_setting("ALLIANCE_RENAME_PERIOD")*86400);
+			$last_rename = $this->getMainField("last_rename");
+			if(!$last_rename) return true;
+			return (time()-$last_rename >= global_setting("ALLIANCE_RENAME_PERIOD")*86400);
 		}
 
 		/**
 		  * Benennt die Allianz um. Aktualisiert die Highscores und Profile der Mitglieder.
+		  * @param $new_name string
+		  * @return null
 		*/
 
 		function rename($new_name)
 		{
-			if(!$this->status) return false;
-
 			$new_name = trim($new_name);
+			$really_rename = (self::datasetName($new_name) != $this->getName());
 
-			$really_rename = (strtolower($new_name) != strtolower($this->getName()));
-
-			if($really_rename)
-			{
-				$new_fname = $this->save_dir.'/'.urlencode(strtolower($new_name));
-				if(file_exists($new_fname)) return false;
-			}
+			if($really_rename && self::exists($new_name))
+				throw new DatasetException("New name already exists.");
 
 			# Alliancetag bei den Mitgliedern aendern
-			foreach($this->raw['members'] as $username=>$info)
+			foreach($this->getUsersList() as $username)
 			{
 				$user = Classes::User($username);
 				$user->allianceTag($new_name, false);
@@ -821,59 +612,13 @@
 			# Highscores-Eintrag aendern
 			$hs = Classes::Highscores();
 			$hs->renameAlliance($this->getName(), $new_name);
-
-			$this->raw['tag'] = $new_name;
-			if($really_rename) $this->raw['last_rename'] = time();
-			$this->changed = true;
-
 			if($really_rename)
-			{
-				# Datei umbenennen
-				$this->__destruct();
-				rename($this->filename, $new_fname);
-				$this->__construct($new_name, !$this->readonly);
-			}
-			else $this->name = $new_name;
+				$this->setMainField("last_rename", time());
 
-			return true;
-		}
-
-		/**
-		* Liefert die Zahl der existierenden Allianzen zurueck. Diese wird aus den Highscores ermittelt.
-		*/
-
-		static function getAlliancesCount()
-		{
-			$highscores = Classes::Highscores();
-			return $highscores->getCount('alliances');
-		}
-
-		/**
-		* uasort-Callbackfunktion zum Sortieren von Allianzmitgliedern.
-		* Die globale Variable $sortAllianceMembersBy bestimmt, ob nach Beitrittszeit ('time') oder Punkten ('punkte') sortiert werden soll.
-		* Ist die globale Variable $sortAllianceMembersInvert gesetzt, wird die Sortierung umgekehrt.
-		*/
-
-		static function sortAllianceMembersList($a, $b)
-		{
-			global $sortAllianceMembersInvert;
-			global $sortAllianceMembersBy;
-
-			if(isset($sortAllianceMembersInvert) && $sortAllianceMembersInvert) $invert = -1;
-			else $invert = 1;
-			if(isset($sortAllianceMembersBy) && ($sortAllianceMembersBy == 'punkte' || $sortAllianceMembersBy == 'time'))
-			{
-				if($a[$sortAllianceMembersBy] > $b[$sortAllianceMembersBy]) return $invert;
-				elseif($a[$sortAllianceMembersBy] < $b[$sortAllianceMembersBy]) return -$invert;
-				else return 0;
-			}
-			else
-			{
-				$cmp = strnatcasecmp($a[$sortAllianceMembersBy], $b[$sortAllianceMembersBy]);
-				if($cmp < 0) return -$invert;
-				elseif($cmp > 0) return $invert;
-				else return 0;
-			}
+			self::$sqlite->query("UPDATE alliances SET tag = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($this->getName());
+			self::$sqlite->query("UPDATE alliances_members SET tag = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($this->getName());
+			self::$sqlite->query("UPDATE alliances_applications SET tag = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($this->getName());
+			$this->name = $new_name;
 		}
 
 		/**
@@ -883,20 +628,6 @@
 
 		static function findAlliance($search_string)
 		{
-			$preg = '/^'.str_replace(array('\\*', '\\?'), array('.*', '.?'), preg_quote($search_string, '/')).'$/i';
-			$alliances = array();
-			$dh = opendir(global_setting("DB_ALLIANCES"));
-			while(($fname = readdir($dh)) !== false)
-			{
-				if(!is_file(global_setting("DB_ALLIANCES").'/'.$fname) || !is_readable(global_setting("DB_ALLIANCES").'/'.$fname))
-					continue;
-				$alliance = urldecode($fname);
-				if(preg_match($preg, $alliance))
-					$alliances[] = $alliance;
-			}
-			closedir($dh);
-			natcasesort($alliances);
-			return $alliances;
+			return self::$sqlite->columnQuery("SELECT tag FROM alliances WHERE tag GLOB ".$this->quote($search_string).";");
 		}
-
 	}

@@ -557,10 +557,10 @@
 	<dd class="c-mitglieder"><?=htmlspecialchars($alliance->getMembersCount())?> <span class="liste">(<a href="allianz.php?action=liste&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Mitgliederliste der Allianz einsehen [Z]" tabindex="<?=$tabindex++?>" accesskey="z">Liste</a>)</span></dd>
 
 	<dt class="c-punkteschnitt"><?=h(_("Punkteschnitt"))?></dt>
-	<dd class="c-punkteschnitt"><?=h(sprintf(_("%s (Platz %s von %s)"), F::ths($average), F::ths($alliance->getRankAverage()), F::ths(Alliance::getAlliancesCount())))?></dd>
+	<dd class="c-punkteschnitt"><?=h(sprintf(_("%s (Platz %s von %s)"), F::ths($average), F::ths($alliance->getRankAverage()), F::ths(Alliance::getNumber())))?></dd>
 
 	<dt class="c-gesamtpunkte"><?=h(_("Gesamtpunkte"))?></dt>
-	<dd class="c-gesamtpunkte"><?=h(sprintf(_("%s (Platz %s von %s)"), F::ths($overall), F::ths($alliance->getRankTotal()), F::ths(Alliance::getAlliancesCount())))?></dd>
+	<dd class="c-gesamtpunkte"><?=h(sprintf(_("%s (Platz %s von %s)"), F::ths($overall), F::ths($alliance->getRankTotal()), F::ths(Alliance::getNumber())))?></dd>
 </dl>
 <?php
 				if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), 8) || $austreten || $alliance->checkUserPermissions($me->getName(), 2) || $alliance->checkUserPermissions($me->getName(), 3) || $alliance->checkUserPermissions($me->getName(), 7))

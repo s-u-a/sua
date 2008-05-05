@@ -53,6 +53,9 @@
 			{
 				do { $name = Functions::randomID(); } while(!self::exists($name));
 			}
+			$existing = self::$sqlite->singleQuery("SELECT ".static::$id_field." FROM ".Functions::first(static::$tables)." WHERE LOWER(".static::$id_field.") = LOWER(".self::$sqlite->quote($name).");");
+			if($existing !== false)
+				$name = $existing;
 			return $name;
 		}
 
@@ -65,10 +68,15 @@
 			return $list;
 		}
 
+		static function getNumber()
+		{
+			return self::singleQuery("SELECT COUNT(*) FROM ".Functions::first(static::$tables).";");
+		}
+
 		static function exists($name)
 		{
 			$name = static::datasetName($name);
-			return (self::$sqlite->singleQuery("SELECT ".static::$id_field." FROM ".Functions::first(static::$tables)." WHERE ".static::$id_field." = ".self::$sqlite->quote($name).";") >= 1);
+			return (self::$sqlite->singleQuery("SELECT COUNT(*) FROM ".Functions::first(static::$tables)." WHERE LOWER(".static::$id_field.") = LOWER(".self::$sqlite->quote($name).");") >= 1);
 		}
 
 		abstract static function create($name);

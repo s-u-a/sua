@@ -47,10 +47,16 @@
 		abstract public function destroy();
 
 		/**
-		 * Gibt eine Liste aller Datensetz des implementierenden Typs zurück.
+		 * Gibt eine Liste aller Datensets des implementierenden Typs zurück.
 		 * @return array(string)
 		*/
 		abstract static public function getList();
+
+		/**
+		 * Gibt die Anzahl existierender Sets des implementierenden Typs zurück (count(getList())).
+		 * @return integer
+		*/
+		abstract static public function getNumber();
 
 		/**
 		 * Gibt zurück, ob das angegebene Datenset existiert.

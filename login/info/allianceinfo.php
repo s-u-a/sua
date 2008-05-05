@@ -53,10 +53,10 @@
 	<dd class="c-mitglieder"><?=htmlspecialchars($members)?></dd>
 
 	<dt class="c-punkteschnitt"><?=h(_("Punkteschnitt"))?></dt>
-	<dd class="c-punkteschnitt"><?=F::ths($average)?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), F::ths($alliance->getRankAverage()), F::ths(Alliance::getAlliancesCount())))?>)</span></dd>
+	<dd class="c-punkteschnitt"><?=F::ths($average)?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), F::ths($alliance->getRankAverage()), F::ths(Alliance::getNumber())))?>)</span></dd>
 
 	<dt class="c-gesamtpunkte"><?=h(_("Gesamtpunkte"))?></dt>
-	<dd class="c-gesamtpunkte"><?=F::ths($overall)?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), F::ths($alliance->getRankTotal()), F::ths(Alliance::getAlliancesCount())))?></span></dd>
+	<dd class="c-gesamtpunkte"><?=F::ths($overall)?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), F::ths($alliance->getRankTotal()), F::ths(Alliance::getNumber())))?></span></dd>
 </dl>
 <h3 id="allianzbeschreibung" class="strong"><?=h(_("Allianzbeschreibung"))?></h3>
 <div class="allianz-externes">

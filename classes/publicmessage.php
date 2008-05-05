@@ -16,9 +16,20 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage storage
+	*/
+
+	/**
+	 * Repräsentiert eine veröffentlichte Nachricht im Spiel.
+	*/
+
 	class PublicMessageDatabase extends SQLite
 	{
-		protected $tables = array("public_messages" => array("message_id PRIMARY KEY", "last_view INT", "sender", "text", "parsed", "subject", "html INT", "receiver", "time", "type"));
+		protected static $tables = array("public_messages" => array("message_id TEXT PRIMARY KEY", "last_view INTEGER", "sender TEXT", "text TEXT", "parsed TEXT", "subject TEXT", "html INTEGER", "receiver TEXT", "time INTEGER", "type INTEGER"));
+		protected static $id_field = "message_id";
 
 		function getField($message_id, $field_name)
 		{
