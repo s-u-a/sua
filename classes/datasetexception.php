@@ -15,6 +15,16 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage exceptions
+	*/
+
+	/**
+	 * In einer Dataset-Funktion ist ein Fehler aufgetreten, zum Beispiel beim Umbenennen
+	 * oder Entfernen eines Objekts.
+	*/
 
 	class DatasetException extends SuaException
 	{

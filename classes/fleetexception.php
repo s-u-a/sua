@@ -22,10 +22,11 @@
 	*/
 
 	/**
-	 * Ein Problem mit einem SQLite-Datenset ist aufgetreten. Zum Beispiel wurde eines
-	 * geöffnet, das noch nicht in der Datenbank aufgeführt ist.
+	 * Es ist ein Fehler mit einer Flottenabfrage aufgetreten. Beispielsweise
+	 * wurden Informationen über einen Benutzer angefragt, der nicht an der Flotte
+	 * teilnimmt.
 	*/
 
-	class SQLiteSetException extends SuaException
+	class FleetException extends SuaException
 	{
 	}

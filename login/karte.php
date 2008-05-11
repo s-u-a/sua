@@ -46,8 +46,8 @@
 
 	$galaxy = Classes::Galaxy($galaxy_n);
 
-	$next_system = array(Functions::change_digit($system_n, 2, 1), Functions::change_digit($system_n, 1, 1), Functions::change_digit($system_n, 0, 1));
-	$prev_system = array(Functions::change_digit($system_n, 2, -1), Functions::change_digit($system_n, 1, -1), Functions::change_digit($system_n, 0, -1));
+	$next_system = array(Functions::changeDigit($system_n, 2, 1), Functions::changeDigit($system_n, 1, 1), Functions::changeDigit($system_n, 0, 1));
+	$prev_system = array(Functions::changeDigit($system_n, 2, -1), Functions::changeDigit($system_n, 1, -1), Functions::changeDigit($system_n, 0, -1));
 
 	if((!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"]))
 	{
@@ -514,12 +514,12 @@
 
 	function get_system_after(which_system)
 	{
-		return [ Functions::change_digit(which_system, 2, 1), Functions::change_digit(which_system, 1, 1), Functions::change_digit(which_system, 0, 1) ];
+		return [ Functions::changeDigit(which_system, 2, 1), Functions::changeDigit(which_system, 1, 1), Functions::changeDigit(which_system, 0, 1) ];
 	}
 
 	function get_system_before(which_system)
 	{
-		return [ Functions::change_digit(which_system, 2, -1), Functions::change_digit(which_system, 1, -1), Functions::change_digit(which_system, 0, -1) ];
+		return [ Functions::changeDigit(which_system, 2, -1), Functions::changeDigit(which_system, 1, -1), Functions::changeDigit(which_system, 0, -1) ];
 	}
 
 	function sw_next_system(idx)

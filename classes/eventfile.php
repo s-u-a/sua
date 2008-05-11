@@ -16,20 +16,41 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage storage
+	*/
+
+	/**
+	 * Verwaltet den Event-Stack. Dort steht, wann der Eventhandler welche Flotte
+	 * ansehen soll, damit diese an ihrem Ziel ankommt.
+	*/
+
 	class EventFile extends SQLite
 	{
 		protected $tables = array("events" => array("time INT", "fleet"));
 
+		/**
+		 * @param integer $time
+		 * @param string $id Die ID des Flottenobjekts.
+		 * @return null
+		*/
+
 		function addNewFleet($time, $id)
 		{
 			$time = round($time);
-			return $this->query("INSERT INTO events (time, fleet) VALUES (".$this->escape($time).", ".$this->escape($id).");");
+			$this->query("INSERT INTO events (time, fleet) VALUES (".$this->escape($time).", ".$this->escape($id).");");
 		}
+
+		/**
+		 * Liefert die ID der nächsten Flotte, deren Ankunft in der Vergangenheit
+		 * liegt, zurück und löscht diese aus der Datenbank.
+		 * @return string|boolean Die Flotten-ID oder false, wenn keine Flotte im Stack schon angekommen ist.
+		*/
 
 		function removeNextFleet()
 		{
-			if(!$this->status) return false;
-
 			# Naechstes Feld aus der Datenbank lesen
 			$field = $this->singleQuery("SELECT * FROM events WHERE time < ".time()." ORDER BY time ASC LIMIT 1;");
 			if(!$field) return false;
@@ -39,17 +60,30 @@
 			return $field;
 		}
 
-		function removeCanceledFleet($fleet, $time=false)
+		/**
+		 * Löscht eine Flotte aus dem Stack, zum Beispiel, weil diese zurückgerufen
+		 * wurde.
+		 * @param string $fleet
+		 * @param integer $time Wenn angegeben, wird nur die Ankunft zu dieser Zeit entfernt, beispielsweise, wenn nur ein Ziel entfernt wurde.
+		 * @return null
+		*/
+
+		function removeCanceledFleet($fleet, $time=null)
 		{
 			$query = "DELETE FROM events WHERE fleet = ".$this->escape($fleet);
-			if($time !== false)
+			if(isset($time))
 			{
 				$time = round($time);
 				$query .= "AND time = ".$this->escape($time);
 			}
 			$query .= ";";
-			return $this->query($query);
+			$this->query($query);
 		}
+
+		/**
+		 * Leert den Stack.
+		 * @return null
+		*/
 
 		function _empty()
 		{

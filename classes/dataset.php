@@ -15,6 +15,16 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage storage
+	*/
+
+	/**
+	 * Einheitliche Funktionen, um mit bestimmten Objekten aus der Datenbank wie
+	 * Benutzern, Nachrichten oder Allianzen umzugehen.
+	*/
 
 	interface Dataset
 	{

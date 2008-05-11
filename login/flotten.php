@@ -155,7 +155,7 @@
 		$types_glob = array();
 		foreach($_POST['flotte'] as $id=>$anzahl)
 		{
-			$_POST['flotte'][$id] = $anzahl = (int) $anzahl;
+			$_POST['flotte'][$id] = $anzahl = floor($anzahl);
 			$item_info = $me->getItemInfo($id, 'schiffe', array("level", "types"));
 			if(!$item_info)
 			{
@@ -214,11 +214,12 @@
 			if(in_array($me->getName(), $buendnisflug_fleet->getUsersList()))
 				throw new LoginFlottenException(_("Sie sind bereits Teil des Bündnisflugs."));
 			$target_koords = array(explode(":", $buendnisflug_fleet->getCurrentTarget()));
+			$target_planets = array(Classes::Planet(Classes::System(Classes::Galaxy($target_koords[0]), $target_koords[1]), $target_koords[2]));
 			$auftraege = array($buendnisflug_fleet->getCurrentType());
 		}
 		else
 		{
-			$types = $auftraege = $galaxy_obj = $planet_owner = $planet_owner_flag = $target_koords = array();
+			$types = $auftraege = $galaxy_obj = $planet_owner = $planet_owner_flag = $target_koords = $target_planets = array();
 			reset($_POST["auftrag"]);
 			for($i=0; list($k,$v) = each($_POST["auftrag"]); $i++)
 			{
@@ -230,6 +231,7 @@
 
 				$auftraege[$i] = $v;
 				$target_koords[$i] = array($_POST["galaxie"][$k], $_POST["system"][$k], $_POST["planet"][$k]);
+				$target_planets[$i] = Classes::Planet(Classes::System(Classes::Galaxy($target_koords[$i][0]), $target_koords[$i][1]), $target_koords[$i][2]);
 
 				$galaxy_obj[$i] = Classes::Galaxy($target_koords[$i][0]);
 				$planet_owner[$i] = $galaxy_obj[$i]->getPlanetOwner($target_koords[$i][1], $target_koords[$i][2]);
@@ -353,9 +355,9 @@
 				$_POST['speed'] = 1;
 
 			foreach($auftraege as $i=>$auftrag)
-				$fleet_obj->addTarget(implode(":", $target_koords[$i]), $auftrag, false);
+				$fleet_obj->addTarget($target_planets[$i], $auftrag, false);
 			if($auftrag != Fleet::$TYPE_STATIONIEREN && $auftrag != Fleet::$TYPE_BESIEDELN)
-				$fleet_obj->addTarget($me->getPosString(), $auftrag, true);
+				$fleet_obj->addTarget($me->getPlanet(), $auftrag, true);
 		}
 
 		if($buendnisflug)
@@ -735,9 +737,9 @@
 					foreach($_POST['flotte'] as $id=>$anzahl)
 						$fleet_obj->addFleet($id, $anzahl, $me->getName());
 					$tritium_all = array();
-					foreach($target_koords as $i=>$koords)
+					foreach($target_planets as $i=>$planet)
 					{
-						$fleet_obj->addTarget(implode(":", $koords), 0, false);
+						$fleet_obj->addTarget($planet, Fleet::$TYPE_NULL, false);
 						$tritium_all[$i] = $fleet_obj->calcNeededTritium($me->getName());
 					}
 					$tritium = $tritium_all[$i];

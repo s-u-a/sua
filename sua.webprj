@@ -3,25 +3,12 @@
   <project type="Local" name="sua" encoding="utf8" enableEvents="true" >
     <upload/>
     <defaultDTD>-//w3c//dtd xhtml 1.0 strict//en</defaultDTD>
-    <item url="admin/" uploadstatus="1" />
-    <item url="admin/edit_changelog.php" uploadstatus="1" />
-    <item url="admin/include.php" uploadstatus="1" />
-    <item url="admin/index.php" uploadstatus="1" />
-    <item url="admin/logs.php" uploadstatus="1" />
-    <item url="admin/news.php" uploadstatus="1" />
-    <item url="admin/style.css" uploadstatus="1" />
-    <item url="admin/userlist.php" uploadstatus="1" />
-    <item url="admin/usermanagement.php" uploadstatus="1" />
     <item url="database.global/" uploadstatus="1" />
     <item url="database.global/changelog" uploadstatus="1" />
-    <item url="database.global/databases" uploadstatus="1" />
     <item url="database.global/eventhandler.log" uploadstatus="1" />
     <item url="database.global/eventhandler.pid" uploadstatus="1" />
     <item url="database.global/forschung" uploadstatus="1" />
     <item url="database.global/gebaeude" uploadstatus="1" />
-    <item url="database.global/gpg" uploadstatus="1" />
-    <item url="database.global/hostname" uploadstatus="1" />
-    <item url="database.global/messengers" uploadstatus="1" />
     <item url="database.global/notifications" uploadstatus="1" />
     <item url="database.global/revision" uploadstatus="1" />
     <item url="database.global/roboter" uploadstatus="1" />
@@ -226,13 +213,11 @@
       <mailinglist address="" />
     </teamdata>
     <events/>
-    <item url="admin/.htaccess" uploadstatus="1" />
     <item url=".cache/" uploadstatus="1" />
     <item url=".cache/.dataModel" uploadstatus="1" />
     <item url="database.global/.htaccess" uploadstatus="1" />
     <item url="database.global/imserver.pid" uploadstatus="1" />
     <item url="doc/" uploadstatus="1" />
-    <item url="doc/api/" uploadstatus="1" />
     <item url="login/res/style/default.cur/" uploadstatus="1" />
     <item url="login/res/style/default.cur/images/" uploadstatus="1" />
     <item url="login/res/style/default.cur/images/planets/" uploadstatus="1" />
@@ -310,7 +295,6 @@
     <item url="classes/captcha.php" uploadstatus="1" />
     <item url="classes/captchaexception.php" uploadstatus="1" />
     <item url="classes/classes.php" uploadstatus="1" />
-    <item url="classes/classexception.php" uploadstatus="1" />
     <item url="classes/dataset.php" uploadstatus="1" />
     <item url="classes/eventfile.php" uploadstatus="1" />
     <item url="classes/fleet.php" uploadstatus="1" />
@@ -424,17 +408,177 @@
     <item url="db_things/regen_highscores.phpc" uploadstatus="1" />
     <item url="db_things/reset_foreign_fleets.phpc" uploadstatus="1" />
     <item url="db_things/update_database.phpc" uploadstatus="1" />
-    <item url="classes/database.php" />
-    <item url="classes/singleton.php" />
-    <item url="classes/databaseexception.php" />
-    <item url="classes/serialized.php" />
-    <item url="database.global/config.db" />
-    <item url="database.global/config.xml" />
-    <item url="database.global/config.xml.example" />
-    <item url="classes/sqliteset.php" />
-    <item url="classes/sqlitesetexception.php" />
-    <item url="classes/datasetexception.php" />
-    <item url="classes/sqliteexception.php" />
-    <item url="classes/allianceexception.php" />
+    <item url="classes/database.php" uploadstatus="1" />
+    <item url="classes/singleton.php" uploadstatus="1" />
+    <item url="classes/databaseexception.php" uploadstatus="1" />
+    <item url="classes/serialized.php" uploadstatus="1" />
+    <item url="database.global/config.db" uploadstatus="1" />
+    <item url="database.global/config.xml" uploadstatus="1" />
+    <item url="database.global/config.xml.example" uploadstatus="1" />
+    <item url="classes/sqliteset.php" uploadstatus="1" />
+    <item url="classes/sqlitesetexception.php" uploadstatus="1" />
+    <item url="classes/datasetexception.php" uploadstatus="1" />
+    <item url="classes/sqliteexception.php" uploadstatus="1" />
+    <item url="classes/allianceexception.php" uploadstatus="1" />
+    <item url="db_things/items2xml.phpc" uploadstatus="1" />
+    <item url="db_things/items.dtd" uploadstatus="1" />
+    <item url="doc/.htaccess" uploadstatus="1" />
+    <item url="doc/refresh" uploadstatus="1" />
+    <item url="classes/koords.php" />
+    <item url="classes/planet.php" />
+    <item url="classes/system.php" />
+    <item url="doc/api/" />
+    <item url="doc/api/default/" />
+    <item url="doc/api/default/AllianceException.html" />
+    <item url="doc/api/default/_allianceexception.php.html" />
+    <item url="doc/api/default/CaptchaException.html" />
+    <item url="doc/api/default/_captchaexception.php.html" />
+    <item url="doc/api/default/Captcha.html" />
+    <item url="doc/api/default/_captcha.php.html" />
+    <item url="doc/api/default/Classes.html" />
+    <item url="doc/api/default/_classes.php.html" />
+    <item url="doc/api/default/ClassException.html" />
+    <item url="doc/api/default/_classexception.php.html" />
+    <item url="doc/api/default/Config.html" />
+    <item url="doc/api/default/_config.php.html" />
+    <item url="doc/api/default/DatabaseException.html" />
+    <item url="doc/api/default/_databaseexception.php.html" />
+    <item url="doc/api/default/Database.html" />
+    <item url="doc/api/default/_database.php.html" />
+    <item url="doc/api/default/DatasetException.html" />
+    <item url="doc/api/default/_datasetexception.php.html" />
+    <item url="doc/api/default/Dataset.html" />
+    <item url="doc/api/default/_dataset.php.html" />
+    <item url="doc/api/default/EventFile.html" />
+    <item url="doc/api/default/_eventfile.php.html" />
+    <item url="doc/api/default/F.html" />
+    <item url="doc/api/default/FleetDatabase.html" />
+    <item url="doc/api/default/Fleet.html" />
+    <item url="doc/api/default/_fleet.php.html" />
+    <item url="doc/api/default/_f.php.html" />
+    <item url="doc/api/default/Functions.html" />
+    <item url="doc/api/default/_functions.php.html" />
+    <item url="doc/api/default/Galaxy.html" />
+    <item url="doc/api/default/_galaxy.php.html" />
+    <item url="doc/api/default/GPG.html" />
+    <item url="doc/api/default/_gpg.php.html" />
+    <item url="doc/api/default/Gui.html" />
+    <item url="doc/api/default/_gui.php.html" />
+    <item url="doc/api/default/Highscores.html" />
+    <item url="doc/api/default/_highscores.php.html" />
+    <item url="doc/api/default/HomeGui.html" />
+    <item url="doc/api/default/_homegui.php.html" />
+    <item url="doc/api/default/IMFile.html" />
+    <item url="doc/api/default/_imfile.php.html" />
+    <item url="doc/api/default/IOException.html" />
+    <item url="doc/api/default/_ioexception.php.html" />
+    <item url="doc/api/default/Item.html" />
+    <item url="doc/api/default/_item.php.html" />
+    <item url="doc/api/default/Items.html" />
+    <item url="doc/api/default/_items.php.html" />
+    <item url="doc/api/default/JS.html" />
+    <item url="doc/api/default/_js.php.html" />
+    <item url="doc/api/default/l.html" />
+    <item url="doc/api/default/LoginGui.html" />
+    <item url="doc/api/default/_logingui.php.html" />
+    <item url="doc/api/default/_l.php.html" />
+    <item url="doc/api/default/Market.html" />
+    <item url="doc/api/default/_market.php.html" />
+    <item url="doc/api/default/ReloadStack.html" />
+    <item url="doc/api/default/_reloadstack.php.html" />
+    <item url="doc/api/default/Serialized.html" />
+    <item url="doc/api/default/_serialized.php.html" />
+    <item url="doc/api/default/SetupGui.html" />
+    <item url="doc/api/default/_setupgui.php.html" />
+    <item url="doc/api/default/Singleton.html" />
+    <item url="doc/api/default/_singleton.php.html" />
+    <item url="doc/api/default/SQLiteException.html" />
+    <item url="doc/api/default/_sqliteexception.php.html" />
+    <item url="doc/api/default/SQLite.html" />
+    <item url="doc/api/default/_sqlite.php.html" />
+    <item url="doc/api/default/SQLiteSetException.html" />
+    <item url="doc/api/default/_sqlitesetexception.php.html" />
+    <item url="doc/api/default/SQLiteSet.html" />
+    <item url="doc/api/default/_sqliteset.php.html" />
+    <item url="doc/api/default/SuaException.html" />
+    <item url="doc/api/default/_suaexception.php.html" />
+    <item url="doc/api/default/User.html" />
+    <item url="doc/api/default/_user.php.html" />
+    <item url="doc/api/media/" />
+    <item url="doc/api/media/banner.css" />
+    <item url="doc/api/media/stylesheet.css" />
+    <item url="doc/api/sua/" />
+    <item url="doc/api/sua/storage/" />
+    <item url="doc/api/sua/storage/Alliance.html" />
+    <item url="doc/api/sua/storage/_alliance.php.html" />
+    <item url="doc/api/sua/storage/Message.html" />
+    <item url="doc/api/sua/storage/_message.php.html" />
+    <item url="doc/api/sua/storage/PublicMessageDatabase.html" />
+    <item url="doc/api/sua/storage/PublicMessage.html" />
+    <item url="doc/api/sua/storage/_publicmessage.php.html" />
+    <item url="doc/api/blank.html" />
+    <item url="doc/api/classtrees_default.html" />
+    <item url="doc/api/classtrees_sua.html" />
+    <item url="doc/api/elementindex_default.html" />
+    <item url="doc/api/elementindex.html" />
+    <item url="doc/api/elementindex_sua.html" />
+    <item url="doc/api/errors.html" />
+    <item url="doc/api/index.html" />
+    <item url="doc/api/li_default.html" />
+    <item url="doc/api/li_sua.html" />
+    <item url="doc/api/packages.html" />
+    <item url="classes/planetexception.php" />
+    <item url="classes/systemexception.php" />
+    <item url="classes/gpgexception.php" />
+    <item url="classes/fleetexception.php" />
+    <item url="doc/api/sua/config/" />
+    <item url="doc/api/sua/config/Config.html" />
+    <item url="doc/api/sua/config/_config.php.html" />
+    <item url="doc/api/sua/config/Database.html" />
+    <item url="doc/api/sua/config/_database.php.html" />
+    <item url="doc/api/sua/exceptions/" />
+    <item url="doc/api/sua/exceptions/AllianceException.html" />
+    <item url="doc/api/sua/exceptions/_allianceexception.php.html" />
+    <item url="doc/api/sua/exceptions/CaptchaException.html" />
+    <item url="doc/api/sua/exceptions/_captchaexception.php.html" />
+    <item url="doc/api/sua/exceptions/DatabaseException.html" />
+    <item url="doc/api/sua/exceptions/_databaseexception.php.html" />
+    <item url="doc/api/sua/exceptions/DatasetException.html" />
+    <item url="doc/api/sua/exceptions/_datasetexception.php.html" />
+    <item url="doc/api/sua/exceptions/GPGException.html" />
+    <item url="doc/api/sua/exceptions/_gpgexception.php.html" />
+    <item url="doc/api/sua/exceptions/IOException.html" />
+    <item url="doc/api/sua/exceptions/_ioexception.php.html" />
+    <item url="doc/api/sua/exceptions/PlanetException.html" />
+    <item url="doc/api/sua/exceptions/_planetexception.php.html" />
+    <item url="doc/api/sua/exceptions/SQLiteException.html" />
+    <item url="doc/api/sua/exceptions/_sqliteexception.php.html" />
+    <item url="doc/api/sua/exceptions/SQLiteSetException.html" />
+    <item url="doc/api/sua/exceptions/_sqlitesetexception.php.html" />
+    <item url="doc/api/sua/exceptions/SuaException.html" />
+    <item url="doc/api/sua/exceptions/_suaexception.php.html" />
+    <item url="doc/api/sua/exceptions/SystemException.html" />
+    <item url="doc/api/sua/exceptions/_systemexception.php.html" />
+    <item url="doc/api/sua/gui/" />
+    <item url="doc/api/sua/gui/Captcha.html" />
+    <item url="doc/api/sua/gui/_captcha.php.html" />
+    <item url="doc/api/sua/gui/F.html" />
+    <item url="doc/api/sua/gui/_f.php.html" />
+    <item url="doc/api/sua/storage/Classes.html" />
+    <item url="doc/api/sua/storage/_classes.php.html" />
+    <item url="doc/api/sua/storage/Dataset.html" />
+    <item url="doc/api/sua/storage/_dataset.php.html" />
+    <item url="doc/api/sua/storage/EventFile.html" />
+    <item url="doc/api/sua/storage/_eventfile.php.html" />
+    <item url="doc/api/sua/storage/Planet.html" />
+    <item url="doc/api/sua/storage/_planet.php.html" />
+    <item url="doc/api/sua/storage/System.html" />
+    <item url="doc/api/sua/storage/_system.php.html" />
+    <item url="doc/api/sua/tools/" />
+    <item url="doc/api/sua/tools/Functions.html" />
+    <item url="doc/api/sua/tools/_functions.php.html" />
+    <item url="doc/api/sua/tools/GPG.html" />
+    <item url="doc/api/sua/tools/_gpg.php.html" />
+    <item url="doc/api/todolist.html" />
   </project>
 </webproject>

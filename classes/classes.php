@@ -16,71 +16,94 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	global $objectInstances;
-	$objectInstances = array();
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage storage
+	*/
+
+	/**
+	 * Stellt statische Funktionen zur Verfügung, die als Wrapper für das new-Keyword gelten.
+	 * Auf diese Weise kann für Klassen, die das Interface Singleton implementieren, ein Mechanismus
+	 * implementiert werden, der dafür sorgt, dass zum Beispiel für einen einzelnen Benutzer immer
+	 * nur ein Objekt gleichzeitig existiert.
+	*/
 
 	class Classes
 	{
-		static function Singleton($classname, $p1=false, $write=true)
-		{
-			global $objectInstances;
+		/**
+		 * Speichert die Instanzen der Singleton-Variablen. Format: ( Klassenname => ( Singleton::datasetName() => Objekt ) )
+		*/
+		private static self::$objectInstances = array();
 
-			if(!isset($objectInstances)) $objectInstances = array();
-			if(!isset($objectInstances[$classname])) $objectInstances[$classname] = array();
+		/**
+		 * Liefert eine Instanz der Klasse $classname mit dem Parameter $p1 zurück.
+		 * $p1 wird zunächst durch Singleton::datasetName() gejagt. Existiert bereits
+		 * eine Instanz von $classname mit $p1, wird diese zurückgegeben, ansonsten
+		 * wird eine erzeugt.
+		 * @param string $classname
+		 * @param mixed $p1
+		 * @param boolean $write Manche Objekte können zur Zeit noch auch nur zum Lesen geöffnet werden.
+		 * @return Object
+		*/
+
+		static function Singleton($classname, $p1=null, $write=true)
+		{
+			if(!isset(self::$objectInstances)) self::$objectInstances = array();
+			if(!isset(self::$objectInstances[$classname])) self::$objectInstances[$classname] = array();
 			$p1 = $classname::datasetName($p1);
-			if(!isset($objectInstances[$classname][$p1]))
+			if(!isset(self::$objectInstances[$classname][$p1]))
 			{
 				$instance = new $classname($p1, $write);
-				$objectInstances[$classname][$p1] = $instance;
+				self::$objectInstances[$classname][$p1] = $instance;
 			}
-			elseif($write && $objectInstances[$classname][$p1]->readonly())
+			elseif($write && self::$objectInstances[$classname][$p1]->readonly())
 			{ # Von Readonly auf Read and write schalten
-				$objectInstances[$classname][$p1]->__destruct();
-				$objectInstances[$classname][$p1]->__construct($p1, $write);
+				self::$objectInstances[$classname][$p1]->__destruct();
+				self::$objectInstances[$classname][$p1]->__construct($p1, $write);
 			}
 
-			return $objectInstances[$classname][$p1_lower];
+			return self::$objectInstances[$classname][$p1_lower];
 		}
 
-		static function resetInstances($classname=false, $destruct=true)
-		{
-			global $objectInstances;
+		/**
+		 * Löscht alle gespeicherten Instanzen. Dies ist zum Beispiel wichtig, wenn
+		 * eine andere Datenbank ausgewählt wird.
+		 * @param string|null $classname Es sollen nur die Instanzen der Klasse $classname gelöscht werden.
+		 * @param boolean $destruct Wenn true, wird __destruct() aller Objekte manuell ausgeführt, wenn vorhanden.
+		 * @return null
+		*/
 
-			if(!$classname)
+		static function resetInstances($classname=null, $destruct=true)
+		{
+			if(!isset($classname))
 			{
-				$status = true;
-				while(count($objectInstances) > 0)
+				while(count(self::$objectInstances) > 0)
 				{
-					foreach($objectInstances as $instanceName=>$instances)
+					foreach(self::$objectInstances as $instanceName=>$instances)
 					{
 						if($instanceName == 'EventFile') continue;
-						if(!self::resetInstances($instanceName))
-							$status = false;
+						self::resetInstances($instanceName);
 					}
 				}
-				return $status;
+				return;
 			}
 
-			if(!isset($objectInstances[$classname])) return true;
+			if(!isset(self::$objectInstances[$classname])) return;
 
-			foreach($objectInstances[$classname] as $key=>$instance)
+			foreach(self::$objectInstances[$classname] as $key=>$instance)
 			{
 				if($destruct && method_exists($instance, '__destruct'))
 					$instance->__destruct();
-				unset($objectInstances[$classname][$key]);
+				unset(self::$objectInstances[$classname][$key]);
 			}
-			unset($objectInstances[$classname]);
-
-			return true;
+			unset(self::$objectInstances[$classname]);
 		}
 
 		# Serialize mit Instanzen und Locking
-		static function User($p1=false, $write=true){ return self::Singleton('User', $p1, $write); }
-		static function Alliance($p1=false, $write=true){ return self::Singleton('Alliance', $p1, $write); }
-		static function Fleet($p1=false) {
-			if($p1 === false) $p1 = str_replace('.', '-', microtime(true));
-			return self::Singleton('Fleet', $p1);
-		}
+		static function User($p1=null, $write=true){ return self::Singleton('User', $p1, $write); }
+		static function Alliance($p1=null, $write=true){ return self::Singleton('Alliance', $p1, $write); }
+		static function Fleet($p1=null) { return self::Singleton('Fleet', $p1); }
 
 		# Serialize
 		static function Items(){ return self::Singleton('Items', 'items'); }
@@ -97,6 +120,9 @@
 		static function Message($id=false){ return new Message($id); }
 		static function PublicMessage($id=false){ return new PublicMessage($id); }
 		static function ReloadStack() { return new ReloadStack(); }
+
+		static function System($galaxy,$system) { return new System($galaxy,$system); }
+		static function Planet($system,$planet) { return new Planet($system,$planet); }
 	}
 
 	register_shutdown_function(array('Classes', 'resetInstances'));

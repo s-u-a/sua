@@ -15,11 +15,22 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage tools
+	*/
+
+	/**
+	 * Erweitert die PHP-Standardfunktionen um nützliche Dinge.
+	*/
 
 	class Functions
 	{
 		/**
-		* Ueberprueft, ob der richtige Hostname aufgerufen wurde und leitet sonst um.
+		 * Ueberprueft, ob der richtige Hostname aufgerufen wurde und leitet sonst um.
+		 * @return null
+		 * @todo Veraltete Funktionsaufrufe
 		*/
 
 		static function checkHostname()
@@ -64,7 +75,11 @@
 			}
 		}
 
-		########################################
+		/**
+		 * Liefert das Produkt der Array-Werte zurück.
+		 * @param array(float) $array
+		 * @return float
+		*/
 
 		function array_product($array)
 		{
@@ -78,7 +93,10 @@
 		}
 
 		/**
-		* Liefert die Differenz zwischen $ao und $bo zurueck (immer positiv).
+		 * Liefert die Differenz zwischen $ao und $bo zurueck (immer positiv).
+		 * @param float $ao
+		 * @param float $bo
+		 * @return float
 		*/
 
 		static function diff($ao, $bo)
@@ -87,8 +105,10 @@
 		}
 
 		/**
-		* Rundet $a (call by reference) auf $d Stellen nach dem Komma. $d kann auch negativ sein.
-		* @return $a
+		 * Rundet $a (call by reference) auf $d Stellen nach dem Komma. $d kann auch negativ sein.
+		 * @param float $a
+		 * @param int $d
+		 * @return float $a
 		*/
 
 		static function stdround(&$a, $d=0)
@@ -101,8 +121,10 @@
 		}
 
 		/**
-		* Wrapper fuer flock(), jedoch mit einem Timeout (1 Sekunde fuer LOCK_SH, sonst 5).
-		* @return (booolean) War das Sperren erfolreich?
+		 * Wrapper fuer flock(), jedoch mit einem Timeout (1 Sekunde fuer LOCK_SH, sonst 5).
+		 * @param resource $file
+		 * @param int $lock_flag LOCK_*
+		 * @return bool War das Sperren erfolreich?
 		*/
 
 		static function fancyFlock($file, $lock_flag)
@@ -122,7 +144,10 @@
 		}
 
 		/**
-		* Verkleinert das Rohstoffarray $array gleichmaessig so, dass dessen Summe den Wert $max nicht uebersteigt.
+		 * Verkleinert das Rohstoffarray $array gleichmaessig so, dass dessen Summe den Wert $max nicht uebersteigt.
+		 * @param array(int) $array
+		 * @param integer $max
+		 * @return array(int)
 		*/
 
 		static function fitToMax($array, $max)
@@ -167,7 +192,10 @@
 		}
 
 		/**
-		* Hilfsfunktion fuer fit_to_max().
+		 * Hilfsfunktion fuer fit_to_max().
+		 * @param int $a
+		 * @param int $b
+		 * @return int
 		*/
 
 		static function _fitToMax_usort($a, $b)
@@ -182,9 +210,11 @@
 		}
 
 		/**
-		* Fuegt an der Zeigerposition im Dateizeiger $fh den String $string ein. Der nachfolgende Inhalt wird nach hinten verschoben.
-		* @param $bs Groesse der Bloecke, in denen der Inhalt verschoben wird, in Bytes.
-		* @return (boolean) Erfolg
+		 * Fuegt an der Zeigerposition im Dateizeiger $fh den String $string ein. Der nachfolgende Inhalt wird nach hinten verschoben.
+		 * @param resource $fh
+		 * @param string $string
+		 * @param int $bs Groesse der Bloecke, in denen der Inhalt verschoben wird, in Bytes.
+		 * @return bool Erfolg
 		*/
 
 		static function finsert($fh, $string, $bs=1024)
@@ -218,9 +248,11 @@
 		}
 
 		/**
-		* Loescht an der Zeigerposition im Dateizeiger $fh die $len Bytes. Der Nachfolgende Inhalt wird vorgezogen.
-		* @param $bs Groesse der Bloecke, in denen der Inhalt verschoben wird, in Bytes.
-		* @return (boolean) Erfolg
+		 * Loescht an der Zeigerposition im Dateizeiger $fh die $len Bytes. Der Nachfolgende Inhalt wird vorgezogen.
+		 * @param resurce $fh
+		 * @param int $len
+		 * @param int $bs Groesse der Bloecke, in denen der Inhalt verschoben wird, in Bytes.
+		 * @return bool Erfolg
 		*/
 
 		static function fdelete($fh, $len, $bs=1024)
@@ -242,7 +274,10 @@
 		}
 
 		/**
-		* Liefert einen zufaelligen Index des Arrays $array zurueck. Die Wahrscheinlichkeitenverteilung entspricht den Werten von $array.
+		 * Liefert einen zufaelligen Index des Arrays $array zurueck.
+		 * Die Wahrscheinlichkeitenverteilung entspricht den Werten von $array.
+		 * @param array $array
+		 * @return int
 		*/
 
 		static function irrand($array)
@@ -260,7 +295,10 @@
 		}
 
 		/**
-		* Liefert den GGT von $i und $j zurueck.
+		 * Liefert den GGT von $i und $j zurueck.
+		 * @param int $i
+		 * @param int $j
+		 * @return int
 		*/
 
 		static function gcd2($i,$j)
@@ -279,7 +317,9 @@
 		}
 
 		/**
-		* Liefert den GGT aller Werte des Arrays $a zurueck.
+		 * Liefert den GGT aller Werte des Arrays $a zurueck.
+		 * @param array(int) $a
+		 * @return int
 		*/
 
 		static function gcd($a)
@@ -303,7 +343,10 @@
 		}
 
 		/**
-		* Manuelle Portierung der Tabellen einer SQLite2- in eine SQLite3-Datenbank.
+		 * Manuelle Portierung der Tabellen einer SQLite2- in eine SQLite3-Datenbank.
+		 * @param string $old_fname
+		 * @param string $new_fname
+		 * @return null
 		*/
 
 		static function sqlite2sqlite3($old_fname, $new_fname)
@@ -337,7 +380,9 @@
 		}
 
 		/**
-		* Liefert den Index zurueck, unter dem in $arr der groesste Wert gespeichert ist.
+		 * Liefert den Index zurueck, unter dem in $arr der groesste Wert gespeichert ist.
+		 * @param array(float) $arr
+		 * @return int|string
 		*/
 
 		static function max_index($arr)
@@ -360,7 +405,9 @@
 		}
 
 		/**
-		* Liefert den Index zurueck, unter dem in $arr der kleinste Wert gespeichert ist.
+		 * Liefert den Index zurueck, unter dem in $arr der kleinste Wert gespeichert ist.
+		 * @param array(float) $arr
+		 * @return int|string
 		*/
 
 		static function min_index($arr)
@@ -383,7 +430,9 @@
 		}
 
 		/**
-		* Kodiert ein Rohstoff-Array zu einem String. Format: Menge1 ' ' Menge 2 ' ' ...
+		 * Kodiert ein Rohstoff-Array zu einem String. Format: Menge1 ' ' Menge 2 ' ' ...
+		 * @param array $list
+		 * @return string
 		*/
 
 		static function encodeRessList($list)
@@ -392,7 +441,9 @@
 		}
 
 		/**
-		* Konvertiert einen mit encode_ress_list() kodierten String zurueck zu einem Rohstoff-Array.
+		 * Konvertiert einen mit encodeRessList() kodierten String zurueck zu einem Rohstoff-Array.
+		 * @param string $encoded
+		 * @return array
 		*/
 
 		static function decodeRessList($encoded)
@@ -404,14 +455,14 @@
 		}
 
 		/**
-		* Fügt in der Zahl $number der Ziffer Nummer $digit $change hinzu. Wird in der Zahl 555 der ersten Ziffer ($digit = 2) $change = 7 addiert, so erhält man 255.
-		* @param $number integer Die Zahl, die geändert werden soll.
-		* @param $digit integer Die wievielte Ziffer soll geändert werden? 0 ist ganz rechts. Negative Werte möglich.
-		* @param $change integer Wieviel soll der Ziffer hinzugefügt werden? Negative Werte möglich.
-		* @return integer Die neue Zahl.
+		 * Fügt in der Zahl $number der Ziffer Nummer $digit $change hinzu. Wird in der Zahl 555 der ersten Ziffer ($digit = 2) $change = 7 addiert, so erhält man 255.
+		 * @param int $number Die Zahl, die geändert werden soll.
+		 * @param int $digit Die wievielte Ziffer soll geändert werden? 0 ist ganz rechts. Negative Werte möglich.
+		 * @param int $change Wieviel soll der Ziffer hinzugefügt werden? Negative Werte möglich.
+		 * @return int Die neue Zahl.
 		*/
 
-		static function change_digit($number, $digit, $change)
+		static function changeDigit($number, $digit, $change)
 		{
 			$d = floor(($number%pow(10, $digit+1))/pow(10, $digit));
 			$d_new = $d+$change;
@@ -421,7 +472,11 @@
 		}
 
 		/**
-		* Funktioniert wie explode(), liefert aber ein leeres Array bei einem leeren String zurück.
+		 * Funktioniert wie explode(), liefert aber ein leeres Array bei einem leeren String zurück.
+		 * @param string $delimiter
+		 * @param string $string
+		 * @param int $limit
+		 * @return array(string)
 		*/
 
 		static function explode0($delimiter, $string, $limit=null)
@@ -437,20 +492,25 @@
 		}
 
 		/**
-		* Überprüft die E-Mail-Adresse $email auf Gültigkeit.
+		 * Überprüft die E-Mail-Adresse $email auf Gültigkeit.
+		 * @param string $email
+		 * @return bool
 		*/
 
 		static function check_email($email)
 		{
 			$reg = "(^((([A-Za-z0-9.!#$%&'*+-/=?^_`{|}~]|\\\\.){1,64})|(\"([\\x00-\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\\\\"]){1,64}\"))@((([a-zA-Z0-9][-a-zA-Z0-9]*)?[a-zA-Z0-9]\\.)*(([a-zA-Z0-9][-a-zA-Z0-9]*)?[a-zA-Z0-9]))\$)";
-			return preg_match($reg, $email);
+			return (true && preg_match($reg, $email));
 		}
 
 		/**
-		* Debug-Ausgabe im Format $string:Zeit:wievielter Aufruf mit $string:Zeit seit letztem Aufruf mit $string:wievielter Aufruf überhaupt:Zeit seit letztem Aufruf überhaupt
+		 * Debug-Ausgabe im Format $string:Zeit:wievielter Aufruf mit $string:Zeit seit letztem Aufruf mit $string:wievielter Aufruf überhaupt:Zeit seit letztem Aufruf überhaupt
+		 * @param string $string
+		 * @param integer $max
+		 * @return null
 		*/
 
-		static function debug_time($string="", $max=null)
+		static function debugTime($string="", $max=null)
 		{
 			static $times;
 			if(!isset($times)) $times = array();
@@ -472,10 +532,24 @@
 			$times[""][1] = $time;
 		}
 
+		/**
+		 * Konvertiert eine Benutzereingabe zu einer Booleanvariable. Eingaben wie
+		 * „no“ oder „false“ werden zu false konvertiert, alle unbekannten Eingaben
+		 * zu true.
+		 * @param string $string
+		 * @return boolean
+		*/
+
 		static function string2boolean($string)
 		{
 			return $string && !in_array($string, array("no", "false", "disabled", "disable", "off", "nein", "n"));
 		}
+
+		/**
+		 * Gibt den ersten Index des Arrays $array zurück.
+		 * @param array $array
+		 * @return int|string
+		*/
 
 		static function first($array)
 		{
@@ -484,8 +558,14 @@
 			return $keys[0];
 		}
 
+		/**
+		 * Gibt eine mögliche neue ID für ein Dataset zurück. Es ist nicht sichergestellt,
+		 * dass diese nicht bereits existiert. Liefert jedesmal eine andere ID zurück.
+		 * @return string
+		*/
+
 		static function randomID()
 		{
-			return substr(md5(rand()), 0, 16);
+			return str_replace(".", "-", microtime(true));
 		}
 	}

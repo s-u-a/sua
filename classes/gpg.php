@@ -15,39 +15,46 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage tools
+	*/
+
+	/**
+	 * Stellt statische Funktionen zur Verfügung, um mit GPG zu arbeiten, zum Beispiel
+	 * zum Signieren oder Verschlüsseln von Text.
+	*/
 
 	class GPG
 	{
 		/**
-		* Oeffnet den GPG-Schluessel entsprechend der Konfiguration und liefert bei Erfolg ein gnupg-Object zurueck.
-		* @return null, wenn keine Konfiguration vorliegt oder der Schluessel nicht geoeffnet werden kann.
-		* @return (gnupg)
+		 * Oeffnet den GPG-Schluessel entsprechend der Konfiguration und liefert bei Erfolg ein gnupg-Object zurueck.
+		 * @param boolean $return_public_key Wenn true, wird statt der gnupg-Instanz der öffentliche Schlüssel zurückgeliefert.
+		 * @return gnupg|string Eine gnupg-Instanz oder der öffentliche Schlüssel.
+		 * @throw GPGException Wenn keine Konfiguration vorliegt oder der Schlüssel nicht geöffnet werden konnte.
 		*/
 
 		static function init($return_public_key=false)
 		{
-			static $gpg,$config;
+			static $gpg;
 
-			if(!isset($config))
-			{
-				if(!is_file(global_setting("DB_GPG"))) return null;
-				$config = parse_ini_file(global_setting("DB_GPG"));
-			}
-			if(!$config || !isset($config["fingerprint"]))
-				return null;
+			$config = Config::getConfig();
+			if(!isset($config["gpg"]))
+				throw new GPGException("GPG is not configured.");
+			$config = & $config["gpg"];
 
 			if(!isset($gpg))
 			{
 				if(!class_exists("gnupg"))
-					return null;
+					throw new GPGException("The PHP gnupg extension (PECL) is not installed.");
 				$gpg = new gnupg();
-				$gpg->seterrormode(gnupg::ERROR_WARNING);
+				$gpg->seterrormode(gnupg::ERROR_EXCEPTION);
 				$gpg->setsignmode(gnupg::SIG_MODE_CLEAR);
 				if(isset($config["gpghome"]))
 					putenv("GNUPGHOME=".$config["gpghome"]);
-				if(!$gpg->addsignkey($config["fingerprint"]))
-					return null;
-				$gpg->adddecryptkey($config["fingerprint"], "");
+				if(!$gpg->addsignkey($config["fingerprint"]) || !$gpg->adddecryptkey($config["fingerprint"], ""))
+					throw new GPGException("Could not open the key.");
 			}
 			if($return_public_key)
 				return $gpg->export($config["fingerprint"]);
@@ -56,7 +63,7 @@
 		}
 
 		/**
-		* Signiert den gegebenen Text wenn moeglich per GPG.
+		 * Signiert den gegebenen Text wenn moeglich per GPG.
 		*/
 
 		static function sign($text)
@@ -71,53 +78,71 @@
 		}
 
 		/**
-		* Signiert den Text, gibt aber nur die Signatur, ohne Header, zurück.
-		* @return false Bei Fehlschlag
+		 * Signiert den Text, gibt aber nur die Signatur, ohne Header, zurück.
+		 * @param string $text
+		 * @return string
 		*/
 
 		static function smallsign($text)
 		{
 			$gpg = self::init();
-			if(!$gpg) return false;
 
 			$signed = $gpg->sign($text);
 			if(!preg_match("/(^|\n)-----BEGIN PGP SIGNATURE-----\r?\n.*?\r?\n\r?\n(.*?)\r?\n-----END PGP SIGNATURE-----(\r?\n|\$)/s", $signed, $m))
-				return false;
+				throw new GPGException("Unrecognised output.");
 			return $m[2];
 		}
 
 		/**
-		* Signiert und verschluesselt den gegebenen Text wenn moeglich per GPG.
+		 * Signiert und verschluesselt den gegebenen Text wenn moeglich per GPG.
+		 * @param string $text
+		 * @param string $fingerprint Der Fingerprint des Schlüssels, der den verschlüsselten Text dekodieren können soll.
+		 * @param bool $return_text_on_failure Liefert bei Fehlschlag den Text unverschlüsselt zurück.
+		 * @return string
 		*/
 
-		static function encrypt($text, $fingerprint)
+		static function encrypt($text, $fingerprint, $return_text_on_failure=true)
 		{
-			$gpg = self::init();
-			if(!$gpg)
+			try
+			{
+				$gpg = self::init();
+			}
+			catch(GPGException $e)
+			{
 				return $text;
+			}
 			$gpg->addencryptkey($fingerprint);
 			$encrypted = $gpg->encryptsign($text);
 			$gpg->clearencryptkeys();
 			if($encrypted === false)
-				return $text;
+			{
+				if($return_text_on_failure)
+					return $text;
+				else
+					throw new GPGException("Encrypting failed.");
+			}
 			return $encrypted;
 		}
 
 		/**
-		* Verschlüsselt und signiert $text für $fingerprint, gibt aber nur den verschlüsselten Text ohne Header zurück.
-		* @return false Bei Fehlschlag.
+		 * Verschlüsselt und signiert $text für $fingerprint, gibt aber nur den verschlüsselten Text ohne Header zurück.
+		 * @param string $text
+		 * @param string $fingerprint Fingerprint, dessen Schlüssel den Text dekodieren können soll
+		 * @return string
 		*/
 
 		static function smallencrypt($text, $fingerprint)
 		{
-			$signed = self::encrypt($text, $fingerprint);
+			$signed = self::encrypt($text, $fingerprint, false);
 			if(!preg_match("/(^|\n)-----BEGIN PGP MESSAGE-----\r?\n.*?\r?\n\r?\n(.*?)\r?\n-----END PGP MESSAGE-----(\r?\n|\$)/s", $signed, $m))
-				return false;
+				throw new GPGException("Unrecognised output.");
 			return $m[2];
 		}
 
 		/**
-		* Entschlüsselt den Text.
+		 * Entschlüsselt den Text.
+		 * @param string $text Der verschlüsselte Text.
+		 * @return string
 		*/
 
 		static function decrypt($text)

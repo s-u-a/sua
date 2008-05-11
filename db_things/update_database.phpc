@@ -47,7 +47,7 @@
 	global_setting("DB_FLEETS", global_setting("DB_DIR")."/fleets");
 
 	# Aktuelle Datenbankversion herausfinden
-	$current_version = Config::get_database_version();
+	$current_version = Classes::Database()->getDatabaseVersion();
 
 	# Version, auf die aktualisiert werden muss
 	$newest_version = global_setting("DATABASE_VERSION");

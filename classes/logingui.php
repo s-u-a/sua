@@ -20,7 +20,7 @@
 	{
 		protected function htmlHead()
 		{
-			$skins = Config::get_skins();
+			$skins = Config::getSkins();
 			$databases = Config::get_databases();
 			$me = $this->getOption("user");
 ?>

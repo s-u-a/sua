@@ -16,9 +16,26 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage config
+	*/
+
+	/**
+	 * Stellt statische Funktionen zur Verfügung, um die Konfiguration des Spiels auszulesen
+	 * und zu schreiben.
+	*/
+
 	class Config
 	{
 		static private $config;
+
+		/**
+		 * Gibt die Spielkonfiguration als Array zurück.
+		 * @return array
+		*/
+
 		static function getConfig()
 		{
 			if(!isset(self::$config))
@@ -71,12 +88,13 @@
 		}
 
 		/**
-		* Sucht nach installierten Skins und liefert ein Array des folgenden
-		* Formats zurueck:
-		* ( ID => [ Name, ( Einstellungsname => ( moeglicher Wert ) ) ] )
+		 * Sucht nach installierten Skins und liefert ein Array des folgenden
+		 * Formats zurueck:
+		 * ( ID => [ Name, ( Einstellungsname => ( moeglicher Wert ) ) ] )
+		 * @return array
 		*/
 
-		static function get_skins()
+		static function getSkins()
 		{
 			# Vorgegebene Skins-Liste bekommen
 			$skins = array();
@@ -107,10 +125,11 @@
 		}
 
 		/**
-		* Liefert die Spielversion zurueck.
+		 * Liefert die Spielversion zurueck.
+		 * @return string
 		*/
 
-		static function get_version()
+		static function getVersion()
 		{
 			$version = '';
 			if(is_file(global_setting("DB_VERSION")) && is_readable(global_setting("DB_VERSION")))
@@ -133,9 +152,10 @@
 		}
 
 		/**
-		* Parst die Messenger-Konfigurationsdatei und schmeisst ungueltige Eintraege hinaus.
-		* @param $type Liefert nur die Konfiguration zum gegebenen Protokoll zurueck
-		* @param $force_reload Soll die Konfigurationsdatei unbedingt neu eingelesen werden?
+		 * Parst die Messenger-Konfigurationsdatei und schmeisst ungueltige Eintraege hinaus.
+		 * @param $type Liefert nur die Konfiguration zum gegebenen Protokoll zurueck
+		 * @param $force_reload Soll die Konfigurationsdatei unbedingt neu eingelesen werden?
+		 * @deprecated
 		*/
 
 		static function get_messenger_info($type=false, $force_reload=false)
@@ -173,11 +193,11 @@
 		}
 
 		/**
-		* Überprüft, ob db_things/imserver gestartet ist.
-		* @return boolean
+		 * Überprüft, ob db_things/imserver.phpc gestartet ist.
+		 * @return boolean
 		*/
 
-		static function imserver_running()
+		static function imserverRunning()
 		{
 			if(!is_file(global_setting("DB_IMSERVER_PIDFILE")) || !is_readable(global_setting("DB_IMSERVER_PIDFILE")))
 				return false;

@@ -183,6 +183,12 @@
 			return true;
 		}
 
+		function getPlanet()
+		{
+			$pos = $this->getPos();
+			return Classes::Planet(Classes::System(Classes::Galaxy($pos[0]), $pos[1]), $pos[2]);
+		}
+
 		function getPos()
 		{
 			if(!$this->status || !isset($this->planet_info)) return false;
@@ -589,7 +595,7 @@
 				$eventfile = Classes::EventFile();
 				foreach($this->raw['flotten'] as $i=>$flotte)
 				{
-					if(!Fleet::fleetExists($flotte))
+					if(!Fleet::exists($flotte))
 					{
 						unset($this->raw['flotten'][$i]);
 						$this->changed = true;
@@ -3503,7 +3509,7 @@
 
 				if(!$fleet_obj->getStatus()) return false;
 
-				$fleet_obj->addTarget($fleet[1], 6, true);
+				$fleet_obj->addTarget(Planet::fromString($fleet[1]), 6, true);
 				$fleet_obj->addUser($this->getName(), $koords, $fleet[2]);
 				foreach($fleet[0] as $id=>$c)
 					$fleet_obj->addFleet($id, $c, $this->getName());

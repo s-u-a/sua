@@ -22,10 +22,10 @@
 	*/
 
 	/**
-	 * Ein Problem mit einem SQLite-Datenset ist aufgetreten. Zum Beispiel wurde eines
-	 * geöffnet, das noch nicht in der Datenbank aufgeführt ist.
+	 * Es ist ein Fehler mit der GPG-Implementation aufgetreten. Möglicherweise konnte
+	 * der Schlüssel zum Signieren nicht geöffnet werden oder Ähnliches.
 	*/
 
-	class SQLiteSetException extends SuaException
+	class GPGException extends SuaException
 	{
 	}

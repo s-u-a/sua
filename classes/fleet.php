@@ -16,54 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-	class FleetDatabase extends SQLite
-	{
-		protected $tables = array("fleets" => array("fleet_id PRIMARY KEY", "targets", "users", "start INT", "finished" ));
-
-		function getField($fleet_id, $field_name)
-		{
-			if(!$this->fleetExists($fleet_id)) return false;
-
-			$result = $this->singleQuery("SELECT ".$field_name." FROM fleets WHERE fleet_id = ".$this->escape($fleet_id)." LIMIT 1;");
-			if($result) $result = $result[$field_name];
-			return $result;
-		}
-
-		function setField($fleet_id, $field_name, $field_value)
-		{
-			if(!$this->fleetExists($fleet_id)) return false;
-
-			return $this->query("UPDATE fleets SET ".$field_name." = ".$this->escape($field_value)." WHERE fleet_id = ".$this->escape($fleet_id).";");
-		}
-
-		function getNewName()
-		{
-			do $name = str_replace('.', '-', microtime(true));
-				while($this->fleetExists($name));
-			return $name;
-		}
-
-		function createNewFleet($fleet_id)
-		{
-			$this->query("INSERT INTO fleets ( fleet_id ) VALUES ( ".$this->escape($fleet_id)." );");
-		}
-
-		function deleteFleet($fleet_id)
-		{
-			$this->query("DELETE FROM fleets WHERE fleet_id = ".$this->escape($fleet_id).";");
-		}
-
-		function fleetExists($fleet_id)
-		{
-			return ($this->singleField("SELECT COUNT(*) FROM fleets WHERE fleet_id = ".$this->escape($fleet_id)." LIMIT 1;") > 0);
-		}
-
-		function fleetsCount()
-		{
-			return ($this->singleField("SELECT COUNT(*) FROM fleets;"));
-		}
-	}
-
 /*
   * Format von $raw:
   * [ Ziele, Benutzer, Startzeit, Vergangene Ziele ]
@@ -74,443 +26,381 @@
   * Handel: [ ( Rohstoffnummer => Menge ), ( Roboter-ID => Anzahl ), Rohstoffe abliefern? ]
 */
 
-	class Fleet implements Singleton,Dataset
-	{
-		protected static $database = false;
-		protected $status = false;
-		protected $raw = false;
-		protected $changed = false;
-		protected $name = false;
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage storage
+	*/
 
+	/**
+	 * Repräsentiert eine Flotte im Spiel.
+	*/
+
+	class Fleet extends SQLiteSet
+	{
+		protected static $tables = array("fleets" => array("fleet_id TEXT PRIMARY KEY", "start_time INTEGER"),
+		                                 "fleets_targets" => array("i INTEGER", "fleet_id TEXT", "galaxy INTEGER", "system INTEGER", "planet INTEGER", "type INTEGER", "flying_back INTEGER", "arrival INTEGER", "finished INTEGER"),
+		                                 "fleets_users" => array("i INTEGER", "fleet_id TEXT", "user TEXT", "from_galaxy INTEGER", "from_system INTEGER", "from_planet INTEGER", "factor REAL", "ress0 INTEGER", "ress1 INTEGER", "ress2 INTEGER", "ress3 INTEGER", "ress4 INTEGER", "ress_tritium INTEGER", "hress0 INTEGER", "hress1 INTEGER", "hress2 INTEGER", "hress3 INTEGER", "hress4 INTEGER", "used_tritium INTEGER", "dont_put_ress INTEGER"),
+		                                 "fleets_users_rob" => array("fleet_id TEXT", "user TEXT", "id TEXT", "number INTEGER"),
+		                                 "fleets_users_hrob" => array("fleet_id TEXT", "user TEXT", "id TEXT", "number INTEGER"),
+		                                 "fleets_users_fleet" => array("fleet_id TEXT", "user TEXT", "id TEXT", "number INTEGER"));
+		protected static $id_field = "fleet_id";
+
+		/**
+		 * Auftrag: steht noch nicht fest
+		 * @var integer
+		*/
+		static $TYPE_NULL = 0;
+
+		/**
+		 * Auftrag: Besiedeln
+		 * @var integer
+		*/
 		static $TYPE_BESIEDELN = 1;
+
+		/**
+		 * Auftrag: Sammeln
+		 * @var integer
+		*/
 		static $TYPE_SAMMELN = 2;
+
+		/**
+		 * Auftrag: Angriff
+		 * @var integer
+		*/
 		static $TYPE_ANGRIFF = 3;
+
+		/**
+		 * Auftrag: Transport
+		 * @var integer
+		*/
 		static $TYPE_TRANSPORT = 4;
+
+		/**
+		 * Auftrag: Spionage
+		 * @var integer
+		*/
 		static $TYPE_SPIONIEREN = 5;
+
+		/**
+		 * Auftrag: Stationieren
+		 * @var integer
+		*/
 		static $TYPE_STATIONIEREN = 6;
 
-		static
-		{
-			self::$database = new FleetDatabase();
-		}
-
-		static protected function databaseInstance()
-		{
-		}
-
-		function __construct($name=false)
-		{
-			self::databaseInstance();
-
-			if($name === false) $name = self::$database->getNewName();
-
-			$this->name = $name;
-			if(self::$database->fleetExists($this->name))
-			{
-				$this->status = 1;
-				$this->read();
-			}
-		}
-
-		function getStatus()
-		{
-			return $this->status;
-		}
-
-		function getName()
-		{
-			return $this->name;
-		}
-
-		function readonly()
-		{
-			return false;
-		}
-
-		static function datasetName($name)
-		{
-			if(!isset($name))
-			{
-				do $name = str_replace(".", "-", microtime(true)); while(self::exists($name));
-			}
-			return $name;
-		}
-
-
-		function __destruct()
-		{
-			$this->write();
-		}
+		/**
+		 * Erzeugt ein Flottenobjekt. Implementiert Dataset::create().
+		 * @return string ID des erzeugten Objekts
+		*/
 
 		static function create($name=null)
 		{
 			$name = self::datasetName($name);
-			self::$database->createNewFleet($name);
-			return Classes::Fleet($name);
+			self::$sqlite->query("INSERT INTO fleets ( fleet_id ) VALUES ( ".self::$sqlite->quote($name)." );");
+			return $name;
 		}
 
-		static function exists($name)
-		{
-			$name = self::datasetName($name);
-			return self::$database->fleetExists($name);
-		}
-
-		static function getList()
-		{
-			return self::$database->getList();
-		}
-
-		function read($force=false)
-		{
-			if(!$this->status) return false;
-			if($this->changed && !$force) $this->write();
-
-			$this->raw = array(array(), array(), false, array());
-
-			$targets = self::$database->getField($this->name, "targets");
-			$targets = (strlen($targets) > 0 ? explode("\n", $targets) : array());
-			foreach($targets as $t)
-			{
-				$t = explode("\t", $t);
-				if(count($t) < 3) continue;
-				$this->raw[0][$t[0]] = array($t[1], ($t[2] == true));
-			}
-
-			$users = self::$database->getField($this->name, "users");
-			$users = (strlen($users) > 0 ? explode("\n", $users) : array());
-			foreach($users as $u)
-			{
-				$u = explode("\t", $u);
-				if(count($u) < 10) continue;
-				$this->raw[1][$u[0]] = array(
-					Items::decodeList($u[1]),
-					$u[2],
-					(float)$u[3],
-					array(
-						Functions::decodeRessList($u[4]),
-						Items::decodeList($u[5]),
-						(float)$u[6]
-					),
-					array(
-						Functions::decodeRessList($u[7]),
-						Items::decodeList($u[8]),
-						(float)$u[10]
-					),
-					(float)$u[9]
-				);
-			}
-
-			$start = self::$database->getField($this->name, "start");
-			if($start)
-				$this->raw[2] = $start;
-
-			$finished = self::$database->getField($this->name, "finished");
-			$finished = (strlen($finished) > 0 ? explode("\n", $finished) : array());
-			foreach($finished as $f)
-			{
-				$f = explode("\t", $f);
-				if(count($f) < 3) continue;
-				$this->raw[3][$f[0]] = array($f[1], ($f[2] == true));
-			}
-		}
-
-		function write($force=false)
-		{
-			if(!$this->status) return false;
-
-			self::databaseInstance();
-
-			if(!$this->started() && !$force)
-			{
-				self::$database->deleteFleet($this->name);
-				return true;
-			}
-
-			if(!$this->changed && !$force)
-				return true;
-
-			$targets = array();
-			foreach($this->raw[0] as $k=>$v)
-				$targets[] = $k."\t".$v[0]."\t".$v[1];
-			self::$database->setField($this->name, "targets", implode("\n", $targets));
-
-			$users = array();
-			foreach($this->raw[1] as $k=>$v)
-				$users[] = $k."\t".Items::encodeList($v[0])."\t".$v[1]."\t".$v[2]."\t".Functions::encodeRessList($v[3][0])."\t".Items::encodeList($v[3][1])."\t".$v[3][2]."\t".Functions::encodeRessList($v[4][0])."\t".Items::encodeList($v[4][1])."\t".$v[5]."\t".$v[4][2];
-			self::$database->setField($this->name, "users", implode("\n", $users));
-
-			self::$database->setField($this->name, "start", $this->raw[2]);
-
-			$finished = array();
-			foreach($this->raw[3] as $k=>$v)
-				$finished[] = $k."\t".$v[0]."\t".$v[1];
-			self::$database->setField($this->name, "finished", implode("\n", $finished));
-
-			return true;
-		}
+		/**
+		 * Entfernt ein Flottenobjekt aus der Datenbank. Implementiert Dataset::destroy().
+		 * @return null
+		*/
 
 		function destroy()
 		{
-			if(!$this->status) return false;
-			self::databaseInstance();
-
-			foreach($this->getVisibleUsers() as $user)
+			foreach(self::$sqlite->columnQuery("SELECT DISTINCT user FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";") as $username)
 			{
-				$user_obj = Classes::User($user);
-				$user_obj->unsetFleet($this->getName());
+				$user = Classes::User($username);
+				$user->unsetFleet($this->getName());
 			}
-
-			self::$database->deleteFleet($this->name);
-			$this->status = 0;
-			$this->changed = false;
-			return true;
+			foreach(array_keys(self::$tables) as $table)
+				self::$sqlite->query("DELETE FROM ".$table." WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";");
 		}
 
-		static function fleetExists($fleet)
-		{
-			self::databaseInstance();
-			return self::$database->fleetExists($fleet);
-		}
+		/**
+		 * Verschiebt die Ankunft (eigentlich die Startzeit) der Flotte im $time_diff Sekunden nach hinten.
+		 * Dies sollte ausgeführt werden, wenn ein Benutzeraccount aus dem Urlaubsmodus genommmen wird und
+		 * die Flotte wieder aufgetaut wird.
+		 * @param integer $time_diff Zeitdifferenz in Sekunden
+		 * @return null
+		*/
 
 		function moveTime($time_diff)
 		{
-			if(!$this->status) return false;
-
-			$this->raw[2] += $time_diff;
-			$this->changed = true;
-
+			self::$sqlite->query("UPDATE fleets SET start_time = start_time + ".self::$sqlite->quote($time_diff)." WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";");
 			$this->createNextEvent();
-
-			return true;
 		}
+
+		/**
+		 * Gibt die Liste der Ziele zurück, die die Flotte anfliegt, in Reihenfolge.
+		 * @return array(Planet)
+		*/
 
 		function getTargetsList()
 		{
-			if(!$this->status) return false;
-
-			$targets = array_keys($this->raw[0]);
-			foreach($targets as $i=>$target)
-			{
-				if(substr($target, -1) == 'T') $targets[$i] = substr($target, 0, -1);
-			}
-			return $targets;
+			self::$sqlite->query("SELECT galaxy, system, planet FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i ASC;");
+			$return = array();
+			while(($r = self::$sqlite->nextResult()) !== false)
+				$return[] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
+			return $return;
 		}
 
-		function getTargetsInformation()
-		{
-			if(!$this->status) return false;
-
-			return $this->raw[0];
-		}
-
-		function getOldTargetsInformation()
-		{
-			if(!$this->status) return false;
-
-			return $this->raw[3];
-		}
+		/**
+		 * Wie getTargetsList(), aber für die Ziele, die schon angeflogen wurden.
+		 * @return array(string)
+		*/
 
 		function getOldTargetsList()
 		{
-			if(!$this->status) return false;
-
-			$targets = array_keys($this->raw[3]);
-			foreach($targets as $i=>$target)
-			{
-				if(substr($target, -1) == 'T') $targets[$i] = substr($target, 0, -1);
-			}
-			return $targets;
+			self::$sqlite->query("SELECT galaxy, system, planet FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND finished ORDER BY i ASC;");
+			$return = array();
+			while(($r = self::$sqlite->nextResult()) !== false)
+				$return[] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
+			return $return;
 		}
+
+		/**
+		 * Liefert ein Array nach dem folgenden Prinzip zurück:
+		 * [ (string) Koordinaten => [ Fleet::$TYPE_*, (boolean) Rückflug? ] ]
+		 * Ist der Typ Sammeln, wird an die Koordinaten ein T angehängt.
+		 * @return array
+		 * @deprecated
+		*/
+
+		function getTargetsInformation()
+		{
+			$return = array();
+			$this->query("SELECT galaxy || ':' || system || ':' || planet, type, flying_back FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i ASC;");
+			while(($r = $this->nextResult()) !== false)
+				$return[$r["galaxy || ':' || system || ':' || planet"].($r["type"] == self::$TYPE_SAMMELN && !$r["flying_back"] ? "T" : "")] = array($r["type"], true && $r["flying_back"]);
+			return $return;
+		}
+
+		/**
+		 * Wie getTargetsInformation(), aber für die Ziele, die schon angeflogen wurden.
+		 * @return array
+		 * @deprecated
+		*/
+
+		function getOldTargetsInformation()
+		{
+			$return = array();
+			$this->query("SELECT galaxy || ':' || system || ':' || planet, type, flying_back FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND finished ORDER BY i ASC;");
+			while(($r = $this->nextResult()) !== false)
+				$return[$r["galaxy || ':' || system || ':' || planet"].($r["type"] == self::$TYPE_SAMMELN ? "T" : "")] = array($r["type"], true && $r["flying_back"]);
+			return $return;
+		}
+
+		/**
+		 * Liefert zurück, wieviele „Flottenslots“ diese Flotte für den übergebenen Benutzer beansprucht.
+		 * Die Zahl der Flottenslots wird durch das Kontrollwesen beeinflusst.
+		 * @param string $user Der Benutzername oder null, wenn der Hauptbenutzer der Flotte benutzt werden soll.
+		 * @return integer
+		*/
 
 		function getNeededSlots($user=null)
 		{
 			if(!$this->status) return false;
 
-			$users = array_keys($this->raw[1]);
-			$first_user = array_shift($users);
+			$users = $this->getUsersList();
+			$first_user = Functions::First($users);
 			if($user === null) $user = $first_user;
-			if(!isset($this->raw[1][$user])) return false;
 
-			if($user != $first_user) return 1;
+			if($user != $first_user)
+				return 1;
 
-			$slots = 0;
-			foreach($this->raw[0] as $k=>$v)
-			{
-				if(!$v[1]) $slots++;
-			}
-			foreach($this->raw[3] as $k=>$v)
-			{
-				if(!$v[1]) $slots++;
-			}
+			$slots = self::$sqlite->singleQuery("SELECT COUNT(*) FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT flying_back;");
 			if($slots < 1) $slots = 1;
 			return $slots;
 		}
 
+		/**
+		 * Fügt der Flotte ein weiteres Ziel hinzu.
+		 * @param Planet $pos Die Zielkoordinaten.
+		 * @param string $type Fleet::$TYPE_*
+		 * @param boolean $back Ist das nur ein Rückflug? (= Stationieren, $type wird ignoriert)
+		 * @return null
+		*/
+
 		function addTarget($pos, $type, $back)
 		{
-			if(!$this->status) return false;
-
-			if($type == 2 && !$back) $pos .= 'T';
-
-			if(isset($this->raw[0][$pos])) return false;
-
-			$this->raw[0][$pos] = array($type, $back);
+			$i = 1+self::$sqlite->singleQuery("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
+			self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back ) VALUES ( ".self::$sqlite->quote($i).", ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($pos->getGalaxy()).", ".self::$sqlite->quote($pos->getSystem()).", ".self::$sqlite->quote($pos->getPlanet()).", ".self::$sqlite->quote($type).", ".self::$sqlite->quote($flying_back ? 1 : 0)." );");
 
 			# Eintragen in die Flottenliste des Benutzers
-			if($this->started() && $pos[strlen($pos)-1] != 'T')
+			if($this->started() && (!$back || $type != self::$TYPE_SAMMELN))
 			{
-				$pos_a = explode(":", $pos2);
-				$galaxy_obj = Classes::Galaxy($pos_a[0]);
-				$owner = $galaxy_obj->getPlanetOwner($pos_a[1], $pos_a[2]);
+				$owner = $pos->getPlanetOwner();
 				if($owner)
 				{
 					$user = Classes::User($owner);
-					if($user->getStatus())
-						$user->addFleet($this->getName());
+					$user->addFleet($this->getName());
 				}
 			}
-
-			$this->changed = true;
-			return true;
 		}
+
+		/**
+		 * Liefert zurück, ob Schiffe eines bestimmten Benutzers in der Flotte mitfliegen.
+		 * @param string $user
+		 * @return bool
+		*/
 
 		function userExists($user)
 		{
-			if(!$this->status) return false;
-
-			return isset($this->raw[1][$user]);
+			return (self::$sqlite->singleQuery("SELECT COUNT(*) FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND username = ".self::$sqlite->quote($user).";") > 0);
 		}
+
+		/**
+		 * Gibt die Auftragsart zurück, mit der die Flotte derzeit unterwegs ist.
+		 * @return integer Fleet::$TYPE_*
+		*/
 
 		function getCurrentType()
 		{
-			if(!$this->status) return false;
-
-			$keys = array_keys($this->raw[0]);
-			return $this->raw[0][array_shift($keys)][0];
+			return self::$sqlite->singleQuery("SELECT type FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;");
 		}
+
+		/**
+		 * Gibt das nächste Ziel der Flotte zurück.
+		 * @return Planet false, wenn kein weiteres Ziel existiert
+		*/
 
 		function getCurrentTarget()
 		{
-			if(!$this->status) return false;
-
-			$keys = array_keys($this->raw[0]);
-			$t = array_shift($keys);
-			if(substr($t, -1) == 'T') $t = substr($t, 0, -1);
-			return $t;
+			self::$sqlite->query("SELECT galaxy, system, planet FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;");
+			$r = self::$sqlite->nextResult();
+			if($r === false)
+				return false;
+			return Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
 		}
 
-		function getLastTarget($user=false)
+		/**
+		 * Gibt das letzte Ziel der Flotte zurück.
+		 * @param string $user Das letzte Ziel für diesen Benutzer, verschiedene Benutzer haben unterschiedliche Startkoordiaten.
+		 * @return Planet
+		*/
+
+		function getLastTarget($user=null)
 		{
-			if(!$this->status) return false;
-
-			$keys = array_keys($this->raw[1]);
-			$first_user = array_shift($keys);
-			if($user === false) $user = $first_user;
-			if($user == $first_user && count($this->raw[3]) > 0)
+			if(!isset($user)) $user = $this->getFirstUser();
+			if($this->isFirstUser($user))
 			{
-				$keys = array_keys($this->raw[3]);
-				$l = array_pop($keys);
-				if(substr($l, -1) == 'T') $l = substr($l, 0, -1);
-				return $l;
+				self::$sqlite->query("SELECT galaxy,system,planet FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND finished ORDER BY i DESC LIMIT 1;");
+				$r = self::$sqlite->nextResult();
+				if($r !== false)
+					return Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
 			}
-			else
-			{
-				if(!isset($this->raw[1][$user])) return false;
-
-				return $this->raw[1][$user][1];
-			}
+			self::$sqlite->query("SELECT from_galaxy,from_system,from_planet FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user)." LIMIT 1;");
+			$r = self::$sqlite->nextResult();
+			if($r === false)
+				throw new FleetException("This user does not participate on the fleet.");
+			return Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
 		}
+
+		/**
+		 * Gibt die Ankunftszeit beim nächsten Ziel zurück.
+		 * @return int
+		*/
 
 		function getNextArrival()
 		{
-			if(!$this->status) return false;
-
-			if($this->started()) $start_time = $this->raw[2];
-			else $start_time = time();
-			$users = array_keys($this->raw[1]);
-			$duration = $this->calcTime(array_shift($users), $this->getLastTarget(), $this->getCurrentTarget());
-			return $start_time+$duration;
+			if($this->started())
+				return self::$sqlite->singleQuery("SELECT arrival FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i DESC LIMIT 1;");
+			else
+				return time()+$this->calcTime($this->getFirstUser(), $this->getLastTarget(), $this->getCurrentTarget());
 		}
+
+		/**
+		 * Gibt die Zeit an, zu der start() ausgeführt wurde.
+		 * @return int
+		*/
 
 		function getDepartingTime()
 		{
-			if(!$this->status) return false;
-			return $this->raw[2];
+			return $this->getMainField("start_time");
 		}
+
+		/**
+		 * Gibt an, ob das aktuelle Ziel als Rückflug behandelt wird.
+		 * @return bool
+		*/
 
 		function isFlyingBack()
 		{
-			if(!$this->status) return false;
-
-			$keys = array_keys($this->raw[0]);
-			return (bool) $this->raw[0][array_shift($keys)][1];
+			return (true && self::$sqlite->singleQuery("SELECT flying_back FROM fleets_targets WHERE fleet_id = ".self::$sqite->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;"));
 		}
+
+		/**
+		 * Fügt Schiffe zum Bestand des Benutzers $user der Flotte hinzu.
+		 * @param string $id Die ID des Schiffs.
+		 * @param int $count Die Anzahl der Schiffe des Typs.
+		 * @param string $user
+		 * @return null
+		*/
 
 		function addFleet($id, $count, $user)
 		{
-			if(!$this->status) return false;
+			$count = floor($count);
+			if($count < 0)
+				throw new InvalidArgumentException("Invalid number.");
 
-			$count = round($count);
-			if($count < 0) return false;
+			$old_number = self::$sqlite->singleQuery("SELECT number FROM fleets_users_fleet WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user)." AND id = ".self::$sqlite->quote($id)." LIMIT 1;");
+			if($old_number === false)
+				self::$sqlite->query("INSERT INTO fleets_users_fleet ( fleet_id, user, id, number ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($id).", ".self::$sqlite->quote($count)." );");
+			else
+				self::$sqlite->query("UPDATE fleets_users_fleet SET number = number + ".self::$sqlite->quote($count)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user)." AND id = ".self::$sqlite->quote($id).";");
 
-			if(!isset($this->raw[1][$user])) return false;
-
-			$keys = array_keys($this->raw[1]);
-			$first = !array_search($user, $keys);
-			if(isset($this->raw[1][$user][0][$id])) $this->raw[1][$user][0][$id] += $count;
-			else $this->raw[1][$user][0][$id] = $count;
-
-			if(!$first)
-			{
-				if($this->started())
-					$fu_time = $this->getNextArrival()-time();
-				else
-					$fu_time = $this->calcTime($this->getFirstUser(), $this->raw[1][$this->getFirstUser()][1], $this->getCurrentTarget());
-				$this->raw[1][$user][2] = $this->calcTime($user, $this->raw[1][$user][1], $this->getCurrentTarget(), true, true)/$fu_time;
-			}
-
-			$this->changed = true;
-			return true;
+			if(!$this->isFirstUser($user)) // Geschwindigkeitsfaktor anpassen
+				self::$sqlite->query("UPDATE fleets_users SET factor = ".self::$sqlite->quote($this->calcTime($user, $this->from($user), $this->getCurrentTarget(), true, true)/($this->getNextArrival()-time()))." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 		}
+
+		/**
+		 * Liefert den Hauptbenutzer der Flotte zurück.
+		 * @return string
+		*/
 
 		function getFirstUser()
 		{
-			if(!$this->status) return false;
-
-			$users = array_keys($this->raw[1]);
-			return array_shift($users);
+			return self::$sqlite->singleQuery("SELECT user FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i ASC LIMIT 1;");
 		}
+
+		/**
+		 * Gibt an, ob der übergebene Benutzer der Hauptbenutzer der Flotte ist.
+		 * @return bool
+		*/
+
+		function isFirstUser($user)
+		{
+			return $user == $this->getFirstUser();
+		}
+
+		/**
+		 * Fügt der Flotte einen Benutzer hinzu.
+		 * @param string $user
+		 * @param Planet $from
+		 * @param float $factor
+		 * @return null
+		 * @todo $from-Parameter überall anpassen
+		*/
 
 		function addUser($user, $from, $factor=1)
 		{
-			if(!$this->status) return false;
-
-			if(isset($this->raw[1][$user])) return false;
-
-			if(count($this->raw[1]) > 0)
-				$factor = null;
+			if($this->userExists($user))
+				throw new FleetException("This user is already participating on the fleet.");
 
 			if($factor <= 0) $factor = 0.01;
 
-			$this->raw[1][$user] = array(
-				array(), # Flotten
-				$from, # Startkoordinaten
-				$factor, # Geschwindigkeitsfaktor
-				array(array(0, 0, 0, 0, 0), array(), 0), # Mitgenommene Rohstoffe
-				array(array(0, 0, 0, 0, 0), array(), true), # Handel
-				0 # Verbrauchtes Tritium
-			);
+			if($this->getFirstUser() !== false)
+				$factor = null;
+
+			$i = 1+self::$sqlite->singleQuery("SELECT i FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
+			self::$sqlite->query("INSERT INTO fleets_users ( i, fleet_id, user, from_galaxy, from_system, from_planet, factor ) VALUES ( ".self::$sqlite->quote($i).", ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($from->getGalaxy()).", ".self::$sqlite->quote($from->getSystem()).", ".self::$sqlite->quote($from->getPlanet()).", ".self::$sqlite->quote($factor)." );");
 
 			# Eintragen in die Flottenliste des Benutzers
 			if($this->started())
 			{
 				$user = Classes::User($user);
-				if($user->getStatus())
-					$user->addFleet($this->getName());
+				$user->addFleet($this->getName());
 			}
-
-			$this->changed = true;
-			return true;
 		}
 
 		function getTransportCapacity($user)

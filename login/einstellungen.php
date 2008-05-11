@@ -59,7 +59,7 @@
 
 	if(isset($_POST['spionagesonden']))
 	{
-		$sonden = (int) $_POST['spionagesonden'];
+		$sonden = floor($_POST['spionagesonden']);
 		if($sonden <= 0)
 			$sonden = 1;
 		$me->setSetting('sonden', $sonden);
@@ -507,7 +507,7 @@
 ?>
 		<p><?=h(_("Nach Änderung des Instant-Messaging-Accounts wird zunächst eine Bestätigungsnachricht versandt."))?></p>
 <?php
-		if(!Config::imserver_running())
+		if(!Config::imserverRunning())
 		{
 ?>
 		<p class="error imserver"><?=sprintf(h(_("Der Instant-Messaging-Bot läuft im Moment %snicht%s!")), "<strong>", "</strong>")?></p>

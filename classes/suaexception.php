@@ -15,6 +15,17 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage exceptions
+	*/
+
+	/**
+	 * Allgemeine Oberklasse für Exceptions, die zum Spiel gehören und deren Ursprung
+	 * im Quellcode des Spiels zu finden ist.
+	*/
+
 	class SuaException extends Exception
 	{
 	}

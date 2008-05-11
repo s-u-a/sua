@@ -16,10 +16,30 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage exceptions
+	*/
+
 	class CaptchaException extends SuaException
 	{
+		/**
+		 * Beim Überprüfen des Captchas ist ein Verbindungsfehler aufgetreten.
+		 * @var integer
+		*/
 		static $HTTP_ERROR = 1;
+
+		/**
+		 * Die Captcha-Konfiguration ist fehlerhaft.
+		 * @var integer
+		*/
 		static $CONFIG_ERROR = 2;
+
+		/**
+		 * Der Benutzer hat falsche Daten eingegeben.
+		 * @var integer
+		*/
 		static $USER_ERROR = 3;
 
 		function __construct($message = null, $code = 0)

@@ -56,7 +56,7 @@
 	$count = $highscores->getCount($mode);
 	$start = 1;
 	if(isset($_GET['start']) && $_GET['start'] <= $count && $_GET['start'] >= 1)
-		$start = (int) $_GET['start'];
+		$start = floor($_GET['start']);
 
 	$sort_field = null;
 	if($mode == "alliances" && $sort == '2') $sort_field = 'scores_total';

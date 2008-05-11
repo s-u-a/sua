@@ -15,15 +15,25 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage gui
+	*/
+
+	/**
+	 * Stellt statische Funktionen zur Verfügung, die Werte zur Ausgabe an den
+	 * Benutzer formatieren.
+	*/
 
 	class F
 	{
 		/**
 		* Formatiert eine Bauzeitangabe zu einem menschlich lesbaren Format.
 		* Beispiel: 650 wird zu 10 Minuten, 50 Sekunden
-		* @param $time2 Bauzeit in Sekunden
-		* @param $short Sollen Werte, die 0 sind, weggelassen werden (Beispiel: 5 Minuten, 0 Sekunden)
-		* @return (string)
+		* @param integer $time2 Bauzeit in Sekunden
+		* @param boolean $short Sollen Werte, die 0 sind, weggelassen werden (Beispiel: 5 Minuten, 0 Sekunden)
+		* @return string
 		*/
 
 		static function format_btime($time2, $short=false)
@@ -71,16 +81,16 @@
 
 		/**
 		* Formatiert die angegeben Rohstoffmenge zu einem menschlich lesbaren Format.
-		* @param $ress Ein Array mit den Rohstoffmengen als Werte
-		* @param $tabs_count Die Anzahl der einzurueckenden Tabs des HTML-Codes
-		* @param $tritium Soll der Array-Wert 4 beachtet werden (Tritium)
-		* @param $energy Soll der Array-Wert 5 beachtet werden (Energie)
-		* @param $_i Die Ausgabe wird so formatiert, dass sie nachtraeglich durch i_() gejagt werden kann
-		* @param $check_availability (User) Gibt mit HTML-Klassen an, ob so viele Rohstoffe auf dem Planeten vorhanden sind.
-		* @param $dl_class string Eine zusätzliche HTML-Klasse, die dem Element zugewiesen wird.
-		* @param $dl_id string Eine HTML-ID, die der Liste zugewiesen wird.
-		* @param $check_limit User Gibt mit HTML-Klassen an, ob die Rohstoffmenge die Speicher übersteigt
-		* @return (string) Eine den HTML-Code einer dl-Liste mit den formatierten Rohstoffangaben
+		* @param array $ress Ein Array mit den Rohstoffmengen als Werte
+		* @param integer $tabs_count Die Anzahl der einzurueckenden Tabs des HTML-Codes
+		* @param boolean $tritium Soll der Array-Wert 4 beachtet werden (Tritium)
+		* @param boolean $energy Soll der Array-Wert 5 beachtet werden (Energie)
+		* @param boolean $_i Die Ausgabe wird so formatiert, dass sie nachtraeglich durch i_() gejagt werden kann
+		* @param User $check_availability Gibt mit HTML-Klassen an, ob so viele Rohstoffe auf dem Planeten vorhanden sind.
+		* @param string $dl_class Eine zusätzliche HTML-Klasse, die dem Element zugewiesen wird.
+		* @param string $dl_id Eine HTML-ID, die der Liste zugewiesen wird.
+		* @param User $check_limit Gibt mit HTML-Klassen an, ob die Rohstoffmenge die Speicher übersteigt
+		* @return string Eine den HTML-Code einer dl-Liste mit den formatierten Rohstoffangaben
 		*/
 
 		static function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false, $_i=false, $check_availability=null, $dl_class="inline", $dl_id=null, $check_limit=null)
@@ -150,9 +160,10 @@
 
 		/**
 		* Formatiert eine Zahl in ein lesbares Format.
-		* @param $count float Die zu formatierende Zahl
-		* @param $utf8 null Ohne Auswirkungen, Kompatiblitaetsparameter
-		* @param $round integer Anzahl der zu rundenden Stellen, standardmaessig 0
+		* @param float $count Die zu formatierende Zahl
+		* @param null $utf8 Ohne Auswirkungen, Kompatiblitaetsparameter
+		* @param integer $round Anzahl der zu rundenden Stellen, standardmaessig 0
+		* @return string
 		*/
 
 		static function ths($count, $utf8=null, $round=null)
@@ -186,7 +197,10 @@
 
 
 		/**
-		* Fuegt soviele Nullen vorne an $count, dass diese mindestens $len Stellen hat.
+		 * Fuegt soviele Nullen vorne an $count, dass diese mindestens $len Stellen hat.
+		 * @param integer $count
+		 * @param integer $len
+		 * @return string
 		*/
 
 		static function add_nulls($count, $len)
@@ -198,9 +212,11 @@
 		}
 
 		/**
-		* Entfernt ungueltiges HTML aus dem uebergebenen Code.
-		* Auf diese Weise kann sichergestellt werden, dass zum Beispiel in der Benutzerbeschreibung nur sauberes HTML ausgegeben wird.
-		* Ungueltige Elemente werden entfernt.
+		 * Entfernt ungueltiges HTML aus dem uebergebenen Code.
+		 * Auf diese Weise kann sichergestellt werden, dass zum Beispiel in der Benutzerbeschreibung nur sauberes HTML ausgegeben wird.
+		 * Ungueltige Elemente werden entfernt.
+		 * @param string $string
+		 * @return string
 		*/
 
 		static function parse_html($string)
@@ -400,8 +416,10 @@
 		}
 
 		/**
-		* Hilfsfunktion fuer parse_html(). Liefert ein Array mit Informationen zu einem HTML-Element zurueck:
-		* ( ( Erlaubtes Kind-Element ); ( Erlaubtes Attribut => Attribut erforderlich? ) )
+		 * Hilfsfunktion fuer parse_html(). Liefert ein Array mit Informationen zu einem HTML-Element zurueck:
+		 * ( ( Erlaubtes Kind-Element ); ( Erlaubtes Attribut => Attribut erforderlich? ) )
+		 * @param string $element
+		 * @return array(string)
 		*/
 
 		static function parse_html_get_element_information($element)
@@ -464,7 +482,10 @@
 		}
 
 		/**
-		* Hilfsfunktion fuer parse_html(). Ersetzt Zeilenumbrueche je nach Anzahl durch HTML-Absaetze oder -Zeilenumbrueche.
+		 * Hilfsfunktion fuer parse_html(). Ersetzt Zeilenumbrueche je nach Anzahl durch HTML-Absaetze oder -Zeilenumbrueche.
+		 * @param string $string
+		 * @param boolean $minus1
+		 * @return string
 		*/
 
 		static function parse_html_nls($string, $minus1)
@@ -475,7 +496,9 @@
 		}
 
 		/**
-		* Hilfsfunktion fuer parse_html_nls(). Ersetzt einen String aus Zeilenumbruechen je nach deren Anzahl durch &lt;br /&gt; oder &lt;/p&gt;(&lt;br /&gt;)*&lt;p&gt;.
+		 * Hilfsfunktion fuer parse_html_nls(). Ersetzt einen String aus Zeilenumbruechen je nach deren Anzahl durch &lt;br /&gt; oder &lt;/p&gt;(&lt;br /&gt;)*&lt;p&gt;.
+		 * @param integer $len
+		 * @return string
 		*/
 
 		static function parse_html_repl_nl($len)
@@ -489,7 +512,9 @@
 		}
 
 		/**
-		* Hilfsfunktion fuer parse_html(). Wie trim(), entfernt jedoch nur Leerzeichen.
+		 * Hilfsfunktion fuer parse_html(). Wie trim(), entfernt jedoch nur Leerzeichen.
+		 * @param string $string
+		 * @return string
 		*/
 
 		static function parse_html_trim($string)
@@ -502,7 +527,9 @@
 		}
 
 		/**
-		* Hilfsfunktion zum Parsen von Nachrichten. Ersetzt einen String aus Zeilenumbruechen je nach deren Anzahl durch &lt;br /&gt; oder &lt;/p&gt;(&lt;br /&gt;)*&lt;p&gt;.
+		 * Hilfsfunktion zum Parsen von Nachrichten. Ersetzt einen String aus Zeilenumbruechen je nach deren Anzahl durch &lt;br /&gt; oder &lt;/p&gt;(&lt;br /&gt;)*&lt;p&gt;.
+		 * @param string $nls
+		 * @return string
 		*/
 
 		static function message_repl_nl($nls)
@@ -517,11 +544,11 @@
 		}
 
 		/**
-		* Hilfsfunktion zum Ersetzen von Links beim Parsen von Nachrichten. Haengt bei Bedarf einen Parameter mit der Session-ID an die URL in $b an.
-		* @param $a Praefix, zum Beispiel &lt;a href=&quot;
-		* @param $b Die URL, die ersetzt werden soll
-		* @param $c Suffix, zum Beispiel &quot;>
-		* @return (string) $a.$b.$c
+		 * Hilfsfunktion zum Ersetzen von Links beim Parsen von Nachrichten. Haengt bei Bedarf einen Parameter mit der Session-ID an die URL in $b an.
+		 * @param string $a Praefix, zum Beispiel &lt;a href=&quot;
+		 * @param string $b Die URL, die ersetzt werden soll
+		 * @param string $c Suffix, zum Beispiel &quot;>
+		 * @return string $a.$b.$c
 		*/
 
 		static function message_repl_links($a, $b, $c)
@@ -557,10 +584,10 @@
 		}
 
 		/**
-		* Gibt versteckte Formularfelder mit den Werten des Arrays $array aus. Nützlich, um POST-Requests zu wiederholen.
-		* @param $array array Assoziatives Array, das Parameterwert den Parameternamen zuordnet.
-		* @param $tabs integer Zahl der Tabs, die vor den Code gehängt werden sollen.
-		* @param $prefix string printf-Ausdruck, mit dem die Feldnamen ausgegeben werden (zum Beispiel feld[%s], um ein Array zu übertragen). Standardmäßig %s.
+		 * Gibt versteckte Formularfelder mit den Werten des Arrays $array aus. Nützlich, um POST-Requests zu wiederholen.
+		 * @param array $array Assoziatives Array, das Parameterwert den Parameternamen zuordnet.
+		 * @param integer $tabs Zahl der Tabs, die vor den Code gehängt werden sollen.
+		 * @param string $prefix printf-Ausdruck, mit dem die Feldnamen ausgegeben werden (zum Beispiel feld[%s], um ein Array zu übertragen). Standardmäßig %s.
 		*/
 
 		static function make_hidden_fields($array, $tabs=0, $prefix="%s")
@@ -580,7 +607,12 @@
 		}
 
 		/**
-		* Formatiert Planeteninformationen in ein lesbares Format.
+		 * Formatiert Planeteninformationen in ein lesbares Format.
+		 * @param string $koords Koordinaten
+		 * @param string $name Planetenname
+		 * @param string $username Eigentümer
+		 * @param string $alliance Allianz des Eigentümers
+		 * @return string
 		*/
 
 		static function format_planet($koords, $name=null, $username=null, $alliance=null)
@@ -599,7 +631,12 @@
 		}
 
 		/**
-		* Wie format_planet(), fügt aber Links auf alles ein
+		 * Wie format_planet(), fügt aber Links auf alles ein
+		 * @param string $koords Koordinaten
+		 * @param string $name Planetenname
+		 * @param string $username Eigentümer
+		 * @param string $alliance Allianz des Eigentümers
+		 * @return string
 		*/
 
 		static function format_planet_h($koords, $name=null, $username=null, $alliance=null)
@@ -619,9 +656,9 @@
 		}
 
 		/**
-		* Formatiert eine Fertigstellungszeit ordentlich.
-		* @param $time integer
-		* @param $user User Wird benötigt, um die Zeit beim Urlaubsmodus anzuhalten
+		 * Formatiert eine Fertigstellungszeit ordentlich.
+		 * @param integer $time
+		 * @param User $user Wird benötigt, um die Zeit beim Urlaubsmodus anzuhalten
 		*/
 
 		static function format_ftime($time, $user=null)

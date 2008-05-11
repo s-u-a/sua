@@ -29,13 +29,12 @@
 	 * ausgeführt werden. Damit wird die Leseberechtigung des Benutzers auf die Nachricht entfernt, versucht
 	 * er also, sie abzurufen, soll er eine Fehlermeldung erhalten. Erst wenn kein Benutzer mehr Leseberechtigung
 	 * auf die Nachricht hat, wird sie aus der Datenbank entfernt.
-	 * @author Candid Dauth
 	*/
 
 	class Message extends SQLiteSet
 	{
 		protected static $tables = array("messages" => array("message_id TEXT PRIMARY KEY", "time INTEGER", "text TEXT", "parsed_text TEXT", "sender TEXT", "subject TEXT", "html INTEGER"),
-		                                 "messages_recipients" => array("message_id TEXT", "recipient TEXT"),
+		                                 "messages_recipients" => array("message_id TEXT", "recipient TEXT", "type INTEGER", "status INTEGER"),
 		                                 "messages_users" => array("message_id TEXT", "user TEXT"));
 		protected static $id_field = "message_id";
 
@@ -92,6 +91,24 @@
 		 * @var integer
 		*/
 		static $TYPE_POSTAUSGANG = 8;
+
+		/**
+		 * Ungelesene Nachricht
+		 * @var integer
+		*/
+		static $STATUS_NEU = 1;
+
+		/**
+		 * Gelesene Nachricht
+		 * @var integer
+		*/
+		static $STATUS_ALT = 2;
+
+		/**
+		 * Archivierte Nachricht
+		 * @var integer
+		*/
+		static $STATUS_ARCHIV = 3;
 
 		/**
 		 * Gibt die Zahl der gespeicherten Nachrichten zurück.
@@ -227,11 +244,14 @@
 		 * Fügt einen Benutzer zur Liste leseberechtigter Benutzer der Nachricht hinzu. Benachrichtigt ihn wenn gewünscht per Instant Messaging über den Eingang.
 		 * @param string $user Der Benutzername
 		 * @param integer $type Der Nachrichtentyp (Message::$TYPE_*). Benötigt für die Benachrichtigung.
+		 * @return null
 		*/
 
-		function addUser($user, $type=6)
+		function addUser($user, $type=null)
 		{
-			self::$sqlite->query("INSERT INTO messages_users ( message_id, user ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user)." );");
+			if(!isset($type)) $type = self::$TYPE_BENUTZERNACHRICHTEN;
+
+			self::$sqlite->query("INSERT INTO messages_users ( message_id, user, type, status ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($type).", ".self::$sqlite->quote(self::$STATUS_NEU)." );");
 
 			$user_obj = Classes::User($user);
 			$user_obj->addMessage($this->name, $type);
@@ -244,8 +264,36 @@
 				// IM-Benachrichtung, siehe __destroy()
 				$this->im_check_notify[$user] = $type;
 			}
+		}
 
-			return true;
+		/**
+		 * Findet heraus oder setzt, welchen Status die Nachricht im Postfach des Benutzers $user hat.
+		 * @param string $user Der Benutzername
+		 * @param integer|null $status Der neue Status (Message::$STATUS_*) oder null, wenn der aktuelle Status zurückgeliefert werden soll
+		 * @return integer|null Message::$STATUS_*, wenn $status null ist
+		*/
+
+		function messageStatus($user, $status=null)
+		{
+			if(!isset($status))
+				return self::$sqlite->singleQuery("SELECT status FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+			else
+				self::$sqlite->query("UPDATE messages_users SET status = ".self::$sqlite->quote($status)." WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+		}
+
+		/**
+		 * Findet heraus oder setzt, welchen Nachrichtentyp die Nachricht im Postfach des Benutzers $user besitzt.
+		 * @param string $user Der Benutzername
+		 * @param integer|null $type Der neue Status (Message::$TYPE_*) oder null, wenn der aktuelle Typ zurückgeliefert werden soll
+		 * @return integer|null Message::$TYPE_*, wenn $type null ist
+		*/
+
+		function messageType($user, $type=null)
+		{
+			if(!isset($type))
+				return self::$sqlite->singleQuery("SELECT type FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+			else
+				self::$sqlite->query("UPDATE messages_users SET type = ".self::$sqlite->quote($status)." WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 		}
 
 		/**

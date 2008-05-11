@@ -15,6 +15,20 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage config
+	*/
+
+	/**
+	 * Repräsentiert eine Datenbank in der Konfiguration und kümmert sich um
+	 * deren Konfiguration.
+	 * Eine Liste der auswählbaren Datenbanken samt IDs wird in der Konfiguration
+	 * des Spiels konfiguriert. Zusätzlich besitzt jede Datenbank eine eigene
+	 * config.xml, in der interne Parameter konfiguriert werden. Diese Datenbank-
+	 * konfiguration wird in dieser Klasse verwaltet.
+	*/
 
 	class Database
 	{
@@ -23,6 +37,11 @@
 		private $alias; /// Datenbank-ID, für den diese Datenbank ein Alias ist
 		private $config; /// Konfiguration der Datenbank in der Spielkonfiguration (Verzeichnis, Aliase und Aktivierung)
 		private $settings; /// Konfiguration der Datenbank selbst
+
+		/**
+		 * @param string|null $id Die ID der Datenbank oder null, wenn global_setting("DB") verwendet werden soll.
+		 * @param string|null $directory Setzt das Datenbankverzeichnis manuell, falls die Datenbank nicht in der Konfiguration steht
+		*/
 
 		function __construct($id=null, $directory=null)
 		{
@@ -109,10 +128,21 @@
 				$this->settings = unserialize(file_get_contents($this->directory."/config.db"));
 		}
 
+		/**
+		 * Liefert die Konfiguration der Datenbank (config.xml im Datenbankverzeichnis)
+		 * als Array zurück.
+		 * @return array
+		*/
+
 		function getConfig()
 		{
 			return $this->settings;
 		}
+
+		/**
+		 * Gibt eine Liste der konfigurierten Datenbank-IDs zurück.
+		 * @return array
+		*/
 
 		static function getList()
 		{
@@ -121,10 +151,23 @@
 			return array_keys($config["databases"]);
 		}
 
+		/**
+		 * Gibt das Verzeichnis zurück, wo die Datenbank liegt.
+		 * @return string
+		*/
+
 		function getDirectory()
 		{
 			return $this->directory;
 		}
+
+		/**
+		 * Gibt zurück, ob die Datenbank in der Spielkonfiguration aktiviert ist.
+		 * Deaktivierte Datenbanken sollen nicht in einer Auswahlliste erscheinen,
+		 * also für den Spieler unsichtbar sein. Sie dienen nur dem Zweck, dass
+		 * öffentliche Nachrichten weiterhin aufrufbar sind.
+		 * @return boolean
+		*/
 
 		function enabled()
 		{
@@ -134,6 +177,15 @@
 				return $this->config["enabled"];
 		}
 
+		/**
+		 * Gibt die Datenbank-ID zurück, für die diese Datenbank ein Alias ist.
+		 * Wird eine Datenbank umbenannt, können in der Spielkonfiguration Aliase
+		 * für die neue Datenbank-ID definiert werden, damit öffentliche Nachrichten
+		 * und andere Dinge weiterhin aufrufbar sind.
+		 * Ist diese Datenbank kein Alias, wird die ID dieser Datenbank zurückgeliefert.
+		 * @return string
+		*/
+
 		function alias()
 		{
 			if($this->alias === false)
@@ -142,6 +194,11 @@
 				return $this->alias;
 		}
 
+		/**
+		 * Gibt eine Liste der Aliase zurück, die für diese Datenbank konfiguriert sind.
+		 * @return array(string)
+		*/
+
 		function getAliases()
 		{
 			if(!isset($this->config["aliases"]) || strlen(trim($this->config["aliases"])) == 0)
@@ -149,6 +206,13 @@
 			else
 				return preg_split("/\s+/", $this->config["aliases"]);
 		}
+
+		/**
+		 * Gibt den Titel der Datenbank an, also die Bezeichnung, die für den
+		 * Benutzer sichtbar sein soll (der Name des Universums/der Runde).
+		 * Ist kein Titel konfiguriert, wird die ID benutzt.
+		 * @return string
+		*/
 
 		function getTitle()
 		{
@@ -161,7 +225,9 @@
 		* Initialisiert die Standardwerte fuer die globalen Einstellungen.
 		* Kann mehrmals aufgerufen werden, zum Beispiel, um auf eine andere
 		* Datenbank umzustellen.
-		* @param $DB Datenbank-ID, auf die die Pfade eingestellt werden sollen
+		* In Zukunft soll nur global_setting("DB") verändert werden und die Funktion
+		* wird überflüssig.
+		* @deprecated
 		*/
 
 		function defineGlobals()
@@ -171,7 +237,8 @@
 			if(!isset($instances_cache)) $instances_cache = array();
 
 			// Instanzen-Cache auslagern, damit keine Konflikte entstehen
-			$old_db = global_setting('DB');
+			// TODO: Das soll wenn überhaupt in Classes geschehen
+			/*$old_db = global_setting('DB');
 			if($old_db && isset($GLOBALS['objectInstances']) && $GLOBALS['objectInstances'])
 			{
 				$db_obj = Classes::Database($old_db);
@@ -182,7 +249,7 @@
 			if(isset($instances[$this->alias()]))
 				$GLOBALS['objectInstances'] = &$instances[$this->alias()];
 			else
-				$GLOBALS['objectInstances'] = array();
+				$GLOBALS['objectInstances'] = array();*/
 
 			global_setting('DB', $this->id);
 
@@ -216,7 +283,9 @@
 		}
 
 		/**
-		* Gibt zurueck, ob eine Handlungssperre in der Datenbank vorliegt.
+		 * Gibt zurueck, ob eine Handlungssperre in der Datenbank vorliegt.
+		 * @return integer|boolean Wird ein Integer zurückgegeben, so gibt dieser an, bis wann die Sperre gilt.
+		 * @todo Muss die neue Konfigurationsdatei und die neue Namenskonvention verwenden.
 		*/
 
 		static function database_locked()
@@ -235,7 +304,9 @@
 		}
 
 		/**
-		* Gibt zurueck, ob eine Flottensperre in der Datenbank vorliegt.
+		 * Gibt zurueck, ob eine Flottensperre in der Datenbank vorliegt.
+		 * @return integer|boolean Wird ein Integer zurückgegeben, so gibt dieser an, bis wann die Sperre gilt.
+		 * @todo Muss die neue Konfigurationsdatei und die neue Namenskonvention verwenden.
 		*/
 
 		static function fleets_locked()
@@ -254,22 +325,22 @@
 		}
 
 		/**
-		* Liefert die im Datenbankverzeichnis eingetragene Version zurueck.
+		 * Liefert die im Datenbankverzeichnis eingetragene Version zurück.
+		 * In der Datenbank wird eine Versionsnummer gespeichert, die global_setting("DATABASE_VERSION")
+		 * entsprechen muss, um Konflikte zu vermeiden, wenn das Datenbankschema geändert wird.
+		 * @return integer
 		*/
 
-		static function get_database_version()
+		static function getDatabaseVersion()
 		{
-			if(is_file(global_setting("DB_DIR").'/.version'))
+			if(is_file($this->getDirectory().'/.version'))
 			{
-				if(!is_readable(global_setting("DB_DIR").'/.version'))
-				{
-					fputs(STDERR, "Could not read ".global_setting("DB_DIR")."/.version.\n");
-					exit(1);
-				}
-				$current_version = trim(file_get_contents(global_setting("DB_DIR").'/.version'));
+				if(!is_readable($this->getDirectory().'/.version'))
+					throw new DatabaseException("Could not read ".$this->getDirectory()."/.version.");
+				$current_version = trim(file_get_contents($this->getDirectory().'/.version'));
 			}
-			elseif(file_exists(global_setting("DB_DIR").'/highscores') && !file_exists(global_setting("DB_DIR").'/highscores_alliances') && !file_exists(global_setting("DB_DIR").'/highscores_alliances2')) $current_version = '4';
-			elseif(file_exists(global_setting("DB_DIR").'/events') && @sqlite_open(global_setting("DB_DIR").'/events')) $current_version = '3';
+			elseif(file_exists($this->getDirectory().'/highscores') && !file_exists($this->getDirectory().'/highscores_alliances') && !file_exists($this->getDirectory().'/highscores_alliances2')) $current_version = '4';
+			elseif(file_exists($this->getDirectory().'/events') && @sqlite_open($this->getDirectory().'/events')) $current_version = '3';
 			elseif(is_dir(global_setting("DB_DIR").'/fleets')) $current_version = '2';
 			else $current_version = '1';
 

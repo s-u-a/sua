@@ -47,7 +47,7 @@
 		define_globals($_SESSION['database']);
 
 	# Skins bekommen
-	$skins = Config::get_skins();
+	$skins = Config::getSkins();
 
 	if(isset($_SESSION["admin_username"]) && isset($_SESSION["username"]) && isset($_REQUEST["switch_user"]))
 		$_SESSION["username"] = $_REQUEST["switch_user"];
@@ -109,7 +109,7 @@
 	}
 
 	# Ueberpruefen, ob Datenbank aktuell ist
-	if(($_cv = Config::get_database_version()) < ($_sv = global_setting("DATABASE_VERSION")))
+	if(($_cv = Classes::Database()->getDatabaseVersion()) < ($_sv = global_setting("DATABASE_VERSION")))
 		$gui->fatal(h(sprintf(_("Error: Database version is %s but should be %s. Please run db_things/update_database.\n"), $_cv, $_sv)));
 
 	# Schnellklicksperre

@@ -47,7 +47,7 @@
 			return $this->name;
 		}
 
-		function datasetName($name = false)
+		static function datasetName($name=null)
 		{
 			if(!isset($name))
 			{
@@ -61,11 +61,7 @@
 
 		static function getList()
 		{
-			$list = array();
-			self::$sqlite->query("SELECT ".static::$id_field." FROM ".Functions::first(static::$tables).";");
-			while(($res = self::$sqlite->nextResult()) !== false)
-				$list[] = $res[static::$id_field];
-			return $list;
+			return self::$sqlite->columnQuery("SELECT DISTINCT ".static::$id_field." FROM ".Functions::first(static::$tables).";");
 		}
 
 		static function getNumber()

@@ -54,7 +54,7 @@
 		/** Nach Beitrittszeit sortieren */
 		public static $SORTBY_ZEIT = 3;
 
-		protected static $tables = array("alliances" => array("tag TEXT PRIMARY KEY", "name TEXT", "description TEXT", "description_parsed TEXT", "inner_description TEXT", "inner_description_parsed TEXT", "last_rename INTEGER"),
+		protected static $tables = array("alliances" => array("tag TEXT PRIMARY KEY", "name TEXT", "description TEXT", "description_parsed TEXT", "inner_description TEXT", "inner_description_parsed TEXT", "last_rename INTEGER", "allow_applications INTEGER"),
 		                                 "alliances_members" => array("tag TEXT", "member TEXT UNIQUE", "score REAL", "rank TEXT", "time INTEGER", "permissions INTEGER")
 		                                 "alliances_applications" => array("tag TEXT", "user TEXT UNIQUE"));
 		protected static $id_field = "tag";

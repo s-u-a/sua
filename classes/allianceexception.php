@@ -16,6 +16,17 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage exceptions
+	*/
+
+	/**
+	 * Es ist ein Fehler mit einer Allianz aufgetreten, zum Beispiel wurde versucht eine zu öffnen, die nicht
+	 * existiert.
+	*/
+
 	class AllianceException extends SuaException
 	{
 	}

@@ -15,6 +15,17 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage exceptions
+	*/
+
+	/**
+	 * Es ist ein Problem mit der SQLite-Datenbank des Spiels aufgetreten. Tritt
+	 * zum Beispiel auf, wenn ein columnQuery ausgeführt wird, der Query aber keine
+	 * Spalte geliefert hat.
+	*/
 
 	class SQLiteException extends SuaException
 	{

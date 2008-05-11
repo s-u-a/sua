@@ -202,7 +202,7 @@
 	);
 
 	# Version herausfinden
-	$version = Config::get_version();
+	$version = Config::getVersion();
 	define('VERSION', $version);
 
 	function &stripslashes_r(&$var)

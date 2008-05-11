@@ -85,6 +85,14 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 
 		function readonly() { return $this->readonly; }
 
+		function systemExists($system)
+		{
+			if(floor($system) != $system) return false;
+			if($system < 1) return false;
+			if($system > 999) return false;
+			return true;
+		}
+
 		function getSystemsCount()
 		{
 			if(!$this->status) return false;
@@ -95,7 +103,7 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		{
 			if(!$this->status) return false;
 
-			$system = (int) $system;
+			$system = floor($system);
 			if($system < 1) return false;
 
 			$pos = ($system-1)*1655;
@@ -109,7 +117,7 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		{
 			if(!$this->status) return false;
 
-			$system = (int) $system;
+			$system = floor($system);
 
 			if(!isset($this->cache['getPlanetsCount'])) $this->cache['getPlanetsCount'] = array();
 			if(!isset($this->cache['getPlanetsCount'][$system]))
@@ -124,8 +132,8 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		{
 			if(!$this->status) return false;
 
-			$planet = (int) $planet;
-			$system = (int) $system;
+			$planet = floor($planet);
+			$system = floor($system);
 
 			if(!isset($this->cache['getPlanetOwner'])) $this->cache['getPlanetOwner'] = array();
 			if(!isset($this->cache['getPlanetOwner'][$system])) $this->cache['getPlanetOwner'][$system] = array();
@@ -168,8 +176,8 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		{
 			if($this->status != 1) return false;
 
-			$system = (int) $system;
-			$planet = (int) $planet;
+			$system = floor($system);
+			$planet = floor($planet);
 			$owner = trim(substr($owner, 0, 24));
 
 			$planets_count = $this->getPlanetsCount($system);
@@ -211,8 +219,8 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		{
 			if(!$this->status) return false;
 
-			$planet = (int) $planet;
-			$system = (int) $system;
+			$planet = floor($planet);
+			$system = floor($system);
 
 			if(!isset($this->cache['getPlanetName'])) $this->cache['getPlanetName'] = array();
 			if(!isset($this->cache['getPlanetName'][$system])) $this->cache['getPlanetName'][$system] = array();
@@ -234,8 +242,8 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		{
 			if($this->status != 1) return false;
 
-			$system = (int) $system;
-			$planet = (int) $planet;
+			$system = floor($system);
+			$planet = floor($planet);
 			$name = trim(substr($name, 0, 24));
 
 			$planets_count = $this->getPlanetsCount($system);
@@ -257,8 +265,8 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		{
 			if(!$this->status) return false;
 
-			$planet = (int) $planet;
-			$system = (int) $system;
+			$planet = floor($planet);
+			$system = floor($system);
 
 			if(!isset($this->cache['getPlanetOwnerAlliance'])) $this->cache['getPlanetOwnerAlliance'] = array();
 			if(!isset($this->cache['getPlanetOwnerAlliance'][$system])) $this->cache['getPlanetOwnerAlliance'][$system] = array();
@@ -280,8 +288,8 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		{
 			if($this->status != 1) return false;
 
-			$system = (int) $system;
-			$planet = (int) $planet;
+			$system = floor($system);
+			$planet = floor($planet);
 			$alliance = trim(substr($alliance, 0, 6));
 
 			$planets_count = $this->getPlanetsCount($system);
@@ -303,8 +311,8 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		{
 			if(!$this->status) return false;
 
-			$planet = (int) $planet;
-			$system = (int) $system;
+			$planet = floor($planet);
+			$system = floor($system);
 
 			if(!isset($this->cache['getPlanetSize'])) $this->cache['getPlanetSize'] = array();
 			if(!isset($this->cache['getPlanetSize'][$system])) $this->cache['getPlanetSize'][$system] = array();
@@ -334,9 +342,9 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 
 			if($this->status != 1) return false;
 
-			$system = (int) $system;
-			$planet = (int) $planet;
-			$size = (int) $size;
+			$system = floor($system);
+			$planet = floor($planet);
+			$size = floor($size);
 			if($size < 100 || $size > 500) return false;
 			$size -= 100;
 

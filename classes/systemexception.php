@@ -22,10 +22,10 @@
 	*/
 
 	/**
-	 * Ein Problem mit einem SQLite-Datenset ist aufgetreten. Zum Beispiel wurde eines
-	 * geöffnet, das noch nicht in der Datenbank aufgeführt ist.
+	 * Es ist ein Problem mit einem Sonnensystem aufgetreten, zum Beispiel wurde eines
+	 * geöffnet, das nicht existiert.
 	*/
 
-	class SQLiteSetException extends SuaException
+	class SystemException extends SuaException
 	{
 	}

@@ -16,6 +16,16 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage exceptions
+	*/
+
+	/**
+	 * Allgemeiner Fehler beim Schreiben oder Lesen auf der Festplatte.
+	*/
+
 	class IOException extends SuaException
 	{
 	}

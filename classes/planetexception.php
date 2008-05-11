@@ -15,7 +15,17 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage exceptions
+	*/
 
-	class ClassException extends SuaException
+	/**
+	 * Es ist ein Fehler mit Planeteninformationen aufgetreten. Zum Beispiel könnte
+	 * ein Planet geöffnet worden sein, der nicht existiert.
+	*/
+
+	class PlanetException extends SuaException
 	{
 	}

@@ -16,9 +16,24 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage gui
+	*/
+
+	/**
+	 * Stellt statische Funktionen zur Verfügung, um Captchas zu implementieren.
+	*/
+
 	class Captcha
 	{
-		public static $FIELDS = array("recaptcha_challenge_field", "recaptcha_response_field");
+		/**
+		 * Gibt ein Formular aus, das den Benutzer auffordert, ein Bild abzutippen.
+		 * @param integer $tabindex Die Tabindex-Variable, wird innerhalb der Funktion weiter hochgezählt und die Tabindizes für die Formularfelder vergeben.
+		 * @param integer $tabs Mit wievielen Tabulatoren soll der Code eingerückt werden?
+		 * @return null
+		*/
 
 		static function challenge(&$tabindex, $tabs=0)
 		{
@@ -60,6 +75,15 @@
 <?php
 		}
 
+		/**
+		 * Überprüft, ob die Eingaben, die der Benutzer ins Captcha::challenge()-Formular
+		 * gemacht hat, stimmen.
+		 * @param string $challenge Der Wert von $_POST["recaptcha_challenge_field"] nach Absenden des Formulars.
+		 * @param string $response Der Wert von $_POST["recaptcha_response_field"] nach Absenden des Formulars.
+		 * @return null
+		 * @throw CaptchaException Wenn die Validierung fehlgeschlagen ist (unterschiedliche Fehlercodes, definiert als CaptchaExceptions::$*_ERROR)
+		*/
+
 		static function validate($challenge, $response)
 		{
 			$fh = fsockopen("api-verify.recaptcha.net", 80, $errno, $errstr);
@@ -94,7 +118,14 @@
 			}
 		}
 
-		static function resolveErrorMessage($string)
+		/**
+		 * Erzeugt aus einem Fehlercode, der vom Recaptcha-Server gesandt wurde,
+		 * eine lesbare Fehlermeldung.
+		 * @param string $string Der Fehler-Code
+		 * @return string
+		*/
+
+		static private function resolveErrorMessage($string)
 		{
 			$fh = fsockopen("api.recaptcha.net", 80, $errno, $errstr);
 			if(!$fh)
@@ -121,20 +152,20 @@
 			return $message = preg_replace("/\\\\(.)/", "\$1", $m[1]);
 		}
 
+		/**
+		 * Gibt entweder die ganze Konfiguration oder einen bestimmten Konfigurations-
+		 * wert zurück.
+		 * @param string|null $index Wenn angegeben, wird nur der übergebene Index der Konfigurationsdatei zurückgegeben.
+		 * @return array(string)|string Liefert das Array mit der Konfiguration oder den gewünschten $index zurück.
+		 * @throw CaptchaException Wenn keine oder eine fehlerhafte Konfiguration existiert.
+		*/
+
 		static function getConfig($index=null)
 		{
-			static $config;
-			if(!isset($config))
-			{
-				if(!is_file(global_setting("DB_CAPTCHA")) || !is_readable(global_setting("DB_CAPTCHA")))
-					throw new CaptchaException(global_setting("DB_CAPTCHA")." not readable.", CaptchaException::$CONFIG_ERROR);
-				$config = parse_ini_file(global_setting("DB_CAPTCHA"));
-				if(!$config)
-				{
-					$config = null;
-					throw new CaptchaException("Configuration error.");
-				}
-			}
+			$config = Config::getConfig();
+			if(!isset($config["captcha"]))
+				throw new CaptchaException("Captchas are not configured.", CaptchaException::$CONFIG_ERROR);
+			$config = &$config["captcha"];
 
 			if($index === null)
 				return $config;
