@@ -15,6 +15,15 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Zeigt eine veröffentlichte Nachricht an.
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage helpers
+	*/
+
+	namespace sua::frontend;
+
 	require('engine.php');
 
 	$databases = Config::get_databases();

@@ -15,6 +15,14 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Include-Datei zum Login, sorgt dafür, dass der Benutzer angemeldet ist.
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage login
+	*/
+	namespace sua::frontend;
+
 	$__FILE__ = str_replace("\\", "/", __FILE__);
 	$include_filename = dirname($__FILE__).'/../engine.php';
 	$LOGIN = true;
@@ -54,7 +62,7 @@
 
 	$gui = new LoginGui();
 
-	if(!isset($_SESSION['username']) || !isset($_SESSION['database']) || isset($_SESSION["last_click"]) && time()-$_SESSION["last_click"] > global_setting("SESSION_TIMEOUT") || (isset($_SESSION['database']) && (!isset($databases[$_SESSION['database']]) || (!$databases[$_SESSION['database']]['enabled'] && !isset($_SESSION['admin_username'])) || !User::userExists($_SESSION['username']))))
+	if(!isset($_SESSION['username']) || !isset($_SESSION['database']) || isset($_SESSION["last_click"]) && time()-$_SESSION["last_click"] > global_setting("SESSION_TIMEOUT") || (isset($_SESSION['database']) && (!isset($databases[$_SESSION['database']]) || (!$databases[$_SESSION['database']]['enabled'] && !isset($_SESSION['admin_username'])) || !User::exists($_SESSION['username']))))
 	{
 		if(isset($_REQUEST['username']) && isset($_REQUEST['password']) && isset($_REQUEST['database']))
 		{
@@ -65,7 +73,7 @@
 			else
 			{
 				define_globals($_REQUEST['database']);
-				if(!User::userExists($_REQUEST['username']))
+				if(!User::exists($_REQUEST['username']))
 					$loggedin = false;
 				else
 				{

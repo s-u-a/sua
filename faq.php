@@ -15,6 +15,15 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Die Hilfe zum Spiel.
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage home
+	*/
+
+	namespace sua::frontend;
+
 	require('include.php');
 
 	$gui->init();

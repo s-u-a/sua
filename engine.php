@@ -15,6 +15,15 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Basis-Include-Datei. Kümmert sich um die richtige Konfiguration aller
+	 * Parameter.
+	 * @author Candid Dauth
+	 * @package sua
+	*/
+
+	namespace sua;
+
 	define('start_mtime', microtime(true));
 
 	error_reporting(4095);
@@ -178,14 +187,14 @@
 
 	# Maximales Alter in Tagen der Nachrichtensorten
 	$message_type_times = array (
-		Message::$TYPE_KAEMPFE => 3,
-		Message::$TYPE_SPIONAGE => 3,
-		Message::$TYPE_TRANSPORT => 2,
-		Message::$TYPE_SAMMELN => 2,
-		Message::$TYPE_BESIEDELUNG => 1,
-		Message::$TYPE_BENUTZERNACHRICHTEN => 5,
-		Message::$TYPE_VERBUENDETE => 4,
-		Message::$TYPE_POSTAUSGANG => 2
+		Message::TYPE_KAEMPFE => 3,
+		Message::TYPE_SPIONAGE => 3,
+		Message::TYPE_TRANSPORT => 2,
+		Message::TYPE_SAMMELN => 2,
+		Message::TYPE_BESIEDELUNG => 1,
+		Message::TYPE_BENUTZERNACHRICHTEN => 5,
+		Message::TYPE_VERBUENDETE => 4,
+		Message::TYPE_POSTAUSGANG => 2
 	);
 
 	# Fuer veroeffentlichte Nachrichten
@@ -193,12 +202,12 @@
 
 	# Zu jeder Flottenauftragsart die zugehoerige Nachrichtensorte
 	$types_message_types = array (
-		Fleet::$TYPE_BESIEDELN => Message::$TYPE_BESIEDELUNG,
-		Fleet::$TYPE_SAMMELN => Message::$TYPE_SAMMELN,
-		Fleet::$TYPE_ANGRIFF => Message::$TYPE_KAEMPFE,
-		Fleet::$TYPE_TRANSPORT => Message::$TYPE_TRANSPORT,
-		Fleet::$TYPE_SPIONIEREN => Message::$TYPE_SPIONAGE,
-		Fleet::$TYPE_STATIONIEREN => Message::$TYPE_TRANSPORT
+		Fleet::TYPE_BESIEDELN => Message::TYPE_BESIEDELUNG,
+		Fleet::TYPE_SAMMELN => Message::TYPE_SAMMELN,
+		Fleet::TYPE_ANGRIFF => Message::TYPE_KAEMPFE,
+		Fleet::TYPE_TRANSPORT => Message::TYPE_TRANSPORT,
+		Fleet::TYPE_SPIONIEREN => Message::TYPE_SPIONAGE,
+		Fleet::TYPE_STATIONIEREN => Message::TYPE_TRANSPORT
 	);
 
 	# Version herausfinden

@@ -15,6 +15,14 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Imperiumsübersicht, zeigt den Status aller eigenen Planeten an.
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage login
+	*/
+	namespace sua::frontend;
+
 	require('include.php');
 
 	$active_planet = $me->getActivePlanet();

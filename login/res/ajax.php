@@ -15,6 +15,14 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Empfängt alle AJAX-Requests aus dem Spiel und beantwortet sie.
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage login-helpers
+	*/
+	namespace sua::frontend;
+
 	$LOGIN = true;
 	define('ignore_action', true);
 	define('ajax', true);

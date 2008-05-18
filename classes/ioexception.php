@@ -22,6 +22,9 @@
 	 * @subpackage exceptions
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Allgemeiner Fehler beim Schreiben oder Lesen auf der Festplatte.
 	*/

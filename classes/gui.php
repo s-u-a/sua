@@ -15,17 +15,56 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage gui
+	*/
+
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
+	/**
+	 * Überklasse für Objekte, die sich um das HTML-Gerüst kümmern. Bietet die
+	 * Möglichkeit, Optionen zu setzen, die den HTML-Code beeinflussen.
+	*/
 
 	abstract class Gui
 	{
+		/**
+		 * Speichert die Optionen.
+		 * @var array
+		*/
 		protected $options = array();
+
+		/**
+		 * Wurde init() schon ausgeführt?
+		 * @var bool
+		*/
 		protected $init_run = false;
+
+		/**
+		 * Wurde end() schon ausgeführt?
+		 * @var bool
+		*/
 		protected $end_run = false;
 
+		/**
+		 * Setzt die GUI-Option $name auf den Wert $value.
+		 * @param string $name
+		 * @param mixed $value
+		 * @return void
+		*/
 		function setOption($name, $value)
 		{
 			$this->options[$name] = $value;
 		}
+
+		/**
+		 * Gibt den Wert der GUI-Option $name zurück.
+		 * @param string $name
+		 * @return mixed
+		*/
 
 		function getOption($name)
 		{
@@ -34,8 +73,25 @@
 			return $this->options[$name];
 		}
 
+		/**
+		 * Gibt den Teil des HTML-Gerüsts aus, der über dem Inhalt steht.
+		 * @return bool Erfolg
+		*/
 		abstract protected function htmlHead();
+
+		/**
+		 * Gibt den Teil des HTML-Gerüsts aus, der unter dem Inhalt steht.
+		 * @return bool Erfolg
+		*/
 		abstract protected function htmlFoot();
+
+		/**
+		 * Gibt den Teil des HTML-Gerüsts aus, der über dem Inhalt steht (öffentliche
+		 * Funktion). Wenn init() schon einmal ausgeführt wurde, wird false zurückgeliefert.
+		 * Wird end() nicht ausgeführt, so geschieht dies automatisch beim Zerstören des
+		 * GUI-Objekts.
+		 * @return bool
+		*/
 
 		function init()
 		{
@@ -45,6 +101,12 @@
 				$this->init_run = true;
 			return $return;
 		}
+
+		/**
+		 * Gibt den Teil des HTML-Gerüsts aus, der unter dem Inhalt steht (öffentliche
+		 * Funktion). Wenn end() schon einmal ausgeführt wurde, wird false zurückgeliefert.
+		 * @return bool
+		*/
 
 		function end()
 		{

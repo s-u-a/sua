@@ -21,6 +21,9 @@
 	 * @subpackage exceptions
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Es ist ein Problem mit der SQLite-Datenbank des Spiels aufgetreten. Tritt
 	 * zum Beispiel auf, wenn ein columnQuery ausgeführt wird, der Query aber keine

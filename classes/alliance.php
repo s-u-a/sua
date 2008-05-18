@@ -22,6 +22,9 @@
 	 * @subpackage storage
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	  * Repraesentiert eine Allianz im Spiel.
 	*/
@@ -74,7 +77,7 @@
 		 * Entfernt die Allianz aus der Datenbank, aus den Highscores und setzt die Allianztags der Mitglieder auf nichts.
 		 * Sendet Nachrichten an die Mitglieder, die über die Auflösung informieren.
 		 * @param string $by_whom Der Benutzername des Benutzers, der die Auflösung verursacht hat, für die Nachrichten.
-		 * @return null
+		 * @return void
 		*/
 
 		function destroy($by_whom=null)
@@ -121,7 +124,7 @@
 
 		/**
 		  * Gibt den Punkteschnitt der Mitglieder zurueck.
-		  * @return integer
+		  * @return int
 		*/
 
 		function getAverageScores()
@@ -131,7 +134,7 @@
 
 		/**
 		  * Gibt die Anzahl der Mitglieder zurueck.
-		  * @return integer
+		  * @return int
 		*/
 
 		function getMembersCount()
@@ -141,7 +144,7 @@
 
 		/**
 		  * Gibt die Punktesumme der Mitglieder zurueck.
-		  * @return integer
+		  * @return int
 		*/
 
 		function getTotalScores()
@@ -151,7 +154,7 @@
 
 		/**
 		  * Verrechnet die Punktzahlen der Mitglieder neu und aktualisiert den Eintrag in den Allianzhighscores.
-		  * @return null
+		  * @return void
 		*/
 
 		function recalcHighscores()
@@ -162,7 +165,7 @@
 
 		/**
 		  * Gibt die Platzierung in den Allianzhighscores hinsichtlich des durchschnittlichen Punktestands zurueck.
-		  * @return integer
+		  * @return int
 		*/
 
 		function getRankAverage()
@@ -173,7 +176,7 @@
 
 		/**
 		  * Gibt die Platzierung in den Allianzhighscores hinsichtlich der Punktesumme der Mitglieder zurueck.
-		  * @return integer
+		  * @return int
 		*/
 
 		function getRankTotal()
@@ -195,9 +198,9 @@
 		  * 7: Benutzerrechte verteilen
 		  * 8: Bündnis aufloesen
 		  * @param string $user Benutzername
-		  * @param integer $key Alliance::$PERMISSION_*
-		  * @param boolean $permission Soll Berechtigung erteilt werden?
-		  * @return null
+		  * @param int $key Alliance::$PERMISSION_*
+		  * @param bool $permission Soll Berechtigung erteilt werden?
+		  * @return void
 		*/
 
 		function setUserPermissions($user, $key, $permission)
@@ -212,8 +215,8 @@
 
 		/**
 		  * Setzt oder liest die Eigenschaft der Allianz, ob neue Bewerbungen erlaubt sind.
-		  * @param boolean $allow Null, wenn die Eigenschaft ausgelesen werden soll
-		  * @return null Wenn $allow gesetzt ist
+		  * @param bool $allow Null, wenn die Eigenschaft ausgelesen werden soll
+		  * @return void Wenn $allow gesetzt ist
 		*/
 
 		function allowApplications($allow=null)
@@ -227,8 +230,8 @@
 		/**
 		  * Ueberprueft, ob das Mitglied $user die Berechtigung $key (Alliance::$PERMISSION_*) besitzt.
 		  * @param string $user
-		  * @param integer $key
-		  * @return boolean
+		  * @param int $key
+		  * @return bool
 		*/
 
 		function checkUserPermissions($user, $key)
@@ -240,8 +243,8 @@
 		/**
 		  * Aktualisiert den gecachten Punktestand eines Mitglieds.
 		  * @param string $user
-		  * @param integer $scores
-		  * @return null
+		  * @param int $scores
+		  * @return void
 		*/
 
 		function setUserScores($user, $scores)
@@ -252,7 +255,7 @@
 
 		/**
 		  * Liefert den gecachten Punktestand eines Mitglieds zurueck.
-		  * @return integer
+		  * @return int
 		*/
 
 		function getUserScores($user)
@@ -263,7 +266,7 @@
 		/**
 		  * Gibt die Beitrittszeit eines Mitglieds zurueck.
 		  * @param string $user
-		  * @return integer
+		  * @return int
 		*/
 
 		function getUserJoiningTime($user)
@@ -275,7 +278,7 @@
 		  * Gibt die Mitgliederliste des Arrays zurueck.
 		  * ( Benutzername => [ 'time' => Beitrittszeit; 'rang' => Benutzerrang; 'punkte' => Punkte-Cache; 'permissions' => ( Berechtigungsnummer, siehe setUserPermissions() => Berechtigung? ) ] )
 		  * @param string $sortby Sortierfeld (Alliance::$SORTBY_*)
-		  * @param boolean $invert Sortierung umkehren?
+		  * @param bool $invert Sortierung umkehren?
 		  * @return array
 		*/
 
@@ -294,7 +297,7 @@
 
 		/**
 		  * Gibt ein Array aller Mitglieder zurueck, die eine bestimmte Berechtigung haben. Fuer die Bedeutung der Berechtigungen siehe setUserPermission().
-		  * @param integer $permission Alliance::$PERMISSION_*
+		  * @param int $permission Alliance::$PERMISSION_*
 		  * @return array(string)
 		*/
 
@@ -307,7 +310,7 @@
 		  * Setzt den Rang eines Benutzers.
 		  * @param string $user
 		  * @param string $rank
-		  * @return null
+		  * @return void
 		*/
 
 		function setUserStatus($user, $rank)
@@ -318,7 +321,7 @@
 		/**
 		  * Gibt den Rang eines Mitglieds zurueck.
 		  * @param string $user
-		  * @return boolean
+		  * @return bool
 		*/
 
 		function getUserStatus($user)
@@ -330,8 +333,8 @@
 		  * Nimmt einen Benutzer in die Allianz auf. Rang ist 'Neuling', keinerlei Rechte.
 		  * Stellt die Allianz beim Benutzer <strong>nicht</strong> ein.
 		  * @param string $user
-		  * @param integer $punkte
-		  * @return null
+		  * @param int $punkte
+		  * @return void
 		*/
 
 		function addUser($user, $punkte=0)
@@ -345,7 +348,7 @@
 		  * Entfernt einen Benutzer aus einer Allianz. Entfernt die Allianz <strong>nicht</strong> aus dem Benutzer-Array.
 		  * Ist dies der letzte Benutzer, wird die Allianz aufgeloest.
 		  * @param String $user
-		  * @return null
+		  * @return void
 		*/
 
 		function removeUser($user)
@@ -360,7 +363,7 @@
 		/**
 		  * Fuegt eine neue Bewerbung des Benutzers $user hinzu. Veraendert das User-Array <strong>nicht</strong>.
 		  * @param string $user
-		  * @return null
+		  * @return void
 		*/
 
 		function newApplication($user)
@@ -374,7 +377,7 @@
 		/**
 		  * Entfernt die Bewerbung des Benutzers $user wieder. Veraendert das User-Array <strong>nicht</strong>.
 		  * @param string $user
-		  * @return null
+		  * @return void
 		*/
 
 		function deleteApplication($user)
@@ -396,7 +399,7 @@
 		  * Setzt oder liest den Allianznamen.
 		  * @param Der $name Name oder null, wenn er zurückgeliefert werden soll.
 		  * @return string Wenn $name null ist
-		  * @return null Wenn $name gesetzt ist
+		  * @return void Wenn $name gesetzt ist
 		*/
 
 		function name($name=null)
@@ -461,7 +464,7 @@
 		/**
 		  * Veraendert die externe Allianzbeschreibung.
 		  * @param string $description
-		  * @return null
+		  * @return void
 		*/
 
 		function setExternalDescription($description)
@@ -473,7 +476,7 @@
 		/**
 		  * Setzt die interne Allianzbeschreibung.
 		  * @param string $description
-		  * @return null
+		  * @return void
 		*/
 
 		function setInternalDescription($description)
@@ -497,7 +500,7 @@
 		  * Nimmt eine Bewerbung an und fuegt den Benutzer zur Allianz hinzu. Die Allianz wird ins Benutzerprofil eingetragen und eine Benachrichtigung erfolgt.
 		  * @param string $user
 		  * @param string $by_whom Der Benutzername des annehmenden Benutzers als Absender für die Benachrichtigungen
-		  * @return null
+		  * @return void
 		*/
 
 		function acceptApplication($user, $by_whom=null)
@@ -531,7 +534,7 @@
 		  * Weist eine Bewerbung zurueck. Das Benutzerprofil wird aktualisiert, eine Benachrichtigung erfolgt.
 		  * @param string $user
 		  * @param string $by_whom Der Name des ablehnenden Benutzers als Absender für die Benachrichtigungen.
-		  * @return null
+		  * @return void
 		*/
 
 		function rejectApplication($user, $by_whom=null)
@@ -567,7 +570,7 @@
 		  * Aktualisiert die Mitgliederliste, wenn ein Benutzer umbenannt wird.
 		  * @param string $old_name
 		  * @param string $new_name
-		  * @return null
+		  * @return void
 		*/
 
 		function renameUser($old_name, $new_name)
@@ -578,7 +581,7 @@
 
 		/**
 		  * Gibt zurueck, ob eine Umbenennung des Allianztags moeglich ist. Es muss mindestens die globale Einstellung ALLIANCE_RENAME_PERIOD in Tagen vergangen sein, damit eine erneute Umbenennung moeglich ist.
-		  * @return boolean
+		  * @return bool
 		*/
 
 		function renameAllowed()
@@ -591,7 +594,7 @@
 		/**
 		  * Benennt die Allianz um. Aktualisiert die Highscores und Profile der Mitglieder.
 		  * @param string $new_name
-		  * @return null
+		  * @return void
 		*/
 
 		function rename($new_name)

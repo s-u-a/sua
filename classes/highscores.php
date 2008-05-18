@@ -15,6 +15,20 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage storage
+	*/
+
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
+	/**
+	 * Verwaltet die Benutzer- und Allianzhighscores.
+	 * @deprecated
+	 * @todo Wird mit der Umstellung der Benutzer auf SQLite überflüssig
+	*/
 
 	class Highscores extends SQLite
 	{

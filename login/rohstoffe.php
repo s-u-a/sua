@@ -15,6 +15,14 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Produktion einsehen und beeinflussen.
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage login
+	*/
+	namespace sua::frontend;
+
 	require('include.php');
 
 	if(isset($_POST['prod']) && is_array($_POST['prod']) && count($_POST['prod']) > 0)

@@ -22,6 +22,9 @@
 	 * @subpackage storage
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Repräsentiert ein Sonnensystem im Spiel.
 	*/
@@ -34,7 +37,7 @@
 
 		/**
 		 * @param Galaxy $galaxy
-		 * @param integer $system
+		 * @param int $system
 		*/
 
 		function __construct($galaxy, $system)
@@ -63,8 +66,8 @@
 		}
 
 		/**
-		 * @param integer $planet
-		 * @return boolean
+		 * @param int $planet
+		 * @return bool
 		*/
 
 		function planetExists($planet)
@@ -76,7 +79,7 @@
 		}
 
 		/**
-		 * @return integer
+		 * @return int
 		*/
 
 		function getGalaxy()
@@ -85,7 +88,7 @@
 		}
 
 		/**
-		 * @return integer
+		 * @return int
 		*/
 
 		function getSystem()
@@ -94,7 +97,7 @@
 		}
 
 		/**
-		 * @return integer
+		 * @return int
 		*/
 
 		function getPlanetsCount()

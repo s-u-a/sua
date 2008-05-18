@@ -22,6 +22,9 @@
 	 * @subpackage storage
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Repräsentiert eine veröffentlichte Nachricht im Spiel.
 	*/
@@ -113,7 +116,7 @@
 		/**
 		 * Die Nachricht wird vom Benutzer betrachtet, also wird die Zeit der letzten Betrachtung erneuert.
 		 * Wichtig für automatische Löschung.
-		 * @return null
+		 * @return void
 		*/
 
 		protected function _read()
@@ -123,7 +126,7 @@
 
 		/**
 		 * Gibt zurück, wann die Nachricht zuletzt betrachtet wurde, also wann zuletzt _read() ausgeführt wurde.
-		 * @return integer
+		 * @return int
 		*/
 
 		function getLastViewTime()
@@ -134,8 +137,8 @@
 		/**
 		 * Setzt oder liest den Text der Nachricht.
 		 * @param string $text Der neue Text der Nachricht, oder null, wenn der aktuelle zurückgegeben werden soll
-		 * @param boolean $filter Sollen Angreifer- und Verteidigerkoordinaten herausgefiltert werden? (Nur sinnvoll, wenn $text null ist)
-		 * @return null Wenn $text gesetzt ist.
+		 * @param bool $filter Sollen Angreifer- und Verteidigerkoordinaten herausgefiltert werden? (Nur sinnvoll, wenn $text null ist)
+		 * @return void Wenn $text gesetzt ist.
 		 * @return String Der Text, wenn $text nicht null ist.
 		*/
 
@@ -168,7 +171,7 @@
 		/**
 		 * Liest oder setzt den Absender der Nachricht.
 		 * @param string $from Der neue Absender. Wenn null, wird der aktuelle zurückgegeben.
-		 * @return null Wenn $from übergeben wurde.
+		 * @return void Wenn $from übergeben wurde.
 		 * @return string Wenn $from null ist, wird der Absender zurückgegeben.
 		*/
 
@@ -183,7 +186,7 @@
 		/**
 		 * Liest oder setzt den Betreff der Nachricht.
 		 * @param string $subject Der neue Betreff oder null, wenn der Betreff ausgelesen werden soll.
-		 * @return null Wenn $subject gesetzt ist
+		 * @return void Wenn $subject gesetzt ist
 		 * @return string Der Betreff, wenn $subject null ist.
 		*/
 
@@ -197,9 +200,9 @@
 
 		/**
 		 * Gibt zurück oder stellt ein, ob der Nachrichtentext im HTML-Format gespeichert wurde.
-		 * @param boolean $html Ist die Nachricht eine HTML-Nachricht?
-		 * @return null Wenn $html gesetzt ist.
-		 * @return boolean Wenn $html null ist, ob die Nachricht eine HTML-Nachricht ist.
+		 * @param bool $html Ist die Nachricht eine HTML-Nachricht?
+		 * @return void Wenn $html gesetzt ist.
+		 * @return bool Wenn $html null ist, ob die Nachricht eine HTML-Nachricht ist.
 		*/
 
 		function html($html=null)
@@ -211,10 +214,10 @@
 		}
 
 		/**
-		 * Gibt den Nachrichtentyp (Message::$TYPE_*) zurück oder setzt diesen.
-		 * @param integer $type Der Nachrichtentyp (Message::$TYPE_*) oder null, wenn der Typ zurückgegeben werden soll.
-		 * @return integer Message::$TYPE_*, wenn $type null ist.
-		 * @return null Wenn $type gesetzt ist.
+		 * Gibt den Nachrichtentyp (Message::TYPE_*) zurück oder setzt diesen.
+		 * @param int $type Der Nachrichtentyp (Message::TYPE_*) oder null, wenn der Typ zurückgegeben werden soll.
+		 * @return int Message::TYPE_*, wenn $type null ist.
+		 * @return void Wenn $type gesetzt ist.
 		*/
 
 		function type($type=null)
@@ -227,9 +230,9 @@
 
 		/**
 		 * Setzt oder liest die Sendezeit der Nachricht.
-		 * @param integer $time Die Sendezeit, oder null, wenn sie zurückgegeben werden soll
-		 * @return integer Wenn $time null ist
-		 * @return null Wenn $time gesetzt ist
+		 * @param int $time Die Sendezeit, oder null, wenn sie zurückgegeben werden soll
+		 * @return int Wenn $time null ist
+		 * @return void Wenn $time gesetzt ist
 		*/
 
 		function time($time=null)
@@ -244,7 +247,7 @@
 		 * Setzt oder liest den Empfänger der Nachricht (also den, der sie veröffentlich hat).
 		 * @param string $to Der Empfänger, oder null, wenn er zurückgegeben werden soll
 		 * @return string Wenn $to null ist
-		 * @return null Wenn $to gesetzt ist
+		 * @return void Wenn $to gesetzt ist
 		*/
 
 		function to($to=null)

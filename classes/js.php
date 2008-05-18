@@ -16,10 +16,26 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage gui
+	*/
+
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
+	/**
+	 * Stellt Hilfsfuntionen für die Ausgabe von JavaScript-Code zur Verfügung.
+	 * Ergänzt daher die Funktionen, die PHP zur HTML-Ausgabe bereitstellt.
+	*/
+
 	class JS
 	{
 		/**
-		* Escapt alle ' und \ mit einem Backslash, sodass der String in JavaScript innerhalb von einfachen Anfuehrungszeichen verwendet werden kann.
+		 * Escapt alle ' und \ mit einem Backslash, sodass der String in JavaScript innerhalb von einfachen Anfuehrungszeichen verwendet werden kann.
+		 * @param string $string
+		 * @return string
 		*/
 
 		static function jsentities($string)
@@ -28,10 +44,12 @@
 		}
 
 		/**
-		* Implodiert ein assoziatives Array und gibt den Code für ein JavaScript-Object seiner Entsprechung zurück.
+		 * Implodiert ein assoziatives Array und gibt den Code für ein JavaScript-Object seiner Entsprechung zurück.
+		 * @param array $array
+		 * @return string
 		*/
 
-		static function aimplode_js($array)
+		static function aimplode_js(array $array)
 		{
 			$string = array();
 			foreach($array as $k=>$v)
@@ -40,10 +58,13 @@
 		}
 
 		/**
-		* Implodiert ein assoziatives Array und gibt den Code für einen Query-String zurück.
+		 * Implodiert ein assoziatives Array und gibt den Code für einen Query-String zurück.
+		 * @param array $array
+		 * @param string $prefix Eventueller Prefix für den Index der URL-Parameter
+		 * @return string
 		*/
 
-		static function aimplode_url($array, $prefix="%s")
+		static function aimplode_url(array $array, $prefix="%s")
 		{
 			$string = array();
 			foreach($array as $k=>$v)

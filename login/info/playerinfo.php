@@ -15,11 +15,19 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Zeigt Informationen zu einem Spieler.
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage login
+	*/
+	namespace sua::frontend;
+
 	require('../include.php');
 
 	$gui->init();
 
-	if(!isset($_GET['player']) || !User::userExists($_GET['player']))
+	if(!isset($_GET['player']) || !User::exists($_GET['player']))
 	{
 ?>
 <p class="error"><?=h(_("Diesen Spieler gibt es nicht."))?></p>

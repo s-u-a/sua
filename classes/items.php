@@ -83,11 +83,6 @@
 			return 'items';
 		}
 
-		function readonly()
-		{ # Needed for instances
-			return false;
-		}
-
 		function refreshItemDatabase()
 		{
 			$items = array('gebaeude' => array(), 'forschung' => array(), 'roboter' => array(), 'schiffe' => array(), 'verteidigung' => array());

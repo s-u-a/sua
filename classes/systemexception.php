@@ -21,6 +21,9 @@
 	 * @subpackage exceptions
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Es ist ein Problem mit einem Sonnensystem aufgetreten, zum Beispiel wurde eines
 	 * geöffnet, das nicht existiert.

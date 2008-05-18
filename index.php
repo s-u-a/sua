@@ -15,6 +15,15 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Startseite mit News.
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage home
+	*/
+
+	namespace sua::frontend;
+
 	require('include.php');
 
 	function repl_nl($nls)

@@ -19,7 +19,7 @@
 /*
   * Format von $raw:
   * [ Ziele, Benutzer, Startzeit, Vergangene Ziele ]
-  * Ziele: ( (string) Koordinaten => [ Fleet::$TYPE_*, (boolean) Rückflug? ] )
+  * Ziele: ( (string) Koordinaten => [ Fleet::TYPE_*, (boolean) Rückflug? ] )
   * Benutzer: ( (string) Benutzername => [ ( Schiffs-ID => Anzahl ), (string) Start-Koordinaten, (float) Geschwindigkeitsfaktor, Mitgenommene Rohstoffe, Handel, (float) Verbrauchtes Tritium (für die Flugerfahrungspunkte) ] )
   * Vergangene Ziele: Ziele
   * Mitgenommene Rohstoffe: [ ( Rohstoffnummer => Menge ), ( Roboter-ID => Anzahl ), Überschüssiges Tritium ]
@@ -31,6 +31,9 @@
 	 * @package sua
 	 * @subpackage storage
 	*/
+
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
 
 	/**
 	 * Repräsentiert eine Flotte im Spiel.
@@ -50,43 +53,43 @@
 		 * Auftrag: steht noch nicht fest
 		 * @var integer
 		*/
-		static $TYPE_NULL = 0;
+		const TYPE_NULL = 0;
 
 		/**
 		 * Auftrag: Besiedeln
 		 * @var integer
 		*/
-		static $TYPE_BESIEDELN = 1;
+		const TYPE_BESIEDELN = 1;
 
 		/**
 		 * Auftrag: Sammeln
 		 * @var integer
 		*/
-		static $TYPE_SAMMELN = 2;
+		const TYPE_SAMMELN = 2;
 
 		/**
 		 * Auftrag: Angriff
 		 * @var integer
 		*/
-		static $TYPE_ANGRIFF = 3;
+		const TYPE_ANGRIFF = 3;
 
 		/**
 		 * Auftrag: Transport
 		 * @var integer
 		*/
-		static $TYPE_TRANSPORT = 4;
+		const TYPE_TRANSPORT = 4;
 
 		/**
 		 * Auftrag: Spionage
 		 * @var integer
 		*/
-		static $TYPE_SPIONIEREN = 5;
+		const TYPE_SPIONIEREN = 5;
 
 		/**
 		 * Auftrag: Stationieren
 		 * @var integer
 		*/
-		static $TYPE_STATIONIEREN = 6;
+		const TYPE_STATIONIEREN = 6;
 
 		/**
 		 * Erzeugt ein Flottenobjekt. Implementiert Dataset::create().
@@ -102,7 +105,7 @@
 
 		/**
 		 * Entfernt ein Flottenobjekt aus der Datenbank. Implementiert Dataset::destroy().
-		 * @return null
+		 * @return void
 		*/
 
 		function destroy()
@@ -120,8 +123,8 @@
 		 * Verschiebt die Ankunft (eigentlich die Startzeit) der Flotte im $time_diff Sekunden nach hinten.
 		 * Dies sollte ausgeführt werden, wenn ein Benutzeraccount aus dem Urlaubsmodus genommmen wird und
 		 * die Flotte wieder aufgetaut wird.
-		 * @param integer $time_diff Zeitdifferenz in Sekunden
-		 * @return null
+		 * @param int $time_diff Zeitdifferenz in Sekunden
+		 * @return void
 		*/
 
 		function moveTime($time_diff)
@@ -137,10 +140,10 @@
 
 		function getTargetsList()
 		{
-			self::$sqlite->query("SELECT galaxy, system, planet FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i ASC;");
+			self::$sqlite->query("SELECT galaxy, system, planet, i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i ASC;");
 			$return = array();
 			while(($r = self::$sqlite->nextResult()) !== false)
-				$return[] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
+				$return[$r["i"]] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
 			return $return;
 		}
 
@@ -154,13 +157,28 @@
 			self::$sqlite->query("SELECT galaxy, system, planet FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND finished ORDER BY i ASC;");
 			$return = array();
 			while(($r = self::$sqlite->nextResult()) !== false)
-				$return[] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
+				$return[$r["i"]] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
 			return $return;
 		}
 
 		/**
+		 * Liefert Informationen zu einem bestimmten Ziel der Flotte zurück.
+		 * @param int $i Der Index des Ziels von getTargetsList() oder getOldTargetsList().
+		 * @return array [ Auftragstyp (Fleet::TYPE_*), (boolean) Rückflug? (wird dann behandelt wie Stationieren) ]
+		*/
+
+		function getTargetType($i)
+		{
+			self::$sqlite->query("SELECT type, flying_back FROM fleets_target WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND i = ".self::$sqlite->quote($i).";");
+			$r = self::$sqlite->nextResult();
+			if($r === false)
+				throw new FleetException("This target does not exist.");
+			return array($r["type"], true && $r["flying_back"]);
+		}
+
+		/**
 		 * Liefert ein Array nach dem folgenden Prinzip zurück:
-		 * [ (string) Koordinaten => [ Fleet::$TYPE_*, (boolean) Rückflug? ] ]
+		 * [ (string) Koordinaten => [ Fleet::TYPE_*, (boolean) Rückflug? ] ]
 		 * Ist der Typ Sammeln, wird an die Koordinaten ein T angehängt.
 		 * @return array
 		 * @deprecated
@@ -171,7 +189,7 @@
 			$return = array();
 			$this->query("SELECT galaxy || ':' || system || ':' || planet, type, flying_back FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i ASC;");
 			while(($r = $this->nextResult()) !== false)
-				$return[$r["galaxy || ':' || system || ':' || planet"].($r["type"] == self::$TYPE_SAMMELN && !$r["flying_back"] ? "T" : "")] = array($r["type"], true && $r["flying_back"]);
+				$return[$r["galaxy || ':' || system || ':' || planet"].($r["type"] == self::TYPE_SAMMELN && !$r["flying_back"] ? "T" : "")] = array($r["type"], true && $r["flying_back"]);
 			return $return;
 		}
 
@@ -186,7 +204,7 @@
 			$return = array();
 			$this->query("SELECT galaxy || ':' || system || ':' || planet, type, flying_back FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND finished ORDER BY i ASC;");
 			while(($r = $this->nextResult()) !== false)
-				$return[$r["galaxy || ':' || system || ':' || planet"].($r["type"] == self::$TYPE_SAMMELN ? "T" : "")] = array($r["type"], true && $r["flying_back"]);
+				$return[$r["galaxy || ':' || system || ':' || planet"].($r["type"] == self::TYPE_SAMMELN ? "T" : "")] = array($r["type"], true && $r["flying_back"]);
 			return $return;
 		}
 
@@ -194,7 +212,7 @@
 		 * Liefert zurück, wieviele „Flottenslots“ diese Flotte für den übergebenen Benutzer beansprucht.
 		 * Die Zahl der Flottenslots wird durch das Kontrollwesen beeinflusst.
 		 * @param string $user Der Benutzername oder null, wenn der Hauptbenutzer der Flotte benutzt werden soll.
-		 * @return integer
+		 * @return int
 		*/
 
 		function getNeededSlots($user=null)
@@ -216,18 +234,18 @@
 		/**
 		 * Fügt der Flotte ein weiteres Ziel hinzu.
 		 * @param Planet $pos Die Zielkoordinaten.
-		 * @param string $type Fleet::$TYPE_*
-		 * @param boolean $back Ist das nur ein Rückflug? (= Stationieren, $type wird ignoriert)
-		 * @return null
+		 * @param string $type Fleet::TYPE_*
+		 * @param bool $back Ist das nur ein Rückflug? (= Stationieren, $type wird ignoriert)
+		 * @return void
 		*/
 
-		function addTarget($pos, $type, $back)
+		function addTarget(Planet $pos, $type, $back)
 		{
 			$i = 1+self::$sqlite->singleQuery("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
 			self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back ) VALUES ( ".self::$sqlite->quote($i).", ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($pos->getGalaxy()).", ".self::$sqlite->quote($pos->getSystem()).", ".self::$sqlite->quote($pos->getPlanet()).", ".self::$sqlite->quote($type).", ".self::$sqlite->quote($flying_back ? 1 : 0)." );");
 
 			# Eintragen in die Flottenliste des Benutzers
-			if($this->started() && (!$back || $type != self::$TYPE_SAMMELN))
+			if($this->started() && (!$back || $type != self::TYPE_SAMMELN))
 			{
 				$owner = $pos->getPlanetOwner();
 				if($owner)
@@ -251,7 +269,7 @@
 
 		/**
 		 * Gibt die Auftragsart zurück, mit der die Flotte derzeit unterwegs ist.
-		 * @return integer Fleet::$TYPE_*
+		 * @return int Fleet::TYPE_*
 		*/
 
 		function getCurrentType()
@@ -334,7 +352,7 @@
 		 * @param string $id Die ID des Schiffs.
 		 * @param int $count Die Anzahl der Schiffe des Typs.
 		 * @param string $user
-		 * @return null
+		 * @return void
 		*/
 
 		function addFleet($id, $count, $user)
@@ -378,11 +396,10 @@
 		 * @param string $user
 		 * @param Planet $from
 		 * @param float $factor
-		 * @return null
-		 * @todo $from-Parameter überall anpassen
+		 * @return void
 		*/
 
-		function addUser($user, $from, $factor=1)
+		function addUser($user, Planet $from, $factor=1)
 		{
 			if($this->userExists($user))
 				throw new FleetException("This user is already participating on the fleet.");
@@ -403,36 +420,47 @@
 			}
 		}
 
+		/**
+		 * Gibt zurück, wieviele Rohstoffe und Roboter der Benutzer mit seinen derzeitigen
+		 * Schiffen transportieren kann.
+		 * @param string $user
+		 * @return array [ 0 => (int) Rohstoffmenge; 1 => (int) Robotermenge ]
+		*/
+
 		function getTransportCapacity($user)
 		{
-			if(!$this->status || !isset($this->raw[1][$user])) return false;
-
 			$trans = array(0, 0);
 			$user_object = Classes::User($user);
-			foreach($this->raw[1][$user][0] as $id=>$count)
+			self::$sqlite->query("SELECT id,number FROM fleets_users_fleet WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+			while(($r = self::$sqlite->nextResult()) !== false)
 			{
-				$item_info = $user_object->getItemInfo($id, 'schiffe', array("trans"));
-				$trans[0] += $item_info['trans'][0]*$count;
-				$trans[1] += $item_info['trans'][1]*$count;
+				$item_info = $user_object->getItemInfo($r["id"], 'schiffe', array("trans"));
+				$trans[0] += $item_info['trans'][0]*$r["number"];
+				$trans[1] += $item_info['trans'][1]*$r["number"];
 			}
 			return $trans;
 		}
 
+		/**
+		 * Fügt der Flotte des Benutzers $user Transportgüter hinzu.
+		 * @param string $user Der Benutzername
+		 * @param array $ress Transportierte Rohstoffe
+		 * @param array $robs Transportierte Roboter
+		 * @return void
+		*/
+
 		function addTransport($user, $ress=false, $robs=false)
 		{
-			if(!$this->status || !isset($this->raw[1][$user])) return false;
+			if(!$this->userExists($user)) throw new FleetException("This user does not participate on the fleet.");
 
 			list($max_ress, $max_robs) = $this->getTransportCapacity($user);
-			$max_ress -= array_sum($this->raw[1][$user][3][0]);
-			$max_robs -= array_sum($this->raw[1][$user][3][1]);
+			$trans = $this->getTransport($user);
+			$max_ress -= array_sum($trans[0]);
+			$max_robs -= array_sum($trans[1]);
 			if($ress)
 			{
 				$ress = Functions::fitToMax($ress, $max_ress);
-				$this->raw[1][$user][3][0][0] += $ress[0];
-				$this->raw[1][$user][3][0][1] += $ress[1];
-				$this->raw[1][$user][3][0][2] += $ress[2];
-				$this->raw[1][$user][3][0][3] += $ress[3];
-				$this->raw[1][$user][3][0][4] += $ress[4];
+				self::$sqlite->query("UPDATE fleets_users SET ress0 = ress0 + ".self::$sqlite->quote($ress[0]).", ress1 = ress1 + ".self::$sqlite->quote($ress[1]).", ress2 = ress2 + ".self::$sqlite->quote($ress[2]).", ress3 = ress3 + ".self::$sqlite->quote($ress[3]).", ress4 = ress4 + ".self::$sqlite->quote($ress[4])." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 			}
 
 			if($robs)
@@ -440,38 +468,41 @@
 				$robs = Functions::fitToMax($robs, $max_robs);
 				foreach($robs as $i=>$rob)
 				{
-					if(!isset($this->raw[1][$user][3][1][$i]))
-						$this->raw[1][$user][3][1][$i] = $rob;
+					if(isset($trans[1][$i]))
+						self::$sqlite->query("UPDATE fleets_users_rob SET number = number + ".self::$sqlite->quote($rob)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 					else
-						$this->raw[1][$user][3][1][$i] += $rob;
+						self::$sqlite->query("INSERT INTO fleets_users_rob ( fleet_id, user, id, number ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($i).", ".self::$sqlite->quote($rob).");");
 				}
 			}
-
-			$this->changed = true;
-			return true;
 		}
+
+		/**
+		 * Fügt der Flotte des Benutzers $user Handelsgüter hinzu.
+		 * @param string $user Der Benutzername
+		 * @param array $ress Transportierte Rohstoffe
+		 * @param array $robs Transportierte Roboter
+		 * @return void
+		*/
 
 		function addHandel($user, $ress=false, $robs=false)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
 
 			list($max_ress, $max_robs) = $this->getTransportCapacity($user);
-			$max_ress -= array_sum($this->raw[1][$user][4][0]);
-			$max_robs -= array_sum($this->raw[1][$user][4][1]);
-			if(!$this->raw[1][$user][4][2])
+			$trans = $this->getHandel($user);
+			$max_ress -= array_sum($trans[0]);
+			$max_robs -= array_sum($trans[1]);
+			if($this->dontPutRes($user))
 			{
 				$transport = $this->getTransport($user);
 				$max_ress -= array_sum($transport[0]);
 				$max_robs -= array_sum($transport[1]);
 			}
+
 			if($ress)
 			{
 				$ress = Functions::fitToMax($ress, $max_ress);
-				$this->raw[1][$user][4][0][0] += $ress[0];
-				$this->raw[1][$user][4][0][1] += $ress[1];
-				$this->raw[1][$user][4][0][2] += $ress[2];
-				$this->raw[1][$user][4][0][3] += $ress[3];
-				$this->raw[1][$user][4][0][4] += $ress[4];
+				self::$sqlite->query("UPDATE fleets_users SET hress0 = hress0 + ".self::$sqlite->quote($ress[0]).", hress1 = hress1 + ".self::$sqlite->quote($ress[1]).", hress2 = hress2 + ".self::$sqlite->quote($ress[2]).", hress3 = hress3 + ".self::$sqlite->quote($ress[3]).", hress4 = hress4 + ".self::$sqlite->quote($ress[4])." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 			}
 
 			if($robs)
@@ -479,115 +510,165 @@
 				$robs = Functions::fitToMax($robs, $max_robs);
 				foreach($robs as $i=>$rob)
 				{
-					if(!isset($this->raw[1][$user][4][1][$i]))
-						$this->raw[1][$user][4][1][$i] = $rob;
+					if(isset($trans[1][$i]))
+						self::$sqlite->query("UPDATE fleets_users_hrob SET number = number + ".self::$sqlite->quote($rob)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 					else
-						$this->raw[1][$user][4][1][$i] += $rob;
+						self::$sqlite->query("INSERT INTO fleets_users_hrob ( fleet_id, user, id, number ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($i).", ".self::$sqlite->quote($rob).");");
 				}
 			}
-
-			$this->changed = true;
-			return true;
 		}
 
-		function setHandel($user, $ress=false, $robs=false, $give=null)
+		/**
+		 * Setzt die Handelsgüter für den Benutzer $user neu.
+		 * @param string $user Der Benutzername
+		 * @param array $ress Transportierte Rohstoffe
+		 * @param array $robs Transportierte Roboter
+		 * @return void
+		*/
+
+		function setHandel($user, $ress=false, $robs=false)
 		{
 			if(!$this->status || !isset($this->raw[1][$user])) return false;
 
-			if($give !== null)
-				$this->raw[1][$user][4][2] = $give;
-
 			list($max_ress, $max_robs) = $this->getTransportCapacity($user);
-
-			if(!$this->raw[1][$user][4][2])
+			$trans = $this->getHandel($user);
+			if($this->dontPutRes($user))
 			{
 				$transport = $this->getTransport($user);
 				$max_ress -= array_sum($transport[0]);
 				$max_robs -= array_sum($transport[1]);
 			}
 
-			if($give !== null && !$give)
+			if($ress)
 			{
-				$this->raw[1][$user][4][0] = Functions::fitToMax($this->raw[1][$user][4][0], $max_ress);
-				$this->raw[1][$user][4][1] = Functions::fitToMax($this->raw[1][$user][4][1], $max_robs);
-			}
-
-			if($ress !== false && is_array($ress))
-			{
-				if(!isset($ress[0])) $ress[0] = 0;
-				if(!isset($ress[1])) $ress[1] = 0;
-				if(!isset($ress[2])) $ress[2] = 0;
-				if(!isset($ress[3])) $ress[3] = 0;
-				if(!isset($ress[4])) $ress[4] = 0;
-
 				$ress = Functions::fitToMax($ress, $max_ress);
-
-				$this->raw[1][$user][4][0] = $ress;
+				self::$sqlite->query("UPDATE fleets_users SET hress0 = ".self::$sqlite->quote($ress[0]).", hress1 = ".self::$sqlite->quote($ress[1]).", hress2 = ".self::$sqlite->quote($ress[2]).", hress3 = ".self::$sqlite->quote($ress[3]).", hress4 = ".self::$sqlite->quote($ress[4])." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 			}
-			if($robs !== false && is_array($robs))
+
+			if($robs)
 			{
 				$robs = Functions::fitToMax($robs, $max_robs);
-				$this->raw[1][$user][4][1] = $robs;
+				foreach($robs as $i=>$rob)
+				{
+					if(isset($trans[1][$i]))
+						self::$sqlite->query("UPDATE fleets_users_hrob SET number = ".self::$sqlite->quote($rob)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+					else
+						self::$sqlite->query("INSERT INTO fleets_users_hrob ( fleet_id, user, id, number ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($i).", ".self::$sqlite->quote($rob).");");
+				}
 			}
-
-			$this->changed = true;
-			return true;
 		}
+
+		/**
+		 * Gibt ein Array zurück, das die aktuelle Transportmenge des Benutzers $user enthält.
+		 * @param string $user
+		 * @return array [ Rohstoffe; Roboter ]
+		*/
 
 		function getTransport($user)
 		{
-			if(!$this->status || !isset($this->raw[1][$user])) return false;
-
-			return $this->raw[1][$user][3];
+			self::$sqlite->query("SELECT ress0,ress1,ress2,ress3,ress4 FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user)." LIMIT 1;");
+			$r = self::$sqlite->nextResult();
+			if($r === false)
+				throw new FleetException("This user does not participate on the fleet.");
+			$return = array(array($r["ress0"], $r["ress1"], $r["ress2"], $r["ress3"], $r["ress4"]), array());
+			self::$sqlite->query("SELECT id,number FROM fleets_users_rob WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+			while(($r = self::$sqlite->nextResult()) !== false)
+			{
+				if(!isset($return[1][$r["id"]])) $return[1][$r["id"]] = 0;
+				$return[1][$r["id"]] += $r["number"];
+			}
+			return $return;
 		}
 
-		function getHandel($user)
+		/**
+		 * Gibt ein Array zurück, das die aktuelle Handelsmenge des Benutzers $user enthält.
+		 * @param string $user
+		 * @return array [ Rohstoffe; Roboter ]
+		*/
+
+		function getTransport($user)
 		{
-			if(!$this->status || !isset($this->raw[1][$user])) return false;
-
-			return $this->raw[1][$user][4];
+			self::$sqlite->query("SELECT hress0,hress1,hress2,hress3,hress4 FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user)." LIMIT 1;");
+			$r = self::$sqlite->nextResult();
+			if($r === false)
+				throw new FleetException("This user does not participate on the fleet.");
+			$return = array(array($r["hress0"], $r["hress1"], $r["hress2"], $r["hress3"], $r["hress4"]), array());
+			self::$sqlite->query("SELECT id,number FROM fleets_users_hrob WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+			while(($r = self::$sqlite->nextResult()) !== false)
+			{
+				if(!isset($return[1][$r["id"]])) $return[1][$r["id"]] = 0;
+				$return[1][$r["id"]] += $r["number"];
+			}
+			return $return;
 		}
+
+		/**
+		 * Liest oder setzt die Einstellung, ob der Transport die Rohstoffe abliefern soll oder zum nächsten Ziel mitnehmen.
+		 * @param string $user
+		 * @param bool|null $new_value
+		 * @return void|bool Wenn $new_value nicht gestzt ist, wird der aktuelle Zustand zurückgeliefert.
+		*/
+
+		function dontPutRes($user, $new_value=null)
+		{
+			if(isset($new_value))
+				self::$sqlite->query("UPDATE fleets_users SET dont_put_ress = ".self::$sqlite->quote($new_value ? 1 : 0)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+			else
+				return (true && self::$sqlite->singleQuery("SELECT dont_put_ress FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";"));
+		}
+
+		/**
+		 * Berechnet, wieviel der Benutzer an Tritium mitnehmen muss.
+		 * @param string $user
+		 * @return int
+		*/
 
 		function calcNeededTritium($user)
 		{
-			if(!$this->status || $this->started()) return false;
-
-			$users = array_keys($this->raw[1]);
-			$user_key = array_search($user, $users);
-
-			if($user_key === false) return false;
-
-			if($user_key)
-				return $this->getTritium($user, $this->raw[1][$user][1], $this->getCurrentTarget())*2;
-			else
+			if($this->isFirstUser($user))
 			{
+				if($this->started())
+					throw new FleetException("The fleet has already been started.");
 				$tritium = 0;
-				$old_target = $this->raw[1][$user][1];
-				foreach($this->raw[0] as $target=>$info)
+				$old_target = $this->from($user);
+				foreach($this->getTargetsList() as $target)
 				{
-					if(substr($target, -1) == 'T') $target = substr($target, 0, -1);
 					$tritium += $this->getTritium($user, $old_target, $target);
+					$old_target = $target;
 				}
-				if($old_target != $this->raw[1][$user][1])
-					$tritium += $this->getTritium($user, $old_target, $this->raw[1][$user][1]);
+				if($old_target != $this->from($user))
+					$tritium += $this->getTritium($user, $old_target, $this->from($user));
 				return $tritium;
 			}
+			else
+				return $this->getTritium($user, $this->from($user), $this->getCurrentTarget())*2;
 		}
 
-		function getTritium($user, $from, $to, $factor=true)
+		/**
+		 * Berechnet den Tritiumverbrauch für die aktuell mitfliegenden Schiffe von $user vom Planeten
+		 * $from zum Planeten $to.
+		 * @param string user
+		 * @param Planet $from
+		 * @param Planet $to
+		 * @param bool $factor Soll der Geschwindigkeitsfaktor miteinberechnet werden?
+		 * @return float
+		*/
+
+		function getTritium($user, Planet $from, Planet $to, $factor=true)
 		{
-			if(!$this->status || !isset($this->raw[1][$user])) return false;
+			if(!$this->userExists($user))
+				throw new FleetException("This user does not participate on the fleet.");
 
 			$mass = 0;
 			$user_obj = Classes::User($user);
-			foreach($this->raw[1][$user][0] as $id=>$count)
+			foreach($this->getFleetsList($user) as $id=>$count)
 			{
 				$item_info = $user_obj->getItemInfo($id, 'schiffe', array("mass"));
 				$mass += $item_info['mass']*$count;
 			}
 
 			$add_factor = 1;
-			if($factor) $add_factor = $this->raw[1][$user][2];
+			if($factor) $add_factor = $this->factor($user);
 			$database_config = Classes::Database(global_setting("DB"))->getConfig();
 			if(isset($database_config["global_factors"]) && isset($database_config["global_factors"]["costs"]))
 				$add_factor *= $database_config["global_factors"]["costs"];
@@ -595,12 +676,23 @@
 			return $add_factor*self::getDistance($from, $to)*$mass/1000000;
 		}
 
-		function getScores($user, $from, $to)
-		{
-			if(!$this->status || !isset($this->raw[1][$user])) return false;
+		/**
+		 * Gibt die Flugerfahrungspunkte zurück, die der Benutzer mit seinen mitfliegenden Schiffen vom
+		 * Planeten $from zum Planeten $to sammelt.
+		 * @param string $user
+		 * @param Planet $from
+		 * @param Planet $to
+		 * @return float
+		*/
 
+		function getScores($user, Planet $from, Planet $to)
+		{
 			return $this->getTritium($user, $from, $to)/1000;
 		}
+
+		/**
+		 * @todo
+		*/
 
 		function getTime($target)
 		{
@@ -627,17 +719,42 @@
 			return $time;
 		}
 
-		function calcTime($user, $from, $to, $use_min_time=true, $ignore_factor=false)
-		{
-			if(!$this->status || !isset($this->raw[1][$user]) || count($this->raw[1][$user]) <= 0) return false;
+		/**
+		 * Berechnet die Flugzeit für die Schiffe des Benutzers $user vom Planeten $from zum Planeten $to.
+		 * @param string $user
+		 * @param Planet $from
+		 * @param Planet $to
+		 * @param bool $use_min_time Soll die globale Mindestbauzeit für die Flugzeit angewandt werden?
+		 * @param bool $ignore_factor Soll der Geschwindigkeitsfaktor, der vom Benutzer eingestellt wurde, ignoriert werden?
+		 * @return int
+		*/
 
-			$return = self::calcFleetTime($user, $from, $to, $this->raw[1][$user][0], $use_min_time);
+		function calcTime($user, Planet $from, Planet $to, $use_min_time=true, $ignore_factor=false)
+		{
+			if(!$this->userExists($user))
+				throw new FleetException("This user does not participate on the fleet.");
+
+			$fleets = $this->getFleetsList($user);
+			if(array_sum($fleets) <= 0)
+				throw new FleetException("This user has not added any fleet yet.");
+
+			$return = self::calcFleetTime($user, $from, $to, $fleets,, $use_min_time);
 			if(!$ignore_factor)
-				$return /= $this->raw[1][$user][2];
+				$return /= $this->factor($user);
 			return $return;
 		}
 
-		static function calcFleetTime($user, $from, $to, $fleet, $use_min_time=true)
+		/**
+		 * Berechnet die Flugzeit der Flotten $fleet vom Planeten $from nach $to für den Benutzer $user
+		 * @param string $user Der Benutzername muss übergeben werden, damit Dinge wie Antriebsforschungen einberechnet werden können
+		 * @param Planet $from
+		 * @param Planet $to
+		 * @param array $fleet Array mit den Flotten ( ID => Anzahl )
+		 * @param bool $use_min_time Die globale Mindestbauzeit einberechnen?
+		 * @return int
+		*/
+
+		static function calcFleetTime($user, Planet $from, Planet $to, array $fleet, $use_min_time=true)
 		{
 			$speeds = array();
 			$user_obj = Classes::User($user);
@@ -660,35 +777,278 @@
 			return $time;
 		}
 
+		/**
+		 * Setzt oder liest den Geschwindigkeitsfaktor des angegebenen Benutzers.
+		 * @param string $user
+		 * @param real|null $factor Der neue Geschwindigkeitsfaktor.
+		 * @return void|real Wenn $factor null ist, wird der aktuelle Faktor zurückgegeben.
+		*/
+
+		function factor($user, $factor=null)
+		{
+			if($this->started())
+				throw new FleetException("The fleet has already departed.");
+			if(!$this->userExists($user))
+				throw new FleetException("This user does not participate on the fleet.");
+
+			if(isset($factor))
+				self::$sqlite->query("UPDATE fleets_users SET factor = ".self::$sqlite->quote($factor)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+			else
+				return self::$sqlite->singleField("SELECT factor FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+		}
+
+		/**
+		 * Gibt die Schiffe zurück, die vom Benutzer $user in der Flotte mitfliegen.
+		 * @param string $user
+		 * @return array (Item-ID => Anzahl)
+		*/
+
+		function getFleetList($user)
+		{
+			$return = array();
+			self::$sqlite->query("SELECT id,number FROM fleets_users_fleet WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";");
+			while(($r = self::$sqlite->nextResult()) !== false)
+			{
+				if(!isset($return[$r["id"]])) $return[$r["id"]] = 0;
+				$return[$r["id"]] += $r["number"];
+			}
+			return $return;
+		}
+
+		/**
+		 * Gibt die Liste der Benutzer zurück, die Schiffe in der Flotte mitfliegen lassen.
+		 * @return array
+		*/
+
+		function getUsersList()
+		{
+			return self::$sqlite->columnQuery("SELECT DISTINCT user FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";");
+		}
+
+		/**
+		 * Gibt den Startplaneten des angegebenen Benutzers zurück.
+		 * @return Planet
+		*/
+
+		function from($user)
+		{
+			self::$sqlite->query("SELECT from_galaxy,from_system,from_planet FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+			$r = self::$sqlite->nextResult();
+			if($r === false)
+				throw new FleetException("This user does not participate on the fleet.");
+			return Planet::fromKoords($r["from_galaxy"], $r["from_system"], $r["from_planet"]);
+		}
+
+		/**
+		 * Gibt zurück, ob die Flotte das Ziel $target anfliegt.
+		 * @param Planet $target
+		 * @return bool
+		*/
+
+		function isATarget(Planet $target)
+		{
+			return (self::$sqlite->singleQuery("SELECT COUNT(*) FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND galaxy = ".self::$sqlite->quote($target->getGalaxy())." AND system = ".self::$sqlite->quote($target->getSystem())." AND planet = ".self::$sqlite->quote($target->getPlanet()).";") > 0);
+		}
+
+		/**
+		 * Benennt den Benutzer in der Flotte um.
+		 * @param string $old_name
+		 * @param string $new_name
+		 * @return void
+		*/
+
+		function renameUser($old_name, $new_name)
+		{
+			if(!$this->userExists($old_name))
+				throw new FleetException("This user does not participate on the fleet.");
+			self::$sqlite->query("UPDATE fleets_users SET user = ".self::$sqlite->quote($new_name)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($old_name).";");
+		}
+
+		/**
+		 * Startet die Flotte.
+		 * @return void
+		*/
+
+		function start()
+		{
+			if($this->started())
+				throw new FleetException("The fleet has already been started.");
+			if(count($this->getTargetsList()) == 0)
+				throw new FleetException("No targets have been added.");
+			if(count($this->getUsersList()) == 0)
+				throw new FleetException("No users have joined the fleet.");
+			if(array_sum($this->getFleetsList($this->getFirstUser())) <= 0)
+				throw new FleetException("The first user has not added any fleet.");
+
+			# Geschwindigkeitsfaktoren der anderen Teilnehmer abstimmen
+			$time = $this->getNextArrival()-time();
+			$users = $this->getUsersList();
+			array_shift($users);
+			if(count($users) > 1)
+			{
+				foreach($users as $user)
+					$this->factor($user, $this->calcTime($user, $this->from($user), $koords)/$time);
+			}
+
+			$this->setMainField("start_time", time());
+
+			# In Eventdatei eintragen
+			$this->createNextEvent();
+
+			# Bei den Benutzern eintragen
+			foreach($this->getVisibleUsers() as $user)
+			{
+				$user_obj = Classes::User($user);
+				$user_obj->addFleet($this->getName());
+			}
+		}
+
+		/**
+		 * Liefert zurück, ob die Flotte bereits fliegt.
+		 * @return bool
+		*/
+
+		function started()
+		{
+			$start_time = $this->getMainField("start_time");
+			return (true && $start_time);
+		}
+
+		/**
+		 * Liefert zurück, wann die Flotte gestartet wurde.
+		 * @return int
+		*/
+
+		function getStartTime()
+		{
+			return $this->getMainField("start_time");
+		}
+
+		/**
+		 * Berechnet die Distanz zwischen den Planeten $start und $target.
+		 * @param Planet $start
+		 * @param Planet $target
+		 * @return int
+		*/
+
+		static function getDistance(Planet $start, Planet $target)
+		{
+			# Entfernung berechnen
+			if($start->getGalaxy() == $target->getGalaxy())
+			{
+				if($start->getSystem() == $target->getSystem())
+				{
+					if($start->getPlanet() == $target->getPlanet())
+						$distance = 0.001;
+					else
+						$distance = 0.1*Functions::diff($start->getPlanet(), $target->getPlanet());
+				}
+				else
+				{
+					$this_x_value = $start->getSystem()-($start->getSystem()%100);
+					$this_y_value = $start->getSystem()-$this_x_value;
+					$this_y_value -= $this_y_value%10;
+					$this_z_value = $start->getSystem()-$this_x_value-$this_y_value;
+					$this_x_value /= 100;
+					$this_y_value /= 10;
+
+					$that_x_value = $target->getSystem()-($that_pos[1]%100);
+					$that_y_value = $target->getSystem()-$that_x_value;
+					$that_y_value -= $that_y_value%10;
+					$that_z_value = $target->getSystem()-$that_x_value-$that_y_value;
+					$that_x_value /= 100;
+					$that_y_value /= 10;
+
+					$x_diff = Functions::diff($this_x_value, $that_x_value);
+					$y_diff = Functions::diff($this_y_value, $that_y_value);
+					$z_diff = Functions::diff($this_z_value, $that_z_value);
+
+					$distance = sqrt(pow($x_diff, 2)+pow($y_diff, 2)+pow($z_diff, 2));
+				}
+			}
+			else
+			{
+				$galaxy_count = Galaxy::getGalaxiesCount();
+
+				$galaxy_diff_1 = Functions::diff($start->getGalaxy(), $target->getGalaxy());
+				$galaxy_diff_2 = Functions::diff($start->getGalaxy()+$galaxy_count, $target->getGalaxy());
+				$galaxy_diff_3 = Functions::diff($start->getGalaxy(), $target->getGalaxy()+$galaxy_count);
+				$galaxy_diff = min($galaxy_diff_1, $galaxy_diff_2, $galaxy_diff_3);
+
+				$radius = (30*$galaxy_count)/(2*pi());
+				$distance = sqrt(2*pow($radius, 2)-2*$radius*$radius*cos(($galaxy_diff/$galaxy_count)*2*pi()));
+			}
+
+			$distance = round($distance*1000);
+			return $distance;
+		}
+
+		/**
+		  * Liefert ein Array mit den Benutzern zurueck, die die Flotte sehen koennen. Das umfasst die Benutzer,
+		  * die selbst Schiffe in der Flotte mitfliegen lassen, und Benutzer, zu deren Planeten die Flotte
+		  * fliegt (außer bei Sammeln).
+		  * @return array(string)
+		*/
+
+		function getVisibleUsers()
+		{
+			$users = $this->getUsersList();
+			foreach($this->getTargetsList() as $i=>$target)
+			{
+				$type = $this->getTargetType($i);
+				if($type[0] == self::TYPE_SAMMELN && !$type[1])
+					continue;
+				$owner = $target->getOwner();
+				if($owner && !in_array($owner, $users))
+					$users[] = $owner;
+			}
+			return $users;
+		}
+
+		/**
+		 * Fügt an das EventFile die nächste Ankunft der Flotte an, damit der Eventhandler die Flotte
+		 * zum gegebenen Zeitpunkt behandelt.
+		 * @return void
+		*/
+
+		function createNextEvent()
+		{
+			Classes::EventFile()->addNewFleet($this->getNextArrival(), $this->getName());
+		}
+
+		/**
+		 * Ruft die Flotten des Benutzers $user aus der Flotte zurück. Ist dies der letzte Benutzer, wird
+		 * die Flotte entfernt. Es wird eine neue Flotte erzeugt, mit der die Schiffe zurückfliegen.
+		 * @param string $user
+		 * @param bool $immediately Wenn true, fliegt die Flotte nicht zurück, sondern landet sofort wieder auf dem Ausgangsplaneten.
+		 * @return void
+		*/
+
 		function callBack($user, $immediately=false)
 		{
-			if(!$this->status || !$this->started() || !isset($this->raw[1][$user]) || $this->isFlyingBack()) return false;
+			if(!$this->started())
+				throw new FleetException("The fleet has not departed yet.");
+			if($this->isFlyingBack())
+				throw new FleetException("The fleet is already flying back.");
+			if(!$this->userExists($user))
+				throw new FleetException("This user does not participate on the fleet.");
 
-			$is_first_user = (array_search($user, array_keys($this->raw[1])) == 0);
-			$start = $this->raw[1][$user][1];
-			$keys = array_keys($this->raw[0]);
-			$to = $to_t = array_shift($keys);
-			if(substr($to, -1) == 'T') $to = substr($to, 0, -1);
-			if(count($this->raw[3]) > 0)
-			{
-				$keys = array_keys($this->raw[3]);
-				$from = $from_t = array_pop($keys);
-				if(substr($from, -1) == 'T') $from = substr($from, 0, -1);
-			}
-			else $from = $from_t = $start;
+			$start = $this->from($user);
+			$from = $this->getLastTarget($user);
+			$to = $this->getCurrentTarget();
 
-			if($to_t == $start) return false;
+			$is_first_user = $this->isFirstUser($user);
+			$visible_users = $this->getVisibleUsers();
 
-			if($from_t == $start) $time1 = 0;
+			if($to->equals($start))
+				throw new FleetException("The fleet is already flying back.");
+
+			if($from->equals($start)) $time1 = 0;
 			else $time1 = $this->calcTime($user, $from, $start);
 			$time2 = $this->calcTime($user, $to, $start);
 			$time3 = $this->calcTime($user, $from, $to);
-			if($immediately) $progress = 0;
-			else
-			{
-				$progress = (time()-$this->raw[2])/$time3;
-				if($progress > 1) $progress = 1;
-			}
+			$progress = (time()-$this->getStartTime())/$time3;
+			if($progress > 1) $progress = 1;
 
 			/* Dreieck ABC:
 			A: $start
@@ -706,13 +1066,14 @@
 
 			$tritium3 = $this->getTritium($user, $from, $to);
 			$back_tritium = $tritium3*(1-$progress);
-			$prev_t = $to;
-			foreach($keys as $next_t)
+			$targets = $this->getTargetsList();
+			$prev = array_shift($targets);
+			foreach($targets as $target)
 			{
-				if(substr($next_t, -1) == 'T') $next_t = substr($next_t, 0, -1);
-				$back_tritium += $this->getTritium($user, $prev_t, $next_t);
+				$back_tritium += $this->getTritium($user, $prev, $target);
+				$prev = $target;
 			}
-			if($from_t == $start) $tritium1 = 0;
+			if($from->equals($start)) $tritium1 = 0;
 			else $tritium1 = $this->getTritium($user, $from, $start);
 			$tritium2 = $this->getTritium($user, $to, $start);
 
@@ -722,308 +1083,85 @@
 			$back_tritium -= $needed_back_tritium;
 
 			# Mit Erfahrungspunkten herumhantieren
-			$this->raw[1][$user][5] += $needed_back_tritium;
-			$this->raw[1][$user][5] -= $tritium2; # Wird bei der Ankunft sowieso wieder hinzugezaehlt
+			# Tritium, das für den Rückflug verbraucht wird, wird zum benutzten Tritium hinzugezählt
+			# Das Tritium vom aktuellen Ziel zum Ausgangsplaneten wird bei der Ankunft zum benutzten Tritium hinzugezaehlt und deswegen jetzt abgezogen
+			self::$sqlite->query("UPDATE fleets_users SET used_tritium = used_tritium + ".self::$sqlite->quote($needed_back_tritium-$tritium2).", ress_tritium = ".self::$sqlite->quote($back_tritium)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 
 			# Eventuellen Handel zurueckerstatten
-			if(array_sum($this->raw[1][$user][4][0]) > 0 || array_sum($this->raw[1][$user][4][1]) > 0)
+			$handel = $this->getHandel($user);
+			if(array_sum($handel[0]) > 0 || array_sum($handel[1]) > 0)
 			{
-				$target_split = explode(':', $to);
-				$galaxy_obj = Classes::Galaxy($target_split[0]);
-				$target_owner = $galaxy_obj->getPlanetOwner($target_split[1], $target_split[2]);
+				$target_owner = $to->getOwner();
 				$target_user_obj = Classes::User($target_owner);
 				$target_user_obj->setActivePlanet($target_user_obj->getPlanetByPos($to));
-				$target_user_obj->addRess($this->raw[1][$user][4][0]);
-				foreach($this->raw[1][$user][4][1] as $id=>$count)
+				$target_user_obj->addRess($handel[0]);
+				foreach($handel[1] as $id=>$count)
 					$target_user_obj->changeItemLevel($id, $count, 'roboter');
-				$this->raw[1][$user][4] = array(array(0,0,0,0,0), array(), true);
+				$this->setHandel($user, array(0,0,0,0,0), array());
 			}
 
-			$new_raw = array(
-				array($start => array($this->raw[0][$to_t][0], 1)),
-				array($user => $this->raw[1][$user]),
-				(time()+$back_time)-$time2,
-				array($to_t => $this->raw[0][$to_t])
-			);
-			if(array_search($user, array_keys($this->raw[1])) == 0)
-				$new_raw[3] = array_merge($this->raw[3], $new_raw[3]);
-			$new_raw[1][$user][3][2] += $back_tritium;
+			// Rückflugflotte erstellen
+			$new_fleet = self::create();
+			self::$sqlite->query("UPDATE fleets SET start_time = ".self::$sqlite->quote(time()+$back_time-$time2)." WHERE fleet_id = ".self::$sqlite->quote($new_fleet).";");
+			// Benutzer von der einen Flotte in die andere verschieben
+			self::$sqlite->query("UPDATE fleets_users SET fleet_id = ".self::$sqlite->quote($new_fleet).", i = 1 WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+			self::$sqlite->query("UPDATE fleets_users_rob SET fleet_id = ".self::$sqlite->quote($new_fleet).", i = 1 WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+			self::$sqlite->query("UPDATE fleets_users_fleet SET fleet_id = ".self::$sqlite->quote($new_fleet).", i = 1 WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 
-			unset($this->raw[1]);
-			$this->changed = true;
+			// Alte Ziele kopieren, wenn der Benutzer sie angeflogen hat
+			if($is_first_user)
+				self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished SELECT i, ".self::$sqlite->quote($new_fleet).", galaxy, system, planet, type, flying_back, arrival, finished FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished;");
 
-			if(count($this->raw[1]) <= 0)
+			// Neues Ziel hinzufügen
+			$i = self::$sqlite->singleQuery("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($new_fleet)." ORDER BY i DESC LIMIT 1;");
+			if($i === false)
+				$i = 1;
+			self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished ) VALUES ( ".self::$sqlite->quote($i).", ".self::$sqlite->quote($new_fleet).", ".self::$sqlite->quote($start->getGalaxy()).", ".self::$sqlite->quote($start->getSystem()).", ".self::$sqlite->quote($start->getPlanet()).", ".self::$sqlite->quote($this->getCurrentType()).", 1, ".self::$sqlite->quote(time()+$back_time).", 0 );");
+
+			Classes::User($user)->addFleet($new_fleet);
+
+			if(count($this->getUsersList()) < 1)
 			{
-				unset($this->raw[1][$user]);
-
 				# Aus der Eventdatei entfernen
 				$event_obj = Classes::EventFile();
 				$event_obj->removeCanceledFleet($this->getName());
 
+				# Aus der Datenbank entfernen
 				$this->destroy();
 			}
 			elseif(!$is_first_user)
 			{
-				# Weitere Ziele entfernen
-				$remaining_users = array_keys($this->raw[1]);
-				$first_user = array_shift($remaining_users);
-				$targets = array_keys($this->raw[0]);
-				array_shift($targets);
-				$check_users = array();
-				foreach($targets as $target)
-				{
-					if(substr($target, -1) != "T")
-					{
-						$target_arr = explode(":", $target);
-						$galaxy_obj = Classes::Galaxy($target_arr[0]);
-						$check_users[] = $galaxy_obj->getPlanetOwner($target_arr[1], $target_arr[2]);
-					}
-					unset($this->raw[0][$target]);
-				}
-				if($this->getCurrentType() != 6)
-					$fleet_obj->addTarget($this->getLastTarget($first_user), $this->getCurrentType(), true);
-				unset($this->raw[1][$user]);
-				$visible_users = $this->getVisibleUsers();
-				foreach($check_users as $u)
-				{
-					if($u && !in_array($u, $visible_users))
-					{
-						$u_obj = Classes::User($u);
-						$u_obj->unsetFleet($this->getName());
-					}
-				}
+				# Weitere Ziele entfernen, da diese zu diesem Benutzer gehoert haben
+				$min_i = self::$sqlite->singleQuery("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i ASC LIMIT 1;");
+				self::$sqlite->query("DELETE FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND i > ".self::$sqlite->quote($min_i).";");
+
+				# Letztes Ziel muss stationieren, Ursprungsplaneten des Benutzers hinzufuegen
+				if($this->getCurrentType() != self::TYPE_STATIONIEREN)
+					$this->addTarget($this->getLastTarget($this->getFirstUser()), $this->getCurrentType(), true);
 			}
 
-			$new = Classes::Fleet();
-			$new->create();
-			$new->setRaw($new_raw);
-			$new->createNextEvent();
-
-			$user_obj = Classes::User($user);
-			if(!in_array($user, $this->getVisibleUsers()))
-				$user_obj->unsetFleet($this->getName());
-			$user_obj->addFleet($new->getName());
-
-			if(count($this->raw[1]) <= 0)
-				return true;
-
-			$this->changed = true;
-			return true;
-		}
-
-		function setRaw($raw)
-		{
-			if(!$this->status) return false;
-
-			$this->raw = $raw;
-			$this->changed = true;
-			return true;
-		}
-
-		function factor($user, $factor=false)
-		{
-			if(!$this->status || $this->started() || !isset($this->raw[1][$user])) return false;
-
-			if(!$factor) return $this->raw[1][$user][2];
-
-			$this->raw[1][$user][2] = $factor;
-			$this->changed = true;
-			return true;
-		}
-
-		function getFleetList($user)
-		{
-			if(!$this->status || !isset($this->raw[1][$user])) return false;
-
-			return $this->raw[1][$user][0];
-		}
-
-		function getUsersList()
-		{
-			if(!$this->status) return false;
-
-			return array_keys($this->raw[1]);
-		}
-
-		function getFleetOwner()
-		{
-			if(!$this->status) return false;
-
-			$users = array_keys($this->raw[1]);
-			return array_shift($users);
-		}
-
-		function from($user)
-		{
-			if(!$this->status || !isset($this->raw[1][$user])) return false;
-
-			return $this->raw[1][$user][1];
-		}
-
-		function isATarget($target)
-		{
-			if(!$this->status) return false;
-
-			return (isset($this->raw[0][$target]) || isset($this->raw[0][$target.'T']));
-		}
-
-		function renameUser($old_name, $new_name)
-		{
-			if(!$this->status) return false;
-
-			if(!isset($this->raw[1][$old_name])) return true;
-			if($old_name == $new_name) return 2;
-
-			$this->raw[1][$new_name] = $this->raw[1][$old_name];
-			unset($this->raw[1][$old_name]);
-			$this->changed = true;
-			return true;
-		}
-
-		function start()
-		{
-			if(!$this->status || $this->started()) return false;
-
-			if(count($this->raw[1]) <= 0 || count($this->raw[0]) <= 0) return false;
-
-			$keys = array_keys($this->raw[1]);
-			$user = array_shift($keys);
-			if(array_sum($this->raw[1][$user][0]) <= 0) return false;
-
-			# Geschwindigkeitsfaktoren der anderen Teilnehmer abstimmen
-			$koords = array_keys($this->raw[0]);
-			$koords = $koords_t = array_shift($koords);
-			if(substr($koords, -1) == 'T') $koords = substr($koords, 0, -1);
-			$time = $this->calcTime($user, $this->raw[1][$user][1], $koords);
-			if(count($keys) > 1)
+			# Flotte bei allen entfernen, zu denen sie nicht mehr fliegt
+			$new_visible_users = $this->getVisibleUsers();
+			foreach($visible_users as $u)
 			{
-				foreach($keys as $key)
-				{
-					$this_time = calcTime($key, $this->raw[1][$key][1], $koords);
-					$this->raw[1][$key][2] = $this_time/$time;
-				}
+				if(!in_array($u, $new_visible_users))
+					Classes::User($u)->unsetFleet($this->getName());
 			}
-
-			$this->raw[2] = time();
-
-			# In Eventdatei eintragen
-			$this->createNextEvent();
-
-			# Bei den Benutzern eintragen
-			$users = array_keys($this->raw[1]);
-			foreach(array_keys($this->raw[0]) as $koords)
-			{
-				if($koords[strlen($koords)-1] == 'T') continue;
-				$koords_a = explode(":", $koords);
-				$galaxy_obj = Classes::Galaxy($koords_a[0]);
-				$owner = $galaxy_obj->getPlanetOwner($koords_a[1], $koords_a[2]);
-				if($owner)
-					$users[] = $owner;
-			}
-			foreach(array_unique($users) as $user)
-			{
-				$user_obj = Classes::User($user);
-				if(!$user_obj->getStatus()) continue;
-				$user_obj->addFleet($this->getName());
-			}
-
-			$this->changed = true;
-			return true;
-		}
-
-		function started()
-		{
-			if(!$this->status) return false;
-			return ($this->raw[2] !== false);
-		}
-
-		static function getDistance($start, $target)
-		{
-			if(substr($start, -1) == "T") $start = substr($start, 0, -1);
-			if(substr($target, -1) == "T") $target = substr($target, 0, -1);
-			$this_pos = explode(':', $start);
-			$that_pos = explode(':', $target);
-
-			# Entfernung berechnen
-			if($this_pos[0] == $that_pos[0]) # Selbe Galaxie
-			{
-				if($this_pos[1] == $that_pos[1]) # Selbes System
-				{
-					if($this_pos[2] == $that_pos[2]) # Selber Planet
-						$distance = 0.001;
-					else # Anderer Planet
-						$distance = 0.1*Functions::diff($this_pos[2], $that_pos[2]);
-				}
-				else
-				{
-					# Anderes System
-
-					$this_x_value = $this_pos[1]-($this_pos[1]%100);
-					$this_y_value = $this_pos[1]-$this_x_value;
-					$this_y_value -= $this_y_value%10;
-					$this_z_value = $this_pos[1]-$this_x_value-$this_y_value;
-					$this_x_value /= 100;
-					$this_y_value /= 10;
-
-					$that_x_value = $that_pos[1]-($that_pos[1]%100);
-					$that_y_value = $that_pos[1]-$that_x_value;
-					$that_y_value -= $that_y_value%10;
-					$that_z_value = $that_pos[1]-$that_x_value-$that_y_value;
-					$that_x_value /= 100;
-					$that_y_value /= 10;
-
-					$x_diff = Functions::diff($this_x_value, $that_x_value);
-					$y_diff = Functions::diff($this_y_value, $that_y_value);
-					$z_diff = Functions::diff($this_z_value, $that_z_value);
-
-					$distance = sqrt(pow($x_diff, 2)+pow($y_diff, 2)+pow($z_diff, 2));
-				}
-			}
-			else # Andere Galaxie
-			{
-				$galaxy_count = Galaxy::getGalaxiesCount();
-
-				$galaxy_diff_1 = Functions::diff($this_pos[0], $that_pos[0]);
-				$galaxy_diff_2 = Functions::diff($this_pos[0]+$galaxy_count, $that_pos[0]);
-				$galaxy_diff_3 = Functions::diff($this_pos[0], $that_pos[0]+$galaxy_count);
-				$galaxy_diff = min($galaxy_diff_1, $galaxy_diff_2, $galaxy_diff_3);
-
-				$radius = (30*$galaxy_count)/(2*pi());
-				$distance = sqrt(2*pow($radius, 2)-2*$radius*$radius*cos(($galaxy_diff/$galaxy_count)*2*pi()));
-			}
-
-			$distance = round($distance*1000);
-
-			return $distance;
 		}
 
 		/**
-		  * Liefert ein Array mit den Benutzern zurueck, die die Flotte sehen koennen.
+		 * Soll vom Eventhandler ausgeführt werden. Kümmert sich um die Ankunft am nächsten Ziel der Flotte
+		 * und führt dort den Auftrag durch. Schiebt das Ziel zu den bearbeiteten Zielen.
+		 * @return void
+		 * @todo
 		*/
-
-		function getVisibleUsers()
-		{
-			if(!$this->status) return array();
-
-			$users = array_keys($this->raw[1]);
-			foreach(array_keys($this->raw[0]) as $target)
-			{
-				if(substr($target, -1) == "T") continue;
-				$target = explode(":", $target);
-				$galaxy_obj = Classes::Galaxy($target[0]);
-				$owner = $galaxy_obj->getPlanetOwner($target[1], $target[2]);
-				if($owner && !in_array($owner, $users))
-					$users[] = $owner;
-			}
-			return $users;
-		}
 
 		function arriveAtNextTarget()
 		{
-			if($this->status != 1) return false;
-
 			global $types_message_types;
 
+			$target = $this->getCurrentTarget();
+			// TODO
 			$keys = array_keys($this->raw[0]);
 			$next_target = $next_target_nt = array_shift($keys);
 			if(substr($next_target_nt, -1) == 'T') $next_target_nt = substr($next_target_nt, 0, -1);
@@ -1879,14 +2017,6 @@
 			}
 
 			return true;
-		}
-
-		function createNextEvent()
-		{
-			if(!$this->status) return false;
-
-			$event_obj = Classes::EventFile();
-			return $event_obj->addNewFleet($this->getNextArrival(), $this->getName());
 		}
 
 		/**

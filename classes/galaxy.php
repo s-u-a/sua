@@ -37,29 +37,18 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		private $filesize = false;
 		private $filename = false;
 		private $galaxy = false;
-		protected $readonly = true;
 
-		function __construct($galaxy, $write=true)
+		function __construct($galaxy)
 		{
 			$this->filename = Classes::Database()->getDirectory()."/universe/".$galaxy;
 			$this->galaxy = $galaxy;
-			$this->readonly = !$write;
 			if(is_file($this->filename) && is_readable($this->filename))
 			{
 				$this->filesize = $filesize = filesize($this->filename);
-				if($write && is_writeable($this->filename))
-				{
-					$this->file_pointer = fopen($this->filename, 'r+');
-					if(!Functions::fancyFlock($this->file_pointer, LOCK_EX))
-						$this->status = false;
-					else $this->status = 1;
-				}
-				else
-				{
-					$this->file_pointer = fopen($this->filename, 'r');
-					Functions::fancyFlock($this->file_pointer, LOCK_SH);
-					$this->status = 2;
-				}
+				$this->file_pointer = fopen($this->filename, 'r+');
+				if(!Functions::fancyFlock($this->file_pointer, LOCK_EX))
+					$this->status = false;
+				else $this->status = 1;
 			}
 		}
 
@@ -82,8 +71,6 @@ Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
 		{
 			return $this->status;
 		}
-
-		function readonly() { return $this->readonly; }
 
 		function systemExists($system)
 		{

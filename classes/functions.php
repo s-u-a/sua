@@ -21,6 +21,9 @@
 	 * @subpackage tools
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Erweitert die PHP-Standardfunktionen um nützliche Dinge.
 	*/
@@ -29,7 +32,7 @@
 	{
 		/**
 		 * Ueberprueft, ob der richtige Hostname aufgerufen wurde und leitet sonst um.
-		 * @return null
+		 * @return void
 		 * @todo Veraltete Funktionsaufrufe
 		*/
 
@@ -146,7 +149,7 @@
 		/**
 		 * Verkleinert das Rohstoffarray $array gleichmaessig so, dass dessen Summe den Wert $max nicht uebersteigt.
 		 * @param array(int) $array
-		 * @param integer $max
+		 * @param int $max
 		 * @return array(int)
 		*/
 
@@ -346,7 +349,7 @@
 		 * Manuelle Portierung der Tabellen einer SQLite2- in eine SQLite3-Datenbank.
 		 * @param string $old_fname
 		 * @param string $new_fname
-		 * @return null
+		 * @return void
 		*/
 
 		static function sqlite2sqlite3($old_fname, $new_fname)
@@ -506,8 +509,8 @@
 		/**
 		 * Debug-Ausgabe im Format $string:Zeit:wievielter Aufruf mit $string:Zeit seit letztem Aufruf mit $string:wievielter Aufruf überhaupt:Zeit seit letztem Aufruf überhaupt
 		 * @param string $string
-		 * @param integer $max
-		 * @return null
+		 * @param int $max
+		 * @return void
 		*/
 
 		static function debugTime($string="", $max=null)
@@ -537,7 +540,7 @@
 		 * „no“ oder „false“ werden zu false konvertiert, alle unbekannten Eingaben
 		 * zu true.
 		 * @param string $string
-		 * @return boolean
+		 * @return bool
 		*/
 
 		static function string2boolean($string)

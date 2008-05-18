@@ -22,6 +22,9 @@
 	 * @subpackage storage
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Stellt statische Funktionen zur Verfügung, die als Wrapper für das new-Keyword gelten.
 	 * Auf diese Weise kann für Klassen, die das Interface Singleton implementieren, ein Mechanismus
@@ -43,7 +46,7 @@
 		 * wird eine erzeugt.
 		 * @param string $classname
 		 * @param mixed $p1
-		 * @param boolean $write Manche Objekte können zur Zeit noch auch nur zum Lesen geöffnet werden.
+		 * @param bool $write Manche Objekte können zur Zeit noch auch nur zum Lesen geöffnet werden.
 		 * @return Object
 		*/
 
@@ -57,11 +60,6 @@
 				$instance = new $classname($p1, $write);
 				self::$objectInstances[$classname][$p1] = $instance;
 			}
-			elseif($write && self::$objectInstances[$classname][$p1]->readonly())
-			{ # Von Readonly auf Read and write schalten
-				self::$objectInstances[$classname][$p1]->__destruct();
-				self::$objectInstances[$classname][$p1]->__construct($p1, $write);
-			}
 
 			return self::$objectInstances[$classname][$p1_lower];
 		}
@@ -70,8 +68,8 @@
 		 * Löscht alle gespeicherten Instanzen. Dies ist zum Beispiel wichtig, wenn
 		 * eine andere Datenbank ausgewählt wird.
 		 * @param string|null $classname Es sollen nur die Instanzen der Klasse $classname gelöscht werden.
-		 * @param boolean $destruct Wenn true, wird __destruct() aller Objekte manuell ausgeführt, wenn vorhanden.
-		 * @return null
+		 * @param bool $destruct Wenn true, wird __destruct() aller Objekte manuell ausgeführt, wenn vorhanden.
+		 * @return void
 		*/
 
 		static function resetInstances($classname=null, $destruct=true)

@@ -21,6 +21,9 @@
 	 * @subpackage gui
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Stellt statische Funktionen zur Verfügung, die Werte zur Ausgabe an den
 	 * Benutzer formatieren.
@@ -31,8 +34,8 @@
 		/**
 		* Formatiert eine Bauzeitangabe zu einem menschlich lesbaren Format.
 		* Beispiel: 650 wird zu 10 Minuten, 50 Sekunden
-		* @param integer $time2 Bauzeit in Sekunden
-		* @param boolean $short Sollen Werte, die 0 sind, weggelassen werden (Beispiel: 5 Minuten, 0 Sekunden)
+		* @param int $time2 Bauzeit in Sekunden
+		* @param bool $short Sollen Werte, die 0 sind, weggelassen werden (Beispiel: 5 Minuten, 0 Sekunden)
 		* @return string
 		*/
 
@@ -82,10 +85,10 @@
 		/**
 		* Formatiert die angegeben Rohstoffmenge zu einem menschlich lesbaren Format.
 		* @param array $ress Ein Array mit den Rohstoffmengen als Werte
-		* @param integer $tabs_count Die Anzahl der einzurueckenden Tabs des HTML-Codes
-		* @param boolean $tritium Soll der Array-Wert 4 beachtet werden (Tritium)
-		* @param boolean $energy Soll der Array-Wert 5 beachtet werden (Energie)
-		* @param boolean $_i Die Ausgabe wird so formatiert, dass sie nachtraeglich durch i_() gejagt werden kann
+		* @param int $tabs_count Die Anzahl der einzurueckenden Tabs des HTML-Codes
+		* @param bool $tritium Soll der Array-Wert 4 beachtet werden (Tritium)
+		* @param bool $energy Soll der Array-Wert 5 beachtet werden (Energie)
+		* @param bool $_i Die Ausgabe wird so formatiert, dass sie nachtraeglich durch i_() gejagt werden kann
 		* @param User $check_availability Gibt mit HTML-Klassen an, ob so viele Rohstoffe auf dem Planeten vorhanden sind.
 		* @param string $dl_class Eine zusätzliche HTML-Klasse, die dem Element zugewiesen wird.
 		* @param string $dl_id Eine HTML-ID, die der Liste zugewiesen wird.
@@ -162,7 +165,7 @@
 		* Formatiert eine Zahl in ein lesbares Format.
 		* @param float $count Die zu formatierende Zahl
 		* @param null $utf8 Ohne Auswirkungen, Kompatiblitaetsparameter
-		* @param integer $round Anzahl der zu rundenden Stellen, standardmaessig 0
+		* @param int $round Anzahl der zu rundenden Stellen, standardmaessig 0
 		* @return string
 		*/
 
@@ -198,8 +201,8 @@
 
 		/**
 		 * Fuegt soviele Nullen vorne an $count, dass diese mindestens $len Stellen hat.
-		 * @param integer $count
-		 * @param integer $len
+		 * @param int $count
+		 * @param int $len
 		 * @return string
 		*/
 
@@ -484,7 +487,7 @@
 		/**
 		 * Hilfsfunktion fuer parse_html(). Ersetzt Zeilenumbrueche je nach Anzahl durch HTML-Absaetze oder -Zeilenumbrueche.
 		 * @param string $string
-		 * @param boolean $minus1
+		 * @param bool $minus1
 		 * @return string
 		*/
 
@@ -497,7 +500,7 @@
 
 		/**
 		 * Hilfsfunktion fuer parse_html_nls(). Ersetzt einen String aus Zeilenumbruechen je nach deren Anzahl durch &lt;br /&gt; oder &lt;/p&gt;(&lt;br /&gt;)*&lt;p&gt;.
-		 * @param integer $len
+		 * @param int $len
 		 * @return string
 		*/
 
@@ -586,7 +589,7 @@
 		/**
 		 * Gibt versteckte Formularfelder mit den Werten des Arrays $array aus. Nützlich, um POST-Requests zu wiederholen.
 		 * @param array $array Assoziatives Array, das Parameterwert den Parameternamen zuordnet.
-		 * @param integer $tabs Zahl der Tabs, die vor den Code gehängt werden sollen.
+		 * @param int $tabs Zahl der Tabs, die vor den Code gehängt werden sollen.
 		 * @param string $prefix printf-Ausdruck, mit dem die Feldnamen ausgegeben werden (zum Beispiel feld[%s], um ein Array zu übertragen). Standardmäßig %s.
 		*/
 
@@ -657,7 +660,7 @@
 
 		/**
 		 * Formatiert eine Fertigstellungszeit ordentlich.
-		 * @param integer $time
+		 * @param int $time
 		 * @param User $user Wird benötigt, um die Zeit beim Urlaubsmodus anzuhalten
 		*/
 

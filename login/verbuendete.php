@@ -15,6 +15,14 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Verbündete verwalten.
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage login
+	*/
+	namespace sua::frontend;
+
 	require('include.php');
 
 	$gui->init();
@@ -35,7 +43,7 @@
 	if(isset($_POST['empfaenger']) && strlen(trim($_POST['empfaenger'])) > 0)
 	{
 		$_POST['empfaenger'] = User::resolveName($_POST['empfaenger']);
-		if(!User::userExists($_POST['empfaenger']))
+		if(!User::exists($_POST['empfaenger']))
 			$buendnis_error = _('Dieser Spieler existiert nicht.');
 		elseif($me->existsVerbuendet($_POST['empfaenger']))
 			$buendnis_error = _('Mit diesem Spieler läuft bereits eine Bewerbung oder ein Bündnis.');

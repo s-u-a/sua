@@ -15,6 +15,18 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Verschiedene Aktionen, die die Flottenseite unterstützen:
+	 * - Handel einer Flotte einstellen
+	 * - Lesezeichen verwalten
+	 * - Flugroute einsehen
+	 * - Bündnisangriff starten
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage login
+	*/
+	namespace sua::frontend;
+
 	require('../include.php');
 
 	if(!isset($_GET['action']))
@@ -88,9 +100,10 @@
 				$trans = $fleet->getTransportCapacity($username);
 				$handel = $fleet->getHandel($username);
 				$used = $fleet->getTransport($username);
-				if($me->getName() == $fleet->getFleetOwner() && isset($_POST["handel_username"]) && $_POST["handel_username"] == $username && $fleet->setHandel($username, false, false, !isset($_POST["keepres"])))
-					$handel[2] = !isset($_POST["keepres"]);
-				if(!$handel[2])
+				$keepres = $fleet->dontPutRes($username);
+				if($me->getName() == $fleet->getFirstUser() && isset($_POST["handel_username"]) && $_POST["handel_username"] == $username && $fleet->dontPutRes($username, isset($_POST["keepres"])))
+					$keepres = isset($_POST["keepres"]);
+				if($keepres)
 				{
 					$trans[0] -= array_sum($used[0]);
 					$trans[1] -= array_sum($used[1]);
@@ -238,12 +251,12 @@
 		<p><?=htmlspecialchars($mess1)?></p>
 		<p><?php printf($mess2, F::ths($trans[0]), F::ths($trans[1]), F::ths($remaining_trans[0]), F::ths($remaining_trans[1]))?></p>
 <?php
-				if($me->getName() == $fleet->getFleetOwner())
+				if($me->getName() == $fleet->getFirstUser())
 				{
 ?>
 		<dl>
 			<dt class="c-rohstoffe-behalten"><label for="i-rohstoffe-behalten"><?=h(_("Transportgut der Flotte nicht abliefern"))?></label></dt>
-			<dd class="c-rohstoffe-behalten"><input type="checkbox" id="i-rohstoffe-behalten" name="keepres"<?=!$handel[2] ? " checked=\"checked\"" : ""?> title="<?=h(_("Diese Funktion erleichtert es Ihnen, mit einer Flugroute Rohstoffe von mehreren Planeten einzusammeln."))?>" /></dd>
+			<dd class="c-rohstoffe-behalten"><input type="checkbox" id="i-rohstoffe-behalten" name="keepres"<?=$keepres ? " checked=\"checked\"" : ""?> title="<?=h(_("Diese Funktion erleichtert es Ihnen, mit einer Flugroute Rohstoffe von mehreren Planeten einzusammeln."))?>" /></dd>
 		</dl>
 <?php
 				}

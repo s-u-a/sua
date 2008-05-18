@@ -22,6 +22,9 @@
 	 * @subpackage storage
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Repräsentiert eine Nachricht des internen Benutzer-Nachrichten-Systems.
 	 * Eine Nachricht kann mehrere Empfänger haben, die unabhängig voneinander die Nachricht in ihrem Postfach
@@ -38,7 +41,7 @@
 		                                 "messages_users" => array("message_id TEXT", "user TEXT"));
 		protected static $id_field = "message_id";
 
-		/** Array nach dem Schema ( Benutzername => Nachrichtentyp (Message::$TYPE_*) ). Beim Zerstören des
+		/** Array nach dem Schema ( Benutzername => Nachrichtentyp (Message::TYPE_*) ). Beim Zerstören des
 		 * Nachrichtenobjekts werden an die Benutzer IM-Nachrichten verschickt, wenn sie es wünschen. Der Grund,
 		 * warum dies nicht sofort gemacht wird, ist, dass möglicherweise addUser() ausgeführt wird, bevor Dinge
 		 * wie der Betreff oder der Absender gesetzt sind. */
@@ -48,71 +51,71 @@
 		 * Nachricht des Typs Kampfbericht
 		 * @var integer
 		*/
-		static $TYPE_KAEMPFE = 1;
+		const TYPE_KAEMPFE = 1;
 
 		/**
 		 * Nachricht des Typs Spionagebericht
 		 * @var integer
 		*/
-		static $TYPE_SPIONAGE = 2;
+		const TYPE_SPIONAGE = 2;
 
 		/**
 		 * Nachricht des Typs Transportbenachrichtigung
 		 * @var integer
 		*/
-		static $TYPE_TRANSPORT = 3;
+		const TYPE_TRANSPORT = 3;
 
 		/**
 		 * Nachricht des Typs Sammelbenachrichtigung
 		 * @var integer
 		*/
-		static $TYPE_SAMMELN = 4;
+		const TYPE_SAMMELN = 4;
 
 		/**
 		 * Nachricht des Typs Besiedelungsbenachrichtigung
 		 * @var integer
 		*/
-		static $TYPE_BESIEDELUNG = 5;
+		const TYPE_BESIEDELUNG = 5;
 
 		/**
 		 * Typ Benutzernachricht
 		 * @var integer
 		*/
-		static $TYPE_BENUTZERNACHRICHTEN = 6;
+		const TYPE_BENUTZERNACHRICHTEN = 6;
 
 		/**
 		 * Typ Bündnis- oder Allianznachricht
 		 * @var integer
 		*/
-		static $TYPE_VERBUENDETE = 7;
+		const TYPE_VERBUENDETE = 7;
 
 		/**
 		 * Nachricht im Postausgang
 		 * @var integer
 		*/
-		static $TYPE_POSTAUSGANG = 8;
+		const TYPE_POSTAUSGANG = 8;
 
 		/**
 		 * Ungelesene Nachricht
 		 * @var integer
 		*/
-		static $STATUS_NEU = 1;
+		const STATUS_NEU = 1;
 
 		/**
 		 * Gelesene Nachricht
 		 * @var integer
 		*/
-		static $STATUS_ALT = 2;
+		const STATUS_ALT = 2;
 
 		/**
 		 * Archivierte Nachricht
 		 * @var integer
 		*/
-		static $STATUS_ARCHIV = 3;
+		const STATUS_ARCHIV = 3;
 
 		/**
 		 * Gibt die Zahl der gespeicherten Nachrichten zurück.
-		 * @return integer
+		 * @return int
 		*/
 
 		static function getMessagesCount()
@@ -123,7 +126,7 @@
 		/**
 		 * Erzeugt die Nachricht mit der ID $name. Implementiert Dataset::create().
 		 * @param string $name Die ID der Nachricht oder null für eine zufällige.
-		 * @return null
+		 * @return void
 		*/
 
 		static function create($name=null)
@@ -138,7 +141,7 @@
 
 		/**
 		 * Entfernt die Nachricht aus der Datenbank. Implementiert Dataset::destroy().
-		 * @return null
+		 * @return void
 		*/
 
 		function destroy()
@@ -156,7 +159,7 @@
 		 * Wird aufgerufen, wenn ein Benutzer seinen Namen ändert. Ersetzt den Benutzernamen in allen Feldern, wo dieser steht (Absender, Empfänger, berechtigte Benutzer).
 		 * @param string $old_name Der bisherige Name des Benutzers.
 		 * @param string $new_name Der neue Benutzername.
-		 * @return null
+		 * @return void
 		*/
 
 		function renameUser($old_name, $new_name)
@@ -169,7 +172,7 @@
 		/**
 		 * Liest oder schreibt den Nachrichtentext.
 		 * @param Wird $text als neuer Nachrichtentext gesetzt. Null für Rückgabe des aktuellen Textes. Sollte nur HTML-Code enthalten, wenn die Nachricht als HTML-Nachricht definiert wurde (Message::html()).
-		 * @return null Wenn $text definiert wird
+		 * @return void Wenn $text definiert wird
 		 * @return string Wenn $text null ist: der aktuelle Nachrichtentext als HTML-Code
 		*/
 
@@ -198,7 +201,7 @@
 		/**
 		 * Liest oder setzt den Absender der Nachricht.
 		 * @param string $from Der neue Absender. Wenn null, wird der aktuelle zurückgegeben.
-		 * @return null Wenn $from übergeben wurde.
+		 * @return void Wenn $from übergeben wurde.
 		 * @return string Wenn $from null ist, wird der Absender zurückgegeben.
 		*/
 
@@ -213,7 +216,7 @@
 		/**
 		 * Liest oder setzt den Betreff der Nachricht.
 		 * @param string $subject Der neue Betreff oder null, wenn der Betreff ausgelesen werden soll.
-		 * @return null Wenn $subject gesetzt ist
+		 * @return void Wenn $subject gesetzt ist
 		 * @return string Der Betreff, wenn $subject null ist.
 		*/
 
@@ -227,9 +230,9 @@
 
 		/**
 		 * Gibt zurück oder stellt ein, ob der Nachrichtentext im HTML-Format gespeichert wurde.
-		 * @param boolean $html Ist die Nachricht eine HTML-Nachricht?
-		 * @return null Wenn $html gesetzt ist.
-		 * @return boolean Wenn $html null ist, ob die Nachricht eine HTML-Nachricht ist.
+		 * @param bool $html Ist die Nachricht eine HTML-Nachricht?
+		 * @return void Wenn $html gesetzt ist.
+		 * @return bool Wenn $html null ist, ob die Nachricht eine HTML-Nachricht ist.
 		*/
 
 		function html($html=null)
@@ -243,21 +246,21 @@
 		/**
 		 * Fügt einen Benutzer zur Liste leseberechtigter Benutzer der Nachricht hinzu. Benachrichtigt ihn wenn gewünscht per Instant Messaging über den Eingang.
 		 * @param string $user Der Benutzername
-		 * @param integer $type Der Nachrichtentyp (Message::$TYPE_*). Benötigt für die Benachrichtigung.
-		 * @return null
+		 * @param int $type Der Nachrichtentyp (Message::TYPE_*). Benötigt für die Benachrichtigung.
+		 * @return void
 		*/
 
 		function addUser($user, $type=null)
 		{
-			if(!isset($type)) $type = self::$TYPE_BENUTZERNACHRICHTEN;
+			if(!isset($type)) $type = self::TYPE_BENUTZERNACHRICHTEN;
 
-			self::$sqlite->query("INSERT INTO messages_users ( message_id, user, type, status ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($type).", ".self::$sqlite->quote(self::$STATUS_NEU)." );");
+			self::$sqlite->query("INSERT INTO messages_users ( message_id, user, type, status ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($type).", ".self::$sqlite->quote(self::STATUS_NEU)." );");
 
 			$user_obj = Classes::User($user);
 			$user_obj->addMessage($this->name, $type);
 			unset($user_obj);
 
-			if($type != self::$TYPE_POSTAUSGANG)
+			if($type != self::TYPE_POSTAUSGANG)
 			{
 				self::$sqlite->query("INSERT INTO messages_recipients ( message_id, recipient ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user)." );");
 
@@ -269,8 +272,8 @@
 		/**
 		 * Findet heraus oder setzt, welchen Status die Nachricht im Postfach des Benutzers $user hat.
 		 * @param string $user Der Benutzername
-		 * @param integer|null $status Der neue Status (Message::$STATUS_*) oder null, wenn der aktuelle Status zurückgeliefert werden soll
-		 * @return integer|null Message::$STATUS_*, wenn $status null ist
+		 * @param int|null $status Der neue Status (Message::STATUS_*) oder null, wenn der aktuelle Status zurückgeliefert werden soll
+		 * @return int|null Message::STATUS_*, wenn $status null ist
 		*/
 
 		function messageStatus($user, $status=null)
@@ -284,8 +287,8 @@
 		/**
 		 * Findet heraus oder setzt, welchen Nachrichtentyp die Nachricht im Postfach des Benutzers $user besitzt.
 		 * @param string $user Der Benutzername
-		 * @param integer|null $type Der neue Status (Message::$TYPE_*) oder null, wenn der aktuelle Typ zurückgeliefert werden soll
-		 * @return integer|null Message::$TYPE_*, wenn $type null ist
+		 * @param int|null $type Der neue Status (Message::TYPE_*) oder null, wenn der aktuelle Typ zurückgeliefert werden soll
+		 * @return int|null Message::TYPE_*, wenn $type null ist
 		*/
 
 		function messageType($user, $type=null)
@@ -300,8 +303,8 @@
 		 * Löscht die Leseberechtigung eines Nutzers, normalerweise, weil dieser die Nachricht aus seinem Postfach löscht.
 		 * Wenn keine Benutzer mehr eine Leseberechtigung haben, wird die Nachricht gelöscht.
 		 * @param string $user Der Benutzername, der entfernt werden soll.
-		 * @param boolean $edit_user Soll der Benutzeraccount bearbeitet werden und dort die Nachricht aus dem Postfach entfernt werden? (Standard: true)
-		 * @return null
+		 * @param bool $edit_user Soll der Benutzeraccount bearbeitet werden und dort die Nachricht aus dem Postfach entfernt werden? (Standard: true)
+		 * @return void
 		*/
 
 		function removeUser($user, $edit_user=true)
@@ -319,7 +322,7 @@
 
 		/**
 		 * Gibt die Zeit zurück, zu der die Nachricht versandt wurde.
-		 * @return integer
+		 * @return int
 		*/
 
 		function getTime()
@@ -349,7 +352,7 @@
 
 		/**
 		 * Benachrichtigt die per addUser() hinzugefügten Benutzer auf Wunsch per Instant Messaging über den Eingang der Nachricht.
-		 * @return null
+		 * @return void
 		*/
 
 		private function IMNotify()

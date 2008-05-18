@@ -21,6 +21,9 @@
 	 * @subpackage config
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Repräsentiert eine Datenbank in der Konfiguration und kümmert sich um
 	 * deren Konfiguration.
@@ -166,7 +169,7 @@
 		 * Deaktivierte Datenbanken sollen nicht in einer Auswahlliste erscheinen,
 		 * also für den Spieler unsichtbar sein. Sie dienen nur dem Zweck, dass
 		 * öffentliche Nachrichten weiterhin aufrufbar sind.
-		 * @return boolean
+		 * @return bool
 		*/
 
 		function enabled()
@@ -284,7 +287,7 @@
 
 		/**
 		 * Gibt zurueck, ob eine Handlungssperre in der Datenbank vorliegt.
-		 * @return integer|boolean Wird ein Integer zurückgegeben, so gibt dieser an, bis wann die Sperre gilt.
+		 * @return int|boolean Wird ein Integer zurückgegeben, so gibt dieser an, bis wann die Sperre gilt.
 		 * @todo Muss die neue Konfigurationsdatei und die neue Namenskonvention verwenden.
 		*/
 
@@ -305,7 +308,7 @@
 
 		/**
 		 * Gibt zurueck, ob eine Flottensperre in der Datenbank vorliegt.
-		 * @return integer|boolean Wird ein Integer zurückgegeben, so gibt dieser an, bis wann die Sperre gilt.
+		 * @return int|boolean Wird ein Integer zurückgegeben, so gibt dieser an, bis wann die Sperre gilt.
 		 * @todo Muss die neue Konfigurationsdatei und die neue Namenskonvention verwenden.
 		*/
 
@@ -328,7 +331,7 @@
 		 * Liefert die im Datenbankverzeichnis eingetragene Version zurück.
 		 * In der Datenbank wird eine Versionsnummer gespeichert, die global_setting("DATABASE_VERSION")
 		 * entsprechen muss, um Konflikte zu vermeiden, wenn das Datenbankschema geändert wird.
-		 * @return integer
+		 * @return int
 		*/
 
 		static function getDatabaseVersion()

@@ -21,6 +21,9 @@
 	 * @subpackage tools
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Stellt statische Funktionen zur Verfügung, um mit GPG zu arbeiten, zum Beispiel
 	 * zum Signieren oder Verschlüsseln von Text.
@@ -30,7 +33,7 @@
 	{
 		/**
 		 * Oeffnet den GPG-Schluessel entsprechend der Konfiguration und liefert bei Erfolg ein gnupg-Object zurueck.
-		 * @param boolean $return_public_key Wenn true, wird statt der gnupg-Instanz der öffentliche Schlüssel zurückgeliefert.
+		 * @param bool $return_public_key Wenn true, wird statt der gnupg-Instanz der öffentliche Schlüssel zurückgeliefert.
 		 * @return gnupg|string Eine gnupg-Instanz oder der öffentliche Schlüssel.
 		 * @throw GPGException Wenn keine Konfiguration vorliegt oder der Schlüssel nicht geöffnet werden konnte.
 		*/

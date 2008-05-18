@@ -16,29 +16,18 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 	/**
-	 * Gibt den öffentlichen GPG-Schlüssel des Spiels aus, der für E-Mails und IM-
-	 * Nachrichten verwendet wird.
 	 * @author Candid Dauth
-	 * @package sua-frontend
-	 * @subpackage helpers
+	 * @package sua
+	 * @subpackage exceptions
 	*/
 
-	namespace sua::frontend;
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
 
-	require("engine.php");
+	/**
+	 * Es ist ein Problem mit einem Benutzeraccount aufgetreten.
+	*/
 
-	$public_key = GPG::init(true);
-	if($public_key)
+	class UserException extends SuaException
 	{
-		header("Content-type: application/pgp");
-		header("Content-disposition: attachment;filename=suabot.asc");
-		print($public_key);
 	}
-	else
-	{
-		header($_SERVER["SERVER_PROTOCOL"]." 501 Not Implemented");
-		header("Content-type: text/plain");
-
-		echo "GPG is not activated.\n";
-	}
-?>

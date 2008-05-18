@@ -15,9 +15,25 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage config
+	*/
+
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
+	/**
+	 * Erstellt die GUI der Hauptseite.
+	*/
 
 	class HomeGui extends Gui
 	{
+		/**
+		 * Implementiert Gui::htmlHead(). Gibt HTML-Head, Überschrift und Login-Formular aus.
+		*/
+
 		protected function htmlHead()
 		{
 ?>
@@ -149,6 +165,10 @@
 <?php
 			return true;
 		}
+
+		/**
+		 * Implementiert Gui::htmlFoot(). Gibt Navigation und Google-Analytics-JavaScript aus.
+		*/
 
 		protected function htmlFoot()
 		{

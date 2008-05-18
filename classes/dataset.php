@@ -21,6 +21,9 @@
 	 * @subpackage storage
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Einheitliche Funktionen, um mit bestimmten Objekten aus der Datenbank wie
 	 * Benutzern, Nachrichten oder Allianzen umzugehen.
@@ -52,7 +55,7 @@
 
 		/**
 		 * Löscht das instanzierte Datenset aus der Datenbank.
-		 * @return null
+		 * @return void
 		*/
 		abstract public function destroy();
 
@@ -64,13 +67,13 @@
 
 		/**
 		 * Gibt die Anzahl existierender Sets des implementierenden Typs zurück (count(getList())).
-		 * @return integer
+		 * @return int
 		*/
 		abstract static public function getNumber();
 
 		/**
 		 * Gibt zurück, ob das angegebene Datenset existiert.
-		 * @return boolean
+		 * @return bool
 		*/
 		abstract static public function exists($name);
 

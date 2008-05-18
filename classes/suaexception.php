@@ -21,6 +21,9 @@
 	 * @subpackage exceptions
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Allgemeine Oberklasse für Exceptions, die zum Spiel gehören und deren Ursprung
 	 * im Quellcode des Spiels zu finden ist.

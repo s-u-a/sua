@@ -22,6 +22,9 @@
 	 * @subpackage storage
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Repräsentiert einen Planeten im Universum.
 	*/
@@ -35,7 +38,7 @@
 
 		/**
 		 * @param System $system
-		 * @param integer $planet
+		 * @param int $planet
 		*/
 
 		function __construct($system, $planet)
@@ -49,7 +52,7 @@
 		}
 
 		/**
-		 * @return integer
+		 * @return int
 		*/
 
 		function getGalaxy()
@@ -58,7 +61,7 @@
 		}
 
 		/**
-		 * @return integer
+		 * @return int
 		*/
 
 		function getSystem()
@@ -67,7 +70,7 @@
 		}
 
 		/**
-		 * @return integer
+		 * @return int
 		*/
 
 		function getPlanet()
@@ -92,9 +95,9 @@
 		}
 
 		/**
-		 * @param integer $galaxy
-		 * @param integer $system
-		 * @param integer $planet
+		 * @param int $galaxy
+		 * @param int $system
+		 * @param int $planet
 		 * @return Planet
 		*/
 
@@ -102,4 +105,60 @@
 		{
 			return Classes::Planet(Classes::System(Classes::Galaxy($galaxy), $system), $planet);
 		}
+
+		/**
+		 * Gibt den Eigentümer des Planeten zurück.
+		 * @return string
+		*/
+
+		function getOwner()
+		{
+			return Classes::Galaxy($this->galaxy)->getPlanetOwner($this->system, $this->planet);
+		}
+
+		/**
+		 * Gibt den Namen des Planeten zurück.
+		 * @return string
+		*/
+
+		function getName()
+		{
+			return Classes::Galaxy($this->galaxy)->getPlanetName($this->system, $this->planet);
+		}
+
+		/**
+		 * Gibt die Größe des Planeten zurück.
+		 * @return int
+		*/
+
+		function getSize()
+		{
+			return Classes::Galaxy($this->galaxy)->getPlanetSize($this->system, $this->planet);
+		}
+
+		/**
+		 * Gibt die CSS-Klasse für den Planeten zurück. Wird verwendet, um verschiedene
+		 * Planetenbilder darzustellen.
+		 * @return int
+		*/
+
+		function getPlanetClass()
+		{
+			return Galaxy::calcPlanetClass($this->galaxy, $this->system, $this->planet);
+		}
+
+		/**
+		 * Liefert zurück, ob $other diesem Planeten entspricht.
+		 * @param Planet $other
+		 * @return bool
+		*/
+
+		function equals($other)
+		{
+			return ($this->getGalaxy() == $other->getGalaxy() && $this->getSystem() == $other->getSystem() && $this->getPlanet() == $other->getPlanet());
+		}
+
+		/**
+		 * @todo Truemmerfelder
+		*/
 	}

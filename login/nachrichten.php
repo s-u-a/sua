@@ -15,6 +15,13 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Nachrichtensystem
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage login
+	*/
+	namespace sua::frontend;
 
 	require('include.php');
 
@@ -39,7 +46,7 @@
 
 			$_POST['empfaenger'] = trim($_POST['empfaenger']);
 
-			if(!isset($_SESSION["admin_username"]) && !User::userExists($_POST['empfaenger']))
+			if(!isset($_SESSION["admin_username"]) && !User::exists($_POST['empfaenger']))
 				$error = _('Der Empfänger, den Sie eingegeben haben, existiert nicht.');
 			elseif(!isset($_SESSION["admin_username"]) && strtolower($_POST['empfaenger']) == strtolower($me->getName()))
 				$error = _('Sie können sich nicht selbst eine Nachricht schicken.');
@@ -63,7 +70,7 @@
 					{
 						foreach(preg_split("/\r?\n/", $_POST["empfaenger"]) as $empf)
 						{
-							if(User::userExists($empf))
+							if(User::exists($empf))
 								$message->addUser($empf, 6);
 						}
 					}
@@ -232,7 +239,7 @@
 
 <?php
 					}
-					if($_GET["type"] == Message::$TYPE_POSTAUSGANG && $message->getRecipients())
+					if($_GET["type"] == Message::TYPE_POSTAUSGANG && $message->getRecipients())
 					{
 ?>
 	<dt class="c-empfaenger"><?=h(_("Empfänger"))?></dt>
@@ -344,7 +351,7 @@
 					{
 						$_POST['weiterleitung-to'] = trim($_POST['weiterleitung-to']);
 
-						if(!User::userExists($_POST['weiterleitung-to']))
+						if(!User::exists($_POST['weiterleitung-to']))
 						{
 ?>
 <p class="error"><?=h(_("Der Empfänger, den Sie eingegeben haben, existiert nicht."))?></p>
@@ -496,7 +503,7 @@
 			<tr>
 				<th class="c-auswaehlen"></th>
 				<th class="c-betreff"><?=h(_("Betreff"))?></th>
-				<th class="c-<?=$_GET["type"] == Message::$TYPE_POSTAUSGANG ? "empfaenger" : "absender"?>"><?=$_GET["type"] == Message::$TYPE_POSTAUSGANG ? h(_("Empfänger")) : h(_("Absender"))?></th>
+				<th class="c-<?=$_GET["type"] == Message::TYPE_POSTAUSGANG ? "empfaenger" : "absender"?>"><?=$_GET["type"] == Message::TYPE_POSTAUSGANG ? h(_("Empfänger")) : h(_("Absender"))?></th>
 				<th class="c-datum"><?=h(_("Datum"))?></th>
 			</tr>
 		</thead>
@@ -522,7 +529,7 @@
 			<tr class="<?=$class?>">
 				<td class="c-auswaehlen"><input type="checkbox" name="message[<?=htmlspecialchars($message_id)?>]" tabindex="<?=$tabindex_save++?>" /></td>
 				<td class="c-betreff"><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($message_id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"><?=htmlspecialchars($subject)?></a></td>
-				<td class="c-<?=$_GET["type"] == Message::$TYPE_POSTAUSGANG ? "empfaenger" : "absender"?>"><?=htmlspecialchars($_GET["type"] == Message::$TYPE_POSTAUSGANG ? implode(_(", "), $message->getRecipients()) : $message->from())?></td>
+				<td class="c-<?=$_GET["type"] == Message::TYPE_POSTAUSGANG ? "empfaenger" : "absender"?>"><?=htmlspecialchars($_GET["type"] == Message::TYPE_POSTAUSGANG ? implode(_(", "), $message->getRecipients()) : $message->from())?></td>
 				<td class="c-datum"><?=date(_('H:i:s, Y-m-d'), $message->getTime())?></td>
 			</tr>
 <?php

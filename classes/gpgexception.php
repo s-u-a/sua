@@ -21,6 +21,9 @@
 	 * @subpackage exceptions
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Es ist ein Fehler mit der GPG-Implementation aufgetreten. Möglicherweise konnte
 	 * der Schlüssel zum Signieren nicht geöffnet werden oder Ähnliches.

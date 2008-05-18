@@ -15,6 +15,15 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Include-Datei für die Hauptseite.
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage home
+	*/
+
+	namespace sua::frontend;
+
 	$__FILE__ = str_replace("\\", "/", __FILE__);
 	$include_filename = dirname($__FILE__).'/engine.php';
 	require_once($include_filename);

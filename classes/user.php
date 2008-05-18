@@ -15,26 +15,68 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage storage
+	*/
+
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
+	/**
+	 * Repräsentiert einen Benutzer im Spiel.
+	 * Viele Funktionen des Benutzers werden nur auf einem bestimmten Planeten ausgeführt. Anstatt dass dieser
+	 * per Parameter übergeben wird, wird per setActivePlanet() der Planet ausgewählt, auf dem solche Aktionen
+	 * durchgeführt werden.
+	 * @todo IteratorAggregate für den Planetendurchlauf implementieren
+	*/
 
 	class User extends Serialized
 	{
+		/**
+		 * Der Index des ausgewählten Planeten.
+		 * @var int
+		*/
 		protected $active_planet = null;
+
+		/**
+		 * Cache für den Index des aktuellen Planeten (cacheActivePlanet(), restoreActivePlanet()).
+		 * @var int
+		*/
 		protected $active_planet_cache = array();
+
+		/**
+		 * Der aktuell ausgewählte Planet.
+		 * @var Planet
+		*/
+		protected $active_planet_obj = null;
+
+		/**
+		 * Die einzelnen Werte geben an, ob beim Zerstören des Objekts die Highscores für Gebäude, Forschung,
+		 * Schiffe, Roboter, Verteidigung, Flugerfahrung und Kampferfahrung neu berechnet werden müssen.
+		 * Wird von recalcHighscores() beeinflusst.
+		 * @var array(bool)
+		*/
 		protected $recalc_highscores = array(false,false,false,false,false,false,false);
-		protected $last_eventhandler_run = array();
-		protected $language_cache = null;
 
-		function __construct($name=false, $write=true)
-		{
-			$this->save_dir = Classes::Database()->getDirectory()."/players";
-			parent::__construct($name, $write);
-		}
+		protected static $save_dir = Classes::Database()->getDirectory()."/players";
 
-		function create()
+		//protected static $tables = array("users" => array("user TEXT PRIMARY KEY", "password TEXT", "registration INTEGER", "last_activity INTEGER", "scores_0 INTEGER", "scores_1 INTEGER", "scores_2 INTEGER", "scores_3 INTEGER", "scores_4 INTEGER", "scores_5 INTEGER", "scores_6 INTEGER", "used_ress_0 INTEGER", "used_ress_1 INTEGER", "used_ress_2 INTEGER", "used_ress_3 INTEGER", "used_ress_4 INTEGER", "description TEXT", "description_parsed TEXT", "locked INTEGER", "holidays INTEGER", "messenger_type TEXT", "messenger_uname TEXT"));
+
+		/**
+		 * Implementiert Dataset::create().
+		 * @return string
+		*/
+
+		static function create($name=null)
 		{
-			if(file_exists($this->filename)) return false;
-			$this->raw = array(
-				'username' => $this->name,
+			$name = self::datasetName($name);
+			if(self::exists($name))
+				throw new UserException("This user does already exist.");
+
+			$raw = array(
+				'username' => $name,
 				'planets' => array(),
 				'forschung' => array(),
 				'password' => 'x',
@@ -52,35 +94,31 @@
 			);
 
 			$highscores = Classes::Highscores();
-			$highscores->updateUser($this->name, '');
+			$highscores->updateUser($name, '');
 
-			$this->write(true, false);
-			$this->__construct($this->name);
-			return true;
+			self::store($name, $raw);
+			return $name;
 		}
 
-		static function userExists($user)
-		{
-			$filename = Classes::Database()->getDirectory()."/players/".strtolower(urlencode($user));
-			return (is_file($filename) && is_readable($filename));
-		}
+		/**
+		 * Überprüft, ob der Benutzer einen Planeten mit dem Index $planet besitzt.
+		 * @param int $planet
+		 * @return bool
+		*/
 
 		function planetExists($planet)
 		{
-			if(!$this->status) return false;
-
 			return isset($this->raw['planets'][$planet]);
 		}
 
 		function setActivePlanet($planet)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['planets'][$planet]))
 				return false;
 
 			$this->active_planet = $planet;
 			$this->planet_info = &$this->raw['planets'][$planet];
+			$this->active_planet_obj = Planet::fromString($this->planet_info["pos"]);
 
 			$this->items['gebaeude'] = &$this->planet_info['gebaeude'];
 			$this->items['roboter'] = &$this->planet_info['roboter'];
@@ -105,8 +143,6 @@
 
 		function getPlanetByPos($pos)
 		{
-			if(!$this->status) return false;
-
 			$return = false;
 			$planets = $this->getPlanetsList();
 			$active_planet = $this->getActivePlanet();
@@ -123,37 +159,41 @@
 			return $return;
 		}
 
+		protected function _forceActivePlanet()
+		{
+			if($this->active_planet === null)
+				throw new UserException("No planet is selected.");
+		}
+
 		function getActivePlanet()
 		{
-			if(!$this->status || $this->active_planet === null) return false;
+			$this->_forceActivePlanet();
 
 			return $this->active_planet;
 		}
 
 		function getPlanetsList()
 		{
-			if(!$this->status) return false;
-
 			return array_keys($this->raw['planets']);
 		}
 
 		function getTotalFields()
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			return $this->planet_info['size'][1];
 		}
 
 		function getUsedFields()
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			return $this->planet_info['size'][0];
 		}
 
 		function changeUsedFields($value)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			$this->planet_info['size'][0] += $value;
 			$this->changed = true;
@@ -162,21 +202,21 @@
 
 		function getRemainingFields()
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			return ($this->planet_info['size'][1]-$this->planet_info['size'][0]);
 		}
 
 		function getBasicFields()
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			return ceil($this->planet_info['size'][1]/($this->getItemLevel('F9', 'forschung')/self::getIngtechFactor()+1));
 		}
 
 		function setFields($size)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			$this->planet_info['size'][1] = $size;
 			$this->changed = true;
@@ -189,9 +229,14 @@
 			return Classes::Planet(Classes::System(Classes::Galaxy($pos[0]), $pos[1]), $pos[2]);
 		}
 
+		function getPosObj()
+		{
+			return $this->active_planet_obj;
+		}
+
 		function getPos()
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			$pos = explode(':', $this->planet_info['pos'], 3);
 			if(count($pos) < 3) return false;
@@ -200,21 +245,21 @@
 
 		function getPosString()
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			return $this->planet_info['pos'];
 		}
 
 		function getPosFormatted()
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			return vsprintf(_("%d:%d:%d"), $this->getPos());
 		}
 
 		function getPlanetClass()
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			$pos = $this->getPos();
 			return Galaxy::calcPlanetClass($pos[0], $pos[1], $pos[2]);
@@ -222,7 +267,7 @@
 
 		function removePlanet()
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			global $types_message_types;
 
@@ -318,8 +363,6 @@
 
 		function registerPlanet($pos_string)
 		{
-			if(!$this->status) return false;
-
 			$pos = explode(':', $pos_string);
 			if(count($pos) != 3) return false;
 
@@ -368,7 +411,6 @@
 
 		function movePlanetUp($planet=false)
 		{
-			if(!$this->status) return false;
 			if($planet === false)
 			{
 				if(!isset($this->planet_info)) return false;
@@ -383,7 +425,6 @@
 
 		function movePlanetDown($planet=false)
 		{
-			if(!$this->status) return false;
 			if($planet === false)
 			{
 				if(!isset($this->planet_info)) return false;
@@ -425,8 +466,6 @@
 
 		function getScores($i=false)
 		{
-			if(!$this->status) return false;
-
 			if($i === false)
 				return $this->raw['punkte'][0]+$this->raw['punkte'][1]+$this->raw['punkte'][2]+$this->raw['punkte'][3]+$this->raw['punkte'][4]+$this->raw['punkte'][5]+$this->raw['punkte'][6];
 			elseif(!isset($this->raw['punkte'][$i]))
@@ -437,8 +476,6 @@
 
 		function addScores($i, $scores)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['punkte'][$i]))
 				$this->raw['punkte'][$i] = $scores;
 			else $this->raw['punkte'][$i] += $scores;
@@ -450,8 +487,6 @@
 
 		function getSpentRess($i=false)
 		{
-			if(!$this->status) return false;
-
 			if($i === false)
 			{
 				return $this->getScores(7)+$this->getScores(8)+$this->getScores(9)+$this->getScores(10)+$this->getScores(11);
@@ -461,8 +496,6 @@
 
 		function getRank($i=null)
 		{
-			if(!$this->status) return false;
-
 			$highscores = Classes::Highscores();
 			if($i === null)
 				return $highscores->getPosition('users', $this->getName());
@@ -472,7 +505,7 @@
 
 		function planetName($name=false)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if($name !== false && trim($name) != '')
 			{
@@ -501,7 +534,7 @@
 
 		function getRess($refresh=true)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if($refresh)
 				$this->refreshRess();
@@ -519,7 +552,7 @@
 
 		function addRess($ress)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if(!is_array($ress)) return false;
 
@@ -536,7 +569,7 @@
 
 		function subtractRess($ress, $make_scores=true)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if(!is_array($ress)) return false;
 
@@ -553,7 +586,7 @@
 
 		function checkRess($ress)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if(!is_array($ress)) return false;
 
@@ -568,8 +601,6 @@
 
 		function isOwnPlanet($pos)
 		{
-			if(!$this->status) return false;
-
 			$planets = $this->getPlanetsList();
 			$active_planet = $this->getActivePlanet();
 			$return = false;
@@ -588,8 +619,6 @@
 
 		function getFleetsList()
 		{
-			if(!$this->status) return false;
-
 			if(isset($this->raw['flotten']) && count($this->raw['flotten']) > 0)
 			{
 				$eventfile = Classes::EventFile();
@@ -616,8 +645,6 @@
 
 		function addFleet($fleet)
 		{
-			if($this->status != 1) return false;
-
 			if(!isset($this->raw['flotten'])) $this->raw['flotten'] = array();
 			elseif(in_array($fleet, $this->raw['flotten'])) return 2;
 			$this->raw['flotten'][] = $fleet;
@@ -628,8 +655,6 @@
 
 		function unsetFleet($fleet)
 		{
-			if($this->status != 1) return false;
-
 			if(!isset($this->raw['flotten'])) return true;
 			$key = array_search($fleet, $this->raw['flotten']);
 			if($key === false) return true;
@@ -640,7 +665,7 @@
 
 		function checkOwnFleetWithPlanet()
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			foreach($this->getFleetsList() as $flotte)
 			{
@@ -653,7 +678,7 @@
 
 		function getFleetsWithPlanet()
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			$fleets = array();
 			foreach($this->getFleetsList() as $flotte)
@@ -667,8 +692,6 @@
 
 		function getMaxParallelFleets()
 		{
-			if(!$this->status) return false;
-
 			$werft = 0;
 			$planets = $this->getPlanetsList();
 			$active_planet = $this->getActivePlanet();
@@ -685,8 +708,6 @@
 
 		function getCurrentParallelFleets()
 		{
-			if(!$this->status) return false;
-
 			$fleets = 0;
 			foreach($this->getFleetsList() as $flotte)
 			{
@@ -716,22 +737,16 @@
 
 		function getRemainingParallelFleets()
 		{
-			if(!$this->status) return false;
-
 			return $this->getMaxParallelFleets()-$this->getCurrentParallelFleets();
 		}
 
 		function checkMessage($message_id, $type)
 		{
-			if(!$this->status) return false;
-
 			return (isset($this->raw['messages']) && isset($this->raw['messages'][$type]) && isset($this->raw['messages'][$type][$message_id]));
 		}
 
 		function checkMessageStatus($message_id, $type)
 		{
-			if(!$this->status) return false;
-
 			if(isset($this->raw['messages']) && isset($this->raw['messages'][$type]) && isset($this->raw['messages'][$type][$message_id]))
 				return (int) $this->raw['messages'][$type][$message_id];
 			else
@@ -740,8 +755,6 @@
 
 		function findMessageType($message_id)
 		{
-			if(!$this->status) return false;
-
 			foreach($this->raw['messages'] as $type=>$messages)
 			{
 				if(isset($messages[$message_id])) return $type;
@@ -751,8 +764,6 @@
 
 		function setMessageStatus($message_id, $type, $status)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['messages']) || !isset($this->raw['messages'][$type]) || !isset($this->raw['messages'][$type][$message_id]))
 				return false;
 
@@ -764,8 +775,6 @@
 
 		function getMessagesList($type)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['messages']) || !isset($this->raw['messages'][$type]))
 				return array();
 			else return array_reverse(array_keys($this->raw['messages'][$type]));
@@ -773,8 +782,6 @@
 
 		function getMessageCategoriesList()
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['messages'])) $return = array();
 			elseif(!isset($this->raw['messages'])) $return = array();
 			else $return = array_keys($this->raw['messages']);
@@ -784,8 +791,6 @@
 
 		function addMessage($message_id, $type)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['messages']))
 				$this->raw['messages'] = array();
 			if(!isset($this->raw['messages'][$type]))
@@ -796,8 +801,6 @@
 
 		function removeMessage($message_id, $type=null, $edit_message=true)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($type) && isset($this->raw["messages"]))
 			{
 				foreach($this->raw["messages"] as $type=>$messages)
@@ -827,8 +830,6 @@
 
 		function checkPassword($password)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['password'])) return false;
 			if(md5($password) == $this->raw['password'])
 			{
@@ -846,8 +847,6 @@
 
 		function setPassword($password)
 		{
-			if(!$this->status) return false;
-
 			$this->raw['password'] = md5($password);
 
 			if(isset($this->raw['email_passwd']) && $this->raw['email_passwd'])
@@ -859,22 +858,17 @@
 
 		function getPasswordSum()
 		{
-			if(!$this->status) return false;
 			return $this->raw['password'];
 		}
 
 		function checkSetting($setting)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->settings[$setting])) return -1;
 			else return $this->settings[$setting];
 		}
 
 		function setSetting($setting, $value)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->settings[$setting]))
 				return false;
 			else
@@ -886,8 +880,6 @@
 
 		function getUserDescription($parsed=true)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['description'])) $this->raw['description'] = '';
 
 			if($parsed)
@@ -905,8 +897,6 @@
 
 		function setUserDescription($description)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['description'])) $this->raw['description'] = '';
 
 			if($description != $this->raw['description'])
@@ -923,8 +913,6 @@
 
 		function lastRequest($last_request=null)
 		{
-			if(!$this->status) return false;
-
 			if($last_request === null)
 			{
 				if(!isset($this->raw['last_request'])) return null;
@@ -938,32 +926,24 @@
 
 		function registerAction()
 		{
-			if(!$this->status) return false;
-
 			$this->raw['last_request'] = $_SERVER['REQUEST_URI'];
 			$this->raw['last_active'] = time();
 		}
 
 		function getLastActivity()
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['last_active'])) return false;
 			return $this->raw['last_active'];
 		}
 
 		function getRegistrationTime()
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['registration'])) return false;
 			return $this->raw['registration'];
 		}
 
 		function getItemsList($type=false)
 		{
-			if(!$this->status) return false;
-
 			$items_instance = Classes::Items();
 			return $items_instance->getItemsList($type);
 		}
@@ -977,8 +957,6 @@
 
 		function getItemDeps($id, $deps=null)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($deps)) $deps = array();
 
 			$item_info = $this->getItemInfo($id, null, array("deps", "level"));
@@ -1050,8 +1028,6 @@
 
 		function getItemInfo($id, $type=null, $fields=null, $run_eventhandler=null, $level=null)
 		{
-			if(!$this->status) return false;
-
 			if($run_eventhandler === null) $run_eventhandler = true;
 
 			list($calc, $fields) = $this->_itemInfoFields($fields);
@@ -1421,8 +1397,6 @@
 
 		function getItemLevel($id, $type=null, $run_eventhandler=true)
 		{
-			if(!$this->status) return false;
-
 			if($run_eventhandler) $this->eventhandler($id,0,0,0,0,0);
 
 			if($type === false || $type === null)
@@ -1434,8 +1408,6 @@
 
 		function changeItemLevel($id, $value=1, $type=null, $time=null)
 		{
-			if(!$this->status) return false;
-
 			if($value == 0) return true;
 
 			if($time === false || $time === null) $time = time();
@@ -1538,7 +1510,7 @@
 
 		protected function refreshRess($time=false)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if($time === false)
 			{
@@ -1570,7 +1542,7 @@
 
 		function checkProductionFactor($gebaeude)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if(isset($this->planet_info['prod'][$gebaeude]))
 				return $this->planet_info['prod'][$gebaeude];
@@ -1579,7 +1551,7 @@
 
 		function setProductionFactor($gebaeude, $factor)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if(!$this->getItemInfo($gebaeude, 'gebaeude', array(false))) return false;
 
@@ -1596,7 +1568,7 @@
 
 		function getProduction($run_eventhandler=true)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			$planet = $this->getActivePlanet();
 			$prod = array(0,0,0,0,0,0,0,false);
@@ -1659,7 +1631,7 @@
 
 		function getProductionLimit($run_eventhandler=true)
 		{
-			if(!$this->status || !$this->planet_info) return false;
+			$this->_forceActivePlanet();
 
 			$limit = global_setting("PRODUCTION_LIMIT_INITIAL");
 			$steps = global_setting("PRODUCTION_LIMIT_STEPS");
@@ -1675,8 +1647,6 @@
 
 		function userLocked($check_unlocked=true)
 		{
-			if(!$this->status) return false;
-
 			if($check_unlocked && isset($this->raw['lock_time']) && $this->raw['lock_time'] && time() > $this->raw['lock_time'])
 				$this->lockUser(false, false);
 			return (isset($this->raw['locked']) && $this->raw['locked']);
@@ -1684,8 +1654,6 @@
 
 		function lockedUntil()
 		{
-			if(!$this->status) return false;
-
 			if(!$this->userLocked()) return false;
 			if(!isset($this->raw['lock_time'])) return false;
 			return $this->raw['lock_time'];
@@ -1693,8 +1661,6 @@
 
 		function lockUser($lock_time=false, $check_unlocked=true)
 		{
-			if(!$this->status) return false;
-
 			$this->eventhandler(0, 1,1,1,1,1);
 			$this->raw['locked'] = !$this->userLocked($check_unlocked);
 			$this->raw['lock_time'] = ($this->raw['locked'] ? $lock_time : false);
@@ -1719,8 +1685,6 @@
 
 		function umode($set=-1)
 		{
-			if(!$this->status) return false;
-
 			if($set !== -1)
 			{
 				$set = (bool)$set;
@@ -1791,8 +1755,6 @@
 
 		function umodePossible()
 		{
-			if(!$this->status) return false;
-
 			foreach($this->getFleetsList() as $fleet)
 			{
 				$fleet_obj = Classes::Fleet($fleet);
@@ -1812,8 +1774,6 @@
 
 		function permissionToUmode()
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['umode_time'])) return true;
 
 			if($this->umode()) $min_days = 3; # Ist gerade im Urlaubsmodus
@@ -1824,8 +1784,6 @@
 
 		function getUmodeEnteringTime()
 		{
-			if(!$this->status) return false;
-
 			if(!$this->umode() || !isset($this->raw["umode_time"])) return null;
 
 			return $this->raw["umode_time"];
@@ -1833,8 +1791,6 @@
 
 		function getUmodeReturnTime()
 		{
-			if(!$this->status) return false;
-
 			if($this->umode()) return $this->raw['umode_time']+3*86400;
 			else return time()+3*86400;
 		}
@@ -1917,7 +1873,7 @@
 
 		function checkBuildingThing($type, $run_eventhandler=true)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if($run_eventhandler)
 			{
@@ -1948,7 +1904,7 @@
 
 		function removeBuildingThing($type, $cancel=true)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			switch($type)
 			{
@@ -2015,8 +1971,6 @@
 
 		function getNextBuiltThing($type)
 		{
-			if(!$this->status) return false;
-
 			$building = $this->checkBuildingThing($type, false);
 
 			switch($type)
@@ -2128,8 +2082,6 @@
 
 		function isVerbuendet($user)
 		{
-			if(!$this->status) return false;
-
 			if($user == $this->getName()) return true;
 
 			if(!isset($this->raw['verbuendete'])) return false;
@@ -2138,8 +2090,6 @@
 
 		function existsVerbuendet($user)
 		{
-			if(!$this->status) return false;
-
 			return (
 				$user == $this->getName()
 				|| (isset($this->raw['verbuendete']) && in_array($user, $this->raw['verbuendete']))
@@ -2150,8 +2100,6 @@
 
 		function renameVerbuendet($old_name, $new_name)
 		{
-			if(!$this->status) return false;
-
 			if($old_name == $new_name) return 2;
 
 			$k1 = (isset($this->raw['verbuendete']) ? array_search($old_name, $this->raw['verbuendete']) : false);
@@ -2169,31 +2117,24 @@
 
 		function getVerbuendetList()
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['verbuendete'])) return array();
 			else return $this->raw['verbuendete'];
 		}
 
 		function getVerbuendetApplicationList()
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['verbuendete_bewerbungen'])) return array();
 			else return $this->raw['verbuendete_bewerbungen'];
 		}
 
 		function getVerbuendetRequestList()
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['verbuendete_anfragen'])) return array();
 			else return $this->raw['verbuendete_anfragen'];
 		}
 
 		function _addVerbuendetRequest($user)
 		{
-			if(!$this->status) return false;
 			if($this->existsVerbuendet($user)) return false;
 
 			if(!isset($this->raw['verbuendete_anfragen'])) $this->raw['verbuendete_anfragen'] = array();
@@ -2205,8 +2146,6 @@
 
 		function _removeVerbuendetRequest($user)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['verbuendete_anfragen']) || !in_array($user, $this->raw['verbuendete_anfragen']))
 				return false;
 			unset($this->raw['verbuendete_anfragen'][array_search($user, $this->raw['verbuendete_anfragen'])]);
@@ -2216,8 +2155,6 @@
 
 		function _removeVerbuendetApplication($user)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['verbuendete_bewerbungen']) || !in_array($user, $this->raw['verbuendete_bewerbungen']))
 				return false;
 
@@ -2229,8 +2166,6 @@
 
 		function _addVerbuendet($user)
 		{
-			if(!$this->status) return false;
-
 			if($this->isVerbuendet($user)) return false;
 
 			if(!isset($this->raw['verbuendete'])) $this->raw['verbuendete'] = array();
@@ -2241,8 +2176,6 @@
 
 		function _removeVerbuendet($user)
 		{
-			if(!$this->status) return false;
-
 			if(!$this->isVerbuendet($user)) return false;
 			unset($this->raw['verbuendete'][array_search($user, $this->raw['verbuendete'])]);
 			$this->changed = true;
@@ -2251,8 +2184,6 @@
 
 		function applyVerbuendet($user, $text='')
 		{
-			if(!$this->status) return false;
-
 			if($this->existsVerbuendet($user)) return false;
 
 			$that_user = Classes::User($user);
@@ -2265,7 +2196,7 @@
 				$message = Classes::Message();
 				if($message->create())
 				{
-					$message->addUser($user, 7);
+					$message->addUser($user, Message::TYPE_VERBUENDETE);
 					$message->subject($that_user->_("Anfrage auf ein Bündnis"));
 					$message->from($this->getName());
 					if(trim($text) == '')
@@ -2281,8 +2212,6 @@
 
 		function acceptVerbuendetApplication($user)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['verbuendete_anfragen']) || !in_array($user, $this->raw['verbuendete_anfragen']))
 				return false;
 
@@ -2300,7 +2229,7 @@
 				$message->from($this->getName());
 				$message->subject($user_obj->_("Bündnisanfrage angenommen"));
 				$message->text(sprintf($user_obj->_("Der Spieler %s hat Ihre Bündnisanfrage angenommen."), $this->getName()));
-				$message->addUser($user, 7);
+				$message->addUser($user, Message::TYPE_VERBUENDETE);
 			}
 
 			return true;
@@ -2308,8 +2237,6 @@
 
 		function rejectVerbuendetApplication($user)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['verbuendete_anfragen']) || !in_array($user, $this->raw['verbuendete_anfragen']))
 				return false;
 
@@ -2324,7 +2251,7 @@
 				$message->from($this->getName());
 				$message->subject($user_obj->_("Bündnisanfrage abgelehnt"));
 				$message->text(sprintf($user_obj->_("Der Spieler %s hat Ihre Bündnisanfrage abgelehnt."), $this->getName()));
-				$message->addUser($user, 7);
+				$message->addUser($user, Message::TYPE_VERBUENDETE);
 			}
 
 			return true;
@@ -2332,8 +2259,6 @@
 
 		function quitVerbuendet($user)
 		{
-			if(!$this->status) return false;
-
 			if(!$this->isVerbuendet($user)) return false;
 
 			$user_obj = Classes::User($user);
@@ -2347,7 +2272,7 @@
 					$message->from($this->getName());
 					$message->subject($user_obj->_("Bündnis gekündigt"));
 					$message->text(sprintf($user_obj->_("Der Spieler %s hat sein Bündnis mit Ihnen gekündigt."), $this->getName()));
-					$message->addUser($user, 7);
+					$message->addUser($user, Message::TYPE_VERBUENDETE);
 				}
 
 				# Fremdstationierte Flotten zurueckholen
@@ -2380,8 +2305,6 @@
 
 		function verbuendetNewsletter($subject, $text)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['verbuendete']) || count($this->raw['verbuendete']) <= 0) return false;
 			if(trim($text) == '') return false;
 
@@ -2392,15 +2315,13 @@
 				$message->subject($subject);
 				$message->text($text);
 				foreach($this->raw['verbuendete'] as $verbuendeter)
-					$message->addUser($verbuendeter, 7);
+					$message->addUser($verbuendeter, Message::TYPE_VERBUENDETE);
 			}
 			return true;
 		}
 
 		function cancelVerbuendetApplication($user)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['verbuendete_bewerbungen']) || !in_array($user, $this->raw['verbuendete_bewerbungen']))
 				return false;
 
@@ -2415,7 +2336,7 @@
 					$message->from($this->getName());
 					$message->subject($user_obj->_("Bündnisanfrage zurückgezogen"));
 					$message->text(sprintf($user_obj->_("Der Spieler %s hat seine Bündnisanfrage an Sie zurückgezogen."), $this->getName()));
-					$message->addUser($user, 7);
+					$message->addUser($user, Message::TYPE_VERBUENDETE);
 				}
 				$this->changed = true;
 				return true;
@@ -2425,8 +2346,6 @@
 
 		function allianceTag($tag='', $check=true)
 		{
-			if(!$this->status) return false;
-
 			if($tag === '')
 			{
 				if(!isset($this->raw['alliance']) || trim($this->raw['alliance']) == '' || !Alliance::allianceExists($this->raw['alliance']))
@@ -2488,8 +2407,6 @@
 
 		function cancelAllianceApplication($message=true)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['alliance_bewerbung']) || !$this->raw['alliance_bewerbung'])
 				return false;
 
@@ -2511,7 +2428,7 @@
 							$message_obj->text(sprintf($user_obj->_("Der Benutzer %s hat seine Bewerbung bei Ihrer Allianz zurückgezogen."),$this->getName()));
 							$users = $alliance_obj->getUsersWithPermission(4);
 							foreach($users as $user)
-								$message_obj->addUser($user, 7);
+								$message_obj->addUser($user, Message::TYPE_VERBUENDETE);
 						}
 					}
 				}
@@ -2524,7 +2441,6 @@
 
 		function allianceApplication($alliance=false, $text=false)
 		{
-			if(!$this->status) return false;
 			if($this->allianceTag()) return false;
 
 			if(!$alliance)
@@ -2534,7 +2450,6 @@
 			}
 			else
 			{
-				if($this->status != 1) return false;
 				if(isset($this->raw['alliance_bewerbung']) && $this->raw['alliance_bewerbung'])
 					return false;
 
@@ -2560,7 +2475,7 @@
 
 						$users = $alliance_obj->getUsersWithPermission(4);
 						foreach($users as $user)
-							$message->addUser($user, 7);
+							$message->addUser($user, Message::TYPE_VERBUENDETE);
 					}
 				}
 
@@ -2572,7 +2487,6 @@
 
 		function quitAlliance()
 		{
-			if($this->status != 1) return false;
 			if(!$this->allianceTag()) return false;
 
 			$alliance = Classes::Alliance($this->allianceTag());
@@ -2592,7 +2506,7 @@
 							$message->from($this->getName());
 							$message->subject($user->_('Benutzer aus Allianz ausgetreten'));
 							$message->text(sprintf($user->_('Der Benutzer %s hat Ihre Allianz verlassen.'), $this->getName()));
-							$message->addUser($member, 7);
+							$message->addUser($member, Message::TYPE_VERBUENDETE);
 						}
 					}
 				}
@@ -2605,15 +2519,13 @@
 
 		function checkPlanetCount()
 		{
-			if(!$this->status) return false;
-
 			if(global_setting("MAX_PLANETS") > 0 && count($this->raw['planets']) < global_setting("MAX_PLANETS")) return true;
 			else return false;
 		}
 
 		function buildGebaeude($id, $rueckbau=false)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if($this->checkBuildingThing('gebaeude')) return false;
 			if($id == 'B8' && $this->checkBuildingThing('forschung')) return false;
@@ -2657,7 +2569,7 @@
 
 		function buildForschung($id, $global)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if($this->checkBuildingThing('forschung')) return false;
 			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B8') return false;
@@ -2707,7 +2619,7 @@
 
 		function buildRoboter($id, $anzahl)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			$anzahl = floor($anzahl);
 			if($anzahl < 0) return false;
@@ -2776,7 +2688,7 @@
 
 		function buildSchiffe($id, $anzahl)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			$anzahl = floor($anzahl);
 			if($anzahl < 0) return false;
@@ -2845,7 +2757,7 @@
 
 		function buildVerteidigung($id, $anzahl)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			$anzahl = floor($anzahl);
 			if($anzahl < 0) return false;
@@ -2914,8 +2826,6 @@
 
 		function destroy()
 		{
-			if(!$this->status) return false;
-
 			# Planeten zuruecksetzen
 			$planets = $this->getPlanetsList();
 			foreach($planets as $planet)
@@ -2983,7 +2893,6 @@
 			$status = (unlink($this->filename) || chmod($this->filename, 0));
 			if($status)
 			{
-				$this->status = 0;
 				$this->changed = false;
 				return true;
 			}
@@ -2992,8 +2901,6 @@
 
 		function recalcHighscores($recalc_gebaeude=false, $recalc_forschung=false, $recalc_roboter=false, $recalc_schiffe=false, $recalc_verteidigung=false)
 		{
-			if(!$this->status) return false;
-
 			$this->recalc_highscores[0] = ($this->recalc_highscores[0] || $recalc_gebaeude);
 			$this->recalc_highscores[1] = ($this->recalc_highscores[1] || $recalc_forschung);
 			$this->recalc_highscores[2] = ($this->recalc_highscores[2] || $recalc_roboter);
@@ -3165,8 +3072,6 @@
 
 		function maySeeKoords($user)
 		{
-			if(!$this->status) return false;
-
 			if($user == $this->getName()) return true;
 			if($this->isVerbuendet($user)) return true;
 
@@ -3257,8 +3162,6 @@
 
 		function lastMailSent($time=false)
 		{
-			if(!$this->status) return false;
-
 			if($time !== false)
 			{
 				$this->raw['last_mail'] = $time;
@@ -3276,12 +3179,12 @@
 		  * @param $fleet array Das Item-Array der Flotten. ( Item-ID => Anzahl )
 		  * @param $from string Die Herkunfskoordinaten der Flotte. Hierhin werden sie beim Abbruch zurückgesandt.
 		  * @param $speed_factor float Mit diesem Geschwindigkeitsfaktor wurden die Flotten losgeschickt, sie werden beim Abbruch genausolangsam zurückfliegen.
-		  * @return boolean Erfolg
+		  * @return bool Erfolg
 		*/
 
 		function addForeignFleet($user, $fleet, $from, $speed_factor)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if(!isset($this->planet_info["foreign_fleets"]))
 				$this->planet_info["foreign_fleets"] = array();
@@ -3311,12 +3214,12 @@
 		  * @param $id Die Item-ID des abzuziehenden Schiffstyps.
 		  * @param $count Wieviele Schiffe abgezogen werden sollen.
 		  * @return 2 Wenn nicht so viele Schiffe vorhanden waren.
-		  * @return boolean Erfolg.
+		  * @return bool Erfolg.
 		*/
 
 		function subForeignShips($username, $id, $count)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$username]))
 				return false;
@@ -3344,12 +3247,12 @@
 		  * Entfernt die fremdstationierte Flotte Nummer $i des Benutzers $user. $i kann mit getForeignFleetsList() herausgefunden werden.
 		  * @param $user string Der Benutzername.
 		  * @param $i integer Die Nummer der Flotte.
-		  * @return boolean Erfolg.
+		  * @return bool Erfolg.
 		*/
 
 		function subForeignFleet($user, $i)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$user]) || !isset($this->planet_info["foreign_fleets"][$user][$i]))
 				return false;
@@ -3362,7 +3265,7 @@
 				$message_obj->text(sprintf($this->_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf($this->_("%d:%d:%d"), $this->getPos()), $this->_i(Items::makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0], true, true))));
 				$message_obj->subject(sprintf($this->_("Fremdstationierung zurückgezogen auf %s"), vsprintf($this->_("%d:%d:%d"), $this->getPos())));
 				$message_obj->from($user);
-				$message_obj->addUser($this->getName(), 3);
+				$message_obj->addUser($this->getName(), Message::TYPE_TRANSPORT);
 			}
 
 			unset($this->planet_info["foreign_fleets"][$user][$i]);
@@ -3388,7 +3291,7 @@
 
 		function getForeignUsersList()
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if(!isset($this->planet_info["foreign_fleets"]))
 				$this->planet_info["foreign_fleets"] = array();
@@ -3407,7 +3310,7 @@
 
 		function getForeignFleetsList($user, $i=null)
 		{
-			if(!$this->status || !isset($this->planet_info)) return false;
+			$this->_forceActivePlanet();
 
 			if(!isset($this->planet_info["foreign_fleets"]))
 				$this->planet_info["foreign_fleets"] = array();
@@ -3433,8 +3336,6 @@
 
 		function _addForeignCoordinates($coords)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw["foreign_coords"]))
 				$this->raw["foreign_coords"] = array();
 
@@ -3456,8 +3357,6 @@
 
 		function _subForeignCoordinates($coords)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw["foreign_coords"]))
 				$this->raw["foreign_coords"] = array();
 
@@ -3476,18 +3375,18 @@
 
 		function getMyForeignFleets()
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw["foreign_coords"]))
 				$this->raw["foreign_coords"] = array();
 
 			return array_unique($this->raw["foreign_coords"]);
 		}
 
+		/**
+		 * @todo $koords als Planet übergeben lassen
+		*/
+
 		function callBackForeignFleet($koords, $i=null)
 		{
-			if(!$this->status) return false;
-
 			$koords_a = explode(":", $koords);
 			$galaxy = Classes::Galaxy($koords_a[0]);
 			$owner = $galaxy->getPlanetOwner($koords_a[1], $koords_a[2]);
@@ -3540,16 +3439,12 @@
 
 		function getNotificationType()
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['im_notification'])) return false;
 			return $this->raw['im_notification'];
 		}
 
 		function checkNewNotificationType($uin, $protocol)
 		{
-			if(!$this->status) return false;
-
 			$this->raw['im_notification_check'] = array($uin, $protocol, time());
 			$this->changed = true;
 			return true;
@@ -3557,8 +3452,6 @@
 
 		function doSetNotificationType($uin, $protocol)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['im_notification_check'])) return false;
 			if($this->raw['im_notification_check'][0] != $uin || $this->raw['im_notification_check'][1] != $protocol)
 				return false;
@@ -3571,8 +3464,6 @@
 
 		function disableNotification()
 		{
-			if(!$this->status) return false;
-
 			$this->raw['im_notification_check'] = false;
 			$this->raw['im_notification'] = false;
 			$this->changed = true;
@@ -3581,8 +3472,6 @@
 
 		function addPosShortcut($pos)
 		{ # Fuegt ein Koordinatenlesezeichen hinzu
-			if(!$this->status) return false;
-
 			if(!is_array($this->raw['pos_shortcuts'])) $this->raw['pos_shortcuts'] = array();
 			if(in_array($pos, $this->raw['pos_shortcuts'])) return 2;
 
@@ -3593,16 +3482,12 @@
 
 		function getPosShortcutsList()
 		{ # Gibt die Liste der Koordinatenlesezeichen zurueck
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['pos_shortcuts'])) return array();
 			return $this->raw['pos_shortcuts'];
 		}
 
 		function removePosShortcut($pos)
 		{ # Entfernt ein Koordinatenlesezeichen wieder
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['pos_shortcuts'])) return 2;
 			$idx = array_search($pos, $this->raw['pos_shortcuts']);
 			if($idx === false) return 2;
@@ -3613,8 +3498,6 @@
 
 		function movePosShortcutUp($pos)
 		{ # Veraendert die Reihenfolge der Lesezeichen
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['pos_shortcuts'])) return false;
 
 			$idx = array_search($pos, $this->raw['pos_shortcuts']);
@@ -3632,8 +3515,6 @@
 
 		function movePosShortcutDown($pos)
 		{ # Veraendert die Reihenfolge der Lesezeichen
-			if(!$this->status) return false;
-
 			if(!isset($this->raw['pos_shortcuts'])) return false;
 
 			$idx = array_search($pos, $this->raw['pos_shortcuts']);
@@ -3651,8 +3532,6 @@
 
 		function getPasswordSendID()
 		{ # Liefert eine ID zurueck, die zum Senden des Passworts benutzt werden kann
-			if($this->status != 1) return false;
-
 			$send_id = md5(microtime());
 			$this->raw['email_passwd'] = $send_id;
 			$this->changed = true;
@@ -3661,14 +3540,12 @@
 
 		function checkPasswordSendID($id)
 		{ # Ueberprueft, ob eine vom Benutzer eingegebene ID der letzten durch getPasswordSendID zurueckgelieferten ID entspricht
-			if(!$this->status) return false;
-
 			return (isset($this->raw['email_passwd']) && $this->raw['email_passwd'] && $this->raw['email_passwd'] == $id);
 		}
 
 		function refreshMessengerBuildingNotifications($type=false)
 		{
-			if(!$this->status || !$this->planet_info) return false;
+			$this->_forceActivePlanet();
 
 			if($type == false)
 			{
@@ -3777,8 +3654,6 @@
 
 		function resolveFleetPasswd($passwd)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw["flotten_passwds"]) || !isset($this->raw["flotten_passwds"][$passwd])) return null;
 			$fleet_id = $this->raw["flotten_passwds"][$passwd];
 
@@ -3796,8 +3671,6 @@
 
 		function getFleetPasswd($fleet_id)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw["flotten_passwds"]) || ($idx = array_search($fleet_id, $this->raw["flotten_passwds"])) === false)
 				return null;
 
@@ -3815,8 +3688,6 @@
 
 		function changeFleetPasswd($fleet_id, $passwd)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw["flotten_passwds"]))
 				$this->raw["flotten_passwds"] = array();
 
@@ -3836,8 +3707,6 @@
 
 		function setLanguage()
 		{
-			if(!$this->status) return false;
-
 			$lang = $this->checkSetting("lang");
 			if($lang && $lang != -1)
 			{
@@ -3901,8 +3770,6 @@
 
 		function getEMailAddress()
 		{
-			if(!$this->status) return false;
-
 			if(isset($this->raw["email_new"]) && $this->raw["email_new"][1] <= time())
 			{
 				$this->raw["email"] = $this->raw["email_new"][0];
@@ -3915,8 +3782,6 @@
 
 		function getTemporaryEMailAddress($array=false)
 		{
-			if(!$this->status) return false;
-
 			if(!isset($this->raw["email_new"]))
 				return null;
 			if($array)
@@ -3927,8 +3792,6 @@
 
 		function setEMailAddress($address, $do_delay=true)
 		{
-			if($this->status != 1) return false;
-
 			if($address === $this->getTemporaryEMailAddress())
 				return true;
 			elseif($do_delay && $this->getEMailAddress() != $this->getTemporaryEMailAddress() && $this->getEMailAddress() != $address)
@@ -3975,8 +3838,6 @@
 
 		function challengeNeeded()
 		{
-			if(!$this->status) return false;
-
 			if(isset($_SESSION["admin_username"]))
 				return false;
 
@@ -3989,8 +3850,6 @@
 
 		function challengePassed()
 		{
-			if($this->status != 1) return false;
-
 			$this->raw["next_challenge"] = time()+rand(global_setting("CHALLENGE_MIN_TIME"), global_setting("CHALLENGE_MAX_TIME"));
 			$this->raw["challenge_failures"] = 0;
 			$this->changed = true;
@@ -3999,8 +3858,6 @@
 
 		function challengeFailed()
 		{
-			if($this->status != 1) return false;
-
 			if(!isset($this->raw["challenge_failures"]))
 				$this->raw["challenge_failures"] = 0;
 			$this->raw["challenge_failures"]++;

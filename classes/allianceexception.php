@@ -22,6 +22,9 @@
 	 * @subpackage exceptions
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Es ist ein Fehler mit einer Allianz aufgetreten, zum Beispiel wurde versucht eine zu öffnen, die nicht
 	 * existiert.

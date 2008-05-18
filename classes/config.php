@@ -22,6 +22,9 @@
 	 * @subpackage config
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Stellt statische Funktionen zur Verfügung, um die Konfiguration des Spiels auszulesen
 	 * und zu schreiben.
@@ -140,7 +143,7 @@
 		/**
 		* Liefert den Hostname zurueck, auf dem die Hauptseite laeuft.
 		* @return (string)
-		* @return null bei Fehlschlag
+		* @return void bei Fehlschlag
 		*/
 
 		static function getDefaultHostname()
@@ -194,7 +197,7 @@
 
 		/**
 		 * Überprüft, ob db_things/imserver.phpc gestartet ist.
-		 * @return boolean
+		 * @return bool
 		*/
 
 		static function imserverRunning()

@@ -21,6 +21,9 @@
 	 * @subpackage exceptions
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Es ist ein Fehler mit Planeteninformationen aufgetreten. Zum Beispiel könnte
 	 * ein Planet geöffnet worden sein, der nicht existiert.

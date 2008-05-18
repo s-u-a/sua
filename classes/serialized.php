@@ -15,19 +15,16 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 	abstract class Serialized implements Singleton,Dataset
 	{
 		protected static $save_dir = false;
 		protected $name = false;
 		protected $filename = false;
 		protected $changed = false;
-		protected $status = false;
 		protected $raw = false;
 		protected $file_pointer = false;
 		protected $cache = array();
 		protected $location = false;
-		protected $readonly = true;
 
 		function getName()
 		{
@@ -72,49 +69,28 @@
 			return file_exists(static::nameToFilename($name));
 		}
 
-		function __construct($name, $write=true)
+		function __construct($name)
 		{
-			$this->readonly = !$write;
-
-			if($this->save_dir === false)
-				$this->status = 0;
+			$this->name = self::datasetName($name);
+			$this->filename = static::nameToFilename(static::datasetName($this->name));
+			$this->location = $this->filename;
+			if(!is_file($this->filename))
+				throw new SerializedException("File does not exist.");
 			else
 			{
-				$this->name = $name;
-				$this->filename = static::nameToFilename(static::datasetName($this->name));
-				$this->location = $this->filename;
-				if(!is_file($this->filename) || !is_readable($this->filename))
-					$this->status = 0;
-				else
-				{
-					if(!$write || !is_writeable($this->filename))
-					{
-						if($this->file_pointer = fopen($this->location, 'rb'))
-						{
-							$this->status = 2;
-							Functions::fancyFlock($this->file_pointer, LOCK_SH);
-						}
-					}
-					elseif(($this->file_pointer = fopen($this->location, 'r+b')) && Functions::fancyFlock($this->file_pointer, LOCK_EX))
-						$this->status = 1;
-					if($this->status)
-						$this->read();
-				}
+				$this->file_pointer = fopen($this->location, 'r+b'));
+				if(!$this->file_pointer || !Functions::fancyFlock($this->file_pointer, LOCK_EX))
+					throw new SerializedException("File is not openable.");
+				$this->read();
 			}
 		}
 
 		function __destruct()
 		{
-			if($this->status)
-			{
-				if($this->status == 1)
-					$this->write();
+			$this->write();
 
-				flock($this->file_pointer, LOCK_UN);
-				fclose($this->file_pointer);
-
-				$this->status = 0;
-			}
+			flock($this->file_pointer, LOCK_UN);
+			fclose($this->file_pointer);
 		}
 
 		static function encode($raw)
@@ -129,7 +105,6 @@
 
 		function read($force=false)
 		{
-			if(!$this->status) return false;
 			if($this->changed && !$force) $this->write();
 
 			clearstatcache();
@@ -142,54 +117,52 @@
 
 		function write($force=false, $getraw=true)
 		{
-			if(!$this->status && (!$force || file_exists($this->filename)))
-				return false;
 			if(!$this->changed && !$force) return 2;
 
 			if($getraw)
 				$this->getRawFromData();
 
+			self::store($this->getName(), $this->raw, $this->file_pointer);
+
+			return true;
+		}
+
+		static protected function store($name, $data, $fh=null)
+		{
 			clearstatcache();
-			if($force && !file_exists($this->filename))
+
+			$name = self::datasetName($name);
+			$fname = self::nameToFilename($name);
+			$do_unlock = !isset($fh);
+			if($do_unlock)
 			{
-				if(!($this->file_pointer = fopen($this->location, 'a+')))
-					return false;
-				if(!Functions::fancyFlock($this->file_pointer, LOCK_EX))
-					return false;
+				$fh = fopen($fname, "a+");
+				if(!$fh || !Functions::fancyFlock($fh, LOCK_EX))
+					throw new SerializedExcepion("Could not write to file.");
 			}
 
-			fseek($this->file_pointer, 0, SEEK_SET);
-			$new_data = self::encode($this->raw);
+			fseek($fh, 0, SEEK_SET);
+			$new_data = self::encode($data);
 
-			$act_filesize = filesize($this->filename);
+			$act_filesize = filesize($fh);
 			$new_filesize = strlen($new_data);
 
 			if($new_filesize > $act_filesize)
 			{
 				$diff = $new_filesize-$act_filesize;
-				$fname = $this->filename;
 				while(is_link($fname)) $fname = readlink($fname);
 				$df = disk_free_space(dirname($fname));
 				if($df < $diff)
-				{
-					echo "Error writing user array: No space left on disk.\n";
-					exit(1);
-				}
+					throw new SerializedException("No space left on disk.");
 			}
-			else ftruncate($this->file_pointer, $new_filesize);
+			else ftruncate($fh, $new_filesize);
 
-			fwrite($this->file_pointer, $new_data);
+			fwrite($fh, $new_data);
 
-			return true;
+			if($do_unlock)
+				flock($fh, LOCK_UN);
 		}
 
 		abstract protected function getDataFromRaw();
 		abstract protected function getRawFromData();
-
-		function getStatus()
-		{
-			return $this->status;
-		}
-
-		function readonly() { return $this->readonly; }
 	}

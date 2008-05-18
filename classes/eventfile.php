@@ -22,6 +22,9 @@
 	 * @subpackage storage
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Verwaltet den Event-Stack. Dort steht, wann der Eventhandler welche Flotte
 	 * ansehen soll, damit diese an ihrem Ziel ankommt.
@@ -32,9 +35,9 @@
 		protected $tables = array("events" => array("time INT", "fleet"));
 
 		/**
-		 * @param integer $time
+		 * @param int $time
 		 * @param string $id Die ID des Flottenobjekts.
-		 * @return null
+		 * @return void
 		*/
 
 		function addNewFleet($time, $id)
@@ -64,8 +67,8 @@
 		 * Löscht eine Flotte aus dem Stack, zum Beispiel, weil diese zurückgerufen
 		 * wurde.
 		 * @param string $fleet
-		 * @param integer $time Wenn angegeben, wird nur die Ankunft zu dieser Zeit entfernt, beispielsweise, wenn nur ein Ziel entfernt wurde.
-		 * @return null
+		 * @param int $time Wenn angegeben, wird nur die Ankunft zu dieser Zeit entfernt, beispielsweise, wenn nur ein Ziel entfernt wurde.
+		 * @return void
 		*/
 
 		function removeCanceledFleet($fleet, $time=null)
@@ -82,7 +85,7 @@
 
 		/**
 		 * Leert den Stack.
-		 * @return null
+		 * @return void
 		*/
 
 		function _empty()

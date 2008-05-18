@@ -21,6 +21,9 @@
 	 * @subpackage exceptions
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Ein Fehler beim Öffnen oder Verändern einer Datenbank ist aufgetreten. Zum
 	 * Beispiel wurde eine Datenbank geöffnet, die nicht existiert.

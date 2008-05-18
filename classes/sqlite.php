@@ -99,6 +99,8 @@
 		function query($query)
 		{
 			$this->checkConnection();
+			if($this->last_result)
+				$this->last_result->closeCursor();
 			try { $this->last_result = $this->connection->query($query); }
 			catch(PDOException $e) { $this->printException($e, $query); }
 			return true;

@@ -22,6 +22,9 @@
 	 * @subpackage exceptions
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	class CaptchaException extends SuaException
 	{
 		/**

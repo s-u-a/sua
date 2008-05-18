@@ -21,6 +21,9 @@
 	 * @subpackage exceptions
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * In einer Dataset-Funktion ist ein Fehler aufgetreten, zum Beispiel beim Umbenennen
 	 * oder Entfernen eines Objekts.

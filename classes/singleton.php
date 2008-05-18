@@ -20,5 +20,4 @@
 	{
 		abstract public function getName();
 		abstract public static function datasetName($name=null);
-		abstract public function readonly();
 	}

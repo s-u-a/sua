@@ -22,6 +22,9 @@
 	 * @subpackage gui
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Stellt statische Funktionen zur Verfügung, um Captchas zu implementieren.
 	*/
@@ -30,9 +33,9 @@
 	{
 		/**
 		 * Gibt ein Formular aus, das den Benutzer auffordert, ein Bild abzutippen.
-		 * @param integer $tabindex Die Tabindex-Variable, wird innerhalb der Funktion weiter hochgezählt und die Tabindizes für die Formularfelder vergeben.
-		 * @param integer $tabs Mit wievielen Tabulatoren soll der Code eingerückt werden?
-		 * @return null
+		 * @param int $tabindex Die Tabindex-Variable, wird innerhalb der Funktion weiter hochgezählt und die Tabindizes für die Formularfelder vergeben.
+		 * @param int $tabs Mit wievielen Tabulatoren soll der Code eingerückt werden?
+		 * @return void
 		*/
 
 		static function challenge(&$tabindex, $tabs=0)
@@ -80,7 +83,7 @@
 		 * gemacht hat, stimmen.
 		 * @param string $challenge Der Wert von $_POST["recaptcha_challenge_field"] nach Absenden des Formulars.
 		 * @param string $response Der Wert von $_POST["recaptcha_response_field"] nach Absenden des Formulars.
-		 * @return null
+		 * @return void
 		 * @throw CaptchaException Wenn die Validierung fehlgeschlagen ist (unterschiedliche Fehlercodes, definiert als CaptchaExceptions::$*_ERROR)
 		*/
 

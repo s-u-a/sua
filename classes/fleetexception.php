@@ -21,6 +21,9 @@
 	 * @subpackage exceptions
 	*/
 
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
 	/**
 	 * Es ist ein Fehler mit einer Flottenabfrage aufgetreten. Beispielsweise
 	 * wurden Informationen über einen Benutzer angefragt, der nicht an der Flotte

@@ -15,6 +15,16 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/**
+	 * Passwort-vergessen-Funktion: E-Mail zusenden lassen und mit einem Link
+	 * das Passwort ändern.
+	 * @author Candid Dauth
+	 * @package sua-frontend
+	 * @subpackage home
+	*/
+
+	namespace sua::frontend;
+
 	require('include.php');
 
 	$databases = Config::get_databases();
@@ -25,7 +35,7 @@
 
 		$_POST['benutzername'] = trim($_POST['benutzername']);
 		$_POST['email'] = trim($_POST['email']);
-		if(!User::userExists($_POST['benutzername']))
+		if(!User::exists($_POST['benutzername']))
 			$error = _('Sie haben einen falschen Benutzernamen eingegeben.');
 		else
 		{
@@ -53,7 +63,7 @@
 	{
 		define_globals($_GET['database']);
 
-		if(!User::userExists($_GET['name']))
+		if(!User::exists($_GET['name']))
 		{
 ?>
 <p class="error"><?=h(_("Sie haben einen falschen Benutzernamen angegeben."))?></p>
