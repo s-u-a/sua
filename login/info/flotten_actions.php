@@ -557,6 +557,7 @@
 	</thead>
 	<tbody>
 <?php
+			// TODO: auf getTargetsInformation() rausschmeißen. Dann kann auch getArrival() statt getDepartingTime() mit $i benutzt werden.
 			$i = 0;
 			$targets = $fleet->getOldTargetsInformation();
 			$old_count = count($targets);

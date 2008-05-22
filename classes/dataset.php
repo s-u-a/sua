@@ -29,27 +29,13 @@
 	 * Benutzern, Nachrichten oder Allianzen umzugehen.
 	*/
 
-	interface Dataset
+	interface Dataset implements Singleton
 	{
-		/**
-		 * Liefert die ID des instanzierten Objekts/Datensets zurück.
-		 * @return string
-		*/
-		abstract public function getName();
-
-		/**
-		 * Liefert einen eindeutigen Namen des Datensets $name zurück. Der Benutzeraccount „test“ lässt sich
-		 * zum Beispiel auch als „tEst“ referenzieren, da Groß-Klein-Schreibung nicht beachtet wird. Für beide
-		 * Werte als $name soll das gleiche zurückgeliefert werden.
-		 * @param $name string Der Name des Datensets, oder null, wenn ein zufälliger Name erzeugt werden soll.
-		 * @return string
-		*/
-		abstract public static function datasetName($name=null);
-
 		/**
 		 * Erzeugt ein Datenset mit dem Namen $name.
 		 * @param $name string Null, wenn ein neuer Name erzeugt werden soll.
 		 * @return String Die ID des neuen Objekts (normalerweise datasetName($name))
+		 * @todo Überall auf die statische Funktion umstellen.
 		*/
 		abstract static public function create($name=null);
 

@@ -228,8 +228,7 @@
 		* Initialisiert die Standardwerte fuer die globalen Einstellungen.
 		* Kann mehrmals aufgerufen werden, zum Beispiel, um auf eine andere
 		* Datenbank umzustellen.
-		* In Zukunft soll nur global_setting("DB") verändert werden und die Funktion
-		* wird überflüssig.
+		* @todo In Zukunft soll nur global_setting("DB") verändert werden und die Funktion wird überflüssig.
 		* @deprecated
 		*/
 

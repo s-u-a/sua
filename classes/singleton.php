@@ -16,8 +16,33 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage storage
+	*/
+
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+	
+	/**
+	 * Die Funktionen dieses Interfaces werden benötigt, damit Classes::Singleton() die Klassen instanzieren kann.
+	*/
+
 	interface Singleton
 	{
+		/**
+		 * Liefert die ID des instanzierten Objekts/Datensets zurück.
+		 * @return string
+		*/
 		abstract public function getName();
+
+		/**
+		 * Liefert einen eindeutigen Namen des Datensets $name zurück. Der Benutzeraccount „test“ lässt sich
+		 * zum Beispiel auch als „tEst“ referenzieren, da Groß-Klein-Schreibung nicht beachtet wird. Für beide
+		 * Werte als $name soll das gleiche zurückgeliefert werden.
+		 * @param $name string Der Name des Datensets, oder null, wenn ein zufälliger Name erzeugt werden soll.
+		 * @return string
+		*/
 		abstract public static function datasetName($name=null);
 	}

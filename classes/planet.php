@@ -157,8 +157,22 @@
 		{
 			return ($this->getGalaxy() == $other->getGalaxy() && $this->getSystem() == $other->getSystem() && $this->getPlanet() == $other->getPlanet());
 		}
+		
+		/**
+		 * Gibt die Koordinaten eines Planeten in einem für Benutzer lesbaren Format zurück.
+		 * @param Planet $planet
+		 * @return string
+		*/
+		
+		static function format(Planet $planet)
+		{
+			return sprintf(_("%d:%d:%d"), $planet->getGalaxy(), $planet->getSystem(), $planet->getPlanet());
+		}
 
 		/**
 		 * @todo Truemmerfelder
+		 * getTruemmerfeld()
+		 * setTruemmerfeld()
+		 * subTruemmerfeld()
 		*/
 	}
