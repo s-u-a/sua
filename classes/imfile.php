@@ -33,7 +33,25 @@
 
 	class IMFile extends SQLite
 	{
-		protected static $tables = array("to_check" => array("uin TEXT", "protocol TEXT", "username TEXT", "database TEXT", "checksum TEXT"), "notifications" => array("time INTEGER", "uin TEXT", "protocol TEXT", "username TEXT", "message TEXT", "database TEXT", "special_id TEXT", "fingerprint TEXT"));
+		protected static $tables = array (
+			"to_check" => array (
+				"uin TEXT",
+				"protocol TEXT",
+				"username TEXT",
+				"database TEXT",
+				"checksum TEXT"
+			),
+			"notifications" => array (
+				"time INTEGER",
+				"uin TEXT",
+				"protocol TEXT",
+				"username TEXT",
+				"message TEXT",
+				"database TEXT",
+				"special_id TEXT",
+				"fingerprint TEXT"
+			)
+		);
 
 		function __construct()
 		{

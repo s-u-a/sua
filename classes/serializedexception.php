@@ -26,6 +26,7 @@
 
 	/**
 	 * Es ist ein Problem mit einem Serialized-Dataset aufgetreten, meist ein Dateisystemfehler.
+	 * @deprecated
 	*/
 
 	class SerializedException extends SuaException

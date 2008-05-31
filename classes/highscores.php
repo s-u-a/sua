@@ -32,7 +32,27 @@
 
 	class Highscores extends SQLite
 	{
-		protected $tables = array("highscores_users" => array("username", "alliance", "scores_0 INT", "scores_1 INT", "scores_2 INT", "scores_3 INT", "scores_4 INT", "scores_5 INT", "scores_6 INT", "changed INT"), "highscores_alliances" => array("tag", "scores_average INT", "scores_total INT", "members_count INT", "changed INT"));
+		protected $tables = array (
+			"highscores_users" => array (
+				"username",
+				"alliance",
+				"scores_0 INT",
+				"scores_1 INT",
+				"scores_2 INT",
+				"scores_3 INT",
+				"scores_4 INT",
+				"scores_5 INT",
+				"scores_6 INT",
+				"changed INT"
+			),
+			"highscores_alliances" => array (
+				"tag",
+				"scores_average INT",
+				"scores_total INT",
+				"members_count INT",
+				"changed INT"
+			)
+		);
 
 		function updateUser($username, $alliance=false, $scores=null)
 		{

@@ -29,8 +29,11 @@
 	 * Benutzern, Nachrichten oder Allianzen umzugehen.
 	*/
 
-	interface Dataset implements Singleton
+	abstract class Dataset implements Singleton
 	{
+		private $name;
+		protected $params;
+
 		/**
 		 * Erzeugt ein Datenset mit dem Namen $name.
 		 * @param $name string Null, wenn ein neuer Name erzeugt werden soll.
@@ -66,5 +69,46 @@
 		/**
 		 * @param $name Die ID des zu instanzierenden Datensets.
 		*/
-		abstract public function __construct($name=null);
+
+		public function __construct($name=null)
+		{
+			if(count(func_get_args()) > 1)
+				$name = static::idFromParams(func_get_args());
+
+			$name = static::datasetName($name);
+			if(!$tables) throw new SQLiteSetException("No tables are used.");
+			if(!self::exists($name))
+				throw new DatasetException("Dataset does not exist.");
+			$this->name = $name;
+			$this->params = func_get_args();
+		}
+
+		/**
+		 * Gibt den Namen dieses Datensets zurück.
+		 * @return string
+		*/
+
+		function getName()
+		{
+			return $this->name;
+		}
+
+		/**
+		 * Hilft Datensets, die mehrere Parameter in Kombination zur Identifikation
+		 * verwenden (zum Beispiel Planeten mit drei Koordinaten). Diese Funktion
+		 * konvertiert mehrere Parameter zu einer ID, mit der die anderen Funktionen
+		 * problemlos ausgeführt werden. Jede Datensetfunktion, die eine ID übergeben
+		 * bekommt, sollte diese vorher aus func_get_args() mit dieser Funktion
+		 * (static::) auflösen.
+		 * @param array $params
+		 * @return string
+		*/
+
+		static function idFromParams(array $params)
+		{
+			if(isset($params[0]))
+				return $params[0];
+			else
+				return null;
+		}
 	}

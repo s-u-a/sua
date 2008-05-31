@@ -23,7 +23,7 @@
 	*/
 
 	namespace sua;
-	require_once dirname(dirname(__FILE__))."/engine.php";
+	//require_once dirname(dirname(__FILE__))."/engine.php";
 
 	/**
 	 * Stellt statische Funktionen zur Verfügung, um die Konfiguration des Spiels auszulesen
@@ -33,6 +33,114 @@
 	class Config
 	{
 		static private $config;
+
+		/**
+		 * Konvertiert eine Konfigurations-XML-Datei in ein Konfigurations-Array.
+		 * @param string $filename
+		 * @return array
+		*/
+
+		static function fileToConfig($filename)
+		{
+			$dom = new DOMDocument();
+			$dom->load($filename, LIBXML_DTDVALID | LIBXML_NOCDATA);
+			$config = array();
+			$cur_conf = &$config;
+			$p = array();
+			$el = $dom->firstChild->nextSibling->firstChild;
+			while($el->nodeType != 1) $el = $el->nextSibling;
+			while(true)
+			{
+				$name = $el->getAttribute("name");
+				if($el->nodeName == "setting")
+					$cur_conf[$name] = $el->firstChild ? $el->firstChild->data : "";
+				elseif($el->nodeName == "section")
+					$cur_conf[$name] = array();
+
+				if($el->nodeName == "section" && $el->firstChild)
+				{
+					$p[] = &$cur_conf;
+					$cur_conf = &$cur_conf[$name];
+					$el = $el->firstChild;
+				}
+
+				if($el->nodeName != "section" || $el->nodeType != 1)
+				{
+					do
+					{
+						while(!$el->nextSibling)
+						{
+							if(count($p) == 0) break 3;
+							$cur_conf = &$p[count($p)-1];
+							array_pop($p);
+							$el = $el->parentNode;
+						}
+						$el = $el->nextSibling;
+					} while($el->nodeType != 1);
+				}
+			}
+			return $config;
+		}
+
+		/**
+		 * Speichert eine Konfiguration als XML ab.
+		 * @param string $filename Der Dateiname der XML-Datei.
+		 * @param array $config
+		 * @return void
+		*/
+
+		static function configToFile($filename, array $config)
+		{
+			$xml = "<?xml version=\"1.0\"?>\n";
+			$xml .= "<!DOCTYPE config [\n";
+			$xml .= "\t<!ELEMENT config (section | setting)*>\n";
+			$xml .= "\t<!ELEMENT section (section | setting)*>\n";
+			$xml .= "\t<!ATTLIST section\n";
+			$xml .= "\t\tname CDATA #REQUIRED\n";
+			$xml .= "\t>\n";
+			$xml .= "\t<!ELEMENT setting (#PCDATA)>\n";
+			$xml .= "\t<!ATTLIST setting\n";
+			$xml .= "\t\tname CDATA #REQUIRED\n";
+			$xml .= "\t>\n";
+			$xml .= "]>\n";
+			$xml .= "<config>\n";
+
+			$cur_config = &$config;
+			$parents = array();
+			$tabs = "\t";
+			while(true)
+			{
+				$name = key($cur_config);
+
+				if(is_array($cur_config[$name]))
+				{
+					$xml .= $tabs."<section name=\"".htmlspecialchars($name)."\">\n";
+					if(count($cur_config[$name]) > 0)
+					{
+						$parents[] = &$cur_config;
+						$cur_config = &$cur_config[$name];
+						$tabs .= "\t";
+						continue;
+					}
+					else
+						$xml .= $tabs."</section>\n";
+				}
+				else
+					$xml .= $tabs."<setting name=\"".htmlspecialchars($name)."\">".htmlspecialchars($cur_config[$name])."</setting>\n";
+
+				while(next($cur_config) === false)
+				{
+					if(count($parents) < 1)
+						break 2;
+					$cur_config = &$parents[count($parents)-1];
+					array_pop($parents);
+					$tabs = str_repeat("\t", count($parents)+1);
+					$xml .= $tabs."</section>\n";
+				}
+			}
+			$xml .= "</config>\n";
+			file_put_contents($filename, $xml);
+		}
 
 		/**
 		 * Gibt die Spielkonfiguration als Array zurück.
@@ -45,49 +153,26 @@
 			{
 				if(!is_file(global_setting("DB_CONFIG_CACHE")) || !is_readable(global_setting("DB_CONFIG_CACHE")) || filemtime(global_setting("DB_CONFIG_CACHE")) < filemtime(global_setting("DB_CONFIG")))
 				{
-					$dom = new DOMDocument();
-					$dom->load(global_setting("DB_CONFIG"), LIBXML_DTDVALID | LIBXML_NOCDATA);
-					self::$config = array();
-					$cur_conf = &self::$config;
-					$p = array();
-					$el = $dom->firstChild->nextSibling->firstChild;
-					while($el->nodeType != 1) $el = $el->nextSibling;
-					while(true)
-					{
-						$name = $el->getAttribute("name");
-						if($el->nodeName == "setting")
-							$cur_conf[$name] = $el->firstChild ? $el->firstChild->data : "";
-						elseif($el->nodeName == "section")
-							$cur_conf[$name] = array();
-
-						if($el->nodeName == "section" && $el->firstChild)
-						{
-							$p[] = &$cur_conf;
-							$cur_conf = &$cur_conf[$name];
-							$el = $el->firstChild;
-						}
-
-						if($el->nodeName != "section" || $el->nodeType != 1)
-						{
-							do
-							{
-								while(!$el->nextSibling)
-								{
-									if(count($p) == 0) break 3;
-									$cur_conf = &$p[count($p)-1];
-									array_pop($p);
-									$el = $el->parentNode;
-								}
-								$el = $el->nextSibling;
-							} while($el->nodeType != 1);
-						}
-					}
+					self::$config = self::fileToConfig(global_setting("DB_CONFIG"));
 					file_put_contents(global_setting("DB_CONFIG_CACHE"), serialize(self::$config));
 				}
 				else
 					self::$config = unserialize(file_get_contents(global_setting("DB_CONFIG_CACHE")));
 			}
 			return self::$config;
+		}
+
+		/**
+		 * Speichert eine neue Spielkonfiguration ab.
+		 * @param array $config
+		 * @return void
+		*/
+
+		static function setConfig(array $config)
+		{
+			self::configToFile(global_setting("DB_CONFIG"), $config);
+			file_put_contents(global_setting("DB_CONFIG_CACHE"), serialize(self::$config));
+			self::$config = $config;
 		}
 
 		/**
@@ -101,16 +186,16 @@
 		{
 			# Vorgegebene Skins-Liste bekommen
 			$skins = array();
-			if(is_dir(s_root.'/login/res/style') && is_readable(s_root.'/login/res/style'))
+			if(is_dir(global_setting("s_root")."/login/res/style") && is_readable(global_setting("s_root")."/login/res/style"))
 			{
-				$dh = opendir(s_root.'/login/res/style');
+				$dh = opendir(global_setting("s_root")."/login/res/style");
 				while(($fname = readdir($dh)) !== false)
 				{
-					if($fname[0] == '.') continue;
-					$path = s_root.'/login/res/style/'.$fname;
+					if($fname[0] == ".") continue;
+					$path = global_setting("s_root")."/login/res/style/".$fname;
 					if(!is_dir($path) || !is_readable($path)) continue;
-					if(!is_file($path.'/types') || !is_readable($path.'/types')) continue;
-					$skins_file = preg_split("/\r\n|\r|\n/", file_get_contents($path.'/types'));
+					if(!is_file($path."/types") || !is_readable($path."/types")) continue;
+					$skins_file = preg_split("/\r\n|\r|\n/", file_get_contents($path."/types"));
 					$new_skin = &$skins[$fname];
 					$new_skin = array(array_shift($skins_file), array());
 					foreach($skins_file as $skins_line)
@@ -134,7 +219,7 @@
 
 		static function getVersion()
 		{
-			$version = '';
+			$version = "";
 			if(is_file(global_setting("DB_VERSION")) && is_readable(global_setting("DB_VERSION")))
 				$version = trim(file_get_contents(global_setting("DB_VERSION")));
 			return $version;
@@ -174,7 +259,7 @@
 					$messenger_parsed_file = &$config["instantmessaging"];
 					foreach($messenger_parsed_file as $k=>$v)
 					{
-						if(!is_array($v) || !isset($v['server']) || !isset($v['username']) || !isset($v['server']))
+						if(!is_array($v) || !isset($v["server"]) || !isset($v["username"]) || !isset($v["server"]))
 						{
 							unset($messenger_parsed_file[$k]);
 							continue;

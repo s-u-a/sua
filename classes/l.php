@@ -16,11 +16,27 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage gui
+	*/
+
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
+
+	/**
+	 * Stellt Funktionen zur Verfügung, um Daten an Sprach- und Lokaleinstellungen
+	 * anzupassen.
+	*/
+
 	class l
 	{
 		/**
-		* Hebt in einem String $text Tastenkuerzel, welche durch ein voranstehendes &amp; gekennzeichnet sind, hervor, und Kodiert HTML-Steuerzeichen mit htmlspecialchars().
-		* @param $make_text Wenn true, wird das Kuerzel durch ein kbd-HTML-Tag hervorgehoben. Wenn false, wird es als ' [' Kuerzel ']' angehaengt.
+		 * Hebt in einem String $text Tastenkuerzel, welche durch ein voranstehendes &amp; gekennzeichnet sind, hervor, und Kodiert HTML-Steuerzeichen mit htmlspecialchars().
+		 * @param string $text
+		 * @param bool $make_text Wenn true (standardmäßig), wird das Kuerzel durch ein kbd-HTML-Tag hervorgehoben. Wenn false, wird es als ' [' Kuerzel ']' angehaengt.
+		 * @return string
 		*/
 
 		static function h($text, $make_tags=true)
@@ -39,8 +55,9 @@
 		}
 
 		/**
-		* Liefert den HTML-Code des Attributs fuer das in $message angegebene Tastenkuerzel (durch ein voranstehende &amp; gekennzeichnet) zurueck.
-		* @return Zum Beispiel ' accesskey="a"'. Wenn kein Tastenkuerzel existiert, ''.
+		 * Liefert den HTML-Code des Attributs fuer das in $message angegebene Tastenkuerzel (durch ein voranstehende & gekennzeichnet) zurueck.
+		 * @param string $message
+		 * @return string Zum Beispiel ' accesskey="a"'. Wenn kein Tastenkuerzel existiert, ''.
 		*/
 
 		static function accesskey_attr($message)
@@ -52,7 +69,8 @@
 
 		/**
 		* Liefert das Titel-HTML-Attribut zur Darstellung eines Tastenkuerzels (in $message durch ein voranstehendes &amp; markiert) zurueck.
-		* @return Zum Beispiel ' title="[A]"'. Wenn kein Tastenkuerzel existiert, ''.
+		* @param string $message
+		* @return string Zum Beispiel ' title="[A]"'. Wenn kein Tastenkuerzel existiert, ''.
 		*/
 
 		static function accesskey_title($message)
@@ -63,7 +81,10 @@
 		}
 
 		/**
-		* Setzt die Sprach-Locale fuer die uebergebene Sprache. Dadurch liefert gettext die Nachrichten in der neuen Sprache zurueck.
+		 * Setzt die Sprach-Locale fuer die uebergebene Sprache. Dadurch liefert gettext die Nachrichten in der neuen Sprache zurueck.
+		 * @param string $lang
+		 * @param bool $die Das Script wird beendet, wenn die Sprache nicht ausgewählt werden kann
+		 * @return bool Konnte die Sprache gesetzt werden?
 		*/
 
 		static function language($lang=null, $die=false)
@@ -89,12 +110,14 @@
 		}
 
 		/**
-		* Ersetzt Dinge wie [item_B0] durch den entsprechenden gettext-String.
-		* @param $links (boolean) Sollen die Dinge durch Links auf die Beschreibung ersetzt werden?
+		 * Ersetzt Dinge wie [item_B0] durch den entsprechenden gettext-String.
+		 * @param string $string
+		 * @param bool $links Sollen die Dinge durch Links auf die Beschreibung ersetzt werden?
+		 * @return string
 		*/
 
 		static function _i($string, $links=true)
 		{
-			return preg_replace("/\\[(item|ress)_([a-zA-Z0-9]+)([-a-zA-Z0-9_]*)\\]/e", ($links?"'<a href=\"".h_root."/login/info/description.php?id=\$2&amp;".htmlspecialchars(global_setting("URL_SUFFIX"))."\">'.h(":"")."_('\$0')".($links?").'</a>'" : ""), $string);
+			return preg_replace("/\\[(item|ress)_([a-zA-Z0-9]+)([-a-zA-Z0-9_]*)\\]/e", ($links?"'<a href=\"".global_setting("h_root")."/login/info/description.php?id=\$2&amp;".htmlspecialchars(global_setting("URL_SUFFIX"))."\">'.h(":"")."_('\$0')".($links?").'</a>'" : ""), $string);
 		}
 	}

@@ -15,21 +15,17 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
-	abstract class Serialized implements Singleton,Dataset
+	/** @deprecated */
+
+	abstract class Serialized extends Dataset implements Singleton
 	{
 		protected static $save_dir = false;
-		protected $name = false;
 		protected $filename = false;
 		protected $changed = false;
 		protected $raw = false;
 		protected $file_pointer = false;
 		protected $cache = array();
 		protected $location = false;
-
-		function getName()
-		{
-			return $this->name;
-		}
 
 		static function datasetName($name=null)
 		{
@@ -71,8 +67,8 @@
 
 		function __construct($name)
 		{
-			$this->name = self::datasetName($name);
-			$this->filename = static::nameToFilename(static::datasetName($this->name));
+			parent::__construct($name);
+			$this->filename = static::nameToFilename(static::datasetName($this->getName()));
 			$this->location = $this->filename;
 			if(!is_file($this->filename))
 				throw new SerializedException("File does not exist.");

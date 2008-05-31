@@ -36,10 +36,27 @@
 
 	class Message extends SQLiteSet
 	{
-		protected static $tables = array("messages" => array("message_id TEXT PRIMARY KEY", "time INTEGER", "text TEXT", "parsed_text TEXT", "sender TEXT", "subject TEXT", "html INTEGER"),
-		                                 "messages_recipients" => array("message_id TEXT", "recipient TEXT", "type INTEGER", "status INTEGER"),
-		                                 "messages_users" => array("message_id TEXT", "user TEXT"));
-		protected static $id_field = "message_id";
+		protected static $tables = array (
+			"messages" => array (
+				"message_id TEXT PRIMARY KEY",
+				"time INTEGER",
+				"text TEXT",
+				"parsed_text TEXT",
+				"sender TEXT",
+				"subject TEXT",
+				"html INTEGER"
+			),
+		    "messages_users" => array (
+				"message_id TEXT",
+				"user TEXT",
+				"type INTEGER",
+				"status INTEGER"
+			),
+		    "messages_recipients" => array (
+				"message_id TEXT",
+				"recipient TEXT"
+			)
+		);
 
 		/** Array nach dem Schema ( Benutzername => Nachrichtentyp (Message::TYPE_*) ). Beim Zerstören des
 		 * Nachrichtenobjekts werden an die Benutzer IM-Nachrichten verschickt, wenn sie es wünschen. Der Grund,
@@ -146,12 +163,6 @@
 
 		function destroy()
 		{
-			foreach($this->getUsersList() as $l)
-			{
-				$user = Classes::User($l);
-				$user->removeMessage($this->name, null, false);
-			}
-
 			self::$sqlite->query("DELETE FROM messages WHERE message_id = ".$this->escape($message_id).";");
 		}
 
@@ -256,10 +267,6 @@
 
 			self::$sqlite->query("INSERT INTO messages_users ( message_id, user, type, status ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($type).", ".self::$sqlite->quote(self::STATUS_NEU)." );");
 
-			$user_obj = Classes::User($user);
-			$user_obj->addMessage($this->name, $type);
-			unset($user_obj);
-
 			if($type != self::TYPE_POSTAUSGANG)
 			{
 				self::$sqlite->query("INSERT INTO messages_recipients ( message_id, recipient ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user)." );");
@@ -303,21 +310,14 @@
 		 * Löscht die Leseberechtigung eines Nutzers, normalerweise, weil dieser die Nachricht aus seinem Postfach löscht.
 		 * Wenn keine Benutzer mehr eine Leseberechtigung haben, wird die Nachricht gelöscht.
 		 * @param string $user Der Benutzername, der entfernt werden soll.
-		 * @param bool $edit_user Soll der Benutzeraccount bearbeitet werden und dort die Nachricht aus dem Postfach entfernt werden? (Standard: true)
 		 * @return void
 		*/
 
-		function removeUser($user, $edit_user=true)
+		function removeUser($user)
 		{
 			self::$sqlite->query("DELETE FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 			if(self::$sqlite->singleQuery("SELECT COUNT(*) FROM message_users WHERE message_id = ".self::$sqlite->quote($this->getName()).";") < 1)
 				$this->destroy();
-
-			if($edit_user)
-			{
-				$user = Classes::User($user);
-				$user->removeMessage($this->name, null, false);
-			}
 		}
 
 		/**
@@ -338,6 +338,18 @@
 		function getUsersList()
 		{
 			return self::$sqlite->columnQuery("SELECT user FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName()).";");
+		}
+
+		/**
+		 * Gibt zurück, ob der angegebene Benutzer berechtigt ist, die Nachricht zu
+		 * lesen.
+		 * @param string $user
+		 * @return bool
+		*/
+
+		function mayRead($user)
+		{
+			return (self::$sqlite->singleField("SELECT COUNT(*) FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user)." LIMIT 1;") > 0);
 		}
 
 		/**
@@ -384,4 +396,46 @@
 			$this->IMNotify();
 		}
 
+		/**
+		 * Gibt eine Liste der Nachrichten zurück, die dieser Benutzer in seinem
+		 * Posteingang hat.
+		 * @param string $user
+		 * @param int $type Message::TYPE_* Wenn angegeben, werden nur Nachrichten dieses Typs zurückgegeben
+		 * @param int $status Message::STATUS_* Wenn angegeben, werden nur Nachrichten mit diesem Status zurückgegeben
+		 * @return array(string)
+		*/
+
+		static function getUserMessages($user, $type=null, $status=null)
+		{
+			return self::$sqlite->columnQuery("SELECT DISTINCT message_id FROM messages_users WHERE user = ".self::$sqlite->quote($user).(isset($type) ? " AND type = ".self::$sqlite->quote($type)).(isset($status) ? " AND status = ".self::$sqlite->quote($status)).";");
+		}
+
+		/**
+		 * Gibt die Anzahl der Nachrichten zurück, die dieser Benutzer in seinem
+		 * Posteingang hat.
+		 * @param string $user
+		 * @param int $type Message::TYPE_* Wenn angegeben, werden nur Nachrichten dieses Typs zurückgegeben
+		 * @param int $status Message::STATUS_* Wenn angegeben, werden nur Nachrichten mit diesem Status zurückgegeben
+		 * @return array(string)
+		*/
+
+		static function getUserMessagesCount($user, $type=null, $status=null)
+		{
+			return self::$sqlite->singleField("SELECT COUNT(DISTINCT message_id) FROM messages_users WHERE user = ".self::$sqlite->quote($user).(isset($type) ? " AND type = ".self::$sqlite->quote($type)).(isset($status) ? " AND status = ".self::$sqlite->quote($status)).";");
+		}
+
+		/**
+		 * Sortiert eine Liste von Nachrichten-IDs nach Eingangdatum.
+		 * @param array $message_ids
+		 * @return array
+		*/
+
+		static function sort(array $message_ids)
+		{
+			$times = array();
+			foreach($message_ids as $id)
+				$times[$id] = self::$sqlite->singleField("SELECT time FROM messages WHERE message_id = ".self::$sqlite->quote($id)." LIMIT 1;");
+			asort($times, SORT_NUMERIC);
+			return array_keys($times);
+		}
 	}

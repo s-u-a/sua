@@ -90,32 +90,31 @@
 		 * Funktion). Wenn init() schon einmal ausgeführt wurde, wird false zurückgeliefert.
 		 * Wird end() nicht ausgeführt, so geschieht dies automatisch beim Zerstören des
 		 * GUI-Objekts.
-		 * @return bool
+		 * @return void
 		*/
 
 		function init()
 		{
-			if($this->init_run) return false;
-			$return = $this->htmlHead();
-			if($return)
-				$this->init_run = true;
-			return $return;
+			if($this->init_run)
+				throw new GuiException("init() has already been run.");
+			$this->htmlHead();
+			$this->init_run = true;
 		}
 
 		/**
 		 * Gibt den Teil des HTML-Gerüsts aus, der unter dem Inhalt steht (öffentliche
 		 * Funktion). Wenn end() schon einmal ausgeführt wurde, wird false zurückgeliefert.
-		 * @return bool
+		 * @return void
 		*/
 
 		function end()
 		{
-			if(!$this->init_run) return false;
-			if($this->end_run) return false;
-			$return = $this->htmlFoot();
-			if($return)
-				$this->end_run = true;
-			return $return;
+			if(!$this->init_run)
+				throw new GuiException("init() has not been run.");
+			if($this->end_run)
+				throw new GuiException("end() has already been run.");
+			$this->htmlFoot();
+			$this->end_run = true;
 		}
 
 		function __destruct()

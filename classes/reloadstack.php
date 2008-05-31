@@ -15,9 +15,17 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+	/** @deprecated */
+
 	class ReloadStack extends SQLite
 	{
-		protected $tables = array("reload_stack" => array("time", "user", "type"));
+		protected $tables = array (
+			"reload_stack" => array (
+				"time",
+				"user",
+				"type"
+			)
+		);
 
 		function addReload($user, $time, $type)
 		{

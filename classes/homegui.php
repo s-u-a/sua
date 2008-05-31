@@ -59,7 +59,7 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 -->
 		<title><?=h(_("[title_abbr_full]"))?></title>
-		<link rel="stylesheet" href="<?=h_root?>/style.css" type="text/css" />
+		<link rel="stylesheet" href="<?=global_setting("h_root")?>/style.css" type="text/css" />
 <?php
 			if($this->getOption("meta"))
 			{
@@ -76,7 +76,7 @@
 ?>
 	</head>
 	<body><div id="main-container">
-		<h1 id="logo"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/')?>" title="<?=h(_("Zurück zur Startseite"))?>"<?=l::accesskey_attr(_("[title_full]&[include.php|1]"))?>><?=h(_("[title_full]&[include.php|1]"))?></a></h1>
+		<h1 id="logo"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/')?>" title="<?=h(_("Zurück zur Startseite"))?>"<?=l::accesskey_attr(_("[title_full]&[include.php|1]"))?>><?=h(_("[title_full]&[include.php|1]"))?></a></h1>
 		<ul id="links-down" class="cross-navigation">
 			<li><a href="#innercontent3"<?=l::accesskey_attr(_("Zum Inhalt&[include.php|1]"))?>><?=h(_("Zum Inhalt&[include.php|1]"))?></a></li>
 			<li><a href="#navigation"<?=l::accesskey_attr(_("Zur Navigation&[include.php|1]"))?>><?=h(_("Zur Navigation&[include.php|1]"))?></a></li>
@@ -86,7 +86,7 @@
 		<div id="content2-0"><div id="content2-1"><div id="content2-2"><div id="content2-3">
 		<div id="content3-0"><div id="content3-1"><div id="content3-2"><div id="content3-3">
 		<div id="content4-1"><div id="content4-2"><div id="content4-3">
-			<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/index.php')?>" method="post" id="login-form">
+			<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/login/index.php')?>" method="post" id="login-form">
 				<fieldset id="login-form-data">
 					<legend><?=h(_("Anmelden"))?></legend>
 					<dl>
@@ -112,8 +112,8 @@
 					</dl>
 					<div class="c-anmelden"><button type="submit"<?=l::accesskey_attr(_("Anmelden&[include.php|2]"))?>><?=h(_("Anmelden&[include.php|2]"))?></button></div>
 					<ul>
-						<li class="c-registrieren"><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/register.php"<?=l::accesskey_attr(_("Registrieren&[include.php|2]"))?>><?=h(_("Registrieren&[include.php|2]"))?></a></li>
-						<li class="c-passwort-vergessen"><a href="http://<?=$_SERVER['HTTP_HOST'].h_root?>/passwd.php"<?=l::accesskey_attr(_("Passwort vergessen?&[include.php|2]"))?>><?=h(_("Passwort vergessen?&[include.php|2]"))?></a></li>
+						<li class="c-registrieren"><a href="http://<?=$_SERVER['HTTP_HOST'].global_setting("h_root")?>/register.php"<?=l::accesskey_attr(_("Registrieren&[include.php|2]"))?>><?=h(_("Registrieren&[include.php|2]"))?></a></li>
+						<li class="c-passwort-vergessen"><a href="http://<?=$_SERVER['HTTP_HOST'].global_setting("h_root")?>/passwd.php"<?=l::accesskey_attr(_("Passwort vergessen?&[include.php|2]"))?>><?=h(_("Passwort vergessen?&[include.php|2]"))?></a></li>
 <?php
 			if(global_setting("USE_PROTOCOL") == 'https')
 			{
@@ -190,20 +190,20 @@
 		<div id="navigation">
 			<h2 id="navigation-heading"><?=h(_("Navigation"))?></h2>
 			<div id="navigation2"><ol id="navigation-inner">
-				<li class="c-index"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/index.php"<?=l::accesskey_attr(_("Neuigkeiten&[include.php|6]"))?>><?=h(_("Neuigkeiten&[include.php|6]"))?></a></li>
-				<li class="c-features"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/features.php"<?=l::accesskey_attr(_("Features&[include.php|6]"))?>><?=h(_("Features&[include.php|6]"))?></a></li>
-				<li class="c-register"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/register.php"<?=l::accesskey_attr(_("Registrieren&[include.php|6]"))?>><?=h(_("Registrieren&[include.php|6]"))?></a></li>
-				<li class="c-rules"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/rules.php"<?=l::accesskey_attr(_("Regeln&[include.php|6]"))?>><?=h(_("Regeln&[include.php|6]"))?></a></li>
-				<li class="c-faq"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/faq.php"<?=l::accesskey_attr(_("FAQ&[include.php|6]"))?>><?=h(_("FAQ&[include.php|6]"))?></a></li>
-				<li class="c-chat"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/chat.php"<?=l::accesskey_attr(_("Chat&[include.php|6]"))?>><?=h(_("Chat&[include.php|6]"))?></a></li>
+				<li class="c-index"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].global_setting("h_root"))?>/index.php"<?=l::accesskey_attr(_("Neuigkeiten&[include.php|6]"))?>><?=h(_("Neuigkeiten&[include.php|6]"))?></a></li>
+				<li class="c-features"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].global_setting("h_root"))?>/features.php"<?=l::accesskey_attr(_("Features&[include.php|6]"))?>><?=h(_("Features&[include.php|6]"))?></a></li>
+				<li class="c-register"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].global_setting("h_root"))?>/register.php"<?=l::accesskey_attr(_("Registrieren&[include.php|6]"))?>><?=h(_("Registrieren&[include.php|6]"))?></a></li>
+				<li class="c-rules"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].global_setting("h_root"))?>/rules.php"<?=l::accesskey_attr(_("Regeln&[include.php|6]"))?>><?=h(_("Regeln&[include.php|6]"))?></a></li>
+				<li class="c-faq"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].global_setting("h_root"))?>/faq.php"<?=l::accesskey_attr(_("FAQ&[include.php|6]"))?>><?=h(_("FAQ&[include.php|6]"))?></a></li>
+				<li class="c-chat"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].global_setting("h_root"))?>/chat.php"<?=l::accesskey_attr(_("Chat&[include.php|6]"))?>><?=h(_("Chat&[include.php|6]"))?></a></li>
 				<li class="c-board"><a href="<?=htmlspecialchars(global_setting("USE_PROTOCOL"))?>://board.s-u-a.net/index.php"<?=l::accesskey_attr(_("Board&[include.php|6]"))?>><?=h(_("Board&[include.php|6]"))?></a></li>
 				<li class="c-developers"><a href="http://dev.s-u-a.net/"<?=l::accesskey_attr(_("Entwicklerseite&"))?>><?=h(_("Entwicklerseite&[include.php|6]"))?></a></li>
-				<li class="c-impressum"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/impressum.php"<?=l::accesskey_attr(_("Impressum&[include.php|6]"))?>><?=h(_("Impressum&[include.php|6]"))?></a></li>
+				<li class="c-impressum"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].global_setting("h_root"))?>/impressum.php"<?=l::accesskey_attr(_("Impressum&[include.php|6]"))?>><?=h(_("Impressum&[include.php|6]"))?></a></li>
 <?php
 			if(isset($_COOKIE['sua_is_admin']) && $_COOKIE['sua_is_admin'])
 			{
 ?>
-				<li class="c-adminbereich"><a href="https://<?=htmlspecialchars($_SERVER['HTTP_HOST'].h_root)?>/admin/index.php"<?=l::accesskey_attr(_("Adminbereich&[include.php|6]"))?>><?=h(_("Adminbereich&[include.php|6]"))?></a></li>
+				<li class="c-adminbereich"><a href="https://<?=htmlspecialchars($_SERVER['HTTP_HOST'].global_setting("h_root"))?>/admin/index.php"<?=l::accesskey_attr(_("Adminbereich&[include.php|6]"))?>><?=h(_("Adminbereich&[include.php|6]"))?></a></li>
 <?php
 			}
 ?>

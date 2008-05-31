@@ -41,13 +41,63 @@
 
 	class Fleet extends SQLiteSet
 	{
-		protected static $tables = array("fleets" => array("fleet_id TEXT PRIMARY KEY"),
-		                                 "fleets_targets" => array("i INTEGER", "fleet_id TEXT", "galaxy INTEGER", "system INTEGER", "planet INTEGER", "type INTEGER", "flying_back INTEGER", "arrival INTEGER", "finished INTEGER"),
-		                                 "fleets_users" => array("i INTEGER", "fleet_id TEXT", "user TEXT", "from_galaxy INTEGER", "from_system INTEGER", "from_planet INTEGER", "factor REAL", "ress0 INTEGER", "ress1 INTEGER", "ress2 INTEGER", "ress3 INTEGER", "ress4 INTEGER", "ress_tritium INTEGER", "hress0 INTEGER", "hress1 INTEGER", "hress2 INTEGER", "hress3 INTEGER", "hress4 INTEGER", "used_tritium INTEGER", "dont_put_ress INTEGER", "departing INTEGER"),
-		                                 "fleets_users_rob" => array("fleet_id TEXT", "user TEXT", "id TEXT", "number INTEGER"),
-		                                 "fleets_users_hrob" => array("fleet_id TEXT", "user TEXT", "id TEXT", "number INTEGER"),
-		                                 "fleets_users_fleet" => array("fleet_id TEXT", "user TEXT", "id TEXT", "number INTEGER"));
-		protected static $id_field = "fleet_id";
+		protected static $tables = array (
+			"fleets" => array (
+				"fleet_id TEXT PRIMARY KEY"
+			),
+			"fleets_targets" => array (
+				"i INTEGER",
+				"fleet_id TEXT",
+				"galaxy INTEGER",
+				"system INTEGER",
+				"planet INTEGER",
+				"type INTEGER",
+				"flying_back INTEGER",
+				"arrival INTEGER",
+				"finished INTEGER"
+			),
+		    "fleets_users" => array (
+				"i INTEGER",
+				"fleet_id TEXT",
+				"user TEXT",
+				"from_galaxy INTEGER",
+				"from_system INTEGER",
+				"from_planet INTEGER",
+				"factor REAL",
+				"ress0 INTEGER",
+				"ress1 INTEGER",
+				"ress2 INTEGER",
+				"ress3 INTEGER",
+				"ress4 INTEGER",
+				"ress_tritium INTEGER",
+				"hress0 INTEGER",
+				"hress1 INTEGER",
+				"hress2 INTEGER",
+				"hress3 INTEGER",
+				"hress4 INTEGER",
+				"used_tritium INTEGER",
+				"dont_put_ress INTEGER",
+				"departing INTEGER"
+			),
+		    "fleets_users_rob" => array (
+				"fleet_id TEXT",
+				"user TEXT",
+				"id TEXT",
+				"number INTEGER"
+			),
+		    "fleets_users_hrob" => array (
+				"fleet_id TEXT",
+				"user TEXT",
+				"id TEXT",
+				"number INTEGER"
+			),
+		    "fleets_users_fleet" => array (
+				"fleet_id TEXT",
+				"user TEXT",
+				"id TEXT",
+				"number INTEGER"
+			)
+		);
 
 		/**
 		 * Auftrag: steht noch nicht fest
@@ -120,6 +170,17 @@
 		}
 
 		/**
+		 * Gibt eine Liste der Flotten-IDs zurück, die an einem Ziel angekommen sind, dessen Ankunft noch nicht
+		 * abgearbeitet wurde.
+		 * @return array(string)
+		*/
+
+		static function getArrivedFleets()
+		{
+			return self::$sqlite->columnQuery("SELECT DISTINCT fleet_id FROM fleets_targets WHERE arrival <= ".self::$sqlite->quote(time())." AND NOT finished ORDER BY arrival ASC;");
+		}
+
+		/**
 		 * Verschiebt die Ankunft und Startzeit der Flotte im $time_diff Sekunden nach hinten.
 		 * Dies sollte ausgeführt werden, wenn ein Benutzeraccount aus dem Urlaubsmodus genommmen wird und
 		 * die Flotte wieder aufgetaut wird.
@@ -131,7 +192,6 @@
 		{
 			self::$sqlite->query("UPDATE fleets_targets SET arrival = arrival + ".self::$sqlite->quote($time_diff)." WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";");
 			self::$sqlite->query("UPDATE fleets_users SET departing = departing + ".self::$sqlite->quote($time_diff)." WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";");
-			$this->createNextEvent();
 		}
 
 		/**
@@ -436,9 +496,9 @@
 			self::$sqlite->query("SELECT id,number FROM fleets_users_fleet WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 			while(($r = self::$sqlite->nextResult()) !== false)
 			{
-				$item_info = $user_object->getItemInfo($r["id"], 'schiffe', array("trans"));
-				$trans[0] += $item_info['trans'][0]*$r["number"];
-				$trans[1] += $item_info['trans'][1]*$r["number"];
+				$item_info = $user_object->getItemInfo($r["id"], "schiffe", array("trans"));
+				$trans[0] += $item_info["trans"][0]*$r["number"];
+				$trans[1] += $item_info["trans"][1]*$r["number"];
 			}
 			return $trans;
 		}
@@ -588,7 +648,7 @@
 		 * @return array [ Rohstoffe; Roboter ]
 		*/
 
-		function getTransport($user)
+		function getHandel($user)
 		{
 			self::$sqlite->query("SELECT hress0,hress1,hress2,hress3,hress4 FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user)." LIMIT 1;");
 			$r = self::$sqlite->nextResult();
@@ -665,8 +725,8 @@
 			$user_obj = Classes::User($user);
 			foreach($this->getFleetsList($user) as $id=>$count)
 			{
-				$item_info = $user_obj->getItemInfo($id, 'schiffe', array("mass"));
-				$mass += $item_info['mass']*$count;
+				$item_info = $user_obj->getItemInfo($id, "schiffe", array("mass"));
+				$mass += $item_info["mass"]*$count;
 			}
 
 			$add_factor = 1;
@@ -693,35 +753,6 @@
 		}
 
 		/**
-		 * @todo
-		*/
-
-		function getTime($target)
-		{
-			if(!$this->status) return false;
-			if(count($this->raw[1]) <= 0) return false;
-
-			$keys = array_keys($this->raw[1]);
-			$user = array_shift($keys);
-
-			$targets = array_keys($this->raw[0]);
-			$max = array_search($target, $targets);
-			if($max === false) $max = array_search($target."T", $targets);
-			if($max === false) return false;
-
-			$time = 0;
-			$last = $this->getLastTarget($user);
-			for($i=0; $i<=$max; $i++)
-			{
-				if(substr($targets[$i], -1) == "T") $targets[$i] = substr($targets[$i], 0, -1);
-				$time += $this->calcTime($user, $last, $targets[$i]);
-				$last = $targets[$i];
-			}
-
-			return $time;
-		}
-
-		/**
 		 * Berechnet die Flugzeit für die Schiffe des Benutzers $user vom Planeten $from zum Planeten $to.
 		 * @param string $user
 		 * @param Planet $from
@@ -740,7 +771,7 @@
 			if(array_sum($fleets) <= 0)
 				throw new FleetException("This user has not added any fleet yet.");
 
-			$return = self::calcFleetTime($user, $from, $to, $fleets,, $use_min_time);
+			$return = self::calcFleetTime($user, $from, $to, $fleets, $use_min_time);
 			if(!$ignore_factor)
 				$return /= $this->factor($user);
 			return $return;
@@ -762,8 +793,8 @@
 			$user_obj = Classes::User($user);
 			foreach($fleet as $id=>$count)
 			{
-				$item_info = $user_obj->getItemInfo($id, 'schiffe', array("speed"));
-				$speeds[] = $item_info['speed'];
+				$item_info = $user_obj->getItemInfo($id, "schiffe", array("speed"));
+				$speeds[] = $item_info["speed"];
 			}
 			$speed = min($speeds)/1000000;
 
@@ -894,9 +925,6 @@
 
 			self::$sqlite->query("UPDATE fleets_users SET departing = ".self::$sqlite->quote(time())." WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";");
 
-			# In Eventdatei eintragen
-			$this->createNextEvent();
-
 			# Bei den Benutzern eintragen
 			foreach($this->getVisibleUsers() as $user)
 			{
@@ -1009,17 +1037,6 @@
 		}
 
 		/**
-		 * Fügt an das EventFile die nächste Ankunft der Flotte an, damit der Eventhandler die Flotte
-		 * zum gegebenen Zeitpunkt behandelt.
-		 * @return void
-		*/
-
-		function createNextEvent()
-		{
-			Classes::EventFile()->addNewFleet($this->getNextArrival(), $this->getName());
-		}
-
-		/**
 		 * Ruft die Flotten des Benutzers $user aus der Flotte zurück. Ist dies der letzte Benutzer, wird
 		 * die Flotte entfernt. Es wird eine neue Flotte erzeugt, mit der die Schiffe zurückfliegen.
 		 * @param string $user
@@ -1099,7 +1116,7 @@
 				$target_user_obj->setActivePlanet($target_user_obj->getPlanetByPos($to));
 				$target_user_obj->addRess($handel[0]);
 				foreach($handel[1] as $id=>$count)
-					$target_user_obj->changeItemLevel($id, $count, 'roboter');
+					$target_user_obj->changeItemLevel($id, $count, "roboter");
 				$this->setHandel($user, array(0,0,0,0,0), array());
 			}
 
@@ -1124,10 +1141,6 @@
 
 			if(count($this->getUsersList()) < 1)
 			{
-				# Aus der Eventdatei entfernen
-				$event_obj = Classes::EventFile();
-				$event_obj->removeCanceledFleet($this->getName());
-
 				# Aus der Datenbank entfernen
 				$this->destroy();
 			}
@@ -1155,7 +1168,6 @@
 		 * Soll vom Eventhandler ausgeführt werden. Kümmert sich um die Ankunft am nächsten Ziel der Flotte
 		 * und führt dort den Auftrag durch. Schiebt das Ziel zu den bearbeiteten Zielen.
 		 * @return void
-		 * @todo
 		*/
 
 		function arriveAtNextTarget()
@@ -1190,7 +1202,7 @@
 					{
 						# Planetenlimit erreicht
 						$message = Classes::Message(Message::create());
-						$message->subject(sprintf($start_user->_('Besiedelung von %s fehlgeschlagen'), vsprintf($start_user->_("%d:%d:%d"), explode(":", $next_target_nt))));
+						$message->subject(sprintf($start_user->_("Besiedelung von %s fehlgeschlagen"), vsprintf($start_user->_("%d:%d:%d"), explode(":", $next_target_nt))));
 						$message->text(sprintf($start_user->_("Ihre Flotte erreicht den Planeten %s und will mit der Besiedelung anfangen. Als Sie jedoch Ihren Zentralcomputer um Bestätigung für die Besiedelung bittet, kommt dieser durcheinander, da Sie schon so viele Planeten haben und er nicht so viele gleichzeitig kontrollieren kann, und schickt in Panik Ihrer Flotte das Signal zum Rückflug."), vsprintf($start_user->_("%d:%d:%d"), explode(":", $next_target_nt))));
 						$message->addUser($first_user, Message::TYPE_BESIEDELUNG);
 					}
@@ -1248,10 +1260,10 @@
 								$this_user = Classes::User($username);
 								foreach($this->getFleetsList() as $id=>$count)
 								{
-									$item_info = $this_user->getItemInfo($id, 'schiffe', array("trans", "types"));
-									$this_trans = $item_info['trans'][0]*$count;
+									$item_info = $this_user->getItemInfo($id, "schiffe", array("trans", "types"));
+									$this_trans = $item_info["trans"][0]*$count;
 									$this_trans_total += $this_trans;
-									if(in_array(self::TYPE_SAMMELN, $item_info['types']))
+									if(in_array(self::TYPE_SAMMELN, $item_info["types"]))
 										$this_trans_tf += $this_trans;
 								}
 
@@ -1384,12 +1396,12 @@
 									if($target_owner == $username && array_sum($trans[1]) > 0)
 									{
 										$target_user->setLanguage();
-										$items_string = Items::makeItemsString($trans[1], false);
+										$items_string = Item::makeItemsString($trans[1], false);
 										$target_user->restoreLanguage();
 										if($write_this_username) $message_text[$username] .= "\n".$items_string;
 										$message_text[$target_owner] .= $target_user->_("; ").$items_string;
 										foreach($trans[1] as $id=>$anzahl)
-											$target_user->changeItemLevel($id, $anzahl, 'roboter');
+											$target_user->changeItemLevel($id, $anzahl, "roboter");
 									}
 								}
 								else
@@ -1411,7 +1423,7 @@
 									foreach($transh[1] as $id=>$number)
 									{
 										if(self::$sqlite->singleQuery("SELECT COUNT(*) FROM fleets_users_rob WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($username)." AND id = ".self::$sqlite->quote($id).";") >= 1)
-											self::$sqlite->query("UPDATE fleets_users_rob SET number = number + ".self::$sqlite->quote($number)." WHERE fleet_id = ".self::$sqlite->quote($this->getName()." AND user = ".self::$sqlite->quote($username)." AND id = ".self::$sqlite->quote($id).";");
+											self::$sqlite->query("UPDATE fleets_users_rob SET number = number + ".self::$sqlite->quote($number)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($username)." AND id = ".self::$sqlite->quote($id).";");
 										else
 											self::$sqlite->query("INSERT INTO fleets_users_rob ( fleet_id, user, id, number ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($username).", ".self::$sqlite->quote($id).", ".self::$sqlite->quote($number).");");
 									}
@@ -1436,7 +1448,7 @@
 									{
 										if($write_this_username) $message_text[$username] .= "\n";
 										$message_text[$target_owner] .= $target_user->_("; ");
-										$items_string = Items::makeItemsString($h[1], false);
+										$items_string = Item::makeItemsString($h[1], false);
 										if($write_this_username) $message_text[$username] .= $items_string;
 										$message_text[$target_owner] .= $items_string;
 									}
@@ -1449,7 +1461,7 @@
 								$user_obj = Classes::User($username);
 
 								// Will keine Nachrichten erhalten?
-								$receive = $user_obj->checkSetting('receive');
+								$receive = $user_obj->checkSetting("receive");
 								if($this->userExists($username) && isset($receive[3]) && isset($receive[3][0]) && !$receive[3][0])
 									continue;
 
@@ -1530,13 +1542,13 @@
 									}
 
 									# Spionagetechnikdifferenz ausrechnen
-									$owner_level = $target_user->getItemLevel('F1', 'forschung'); // Spionagetechnik
+									$owner_level = $target_user->getItemLevel("F1", "forschung"); // Spionagetechnik
 									$others_level = 0;
 									foreach($users as $username)
 									{
 										$fl = $this->getFleetsList($username);
-										if(isset($fl['S5'])) // Spionagesonden
-											$others_level += $fl['S5'];
+										if(isset($fl["S5"])) // Spionagesonden
+											$others_level += $fl["S5"];
 									}
 									$others_level -= count($users);
 									if($others_level < 0) $others_level = 0;
@@ -1545,7 +1557,7 @@
 									foreach($users as $username)
 									{
 										$user = Classes::User($username);
-										$this_f1 = $user->getItemLevel('F1', 'forschung'); // Spionagetechnik
+										$this_f1 = $user->getItemLevel("F1", "forschung"); // Spionagetechnik
 										if($this_f1 > $max_f1) $max_f1 = $this_f1;
 									}
 									$others_level += $max_f1;
@@ -1577,9 +1589,9 @@
 										$next = "\t<div id=\"spionage-roboter\">\n";
 										$next .= "\t\t<h4 class=\"strong\">%7\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
-										foreach($target_user->getItemsList('roboter') as $id)
+										foreach($target_user->getItemsList("roboter") as $id)
 										{
-											if($target_user->getItemLevel($id, 'roboter') <= 0) continue;
+											if($target_user->getItemLevel($id, "roboter") <= 0) continue;
 											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".F::ths($target_user->getItemLevel($id, "roboter")).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
@@ -1590,9 +1602,9 @@
 										$next = "\t<div id=\"spionage-forschung\">\n";
 										$next .= "\t\t<h4 class=\"strong\">%8\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
-										foreach($target_user->getItemsList('forschung') as $id)
+										foreach($target_user->getItemsList("forschung") as $id)
 										{
-											if($target_user->getItemLevel($id, 'forschung') <= 0) continue;
+											if($target_user->getItemLevel($id, "forschung") <= 0) continue;
 											$next .= "\t\t\t<li>[item_".$id."] <span class=\"stufe\">(Level&nbsp;".F::ths($target_user->getItemLevel($id, "forschung")).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
@@ -1604,9 +1616,9 @@
 										$next .= "\t\t<h4 class=\"strong\">%9\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
 										$schiffe = array();
-										foreach($target_user->getItemsList('schiffe') as $id)
+										foreach($target_user->getItemsList("schiffe") as $id)
 										{
-											$count = $target_user->getItemLevel($id, 'schiffe');
+											$count = $target_user->getItemLevel($id, "schiffe");
 											if($count <= 0) continue;
 											$schiffe[$id] = $count;
 										}
@@ -1633,9 +1645,9 @@
 										$next .= "\t<div id=\"spionage-verteidigung\">\n";
 										$next .= "\t\t<h4 class=\"strong\">%10\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
-										foreach($target_user->getItemsList('verteidigung') as $id)
+										foreach($target_user->getItemsList("verteidigung") as $id)
 										{
-											if($target_user->getItemLevel($id, 'verteidigung') <= 0) continue;
+											if($target_user->getItemLevel($id, "verteidigung") <= 0) continue;
 											$next .= "\t\t\t<li>[item_".$id."] <span class=\"anzahl\">(".F::ths($target_user->getItemLevel($id, "verteidigung")).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
@@ -1646,9 +1658,9 @@
 										$next = "\t<div id=\"spionage-gebaeude\">\n";
 										$next .= "\t\t<h4 class=\"strong\">%11\$s</h4>\n";
 										$next .= "\t\t<ul>\n";
-										foreach($target_user->getItemsList('gebaeude') as $id)
+										foreach($target_user->getItemsList("gebaeude") as $id)
 										{
-											if($target_user->getItemLevel($id, 'gebaeude') <= 0) continue;
+											if($target_user->getItemLevel($id, "gebaeude") <= 0) continue;
 											$next .= "\t\t\t<li>[item_".$id."] <span class=\"stufe\">(Stufe&nbsp;".F::ths($target_user->getItemLevel($id, "gebaeude")).")</span></li>\n";
 										}
 										$next .= "\t\t</ul>\n";
@@ -1662,12 +1674,12 @@
 										$next .= "\t</div>\n";
 										unset($next);
 								}
-								$message_text .= implode('', array_reverse($message_text2));
+								$message_text .= implode("", array_reverse($message_text2));
 								$message_text .= "</div>\n";
 
 								# Benachrichtigung an den Planetenbesitzer
 								$message = Classes::Message(Message::create());
-								$message->subject(sprintf($target_user->_('Fremde Flotte auf dem Planeten %s'), $target_user->localise(array("Planet", "format"), $target));
+								$message->subject(sprintf($target_user->_("Fremde Flotte auf dem Planeten %s"), $target_user->localise(array("Planet", "format"), $target)));
 								$from = $this->from($this->getFirstUser());
 								$first_user_text = sprintf($target_user->_("Eine fremde Flotte vom Planeten %s wurde von Ihrem Planeten %s aus bei der Spionage gesichtet."), sprintf($target_user->_("„%s“ (%s, Eigentümer: %s)"), $from->getName(), $target_user->localise(array("Planet", "format"), $from), $first_user), sprintf($target_user->_("„%s“ (%s)"), $target_user->planetName(), $target_user->localise(array("Planet", "format"), $target)));
 								if(array_sum($destroyed) > 0)
@@ -1749,7 +1761,7 @@
 				# Flugerfahrung
 				foreach($this->getUsersList() as $user)
 					self::$sqlite->query("UPDATE fleets_users SET used_tritium = used_tritium + ".self::$sqlite->quote($this->getTritium($user, $this->getLastTarget($user), $target))." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
-				
+
 				# Rückflugflotten der anderen Benutzer
 				$users = $this->getUsersList();
 				array_shift($users);
@@ -1759,16 +1771,15 @@
 					$new_fleet = self::create();
 					$from = $this->from($user);
 					self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished ) SELECT 1, ".self::$sqlite->quote($new_fleet).", galaxy, system, planet, type, flying_back, arrival, 1 FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;");
-					self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished ) VALUES ( 2, ".self::$sqlite->quote($new_fleet).", ".self::$sqlite->quote($from->getGalaxy()).", ".self::$sqlite->quote($from->getSystem()).", ".self::$sqlite->quote($from->getPlanet()).", ".self::$sqlite->quote($this->getCurrentType()).", 1, ".self::$sqlite->quote(2*$this->getNextArrival()-$this->getStartTime($user))).", 0);");
+					self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished ) VALUES ( 2, ".self::$sqlite->quote($new_fleet).", ".self::$sqlite->quote($from->getGalaxy()).", ".self::$sqlite->quote($from->getSystem()).", ".self::$sqlite->quote($from->getPlanet()).", ".self::$sqlite->quote($this->getCurrentType()).", 1, ".self::$sqlite->quote(2*$this->getNextArrival()-$this->getStartTime($user)).", 0);");
 					self::$sqlite->query("UPDATE fleets_users SET fleet_id = ".self::$sqlite->quote($new_fleet)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 					$user_obj->addFleet($new_fleet);
 				}
-				
+
 				if($further)
 				{
 					$i = self::$sqlite->singleQuery("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT FINISHED ORDER BY i ASC LIMIT 1;");
 					self::$sqlite->query("UPDATE fleets_targets SET finished = 1 WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND i = ".self::$sqlite->quote($i).";");
-					$this->createNextEvent();
 				}
 
 				# Von den Benutzern entfernen
@@ -1782,57 +1793,49 @@
 				if(!$further) $this->destroy();
 			}
 			else
-			{ // TODO mark
+			{
 				# Stationieren
 
-				$target = explode(':', $next_target_nt);
-				$target_galaxy = Classes::Galaxy($target[0], $besiedeln);
-				if(($besiedeln && $target_galaxy->getStatus() != 1) || !$target_galaxy->getStatus())
-					return false;
-
-				$owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
+				$owner = $target->getPlanetOwner($target[1], $target[2]);
 
 				if($besiedeln || $owner == $first_user && !$back)
 				{
 					# Ueberschuessiges Tritium
-					$this->raw[1][$first_user][3][2] += $this->getTritium($first_user, $this->raw[1][$first_user][1], $next_target_nt);
+					self::$sqlite->query("UPDATE fleets_users SET ress_tritium = ress_tritium + ".self::$sqlite->quote($this->getTritium($first_user, $this->from($first_user), $target))." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($first_user).";");
 				}
 
 				if($besiedeln)
 				{
 					$user_obj = Classes::User($first_user);
-					if($user_obj->registerPlanet($next_target_nt) === false)
-						return false;
-					if(isset($this->raw[1][$first_user][0]['S6']))
+					$user_obj->registerPlanet($target);
+					$fleet = $this->getFleetsList($first_user);
+					if(isset($fleet["S6"]) && $fleet["S6"] > 0) // Besiedelungsschiff
 					{
-						$this->raw[1][$first_user][0]['S6']--;
-						$active_planet = $user_obj->getActivePlanet();
-						$user_obj->setActivePlanet($user_obj->getPlanetByPos($next_target_nt));
-						$item_info = $user_obj->getItemInfo('S6', 'schiffe', array("ress"));
-						$besiedelung_ress = $item_info['ress'];
+						self::$sqlite->query("UPDATE fleets_users_fleet SET number = number - 1 WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($first_user)." AND id = ".self::$sqlite->quote("S6").";");
+						$user_obj->cacheActivePlanet();
+						$user_obj->setActivePlanet($user_obj->getPlanetByPos($target));
+						$item_info = $user_obj->getItemInfo("S6", "schiffe", array("ress"));
+						$besiedelung_ress = $item_info["ress"];
 						$besiedelung_ress[0] *= .4;
 						$besiedelung_ress[1] *= .4;
 						$besiedelung_ress[2] *= .4;
 						$besiedelung_ress[3] *= .4;
 						$user_obj->addRess($besiedelung_ress);
+						$user_obj->restoreActivePlanet();
 					}
 					$owner = $first_user;
 				}
 
-
 				if(!$owner)
-				{
-					$this->destroy();
-					return false;
-				}
+					throw new FleetException("Tried to land on a planet that is not colonised yet.");
 
 				$owner_obj = Classes::User($owner);
-				if(!$owner_obj->getStatus()) return false;
 
-				$planet_index = $owner_obj->getPlanetByPos($next_target_nt);
+				$planet_index = $owner_obj->getPlanetByPos($target);
 				if($planet_index === false)
-					return false;
+					throw new FleetException("This planet does not belong to that user.");
 
+				$owner_obj->cacheActivePlanet();
 				$owner_obj->setActivePlanet($planet_index);
 
 				$ress = array(0, 0, 0, 0, 0);
@@ -1841,23 +1844,16 @@
 				$schiffe_other = array();
 
 				# Flugerfahrung
-				$last_targets = array_keys($this->raw[3]);
-				if(count($last_targets) <= 0) $last_target = false;
-				else
+				foreach($this->getUsersList() as $username)
 				{
-					$last_target = array_pop($last_targets);
-					if(substr($last_target, -1) == 'T') $last_target = substr($last_target, 0, -1);
-				}
+					$trans = $this->getTransport($username);
+					$ress[0] += $trans[0][0];
+					$ress[1] += $trans[0][1];
+					$ress[2] += $trans[0][2];
+					$ress[3] += $trans[0][3];
+					$ress[4] += $trans[0][4];
 
-				foreach($this->raw[1] as $username=>$move_info)
-				{
-					$ress[0] += $move_info[3][0][0];
-					$ress[1] += $move_info[3][0][1];
-					$ress[2] += $move_info[3][0][2];
-					$ress[3] += $move_info[3][0][3];
-					$ress[4] += $move_info[3][0][4];
-
-					foreach($move_info[3][1] as $id=>$count)
+					foreach($trans[1] as $id=>$count)
 					{
 						if(isset($robs[$id])) $robs[$id] += $count;
 						else $robs[$id] = $count;
@@ -1866,21 +1862,21 @@
 					if($username == $owner)
 					{
 						# Stationieren
-						foreach($move_info[0] as $id=>$count)
+						foreach($this->getFleetsList($username) as $id=>$count)
 						{
 							if(isset($schiffe_own[$id])) $schiffe_own[$id] += $count;
 							else $schiffe_own[$id] = $count;
 						}
 
-						if($username != $first_user)
-							$this->raw[1][$username][3][2] += $this->getTritium($username, $this->raw[1][$username][1], $next_target_nt);
+						if($username != $first_user) # Überschüssiges Tritium
+							self::$sqlite->query("UPDATE fleets_users SET ress_tritium = ress_tritium + ".self::$sqlite->quote($this->getTritium($username, $this->from($username), $target))." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($username).";");
 					}
 					else
 					{
 						# Fremdstationieren
 						if(!isset($schiffe_other[$username]))
 							$schiffe_other[$username] = array();
-						foreach($move_info[0] as $id=>$count)
+						foreach($this->getFleetsList($username) as $id=>$count)
 						{
 							if(isset($schiffe_other[$username][$id])) $schiffe_other[$username][$id] += $count;
 							else $schiffe_other[$username][$id] = $count;
@@ -1888,11 +1884,10 @@
 					}
 
 					# Flugerfahrung
-					$this_last_target = (($last_target === false) ? $this->raw[1][$username][1] : $last_target);
-					$this->raw[1][$username][5] += $this->getTritium($username, $this_last_target, $next_target);
+					self::$sqlite->query("UPDATE fleets_users SET used_tritium = used_tritium + ".self::$sqlite->quote($this->getTritium($username, $this->getLastTarget($username), $target))." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($username).";");
 
 					$user_obj = Classes::User($username);
-					$user_obj->addScores(5, $this->raw[1][$username][5]/1000);
+					$user_obj->addScores(User::SCORES_FLUGERFAHRUNG, self::$sqlite->singleField("SELECT used_tritium FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($username)." LIMIT 1;")/1000);
 				}
 
 				foreach($schiffe_own as $id=>$anzahl)
@@ -1900,24 +1895,24 @@
 				foreach($schiffe_other as $user=>$schiffe)
 					$owner_obj->addForeignFleet($user, $schiffe, $move_info[1], $move_info[2]);
 				foreach($robs as $id=>$anzahl)
-					$owner_obj->changeItemLevel($id, $anzahl, 'roboter');
+					$owner_obj->changeItemLevel($id, $anzahl, "roboter");
 
-				$ress[4] += $this->raw[1][$first_user][3][2];
+				$ress[4] += self::$sqlite->singleField("SELECT ress_tritium FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($first_user)." LIMIT 1;");
 				$owner_obj->addRess($ress);
 
 				$message_users = array();
-				foreach($this->raw[1] as $username=>$move_info)
+				foreach($this->getUsersList() as $username)
 				{
 					$message_user_obj = Classes::User($username);
-					$receive = $message_user_obj->checkSetting('receive');
-					if(!isset($receive[$types_message_types[$this->raw[0][$next_target][0]]][$this->raw[0][$next_target][1]]) || $receive[$types_message_types[$this->raw[0][$next_target][0]]][$this->raw[0][$next_target][1]])
+					$receive = $message_user_obj->checkSetting("receive");
+					if(!isset($receive[$types_message_types[$this->getCurrentType()]][$this->isFlyingBack()]) || $receive[$types_message_types[$this->getCurrentType()]][$this->isFlyingBack()])
 					{
 						# Will Nachricht erhalten
 						$message_users[] = $username;
 					}
 				}
 
-				if($owner && !isset($this->raw[1][$owner]))
+				if($owner && !$this->userExists($owner))
 					$message_users[] = $owner;
 
 				foreach($message_users as $name)
@@ -1926,18 +1921,18 @@
 					$message_text = "";
 					if($besiedeln)
 					{
-						$message_text .= sprintf($user_obj->_("Ihre Flotte erreicht den Planeten %s und beginnt mit seiner Besiedelung."), $next_target_nt);
+						$message_text .= sprintf($user_obj->_("Ihre Flotte erreicht den Planeten %s und beginnt mit seiner Besiedelung."), $user_obj->localise(array("Planet", "format"), $target));
 						if(isset($besiedelung_ress))
 							$message_text .= " ".sprintf($user_obj->_(" Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe wiederhergestellt werden: %s."), sprintf($user_obj->_("%s %s, %s %s, %s %s, %s %s"), F::ths($besiedelung_ress[0], true), $user_obj->_("[ress_0]"), F::ths($besiedelung_ress[1], true), $user_obj->_("[ress_1]"), F::ths($besiedelung_ress[2], true), $user_obj->_("[ress_2]"), F::ths($besiedelung_ress[3], true), $user_obj->_("[ress_3]")));
 						$message_text .= "\n";
 					}
 					else
-						$message_text .= sprintf($user_obj->_("Eine Flotte erreicht den Planeten %s."), sprintf($user_obj->_("„%s“ (%s, Eigentümer: %s)"), $owner_obj->planetName(), $owner_obj->getPosString(), $owner_obj->getName()))."\n";
+						$message_text .= sprintf($user_obj->_("Eine Flotte erreicht den Planeten %s."), sprintf($user_obj->_("„%s“ (%s, Eigentümer: %s)"), $owner_obj->planetName(), $owner_obj->getPosFormatted(), $owner_obj->getName()))."\n";
 
 					if(array_sum($schiffe_own) > 0)
 					{
 						$user_obj->setLanguage();
-						$message_text .= sprintf($user_obj->_("Die Flotte besteht aus folgenden Schiffen: %s"), Items::makeItemsString($schiffe_own, false))."\n";
+						$message_text .= sprintf($user_obj->_("Die Flotte besteht aus folgenden Schiffen: %s"), Item::makeItemsString($schiffe_own, false))."\n";
 						$user_obj->restoreLanguage();
 					}
 
@@ -1947,7 +1942,7 @@
 						foreach($schiffe_other as $user=>$schiffe)
 						{
 							$user_obj->setLanguage();
-							$message_text .= sprintf($user_obj->_("%s: %s"), $user, Items::makeItemsString($schiffe, false))."\n";
+							$message_text .= sprintf($user_obj->_("%s: %s"), $user, Item::makeItemsString($schiffe, false))."\n";
 							$user_obj->restoreLanguage();
 						}
 					}
@@ -1957,34 +1952,30 @@
 					if(array_sum($robs) > 0)
 					{
 						$user_obj->setLanguage();
-						$message_text .= "\n".Items::makeItemsString($robs, false)."\n";
+						$message_text .= "\n".Item::makeItemsString($robs, false)."\n";
 						$user_obj->restoreLanguage();
 					}
 
-					if($this->raw[1][$first_user][3][2] > 0)
-						$message_text .= "\n\n".sprintf($user_obj->_("Folgender überschüssiger Treibstoff wird abgeliefert: %s."), sprintf($user_obj->_("%s %s"), F::ths($this->raw[1][$first_user][3][2], true), $user_obj->_("[ress_4]")));
+					$tritium = self::$sqlite->singleField("SELECT ress_tritium FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($first_user)." LIMIT 1;");
+					if($tritium > 0)
+						$message_text .= "\n\n".sprintf($user_obj->_("Folgender überschüssiger Treibstoff wird abgeliefert: %s."), sprintf($user_obj->_("%s %s"), F::ths($tritium, true), $user_obj->_("[ress_4]")));
 
-					$message_obj = Classes::Message();
-					if($message_obj->create())
-					{
-						$message_obj->text($message_text);
-						if($besiedeln)
-							$message_obj->subject(sprintf($user_obj->_("Besiedelung von %s"), $next_target_nt));
-						else
-							$message_obj->subject(sprintf($user_obj->_("Stationierung auf %s"), $owner_obj->getPosString()));
+					$message_obj = Classes::Message(Message::create());
+					$message_obj->text($message_text);
+					if($besiedeln)
+						$message_obj->subject(sprintf($user_obj->_("Besiedelung von %s"), $user_obj->localise(array("Planet", "format"), $target)));
+					else
+						$message_obj->subject(sprintf($user_obj->_("Stationierung auf %s"), $owner_obj->getPosFormatted()));
 
-						# Bei Fremdstationierung Nachrichtenabsender eintragen
-						if($owner && !isset($this->raw[1][$owner]))
-							$message_obj->from($first_user);
+					# Bei Fremdstationierung Nachrichtenabsender eintragen
+					if($owner && !$this->userExists($owner))
+						$message_obj->from($first_user);
 
-						$message_obj->addUser($name, $types_message_types[$this->raw[0][$next_target][0]]);
-					}
+					$message_obj->addUser($name, $types_message_types[$this->getCurrentType()]);
 				}
 
 				$this->destroy();
 			}
-
-			return true;
 		}
 
 		/**
@@ -2011,15 +2002,15 @@
 
 			$verteidiger = array();
 			$verteidiger[$target_owner] = array();
-			foreach($target_user->getItemsList('schiffe') as $item)
+			foreach($target_user->getItemsList("schiffe") as $item)
 			{
-				$level = $target_user->getItemLevel($item, 'schiffe');
+				$level = $target_user->getItemLevel($item, "schiffe");
 				if($level <= 0) continue;
 				$verteidiger[$target_owner][$item] = $level;
 			}
-			foreach($target_user->getItemsList('verteidigung') as $item)
+			foreach($target_user->getItemsList("verteidigung") as $item)
 			{
-				$level = $target_user->getItemLevel($item, 'verteidigung');
+				$level = $target_user->getItemLevel($item, "verteidigung");
 				if($level <= 0) continue;
 				$verteidiger[$target_owner][$item] = $level;
 			}
@@ -2028,8 +2019,8 @@
 			{
 				$foreign_fleet = array();
 				foreach($target_user->getForeignFleetsList($username) as $foreign_fi)
-					$foreign_fleet = Items::iadd($foreign_fleet, $foreign_fi[0]);
-				Items::isort($foreign_fleet);
+					$foreign_fleet = Item::iadd($foreign_fleet, $foreign_fi[0]);
+				Item::isort($foreign_fleet);
 				$verteidiger[$username] = $foreign_fleet;
 			}
 
@@ -2047,12 +2038,12 @@
 			# Spionagetechnik fuer Erstschlag
 			$angreifer_spiotech = 0;
 			foreach($users_angreifer as $user)
-				$angreifer_spiotech += $user->getItemLevel('F1', 'forschung');
+				$angreifer_spiotech += $user->getItemLevel("F1", "forschung");
 			$angreifer_spiotech /= count($users_angreifer);
 
 			$verteidiger_spiotech = 0;
 			foreach($users_verteidiger as $user)
-				$verteidiger_spiotech += $user->getItemLevel('F1', 'forschung');
+				$verteidiger_spiotech += $user->getItemLevel("F1", "forschung");
 			$verteidiger_spiotech /= count($users_verteidiger);
 
 
@@ -2092,8 +2083,8 @@
 				{
 					$item_info = $users_angreifer[$name]->getItemInfo($id, null, array("att", "def"));
 
-					$staerke = $item_info['att']*$anzahl;
-					$schild = $item_info['def']*$anzahl;
+					$staerke = $item_info["att"]*$anzahl;
+					$schild = $item_info["def"]*$anzahl;
 
 					$nachrichten_text .= "\t\t\t<tr>\n";
 					$nachrichten_text .= "\t\t\t\t<td class=\"c-schiffstyp\"><a href=\"info/description.php?id=".htmlspecialchars(urlencode($id))."\" title=\"%6\$s\">[item_".$id."]</a></td>\n";
@@ -2160,8 +2151,8 @@
 				{
 					$item_info = $users_verteidiger[$name]->getItemInfo($id, null, array("att", "def"));
 
-					$staerke = $item_info['att']*$anzahl;
-					$schild = $item_info['def']*$anzahl;
+					$staerke = $item_info["att"]*$anzahl;
+					$schild = $item_info["def"]*$anzahl;
 
 					if($anzahl > 0)
 					{
@@ -2218,8 +2209,8 @@
 			# Erstschlag
 			if($angreifer_spiotech > $verteidiger_spiotech)
 			{
-				$runde_starter = 'angreifer';
-				$runde_anderer = 'verteidiger';
+				$runde_starter = "angreifer";
+				$runde_anderer = "verteidiger";
 
 				$nachrichten_text .= "\t<p class=\"erstschlag angreifer\">\n";
 				$nachrichten_text .= "\t\t%10\$s\n";
@@ -2227,8 +2218,8 @@
 			}
 			else
 			{
-				$runde_starter = 'verteidiger';
-				$runde_anderer = 'angreifer';
+				$runde_starter = "verteidiger";
+				$runde_anderer = "angreifer";
 
 				$nachrichten_text .= "\t<p class=\"erstschlag verteidiger\">\n";
 				$nachrichten_text .= "\t\t%11\$s\n";
@@ -2246,8 +2237,8 @@
 			}
 			if($verteidiger_no_fleet)
 			{
-				$runde_starter = 'angreifer';
-				$runde_anderer = 'verteidiger';
+				$runde_starter = "angreifer";
+				$runde_anderer = "verteidiger";
 			}
 
 			foreach($angreifer as $name=>$ids)
@@ -2282,8 +2273,8 @@
 
 				$a = & ${$runde_starter};
 				$d = & ${$runde_anderer};
-				$a_objs = & ${'users_'.$runde_starter};
-				$d_objs = & ${'users_'.$runde_anderer};
+				$a_objs = & ${"users_".$runde_starter};
+				$d_objs = & ${"users_".$runde_anderer};
 
 				# Flottengesamtstaerke
 				$staerke = 0;
@@ -2293,7 +2284,7 @@
 					{
 						$item_info = $a_objs[$name]->getItemInfo($id, null, array("att"));
 						if(!$item_info) continue;
-						$staerke += $item_info['att']*$anzahl;
+						$staerke += $item_info["att"]*$anzahl;
 					}
 				}
 
@@ -2315,17 +2306,17 @@
 					$att_user = array_rand($d);
 					$att_id = array_rand($d[$att_user]);
 
-					$item_info = ${'users_'.$runde_anderer}[$att_user]->getItemInfo($att_id, null, array("def"));
-					$this_shield = $item_info['def']*$d[$att_user][$att_id];
+					$item_info = ${"users_".$runde_anderer}[$att_user]->getItemInfo($att_id, null, array("def"));
+					$this_shield = $item_info["def"]*$d[$att_user][$att_id];
 
-					$schild_f = pow(0.95, ${'users_'.$runde_anderer}[$att_user]->getItemLevel('F10', 'forschung'));
+					$schild_f = pow(0.95, ${"users_".$runde_anderer}[$att_user]->getItemLevel("F10", "forschung"));
 					$aff_staerke = $staerke*$schild_f;
 
 					if($this_shield > $aff_staerke)
 					{
 						$this_shield -= $aff_staerke;
 						$before = $d[$att_user][$att_id];
-						$d[$att_user][$att_id] = $this_shield/$item_info['def'];
+						$d[$att_user][$att_id] = $this_shield/$item_info["def"];
 						$floor_diff = ceil($before)-ceil($d[$att_user][$att_id]);
 
 						foreach($users_all as $name=>$user_obj)
@@ -2437,14 +2428,14 @@
 						$anzahl = 0;
 
 					$diff = $old_anzahl-$anzahl;
-					$truemmerfeld[0] += $item_info['ress'][0]*$diff*.4;
-					$truemmerfeld[1] += $item_info['ress'][1]*$diff*.4;
-					$truemmerfeld[2] += $item_info['ress'][2]*$diff*.4;
-					$truemmerfeld[3] += $item_info['ress'][3]*$diff*.4;
-					$angreifer_punkte[$name] += $item_info['simple_scores']*$diff;
+					$truemmerfeld[0] += $item_info["ress"][0]*$diff*.4;
+					$truemmerfeld[1] += $item_info["ress"][1]*$diff*.4;
+					$truemmerfeld[2] += $item_info["ress"][2]*$diff*.4;
+					$truemmerfeld[3] += $item_info["ress"][3]*$diff*.4;
+					$angreifer_punkte[$name] += $item_info["simple_scores"]*$diff;
 
-					$staerke = $item_info['att']*$anzahl;
-					$schild = $item_info['def']*$anzahl;
+					$staerke = $item_info["att"]*$anzahl;
+					$schild = $item_info["def"]*$anzahl;
 
 					if($anzahl > 0)
 					{
@@ -2530,25 +2521,25 @@
 					else $anzahl = 0;
 
 					$diff = $anzahl_old-$anzahl;
-					if($item_info['type'] == 'schiffe')
+					if($item_info["type"] == "schiffe")
 					{
-						$truemmerfeld[0] += $item_info['ress'][0]*$diff*.4;
-						$truemmerfeld[1] += $item_info['ress'][1]*$diff*.4;
-						$truemmerfeld[2] += $item_info['ress'][2]*$diff*.4;
-						$truemmerfeld[3] += $item_info['ress'][3]*$diff*.4;
+						$truemmerfeld[0] += $item_info["ress"][0]*$diff*.4;
+						$truemmerfeld[1] += $item_info["ress"][1]*$diff*.4;
+						$truemmerfeld[2] += $item_info["ress"][2]*$diff*.4;
+						$truemmerfeld[3] += $item_info["ress"][3]*$diff*.4;
 					}
-					elseif($item_info['type'] == 'verteidigung')
+					elseif($item_info["type"] == "verteidigung")
 					{
-						$verteidiger_ress[$name][0] += $item_info['ress'][0]*.2;
-						$verteidiger_ress[$name][1] += $item_info['ress'][1]*.2;
-						$verteidiger_ress[$name][2] += $item_info['ress'][2]*.2;
-						$verteidiger_ress[$name][3] += $item_info['ress'][3]*.2;
+						$verteidiger_ress[$name][0] += $item_info["ress"][0]*.2;
+						$verteidiger_ress[$name][1] += $item_info["ress"][1]*.2;
+						$verteidiger_ress[$name][2] += $item_info["ress"][2]*.2;
+						$verteidiger_ress[$name][3] += $item_info["ress"][3]*.2;
 					}
 
-					$verteidiger_punkte[$name] += $diff*$item_info['simple_scores'];
+					$verteidiger_punkte[$name] += $diff*$item_info["simple_scores"];
 
-					$staerke = $item_info['att']*$anzahl;
-					$schild = $item_info['def']*$anzahl;
+					$staerke = $item_info["att"]*$anzahl;
+					$schild = $item_info["def"]*$anzahl;
 
 					if($anzahl > 0)
 					{
@@ -2703,8 +2694,8 @@
 					$this_user = Classes::User($username);
 					foreach($fleet as $id=>$count)
 					{
-						$item_info = $this_user->getItemInfo($id, 'schiffe', array("trans"));
-						$this_trans = $item_info['trans'][0]*$count;
+						$item_info = $this_user->getItemInfo($id, "schiffe", array("trans"));
+						$this_trans = $item_info["trans"][0]*$count;
 						$trans[$username] += $this_trans;
 						$trans_total += $this_trans;
 					}

@@ -32,35 +32,54 @@
 	class Alliance extends SQLiteSet
 	{
 		/** Rundmail schreiben */
-		public static $PERMISSION_MAIL = 0;
+		const PERMISSION_MAIL = 0;
 		/** Koordinaten der Mitglieder sehen */
-		public static $PERMISSION_COORDS = 1;
+		const PERMISSION_COORDS = 1;
 		/** Internen Bereich bearbeiten */
-		public static $PERMISSION_INTERNAL = 2;
+		const PERMISSION_INTERNAL = 2;
 		/** Externen Bereich bearbeiten */
-		public static $PERMISSION_EXTERNAL = 3;
+		const PERMISSION_EXTERNAL = 3;
 		/** Bewerbungen annehmen oder ablehnen */
-		public static $PERMISSION_APPLICATIONS = 4;
+		const PERMISSION_APPLICATIONS = 4;
 		/** Spieler aus der Allianz werfen */
-		public static $PERMISSION_KICK = 5;
+		const PERMISSION_KICK = 5;
 		/** Ränge verteilen */
-		public static $PERMISSION_RANK = 6;
+		const PERMISSION_RANK = 6;
 		/** Benutzerrechte verteilen */
-		public static $PERMISSION_PERMISSIONS = 7;
+		const PERMISSION_PERMISSIONS = 7;
 		/** Allianz auflösen */
-		public static $PERMISSION_REMOVE = 8;
+		const PERMISSION_REMOVE = 8;
 
 		/** Nach Punktzahl sortieren */
-		public static $SORTBY_PUNKTE = 1;
+		const SORTBY_PUNKTE = 1;
 		/** Nach Rang sortieren */
-		public static $SORTBY_RANG = 2;
+		const SORTBY_RANG = 2;
 		/** Nach Beitrittszeit sortieren */
-		public static $SORTBY_ZEIT = 3;
+		const SORTBY_ZEIT = 3;
 
-		protected static $tables = array("alliances" => array("tag TEXT PRIMARY KEY", "name TEXT", "description TEXT", "description_parsed TEXT", "inner_description TEXT", "inner_description_parsed TEXT", "last_rename INTEGER", "allow_applications INTEGER"),
-		                                 "alliances_members" => array("tag TEXT", "member TEXT UNIQUE", "score REAL", "rank TEXT", "time INTEGER", "permissions INTEGER")
-		                                 "alliances_applications" => array("tag TEXT", "user TEXT UNIQUE"));
-		protected static $id_field = "tag";
+		protected static $tables = array (
+			"alliances" => array (
+				"tag TEXT PRIMARY KEY",
+				"name TEXT",
+				"description TEXT",
+				"description_parsed TEXT",
+				"inner_description TEXT",
+				"inner_description_parsed TEXT",
+				"last_rename INTEGER",
+				"allow_applications INTEGER"),
+			"alliances_members" => array (
+				"tag TEXT",
+				"member TEXT UNIQUE",
+				"score REAL",
+				"rank TEXT",
+				"time INTEGER",
+				"permissions INTEGER"
+			),
+			"alliances_applications" => array (
+				"tag TEXT",
+				"user TEXT UNIQUE"
+			)
+		);
 
 		static function create($name=null)
 		{
@@ -119,7 +138,7 @@
 
 			# Aus den Allianz-Highscores entfernen
 			$highscores = Classes::Highscores();
-			$highscores->removeEntry('alliances', $this->getName());
+			$highscores->removeEntry("alliances", $this->getName());
 		}
 
 		/**
@@ -171,7 +190,7 @@
 		function getRankAverage()
 		{
 			$highscores = Classes::Highscores();
-			return $highscores->getPosition('alliances', $this->getName(), 'scores_average');
+			return $highscores->getPosition("alliances", $this->getName(), "scores_average");
 		}
 
 		/**
@@ -182,23 +201,13 @@
 		function getRankTotal()
 		{
 			$highscores = Classes::Highscores();
-			return $highscores->getPosition('alliances', $this->getName(), 'scores_total');
+			return $highscores->getPosition("alliances", $this->getName(), "scores_total");
 		}
 
 		/**
-		  * Setzt die Erlaubnis (Alliance::$PERMISSION_*) fuer das Mitglied $user, die Aktion $key durchzufueren.
-		  * Folgende Aktionen sind moeglich:
-		  * 0: Rundschreiben verfassen
-		  * 1: Koordinaten der Mitglieder einsehen
-		  * 2: Internen Bereich bearbeiten
-		  * 3: Externen Bereich bearbeiten
-		  * 4: Bewerbungen annehmen/ablehnen
-		  * 5: Mitglieder hinauswerfen
-		  * 6: Raenge verteilen
-		  * 7: Benutzerrechte verteilen
-		  * 8: Bündnis aufloesen
+		  * Setzt die Erlaubnis (Alliance::PERMISSION_*) fuer das Mitglied $user, die Aktion $key durchzufueren.
 		  * @param string $user Benutzername
-		  * @param int $key Alliance::$PERMISSION_*
+		  * @param int $key Alliance::PERMISSION_*
 		  * @param bool $permission Soll Berechtigung erteilt werden?
 		  * @return void
 		*/
@@ -228,7 +237,7 @@
 		}
 
 		/**
-		  * Ueberprueft, ob das Mitglied $user die Berechtigung $key (Alliance::$PERMISSION_*) besitzt.
+		  * Ueberprueft, ob das Mitglied $user die Berechtigung $key (Alliance::PERMISSION_*) besitzt.
 		  * @param string $user
 		  * @param int $key
 		  * @return bool
@@ -255,6 +264,7 @@
 
 		/**
 		  * Liefert den gecachten Punktestand eines Mitglieds zurueck.
+		  * @param string $User
 		  * @return int
 		*/
 
@@ -277,7 +287,7 @@
 		/**
 		  * Gibt die Mitgliederliste des Arrays zurueck.
 		  * ( Benutzername => [ 'time' => Beitrittszeit; 'rang' => Benutzerrang; 'punkte' => Punkte-Cache; 'permissions' => ( Berechtigungsnummer, siehe setUserPermissions() => Berechtigung? ) ] )
-		  * @param string $sortby Sortierfeld (Alliance::$SORTBY_*)
+		  * @param string $sortby Sortierfeld (Alliance::SORTBY_*)
 		  * @param bool $invert Sortierung umkehren?
 		  * @return array
 		*/
@@ -286,9 +296,9 @@
 		{
 			switch($sortby)
 			{
-				case Alliance::$SORTBY_PUNKTE: $order = "score"; break;
-				case Alliance::$SORTBY_RANG: $order = "rank"; break;
-				case Alliance::$SORTBY_ZEIT: $order = "time"; break;
+				case Alliance::SORTBY_PUNKTE: $order = "score"; break;
+				case Alliance::SORTBY_RANG: $order = "rank"; break;
+				case Alliance::SORTBY_ZEIT: $order = "time"; break;
 				default: $oder = "member"; break;
 			}
 			$oder .= " ".($invert ? "DESC" : "ASC");
@@ -297,7 +307,7 @@
 
 		/**
 		  * Gibt ein Array aller Mitglieder zurueck, die eine bestimmte Berechtigung haben. Fuer die Bedeutung der Berechtigungen siehe setUserPermission().
-		  * @param int $permission Alliance::$PERMISSION_*
+		  * @param int $permission Alliance::PERMISSION_*
 		  * @return array(string)
 		*/
 
@@ -397,9 +407,8 @@
 
 		/**
 		  * Setzt oder liest den Allianznamen.
-		  * @param Der $name Name oder null, wenn er zurückgeliefert werden soll.
-		  * @return string Wenn $name null ist
-		  * @return void Wenn $name gesetzt ist
+		  * @param null $name Der Name oder null, wenn er zurückgeliefert werden soll.
+		  * @return string|void Liefert den aktuellen Namen zurück, wenn $name null ist.
 		*/
 
 		function name($name=null)
@@ -413,7 +422,7 @@
 		/**
 		  * Wirft einen Benutzer aus der Allianz. Die Allianz wird aus dem Benutzerprofil entfernt und eine Benachrichtigung erfolgt.
 		  * @param string $user
-		  * @param string $by_whom Der Benutzer, der den Kick ausführt. Als Absender der Benachrichtigung.
+		  * @param string|null $by_whom Der Benutzer, der den Kick ausführt. Als Absender der Benachrichtigung.
 		  * @return (boolean) Erfolg
 		*/
 
@@ -452,7 +461,7 @@
 
 		/**
 		  * Liefert die externe Allianzbeschreibung zurueck.
-		  * @param Bestimmt, $parsed ob der HTML-Code gefiltert sein soll (fuer die Ausgabe).
+		  * @param bool $parsed Bestimmt, $parsed ob der HTML-Code gefiltert sein soll (fuer die Ausgabe).
 		  * @return string
 		*/
 
@@ -487,7 +496,7 @@
 
 		/**
 		  * Gibt die interne Allianzbeschreibung zurück.
-		  * @param Bestimmt, $parsed ob der HTML-Code gefiltert sein soll (fuer die Ausgabe)
+		  * @param bool $parsed Bestimmt, $parsed ob der HTML-Code gefiltert sein soll (fuer die Ausgabe)
 		  * @return string
 		*/
 
@@ -499,7 +508,7 @@
 		/**
 		  * Nimmt eine Bewerbung an und fuegt den Benutzer zur Allianz hinzu. Die Allianz wird ins Benutzerprofil eingetragen und eine Benachrichtigung erfolgt.
 		  * @param string $user
-		  * @param string $by_whom Der Benutzername des annehmenden Benutzers als Absender für die Benachrichtigungen
+		  * @param string|null $by_whom Der Benutzername des annehmenden Benutzers als Absender für die Benachrichtigungen
 		  * @return void
 		*/
 
@@ -509,8 +518,8 @@
 			$user_obj->allianceTag($this->getName()); // Fügt den Benutzer zur Allianz hinzu und löscht die Bewerbung
 
 			$message = Classes::Message(Message::create());
-			$message->subject($user_obj->_('Allianzbewerbung angenommen'));
-			$message->text(sprintf($user_obj->_('Ihre Bewerbung bei der Allianz %s wurde angenommen.'), $this->getName()));
+			$message->subject($user_obj->_("Allianzbewerbung angenommen"));
+			$message->text(sprintf($user_obj->_("Ihre Bewerbung bei der Allianz %s wurde angenommen."), $this->getName()));
 			if(isset($by_whom)) $message->from($by_whom);
 			$message->addUser($user, 7);
 
@@ -522,7 +531,7 @@
 				$message = Classes::Message(Message::create());
 				if($user_obj->getStatus())
 				{
-					$message->subject($user_obj->_('Neues Allianzmitglied'));
+					$message->subject($user_obj->_("Neues Allianzmitglied"));
 					$message->text(sprintf($user_obj->_("Ein neues Mitglied wurde in Ihre Allianz aufgenommen: %s"), $user));
 					if($by_whom) $message->from($by_whom);
 					$message->addUser($member, 7);
@@ -533,7 +542,7 @@
 		/**
 		  * Weist eine Bewerbung zurueck. Das Benutzerprofil wird aktualisiert, eine Benachrichtigung erfolgt.
 		  * @param string $user
-		  * @param string $by_whom Der Name des ablehnenden Benutzers als Absender für die Benachrichtigungen.
+		  * @param string|null $by_whom Der Name des ablehnenden Benutzers als Absender für die Benachrichtigungen.
 		  * @return void
 		*/
 
@@ -545,8 +554,8 @@
 			$message = Classes::Message();
 			if($message->create())
 			{
-				$message->subject($user_obj->_('Allianzbewerbung abgelehnt'));
-				$message->text(sprintf($user_obj->_('Ihre Bewerbung bei der Allianz %s wurde abgelehnt.'), $this->getName()));
+				$message->subject($user_obj->_("Allianzbewerbung abgelehnt"));
+				$message->text(sprintf($user_obj->_("Ihre Bewerbung bei der Allianz %s wurde abgelehnt."), $this->getName()));
 				$message->addUser($user, 7);
 			}
 
@@ -558,8 +567,8 @@
 				$message = Classes::Message();
 				if($user_obj->getStatus() && $message->create())
 				{
-					$message->subject($user_obj->_('Allianzbewerbung abgelehnt'));
-					$message->text(sprintf($user_obj->_('Die Bewerbung von %s an Ihre Allianz wurde abgelehnt.'), $user));
+					$message->subject($user_obj->_("Allianzbewerbung abgelehnt"));
+					$message->text(sprintf($user_obj->_("Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."), $user));
 					if($by_whom) $message->from($by_whom);
 					$message->addUser($member, 7);
 				}
@@ -626,7 +635,8 @@
 
 		/**
 		* Sucht eine Allianz mit dem Tag $search_string. '*' und '?' sind als Wildcards moeglich.
-		* @return (array) die gefundenen Allianztags
+		* @param string $search_string
+		* @return array die gefundenen Allianztags
 		*/
 
 		static function findAlliance($search_string)

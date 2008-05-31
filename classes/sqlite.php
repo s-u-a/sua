@@ -24,9 +24,10 @@
 
 	namespace sua;
 	require_once dirname(dirname(__FILE__))."/engine.php";
-	
+
 	/**
 	 * Stellt eine Verbindung zur SQLite-Datenbank her und stellt Funktionen zur Verfügung, um damit zu arbeiten.
+	 * @todo Die ganzen Kindklassen aktualisieren
 	*/
 
 	class SQLite
@@ -36,13 +37,13 @@
 		 * @var PDO
 		*/
 		private static $connection = false;
-		
+
 		/**
 		 * Die Rückgabe des letzten SQLite->query()-Aufrufs für SQLite->nextResult() und SQLite->lastRowsAffected().
 		 * @var PDOStatement
 		*/
 		private static $last_result = false;
-		
+
 		/**
 		 * Zweidimensionales Array, enthält die Queries der einzelnen Transaktionen, die gerade geöffnet sind.
 		 * @var array(array(string))
@@ -63,7 +64,7 @@
 			$this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->connection->setAttribute(PDO::ATTR_TIMEOUT, 86400);
 		}
-		
+
 		/**
 		 * Überprüft, ob die in $tables definierten Tabellen mit ihren Spalten definiert sind. Ansonsten wird die Tabelle angelegt
 		 * oder die Spalten eingefügt. $tables hat das Format ( Tabellenname => ( Feld ) ). Feld kann auch den Typ und weitere
@@ -117,7 +118,7 @@
 				}
 			}
 		}
-		
+
 		/**
 		 * Führt einen Query aus, ohne dass sein Ergebnis für nextResult() und lastRowsAffected() gespeichert wird.
 		 * @param string $query
@@ -130,7 +131,7 @@
 			catch(PDOException $e) { $this->printException($e, $query); }
 			$result->closeCursor();
 		}
-		
+
 		/**
 		 * Führt einen Query aus. Die Ergebnisse können per nextResult() und lastRowsAffected() ausgelesen werden.
 		 * @param string $query
@@ -144,7 +145,7 @@
 			try { $this->last_result = $this->connection->query($query); }
 			catch(PDOException $e) { $this->printException($e, $query); }
 		}
-		
+
 		/**
 		 * Gibt das nächste Ergebnis der letzten query()-Operation aus. Ist kein Ergebnis vorhanden, wird false zurückgeliefert.
 		 * Siehe PDOStatement->fetch(). Die Zeile wird als assoziatives Array zurückgegeben, die Indexe sind die Namen der Felder.
@@ -157,7 +158,7 @@
 
 			return $this->last_result->fetch(PDO::FETCH_ASSOC);
 		}
-		
+
 		/**
 		 * Wenn die letzte query()-Operation ein UPDATE oder DELETE war, gibt diese Funktion zurück, wieviele Zeilen davon
 		 * betroffen waren.
@@ -170,7 +171,7 @@
 
 			return $this->last_result->rowCount();
 		}
-		
+
 		/**
 		 * Führt einen Query aus und gibt dessen Ergebnis in Form eines Arrays aus, wobei jeder Eintrag des Arrays einer Zeile
 		 * entspricht. Die einzelnen Zeilen werden in einem assoziativen Array gespeichert, dessen Indexe den Feldernamen des
@@ -187,7 +188,7 @@
 			$result->closeCursor();
 			return $data;
 		}
-		
+
 		/**
 		 * Führt einen Query aus und gibt ein Array zurück, das die Werte der ersten Spalte des Querys enthält.
 		 * @param string $query
@@ -207,7 +208,7 @@
 			}
 			return $result;
 		}
-		
+
 		/**
 		 * Führt einen Query aus und gibt die erste Zeile als assoziatives Array zurück, die damit selektiert wurde.
 		 * @param string $query
@@ -222,7 +223,7 @@
 			$result->closeCursor();
 			return $data;
 		}
-		
+
 		/**
 		 * Führt einen Query aus und gibt das erste Feld zurück, das damit selektiert wurde.
 		 * @param string $query
@@ -237,7 +238,7 @@
 			$result->closeCursor();
 			return $data;
 		}
-		
+
 		/**
 		 * Formatiert einen String so, dass dieser als Wert in einem SQLite-Query verwendet werden kann. Ein String wird zum
 		 * Beispiel in Anführungszeichen gesetzt.
@@ -252,18 +253,18 @@
 			else
 				return $this->connection->quote($value);
 		}
-		
+
 		/**
 		 * Alias für SQLite->escape().
 		 * @param mixed $value
 		 * @return string
 		*/
-		
+
 		function quote($value)
 		{
 			return $this->escape($value);
 		}
-		
+
 		/**
 		 * Startet eine Transaktion. Nach dem Start können immernoch normale Queries ausgeführt werden, die Transaktion wird
 		 * erst bei endTransaction() an die Datenbank übermittelt. beginTransaction() kann mehrmals hintereinander ausgeführt
@@ -276,14 +277,14 @@
 		{
 			$this->transactions[] = array();
 		}
-		
+
 		/**
 		 * Fügt einen Query zur letzten per beginTransaction() initialisierten Transaktion hinzu.
 		 * @param string $query
 		 * @return void
 		 * @throw SQLiteException Wenn noch keine Transaktion initialisiert wurde
 		*/
-		
+
 		function transactionQuery($query)
 		{
 			$c = count($this->transactions);
@@ -291,7 +292,7 @@
 				throw new SQLiteException("No transaction has been started.");
 			$this->transactions[$c-1][] = $query;
 		}
-		
+
 		/**
 		 * Beendet die letzte Transaktion, die durch beginTransaction() initialisiert wurde und führt deren Queries aus.
 		 * @return null
@@ -311,7 +312,7 @@
 			}
 			return $this->connection->commit();
 		}
-		
+
 		/**
 		 * Gibt eine Exception an das globale Logfile (global_setting("LOG")) aus und leitet sie dann weiter. Diese Funktion
 		 * wird in allen Query-Funktionen ausgeführt, wenn eine PDOException auftaucht, damit der Fehler dokumentiert wird.

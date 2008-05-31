@@ -40,7 +40,7 @@
 		 * @param int $system
 		*/
 
-		function __construct($galaxy, $system)
+		function __construct(Galaxy $galaxy, $system)
 		{
 			if(!$galaxy->systemExists($system))
 				throw new SystemException("System does not exist.");

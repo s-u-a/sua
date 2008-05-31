@@ -25,10 +25,10 @@
 	require_once dirname(dirname(__FILE__))."/engine.php";
 
 	/**
-	 * Es ist ein Problem mit einem Benutzeraccount aufgetreten.
+	 * Es ist ein Fehler in der GUI aufgetreten. Beispielsweise wurde end()
+	 * aufgerufen, ohne init() aufzurufen.
 	*/
 
-	class UserException extends SuaException
+	class GuiException extends SuaException
 	{
-		const ERROR_PLANETCOUNT = 1;
 	}

@@ -27,28 +27,79 @@
 
 	/**
 	 * Repräsentiert einen Planeten im Universum.
+	 * Konstruktor: Classes::Planet(System $system, int $planet)
 	*/
 
-	class Planet
+	class Planet extends SQLiteSet
 	{
-		private $galaxy;
-		private $system;
-		private $planet;
-		private $system_obj;
+		protected static $tables = array (
+			"planets" => array (
+				"pid INTEGER PRIMARY KEY AUTOINCREMENT",
+				"galaxy INTEGER",
+				"system INTEGER",
+				"planet INTEGER",
+				"size_original INTEGER",
+				"user TEXT",
+				"name TEXT",
+				"ress0 REAL",
+				"ress1 REAL",
+				"ress2 REAL",
+				"ress3 REAL",
+				"ress4 REAL",
+				"last_refresh INTEGER",
+				"tf0 REAL",
+				"tf1 REAL",
+				"tf2 REAL",
+				"tf3 REAL",
+				"size INTEGER",
+				"size_used INTEGER"
+			),
+			"planets_items" => array (
+				"pid INTEGER",
+				"id TEXT",
+				"level INTEGER"
+			),
+			"planets_building" => array (
+				"pid INTEGER",
+				"id TEXT",
+				"number INTEGER",
+				"start INTEGER",
+				"duration REAL",
+				"cost0 INTEGER",
+				"cost1 INTEGER",
+				"cost2 INTEGER",
+				"cost3 INTEGER"
+			)
+		);
+
+		static function idFromParams(array $params)
+		{
+			if(count($params) < 2)
+				throw new DatasetException("Insufficient parameters.");
+			return self::$sqlite->singleField("SELECT pid FROM planets WHERE galaxy = ".self::$sqlite->quote($params[0])." AND system = ".self::$sqlite->quote($params[1]).";");
+		}
 
 		/**
+		 * Besiedelt den Planeten.
 		 * @param System $system
 		 * @param int $planet
 		*/
 
-		function __construct($system, $planet)
+		static function create(System $system, $planet)
 		{
-			if(!$system->planetExists($planet))
-				throw new PlanetException("Planet does not exist.");
-			$this->system_obj = $system;
-			$this->galaxy = $system->getGalaxy();
-			$this->system = $system->getName();
-			$this->planet = $planet;
+			if(self::$sqlite->singleField("SELECT COUNT(*) FROM planets WHERE galaxy = ".self::$sqlite->quote($system->getGalaxy())." AND system = ".self::$sqlite->quote($system->getSystem())." AND planet = ".self::$sqlite->quote($planet)." LIMIT 1;") > 0)
+				throw new PlanetException("This planet does already exist.");
+			self::$sqlite->query("INSERT INTO planets ( galaxy, system, planet ) VALUES ( ".self::$sqlite->quote($system->getGalaxy()).", ".self::$sqlite->quote($system->getSystem()).", ".self::$sqlite->quote($planet)." );");
+			return self::idFromParams(array($system, $planet));
+		}
+
+		/**
+		 * Entfernt den Planeten.
+		 * @todo
+		*/
+
+		function destroy()
+		{
 		}
 
 		/**
@@ -157,13 +208,13 @@
 		{
 			return ($this->getGalaxy() == $other->getGalaxy() && $this->getSystem() == $other->getSystem() && $this->getPlanet() == $other->getPlanet());
 		}
-		
+
 		/**
 		 * Gibt die Koordinaten eines Planeten in einem für Benutzer lesbaren Format zurück.
 		 * @param Planet $planet
 		 * @return string
 		*/
-		
+
 		static function format(Planet $planet)
 		{
 			return sprintf(_("%d:%d:%d"), $planet->getGalaxy(), $planet->getSystem(), $planet->getPlanet());

@@ -611,50 +611,66 @@
 
 		/**
 		 * Formatiert Planeteninformationen in ein lesbares Format.
-		 * @param string $koords Koordinaten
-		 * @param string $name Planetenname
-		 * @param string $username Eigentümer
-		 * @param string $alliance Allianz des Eigentümers
+		 * @param Planet $planet Koordinaten
+		 * @param bool $show_owner Den Planeteneigentümer anzeigen?
+		 * @param bool $show_alliance Die Allianz des Eigentümers anzeigen?
 		 * @return string
 		*/
 
-		static function format_planet($koords, $name=null, $username=null, $alliance=null)
+		static function formatPlanet(Planet $planet, $show_owner=true, $show_alliance=true)
 		{
-			$koords = vsprintf(_("%d:%d:%d"), explode(":", $koords));
+			$koords = Planet::format($planet);
+			$name = $planet->getName();
 			if(!$name)
 				return sprintf(_("%s (unbesiedelt)"), $koords);
-			elseif(!$username)
-				return sprintf(_("„%s“ (%s)"), $name, $koords);
 			else
 			{
-				if($alliance)
-					$username = sprintf(_("[%s] %s"), $alliance, $username);
-				return sprintf(_("„%s“ (%s, Eigentümer: %s)"), $name, $koords, $username);
+				$username = $planet->getOwner();
+				if(!$username || !$show_owner)
+					return sprintf(_("„%s“ (%s)"), $name, $koords);
+				else
+				{
+					if($show_alliance)
+					{
+						$alliance = Classes::User($username)->allianceTag();
+						if($alliance)
+							$username = sprintf(_("[%s] %s"), $alliance, $username);
+					}
+					return sprintf(_("„%s“ (%s, Eigentümer: %s)"), $name, $koords, $username);
+				}
 			}
 		}
 
 		/**
-		 * Wie format_planet(), fügt aber Links auf alles ein
-		 * @param string $koords Koordinaten
-		 * @param string $name Planetenname
-		 * @param string $username Eigentümer
-		 * @param string $alliance Allianz des Eigentümers
+		 * Wie formatPlanet(), fügt aber Links auf alles ein
+		 * @param Planet $planet Koordinaten
+		 * @param bool $show_owner Den Planeteneigentümer anzeigen?
+		 * @param bool $show_alliance Die Allianz des Eigentümers anzeigen?
 		 * @return string
 		*/
 
-		static function format_planet_h($koords, $name=null, $username=null, $alliance=null)
+		static function formatPlanetH(Planet $planet, $show_owner=true, $show_alliance=true)
 		{
-			$koords = "<a href=\"".htmlspecialchars(h_root."/karte.php?shortcut=".urlencode($koords)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Diesen Planeten in der Karte anzeigen"))."\" class=\"koords\">".vsprintf(h(_("%d:%d:%d")), explode(":", $koords))."</a>";
+			$koords = "<a href=\"".htmlspecialchars(global_setting("h_root")."/karte.php?shortcut=".urlencode($planet->__toString())."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Diesen Planeten in der Karte anzeigen"))."\" class=\"koords\">".Planet::format($planet)."</a>";
+			$name = $planet->getName();
 			if(!$name)
 				return sprintf(h(_("%s (unbesiedelt)")), $koords);
-			elseif(!$username)
-				return sprintf(h(_("„%s“ (%s)")), $name, $koords);
 			else
 			{
-				$username = "<a href=\"".htmlspecialchars(h_root."/info/playerinfo.php?player=".urlencode($player)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Informationen zu diesem Spieler anzeigen"))."\" class=\"playername\">".htmlspecialchars($player)."</a>";
-				if($alliance)
-					$username = sprintf(h(_("[%s] %s")), "<a href=\"".htmlspecialchars(h_root."/info/allianceinfo.php?alliance=".urlencode($alliance)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Informationen zu dieser Allianz anzeigen"))."\" class=\"alliancename\">".htmlspecialchars($alliance)."</a>", $username);
-				return sprintf(h(_("„%s“ (%s, Eigentümer: %s)")), $name, $koords, $username);
+				$username = $planet->getOwner();
+				if(!$username || !$show_owner)
+					return sprintf(h(_("„%s“ (%s)")), $name, $koords);
+				else
+				{
+					if($show_alliance)
+					{
+						$alliance = Classes::User($username)->allianceTag();
+						$username = "<a href=\"".htmlspecialchars(global_setting("h_root")."/info/playerinfo.php?player=".urlencode($player)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Informationen zu diesem Spieler anzeigen"))."\" class=\"playername\">".htmlspecialchars($player)."</a>";
+						if($alliance)
+							$username = sprintf(h(_("[%s] %s")), "<a href=\"".htmlspecialchars(global_setting("h_root")."/info/allianceinfo.php?alliance=".urlencode($alliance)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Informationen zu dieser Allianz anzeigen"))."\" class=\"alliancename\">".htmlspecialchars($alliance)."</a>", $username);
+					}
+					return sprintf(h(_("„%s“ (%s, Eigentümer: %s)")), $name, $koords, $username);
+				}
 			}
 		}
 

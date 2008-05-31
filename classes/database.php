@@ -88,43 +88,7 @@
 
 			if(!is_file($this->directory."/config.db") || filemtime($this->directory."/config.db") < filemtime($this->directory."/config.xml"))
 			{
-				$dom = new DOMDocument();
-				$dom->load($this->directory."/config.xml", LIBXML_DTDVALID | LIBXML_NOCDATA);
-				self::$config = array();
-				$cur_conf = &$this->settings;
-				$p = array();
-				$el = $dom->firstChild->nextSibling->firstChild;
-				while($el->nodeType != 1) $el = $el->nextSibling;
-				while(true)
-				{
-					$name = $el->getAttribute("name");
-					if($el->nodeName == "setting")
-						$cur_conf[$name] = $el->firstChild ? $el->firstChild->data : "";
-					elseif($el->nodeName == "section")
-						$cur_conf[$name] = array();
-
-					if($el->nodeName == "section" && $el->firstChild)
-					{
-						$p[] = &$cur_conf;
-						$cur_conf = &$cur_conf[$name];
-						$el = $el->firstChild;
-					}
-
-					if($el->nodeName != "section" || $el->nodeType != 1)
-					{
-						do
-						{
-							while(!$el->nextSibling)
-							{
-								if(count($p) == 0) break 3;
-								$cur_conf = &$p[count($p)-1];
-								array_pop($p);
-								$el = $el->parentNode;
-							}
-							$el = $el->nextSibling;
-						} while($el->nodeType != 1);
-					}
-				}
+				$this->settings = Config::fileToConfig($this->directory."/config.xml");
 				file_put_contents($this->directory."/config.db", serialize($this->settings));
 			}
 			else
@@ -257,7 +221,7 @@
 
 			$DB_DIR = $this->config['directory'];
 			if(substr($DB_DIR, 0, 1) != '/')
-				$DB_DIR = s_root.'/'.$DB_DIR;
+				$DB_DIR = global_setting("s_root").'/'.$DB_DIR;
 
 			global_setting('DB_DIR', $DB_DIR);
 

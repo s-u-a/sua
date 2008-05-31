@@ -25,10 +25,9 @@
 	require_once dirname(dirname(__FILE__))."/engine.php";
 
 	/**
-	 * Es ist ein Problem mit einem Benutzeraccount aufgetreten.
+	 * Es ist ein Problem mit einem Item aufgetreten.
 	*/
 
-	class UserException extends SuaException
+	class ItemException extends SuaException
 	{
-		const ERROR_PLANETCOUNT = 1;
 	}

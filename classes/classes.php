@@ -45,19 +45,19 @@
 		 * eine Instanz von $classname mit $p1, wird diese zurückgegeben, ansonsten
 		 * wird eine erzeugt.
 		 * @param string $classname
-		 * @param mixed $p1
-		 * @param bool $write Manche Objekte können zur Zeit noch auch nur zum Lesen geöffnet werden.
+		 * @param array $args
 		 * @return Object
+		 * @todo Auch für nicht-Singleton-Dinge soll das funktionieren, is_subclass_of() scheint aber nicht mit Interfaces zu funktionieren
 		*/
 
-		static function Singleton($classname, $p1=null, $write=true)
+		static function __callStatic($classname, $args)
 		{
 			if(!isset(self::$objectInstances)) self::$objectInstances = array();
 			if(!isset(self::$objectInstances[$classname])) self::$objectInstances[$classname] = array();
-			$p1 = $classname::datasetName($p1);
+			$p1 = $classname::datasetName($classname::idFromParams($args));
 			if(!isset(self::$objectInstances[$classname][$p1]))
 			{
-				$instance = new $classname($p1, $write);
+				$instance = new $classname($p1);
 				self::$objectInstances[$classname][$p1] = $instance;
 			}
 
@@ -79,10 +79,7 @@
 				while(count(self::$objectInstances) > 0)
 				{
 					foreach(self::$objectInstances as $instanceName=>$instances)
-					{
-						if($instanceName == 'EventFile') continue;
 						self::resetInstances($instanceName);
-					}
 				}
 				return;
 			}
@@ -91,36 +88,12 @@
 
 			foreach(self::$objectInstances[$classname] as $key=>$instance)
 			{
-				if($destruct && method_exists($instance, '__destruct'))
+				if($destruct && method_exists($instance, "__destruct"))
 					$instance->__destruct();
 				unset(self::$objectInstances[$classname][$key]);
 			}
 			unset(self::$objectInstances[$classname]);
 		}
-
-		# Serialize mit Instanzen und Locking
-		static function User($p1=null, $write=true){ return self::Singleton('User', $p1, $write); }
-		static function Alliance($p1=null, $write=true){ return self::Singleton('Alliance', $p1, $write); }
-		static function Fleet($p1=null) { return self::Singleton('Fleet', $p1); }
-
-		# Serialize
-		static function Items(){ return self::Singleton('Items', 'items'); }
-		static function Item($id){ return self::Singleton("Item", $id); }
-
-		# Eigenes Binaerformat
-		static function Galaxy($p1, $write=true){ return self::Singleton('Galaxy', $p1, $write); }
-
-		# SQLite
-		static function SQLite() { return new SQLite(); }
-		static function EventFile() { return new EventFile(); }
-		static function Highscores() { return new Highscores(); }
-		static function IMFile() { return new IMFile(); }
-		static function Message($id=false){ return new Message($id); }
-		static function PublicMessage($id=false){ return new PublicMessage($id); }
-		static function ReloadStack() { return new ReloadStack(); }
-
-		static function System($galaxy,$system) { return new System($galaxy,$system); }
-		static function Planet($system,$planet) { return new Planet($system,$planet); }
 	}
 
-	register_shutdown_function(array('Classes', 'resetInstances'));
+	register_shutdown_function(array("Classes", "resetInstances"));

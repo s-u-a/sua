@@ -31,8 +31,20 @@
 
 	class PublicMessageDatabase extends SQLite
 	{
-		protected static $tables = array("public_messages" => array("message_id TEXT PRIMARY KEY", "last_view INTEGER", "sender TEXT", "text TEXT", "parsed TEXT", "subject TEXT", "html INTEGER", "receiver TEXT", "time INTEGER", "type INTEGER"));
-		protected static $id_field = "message_id";
+		protected static $tables = array (
+			"public_messages" => array (
+				"message_id TEXT PRIMARY KEY",
+				"last_view INTEGER",
+				"sender TEXT",
+				"text TEXT",
+				"parsed TEXT",
+				"subject TEXT",
+				"html INTEGER",
+				"receiver TEXT",
+				"time INTEGER",
+				"type INTEGER"
+			)
+		);
 
 		function getField($message_id, $field_name)
 		{

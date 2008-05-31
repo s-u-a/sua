@@ -15,20 +15,26 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage exceptions
+	 * @subpackage storage
 	*/
 
 	namespace sua;
 	require_once dirname(dirname(__FILE__))."/engine.php";
 
 	/**
-	 * Es ist ein Problem mit einem Benutzeraccount aufgetreten.
+	 * Klassen, die dieses Interface implementieren, besitzen eine statische Funktion init(), die beim Laden
+	 * der Klasse aufgerufen werden soll.
 	*/
 
-	class UserException extends SuaException
+	interface StaticInit
 	{
-		const ERROR_PLANETCOUNT = 1;
+		/**
+		 * Wird beim Einbinden der Klasse von __autoload() ausgeführt.
+		 * @return void
+		*/
+		abstract public static function init();
 	}
