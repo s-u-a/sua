@@ -401,7 +401,6 @@
     <item url="db_things/fix_verbuendet_relations.phpc" uploadstatus="1" />
     <item url="db_things/im_server.phpc" uploadstatus="1" />
     <item url="db_things/refill_fleets.phpc" uploadstatus="1" />
-    <item url="db_things/refill_universe.phpc" uploadstatus="1" />
     <item url="db_things/regen_highscores.phpc" uploadstatus="1" />
     <item url="db_things/reset_foreign_fleets.phpc" uploadstatus="1" />
     <item url="db_things/update_database.phpc" uploadstatus="1" />
@@ -425,45 +424,10 @@
     <item url="classes/system.php" uploadstatus="1" />
     <item url="doc/api/" uploadstatus="1" />
     <item url="doc/api/default/" uploadstatus="1" />
-    <item url="doc/api/default/FleetDatabase.html" uploadstatus="1" />
-    <item url="doc/api/default/Fleet.html" uploadstatus="1" />
-    <item url="doc/api/default/_fleet.php.html" uploadstatus="1" />
-    <item url="doc/api/default/Galaxy.html" uploadstatus="1" />
     <item url="doc/api/default/_galaxy.php.html" uploadstatus="1" />
-    <item url="doc/api/default/Gui.html" uploadstatus="1" />
-    <item url="doc/api/default/_gui.php.html" uploadstatus="1" />
-    <item url="doc/api/default/Highscores.html" uploadstatus="1" />
-    <item url="doc/api/default/_highscores.php.html" uploadstatus="1" />
-    <item url="doc/api/default/HomeGui.html" uploadstatus="1" />
-    <item url="doc/api/default/_homegui.php.html" uploadstatus="1" />
-    <item url="doc/api/default/IMFile.html" uploadstatus="1" />
-    <item url="doc/api/default/_imfile.php.html" uploadstatus="1" />
-    <item url="doc/api/default/Item.html" uploadstatus="1" />
-    <item url="doc/api/default/_item.php.html" uploadstatus="1" />
-    <item url="doc/api/default/Items.html" uploadstatus="1" />
-    <item url="doc/api/default/_items.php.html" uploadstatus="1" />
-    <item url="doc/api/default/JS.html" uploadstatus="1" />
-    <item url="doc/api/default/_js.php.html" uploadstatus="1" />
-    <item url="doc/api/default/l.html" uploadstatus="1" />
-    <item url="doc/api/default/LoginGui.html" uploadstatus="1" />
-    <item url="doc/api/default/_logingui.php.html" uploadstatus="1" />
-    <item url="doc/api/default/_l.php.html" uploadstatus="1" />
-    <item url="doc/api/default/Market.html" uploadstatus="1" />
-    <item url="doc/api/default/_market.php.html" uploadstatus="1" />
-    <item url="doc/api/default/ReloadStack.html" uploadstatus="1" />
     <item url="doc/api/default/_reloadstack.php.html" uploadstatus="1" />
-    <item url="doc/api/default/Serialized.html" uploadstatus="1" />
     <item url="doc/api/default/_serialized.php.html" uploadstatus="1" />
-    <item url="doc/api/default/SetupGui.html" uploadstatus="1" />
     <item url="doc/api/default/_setupgui.php.html" uploadstatus="1" />
-    <item url="doc/api/default/Singleton.html" uploadstatus="1" />
-    <item url="doc/api/default/_singleton.php.html" uploadstatus="1" />
-    <item url="doc/api/default/SQLite.html" uploadstatus="1" />
-    <item url="doc/api/default/_sqlite.php.html" uploadstatus="1" />
-    <item url="doc/api/default/SQLiteSet.html" uploadstatus="1" />
-    <item url="doc/api/default/_sqliteset.php.html" uploadstatus="1" />
-    <item url="doc/api/default/User.html" uploadstatus="1" />
-    <item url="doc/api/default/_user.php.html" uploadstatus="1" />
     <item url="doc/api/media/" uploadstatus="1" />
     <item url="doc/api/media/banner.css" uploadstatus="1" />
     <item url="doc/api/media/stylesheet.css" uploadstatus="1" />
@@ -528,8 +492,6 @@
     <item url="doc/api/sua/storage/_classes.php.html" uploadstatus="1" />
     <item url="doc/api/sua/storage/Dataset.html" uploadstatus="1" />
     <item url="doc/api/sua/storage/_dataset.php.html" uploadstatus="1" />
-    <item url="doc/api/sua/storage/EventFile.html" uploadstatus="1" />
-    <item url="doc/api/sua/storage/_eventfile.php.html" uploadstatus="1" />
     <item url="doc/api/sua/storage/Planet.html" uploadstatus="1" />
     <item url="doc/api/sua/storage/_planet.php.html" uploadstatus="1" />
     <item url="doc/api/sua/storage/System.html" uploadstatus="1" />
@@ -546,6 +508,271 @@
     <item url="classes/staticinit.php" uploadstatus="1" />
     <item url="classes/guiexception.php" uploadstatus="1" />
     <item url="classes/itemexception.php" uploadstatus="1" />
-    <item url="classes/galaxyexception.php" />
+    <item url="classes/galaxyexception.php" uploadstatus="1" />
+    <item url="config/" />
+    <item url="config/changelog" />
+    <item url="config/config.db" />
+    <item url="config/config.xml" />
+    <item url="config/config.xml.example" />
+    <item url="config/eventhandler.log" />
+    <item url="config/eventhandler.pid" />
+    <item url="config/.htaccess" />
+    <item url="config/imserver.pid" />
+    <item url="config/notifications" />
+    <item url="config/revision" />
+    <item url="config/version" />
+    <item url="doc/api/sua/config/HomeGui.html" />
+    <item url="doc/api/sua/config/_homegui.php.html" />
+    <item url="doc/api/sua/exceptions/FleetException.html" />
+    <item url="doc/api/sua/exceptions/_fleetexception.php.html" />
+    <item url="doc/api/sua/exceptions/GalaxyException.html" />
+    <item url="doc/api/sua/exceptions/_galaxyexception.php.html" />
+    <item url="doc/api/sua/exceptions/GuiException.html" />
+    <item url="doc/api/sua/exceptions/_guiexception.php.html" />
+    <item url="doc/api/sua/exceptions/ItemException.html" />
+    <item url="doc/api/sua/exceptions/_itemexception.php.html" />
+    <item url="doc/api/sua/exceptions/SerializedException.html" />
+    <item url="doc/api/sua/exceptions/_serializedexception.php.html" />
+    <item url="doc/api/sua/exceptions/UserException.html" />
+    <item url="doc/api/sua/exceptions/_userexception.php.html" />
+    <item url="doc/api/sua/gui/Gui.html" />
+    <item url="doc/api/sua/gui/_gui.php.html" />
+    <item url="doc/api/sua/gui/JS.html" />
+    <item url="doc/api/sua/gui/_js.php.html" />
+    <item url="doc/api/sua/gui/l.html" />
+    <item url="doc/api/sua/gui/LoginGui.html" />
+    <item url="doc/api/sua/gui/_logingui.php.html" />
+    <item url="doc/api/sua/gui/_l.php.html" />
+    <item url="doc/api/sua/gui/SetupGui.html" />
+    <item url="doc/api/sua/storage/Fleet.html" />
+    <item url="doc/api/sua/storage/_fleet.php.html" />
+    <item url="doc/api/sua/storage/Galaxy.html" />
+    <item url="doc/api/sua/storage/Highscores.html" />
+    <item url="doc/api/sua/storage/_highscores.php.html" />
+    <item url="doc/api/sua/storage/IMFile.html" />
+    <item url="doc/api/sua/storage/_imfile.php.html" />
+    <item url="doc/api/sua/storage/Item.html" />
+    <item url="doc/api/sua/storage/_item.php.html" />
+    <item url="doc/api/sua/storage/Market.html" />
+    <item url="doc/api/sua/storage/_market.php.html" />
+    <item url="doc/api/sua/storage/ReloadStack.html" />
+    <item url="doc/api/sua/storage/Serialized.html" />
+    <item url="doc/api/sua/storage/Singleton.html" />
+    <item url="doc/api/sua/storage/_singleton.php.html" />
+    <item url="doc/api/sua/storage/SQLite.html" />
+    <item url="doc/api/sua/storage/_sqlite.php.html" />
+    <item url="doc/api/sua/storage/SQLiteSet.html" />
+    <item url="doc/api/sua/storage/_sqliteset.php.html" />
+    <item url="doc/api/sua/storage/StaticInit.html" />
+    <item url="doc/api/sua/storage/_staticinit.php.html" />
+    <item url="doc/api/sua/storage/User.html" />
+    <item url="doc/api/sua/storage/_user.php.html" />
+    <item url="homepage/" />
+    <item url="homepage/images/" />
+    <item url="homepage/images/screenshots/" />
+    <item url="homepage/images/screenshots/preview_01.jpg" />
+    <item url="homepage/images/screenshots/preview_02.jpg" />
+    <item url="homepage/images/screenshots/preview_03.jpg" />
+    <item url="homepage/images/screenshots/preview_04.jpg" />
+    <item url="homepage/images/screenshots/preview_05.jpg" />
+    <item url="homepage/images/screenshots/preview_06.jpg" />
+    <item url="homepage/images/screenshots/preview_07.jpg" />
+    <item url="homepage/images/screenshots/preview_08.jpg" />
+    <item url="homepage/images/screenshots/preview_09.jpg" />
+    <item url="homepage/images/screenshots/preview_10.jpg" />
+    <item url="homepage/images/screenshots/preview_11.jpg" />
+    <item url="homepage/images/screenshots/preview_12.jpg" />
+    <item url="homepage/images/screenshots/screenshot_01.png" />
+    <item url="homepage/images/screenshots/screenshot_02.png" />
+    <item url="homepage/images/screenshots/screenshot_03.png" />
+    <item url="homepage/images/screenshots/screenshot_04.png" />
+    <item url="homepage/images/screenshots/screenshot_05.png" />
+    <item url="homepage/images/screenshots/screenshot_06.png" />
+    <item url="homepage/images/screenshots/screenshot_07.png" />
+    <item url="homepage/images/screenshots/screenshot_08.png" />
+    <item url="homepage/images/screenshots/screenshot_09.png" />
+    <item url="homepage/images/screenshots/screenshot_10.png" />
+    <item url="homepage/images/screenshots/screenshot_11.png" />
+    <item url="homepage/images/screenshots/screenshot_12.png" />
+    <item url="homepage/images/background.png" />
+    <item url="homepage/images/button_background.png" />
+    <item url="homepage/images/content_body_left.png" />
+    <item url="homepage/images/content_body_right.png" />
+    <item url="homepage/images/content_body_scale.png" />
+    <item url="homepage/images/content_bottom_centre.png" />
+    <item url="homepage/images/content_bottom_left.png" />
+    <item url="homepage/images/content_bottom_right.png" />
+    <item url="homepage/images/content_bottom_scale.png" />
+    <item url="homepage/images/content_inner_body_left.png" />
+    <item url="homepage/images/content_inner_body_right.png" />
+    <item url="homepage/images/content_inner_top_left.png" />
+    <item url="homepage/images/content_inner_top_right.png" />
+    <item url="homepage/images/content_inner_top_scale.png" />
+    <item url="homepage/images/content_top_centre.png" />
+    <item url="homepage/images/content_top_left.png" />
+    <item url="homepage/images/content_top_right.png" />
+    <item url="homepage/images/content_top_scale.png" />
+    <item url="homepage/images/input_background.png" />
+    <item url="homepage/images/navigation_body.png" />
+    <item url="homepage/images/navigation_bottom.png" />
+    <item url="homepage/images/navigation_button_down.png" />
+    <item url="homepage/images/navigation_button.png" />
+    <item url="homepage/images/navigation_top.png" />
+    <item url="homepage/images/separator.png" />
+    <item url="homepage/chat.php" />
+    <item url="homepage/faq.php" />
+    <item url="homepage/features.php" />
+    <item url="homepage/gpg.asc.php" />
+    <item url="homepage/impressum.php" />
+    <item url="homepage/include.php" />
+    <item url="homepage/index.php" />
+    <item url="homepage/passwd.php" />
+    <item url="homepage/phpinfo.php" />
+    <item url="homepage/public_message.php" />
+    <item url="homepage/register.php" />
+    <item url="homepage/rules.php" />
+    <item url="homepage/style.css" />
+    <item url="lib/" />
+    <item url="lib/jabberclass/" />
+    <item url="lib/jabberclass/class_ConnectionSocket.php" />
+    <item url="lib/jabberclass/class_Jabber.php" />
+    <item url="lib/jabberclass/class_SHA1Library.php" />
+    <item url="lib/jabberclass/class_XMLParser.php" />
+    <item url="lib/jabberclass/jabber_example.php" />
+    <item url="lib/jabberclass/LICENSE" />
+    <item url="lib/jabberclass/README" />
+    <item url="lib/openid/" />
+    <item url="lib/openid/class.openid.v3.php" />
+    <item url="lib/openid/openid_component_2008-02-06.zip" />
+    <item url="lib/pjirc/" />
+    <item url="lib/pjirc/img/" />
+    <item url="lib/pjirc/img/ange.gif" />
+    <item url="lib/pjirc/img/arbre.gif" />
+    <item url="lib/pjirc/img/argh.gif" />
+    <item url="lib/pjirc/img/ballon.gif" />
+    <item url="lib/pjirc/img/biere.gif" />
+    <item url="lib/pjirc/img/bombe.gif" />
+    <item url="lib/pjirc/img/bouche.gif" />
+    <item url="lib/pjirc/img/bouqin.gif" />
+    <item url="lib/pjirc/img/cadeau.gif" />
+    <item url="lib/pjirc/img/chien.gif" />
+    <item url="lib/pjirc/img/clin-oeuil.gif" />
+    <item url="lib/pjirc/img/clin-oeuil-langue.gif" />
+    <item url="lib/pjirc/img/coeur-brise.gif" />
+    <item url="lib/pjirc/img/coeur.gif" />
+    <item url="lib/pjirc/img/comprends-pas.gif" />
+    <item url="lib/pjirc/img/content.gif" />
+    <item url="lib/pjirc/img/cool.gif" />
+    <item url="lib/pjirc/img/diable.gif" />
+    <item url="lib/pjirc/img/dwchat.gif" />
+    <item url="lib/pjirc/img/enerve1.gif" />
+    <item url="lib/pjirc/img/enerve2.gif" />
+    <item url="lib/pjirc/img/femme.gif" />
+    <item url="lib/pjirc/img/fille.gif" />
+    <item url="lib/pjirc/img/fleur.gif" />
+    <item url="lib/pjirc/img/fume.gif" />
+    <item url="lib/pjirc/img/garcon.gif" />
+    <item url="lib/pjirc/img/grognon.gif" />
+    <item url="lib/pjirc/img/halloween.gif" />
+    <item url="lib/pjirc/img/hamburger.gif" />
+    <item url="lib/pjirc/img/homme.gif" />
+    <item url="lib/pjirc/img/langue.gif" />
+    <item url="lib/pjirc/img/lettre.gif" />
+    <item url="lib/pjirc/img/lit.gif" />
+    <item url="lib/pjirc/img/love.gif" />
+    <item url="lib/pjirc/img/lune.gif" />
+    <item url="lib/pjirc/img/mecontent.gif" />
+    <item url="lib/pjirc/img/newbie.gif" />
+    <item url="lib/pjirc/img/OH-1.gif" />
+    <item url="lib/pjirc/img/OH-2.gif" />
+    <item url="lib/pjirc/img/OH-3.gif" />
+    <item url="lib/pjirc/img/ordi.gif" />
+    <item url="lib/pjirc/img/pere-noel.gif" />
+    <item url="lib/pjirc/img/pleure.gif" />
+    <item url="lib/pjirc/img/poisson.gif" />
+    <item url="lib/pjirc/img/pomme.gif" />
+    <item url="lib/pjirc/img/portable.gif" />
+    <item url="lib/pjirc/img/pouce-non.gif" />
+    <item url="lib/pjirc/img/pouce-oui.gif" />
+    <item url="lib/pjirc/img/roll-eyes.gif" />
+    <item url="lib/pjirc/img/rouge.gif" />
+    <item url="lib/pjirc/img/sapin.gif" />
+    <item url="lib/pjirc/img/sleep.gif" />
+    <item url="lib/pjirc/img/soleil.gif" />
+    <item url="lib/pjirc/img/sourire.gif" />
+    <item url="lib/pjirc/img/terre.gif" />
+    <item url="lib/pjirc/img/triste.gif" />
+    <item url="lib/pjirc/img/verre-eau.gif" />
+    <item url="lib/pjirc/img/verre-vin.gif" />
+    <item url="lib/pjirc/img/yinyang.gif" />
+    <item url="lib/pjirc/english.lng" />
+    <item url="lib/pjirc/IRCApplet.class" />
+    <item url="lib/pjirc/irc.cab" />
+    <item url="lib/pjirc/irc.jar" />
+    <item url="lib/pjirc/pixx.cab" />
+    <item url="lib/pjirc/pixx-english.lng" />
+    <item url="lib/pjirc/pixx.jar" />
+    <item url="lib/sarissa/" />
+    <item url="lib/sarissa/sarissa.js" />
+    <item url="lib/sua/" />
+    <item url="lib/sua/classes/" />
+    <item url="lib/sua/classes/allianceexception.php" />
+    <item url="lib/sua/classes/alliance.php" />
+    <item url="lib/sua/classes/captchaexception.php" />
+    <item url="lib/sua/classes/captcha.php" />
+    <item url="lib/sua/classes/classes.php" />
+    <item url="lib/sua/classes/config.php" />
+    <item url="lib/sua/classes/databaseexception.php" />
+    <item url="lib/sua/classes/database.php" />
+    <item url="lib/sua/classes/datasetexception.php" />
+    <item url="lib/sua/classes/dataset.php" />
+    <item url="lib/sua/classes/fleetexception.php" />
+    <item url="lib/sua/classes/fleet.php" />
+    <item url="lib/sua/classes/f.php" />
+    <item url="lib/sua/classes/functions.php" />
+    <item url="lib/sua/classes/galaxyexception.php" />
+    <item url="lib/sua/classes/galaxy.php" />
+    <item url="lib/sua/classes/gpgexception.php" />
+    <item url="lib/sua/classes/gpg.php" />
+    <item url="lib/sua/classes/guiexception.php" />
+    <item url="lib/sua/classes/gui.php" />
+    <item url="lib/sua/classes/highscores.php" />
+    <item url="lib/sua/classes/homegui.php" />
+    <item url="lib/sua/classes/imfile.php" />
+    <item url="lib/sua/classes/ioexception.php" />
+    <item url="lib/sua/classes/itemexception.php" />
+    <item url="lib/sua/classes/item.php" />
+    <item url="lib/sua/classes/js.php" />
+    <item url="lib/sua/classes/logingui.php" />
+    <item url="lib/sua/classes/l.php" />
+    <item url="lib/sua/classes/market.php" />
+    <item url="lib/sua/classes/message.php" />
+    <item url="lib/sua/classes/planetexception.php" />
+    <item url="lib/sua/classes/planet.php" />
+    <item url="lib/sua/classes/publicmessage.php" />
+    <item url="lib/sua/classes/reloadstack.php" />
+    <item url="lib/sua/classes/serializedexception.php" />
+    <item url="lib/sua/classes/serialized.php" />
+    <item url="lib/sua/classes/setupgui.php" />
+    <item url="lib/sua/classes/singleton.php" />
+    <item url="lib/sua/classes/sqliteexception.php" />
+    <item url="lib/sua/classes/sqlite.php" />
+    <item url="lib/sua/classes/sqlitesetexception.php" />
+    <item url="lib/sua/classes/sqliteset.php" />
+    <item url="lib/sua/classes/staticinit.php" />
+    <item url="lib/sua/classes/suaexception.php" />
+    <item url="lib/sua/classes/systemexception.php" />
+    <item url="lib/sua/classes/system.php" />
+    <item url="lib/sua/classes/userexception.php" />
+    <item url="lib/sua/classes/user.php" />
+    <item url="lib/sua/engine.php" />
+    <item url="login/503.html" />
+    <item url="scripts/" />
+    <item url="scripts/callback_atts.phpc" />
+    <item url="scripts/create_database.sav" />
+    <item url="scripts/eventhandler.phpc" />
+    <item url="scripts/im_server.phpc" />
+    <item url="scripts/update_database.phpc" />
+    <item url="README" />
   </project>
 </webproject>
