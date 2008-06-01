@@ -285,7 +285,7 @@
 	document.write('<p><?=JS::jsentities(h(_("Klicken Sie auf einen der Punkte, um die zugehörigen Einstellungen auszuklappen.")))?></p>');
 // ]]>
 </script>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/einstellungen.php?'.global_setting("URL_SUFFIX"))?>" method="post" class="einstellungen-formular" enctype="multipart/form-data">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/login/einstellungen.php?'.global_setting("URL_SUFFIX"))?>" method="post" class="einstellungen-formular" enctype="multipart/form-data">
 	<fieldset class="aussehen" id="fieldset-<?=$fieldset++?>">
 		<legend><a accesskey="<?=l::accesskey_attr(_("Aussehen&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=h(_("Aussehen&[login/einstellungen.php|1]"))?></a></legend>
 		<dl class="form">
@@ -388,7 +388,7 @@
 					if(document.getElementById("skin-choice").value == "custom")
 						l[i].href = document.getElementById("skin").value;
 					else
-						l[i].href = '<?=JS::jsentities(h_root)?>/login/res/style/'+document.getElementById("skin-choice").value+'/style.css';
+						l[i].href = '<?=JS::jsentities(global_setting("h_root"))?>/login/res/style/'+document.getElementById("skin-choice").value+'/style.css';
 					break;
 				}
 			}
@@ -951,7 +951,7 @@
 ?>
 			<dd class="c-gpg-key"><input type="file" name="gpg" id="i-gpg"<?=l::accesskey_attr(_("OpenPGP-Key&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
 <?php /*			<dd class="c-gpg-key"><input type="checkbox" name="gpg_im" id="i-gpg-im"<?=$me->checkSetting("gpg_im") ? " checked=\"checked\"" : ""?><?=l::accesskey_attr(_("Für Instant Messaging verwenden&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /><label for="i-gpg-im"> <?=h(_("Für Instant Messaging verwenden&[login/einstellungen.php|1]"))?></dd>*/?>
-			<dd class="c-gpg-key"><a href="<?=htmlspecialchars(h_root."/gpg.asc.php")?>"><?=h(_("Den OpenPGP-Key des Spiels herunterladen"))?></a></dd>
+			<dd class="c-gpg-key"><a href="<?=htmlspecialchars(global_setting("h_root")."/gpg.asc.php")?>"><?=h(_("Den OpenPGP-Key des Spiels herunterladen"))?></a></dd>
 <?php
 	}
 ?>

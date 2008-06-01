@@ -40,8 +40,6 @@
 		else
 		{
 			$that_user = Classes::User($_POST['benutzername']);
-			if(!$that_user->getStatus())
-				$error = _('Datenbankfehler.');
 			elseif(!Functions::check_email(trim($that_user->getEMailAddress())))
 				$error = _('In diesem Account wurde keine gültige E-Mail-Adresse gespeichert.');
 			elseif($_POST["email"] == trim($that_user->getEMailAddress()) || $_POST['email'] == trim($that_user->getTemporaryEMailAddress()))
@@ -49,7 +47,7 @@
 				$send_id = $that_user->getPasswordSendID();
 
 				# ID schreiben
-				if(!$that_user->sendMail(sprintf($that_user->_("Passwortänderung in %s"), $that_user->_("[title_abbr]")), sprintf($that_user->_("Jemand (vermutlich Sie) hat in %2\$s die „Passwort vergessen“-Funktion mit Ihrem Account benutzt. Diese Nachricht ist deshalb an jene E-Mail-Adresse adressiert, die Sie in Ihren Einstellungen in %2\$s eingetragen haben.\nSollten Sie eine Änderung Ihres Passworts nicht erwünschen, ignorieren – oder besser löschen – Sie diese Nachricht einfach.\n\nUm Ihr Passwort zu ändern, rufen Sie bitte die folgende Adresse in Ihrem Browser auf und folgen Sie den Anweisungen:\n%3\$s\n(Ohne SSL: %4\$s.)"), $that_user->_("[title_full]"), $that_user->_("[title_abbr]"), "https://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."&database=".urlencode($_POST['database']), "http://".$_SERVER['HTTP_HOST'].h_root."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."&database=".urlencode($_POST['database']))))
+				if(!$that_user->sendMail(sprintf($that_user->_("Passwortänderung in %s"), $that_user->_("[title_abbr]")), sprintf($that_user->_("Jemand (vermutlich Sie) hat in %2\$s die „Passwort vergessen“-Funktion mit Ihrem Account benutzt. Diese Nachricht ist deshalb an jene E-Mail-Adresse adressiert, die Sie in Ihren Einstellungen in %2\$s eingetragen haben.\nSollten Sie eine Änderung Ihres Passworts nicht erwünschen, ignorieren – oder besser löschen – Sie diese Nachricht einfach.\n\nUm Ihr Passwort zu ändern, rufen Sie bitte die folgende Adresse in Ihrem Browser auf und folgen Sie den Anweisungen:\n%3\$s\n(Ohne SSL: %4\$s.)"), $that_user->_("[title_full]"), $that_user->_("[title_abbr]"), "https://".$_SERVER['HTTP_HOST'].global_setting("h_root")."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."&database=".urlencode($_POST['database']), "http://".$_SERVER['HTTP_HOST'].global_setting("h_root")."/passwd.php?name=".urlencode($_POST['benutzername'])."&id=".urlencode($send_id)."&database=".urlencode($_POST['database']))))
 					$error = _('Fehler beim Versand der E-Mail-Nachricht.');
 			}
 		}
@@ -72,13 +70,7 @@
 		else
 		{
 			$that_user = Classes::User($_GET['name']);
-			if(!$that_user->getStatus())
-			{
-?>
-<p class="error"><?=h(_("Datenbankfehler."))?></p>
-<?php
-			}
-			elseif(!$that_user->checkPasswordSendID($_GET['id']))
+			if(!$that_user->checkPasswordSendID($_GET['id']))
 			{
 ?>
 <p class="error"><?=h(_("Falsche ID."))?></p>
@@ -154,7 +146,7 @@
 <p><?=sprintf(h(_("Sollten Sie im Spiel keine gültige E-Mail-Adresse angegeben haben, %swenden Sie sich bitte an einen der Administratoren%s.")), "<a href=\"faq.php#administrators\" title=\"".h(sprintf(_("FAQ: %s"), _("Wie kann ich die Administratoren erreichen?")))."\">", "</a>")?></p>
 <hr />
 <p><?=h(_("Um Ihr Passwort ändern zu können, füllen Sie bitte in das folgende Formular Ihren Benutzernamen und diejenige E-Mail-Adresse an, die Sie im Spiel in Ihren Einstellungen gespeichert haben."))?></p>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/passwd.php')?>" method="post">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/passwd.php')?>" method="post">
 	<dl>
 		<dt><label for="runde-select"><?=h(_("Runde&[passwd.php|2]"))?></label></dt>
 		<dd><select name="database" id="runde-select"<?=l::accesskey_attr(_("Runde&[passwd.php|2]"))?>>

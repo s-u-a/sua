@@ -347,4 +347,19 @@
 				$list[$encoded_sp[$i]] = (float)$encoded_sp[++$i];
 			return $list;
 		}
+
+		/**
+		 * Planetengröße = Ursprüngliche Größe * (1 + ( Ausbaustufe Ingenieurswissenschaft / Item::getIngtechFactor() ) )
+		 * @return int
+		*/
+
+		static function getIngtechFactor()
+		{
+			if(file_exists(global_setting("DB_USE_OLD_INGTECH")))
+				return 1;
+			elseif(file_exists(global_setting("DB_USE_OLD_ROBTECH")))
+				return 2;
+			else
+				return 10;
+		}
 	}

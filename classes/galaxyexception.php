@@ -16,18 +16,19 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 	/**
-	 * Include-Datei für die Hauptseite.
 	 * @author Candid Dauth
-	 * @package sua-frontend
-	 * @subpackage home
+	 * @package sua
+	 * @subpackage exceptions
 	*/
 
-	namespace sua::frontend;
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
 
-	$__FILE__ = str_replace("\\", "/", __FILE__);
-	$include_filename = dirname($__FILE__).'/engine.php';
-	require_once($include_filename);
+	/**
+	 * Es ist ein Fehler in einer Galaxie aufgetreten. Zum Beispiel wurde versucht,
+	 * eine zu erzeugen, die schon existiert.
+	*/
 
-	l::language("de_DE", true);
-	$gui = Classes::HomeGui();
-?>
+	class GalaxyException extends SuaException
+	{
+	}

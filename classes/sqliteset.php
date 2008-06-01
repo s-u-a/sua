@@ -47,6 +47,8 @@
 		*/
 		protected static $tables;
 
+		protected static $views;
+
 		static public init()
 		{
 			self::$sqlite = Classes::SQLite();
@@ -60,7 +62,7 @@
 
 		static protected function checkTables()
 		{
-			self::$sqlite->checkTables(static::$tables);
+			self::$sqlite->checkTables(static::$tables, static::$views);
 		}
 
 		static function datasetName($name=null)
@@ -72,7 +74,8 @@
 			{
 				do { $name = Functions::randomID(); } while(!self::exists($name));
 			}
-			$existing = self::$sqlite->singleQuery("SELECT ".static::_idField()." FROM ".Functions::first(static::$tables)." WHERE LOWER(".static::_idField().") = LOWER(".self::$sqlite->quote($name).");");
+			$name = parent::datasetName($name);
+			$existing = self::$sqlite->singleField("SELECT ".static::_idField()." FROM ".Functions::first(static::$tables)." WHERE LOWER(".static::_idField().") = LOWER(".self::$sqlite->quote($name).");");
 			if($existing !== false)
 				$name = $existing;
 			return $name;
@@ -97,7 +100,7 @@
 
 		static function getNumber()
 		{
-			return self::singleQuery("SELECT COUNT(*) FROM ".Functions::first(static::$tables).";");
+			return self::singleField("SELECT COUNT(*) FROM ".Functions::first(static::$tables).";");
 		}
 
 		static function exists($name)
@@ -106,7 +109,7 @@
 				$name = static::idFromParams(func_get_args());
 
 			$name = static::datasetName($name);
-			return (self::$sqlite->singleQuery("SELECT COUNT(*) FROM ".Functions::first(static::$tables)." WHERE LOWER(".static::_idField().") = LOWER(".self::$sqlite->quote($name).");") >= 1);
+			return (self::$sqlite->singleField("SELECT COUNT(*) FROM ".Functions::first(static::$tables)." WHERE LOWER(".static::_idField().") = LOWER(".self::$sqlite->quote($name).");") >= 1);
 		}
 
 		abstract static function create($name);
@@ -122,7 +125,7 @@
 
 		protected function getMainField($field_name)
 		{
-			return self::$sqlite->singleQuery("SELECT ".$field_name." FROM ".Functions::first(static::$tables)." WHERE ".static::_idField()." = ".self::$sqlite->quote($this->getName()).";");
+			return self::$sqlite->singleField("SELECT ".$field_name." FROM ".Functions::first(static::$tables)." WHERE ".static::_idField()." = ".self::$sqlite->quote($this->getName()).";");
 		}
 
 		/**

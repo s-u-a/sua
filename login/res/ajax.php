@@ -97,21 +97,26 @@ EOF;
 			if(!isset($_GET['system']) || !is_array($_GET['system'])) $_GET['system'] = array();
 			foreach($_GET['system'] as $systemo)
 			{
-				$system = explode(':', $systemo);
-				if(count($system) != 2) continue;
-				$galaxy_obj = Classes::Galaxy($system[0]);
-				if(!$galaxy_obj->getStatus() || !($planets_count = $galaxy_obj->getPlanetsCount($system[1])))
-					continue;
+				$system = System::fromString($systemo);
 				echo "\t<system number=\"".htmlspecialchars($systemo)."\">\n";
 
-				for($i=1; $i<=$planets_count; $i++)
+				foreach($system as $i=>$planet)
 				{
+					$owner = $planet->getOwner();
+					$alliance = $flag = "";
+					if($owner)
+					{
+						$user_obj = Classes::User($owner);
+						$alliance = Alliance::getUserAlliance($owner);
+						$flag = $user_obj->getFlag();
+					}
+
 					echo "\t\t<planet number=\"".htmlspecialchars($i)."\">\n";
-					echo "\t\t\t<owner>".htmlspecialchars($galaxy_obj->getPlanetOwner($system[1], $i))."</owner>\n";
-					echo "\t\t\t<name>".htmlspecialchars($galaxy_obj->getPlanetName($system[1], $i))."</name>\n";
-					echo "\t\t\t<alliance>".htmlspecialchars($galaxy_obj->getPlanetOwnerAlliance($system[1], $i))."</alliance>\n";
-					echo "\t\t\t<flag>".htmlspecialchars($galaxy_obj->getPlanetOwnerFlag($system[1], $i))."</flag>\n";
-					$truemmerfeld = $galaxy_obj->truemmerfeldGet($system[1], $i);
+					echo "\t\t\t<owner>".htmlspecialchars($owner)."</owner>\n";
+					echo "\t\t\t<name>".htmlspecialchars($planet->getName())."</name>\n";
+					echo "\t\t\t<alliance>".htmlspecialchars($alliance)."</alliance>\n";
+					echo "\t\t\t<flag>".htmlspecialchars($flag)."</flag>\n";
+					$truemmerfeld = $planet->getTruemmerfeld();
 					if(array_sum($truemmerfeld) > 0)
 						echo "\t\t\t<truemmerfeld carbon=\"".htmlspecialchars($truemmerfeld[0])."\" aluminium=\"".htmlspecialchars($truemmerfeld[1])."\" wolfram=\"".htmlspecialchars($truemmerfeld[2])."\" radium=\"".htmlspecialchars($truemmerfeld[3])."\" />\n";
 					echo "\t\t</planet>\n";

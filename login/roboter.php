@@ -143,7 +143,7 @@
 <?php
 		}
 ?>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/roboter.php?'.global_setting("URL_SUFFIX"))?>" method="post" class="alle-abbrechen">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/login/roboter.php?'.global_setting("URL_SUFFIX"))?>" method="post" class="alle-abbrechen">
 	<p><?=sprintf(h(_("Geben Sie hier Ihr Passwort ein, um alle im Bau befindlichen Roboter %sohne Kostenrückerstattung%s abzubrechen.")), "<strong>", "</strong>")?></p>
 	<div><input type="password" name="cancel-all-roboter" /><input type="submit" value="<?=h(_("Alle abbrechen&[login/roboter.php|1]"), false)?>"<?=l::accesskey_attr(_("Alle abbrechen&[login/roboter.php|1]"))?> /></div>
 </form>

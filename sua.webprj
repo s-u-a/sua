@@ -83,7 +83,6 @@
     <item url="login/info/" uploadstatus="1" />
     <item url="login/info/allianceinfo.php" uploadstatus="1" />
     <item url="login/info/changelog.php" uploadstatus="1" />
-    <item url="login/info/description.php" uploadstatus="1" />
     <item url="login/info/flotten_actions.php" uploadstatus="1" />
     <item url="login/info/logout.php" uploadstatus="1" />
     <item url="login/info/playerinfo.php" uploadstatus="1" />
@@ -296,7 +295,6 @@
     <item url="classes/captchaexception.php" uploadstatus="1" />
     <item url="classes/classes.php" uploadstatus="1" />
     <item url="classes/dataset.php" uploadstatus="1" />
-    <item url="classes/eventfile.php" uploadstatus="1" />
     <item url="classes/fleet.php" uploadstatus="1" />
     <item url="classes/galaxy.php" uploadstatus="1" />
     <item url="classes/gui.php" uploadstatus="1" />
@@ -305,7 +303,6 @@
     <item url="classes/imfile.php" uploadstatus="1" />
     <item url="classes/ioexception.php" uploadstatus="1" />
     <item url="classes/item.php" uploadstatus="1" />
-    <item url="classes/items.php" uploadstatus="1" />
     <item url="classes/logingui.php" uploadstatus="1" />
     <item url="classes/market.php" uploadstatus="1" />
     <item url="classes/message.php" uploadstatus="1" />
@@ -543,11 +540,12 @@
     <item url="doc/api/sua/tools/GPG.html" uploadstatus="1" />
     <item url="doc/api/sua/tools/_gpg.php.html" uploadstatus="1" />
     <item url="doc/api/todolist.html" uploadstatus="1" />
-    <item url="classes/fleet.php.27170.backup" />
-    <item url="classes/fleet.php.27372.backup" />
-    <item url="classes/fleet.php.27621.backup" />
-    <item url="classes/userexception.php" />
-    <item url="classes/serializedexception.php" />
-    <item url="login/info/iteminfo.php" />
+    <item url="classes/userexception.php" uploadstatus="1" />
+    <item url="classes/serializedexception.php" uploadstatus="1" />
+    <item url="login/info/iteminfo.php" uploadstatus="1" />
+    <item url="classes/staticinit.php" uploadstatus="1" />
+    <item url="classes/guiexception.php" uploadstatus="1" />
+    <item url="classes/itemexception.php" uploadstatus="1" />
+    <item url="classes/galaxyexception.php" />
   </project>
 </webproject>

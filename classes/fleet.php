@@ -16,16 +16,6 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*
-  * Format von $raw:
-  * [ Ziele, Benutzer, Startzeit, Vergangene Ziele ]
-  * Ziele: ( (string) Koordinaten => [ Fleet::TYPE_*, (boolean) Rückflug? ] )
-  * Benutzer: ( (string) Benutzername => [ ( Schiffs-ID => Anzahl ), (string) Start-Koordinaten, (float) Geschwindigkeitsfaktor, Mitgenommene Rohstoffe, Handel, (float) Verbrauchtes Tritium (für die Flugerfahrungspunkte) ] )
-  * Vergangene Ziele: Ziele
-  * Mitgenommene Rohstoffe: [ ( Rohstoffnummer => Menge ), ( Roboter-ID => Anzahl ), Überschüssiges Tritium ]
-  * Handel: [ ( Rohstoffnummer => Menge ), ( Roboter-ID => Anzahl ), Rohstoffe abliefern? ]
-*/
-
 	/**
 	 * @author Candid Dauth
 	 * @package sua
@@ -83,19 +73,22 @@
 				"fleet_id TEXT",
 				"user TEXT",
 				"id TEXT",
-				"number INTEGER"
+				"number INTEGER",
+				"scores INTEGER"
 			),
 		    "fleets_users_hrob" => array (
 				"fleet_id TEXT",
 				"user TEXT",
 				"id TEXT",
-				"number INTEGER"
+				"number INTEGER",
+				"scores INTEGER"
 			),
 		    "fleets_users_fleet" => array (
 				"fleet_id TEXT",
 				"user TEXT",
 				"id TEXT",
-				"number INTEGER"
+				"number INTEGER",
+				"scores INTEGER"
 			)
 		);
 
@@ -287,7 +280,7 @@
 			if($user != $first_user)
 				return 1;
 
-			$slots = self::$sqlite->singleQuery("SELECT COUNT(*) FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT flying_back;");
+			$slots = self::$sqlite->singleField("SELECT COUNT(*) FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT flying_back;");
 			if($slots < 1) $slots = 1;
 			return $slots;
 		}
@@ -302,13 +295,13 @@
 
 		function addTarget(Planet $pos, $type, $back)
 		{
-			$i = 1+self::$sqlite->singleQuery("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
+			$i = 1+self::$sqlite->singleField("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
 			self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back ) VALUES ( ".self::$sqlite->quote($i).", ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($pos->getGalaxy()).", ".self::$sqlite->quote($pos->getSystem()).", ".self::$sqlite->quote($pos->getPlanet()).", ".self::$sqlite->quote($type).", ".self::$sqlite->quote($flying_back ? 1 : 0)." );");
 
 			# Eintragen in die Flottenliste des Benutzers
 			if($this->started() && (!$back || $type != self::TYPE_SAMMELN))
 			{
-				$owner = $pos->getPlanetOwner();
+				$owner = $pos->getOwner();
 				if($owner)
 				{
 					$user = Classes::User($owner);
@@ -325,7 +318,7 @@
 
 		function userExists($user)
 		{
-			return (self::$sqlite->singleQuery("SELECT COUNT(*) FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND username = ".self::$sqlite->quote($user).";") > 0);
+			return (self::$sqlite->singleField("SELECT COUNT(*) FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND username = ".self::$sqlite->quote($user).";") > 0);
 		}
 
 		/**
@@ -335,7 +328,7 @@
 
 		function getCurrentType()
 		{
-			return self::$sqlite->singleQuery("SELECT type FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;");
+			return self::$sqlite->singleField("SELECT type FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;");
 		}
 
 		/**
@@ -383,7 +376,7 @@
 		function getNextArrival()
 		{
 			if($this->started())
-				return self::$sqlite->singleQuery("SELECT arrival FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i DESC LIMIT 1;");
+				return self::$sqlite->singleField("SELECT arrival FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i DESC LIMIT 1;");
 			else
 				return time()+$this->calcTime($this->getFirstUser(), $this->getLastTarget(), $this->getCurrentTarget());
 		}
@@ -396,7 +389,7 @@
 
 		function getArrival($i)
 		{
-			return self::$sqlite->singleQuery("SELECT arrival FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND i = ".self::$sqlite->quote($i).";");
+			return self::$sqlite->singleField("SELECT arrival FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND i = ".self::$sqlite->quote($i).";");
 		}
 
 		/**
@@ -406,7 +399,7 @@
 
 		function isFlyingBack()
 		{
-			return (true && self::$sqlite->singleQuery("SELECT flying_back FROM fleets_targets WHERE fleet_id = ".self::$sqite->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;"));
+			return (true && self::$sqlite->singleField("SELECT flying_back FROM fleets_targets WHERE fleet_id = ".self::$sqite->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;"));
 		}
 
 		/**
@@ -423,11 +416,14 @@
 			if($count < 0)
 				throw new InvalidArgumentException("Invalid number.");
 
-			$old_number = self::$sqlite->singleQuery("SELECT number FROM fleets_users_fleet WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user)." AND id = ".self::$sqlite->quote($id)." LIMIT 1;");
+			$user_obj = Classes::User($user);
+			$item_info = $user_obj->getItemInfo($id, "schiffe", array("scores"));
+			$scores = $item_info["scores"]*$count;
+			$old_number = self::$sqlite->singleField("SELECT number FROM fleets_users_fleet WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user)." AND id = ".self::$sqlite->quote($id)." LIMIT 1;");
 			if($old_number === false)
-				self::$sqlite->query("INSERT INTO fleets_users_fleet ( fleet_id, user, id, number ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($id).", ".self::$sqlite->quote($count)." );");
+				self::$sqlite->query("INSERT INTO fleets_users_fleet ( fleet_id, user, id, number, scores ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($id).", ".self::$sqlite->quote($count).", ".self::$sqlite->quote($scores)." );");
 			else
-				self::$sqlite->query("UPDATE fleets_users_fleet SET number = number + ".self::$sqlite->quote($count)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user)." AND id = ".self::$sqlite->quote($id).";");
+				self::$sqlite->query("UPDATE fleets_users_fleet SET number = number + ".self::$sqlite->quote($count).", scores = scores + ".self::$sqlite->quote($scores)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user)." AND id = ".self::$sqlite->quote($id).";");
 
 			if(!$this->isFirstUser($user)) // Geschwindigkeitsfaktor anpassen
 				self::$sqlite->query("UPDATE fleets_users SET factor = ".self::$sqlite->quote($this->calcTime($user, $this->from($user), $this->getCurrentTarget(), true, true)/($this->getNextArrival()-time()))." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
@@ -440,7 +436,7 @@
 
 		function getFirstUser()
 		{
-			return self::$sqlite->singleQuery("SELECT user FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i ASC LIMIT 1;");
+			return self::$sqlite->singleField("SELECT user FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i ASC LIMIT 1;");
 		}
 
 		/**
@@ -471,7 +467,7 @@
 			if($this->getFirstUser() !== false)
 				$factor = null;
 
-			$i = 1+self::$sqlite->singleQuery("SELECT i FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
+			$i = 1+self::$sqlite->singleField("SELECT i FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
 			self::$sqlite->query("INSERT INTO fleets_users ( i, fleet_id, user, from_galaxy, from_system, from_planet, factor ) VALUES ( ".self::$sqlite->quote($i).", ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($from->getGalaxy()).", ".self::$sqlite->quote($from->getSystem()).", ".self::$sqlite->quote($from->getPlanet()).", ".self::$sqlite->quote($factor)." );");
 
 			# Eintragen in die Flottenliste des Benutzers
@@ -527,13 +523,16 @@
 
 			if($robs)
 			{
+				$user_obj = Classes::User($user);
 				$robs = Functions::fitToMax($robs, $max_robs);
 				foreach($robs as $i=>$rob)
 				{
+					$item_info = $user_obj->getItemInfo($i, "roboter", array("scores"));
+					$scores = $item_info["scores"]*$rob;
 					if(isset($trans[1][$i]))
-						self::$sqlite->query("UPDATE fleets_users_rob SET number = number + ".self::$sqlite->quote($rob)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+						self::$sqlite->query("UPDATE fleets_users_rob SET number = number + ".self::$sqlite->quote($rob).", scores = scores + ".self::$sqlite->quote($scores)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 					else
-						self::$sqlite->query("INSERT INTO fleets_users_rob ( fleet_id, user, id, number ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($i).", ".self::$sqlite->quote($rob).");");
+						self::$sqlite->query("INSERT INTO fleets_users_rob ( fleet_id, user, id, number, scores ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($i).", ".self::$sqlite->quote($rob).", ".self::$sqlite->quote($scores).");");
 				}
 			}
 		}
@@ -570,12 +569,15 @@
 			if($robs)
 			{
 				$robs = Functions::fitToMax($robs, $max_robs);
+				$user_obj = Classes::User($user);
 				foreach($robs as $i=>$rob)
 				{
+					$item_info = $user_obj->getItemInfo($i, "roboter", array("scores"));
+					$scores = $item_info["scores"]*$rob;
 					if(isset($trans[1][$i]))
-						self::$sqlite->query("UPDATE fleets_users_hrob SET number = number + ".self::$sqlite->quote($rob)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+						self::$sqlite->query("UPDATE fleets_users_hrob SET number = number + ".self::$sqlite->quote($rob).", scores = scores + ".self::$sqlite->quote($scores)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 					else
-						self::$sqlite->query("INSERT INTO fleets_users_hrob ( fleet_id, user, id, number ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($i).", ".self::$sqlite->quote($rob).");");
+						self::$sqlite->query("INSERT INTO fleets_users_hrob ( fleet_id, user, id, number, scores ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($i).", ".self::$sqlite->quote($rob).", ".self::$sqlite->quote($scores)." );");
 				}
 			}
 		}
@@ -610,12 +612,15 @@
 			if($robs)
 			{
 				$robs = Functions::fitToMax($robs, $max_robs);
+				$user_obj = Classes::User($user);
 				foreach($robs as $i=>$rob)
 				{
+					$item_info = $user_obj->getItemInfo($i, "roboter", array("scores"));
+					$scores = $item_info["scores"]*$rob;
 					if(isset($trans[1][$i]))
-						self::$sqlite->query("UPDATE fleets_users_hrob SET number = ".self::$sqlite->quote($rob)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+						self::$sqlite->query("UPDATE fleets_users_hrob SET number = ".self::$sqlite->quote($rob).", scores = ".self::$sqlite->quote($scores)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 					else
-						self::$sqlite->query("INSERT INTO fleets_users_hrob ( fleet_id, user, id, number ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($i).", ".self::$sqlite->quote($rob).");");
+						self::$sqlite->query("INSERT INTO fleets_users_hrob ( fleet_id, user, id, number, scores ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($i).", ".self::$sqlite->quote($rob).", ".self::$sqlite->quote($scores)." );");
 				}
 			}
 		}
@@ -676,7 +681,7 @@
 			if(isset($new_value))
 				self::$sqlite->query("UPDATE fleets_users SET dont_put_ress = ".self::$sqlite->quote($new_value ? 1 : 0)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 			else
-				return (true && self::$sqlite->singleQuery("SELECT dont_put_ress FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";"));
+				return (true && self::$sqlite->singleField("SELECT dont_put_ress FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";"));
 		}
 
 		/**
@@ -880,7 +885,7 @@
 
 		function isATarget(Planet $target)
 		{
-			return (self::$sqlite->singleQuery("SELECT COUNT(*) FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND galaxy = ".self::$sqlite->quote($target->getGalaxy())." AND system = ".self::$sqlite->quote($target->getSystem())." AND planet = ".self::$sqlite->quote($target->getPlanet()).";") > 0);
+			return (self::$sqlite->singleField("SELECT COUNT(*) FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND galaxy = ".self::$sqlite->quote($target->getGalaxy())." AND system = ".self::$sqlite->quote($target->getSystem())." AND planet = ".self::$sqlite->quote($target->getPlanet()).";") > 0);
 		}
 
 		/**
@@ -940,7 +945,7 @@
 
 		function started()
 		{
-			return (true && self::$sqlite->singleQuery("SELECT departing FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($this->getFirstUser()).";"));
+			return (true && self::$sqlite->singleField("SELECT departing FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($this->getFirstUser()).";"));
 		}
 
 		/**
@@ -952,7 +957,7 @@
 		function getStartTime($user = null)
 		{
 			if(!isset($user)) $user = $this->getFirstUser();
-			return self::$sqlite->singleQuery("SELECT departing FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+			return self::$sqlite->singleField("SELECT departing FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 		}
 
 		/**
@@ -999,7 +1004,7 @@
 			}
 			else
 			{
-				$galaxy_count = Galaxy::getGalaxiesCount();
+				$galaxy_count = Galaxy::getNumber();
 
 				$galaxy_diff_1 = Functions::diff($start->getGalaxy(), $target->getGalaxy());
 				$galaxy_diff_2 = Functions::diff($start->getGalaxy()+$galaxy_count, $target->getGalaxy());
@@ -1132,7 +1137,7 @@
 				self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished SELECT i, ".self::$sqlite->quote($new_fleet).", galaxy, system, planet, type, flying_back, arrival, finished FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished;");
 
 			// Neues Ziel hinzufügen
-			$i = self::$sqlite->singleQuery("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($new_fleet)." ORDER BY i DESC LIMIT 1;");
+			$i = self::$sqlite->singleField("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($new_fleet)." ORDER BY i DESC LIMIT 1;");
 			if($i === false)
 				$i = 1;
 			self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished ) VALUES ( ".self::$sqlite->quote($i).", ".self::$sqlite->quote($new_fleet).", ".self::$sqlite->quote($start->getGalaxy()).", ".self::$sqlite->quote($start->getSystem()).", ".self::$sqlite->quote($start->getPlanet()).", ".self::$sqlite->quote($this->getCurrentType()).", 1, ".self::$sqlite->quote(time()+$back_time).", 0 );");
@@ -1147,7 +1152,7 @@
 			elseif(!$is_first_user)
 			{
 				# Weitere Ziele entfernen, da diese zu diesem Benutzer gehoert haben
-				$min_i = self::$sqlite->singleQuery("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i ASC LIMIT 1;");
+				$min_i = self::$sqlite->singleField("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i ASC LIMIT 1;");
 				self::$sqlite->query("DELETE FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND i > ".self::$sqlite->quote($min_i).";");
 
 				# Letztes Ziel muss stationieren, Ursprungsplaneten des Benutzers hinzufuegen
@@ -1220,7 +1225,6 @@
 				if($target_owner)
 				{
 					$target_user = Classes::User($target_owner);
-					if(!$target_user->getStatus()) return false;
 					$target_user->setActivePlanet($target_user->getPlanetByPos($target));
 				}
 				else $target_user = false;
@@ -1316,7 +1320,7 @@
 							# Aus dem Truemmerfeld abziehen
 							$target->subTruemmerfeld($ress_max[0], $ress_max[1], $ress_max[2], $ress_max[3]);
 
-							$tr_verbl = $target->truemmerfeldGet();
+							$tr_verbl = $target->getTruemmerfeld();
 
 							# Nachrichten versenden
 							foreach($got_ress as $username=>$rtrans)
@@ -1422,7 +1426,7 @@
 									self::$sqlite->query("UPDATE fleets_users SET ress0 = ress0 + ".$transh[0].", ress1 = ress1 + ".$transh[1].", ress2 = ress2 + ".$transh[2].", ress3 = ress3 + ".$transh[3].", ress4 = ress4 + ".$transh[4]." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($username).";");
 									foreach($transh[1] as $id=>$number)
 									{
-										if(self::$sqlite->singleQuery("SELECT COUNT(*) FROM fleets_users_rob WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($username)." AND id = ".self::$sqlite->quote($id).";") >= 1)
+										if(self::$sqlite->singleField("SELECT COUNT(*) FROM fleets_users_rob WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($username)." AND id = ".self::$sqlite->quote($id).";") >= 1)
 											self::$sqlite->query("UPDATE fleets_users_rob SET number = number + ".self::$sqlite->quote($number)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($username)." AND id = ".self::$sqlite->quote($id).";");
 										else
 											self::$sqlite->query("INSERT INTO fleets_users_rob ( fleet_id, user, id, number ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($username).", ".self::$sqlite->quote($id).", ".self::$sqlite->quote($number).");");
@@ -1778,7 +1782,7 @@
 
 				if($further)
 				{
-					$i = self::$sqlite->singleQuery("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT FINISHED ORDER BY i ASC LIMIT 1;");
+					$i = self::$sqlite->singleField("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT FINISHED ORDER BY i ASC LIMIT 1;");
 					self::$sqlite->query("UPDATE fleets_targets SET finished = 1 WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND i = ".self::$sqlite->quote($i).";");
 				}
 
@@ -1796,7 +1800,7 @@
 			{
 				# Stationieren
 
-				$owner = $target->getPlanetOwner($target[1], $target[2]);
+				$owner = $target->getOwner();
 
 				if($besiedeln || $owner == $first_user && !$back)
 				{
@@ -1980,24 +1984,21 @@
 
 		/**
 		* Laesst auf dem Planeten $planet die Flotten $angreifer angreifen.
-		* @param $planet (string) Galaxie ':' System ':' Planet
-		* @param $angreifer_param ( Benutzername => [ ( Item-ID => Anzahl ), ( Rohstoff-Index => Rohstoff-Anzahl ) ] )
+		* @param Planet $planet
+		* @param array $angreifer_param ( Benutzername => [ ( Item-ID => Anzahl ), ( Rohstoff-Index => Rohstoff-Anzahl ) ] )
 		* @return $angreifer_param hinterher
-		* @return false bei Fehlschlag
 		*/
 
-		static function battle($planet, $angreifer_param)
+		static function battle(Planet $planet, array $angreifer_param)
 		{
 			$angreifer = array();
 			foreach($angreifer_param as $username=>$info)
 				$angreifer[$username] = $info[0];
 
-			$target = explode(":", $planet);
-			$target_galaxy = Classes::Galaxy($target[0]);
-			$target_owner = $target_galaxy->getPlanetOwner($target[1], $target[2]);
-			if(!$target_owner) return false;
+			$target_owner = $planet->getOwner();
+			if(!$target_owner)
+				throw new FleetException("Planet is not colonised.");
 			$target_user = Classes::User($target_owner);
-			if(!$target_user->getStatus()) return false;
 			$target_user->setActivePlanet($target_user->getPlanetByPos($planet));
 
 			$verteidiger = array();
@@ -2664,7 +2665,7 @@
 			}
 
 			if(array_sum($truemmerfeld) > 0)
-				$target_galaxy->truemmerfeldAdd($target[1], $target[2], $truemmerfeld[0], $truemmerfeld[1], $truemmerfeld[2], $truemmerfeld[3]);
+				$target->addTruemmerfeld($truemmerfeld);
 
 			$angreifer_return = array();
 			foreach($angreifer as $username=>$fleet)
@@ -2755,8 +2756,7 @@
 			# Nachrichten zustellen
 			foreach($nachrichten as $username=>$text)
 			{
-				$message = Classes::Message();
-				if(!$message->create()) continue;
+				$message = Classes::Message(Message::create());
 				$message->text($text);
 				$message->subject(sprintf($users_all[$username]->_("Kampf auf %s"), $planet));
 				$message->html(true);

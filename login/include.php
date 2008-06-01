@@ -41,7 +41,7 @@
 		session_start();
 		if(!isset($_SESSION["username"]))
 		{
-			setcookie(global_setting("SESSION_NAME"), "", 0, h_root."/");
+			setcookie(global_setting("SESSION_NAME"), "", 0, global_setting("h_root")."/");
 			session_regenerate_id(true);
 		}
 	}
@@ -60,7 +60,7 @@
 	if(isset($_SESSION["admin_username"]) && isset($_SESSION["username"]) && isset($_REQUEST["switch_user"]))
 		$_SESSION["username"] = $_REQUEST["switch_user"];
 
-	$gui = new LoginGui();
+	$gui = Classes::LoginGui();
 
 	if(!isset($_SESSION['username']) || !isset($_SESSION['database']) || isset($_SESSION["last_click"]) && time()-$_SESSION["last_click"] > global_setting("SESSION_TIMEOUT") || (isset($_SESSION['database']) && (!isset($databases[$_SESSION['database']]) || (!$databases[$_SESSION['database']]['enabled'] && !isset($_SESSION['admin_username'])) || !User::exists($_SESSION['username']))))
 	{
@@ -110,7 +110,7 @@
 			$del_email_passwd = true;
 			if(isset($_COOKIE["use_cookies"]) && $_COOKIE["use_cookies"] && (!isset($_COOKIE[global_setting("SESSION_NAME")]) || !$_COOKIE[global_setting("SESSION_NAME")]))
 			{
-				setcookie(global_setting("SESSION_NAME"), session_id(), 0, h_root."/");
+				setcookie(global_setting("SESSION_NAME"), session_id(), 0, global_setting("h_root")."/");
 				$_SESSION["cookie"] = true;
 			}
 		}
@@ -143,8 +143,6 @@
 	$_SESSION['last_click'] = $now_time;
 
 	$me = Classes::User($_SESSION['username']);
-	if(!$me->getStatus())
-		$gui->fatal(h(_("Datenbankfehler.")));
 
 	$_SESSION['username'] = $me->getName();
 	l::language($me->checkSetting("lang"));
@@ -154,8 +152,8 @@
 	if(isset($_SESSION["ip"]) && $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
 	{
 		if(isset($_COOKIE[global_setting("SESSION_NAME")]))
-			setcookie(global_setting("SESSION_NAME"), '', 0, h_root."/");
-		$gui->fatal(sprintf(h(_("Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s.")), "<a href=\"http://".htmlspecialchars(Config::get_default_hostname().h_root)."/index.php\">", "</a>"));
+			setcookie(global_setting("SESSION_NAME"), '', 0, global_setting("h_root")."/");
+		$gui->fatal(sprintf(h(_("Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s.")), "<a href=\"http://".htmlspecialchars(Config::get_default_hostname().global_setting("h_root"))."/index.php\">", "</a>"));
 	}
 
 	if(!isset($_GET['planet']) || !$me->planetExists($_GET['planet']))

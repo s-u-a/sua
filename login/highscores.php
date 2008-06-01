@@ -143,7 +143,7 @@
 				$class = 'verbuendet';
 
 			$alliance_class = 'fremd';
-			if($info['alliance'] && $me->allianceTag() == $info['alliance'])
+			if($info['alliance'] && Classes::getUserAlliance($me->getName()) == $info['alliance'])
 				$alliance_class = 'eigen';
 
 			$info2 = $info;
@@ -175,7 +175,7 @@
 		else
 		{
 			$class = 'fremd';
-			if($info['tag'] == $me->allianceTag())
+			if($info['tag'] == Classes::getUserAlliance($me->getName()))
 				$class = 'verbuendet';
 
 ?>

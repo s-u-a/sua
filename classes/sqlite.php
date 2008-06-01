@@ -74,10 +74,26 @@
 		 * @return void
 		*/
 
-		function checkTables($tables)
+		function checkTables($tables, $views=null)
 		{
+			if(isset($views))
+			{
+				foreach($views as $key=>$create)
+				{
+					$view_statement = "CREATE VIEW ".$key." AS ".$create.";";
+					if($this->singleField("SELECT COUNT(*) FROM sqlite_master WHERE type='view' AND sql=".$this->quote($view_statement).";") < 1)
+					{
+						$this->query("DROP VIEW IF EXISTS ".$key.";");
+						$this->query($view_statement);
+					}
+				}
+			}
+
 			foreach($tables as $table=>$cols)
 			{
+				if(isset($views) && isset($views[$table]))
+					continue;
+
 				if($this->singleField("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=".$this->escape($table).";") < 1)
 					$this->query("CREATE TABLE ".$table." ( ".implode(", ", $cols)." );");
 				try
@@ -215,7 +231,7 @@
 		 * @return mixed
 		*/
 
-		function singleQuery($query)
+		function singleLine($query)
 		{
 			try { $result = $this->connection->query($query); }
 			catch(PDOException $e) { $this->printException($e, $query); }

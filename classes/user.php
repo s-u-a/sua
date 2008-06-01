@@ -95,7 +95,66 @@
 
 		protected static $save_dir = Classes::Database()->getDirectory()."/players";
 
-		//protected static $tables = array("users" => array("user TEXT PRIMARY KEY", "password TEXT", "registration INTEGER", "last_activity INTEGER", "scores_0 INTEGER", "scores_1 INTEGER", "scores_2 INTEGER", "scores_3 INTEGER", "scores_4 INTEGER", "scores_5 INTEGER", "scores_6 INTEGER", "used_ress_0 INTEGER", "used_ress_1 INTEGER", "used_ress_2 INTEGER", "used_ress_3 INTEGER", "used_ress_4 INTEGER", "description TEXT", "description_parsed TEXT", "locked INTEGER", "holidays INTEGER", "messenger_type TEXT", "messenger_uname TEXT"));
+		protected static $tables = array (
+			"users" => array (
+				"user TEXT PRIMARY KEY",
+				"password TEXT",
+				"registration INTEGER",
+				"last_activity INTEGER",
+				"flightexp INTEGER",
+				"battleexp INTEGER",
+				"used_ress_0 INTEGER",
+				"used_ress_1 INTEGER",
+				"used_ress_2 INTEGER",
+				"used_ress_3 INTEGER",
+				"used_ress_4 INTEGER",
+				"description TEXT",
+				"description_parsed TEXT",
+				"locked INTEGER",
+				"holidays INTEGER",
+				"messenger_type TEXT",
+				"messenger_uname TEXT"
+			),
+			"users_research" => array (
+				"user TEXT",
+				"id TEXT",
+				"level INTEGER",
+				"scores REAL"
+			),
+			"highscores" => array (
+				"user TEXT",
+				"gebaeude REAL",
+				"forschung REAL",
+				"roboter REAL",
+				"schiffe REAL",
+				"verteidigung REAL",
+				"flightexp REAL",
+				"battleexp REAL",
+				"total REAL"
+			),
+			"users_friends" => array (
+				"user1 TEXT",
+				"user2 TEXT"
+			),
+			"users_friend_requests" => array (
+				"user_from TEXT",
+				"user_to TEXT"
+			),
+			"users_shortcuts" => array (
+				"user TEXT",
+				"galaxy INTEGER",
+				"system INTEGER",
+				"planet INTEGER"
+			),
+			"users_settings" => array (
+				"setting TEXT",
+				"value TEXT"
+			)
+		);
+
+		protected static $views = array (
+			"highscores" => "SELECT h_users.user AS user, h_gebaeude.scores AS gebaeude, h_forschung.scores AS forschung, h_roboter.scores AS roboter, h_schiffe.scores AS schiffe, h_verteidigung.scores AS verteidigung, h_users.flightexp AS flightexp, h_users.battleexp AS battleexp, gebaeude + forschung + roboter + schiffe + verteidigung + flightexp + battleexp AS total FROM ( SELECT user, flightexp, battleexp FROM users ) AS h_users LEFT OUTER JOIN ( SELECT user,scores FROM planets_items WHERE type = 'gebaeude' GROUP BY user ) AS h_gebaeude ON h_gebaeude.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM users_research GROUP BY user ) AS h_forschung ON h_forschung.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM ( SELECT user,scores FROM planets_items WHERE type = 'roboter' UNION ALL SELECT user,scores FROM fleets_users_rob UNION ALL SELECT user,scores FROM fleets_users_hrob ) GROUP BY user ) AS h_roboter ON h_roboter.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM ( SELECT user,scores FROM planets_items WHERE type = 'schiffe' UNION ALL SELECT user,scores FROM fleets_users_fleet UNION ALL SELECT user,scores FROM planet_remote_fleet ) GROUP BY user ) AS h_schiffe ON h_schiffe.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM planets_items WHERE type = 'verteidigung' GROUP BY user ) AS h_verteidigung ON h_verteidigung.user = h_users.user"
+		);
 
 		/**
 		 * Implementiert Dataset::create().
@@ -109,28 +168,1004 @@
 				throw new UserException("This user does already exist.");
 
 			$raw = array(
-				'username' => $name,
-				'planets' => array(),
-				'forschung' => array(),
-				'password' => 'x',
-				'punkte' => array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-				'registration' => time(),
-				'messages' => array(),
-				'description' => '',
-				'description_parsed' => '',
-				'flotten' => array(),
-				'flotten_passwds' => array(),
-				'foreign_fleets' => array(),
-				'foreign_coords' => array(),
-				'alliance' => false,
-				'lang' => l::language()
+				"username" => $name,
+				"planets" => array(),
+				"forschung" => array(),
+				"password" => "x",
+				"punkte" => array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+				"registration" => time(),
+				"messages" => array(),
+				"description" => "",
+				"description_parsed" => "",
+				"flotten" => array(),
+				"flotten_passwds" => array(),
+				"foreign_fleets" => array(),
+				"foreign_coords" => array(),
+				"alliance" => false,
+				"lang" => l::language()
 			);
 
 			$highscores = Classes::Highscores();
-			$highscores->updateUser($name, '');
+			$highscores->updateUser($name, "");
 
 			self::store($name, $raw);
 			return $name;
+		}
+
+		function destroy()
+		{
+			# Planeten zuruecksetzen
+			$planets = $this->getPlanetsList();
+			foreach($planets as $planet)
+			{
+				$this->setActivePlanet($planet);
+				if(!$this->removePlanet()) return false;
+			}
+
+			# Buendnispartner entfernen
+			$verb_list = $this->getVerbuendetList();
+			foreach($verb_list as $verb)
+				$this->quitVerbuendet($verb);
+			$verb_list = $this->getVerbuendetApplicationList();
+			foreach($verb_list as $verb)
+				$this->cancelVerbuendetApplication($verb);
+			$verb_list = $this->getVerbuendetRequestList();
+			foreach($verb_list as $verb)
+				$this->rejectVerbuendetApplication($verb);
+
+			# Nachrichten entfernen
+			foreach(Message::getUserMessages($this->getName()) as $message_id)
+				Classes::Message($message_id)->removeUser($me->getName());
+
+			# Aus der Allianz austreten
+			$tag = Alliance::getUserAlliance($this->getName());
+			if($tag)
+				Classes::Alliance($tag)->quitUser($this->getName());
+
+			# Flotten zurueckrufen
+			$fleets = $this->getFleetsList();
+			foreach($fleets as $fleet)
+			{
+				$fleet_obj = Classes::Fleet($fleet);
+				foreach(array_reverse($fleet_obj->getUsersList()) as $username)
+					$fleet_obj->callBack($username);
+			}
+
+			# IM-Benachrichtigungen entfernen
+			$imfile = Classes::IMFile();
+			$imfile->removeMessages($this->getName());
+
+			# Aus den Highscores entfernen
+			$highscores = Classes::Highscores();
+			$highscores->removeEntry("users", $this->getName());
+
+			$status = (unlink($this->filename) || chmod($this->filename, 0));
+			if($status)
+			{
+				$this->changed = false;
+				return true;
+			}
+			else return false;
+		}
+
+		protected function getDataFromRaw()
+		{
+			$settings = array("skin" => false, "schrift" => true,
+				"sonden" => 1, "ress_refresh" => 0,
+				"fastbuild" => false, "shortcuts" => false,
+				"tooltips" => false,
+				"noads" => false, "show_extern" => false,
+				"notify" => false,
+				"extended_buildings" => false,
+				"fastbuild_full" => false,
+				"receive" => array(
+					1 => array(true, true),
+					2 => array(true, false),
+					3 => array(true, false),
+					4 => array(true, true),
+					5 => array(true, false)
+				),
+				"show_building" => array(
+					"gebaeude" => 1,
+					"forschung" => 1,
+					"roboter" => 0,
+					"schiffe" => 0,
+					"verteidigung" => 0
+				),
+				"prod_show_days" => 1,
+				"messenger_receive" => array(
+					"messages" => array(1=>true, 2=>true, 3=>true, 4=>true, 5=>true, 6=>true, 7=>true),
+					"building" => array("gebaeude" => 1, "forschung" => 1, "roboter" => 3, "schiffe" => 3, "verteidigung" => 3)
+				),
+				"lang" => l::language(),
+				"fingerprint" => false,
+				"gpg_im" => false,
+				"timezone" => date_default_timezone_get()
+			);
+
+			$this->settings = array();
+			foreach($settings as $setting=>$default)
+			{
+				if(isset($this->raw[$setting])) $this->settings[$setting] = $this->raw[$setting];
+				else $this->settings[$setting] = $default;
+			}
+			if(!isset($this->settings["messenger_receive"]["building"]))
+				$this->settings["messenger_receive"]["building"] = array("gebaeude" => 1, "forschung" => 1, "roboter" => 3, "schiffe" => 3, "verteidigung" => 3);
+
+			$this->items = array();
+			$this->items["forschung"] = &$this->raw["forschung"];
+
+			$this->name = $this->raw["username"];
+
+			$this->eventhandler();
+		}
+
+		protected function getRawFromData()
+		{
+			if($this->recalc_highscores[0] || $this->recalc_highscores[1] || $this->recalc_highscores[2] || $this->recalc_highscores[3] || $this->recalc_highscores[4] || $this->recalc_highscores[5] || $this->recalc_highscores[6])
+				$this->doRecalcHighscores($this->recalc_highscores[0], $this->recalc_highscores[1], $this->recalc_highscores[2], $this->recalc_highscores[3], $this->recalc_highscores[4]);
+
+			foreach($this->settings as $setting=>$value)
+				$this->raw[$setting] = $value;
+			$this->raw["forschung"] = $this->items["forschung"];
+
+			$active_planet = $this->getActivePlanet();
+			if($active_planet !== false)
+			{
+				$this->planet_info["gebaeude"] = $this->items["gebaeude"];
+				$this->planet_info["roboter"] = $this->items["roboter"];
+				$this->planet_info["schiffe"] = $this->items["schiffe"];
+				$this->planet_info["verteidigung"] = $this->items["verteidigung"];
+			}
+		}
+
+/*********************************************
+*** Account ***
+*********************************************/
+
+		/**
+		 * Benennt den Benutzer um.
+		 * @param string $new_name
+		 * @return void
+		 * @todo
+		*/
+
+		function rename($new_name)
+		{
+			# Planeteneigentuemer aendern
+			# Nachrichtenabsender aendern
+			# Bei Buendnispartnern abaendern
+			# In Flottenbewegungen umbenennen
+			# In der Allianz umbenennen
+			# Highscores-Eintrag neu schreiben
+			# IM-Benachrichtigungen aendern
+		}
+
+		/**
+		 * Liest oder setzt die Zeit, wann eine letzte Inaktivitätsbenachrichtigung versandt wurde.
+		 * @param int $time
+		 * @return void|int
+		*/
+
+		function lastMailSent($time=null)
+		{
+			if(isset($time))
+			{
+				$this->raw["last_mail"] = $time;
+				$this->changed = true;
+			}
+
+			if(!isset($this->raw["last_mail"])) return null;
+			return $this->raw["last_mail"];
+		}
+
+		/**
+		 * Überprüft, ob das übergebene Passwort dem dieses Benutzers entspricht.
+		 * Wenn das Passwort stimmt, wird eine eventuelle Prüfsumme, die beim letzten
+		 * Aufruf der Passwort-vergessen-Funktion angelegt wurde, wieder deaktiviert.
+		 * @param string $password
+		 * @return bool
+		*/
+
+		function checkPassword($password)
+		{
+			if(!isset($this->raw["password"])) return false;
+			if(md5($password) == $this->raw["password"])
+			{
+				# Passwort stimmt, Passwort-vergessen-Funktion deaktivieren
+				if(isset($this->raw["email_passwd"]) && $this->raw["email_passwd"])
+				{
+					$this->raw["email_passwd"] = false;
+					$this->changed = true;
+				}
+
+				return true;
+			}
+			else return false;
+		}
+
+		/**
+		 * Setzt das Passwort dieses Benutzers neu.
+		 * @param string $password
+		 * @return void
+		*/
+
+		function setPassword($password)
+		{
+			$this->raw["password"] = md5($password);
+
+			if(isset($this->raw["email_passwd"]) && $this->raw["email_passwd"])
+				$this->raw["email_passwd"] = false;
+
+			$this->changed = true;
+		}
+
+		/**
+		 * Gibt die Passwort-Prüfsumme dieses Benutzers zurück. Nutzbar zum Vergleich
+		 * mit anderen Benutzern.
+		 * @return string
+		*/
+
+		function getPasswordSum()
+		{
+			return $this->raw["password"];
+		}
+
+		/**
+		 * Gibt die Benutzereinstellung mit der ID $setting zurück.
+		 * @param string $setting
+		 * @return mixed
+		*/
+
+		function checkSetting($setting)
+		{
+			if(!isset($this->settings[$setting]))
+				throw new UserException("This is not a valid setting.");
+			return $this->settings[$setting];
+		}
+
+		/**
+		 * Setzt die Benutzereinstellung $setting neu.
+		 * @param string $setting
+		 * @param mixed $value
+		 * @return void
+		*/
+
+		function setSetting($setting, $value)
+		{
+			if(!isset($this->settings[$setting]))
+				throw new UserException("This is not a valid setting.");
+			else
+			{
+				$this->settings[$setting] = $value;
+				$this->changed = true;
+			}
+		}
+
+		/**
+		 * Gibt die Benutzerbeschreibung dieses Benutzers zurück.
+		 * @param bool $parsed Soll die Beschreibung zur HTML-Ausgabe zurückgegeben werden?
+		 * @return string
+		*/
+
+		function getUserDescription($parsed=true)
+		{
+			if(!isset($this->raw["description"])) $this->raw["description"] = "";
+
+			if($parsed)
+			{
+				if(!isset($this->raw["description_parsed"]))
+				{
+					$this->raw["description_parsed"] = F::parse_html($this->raw["description"]);
+					$this->changed = true;
+				}
+				return $this->raw["description_parsed"];
+			}
+			else
+				return $this->raw["description"];
+		}
+
+		/**
+		 * Setzt die Benutzerbeschreibung dieses Benutzers neu.
+		 * @param string $description
+		 * @return void
+		*/
+
+		function setUserDescription($description)
+		{
+			if(!isset($this->raw["description"])) $this->raw["description"] = "";
+
+			if($description != $this->raw["description"])
+			{
+				$this->raw["description"] = $description;
+				$this->raw["description_parsed"] = F::parse_html($this->raw["description"]);
+				$this->changed = true;
+			}
+		}
+
+		/**
+		 * Liest oder setzt die letzte aufgerufene URL des Benutzers. ($_SERVER["REQUEST_URI"])
+		 * @param string $last_request
+		 * @return void|int Wenn $last_request null ist, die letzte URL
+		*/
+
+		function lastRequest($last_request=null)
+		{
+			if(!isset($last_request))
+			{
+				if(!isset($this->raw["last_request"])) return null;
+				else return $this->raw["last_request"];
+			}
+
+			$this->raw["last_request"] = $last_request;
+			$this->changed = true;
+		}
+
+		/**
+		 * Erneuert den Zeitpunkt der letzten Aktivität und setzt die letzte URL
+		 * auf die aktuelle.
+		 * @return void
+		*/
+
+		function registerAction()
+		{
+			$this->raw["last_request"] = $_SERVER["REQUEST_URI"];
+			$this->raw["last_active"] = time();
+		}
+
+		/**
+		 * Gibt den Zeitpunkt der letzten Aktivität zurück.
+		 * @return int
+		*/
+
+		function getLastActivity()
+		{
+			if(!isset($this->raw["last_active"])) return null;
+			return $this->raw["last_active"];
+		}
+
+		/**
+		 * Gibt den Zeitpunkt der Registrierung zurück.
+		 * @return int
+		*/
+
+		function getRegistrationTime()
+		{
+			if(!isset($this->raw["registration"])) return null;
+			return $this->raw["registration"];
+		}
+
+		/**
+		 * Gibt zurück, ob dieser Benutzer gesperrt ist.
+		 * @param bool $check_unlocked Soll überprüft werden, ob eine Zeitsperre abgelaufen ist?
+		 * @return bool
+		*/
+
+		function userLocked($check_unlocked=true)
+		{
+			if($check_unlocked && isset($this->raw["lock_time"]) && time() > $this->raw["lock_time"])
+				$this->lockUser(false, false);
+			return (isset($this->raw["locked"]) && $this->raw["locked"]);
+		}
+
+		/**
+		 * Gibt bei einer Sperre zurück, bis wann diese noch gilt.
+		 * @return int|null Null, wenn sie unendlich ist.
+		*/
+
+		function lockedUntil()
+		{
+			if(!$this->userLocked()) return null;
+			if(!isset($this->raw["lock_time"])) return null;
+			return $this->raw["lock_time"];
+		}
+
+		/**
+		 * Schaltet den Sperrzustand des Benutzers um. Wenn er gesperrt ist, wird
+		 * er entsperrt, wenn er entsperrt ist, wird er gesperrt.
+		 * @param bool $lock_time Wenn der Benutzer gesperrt werden soll, die Zeit, wie lange die Sperre gilt
+		 * @param bool $check_unlocked Soll überprüft werden, ob eine Zeitsperre mittlerweile abgelaufen ist?
+		 * @return void
+		*/
+
+		function lockUser($lock_time=null, $check_unlocked=true)
+		{
+			$this->raw["locked"] = !$this->userLocked($check_unlocked);
+			$this->raw["lock_time"] = ($this->raw["locked"] ? $lock_time : false);
+			$this->changed = true;
+		}
+
+		/**
+		 * Gibt zurück, ob sich der Spieler im Urlaubsmodus befindet oder setzt
+		 * diesen Zustand.
+		 * @param bool $set
+		 * @return bool|void Wenn $set null ist, der aktuelle Zustand.
+		 * @throw UserException Der Urlaubsmodus ist nicht möglich. (Siehe User->umodePossible())
+		*/
+
+		function umode($set=null)
+		{
+			if(isset($set))
+			{
+				if($set == $this->umode()) return;
+				if($set && !$this->umodePossible())
+					throw new UserException("Vacation mode is not possible.");
+
+				if(!$set)
+				{
+					$time_diff = time()-$this->raw["umode_time"];
+					$active_planet = $this->getActivePlanet();
+					foreach($this->getPlanetsList() as $planet)
+					{
+						$this->setActivePlanet($planet);
+						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["gebaeude"]) && $this->planet_info["building"]["gebaeude"])
+							$this->planet_info["building"]["gebaeude"][1] += $time_diff;
+						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["forschung"]) && $this->planet_info["building"]["forschung"])
+							$this->planet_info["building"]["forschung"][1] += $time_diff;
+						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["roboter"]) && $this->planet_info["building"]["roboter"])
+						{
+							foreach($this->planet_info["building"]["roboter"] as $k=>$v)
+								$this->planet_info["building"]["roboter"][$k][1] += $time_diff;
+						}
+						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["schiffe"]) && $this->planet_info["building"]["schiffe"])
+						{
+							foreach($this->planet_info["building"]["schiffe"] as $k=>$v)
+								$this->planet_info["building"]["schiffe"][$k][1] += $time_diff;
+						}
+						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["verteidigung"]) && $this->planet_info["building"]["verteidigung"])
+						{
+							foreach($this->planet_info["building"]["verteidigung"] as $k=>$v)
+								$this->planet_info["building"]["verteidigung"][$k][1] += $time_diff;
+						}
+					}
+					foreach($this->getFleetsList() as $fleet)
+					{
+						$fleet_obj = Classes::Fleet($fleet);
+						$fleet_obj->moveTime($time_diff);
+					}
+				}
+
+				$this->raw["umode"] = $set;
+				$this->raw["umode_time"] = time();
+				$this->changed = true;
+
+				$flag = ($this->raw["umode"] ? "U" : "");
+				$active_planet = $this->getActivePlanet();
+				$planets = $this->getPlanetsList();
+				foreach($planets as $planet)
+				{
+					$this->setActivePlanet($planet);
+					$pos = $this->getPos();
+					$galaxy_obj = Classes::Galaxy($pos[0]);
+					$galaxy_obj->setPlanetOwnerFlag($pos[1], $pos[2], $flag);
+				}
+				$this->setActivePlanet($planet);
+			}
+
+			return (isset($this->raw["umode"]) && $this->raw["umode"]);
+		}
+
+		/**
+		 * Überprüft, ob der Urlaubsmodus derzeit möglich ist. Das ist nur der Fall,
+		 * wenn keine eigenen Flotten zu fremden Planeten unterwegs sind.
+		 * @return bool
+		*/
+
+		function umodePossible()
+		{
+			foreach($this->getFleetsList() as $fleet)
+			{
+				$fleet_obj = Classes::Fleet($fleet);
+				if(!$fleet_obj->userExists($this->getName()))
+					continue;
+				foreach($fleet_obj->getTargetsList() as $target)
+				{
+					if($target->getOwner() != $this->getName())
+						return false;
+				}
+			}
+			return true;
+		}
+
+		/**
+		 * Überprüft, ob der Benutzer die Erlaubnis hat, in/aus den Urlaubsmodus zu
+		 * gehen, also ob die Mindestzeit seit dem letzten Statuswechsel abgelaufen
+		 * ist.
+		 * @return bool
+		*/
+
+		function permissionToUmode()
+		{
+			if(!isset($this->raw["umode_time"])) return true;
+
+			if($this->umode()) $min_days = 3; # Ist gerade im Urlaubsmodus
+			else $min_days = 3;
+
+			return ((time()-$this->raw["umode_time"]) > $min_days*86400);
+		}
+
+		/**
+		 * Falls sich der Benutzer im Urlaubsmodus befindet, gibt diese Funktion
+		 * den Zeitpunkt zurück, zu dem er ihn betreten hat. Ansonsten wird null
+		 * zurückgeliefert.
+		 * @return int|null
+		*/
+
+		function getUmodeEnteringTime()
+		{
+			if(!$this->umode() || !isset($this->raw["umode_time"])) return null;
+
+			return $this->raw["umode_time"];
+		}
+
+		/**
+		 * Falls sich der Benutzer im Urlaubsmodus befindet, gibt diese Funktion
+		 * den Zeitpunkt zurück, zu dem er ihn verlassen darf. Ansonsten gibt sie
+		 * den Zeitpunkt zurück, zu dem er ihn verlassen dürfte, wenn er ihn jetzt
+		 * beträte.
+		 * @return int
+		*/
+
+		function getUmodeReturnTime()
+		{
+			if($this->umode()) return $this->raw["umode_time"]+3*86400;
+			else return time()+3*86400;
+		}
+
+		/**
+		 * Gibt zurück, ob der Benutzer Dinge bauen und Flotten verschicken darf, was
+		 * nicht der Fall ist, wenn er gesperrt ist, die Datenbank gesperrt ist oder
+		 * er sich im Urlaubsmodus befindet.
+		 * @return bool
+		*/
+
+		function permissionToAct()
+		{
+			return !Config::database_locked() && !$this->userLocked() && !$this->umode();
+		}
+
+		/**
+		 * Gibt die ID des IM-Protokolls zurück, unter dem der Benutzer benachrichtigt werden will. Ansonsten
+		 * false.
+		 * @return string|bool
+		*/
+
+		function getNotificationType()
+		{
+			if(!isset($this->raw["im_notification"])) return false;
+			return $this->raw["im_notification"];
+		}
+
+		/**
+		 * Stellt einen neuen IM-Account temporär für den Benutzer ein. Der Account wird erst übernommen,
+		 * wenn von diesem Account eine Nachricht mit der Prüfsumme eingeht.
+		 * @param string $uin
+		 * @param string $protocol
+		 * @return void
+		*/
+
+		function checkNewNotificationType($uin, $protocol)
+		{
+			$this->raw["im_notification_check"] = array($uin, $protocol, time());
+			$this->changed = true;
+			return true;
+		}
+
+		/**
+		 * Setzt einen neuen IM-Account für diesen Benutzer ein.
+		 * @param string $uin
+		 * @param string $protocol
+		 * @return void
+		*/
+
+		function doSetNotificationType($uin, $protocol)
+		{
+			if(!isset($this->raw["im_notification_check"])) return false;
+			if($this->raw["im_notification_check"][0] != $uin || $this->raw["im_notification_check"][1] != $protocol)
+				return false;
+			if(time()-$this->raw["im_notification_check"][2] > 86400) return false;
+
+			$this->raw["im_notification"] = array($this->raw["im_notification_check"][0], $this->raw["im_notification_check"][1]);
+			$this->changed = true;
+			return true;
+		}
+
+		/**
+		 * Entfernt die IM-Benachrichtigung für diesen Benutzer.
+		 * @return void
+		*/
+
+		function disableNotification()
+		{
+			$this->raw["im_notification_check"] = false;
+			$this->raw["im_notification"] = false;
+			$this->changed = true;
+			return true;
+		}
+
+		/**
+		 * Fügt ein Lesezeichen hinzu.
+		 * @param Planet $pos
+		 * @return void
+		*/
+
+		function addPosShortcut(Planet $pos)
+		{ # Fuegt ein Koordinatenlesezeichen hinzu
+			if(!is_array($this->raw["pos_shortcuts"])) $this->raw["pos_shortcuts"] = array();
+			if(in_array($pos, $this->raw["pos_shortcuts"])) return 2;
+
+			$this->raw["pos_shortcuts"][] = $pos;
+			$this->changed = true;
+			return true;
+		}
+
+		/**
+		 * Gibt eine Liste von Lesezeichen zurück.
+		 * @return array(Planet)
+		*/
+
+		function getPosShortcutsList()
+		{ # Gibt die Liste der Koordinatenlesezeichen zurueck
+			if(!isset($this->raw["pos_shortcuts"])) return array();
+			return $this->raw["pos_shortcuts"];
+		}
+
+		/**
+		 * Entfernt ein Lesezeichen.
+		 * @param Planet $pos
+		 * @return void
+		*/
+
+		function removePosShortcut(Planet $pos)
+		{ # Entfernt ein Koordinatenlesezeichen wieder
+			if(!isset($this->raw["pos_shortcuts"])) return 2;
+			$idx = array_search($pos, $this->raw["pos_shortcuts"]);
+			if($idx === false) return 2;
+			unset($this->raw["pos_shortcuts"][$idx]);
+			$this->changed = true;
+			return true;
+		}
+
+		/**
+		 * Schiebt ein Lesezeichen in der Liste nach oben.
+		 * @param Planet $pos
+		 * @return void
+		*/
+
+		function movePosShortcutUp(Planet $pos)
+		{ # Veraendert die Reihenfolge der Lesezeichen
+			if(!isset($this->raw["pos_shortcuts"])) return false;
+
+			$idx = array_search($pos, $this->raw["pos_shortcuts"]);
+			if($idx === false) return false;
+
+			$keys = array_keys($this->raw["pos_shortcuts"]);
+			$keys_idx = array_search($idx, $keys);
+
+			if(!isset($keys[$keys_idx-1])) return false;
+
+			list($this->raw["pos_shortcuts"][$idx], $this->raw["pos_shortcuts"][$keys[$keys_idx-1]]) = array($this->raw["pos_shortcuts"][$keys[$keys_idx-1]], $this->raw["pos_shortcuts"][$idx]); # Confusing, ain"t it? ;-)
+			$this->changed = true;
+			return true;
+		}
+
+		/**
+		 * Schiebt ein Lesezeichen in der Liste nach unten.
+		 * @param Planet $pos
+		 * @return void
+		*/
+
+		function movePosShortcutDown(Planet $pos)
+		{ # Veraendert die Reihenfolge der Lesezeichen
+			if(!isset($this->raw["pos_shortcuts"])) return false;
+
+			$idx = array_search($pos, $this->raw["pos_shortcuts"]);
+			if($idx === false) return false;
+
+			$keys = array_keys($this->raw["pos_shortcuts"]);
+			$keys_idx = array_search($idx, $keys);
+
+			if(!isset($keys[$keys_idx+1])) return false;
+
+			list($this->raw["pos_shortcuts"][$idx], $this->raw["pos_shortcuts"][$keys[$keys_idx+1]]) = array($this->raw["pos_shortcuts"][$keys[$keys_idx+1]], $this->raw["pos_shortcuts"][$idx]); # The same another time...
+			$this->changed = true;
+			return true;
+		}
+
+		/**
+		 * Gibt die Prüfsumme zurück, die der Benutzer beim letzten Benutzen der „Passwort vergessen“-Funktion
+		 * zugesandt bekommen hat.
+		 * @return string
+		*/
+
+		function getPasswordSendID()
+		{ # Liefert eine ID zurueck, die zum Senden des Passworts benutzt werden kann
+			$send_id = md5(microtime());
+			$this->raw["email_passwd"] = $send_id;
+			$this->changed = true;
+			return $send_id;
+		}
+
+		/**
+		 * Überprüft, ob die übergebene Prüf-ID für die Passwort-vergessen-Funktion gültig ist.
+		 * @param string $id
+		 * @return bool
+		*/
+
+		function checkPasswordSendID($id)
+		{ # Ueberprueft, ob eine vom Benutzer eingegebene ID der letzten durch getPasswordSendID zurueckgelieferten ID entspricht
+			return (isset($this->raw["email_passwd"]) && $this->raw["email_passwd"] && $this->raw["email_passwd"] == $id);
+		}
+
+		/**
+		 * Stellt die Sprache dieses Benutzer temporär als globale Spracheinstellung ein. Die vorige Einstellung
+		 * kann mittels restoreLanguage() wiederhergestellt werden. Verschachtelte Aufrufe sind möglich.
+		 * @return void
+		*/
+
+		function setLanguage()
+		{
+			$lang = $this->checkSetting("lang");
+			if($lang && $lang != -1)
+			{
+				$this->language_cache[] = l::language();
+				l::language($lang);
+			}
+			else
+				$this->language_cache[] = null;
+		}
+
+		/**
+		 * Stellt die Sprache, die zuletzt bei setLanguage() gecacht wurde, wieder ein.
+		 * @return void
+		*/
+
+		function restoreLanguage()
+		{
+			if(count($this->language_cache) < 1)
+				throw new UserException("No language has been cached.");
+			$language = array_pop($this->language_cache);
+			if(!is_null($language))
+				l::language($language);
+		}
+
+		/**
+		 * _() benutzerlokalisiert.
+		 * @param string $message
+		 * @return string
+		*/
+
+		function _($message)
+		{
+			return $this->localise("_", $message);
+		}
+
+		/**
+		 * l::_i() benutzerlokalisiert.
+		 * @param string $message
+		 * @return string
+		*/
+
+		function _i($message)
+		{
+			return $this->localise(array("l", "_i"), $message);
+		}
+
+		/**
+		 * Führt eine Funktion mit der Spracheinstellung dieses Benutzers aus. Der erste Parameter ist der Name
+		 * der Funktion, alle anderen werden an die Funktion übergeben.
+		 * @param callback $function
+		 * @return mixed
+		*/
+
+		function localise($function)
+		{
+			$args = func_get_args();
+			$this->setLanguage();
+			$ret = call_user_func_array(array_shift($args), $args);
+			$this->restoreLanguage();
+			return $ret;
+		}
+
+		/**
+		 * ngettext() benutzerlokalisiert.
+		 * @param string $msgid1
+		 * @param string $msgid2
+		 * @param int $n
+		 * @return string
+		*/
+
+		function ngettext($msgid1, $msgid2, $n)
+		{
+			return $this->localise("ngettext", $msgid1, $msgid2, $n);
+		}
+
+		/**
+		 * date() benutzerlokalisiert.
+		 * @param string $format
+		 * @param int $timestamp
+		 * @return string
+		*/
+
+		function date($format, $timestamp=null)
+		{
+			$timezone = date_default_timezone_get();
+			date_default_timezone_set($this->checkSetting("timezone"));
+			if($timestamp !== null) $r = date($format, $timestamp);
+			else $r = date($format);
+			date_default_timezone_set($timezone);
+			return $r;
+		}
+
+		/**
+		 * Gibt die aktuell gültige E-Mail-Adresse des Benutzers zurück.
+		 * @return string
+		*/
+
+		function getEMailAddress()
+		{
+			if(isset($this->raw["email_new"]) && $this->raw["email_new"][1] <= time())
+			{
+				$this->raw["email"] = $this->raw["email_new"][0];
+				unset($this->raw["email_new"]);
+			}
+			if(!isset($this->raw["email"]) || !$this->raw["email"])
+				return null;
+			return $this->raw["email"];
+		}
+
+		/**
+		 * Gibt die temporäre E-Mail-Adresse des Benutzers zurück. Die Einstellung der E-Mail-Adresse wird erst
+		 * nach einer gewissen Zeitspanne übernommen.
+		 * @param bool $array Wenn true, wird nur die Adresse zurückgegeben.
+		 * @return bool|array [ E-Mail-Adresse; Zeitpunkt der Gültigkeit ]
+		*/
+
+		function getTemporaryEMailAddress($array=false)
+		{
+			if(!isset($this->raw["email_new"]))
+				return null;
+			if($array)
+				return $this->raw["email_new"];
+			else
+				return $this->raw["email_new"][0];
+		}
+
+		/**
+		 * Setzt die E-Mail-Adresse des Benutzers.
+		 * @param string $address
+		 * @param bool $do_delay Soll die Verzögerung der Gültigkeit angewandt werden?
+		 * @return void
+		*/
+
+		function setEMailAddress($address, $do_delay=true)
+		{
+			if($address === $this->getTemporaryEMailAddress())
+				return true;
+			elseif($do_delay && $this->getEMailAddress() != $this->getTemporaryEMailAddress() && $this->getEMailAddress() != $address)
+				$this->raw["email_new"] = array($address, time()+global_setting("EMAIL_CHANGE_DELAY"));
+			else
+			{
+				$this->raw["email"] = $address;
+				if(isset($this->raw["email_new"]))
+					unset($this->raw["email_new"]);
+			}
+			$this->changed = true;
+			return true;
+		}
+
+		/**
+		 * Sendet (und verschlüsselt oder signiert) eine E-Mail an diesen Benutzer.
+		 * @param string $subject
+		 * @param string $text
+		 * @param bool $last_mail_sent Soll User->lastMailSent() aktualisiert werden?
+		 * @return void
+		*/
+
+		function sendMail($subject, $text, $last_mail_sent=null)
+		{
+			if(!$this->getEMailAddress()) return;
+			$er = error_reporting();
+			error_reporting(3);
+			if(!(include_once("Mail.php")) || !(include_once("Mail/mime.php")))
+			{
+				error_reporting($er);
+				return;
+			}
+
+			$text = sprintf($this->_("Automatisch generierte Nachricht vom %s"), $this->date(_("Y-m-d H:i:s")))."\n\n".$text;
+
+			$mime = new Mail_mime("\n");
+			if($this->checkSetting("fingerprint"))
+				$mime->setTXTBody(gpg_encrypt($text, $this->checkSetting("fingerprint")));
+			else
+				$mime->setTXTBody(GPG::sign($text));
+
+			$body = $mime->get(array("text_charset" => "utf-8", "html_charset" => "utf-8", "head_charset" => "utf-8"));
+			$hdrs = $mime->headers(array("From" => "\"".$this->_("[title_full]")."\" <".global_setting("EMAIL_FROM").">", "Subject" => $subject));
+
+			$mail = Mail::factory("mail");
+			$return = $mail->send($this->getEMailAddress(), $hdrs, $body);
+			if($return && $last_mail_sent !== null)
+				$this->lastMailSent($last_mail_sent);
+			error_reporting($er);
+		}
+
+		/**
+		 * Gibt zurück, ob der Benutzer wieder ein Captcha eingeben muss.
+		 * @return bool
+		*/
+
+		function challengeNeeded()
+		{
+			if(isset($_SESSION["admin_username"]))
+				return false;
+
+			if(!$this->permissionToAct()) return false;
+
+			if(!isset($this->raw["next_challenge"]))
+				return true;
+			else return (time() >= $this->raw["next_challenge"]);
+		}
+
+		/**
+		 * Der Benutzer hat sein Captcha erfolgreich eingegeben. Der nächste Zeitpunkt der Eingabe wird
+		 * festgelegt.
+		 * @return void
+		*/
+
+		function challengePassed()
+		{
+			$this->raw["next_challenge"] = time()+rand(global_setting("CHALLENGE_MIN_TIME"), global_setting("CHALLENGE_MAX_TIME"));
+			$this->raw["challenge_failures"] = 0;
+			$this->changed = true;
+		}
+
+		/**
+		 * Die Eingabe des Captchas ist fehlgeschlagen. Eventuell wird der Benutzer bald gesperrt.
+		 * @return void
+		*/
+
+		function challengeFailed()
+		{
+			if(!isset($this->raw["challenge_failures"]))
+				$this->raw["challenge_failures"] = 0;
+			$this->raw["challenge_failures"]++;
+			$this->changed = true;
+
+			if($this->raw["challenge_failures"] > global_setting("CHALLENGE_MAX_FAILURES") && !$this->userLocked())
+				$this->lockUser(time()+global_setting("CHALLENGE_LOCK_TIME"));
+		}
+
+/***************************************************
+*** Planeten ***
+***************************************************/
+
+		/**
+		 * Überprüft, ob noch weitere Planeten besiedelt werden dürfen.
+		 * @return bool
+		*/
+
+		function checkPlanetCount()
+		{
+			if(global_setting("MAX_PLANETS") > 0 && count($this->raw["planets"]) < global_setting("MAX_PLANETS")) return true;
+			else return false;
+		}
+
+		/**
+		 * Gibt ein Flag zurück, das in der Karte hinter dem Benutzernamen angezeigt
+		 * werden kann. Stellt dar, ob der Benutzer sich im Urlaubsmodus befindet
+		 * oder gesperrt ist.
+		*/
+
+		function getFlag()
+		{
+			if($this->userLocked())
+				return "g";
+			elseif($this->umode())
+				return "U";
+			else
+				return null;
 		}
 
 		/**
@@ -141,7 +1176,7 @@
 
 		function planetExists($planet)
 		{
-			return isset($this->raw['planets'][$planet]);
+			return isset($this->raw["planets"][$planet]);
 		}
 
 		/**
@@ -153,13 +1188,13 @@
 		function setActivePlanet($planet)
 		{
 			$this->active_planet = $planet;
-			$this->planet_info = &$this->raw['planets'][$planet];
+			$this->planet_info = &$this->raw["planets"][$planet];
 			$this->active_planet_obj = Planet::fromString($this->planet_info["pos"]);
 
-			$this->items['gebaeude'] = &$this->planet_info['gebaeude'];
-			$this->items['roboter'] = &$this->planet_info['roboter'];
-			$this->items['schiffe'] = &$this->planet_info['schiffe'];
-			$this->items['verteidigung'] = &$this->planet_info['verteidigung'];
+			$this->items["gebaeude"] = &$this->planet_info["gebaeude"];
+			$this->items["roboter"] = &$this->planet_info["roboter"];
+			$this->items["schiffe"] = &$this->planet_info["schiffe"];
+			$this->items["verteidigung"] = &$this->planet_info["verteidigung"];
 		}
 
 		/**
@@ -260,7 +1295,7 @@
 
 		function getPlanetsList()
 		{
-			return array_keys($this->raw['planets']);
+			return array_keys($this->raw["planets"]);
 		}
 
 		/**
@@ -272,7 +1307,7 @@
 		{
 			$this->_forceActivePlanet();
 
-			return $this->planet_info['size'][1];
+			return $this->planet_info["size"][1];
 		}
 
 		/**
@@ -284,7 +1319,7 @@
 		{
 			$this->_forceActivePlanet();
 
-			return $this->planet_info['size'][0];
+			return $this->planet_info["size"][0];
 		}
 
 		/**
@@ -297,7 +1332,7 @@
 		{
 			$this->_forceActivePlanet();
 
-			$this->planet_info['size'][0] += $value;
+			$this->planet_info["size"][0] += $value;
 			$this->changed = true;
 		}
 
@@ -310,7 +1345,7 @@
 		{
 			$this->_forceActivePlanet();
 
-			return ($this->planet_info['size'][1]-$this->planet_info['size'][0]);
+			return ($this->planet_info["size"][1]-$this->planet_info["size"][0]);
 		}
 
 		/**
@@ -322,7 +1357,7 @@
 		{
 			$this->_forceActivePlanet();
 
-			return ceil($this->planet_info['size'][1]/($this->getItemLevel('F9', 'forschung')/self::getIngtechFactor()+1));
+			return ceil($this->planet_info["size"][1]/($this->getItemLevel("F9", "forschung")/Item::getIngtechFactor()+1));
 		}
 
 		/**
@@ -335,7 +1370,7 @@
 		{
 			$this->_forceActivePlanet();
 
-			$this->planet_info['size'][1] = $size;
+			$this->planet_info["size"][1] = $size;
 			$this->changed = true;
 		}
 
@@ -358,7 +1393,7 @@
 		{
 			$this->_forceActivePlanet();
 
-			$pos = explode(':', $this->planet_info['pos'], 3);
+			$pos = explode(":", $this->planet_info["pos"], 3);
 			if(count($pos) < 3) return false;
 			return $pos;
 		}
@@ -372,7 +1407,7 @@
 		{
 			$this->_forceActivePlanet();
 
-			return $this->planet_info['pos'];
+			return $this->planet_info["pos"];
 		}
 
 		/**
@@ -397,8 +1432,8 @@
 		{
 			$this->_forceActivePlanet();
 
-			$pos = $this->getPos();
-			return Galaxy::calcPlanetClass($pos[0], $pos[1], $pos[2]);
+			$pos = $this->getPosObj();
+			return $pos->getPlanetClass();
 		}
 
 		/**
@@ -449,15 +1484,12 @@
 			# Fremdstationierte Flotten, die hier ihren Heimatplaneten haben, aufloesen
 			foreach($this->getMyForeignFleets() as $koords)
 			{
-				$koords_a = explode(":", $koords);
-				$galaxy_obj = Classes::Galaxy($koords_a[0]);
-				$user_obj = Classes::User($galaxy_obj->getPlanetOwner($koords_a[1], $koords_a[2]));
-				if(!$user_obj->getStatus()) continue;
+				$user_obj = Classes::User($koords->getOwner());
 				$user_obj->cacheActivePlanet();
 				$user_obj->setActivePlanet($user_obj->getPlanetByPos($koords));
 				foreach($user_obj->getForeignFleetsList($this->getName()) as $i=>$fleet)
 				{
-					if($fleet[1] == $this->getPosString())
+					if($fleet[1]->equals($this->getPosObj()))
 						$user_obj->subForeignFleet($this->getName(), $i);
 				}
 				$user_obj->restoreActivePlanet();
@@ -472,9 +1504,9 @@
 			$planets = $this->getPlanetsList();
 			$active_key = array_search($this->getActivePlanet(), $planets);
 			unset($this->planet_info);
-			unset($this->raw['planets'][$active_key]);
-			$keys = array_keys($this->raw['planets']);
-			$this->raw['planets'] = array_values($this->raw['planets']);
+			unset($this->raw["planets"][$active_key]);
+			$keys = array_keys($this->raw["planets"]);
+			$this->raw["planets"] = array_values($this->raw["planets"]);
 			if(isset($planets[$active_key+1]))
 				$new_active_planet = array_search($planets[$active_key+1], $keys);
 			elseif(isset($planets[$active_key-1]))
@@ -485,10 +1517,10 @@
 			foreach($new_planets as $planet)
 			{
 				$this->setActivePlanet($planet);
-				$active_forschung = $this->checkBuildingThing('forschung');
+				$active_forschung = $this->checkBuildingThing("forschung");
 				if(!$active_forschung) continue;
 				if($active_forschung[2])
-					$this->planet_info['building']['forschung'][4] = array_search($active_forschung[4], $keys);
+					$this->planet_info["building"]["forschung"][4] = array_search($active_forschung[4], $keys);
 			}
 
 			if($new_active_planet !== false)
@@ -517,27 +1549,27 @@
 			$pos->setOwner($this->getName());
 			$pos->setName($planet_name);
 
-			if(count($this->raw['planets']) <= 0) $size = 375;
+			if(count($this->raw["planets"]) <= 0) $size = 375;
 			else $size = $pos->getSize();
-			$size = floor($size*($this->getItemLevel('F9', 'forschung')/self::getIngtechFactor()+1));
+			$size = floor($size*($this->getItemLevel("F9", "forschung")/Item::getIngtechFactor()+1));
 
 			$planets = $this->getPlanetsList();
 			if(count($planets) == 0) $planet_index = 0;
 			else $planet_index = max($planets)+1;
-			while(isset($this->raw['planets'][$planet_index])) $planet_index++;
+			while(isset($this->raw["planets"][$planet_index])) $planet_index++;
 
-			$this->raw['planets'][$planet_index] = array (
-				'pos' => $pos_string,
-				'ress' => array(0, 0, 0, 0, 0),
-				'gebaeude' => array(),
-				'roboter' => array(),
-				'schiffe' => array(),
-				'verteidigung' => array(),
-				'size' => array(0, $size),
-				'last_refresh' => time(),
-				'time' => $planet_name,
-				'prod' => array(),
-				'name' => $planet_name,
+			$this->raw["planets"][$planet_index] = array (
+				"pos" => $pos_string,
+				"ress" => array(0, 0, 0, 0, 0),
+				"gebaeude" => array(),
+				"roboter" => array(),
+				"schiffe" => array(),
+				"verteidigung" => array(),
+				"size" => array(0, $size),
+				"last_refresh" => time(),
+				"time" => $planet_name,
+				"prod" => array(),
+				"name" => $planet_name,
 				"foreign_fleets" => array() # Enthaelt ein Array aus Arrays, von wem welche Flotten stationiert sind
 			);
 
@@ -558,7 +1590,7 @@
 		{
 			if(!isset($planet))
 			{
-				$this->_checkActivePlanet();
+				$this->_forceActivePlanet();
 				$planet = $this->getActivePlanet();
 			}
 
@@ -583,7 +1615,7 @@
 		{
 			if(!isset($planet)
 			{
-				$this->_checkActivePlanet();
+				$this->_forceActivePlanet();
 				$planet = $this->getActivePlanet();
 			}
 
@@ -603,19 +1635,19 @@
 			unset($this->planet_info);
 
 			# Planeten vertauschen
-			list($this->raw['planets'][$planet], $this->raw['planets'][$planet2]) = array($this->raw['planets'][$planet2], $this->raw['planets'][$planet]);
+			list($this->raw["planets"][$planet], $this->raw["planets"][$planet2]) = array($this->raw["planets"][$planet2], $this->raw["planets"][$planet]);
 
 			# Aktive Forschungen aendern
 			$this->setActivePlanet($planet);
-			$active_forschung = $this->checkBuildingThing('forschung');
+			$active_forschung = $this->checkBuildingThing("forschung");
 			if($active_forschung && $active_forschung[2])
-				$this->planet_info['building']['forschung'][4] = $planet2;
+				$this->planet_info["building"]["forschung"][4] = $planet2;
 			$this->refreshMessengerBuildingNotifications();
 
 			$this->setActivePlanet($planet2);
-			$active_forschung = $this->checkBuildingThing('forschung');
+			$active_forschung = $this->checkBuildingThing("forschung");
 			if($active_forschung && $active_forschung[2])
-				$this->planet_info['building']['forschung'][4] = $planet;
+				$this->planet_info["building"]["forschung"][4] = $planet;
 			$this->refreshMessengerBuildingNotifications();
 
 			# Index in der Börse aktualisieren
@@ -628,71 +1660,7 @@
 			if($new_active_planet != $planet2) $this->setActivePlanet($new_active_planet);
 		}
 
-		/**
-		 * Gibt die Punkte des Spielers zurück.
-		 * @param int $i User::SCORES_* oder nichts für die Gesamtpunktzahl
-		 * @return float
-		*/
-
-		function getScores($i=null)
-		{
-			if(!isset($i))
-				return $this->raw['punkte'][0]+$this->raw['punkte'][1]+$this->raw['punkte'][2]+$this->raw['punkte'][3]+$this->raw['punkte'][4]+$this->raw['punkte'][5]+$this->raw['punkte'][6];
-			elseif(!isset($this->raw['punkte'][$i]))
-				return 0;
-			else
-				return $this->raw['punkte'][$i];
-		}
-
-		/**
-		 * Addiert dem Benutzeraccount Punkte hinzu.
-		 * @param int $i User::SCORES_*
-		 * @param float $scores
-		 * @return void
-		*/
-
-		function addScores($i, $scores)
-		{
-			if(!isset($this->raw['punkte'][$i]))
-				$this->raw['punkte'][$i] = $scores;
-			else $this->raw['punkte'][$i] += $scores;
-
-			$this->recalc_highscores[$i] = true;
-			$this->changed = true;
-		}
-
-		/**
-		 * Gibt die Anzahl der Rohstoffe zurück, die der Benutzer seit Bestehen
-		 * des Accounts ausgegeben hat.
-		 * @param int $i 0: Carbon; 1: Aluminium; ... Wenn nicht angegeben, wird die Gesamtzahl zurückgegeben
-		 * @return int
-		*/
-
-		function getSpentRess($i=false)
-		{
-			if($i === false)
-			{
-				return $this->getScores(7)+$this->getScores(8)+$this->getScores(9)+$this->getScores(10)+$this->getScores(11);
-			}
-			else return $this->getScores($i+7);
-		}
-
-		/**
-		 * Gibt die Platzierung dieses Spielers in den Highscores zurück.
-		 * @param int $i User::SCORES_*, wenn die Platzierung bei einer bestimmten Punktart gemeint ist
-		 * @return int
-		*/
-
-		function getRank($i=null)
-		{
-			$highscores = Classes::Highscores();
-			if($i === null)
-				return $highscores->getPosition('users', $this->getName());
-			else
-				return $highscores->getPosition("users", $this->getName(), "scores_".$i);
-		}
-
-		/**
+				/**
 		 * Setzt oder liest den Namen des aktiven Planeten.
 		 * @param string $name Wenn angegeben, wird der Name hierauf gesetzt.
 		 * @return string|void Wenn $name null ist, der Name des aktiven Planeten.
@@ -707,20 +1675,20 @@
 				if(trim($name) == "")
 					throw new UserException("The planet name cannot be empty.");
 				$name = substr($name, 0, 24);
-				if(isset($this->planet_info['name']))
-					$old_name = $this->planet_info['name'];
-				else $old_name = '';
-				$this->planet_info['name'] = $name;
+				if(isset($this->planet_info["name"]))
+					$old_name = $this->planet_info["name"];
+				else $old_name = "";
+				$this->planet_info["name"] = $name;
 
 				$pos = $this->getPos();
 				$galaxy = Classes::Galaxy($pos[0]);
 				if(!$galaxy->setPlanetName($pos[1], $pos[2], $name))
-					$this->planet_info['name'] = $old_name;
+					$this->planet_info["name"] = $old_name;
 				else
 					$this->changed = true;
 			}
 
-			return $this->planet_info['name'];
+			return $this->planet_info["name"];
 		}
 
 		/**
@@ -777,11 +1745,11 @@
 		{
 			$this->_forceActivePlanet();
 
-			if(isset($ress[0])){ $this->planet_info["ress"][0] -= $ress[0]; if($make_scores) $this->raw['punkte'][7] += $ress[0]; }
-			if(isset($ress[1])){ $this->planet_info["ress"][1] -= $ress[1]; if($make_scores) $this->raw['punkte'][8] += $ress[1]; }
-			if(isset($ress[2])){ $this->planet_info["ress"][2] -= $ress[2]; if($make_scores) $this->raw['punkte'][9] += $ress[2]; }
-			if(isset($ress[3])){ $this->planet_info["ress"][3] -= $ress[3]; if($make_scores) $this->raw['punkte'][10] += $ress[3]; }
-			if(isset($ress[4])){ $this->planet_info["ress"][4] -= $ress[4]; if($make_scores) $this->raw['punkte'][11] += $ress[4]; }
+			if(isset($ress[0])){ $this->planet_info["ress"][0] -= $ress[0]; if($make_scores) $this->raw["punkte"][7] += $ress[0]; }
+			if(isset($ress[1])){ $this->planet_info["ress"][1] -= $ress[1]; if($make_scores) $this->raw["punkte"][8] += $ress[1]; }
+			if(isset($ress[2])){ $this->planet_info["ress"][2] -= $ress[2]; if($make_scores) $this->raw["punkte"][9] += $ress[2]; }
+			if(isset($ress[3])){ $this->planet_info["ress"][3] -= $ress[3]; if($make_scores) $this->raw["punkte"][10] += $ress[3]; }
+			if(isset($ress[4])){ $this->planet_info["ress"][4] -= $ress[4]; if($make_scores) $this->raw["punkte"][11] += $ress[4]; }
 
 			$this->changed = true;
 		}
@@ -806,31 +1774,261 @@
 		}
 
 		/**
+		 * Erneuert die Rohstoffbestände auf diesem Planeten. Der Zeitpunkt der
+		 * letzten Erneuerung wurde zwischengespeichert, die Produktion seither
+		 * wird nun hinzugefügt.
+		 * @param int $time Bestand zu diesem Zeitpunkt statt zum aktuellen verwenden
+		 * @throw UserException Die letzte Aktualisierung ist neuer als $time
+		 * @return void
+		*/
+
+		protected function refreshRess($time=null)
+		{
+			$this->_forceActivePlanet();
+
+			if($this->planet_info["last_refresh"] >= $time)
+				throw new UserException("Last refresh is in the future.");
+
+			$prod = $this->getProduction($time !== false);
+			$limit = $this->getProductionLimit($time !== false);
+
+			$f = ($time-$this->planet_info["last_refresh"])/3600;
+
+			for($i=0; $i<=4; $i++)
+			{
+				if($this->planet_info["ress"][$i] >= $limit[$i])
+					continue;
+				$this->planet_info["ress"][$i] += $prod[$i]*$f;
+				if($this->planet_info["ress"][$i] > $limit[$i])
+					$this->planet_info["ress"][$i] = $limit[$i];
+			}
+
+			$this->planet_info["last_refresh"] = $time;
+
+			$this->changed = true;
+		}
+
+		/**
+		 * Gibt den eingestellten Produktionsfaktor eines Gebäudes zurück.
+		 * @param string $gebaeude Die Item-ID.
+		 * @return float
+		*/
+
+		function checkProductionFactor($gebaeude)
+		{
+			$this->_forceActivePlanet();
+
+			if(isset($this->planet_info["prod"][$gebaeude]))
+				return $this->planet_info["prod"][$gebaeude];
+			else return 1;
+		}
+
+		/**
+		 * Setzt den Produktionsfaktor eines Gebäudes.
+		 * @param string $gebaeude Die Item-ID
+		 * @param float $factor
+		 * @return void
+		*/
+
+		function setProductionFactor($gebaeude, $factor)
+		{
+			$this->_forceActivePlanet();
+
+			if(!$this->getItemInfo($gebaeude, "gebaeude", array(false))) return false;
+
+			$factor = (float) $factor;
+
+			if($factor < 0) $factor = 0;
+			if($factor > 1) $factor = 1;
+
+			$this->planet_info["prod"][$gebaeude] = $factor;
+			$this->changed = true;
+		}
+
+		/**
+		 * Gibt zurück, wieviel pro Stunde produziert wird.
+		 * @return array [ Carbon, Aluminium, Wolfram, Radium, Tritium, Energie, Unterproduktionsfaktor Energie, Energiemaximum erreicht? ]
+		*/
+
+		function getProduction()
+		{
+			$this->_forceActivePlanet();
+
+			$planet = $this->getActivePlanet();
+			$prod = array(0,0,0,0,0,0,0,false);
+			if($this->permissionToAct())
+			{
+				$gebaeude = $this->getItemsList("gebaeude");
+
+				$energie_prod = 0;
+				$energie_need = 0;
+				foreach($gebaeude as $id)
+				{
+					$item = $this->getItemInfo($id, "gebaeude", null, false);
+					if($item["prod"][5] < 0) $energie_need -= $item["prod"][5];
+					elseif($item["prod"][5] > 0) $energie_prod += $item["prod"][5];
+
+					$prod[0] += $item["prod"][0];
+					$prod[1] += $item["prod"][1];
+					$prod[2] += $item["prod"][2];
+					$prod[3] += $item["prod"][3];
+					$prod[4] += $item["prod"][4];
+				}
+
+				$limit = $this->getProductionLimit();
+				if($energie_prod > $limit[5])
+				{
+					$energie_prod = $limit[5];
+					$prod[7] = true;
+				}
+
+				$f = 1;
+				if($energie_need > $energie_prod) # Nicht genug Energie
+				{
+					$f = $energie_prod/$energie_need;
+					$prod[0] *= $f;
+					$prod[1] *= $f;
+					$prod[2] *= $f;
+					$prod[3] *= $f;
+					$prod[4] *= $f;
+				}
+
+				$prod[5] = $energie_prod-$energie_need;
+
+				foreach(global_setting("MIN_PRODUCTION") as $k=>$v)
+				{
+					if(!isset($prod[$k])) $prod[$k] = 0;
+					if($prod[$k] < $v) $prod[$k] = $v;
+				}
+
+				Functions::stdround($prod[0]);
+				Functions::stdround($prod[1]);
+				Functions::stdround($prod[2]);
+				Functions::stdround($prod[3]);
+				Functions::stdround($prod[4]);
+				Functions::stdround($prod[5]);
+
+				$prod[6] = $f;
+			}
+			return $prod;
+		}
+
+		/**
+		 * Gibt die maximalen Produktionsmengen für Rohstoffe und Energie zurück.
+		 * @return array(float)
+		*/
+
+		function getProductionLimit()
+		{
+			$this->_forceActivePlanet();
+
+			$limit = global_setting("PRODUCTION_LIMIT_INITIAL");
+			$steps = global_setting("PRODUCTION_LIMIT_STEPS");
+			$limit[0] += $this->getItemLevel("R02", "roboter")*$steps[0];
+			$limit[1] += $this->getItemLevel("R03", "roboter")*$steps[1];
+			$limit[2] += $this->getItemLevel("R04", "roboter")*$steps[2];
+			$limit[3] += $this->getItemLevel("R05", "roboter")*$steps[3];
+			$limit[4] += $this->getItemLevel("R06", "roboter")*$steps[4];
+			$limit[5] += $this->getItemLevel("F3", "forschung")*$steps[5];
+
+			return $limit;
+		}
+
+/*****************************************
+*** Highscores ***
+*****************************************/
+
+		/**
+		 * Gibt die Punkte des Spielers zurück.
+		 * @param int $i User::SCORES_* oder nichts für die Gesamtpunktzahl
+		 * @return float
+		*/
+
+		function getScores($i=null)
+		{
+			if(!isset($i))
+				return $this->raw["punkte"][0]+$this->raw["punkte"][1]+$this->raw["punkte"][2]+$this->raw["punkte"][3]+$this->raw["punkte"][4]+$this->raw["punkte"][5]+$this->raw["punkte"][6];
+			elseif(!isset($this->raw["punkte"][$i]))
+				return 0;
+			else
+				return $this->raw["punkte"][$i];
+		}
+
+		/**
+		 * Addiert dem Benutzeraccount Punkte hinzu.
+		 * @param int $i User::SCORES_*
+		 * @param float $scores
+		 * @return void
+		*/
+
+		function addScores($i, $scores)
+		{
+			if(!isset($this->raw["punkte"][$i]))
+				$this->raw["punkte"][$i] = $scores;
+			else $this->raw["punkte"][$i] += $scores;
+
+			$this->recalc_highscores[$i] = true;
+			$this->changed = true;
+		}
+
+		/**
+		 * Gibt die Anzahl der Rohstoffe zurück, die der Benutzer seit Bestehen
+		 * des Accounts ausgegeben hat.
+		 * @param int $i 0: Carbon; 1: Aluminium; ... Wenn nicht angegeben, wird die Gesamtzahl zurückgegeben
+		 * @return int
+		*/
+
+		function getSpentRess($i=false)
+		{
+			if($i === false)
+			{
+				return $this->getScores(7)+$this->getScores(8)+$this->getScores(9)+$this->getScores(10)+$this->getScores(11);
+			}
+			else return $this->getScores($i+7);
+		}
+
+		/**
+		 * Gibt die Platzierung dieses Spielers in den Highscores zurück.
+		 * @param int $i User::SCORES_*, wenn die Platzierung bei einer bestimmten Punktart gemeint ist
+		 * @return int
+		*/
+
+		function getRank($i=null)
+		{
+			$highscores = Classes::Highscores();
+			if($i === null)
+				return $highscores->getPosition("users", $this->getName());
+			else
+				return $highscores->getPosition("users", $this->getName(), "scores_".$i);
+		}
+
+/***************************************
+*** Flotten ***
+***************************************/
+
+		/**
 		 * Gibt eine Liste mit den Flotten zurück, die dieser Benutzer sehen darf.
 		 * @return array Array mit Flotten-IDs.
 		*/
 
 		function getFleetsList()
 		{
-			if(isset($this->raw['flotten']) && count($this->raw['flotten']) > 0)
+			if(isset($this->raw["flotten"]) && count($this->raw["flotten"]) > 0)
 			{
-				foreach($this->raw['flotten'] as $i=>$flotte)
+				foreach($this->raw["flotten"] as $i=>$flotte)
 				{
 					if(!Fleet::exists($flotte))
 					{
-						unset($this->raw['flotten'][$i]);
+						unset($this->raw["flotten"][$i]);
 						$this->changed = true;
 						continue;
 					}
 					/*$fl = Classes::Fleet($flotte);
-					if($fl->getStatus() == 1)
-					{
-						$arrival = $fl->getNextArrival();
-						if($arrival <= time())
-							$fl->arriveAtNextTarget();
-					}*/
+					$arrival = $fl->getNextArrival();
+					if($arrival <= time())
+						$fl->arriveAtNextTarget();*/
 				}
-				return $this->raw['flotten'];
+				return $this->raw["flotten"];
 			}
 			else return array();
 		}
@@ -843,10 +2041,10 @@
 
 		function addFleet($fleet)
 		{
-			if(!isset($this->raw['flotten'])) $this->raw['flotten'] = array();
-			elseif(in_array($fleet, $this->raw['flotten'])) return;
-			$this->raw['flotten'][] = $fleet;
-			natcasesort($this->raw['flotten']);
+			if(!isset($this->raw["flotten"])) $this->raw["flotten"] = array();
+			elseif(in_array($fleet, $this->raw["flotten"])) return;
+			$this->raw["flotten"][] = $fleet;
+			natcasesort($this->raw["flotten"]);
 			$this->changed = true;
 		}
 
@@ -857,10 +2055,10 @@
 
 		function unsetFleet($fleet)
 		{
-			if(!isset($this->raw['flotten'])) return;
-			$key = array_search($fleet, $this->raw['flotten']);
+			if(!isset($this->raw["flotten"])) return;
+			$key = array_search($fleet, $this->raw["flotten"]);
 			if($key === false) return;
-			unset($this->raw['flotten'][$key]);
+			unset($this->raw["flotten"][$key]);
 			$this->changed = true;
 		}
 
@@ -916,12 +2114,12 @@
 			foreach($planets as $planet)
 			{
 				$this->setActivePlanet($planet);
-				if($this->getItemLevel('B10', 'gebaeude') > 0)
+				if($this->getItemLevel("B10", "gebaeude") > 0)
 					$werft++;
 			}
 			$this->setActivePlanet($active_planet);
 
-			return ceil(pow($werft*$this->getItemLevel('F0', 'forschung'), .7));
+			return ceil(pow($werft*$this->getItemLevel("F0", "forschung"), .7));
 		}
 
 		/**
@@ -946,10 +2144,7 @@
 			# Fremdstationierte Flotten benoetigen einen Slot
 			foreach($this->getMyForeignFleets() as $coords)
 			{
-				$coords_a = explode(":", $coords);
-				$galaxy_obj = Classes::Galaxy($coords_a[0]);
-				$user_obj = Classes::User($galaxy_obj->getPlanetOwner($coords_a[1], $coords_a[2]));
-				if(!$user_obj->getStatus()) continue;
+				$user_obj = Classes::User($coords->getOwner());
 				$user_obj->cacheActivePlanet();
 				$user_obj->setActivePlanet($user_obj->getPlanetByPos($coords));
 				$fleets += count($user_obj->getForeignFleetsList($this->getName()));
@@ -969,180 +2164,322 @@
 		}
 
 		/**
-		 * Überprüft, ob das übergebene Passwort dem dieses Benutzers entspricht.
-		 * Wenn das Passwort stimmt, wird eine eventuelle Prüfsumme, die beim letzten
-		 * Aufruf der Passwort-vergessen-Funktion angelegt wurde, wieder deaktiviert.
-		 * @param string $password
-		 * @return bool
-		*/
-
-		function checkPassword($password)
-		{
-			if(!isset($this->raw['password'])) return false;
-			if(md5($password) == $this->raw['password'])
-			{
-				# Passwort stimmt, Passwort-vergessen-Funktion deaktivieren
-				if(isset($this->raw['email_passwd']) && $this->raw['email_passwd'])
-				{
-					$this->raw['email_passwd'] = false;
-					$this->changed = true;
-				}
-
-				return true;
-			}
-			else return false;
-		}
-
-		/**
-		 * Setzt das Passwort dieses Benutzers neu.
-		 * @param string $password
+		 * Stationiert eine Flotte $fleet vom Planeten $from, die dem Benutzer $user gehört, auf dem aktiven Planeten.
+		 * @param string $user Der Benutzername des Eigentümers der Flotten.
+		 * @param array $fleet Das Item-Array der Flotten. ( Item-ID => Anzahl )
+		 * @param string $from Die Herkunfskoordinaten der Flotte. Hierhin werden sie beim Abbruch zurückgesandt.
+		 * @param float $speed_factor Mit diesem Geschwindigkeitsfaktor wurden die Flotten losgeschickt, sie werden beim Abbruch genausolangsam zurückfliegen.
 		 * @return void
 		*/
 
-		function setPassword($password)
+		function addForeignFleet($user, array $fleet, $from, $speed_factor)
 		{
-			$this->raw['password'] = md5($password);
+			$this->_forceActivePlanet();
 
-			if(isset($this->raw['email_passwd']) && $this->raw['email_passwd'])
-				$this->raw['email_passwd'] = false;
+			if(!isset($this->planet_info["foreign_fleets"]))
+				$this->planet_info["foreign_fleets"] = array();
+
+			if(!isset($this->planet_info["foreign_fleets"][$user]))
+			{
+				$this->planet_info["foreign_fleets"][$user] = array();
+				$user_obj = Classes::User($user);
+				$user_obj->_addForeignCoordinates($this->getPosString());
+			}
+
+			if(count($this->planet_info["foreign_fleets"][$user]) > 0)
+				$next_i = max(array_keys($this->planet_info["foreign_fleets"][$user]))+1;
+			else
+				$next_i = 0;
+			$this->planet_info["foreign_fleets"][$user][$next_i] = array($fleet, $from, $speed_factor);
+
+			$this->changed = true;
+
+			return $next_i;
+		}
+
+		/**
+		 * Entfernt fremdstationierte Schiffe des Benutzers $username. Hat der Benutzer mehrere Flotten stationiert, wird zunächst von der ältesten abgezogen.
+		 * @param $username Der Benutzername des Eigentümers der Schiffe.
+		 * @param $id Die Item-ID des abzuziehenden Schiffstyps.
+		 * @param $count Wieviele Schiffe abgezogen werden sollen.
+		 * @return void
+		*/
+
+		function subForeignShips($username, $id, $count)
+		{
+			$this->_forceActivePlanet();
+
+			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$username]))
+				return false;
+			foreach($this->planet_info["foreign_fleets"][$username] as $i=>$fleet)
+			{
+				if(!isset($fleet[0][$id])) continue;
+				$fleet[0][$id] -= $count;
+				$count = -$fleet[0][$id];
+				if($fleet[0][$id] <= 0)
+					unset($fleet[0][$id]);
+				if(count($fleet[0]) > 0)
+					$this->planet_info["foreign_fleets"][$username][$i] = $fleet;
+				else
+					unset($this->planet_info["foreign_fleets"][$username][$i]);
+				if($count <= 0) break;
+			}
+			if(count($this->planet_info["foreign_fleets"][$username]) <= 0)
+				unset($this->planet_info["foreign_fleets"][$username]);
+			$this->changed = true;
+			if($count > 0) return 2;
+			return true;
+		}
+
+		/**
+		 * Entfernt die fremdstationierte Flotte Nummer $i des Benutzers $user. $i kann mit getForeignFleetsList() herausgefunden werden.
+		 * @param string $user Der Benutzername.
+		 * @param int $i Die Nummer der Flotte.
+		 * @return void
+		*/
+
+		function subForeignFleet($user, $i)
+		{
+			$this->_forceActivePlanet();
+
+			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$user]) || !isset($this->planet_info["foreign_fleets"][$user][$i]))
+				return false;
+
+			$message_obj = Classes::Message(Message::create());
+			$message_obj->text(sprintf($this->_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf($this->_("%d:%d:%d"), $this->getPos()), $this->_i(Item::makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0], true, true))));
+			$message_obj->subject(sprintf($this->_("Fremdstationierung zurückgezogen auf %s"), vsprintf($this->_("%d:%d:%d"), $this->getPos())));
+			$message_obj->from($user);
+			$message_obj->addUser($this->getName(), Message::TYPE_TRANSPORT);
+
+			unset($this->planet_info["foreign_fleets"][$user][$i]);
+
+			if(count($this->planet_info["foreign_fleets"][$user]) == 0)
+			{
+				unset($this->planet_info["foreign_fleets"][$user]);
+				$user_obj = Classes::User($user);
+				$user_obj->_subForeignCoordinates($this->getPosString());
+			}
+
+			$this->changed = true;
+
+			return true;
+		}
+
+		/**
+		 * Gibt die Liste der Benutzer zurück, die auf diesem Planeten Flotte stationiert haben.
+		 * @return array ( Benutzername )
+		*/
+
+		function getForeignUsersList()
+		{
+			$this->_forceActivePlanet();
+
+			if(!isset($this->planet_info["foreign_fleets"]))
+				$this->planet_info["foreign_fleets"] = array();
+
+			return array_keys($this->planet_info["foreign_fleets"]);
+		}
+
+		/**
+		 * Gibt die Liste der fremdstationierten Flotten des Benutzers $user auf diesem Planeten zurück. Jede ankommende Fremdstationierung erhält einen eigenen Index. Um nur die Flotten einer bestimmten Fremdstationierung zu erhalten, kann $i gesetzt werden.
+		 * @param string $user Der Benutzername.
+		 * @param int $i Der Index der Fremdstationierung.
+		 * @return array ( Index => [ ( Item-ID => Anzahl ), Herkunftsplanet, Geschwindigkeitsfaktor ] ), wenn $i null ist, ansonsten den Inhalt des Index $i.
+		*/
+
+		function getForeignFleetsList($user, $i=null)
+		{
+			$this->_forceActivePlanet();
+
+			if(!isset($this->planet_info["foreign_fleets"]))
+				$this->planet_info["foreign_fleets"] = array();
+
+			if($i === null)
+			{
+				if(!isset($this->planet_info["foreign_fleets"][$user]))
+					return array();
+				else
+					return $this->planet_info["foreign_fleets"][$user];
+			}
+			elseif(!isset($this->planet_info["foreign_fleets"][$user]) || !isset($this->planet_info["foreign_fleets"][$user][$i]))
+				return false;
+			else
+				return $this->planet_info["foreign_fleets"][$user][$i];
+		}
+
+		/**
+		 * Speichert Koordinaten ab, unter denen der Benutzer Flotte
+		 * fremdstationiert hat. Wird von addForeignFleet auf den
+		 * stationierenden Benutzer aufgerufen.
+		 * @param Planet $coords
+		 * @return void
+		*/
+
+		function _addForeignCoordinates($coords)
+		{
+			if(!isset($this->raw["foreign_coords"]))
+				$this->raw["foreign_coords"] = array();
+
+			if(in_array($coords, $this->raw["foreign_coords"]))
+				return 2;
+
+			$this->raw["foreign_coords"][] = $coords;
+
+			$this->changed = true;
+
+			return true;
+		}
+
+		/**
+		 * Loescht die Koordinaten von User::_addForeignCoordinates
+		 * wieder. Wird von subForeignFleet auf den zurueckziehenden
+		 * Benutzer ausgefuehrt.
+		 * @param Planet $coords
+		 * @return void
+		*/
+
+		function _subForeignCoordinates($coords)
+		{
+			if(!isset($this->raw["foreign_coords"]))
+				$this->raw["foreign_coords"] = array();
+
+			$key = array_search($coords, $this->raw["foreign_coords"]);
+			if($key === false) return 2;
+
+			unset($this->raw["foreign_coords"][$key]);
+			$this->changed = true;
+
+			return true;
+		}
+
+		/**
+		 * Liefert die Koordinaten zurück, bei denen dieser Benutzer Flotten stationiert hat.
+		 * @return array(Planet)
+		*/
+
+		function getMyForeignFleets()
+		{
+			if(!isset($this->raw["foreign_coords"]))
+				$this->raw["foreign_coords"] = array();
+
+			return array_unique($this->raw["foreign_coords"]);
+		}
+
+		/**
+		 * Holt eine fremdstationierte Flotte zurück.
+		 * @param Planet $koords
+		 * @param int $i Der Index der Flotte, ansonsten werden alle zurückgeholt.
+		 * @return void
+		 * @todo $koords als Planet übergeben lassen
+		*/
+
+		function callBackForeignFleet($koords, $i=null)
+		{
+			$owner = $koords->getOwner();
+			if(!$owner) return false;
+
+			$user_obj = Classes::User($owner);
+			$user_obj->cacheActivePlanet();
+			$user_obj->setActivePlanet($user_obj->getPlanetByPos($koords));
+
+			$fleets = $user_obj->getForeignFleetsList($this->getName());
+			if($i !== null && !isset($fleets[$i])) return false;
+			foreach($fleets as $i2=>$fleet)
+			{
+				if($i !== null && $i != $i2) continue;
+
+				$fleet_obj = Classes::Fleet(Fleet::create());
+
+				$fleet_obj->addTarget(Planet::fromString($fleet[1]), 6, true);
+				$fleet_obj->addUser($this->getName(), $koords, $fleet[2]);
+				foreach($fleet[0] as $id=>$c)
+					$fleet_obj->addFleet($id, $c, $this->getName());
+
+				if(!$user_obj->subForeignFleet($this->getName(), $i))
+					return false;
+
+				$fleet_obj->start();
+			}
+
+			$user_obj->restoreActivePlanet();
+
+			return true;
+		}
+
+		/**
+		 * Gibt die Flotten-ID zurück, die zu einem Verbundflottenpasswort gehört.
+		 * @param string $passwd
+		 * @return string
+		*/
+
+		function resolveFleetPasswd($passwd)
+		{
+			if(!isset($this->raw["flotten_passwds"]) || !isset($this->raw["flotten_passwds"][$passwd])) return null;
+			$fleet_id = $this->raw["flotten_passwds"][$passwd];
+
+			# Ueberpruefen, ob die Flotte noch die Kriterien erfuellt, ansonsten aus der Liste loeschen
+			$fleet = Classes::Fleet($fleet_id);
+			if($fleet->getCurrentType() != 3 || $fleet->isFlyingBack() || array_search($this->getName(), $fleet->getUsersList()) !== 0)
+			{
+				unset($this->raw["flotten_passwds"][$passwd]);
+				$this->changed = true;
+				return null;
+			}
+
+			return $fleet_id;
+		}
+
+		/**
+		 * Gibt das Verbundflottenpasswort einer Flotte zurück.
+		 * @param string $fleet_id
+		 * @return string
+		*/
+
+		function getFleetPasswd($fleet_id)
+		{
+			if(!isset($this->raw["flotten_passwds"]) || ($idx = array_search($fleet_id, $this->raw["flotten_passwds"])) === false)
+				return null;
+
+			# Ueberpruefen, ob die Flotte noch die Kriterien erfuellt, ansonsten aus der Liste loeschen
+			$fleet = Classes::Fleet($fleet_id);
+			if($fleet->getCurrentType() != 3 || $fleet->isFlyingBack() || array_search($this->getName(), $fleet->getUsersList()) !== 0)
+			{
+				unset($this->raw["flotten_passwds"][$idx]);
+				$this->changed = true;
+				return null;
+			}
+
+			return $idx;
+		}
+
+		/**
+		 * Ändert das Verbundflottenpasswort einer Flotte.
+		 * @param string $fleet_id
+		 * @param string $passwd
+		 * @return void
+		*/
+
+		function changeFleetPasswd($fleet_id, $passwd)
+		{
+			if(!isset($this->raw["flotten_passwds"]))
+				$this->raw["flotten_passwds"] = array();
+
+			$old_passwd = $this->getFleetPasswd($fleet_id);
+			if(($old_passwd === null || $old_passwd != $passwd) && $this->resolveFleetPasswd($passwd) !== null)
+				return false;
+
+			if($old_passwd !== null)
+				unset($this->raw["flotten_passwds"][$old_passwd]);
+
+			if($passwd)
+				$this->raw["flotten_passwds"][$passwd] = $fleet_id;
 
 			$this->changed = true;
 		}
 
-		/**
-		 * Gibt die Passwort-Prüfsumme dieses Benutzers zurück. Nutzbar zum Vergleich
-		 * mit anderen Benutzern.
-		 * @return string
-		*/
-
-		function getPasswordSum()
-		{
-			return $this->raw['password'];
-		}
-
-		/**
-		 * Gibt die Benutzereinstellung mit der ID $setting zurück.
-		 * @param string $setting
-		 * @return mixed
-		*/
-
-		function checkSetting($setting)
-		{
-			if(!isset($this->settings[$setting]))
-				throw new UserException("This is not a valid setting.");
-			return $this->settings[$setting];
-		}
-
-		/**
-		 * Setzt die Benutzereinstellung $setting neu.
-		 * @param string $setting
-		 * @param mixed $value
-		 * @return void
-		*/
-
-		function setSetting($setting, $value)
-		{
-			if(!isset($this->settings[$setting]))
-				throw new UserException("This is not a valid setting.");
-			else
-			{
-				$this->settings[$setting] = $value;
-				$this->changed = true;
-			}
-		}
-
-		/**
-		 * Gibt die Benutzerbeschreibung dieses Benutzers zurück.
-		 * @param bool $parsed Soll die Beschreibung zur HTML-Ausgabe zurückgegeben werden?
-		 * @return string
-		*/
-
-		function getUserDescription($parsed=true)
-		{
-			if(!isset($this->raw['description'])) $this->raw['description'] = '';
-
-			if($parsed)
-			{
-				if(!isset($this->raw['description_parsed']))
-				{
-					$this->raw['description_parsed'] = F::parse_html($this->raw['description']);
-					$this->changed = true;
-				}
-				return $this->raw['description_parsed'];
-			}
-			else
-				return $this->raw['description'];
-		}
-
-		/**
-		 * Setzt die Benutzerbeschreibung dieses Benutzers neu.
-		 * @param string $description
-		 * @return void
-		*/
-
-		function setUserDescription($description)
-		{
-			if(!isset($this->raw['description'])) $this->raw['description'] = '';
-
-			if($description != $this->raw['description'])
-			{
-				$this->raw['description'] = $description;
-				$this->raw['description_parsed'] = F::parse_html($this->raw['description']);
-				$this->changed = true;
-			}
-		}
-
-		/**
-		 * Liest oder setzt die letzte aufgerufene URL des Benutzers. ($_SERVER["REQUEST_URI"])
-		 * @param string $last_request
-		 * @return void|int Wenn $last_request null ist, die letzte URL
-		*/
-
-		function lastRequest($last_request=null)
-		{
-			if(!isset($last_request))
-			{
-				if(!isset($this->raw['last_request'])) return null;
-				else return $this->raw['last_request'];
-			}
-
-			$this->raw['last_request'] = $last_request;
-			$this->changed = true;
-		}
-
-		/**
-		 * Erneuert den Zeitpunkt der letzten Aktivität und setzt die letzte URL
-		 * auf die aktuelle.
-		 * @return void
-		*/
-
-		function registerAction()
-		{
-			$this->raw['last_request'] = $_SERVER['REQUEST_URI'];
-			$this->raw['last_active'] = time();
-		}
-
-		/**
-		 * Gibt den Zeitpunkt der letzten Aktivität zurück.
-		 * @return int
-		*/
-
-		function getLastActivity()
-		{
-			if(!isset($this->raw['last_active'])) return null;
-			return $this->raw['last_active'];
-		}
-
-		/**
-		 * Gibt den Zeitpunkt der Registrierung zurück.
-		 * @return int
-		*/
-
-		function getRegistrationTime()
-		{
-			if(!isset($this->raw['registration'])) return null;
-			return $this->raw['registration'];
-		}
+/*********************************************
+*** Items ***
+*********************************************/
 
 		/**
 		 * Gibt eine Liste der Item-IDs zurück, die dieser Benutzer theoretisch
@@ -1249,14 +2586,13 @@
 		 * @param string $id
 		 * @param string $type gebaeude, forschung, roboter, schiffe, verteidigung
 		 * @param array $fields Wenn angegeben, werden nur diese Eigenschaften (also nur diese Array-Keys) zurückgegeben.
-		 * @param bool $run_eventhandler Soll der Eventhandler erst alles fertigstellen, was Auswirkungen haben kann? (Zum Beispiel Roboter für die Bauzeit.)
+		 * @param bool $run_eventhandler Wirkungslos
+		 * @param int $level Gibt die Informationen auf einer bestimmten Ausbaustufe zurück
 		 * @return array
 		*/
 
 		function getItemInfo($id, $type=null, $fields=null, $run_eventhandler=null, $level=null)
 		{
-			if($run_eventhandler === null) $run_eventhandler = true;
-
 			list($calc, $fields) = $this->_itemInfoFields($fields);
 
 			$this_planet = $this->getActivePlanet();
@@ -1265,187 +2601,187 @@
 			$info = $item->getInfo($fields);
 			if($info === false) return false;
 			if($calc["type"])
-				$info['type'] = $type;
+				$info["type"] = $type;
 			if($calc["buildable"])
-				$info['buildable'] = $item->checkDependencies($this, $run_eventhandler);
+				$info["buildable"] = $item->checkDependencies($this);
 			if($calc["deps-okay"])
-				$info['deps-okay'] = $item->checkDependencies($this, $run_eventhandler);
+				$info["deps-okay"] = $item->checkDependencies($this);
 			if($calc["level"])
-				$info['level'] = ($level !== null ? $level : $this->getItemLevel($id, $type, $run_eventhandler));
+				$info["level"] = ($level !== null ? $level : $this->getItemLevel($id, $type));
 			if($calc["name"])
 				$info["name"] = $this->_("[item_".$id."]");
 
 			# Bauzeit als Anteil der Punkte des ersten Platzes
-			/*if(isset($info['time']))
+			/*if(isset($info["time"]))
 			{
 				$highscores = Classes::Highscores();
-				if($highscores->getStatus() && ($first = $highscores->getList('users', 1, 1)))
+				if($first = $highscores->getList("users", 1, 1))
 				{
 					list($best_rank) = $first;
-					if($best_rank['scores'] == 0) $f = 1;
-					else $f = $this->getScores()/$best_rank['scores'];
+					if($best_rank["scores"] == 0) $f = 1;
+					else $f = $this->getScores()/$best_rank["scores"];
 					if($f < .5) $f = .5;
-					$info['time'] *= $f;
+					$info["time"] *= $f;
 				}
 			}*/
 
 			$database_config = Classes::Database(global_setting("DB"))->getConfig();
 			$global_factors = isset($database_config["global_factors"]) ? $database_config["global_factors"] : array();
 
-			if(isset($info['time']) && isset($global_factors["time"]))
-				$info['time'] *= $global_factors['time'];
-			if(isset($info['prod']) && isset($global_factors["production"]))
+			if(isset($info["time"]) && isset($global_factors["time"]))
+				$info["time"] *= $global_factors["time"];
+			if(isset($info["prod"]) && isset($global_factors["production"]))
 			{
-				$info['prod'][0] *= $global_factors['production'];
-				$info['prod'][1] *= $global_factors['production'];
-				$info['prod'][2] *= $global_factors['production'];
-				$info['prod'][3] *= $global_factors['production'];
-				$info['prod'][4] *= $global_factors['production'];
-				$info['prod'][5] *= $global_factors['production'];
+				$info["prod"][0] *= $global_factors["production"];
+				$info["prod"][1] *= $global_factors["production"];
+				$info["prod"][2] *= $global_factors["production"];
+				$info["prod"][3] *= $global_factors["production"];
+				$info["prod"][4] *= $global_factors["production"];
+				$info["prod"][5] *= $global_factors["production"];
 			}
-			if(isset($info['ress']) && isset($global_factors["costs"]))
+			if(isset($info["ress"]) && isset($global_factors["costs"]))
 			{
-				$info['ress'][0] *= $global_factors['costs'];
-				$info['ress'][1] *= $global_factors['costs'];
-				$info['ress'][2] *= $global_factors['costs'];
-				$info['ress'][3] *= $global_factors['costs'];
+				$info["ress"][0] *= $global_factors["costs"];
+				$info["ress"][1] *= $global_factors["costs"];
+				$info["ress"][2] *= $global_factors["costs"];
+				$info["ress"][3] *= $global_factors["costs"];
 			}
 
 			switch($type)
 			{
-				case 'gebaeude':
+				case "gebaeude":
 					if($calc["prod"] || $calc["time"])
 						$max_rob_limit = floor($this->getBasicFields()/2);
 
 					if($calc["has_prod"])
-						$info['has_prod'] = ($info['prod'][0] > 0 || $info['prod'][1] > 0 || $info['prod'][2] > 0 || $info['prod'][3] > 0 || $info['prod'][4] > 0 || $info['prod'][5] > 0);
+						$info["has_prod"] = ($info["prod"][0] > 0 || $info["prod"][1] > 0 || $info["prod"][2] > 0 || $info["prod"][3] > 0 || $info["prod"][4] > 0 || $info["prod"][5] > 0);
 					if($calc["prod"])
 					{
-						$level_f = pow($info['level'], 2);
+						$level_f = pow($info["level"], 2);
 						$percent_f = $this->checkProductionFactor($id);
-						$info['prod'][0] *= $level_f*$percent_f;
-						$info['prod'][1] *= $level_f*$percent_f;
-						$info['prod'][2] *= $level_f*$percent_f;
-						$info['prod'][3] *= $level_f*$percent_f;
-						$info['prod'][4] *= $level_f*$percent_f;
-						$info['prod'][5] *= $level_f*$percent_f;
+						$info["prod"][0] *= $level_f*$percent_f;
+						$info["prod"][1] *= $level_f*$percent_f;
+						$info["prod"][2] *= $level_f*$percent_f;
+						$info["prod"][3] *= $level_f*$percent_f;
+						$info["prod"][4] *= $level_f*$percent_f;
+						$info["prod"][5] *= $level_f*$percent_f;
 
 						$use_old_robtech = file_exists(global_setting("DB_USE_OLD_ROBTECH"));
 						if($use_old_robtech)
-							$minen_rob = 1+0.0003125*$this->getItemLevel('F2', 'forschung', $run_eventhandler);
+							$minen_rob = 1+0.0003125*$this->getItemLevel("F2", "forschung");
 						else
-							$minen_rob = sqrt($this->getItemLevel("F2", "forschung", $run_eventhandler))/250;
+							$minen_rob = sqrt($this->getItemLevel("F2", "forschung"))/250;
 						if($use_old_robtech && $minen_rob > 1 || !$use_old_robtech && $minen_rob > 0)
 						{
-							$use_max_limit = !file_exists(global_setting('DB_NO_STRICT_ROB_LIMITS'));
+							$use_max_limit = !file_exists(global_setting("DB_NO_STRICT_ROB_LIMITS"));
 
-							$rob = $this->getItemLevel('R02', 'roboter', $run_eventhandler);
-							if($rob > $this->getItemLevel('B0', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B0', 'gebaeude', $run_eventhandler);
+							$rob = $this->getItemLevel("R02", "roboter");
+							if($rob > $this->getItemLevel("B0", "gebaeude")) $rob = $this->getItemLevel("B0", "gebaeude");
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
 							if($use_old_robtech)
-								$info['prod'][0] *= pow($minen_rob, $rob);
+								$info["prod"][0] *= pow($minen_rob, $rob);
 							else
-								$info['prod'][0] *= 1+$minen_rob*$rob;
+								$info["prod"][0] *= 1+$minen_rob*$rob;
 
-							$rob = $this->getItemLevel('R03', 'roboter', $run_eventhandler);
-							if($rob > $this->getItemLevel('B1', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B1', 'gebaeude', $run_eventhandler);
+							$rob = $this->getItemLevel("R03", "roboter");
+							if($rob > $this->getItemLevel("B1", "gebaeude")) $rob = $this->getItemLevel("B1", "gebaeude");
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
 							if($use_old_robtech)
-								$info['prod'][1] *= pow($minen_rob, $rob);
+								$info["prod"][1] *= pow($minen_rob, $rob);
 							else
-								$info['prod'][1] *= 1+$minen_rob*$rob;
+								$info["prod"][1] *= 1+$minen_rob*$rob;
 
-							$rob = $this->getItemLevel('R04', 'roboter', $run_eventhandler);
-							if($rob > $this->getItemLevel('B2', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B2', 'gebaeude', $run_eventhandler);
+							$rob = $this->getItemLevel("R04", "roboter");
+							if($rob > $this->getItemLevel("B2", "gebaeude")) $rob = $this->getItemLevel("B2", "gebaeude");
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
 							if($use_old_robtech)
-								$info['prod'][2] *= pow($minen_rob, $rob);
+								$info["prod"][2] *= pow($minen_rob, $rob);
 							else
-								$info['prod'][2] *= 1+$minen_rob*$rob;
+								$info["prod"][2] *= 1+$minen_rob*$rob;
 
-							$rob = $this->getItemLevel('R05', 'roboter', $run_eventhandler);
-							if($rob > $this->getItemLevel('B3', 'gebaeude', $run_eventhandler)) $rob = $this->getItemLevel('B3', 'gebaeude', $run_eventhandler);
+							$rob = $this->getItemLevel("R05", "roboter");
+							if($rob > $this->getItemLevel("B3", "gebaeude")) $rob = $this->getItemLevel("B3", "gebaeude");
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
 							if($use_old_robtech)
-								$info['prod'][3] *= pow($minen_rob, $rob);
+								$info["prod"][3] *= pow($minen_rob, $rob);
 							else
-								$info['prod'][3] *= 1+$minen_rob*$rob;
+								$info["prod"][3] *= 1+$minen_rob*$rob;
 
-							$rob = $this->getItemLevel('R06', 'roboter', $run_eventhandler);
-							if($rob > $this->getItemLevel('B4', 'gebaeude', $run_eventhandler)*2) $rob = $this->getItemLevel('B4', 'gebaeude', $run_eventhandler)*2;
+							$rob = $this->getItemLevel("R06", "roboter");
+							if($rob > $this->getItemLevel("B4", "gebaeude")*2) $rob = $this->getItemLevel("B4", "gebaeude")*2;
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
 							if($use_old_robtech)
-								$info['prod'][4] *= pow($minen_rob, $rob);
+								$info["prod"][4] *= pow($minen_rob, $rob);
 							else
-								$info['prod'][4] *= 1+$minen_rob*$rob;
+								$info["prod"][4] *= 1+$minen_rob*$rob;
 						}
 					}
 
 					if($calc["time"])
 					{
-						$info['time'] *= pow($info['level']+1, 1.5);
-						$baurob = 1-0.00125*$this->getItemLevel('F2', 'forschung', $run_eventhandler);
-						$rob = $this->getItemLevel('R01', 'roboter', $run_eventhandler);
+						$info["time"] *= pow($info["level"]+1, 1.5);
+						$baurob = 1-0.00125*$this->getItemLevel("F2", "forschung");
+						$rob = $this->getItemLevel("R01", "roboter");
 						if($rob > $max_rob_limit) $rob = $max_rob_limit;
-						$info['time'] *= pow($baurob, $rob);
+						$info["time"] *= pow($baurob, $rob);
 					}
 
 					if($calc["scores"])
 					{
-						$ress = array_sum($info['ress']);
+						$ress = array_sum($info["ress"]);
 						$scores = 0;
-						for($i=1; $i<=$info['level']; $i++)
+						for($i=1; $i<=$info["level"]; $i++)
 							$scores += $ress*pow($i, 2.4);
-						$info['scores'] = $scores/1000;
+						$info["scores"] = $scores/1000;
 					}
 
 					if($calc["ress"])
 					{
-						$ress_f = pow($info['level']+1, 2.4);
-						$info['ress'][0] *= $ress_f;
-						$info['ress'][1] *= $ress_f;
-						$info['ress'][2] *= $ress_f;
-						$info['ress'][3] *= $ress_f;
+						$ress_f = pow($info["level"]+1, 2.4);
+						$info["ress"][0] *= $ress_f;
+						$info["ress"][1] *= $ress_f;
+						$info["ress"][2] *= $ress_f;
+						$info["ress"][3] *= $ress_f;
 					}
 
-					if($calc["buildable"] && $info['buildable'] && $info['fields'] > $this->getRemainingFields())
-						$info['buildable'] = false;
+					if($calc["buildable"] && $info["buildable"] && $info["fields"] > $this->getRemainingFields())
+						$info["buildable"] = false;
 					if($calc["debuildable"])
-						$info['debuildable'] = ($info['level'] >= 1 && -$info['fields'] <= $this->getRemainingFields());
+						$info["debuildable"] = ($info["level"] >= 1 && -$info["fields"] <= $this->getRemainingFields());
 
 					if($calc["limit_factor"])
 					{
-						if($info['time'] < global_setting("MIN_BUILDING_TIME"))
-							$info['limit_factor'] = $info['time']/global_setting("MIN_BUILDING_TIME");
+						if($info["time"] < global_setting("MIN_BUILDING_TIME"))
+							$info["limit_factor"] = $info["time"]/global_setting("MIN_BUILDING_TIME");
 						else
-							$info['limit_factor'] = 1;
+							$info["limit_factor"] = 1;
 					}
 
 					# Runden
 					if($calc["prod"])
 					{
-						Functions::stdround($info['prod'][0]);
-						Functions::stdround($info['prod'][1]);
-						Functions::stdround($info['prod'][2]);
-						Functions::stdround($info['prod'][3]);
-						Functions::stdround($info['prod'][4]);
-						Functions::stdround($info['prod'][5]);
+						Functions::stdround($info["prod"][0]);
+						Functions::stdround($info["prod"][1]);
+						Functions::stdround($info["prod"][2]);
+						Functions::stdround($info["prod"][3]);
+						Functions::stdround($info["prod"][4]);
+						Functions::stdround($info["prod"][5]);
 					}
 					if($calc["time"])
-						Functions::stdround($info['time']);
+						Functions::stdround($info["time"]);
 					if($calc["ress"])
 					{
-						Functions::stdround($info['ress'][0]);
-						Functions::stdround($info['ress'][1]);
-						Functions::stdround($info['ress'][2]);
-						Functions::stdround($info['ress'][3]);
-						Functions::stdround($info['ress'][4]);
+						Functions::stdround($info["ress"][0]);
+						Functions::stdround($info["ress"][1]);
+						Functions::stdround($info["ress"][2]);
+						Functions::stdround($info["ress"][3]);
+						Functions::stdround($info["ress"][4]);
 					}
 					break;
-				case 'forschung':
+				case "forschung":
 					if($calc["time"])
 					{
-						$info['time'] *= pow($info['level']+1, 2);
+						$info["time"] *= pow($info["level"]+1, 2);
 
 						$local_labs = 0;
 						$global_labs = 0;
@@ -1454,170 +2790,170 @@
 						foreach($planets as $planet)
 						{
 							$this->setActivePlanet($planet);
-							if($planet == $active_planet) $local_labs += $this->getItemLevel('B8', 'gebaeude', $run_eventhandler);
-							else $global_labs += $this->getItemLevel('B8', 'gebaeude', $run_eventhandler);
+							if($planet == $active_planet) $local_labs += $this->getItemLevel("B8", "gebaeude");
+							else $global_labs += $this->getItemLevel("B8", "gebaeude");
 						}
 						$this->setActivePlanet($active_planet);
 
 						if($calc["time_local"])
-							$info['time_local'] = $info['time']*pow(0.95, $local_labs);
+							$info["time_local"] = $info["time"]*pow(0.95, $local_labs);
 						unset($info["time"]);
 						if($calc["time_global"])
-							$info['time_global'] = $info['time_local']*pow(0.975, $global_labs);
+							$info["time_global"] = $info["time_local"]*pow(0.975, $global_labs);
 					}
 
 					if($calc["scores"])
 					{
-						$ress = array_sum($info['ress']);
+						$ress = array_sum($info["ress"]);
 						$scores = 0;
-						for($i=1; $i<=$info['level']; $i++)
+						for($i=1; $i<=$info["level"]; $i++)
 							$scores += $ress*pow($i, 3);
-						$info['scores'] = $scores/1000;
+						$info["scores"] = $scores/1000;
 					}
 
 					if($calc["ress"])
 					{
-						$ress_f = pow($info['level']+1, 3);
-						$info['ress'][0] *= $ress_f;
-						$info['ress'][1] *= $ress_f;
-						$info['ress'][2] *= $ress_f;
-						$info['ress'][3] *= $ress_f;
+						$ress_f = pow($info["level"]+1, 3);
+						$info["ress"][0] *= $ress_f;
+						$info["ress"][1] *= $ress_f;
+						$info["ress"][2] *= $ress_f;
+						$info["ress"][3] *= $ress_f;
 					}
 
 					if($calc["limit_factor_local"])
 					{
-						if($info['time_local'] < global_setting("MIN_BUILDING_TIME"))
-							$info['limit_factor_local'] = $info['time_local']/global_setting("MIN_BUILDING_TIME");
+						if($info["time_local"] < global_setting("MIN_BUILDING_TIME"))
+							$info["limit_factor_local"] = $info["time_local"]/global_setting("MIN_BUILDING_TIME");
 						else
-							$info['limit_factor_local'] = 1;
+							$info["limit_factor_local"] = 1;
 					}
 					if($calc["limit_factor_global"])
 					{
-						if($info['time_global'] < global_setting("MIN_BUILDING_TIME"))
-							$info['limit_factor_global'] = $info['time_global']/global_setting("MIN_BUILDING_TIME");
+						if($info["time_global"] < global_setting("MIN_BUILDING_TIME"))
+							$info["limit_factor_global"] = $info["time_global"]/global_setting("MIN_BUILDING_TIME");
 						else
-							$info['limit_factor_global'] = 1;
+							$info["limit_factor_global"] = 1;
 					}
 
 					# Runden
 					if($calc["time_local"])
-						Functions::stdround($info['time_local']);
+						Functions::stdround($info["time_local"]);
 					if($calc["time_global"])
-						Functions::stdround($info['time_global']);
+						Functions::stdround($info["time_global"]);
 					if($calc["ress"])
 					{
-						Functions::stdround($info['ress'][0]);
-						Functions::stdround($info['ress'][1]);
-						Functions::stdround($info['ress'][2]);
-						Functions::stdround($info['ress'][3]);
-						Functions::stdround($info['ress'][4]);
+						Functions::stdround($info["ress"][0]);
+						Functions::stdround($info["ress"][1]);
+						Functions::stdround($info["ress"][2]);
+						Functions::stdround($info["ress"][3]);
+						Functions::stdround($info["ress"][4]);
 					}
 					break;
-				case 'roboter':
+				case "roboter":
 					if($calc["time"])
-						$info['time'] *= pow(0.95, $this->getItemLevel('B9', 'gebaeude', $run_eventhandler));
+						$info["time"] *= pow(0.95, $this->getItemLevel("B9", "gebaeude"));
 
 					if($calc["simple_scores"])
-						$info['simple_scores'] = array_sum($info['ress'])/1000;
+						$info["simple_scores"] = array_sum($info["ress"])/1000;
 					if($calc["scores"])
-						$info['scores'] = $info['simple_scores']*$info['level'];
+						$info["scores"] = $info["simple_scores"]*$info["level"];
 
 					if($calc["limit_factor"])
 					{
-						if($info['time'] < global_setting("MIN_BUILDING_TIME"))
-							$info['limit_factor'] = $info['time']/global_setting("MIN_BUILDING_TIME");
+						if($info["time"] < global_setting("MIN_BUILDING_TIME"))
+							$info["limit_factor"] = $info["time"]/global_setting("MIN_BUILDING_TIME");
 						else
-							$info['limit_factor'] = 1;
+							$info["limit_factor"] = 1;
 					}
 
 					if($calc["time"])
-						Functions::stdround($info['time']);
+						Functions::stdround($info["time"]);
 					break;
-				case 'schiffe':
+				case "schiffe":
 					if($calc["att"])
-						$info['att'] *= pow(1.05, $this->getItemLevel('F4', 'forschung', $run_eventhandler));
+						$info["att"] *= pow(1.05, $this->getItemLevel("F4", "forschung"));
 					if($calc["def"])
-						$info['def'] *= pow(1.05, $this->getItemLevel('F5', 'forschung', $run_eventhandler));
+						$info["def"] *= pow(1.05, $this->getItemLevel("F5", "forschung"));
 					if($calc["trans"])
 					{
-						$lad_f = pow(1.2, $this->getItemLevel('F11', 'forschung', $run_eventhandler));
-						$info['trans'][0] *= $lad_f;
-						$info['trans'][1] *= $lad_f;
+						$lad_f = pow(1.2, $this->getItemLevel("F11", "forschung"));
+						$info["trans"][0] *= $lad_f;
+						$info["trans"][1] *= $lad_f;
 					}
 					if($calc["time"])
-						$info['time'] *= pow(0.95, $this->getItemLevel('B10', 'gebaeude', $run_eventhandler));
+						$info["time"] *= pow(0.95, $this->getItemLevel("B10", "gebaeude"));
 					if($calc["speed"])
 					{
-						$info['speed'] *= pow(1.025, $this->getItemLevel('F6', 'forschung', $run_eventhandler));
-						$info['speed'] *= pow(1.05, $this->getItemLevel('F7', 'forschung', $run_eventhandler));
-						$info['speed'] *= pow(1.5, $this->getItemLevel('F8', 'forschung', $run_eventhandler));
+						$info["speed"] *= pow(1.025, $this->getItemLevel("F6", "forschung"));
+						$info["speed"] *= pow(1.05, $this->getItemLevel("F7", "forschung"));
+						$info["speed"] *= pow(1.5, $this->getItemLevel("F8", "forschung"));
 					}
 
 					if($calc["simple_scores"])
-						$info['simple_scores'] = array_sum($info['ress'])/1000;
+						$info["simple_scores"] = array_sum($info["ress"])/1000;
 					if($calc["scores"])
-						$info['scores'] = $info['simple_scores']*$info['level'];
+						$info["scores"] = $info["simple_scores"]*$info["level"];
 
 					if($calc["limit_factor"])
 					{
-						if($info['time'] < global_setting("MIN_BUILDING_TIME"))
-							$info['limit_factor'] = $info['time']/global_setting("MIN_BUILDING_TIME");
+						if($info["time"] < global_setting("MIN_BUILDING_TIME"))
+							$info["limit_factor"] = $info["time"]/global_setting("MIN_BUILDING_TIME");
 						else
-							$info['limit_factor'] = 1;
+							$info["limit_factor"] = 1;
 					}
 
 					# Runden
 					if($calc["att"])
-						Functions::stdround($info['att']);
+						Functions::stdround($info["att"]);
 					if($calc["def"])
-						Functions::stdround($info['def']);
+						Functions::stdround($info["def"]);
 					if($calc["trans"])
 					{
-						Functions::stdround($info['trans'][0]);
-						Functions::stdround($info['trans'][1]);
+						Functions::stdround($info["trans"][0]);
+						Functions::stdround($info["trans"][1]);
 					}
 					if($calc["time"])
-						Functions::stdround($info['time']);
+						Functions::stdround($info["time"]);
 					if($calc["speed"])
-						Functions::stdround($info['speed']);
+						Functions::stdround($info["speed"]);
 					break;
-				case 'verteidigung':
+				case "verteidigung":
 					if($calc["att"])
-						$info['att'] *= pow(1.05, $this->getItemLevel('F4', 'forschung', $run_eventhandler));
+						$info["att"] *= pow(1.05, $this->getItemLevel("F4", "forschung"));
 					if($calc["def"])
-						$info['def'] *= pow(1.05, $this->getItemLevel('F5', 'forschung', $run_eventhandler));
+						$info["def"] *= pow(1.05, $this->getItemLevel("F5", "forschung"));
 					if($calc["time"])
-						$info['time'] *= pow(0.95, $this->getItemLevel('B10', 'gebaeude', $run_eventhandler));
+						$info["time"] *= pow(0.95, $this->getItemLevel("B10", "gebaeude"));
 
 					if($calc["simple_scores"])
-						$info['simple_scores'] = array_sum($info['ress'])/1000;
+						$info["simple_scores"] = array_sum($info["ress"])/1000;
 					if($calc["scores"])
-						$info['scores'] = $info['simple_scores']*$info['level'];
+						$info["scores"] = $info["simple_scores"]*$info["level"];
 
 					if($calc["limit_factor"])
 					{
-						if($info['time'] < global_setting("MIN_BUILDING_TIME"))
-							$info['limit_factor'] = $info['time']/global_setting("MIN_BUILDING_TIME");
+						if($info["time"] < global_setting("MIN_BUILDING_TIME"))
+							$info["limit_factor"] = $info["time"]/global_setting("MIN_BUILDING_TIME");
 						else
-							$info['limit_factor'] = 1;
+							$info["limit_factor"] = 1;
 					}
 
 					if($calc["att"])
-						Functions::stdround($info['att']);
+						Functions::stdround($info["att"]);
 					if($calc["def"])
-						Functions::stdround($info['def']);
+						Functions::stdround($info["def"]);
 					if($calc["time"])
-						Functions::stdround($info['time']);
+						Functions::stdround($info["time"]);
 					break;
 			}
 
 			# Mindestbauzeit zwoelf Sekunden aufgrund von Serverbelastung
-			if($type == 'forschung')
+			if($type == "forschung")
 			{
-				if($calc["time_local"] && $info['time_local'] < global_setting("MIN_BUILDING_TIME")) $info['time_local'] = global_setting("MIN_BUILDING_TIME");
-				if($calc["time_global"] && $info['time_global'] < global_setting("MIN_BUILDING_TIME")) $info['time_global'] = global_setting("MIN_BUILDING_TIME");
+				if($calc["time_local"] && $info["time_local"] < global_setting("MIN_BUILDING_TIME")) $info["time_local"] = global_setting("MIN_BUILDING_TIME");
+				if($calc["time_global"] && $info["time_global"] < global_setting("MIN_BUILDING_TIME")) $info["time_global"] = global_setting("MIN_BUILDING_TIME");
 			}
-			elseif($calc["time"] && $info['time'] < global_setting("MIN_BUILDING_TIME")) $info['time'] = global_setting("MIN_BUILDING_TIME");
+			elseif($calc["time"] && $info["time"] < global_setting("MIN_BUILDING_TIME")) $info["time"] = global_setting("MIN_BUILDING_TIME");
 
 			return $info;
 		}
@@ -1627,14 +2963,11 @@
 		 * (Roboter, Schiffe, Verteidigung) des Items zurück.
 		 * @param string $id
 		 * @param string $type gebaeude, forschung, roboter, schiffe oder verteidigung
-		 * @param bool $run_eventhandler Soll der Eventhandler vorher alles fertigstellen?
 		 * @return int
 		*/
 
-		function getItemLevel($id, $type=null, $run_eventhandler=true)
+		function getItemLevel($id, $type=null)
 		{
-			if($run_eventhandler) $this->eventhandler($id,0,0,0,0,0);
-
 			if($type === false || $type === null)
 				$type = Item::getItemType($id);
 			if(!isset($this->items[$type]) || !isset($this->items[$type][$id]))
@@ -1658,11 +2991,11 @@
 			if(!isset($time)) $time = time();
 
 			$recalc = array(
-				'gebaeude' => 0,
-				'forschung' => 1,
-				'roboter' => 2,
-				'schiffe' => 3,
-				'verteidigung' => 4
+				"gebaeude" => 0,
+				"forschung" => 1,
+				"roboter" => 2,
+				"schiffe" => 3,
+				"verteidigung" => 4
 			);
 
 			if(!isset($type))
@@ -1675,30 +3008,30 @@
 			$this->recalc_highscores[$recalc[$type]] = true;
 
 			# Felder belegen
-			if($type == 'gebaeude')
+			if($type == "gebaeude")
 			{
-				$item_info = $this->getItemInfo($id, 'gebaeude', array("fields"));
-				if($item_info['fields'] > 0)
-					$this->changeUsedFields($item_info['fields']*$value);
+				$item_info = $this->getItemInfo($id, "gebaeude", array("fields"));
+				if($item_info["fields"] > 0)
+					$this->changeUsedFields($item_info["fields"]*$value);
 			}
 
 			switch($id)
 			{
 				# Ingeneurswissenschaft: Planeten vergroessern
-				case 'F9':
+				case "F9":
 					$planets = $this->getPlanetsList();
 					$active_planet = $this->getActivePlanet();
 					foreach($planets as $planet)
 					{
 						$this->setActivePlanet($planet);
-						$size = ceil($this->getTotalFields()/(($this->getItemLevel('F9', false, false)-$value)/self::getIngtechFactor()+1));
-						$this->setFields(floor($size*($this->getItemLevel('F9', false, false)/self::getIngtechFactor()+1)));
+						$size = ceil($this->getTotalFields()/(($this->getItemLevel("F9", false, false)-$value)/Item::getIngtechFactor()+1));
+						$this->setFields(floor($size*($this->getItemLevel("F9", false, false)/Item::getIngtechFactor()+1)));
 					}
 					$this->setActivePlanet($active_planet);
 					break;
 
 				# Bauroboter: Laufende Bauzeit verkuerzen (TODO?)
-				/*case 'R01':
+				/*case "R01":
 					$max_rob_limit = floor($this->getBasicFields()/2);
 					$counting_after = $this->items[$type][$id];
 					$counting_before = $counting_after-$value;
@@ -1706,41 +3039,41 @@
 					if($counting_before > $max_rob_limit) $counting_before = $max_rob_limit;
 					$counting_value = $counting_after-$counting_before;
 
-					$building = $this->checkBuildingThing('gebaeude');
+					$building = $this->checkBuildingThing("gebaeude");
 					if($building && $building[1] > $time)
 					{
-						$f = pow(1-0.00125*$this->getItemLevel('F2', 'forschung', false), $counting_value);
+						$f = pow(1-0.00125*$this->getItemLevel("F2", "forschung", false), $counting_value);
 						$old_finished = $building[4][0]-$building[1];
 						$old_remaining = ($building[1]-$time)*$building[4][1];
 						$new_remaining = $old_remaining*$f;
 						if(($old_finished*$f)+$new_remaining < global_setting("MIN_BUILDING_TIME"))
 						{
-							$this->planet_info['building']['gebaeude'][4][1] = $new_remaining/(global_setting("MIN_BUILDING_TIME")-($old_finished*$f));
+							$this->planet_info["building"]["gebaeude"][4][1] = $new_remaining/(global_setting("MIN_BUILDING_TIME")-($old_finished*$f));
 							$new_remaining = global_setting("MIN_BUILDING_TIME")-($old_finished*$f);
 						}
 						else
-							$this->planet_info['building']['gebaeude'][4][1] = 1;
-						$this->planet_info['building']['gebaeude'][1] = $time+$new_remaining;
+							$this->planet_info["building"]["gebaeude"][4][1] = 1;
+						$this->planet_info["building"]["gebaeude"][1] = $time+$new_remaining;
 					}
 
 					break;*/
 
 				# Roboterbautechnik: Auswirkungen der Bauroboter aendern
-				case 'F2':
+				case "F2":
 					$planets = $this->getPlanetsList();
 					$active_planet = $this->getActivePlanet();
 					foreach($planets as $planet)
 					{
 						$this->setActivePlanet($planet);
 
-						$building = $this->checkBuildingThing('gebaeude');
-						$robs = $this->getItemLevel('R01', 'roboter', false);
+						$building = $this->checkBuildingThing("gebaeude");
+						$robs = $this->getItemLevel("R01", "roboter", false);
 						if($robs > 0 && $building && $building[1] > $time)
 						{
-							$f_1 = pow(1-0.00125*($this->getItemLevel('F2', false, false)-$value), $robs);
-							$f_2 = pow(1-0.00125*$this->getItemLevel('F2', false, false), $robs);
+							$f_1 = pow(1-0.00125*($this->getItemLevel("F2", false, false)-$value), $robs);
+							$f_2 = pow(1-0.00125*$this->getItemLevel("F2", false, false), $robs);
 							$remaining = ($building[1]-$time)*$f_2/$f_1;
-							$this->raw['building']['gebaeude'][1] = $time+$remaining;
+							$this->raw["building"]["gebaeude"][1] = $time+$remaining;
 						}
 					}
 					$this->setActivePlanet($active_planet);
@@ -1752,435 +3085,39 @@
 		}
 
 		/**
-		 * Erneuert die Rohstoffbestände auf diesem Planeten. Der Zeitpunkt der
-		 * letzten Erneuerung wurde zwischengespeichert, die Produktion seither
-		 * wird nun hinzugefügt.
-		 * @param int $time Bestand zu diesem Zeitpunkt statt zum aktuellen verwenden
-		 * @throw UserException Die letzte Aktualisierung ist neuer als $time
-		 * @return void
+		 * Gibt Informationen über die im Bau befindlichen Dinge auf diesem Planeten zurück.
+		 * Das Rückgabe-Array hat bei Gebäuden und Forschung das folgende Format:
+		 * [ Item-ID; Fertigstellungszeitpunkt; Globale Forschung?/Gebäuderückbau?; Verbrauchte Rohstoffe; Planetenindex der globalen Forschung ]
+		 * Bei Robotern, Schiffen und Verteidigungsanlagen ist das Format wie folgt:
+		 * ( [ Item-ID; Startzeit; Anzahl; Bauzeit pro Stück ] )
+		 * @param string $type gebaeude, forschung, roboter, schiffe oder verteidigung
+		 * @return array
 		*/
 
-		protected function refreshRess($time=null)
+		function checkBuildingThing($type)
 		{
 			$this->_forceActivePlanet();
-
-			if(!isset($time))
-			{
-				$this->eventhandler(0, 1,1,1,0,0);
-				$time = time();
-			}
-
-			if($this->planet_info['last_refresh'] >= $time)
-				throw new UserException("Last refresh is in the future.");
-
-			$prod = $this->getProduction($time !== false);
-			$limit = $this->getProductionLimit($time !== false);
-
-			$f = ($time-$this->planet_info['last_refresh'])/3600;
-
-			for($i=0; $i<=4; $i++)
-			{
-				if($this->planet_info["ress"][$i] >= $limit[$i])
-					continue;
-				$this->planet_info["ress"][$i] += $prod[$i]*$f;
-				if($this->planet_info["ress"][$i] > $limit[$i])
-					$this->planet_info["ress"][$i] = $limit[$i];
-			}
-
-			$this->planet_info['last_refresh'] = $time;
-
-			$this->changed = true;
-		}
-
-		/**
-		 * Gibt den eingestellten Produktionsfaktor eines Gebäudes zurück.
-		 * @param string $gebaeude Die Item-ID.
-		 * @return float
-		*/
-
-		function checkProductionFactor($gebaeude)
-		{
-			$this->_forceActivePlanet();
-
-			if(isset($this->planet_info['prod'][$gebaeude]))
-				return $this->planet_info['prod'][$gebaeude];
-			else return 1;
-		}
-
-		/**
-		 * Setzt den Produktionsfaktor eines Gebäudes.
-		 * @param string $gebaeude Die Item-ID
-		 * @param float $factor
-		 * @return void
-		*/
-
-		function setProductionFactor($gebaeude, $factor)
-		{
-			$this->_forceActivePlanet();
-
-			if(!$this->getItemInfo($gebaeude, 'gebaeude', array(false))) return false;
-
-			$factor = (float) $factor;
-
-			if($factor < 0) $factor = 0;
-			if($factor > 1) $factor = 1;
-
-			$this->planet_info['prod'][$gebaeude] = $factor;
-			$this->changed = true;
-		}
-
-		/**
-		 * Gibt zurück, wieviel pro Stunde produziert wird.
-		 * @param bool $run_eventhandler Sollen produzierende Gebäude vorher fertiggestellt werden?
-		 * @return array [ Carbon, Aluminium, Wolfram, Radium, Tritium, Energie, Unterproduktionsfaktor Energie, Energiemaximum erreicht? ]
-		*/
-
-		function getProduction($run_eventhandler=true)
-		{
-			$this->_forceActivePlanet();
-
-			$planet = $this->getActivePlanet();
-			$prod = array(0,0,0,0,0,0,0,false);
-			if($this->permissionToAct())
-			{
-				$gebaeude = $this->getItemsList('gebaeude');
-
-				$energie_prod = 0;
-				$energie_need = 0;
-				foreach($gebaeude as $id)
-				{
-					$item = $this->getItemInfo($id, 'gebaeude', null, false);
-					if($item['prod'][5] < 0) $energie_need -= $item['prod'][5];
-					elseif($item['prod'][5] > 0) $energie_prod += $item['prod'][5];
-
-					$prod[0] += $item['prod'][0];
-					$prod[1] += $item['prod'][1];
-					$prod[2] += $item['prod'][2];
-					$prod[3] += $item['prod'][3];
-					$prod[4] += $item['prod'][4];
-				}
-
-				$limit = $this->getProductionLimit($run_eventhandler);
-				if($energie_prod > $limit[5])
-				{
-					$energie_prod = $limit[5];
-					$prod[7] = true;
-				}
-
-				$f = 1;
-				if($energie_need > $energie_prod) # Nicht genug Energie
-				{
-					$f = $energie_prod/$energie_need;
-					$prod[0] *= $f;
-					$prod[1] *= $f;
-					$prod[2] *= $f;
-					$prod[3] *= $f;
-					$prod[4] *= $f;
-				}
-
-				$prod[5] = $energie_prod-$energie_need;
-
-				foreach(global_setting("MIN_PRODUCTION") as $k=>$v)
-				{
-					if(!isset($prod[$k])) $prod[$k] = 0;
-					if($prod[$k] < $v) $prod[$k] = $v;
-				}
-
-				Functions::stdround($prod[0]);
-				Functions::stdround($prod[1]);
-				Functions::stdround($prod[2]);
-				Functions::stdround($prod[3]);
-				Functions::stdround($prod[4]);
-				Functions::stdround($prod[5]);
-
-				$prod[6] = $f;
-			}
-			return $prod;
-		}
-
-		/**
-		 * Gibt die maximalen Produktionsmengen für Rohstoffe und Energie zurück.
-		 * @param bool $run_eventhandler Sollen Dinge wie Roboter und Energietechnik zuerst fertiggestellt werden?
-		 * @return array(float)
-		*/
-
-		function getProductionLimit($run_eventhandler=true)
-		{
-			$this->_forceActivePlanet();
-
-			$limit = global_setting("PRODUCTION_LIMIT_INITIAL");
-			$steps = global_setting("PRODUCTION_LIMIT_STEPS");
-			$limit[0] += $this->getItemLevel("R01", "roboter", $run_eventhandler)*$steps[0];
-			$limit[1] += $this->getItemLevel("R01", "roboter", $run_eventhandler)*$steps[1];
-			$limit[2] += $this->getItemLevel("R01", "roboter", $run_eventhandler)*$steps[2];
-			$limit[3] += $this->getItemLevel("R01", "roboter", $run_eventhandler)*$steps[3];
-			$limit[4] += $this->getItemLevel("R01", "roboter", $run_eventhandler)*$steps[4];
-			$limit[5] += $this->getItemLevel("F3", "forschung", $run_eventhandler)*$steps[5];
-
-			return $limit;
-		}
-
-		/**
-		 * Gibt zurück, ob dieser Benutzer gesperrt ist.
-		 * @param bool $check_unlocked Soll überprüft werden, ob eine Zeitsperre abgelaufen ist?
-		 * @return bool
-		*/
-
-		function userLocked($check_unlocked=true)
-		{
-			if($check_unlocked && isset($this->raw['lock_time']) && $this->raw['lock_time'] && time() > $this->raw['lock_time'])
-				$this->lockUser(false, false);
-			return (isset($this->raw['locked']) && $this->raw['locked']);
-		}
-
-		/**
-		 * Gibt bei einer Sperre zurück, bis wann diese noch gilt.
-		 * @return int|null Null, wenn sie unendlich ist.
-		*/
-
-		function lockedUntil()
-		{
-			if(!$this->userLocked()) return null;
-			if(!isset($this->raw['lock_time'])) return null;
-			return $this->raw['lock_time'];
-		}
-
-		function lockUser($lock_time=false, $check_unlocked=true)
-		{
-			$this->eventhandler(0, 1,1,1,1,1);
-			$this->raw['locked'] = !$this->userLocked($check_unlocked);
-			$this->raw['lock_time'] = ($this->raw['locked'] ? $lock_time : false);
-			$this->changed = true;
-
-			# Planeteneigentuemer umbenennen
-			$flag = '';
-			if($this->userLocked(false)) $flag = 'g';
-			$active_planet = $this->getActivePlanet();
-			$planets = $this->getPlanetsList();
-			foreach($planets as $planet)
-			{
-				$this->setActivePlanet($planet);
-				$pos = $this->getPos();
-				$galaxy = Classes::Galaxy($pos[0]);
-				$galaxy->setPlanetOwnerFlag($pos[1], $pos[2], $flag);
-			}
-			if($active_planet !== false) $this->setActivePlanet($active_planet);
-
-			return true;
-		}
-
-		function umode($set=-1)
-		{
-			if($set !== -1)
-			{
-				$set = (bool)$set;
-				if($set == $this->umode()) return true;
-				if($set && !$this->umodePossible()) return false;
-
-				if(!$set)
-				{
-					$time_diff = time()-$this->raw["umode_time"];
-					$active_planet = $this->getActivePlanet();
-					foreach($this->getPlanetsList() as $planet)
-					{
-						$this->setActivePlanet($planet);
-						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["gebaeude"]) && $this->planet_info["building"]["gebaeude"])
-							$this->planet_info["building"]["gebaeude"][1] += $time_diff;
-						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["forschung"]) && $this->planet_info["building"]["forschung"])
-							$this->planet_info["building"]["forschung"][1] += $time_diff;
-						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["roboter"]) && $this->planet_info["building"]["roboter"])
-						{
-							foreach($this->planet_info["building"]["roboter"] as $k=>$v)
-								$this->planet_info["building"]["roboter"][$k][1] += $time_diff;
-						}
-						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["schiffe"]) && $this->planet_info["building"]["schiffe"])
-						{
-							foreach($this->planet_info["building"]["schiffe"] as $k=>$v)
-								$this->planet_info["building"]["schiffe"][$k][1] += $time_diff;
-						}
-						if(isset($this->planet_info["building"]) && isset($this->planet_info["building"]["verteidigung"]) && $this->planet_info["building"]["verteidigung"])
-						{
-							foreach($this->planet_info["building"]["verteidigung"] as $k=>$v)
-								$this->planet_info["building"]["verteidigung"][$k][1] += $time_diff;
-						}
-					}
-					foreach($this->getFleetsList() as $fleet)
-					{
-						$fleet_obj = Classes::Fleet($fleet);
-						$fleet_obj->moveTime($time_diff);
-					}
-				}
-
-				$this->raw['umode'] = $set;
-				$this->raw['umode_time'] = time();
-				$this->changed = true;
-
-				$flag = ($this->raw['umode'] ? 'U' : '');
-				$active_planet = $this->getActivePlanet();
-				$planets = $this->getPlanetsList();
-				foreach($planets as $planet)
-				{
-					$this->setActivePlanet($planet);
-					$pos = $this->getPos();
-					$galaxy_obj = Classes::Galaxy($pos[0]);
-					$galaxy_obj->setPlanetOwnerFlag($pos[1], $pos[2], $flag);
-				}
-				$this->setActivePlanet($planet);
-
-				return true;
-			}
-
-			return (isset($this->raw['umode']) && $this->raw['umode']);
-		}
-
-		function umodePossible()
-		{
-			foreach($this->getFleetsList() as $fleet)
-			{
-				$fleet_obj = Classes::Fleet($fleet);
-				if(!$fleet_obj->userExists($this->getName()))
-					continue;
-				foreach($fleet_obj->getTargetsList() as $target)
-				{
-					$target_spl = explode(":", $target);
-					$galaxy_obj = Classes::Galaxy($target_spl[0]);
-					$owner = $galaxy_obj->getPlanetOwner($target_spl[1], $target_spl[2]);
-					if($owner && $owner != $this->getName())
-						return false;
-				}
-			}
-			return true;
-		}
-
-		function permissionToUmode()
-		{
-			if(!isset($this->raw['umode_time'])) return true;
-
-			if($this->umode()) $min_days = 3; # Ist gerade im Urlaubsmodus
-			else $min_days = 3;
-
-			return ((time()-$this->raw['umode_time']) > $min_days*86400);
-		}
-
-		function getUmodeEnteringTime()
-		{
-			if(!$this->umode() || !isset($this->raw["umode_time"])) return null;
-
-			return $this->raw["umode_time"];
-		}
-
-		function getUmodeReturnTime()
-		{
-			if($this->umode()) return $this->raw['umode_time']+3*86400;
-			else return time()+3*86400;
-		}
-
-		function permissionToAct()
-		{
-			return !Config::database_locked() && !$this->userLocked() && !$this->umode();
-		}
-
-		protected function getDataFromRaw()
-		{
-			$settings = array('skin' => false, 'schrift' => true,
-				'sonden' => 1, 'ress_refresh' => 0,
-				'fastbuild' => false, 'shortcuts' => false,
-				'tooltips' => false,
-				'noads' => false, 'show_extern' => false,
-				'notify' => false,
-				"extended_buildings" => false,
-				'fastbuild_full' => false,
-				'receive' => array(
-					1 => array(true, true),
-					2 => array(true, false),
-					3 => array(true, false),
-					4 => array(true, true),
-					5 => array(true, false)
-				),
-				'show_building' => array(
-					'gebaeude' => 1,
-					'forschung' => 1,
-					'roboter' => 0,
-					'schiffe' => 0,
-					'verteidigung' => 0
-				),
-				'prod_show_days' => 1,
-				'messenger_receive' => array(
-					'messages' => array(1=>true, 2=>true, 3=>true, 4=>true, 5=>true, 6=>true, 7=>true),
-					'building' => array('gebaeude' => 1, 'forschung' => 1, 'roboter' => 3, 'schiffe' => 3, 'verteidigung' => 3)
-				),
-				'lang' => l::language(),
-				'fingerprint' => false,
-				'gpg_im' => false,
-				'timezone' => date_default_timezone_get()
-			);
-
-			$this->settings = array();
-			foreach($settings as $setting=>$default)
-			{
-				if(isset($this->raw[$setting])) $this->settings[$setting] = $this->raw[$setting];
-				else $this->settings[$setting] = $default;
-			}
-			if(!isset($this->settings['messenger_receive']['building']))
-				$this->settings['messenger_receive']['building'] = array('gebaeude' => 1, 'forschung' => 1, 'roboter' => 3, 'schiffe' => 3, 'verteidigung' => 3);
-
-			$this->items = array();
-			$this->items['forschung'] = &$this->raw['forschung'];
-
-			$this->name = $this->raw['username'];
-
-			$this->realEventhandler();
-		}
-
-		protected function getRawFromData()
-		{
-			if($this->recalc_highscores[0] || $this->recalc_highscores[1] || $this->recalc_highscores[2] || $this->recalc_highscores[3] || $this->recalc_highscores[4] || $this->recalc_highscores[5] || $this->recalc_highscores[6])
-				$this->doRecalcHighscores($this->recalc_highscores[0], $this->recalc_highscores[1], $this->recalc_highscores[2], $this->recalc_highscores[3], $this->recalc_highscores[4]);
-
-			foreach($this->settings as $setting=>$value)
-				$this->raw[$setting] = $value;
-			$this->raw['forschung'] = $this->items['forschung'];
-
-			$active_planet = $this->getActivePlanet();
-			if($active_planet !== false)
-			{
-				$this->planet_info['gebaeude'] = $this->items['gebaeude'];
-				$this->planet_info['roboter'] = $this->items['roboter'];
-				$this->planet_info['schiffe'] = $this->items['schiffe'];
-				$this->planet_info['verteidigung'] = $this->items['verteidigung'];
-			}
-		}
-
-		function checkBuildingThing($type, $run_eventhandler=true)
-		{
-			$this->_forceActivePlanet();
-
-			if($run_eventhandler)
-			{
-				switch($type)
-				{
-					case 'gebaeude': $this->eventhandler(false, 1, 0, 0, 0, 0); break;
-					case 'forschung': $this->eventhandler(false, 0, 1, 0, 0, 0); break;
-					case 'roboter': $this->eventhandler(false, 0, 0, 1, 0, 0); break;
-					case 'schiffe': $this->eventhandler(false, 0, 0, 0, 1, 0); break;
-					case 'verteidigung': $this->eventhandler(false, 0, 0, 0, 0, 1); break;
-					default: return false;
-				}
-			}
 
 			switch($type)
 			{
-				case 'gebaeude': case 'forschung':
-					if(!isset($this->planet_info['building']) || !isset($this->planet_info['building'][$type]) || trim($this->planet_info['building'][$type][0]) == '')
+				case "gebaeude": case "forschung":
+					if(!isset($this->planet_info["building"]) || !isset($this->planet_info["building"][$type]) || trim($this->planet_info["building"][$type][0]) == "")
 						return false;
-					return $this->planet_info['building'][$type];
-				case 'roboter': case 'schiffe': case 'verteidigung':
-					if(!isset($this->planet_info['building']) || !isset($this->planet_info['building'][$type]) || count($this->planet_info['building'][$type]) <= 0)
+					return $this->planet_info["building"][$type];
+				case "roboter": case "schiffe": case "verteidigung":
+					if(!isset($this->planet_info["building"]) || !isset($this->planet_info["building"][$type]) || count($this->planet_info["building"][$type]) <= 0)
 						return array();
-					return $this->planet_info['building'][$type];
+					return $this->planet_info["building"][$type];
 				default: return false;
 			}
 		}
+
+		/**
+		 * Bricht die aktuell im Bau befindlichen Gegenstände des angegebenen Typs ab.
+		 * @param string $type gebaeude, forschung, roboter, schiffe, verteidigung
+		 * @param bool $cancel Wenn true, werden die Rohstoffe bei Gebäude und Forschung rückerstattet.
+		 * @return void
+		*/
 
 		function removeBuildingThing($type, $cancel=true)
 		{
@@ -2188,14 +3125,14 @@
 
 			switch($type)
 			{
-				case 'gebaeude': case 'forschung':
-					if(!isset($this->planet_info['building']) || !isset($this->planet_info['building'][$type]) || trim($this->planet_info['building'][$type][0]) == '')
-						return false;
+				case "gebaeude": case "forschung":
+					if(!isset($this->planet_info["building"]) || !isset($this->planet_info["building"][$type]) || trim($this->planet_info["building"][$type][0]) == "")
+						return;
 
-					if($type == 'forschung' && $this->planet_info['building'][$type][2])
+					if($type == "forschung" && $this->planet_info["building"][$type][2])
 					{
-						$source_planet = $this->planet_info['building'][$type][4];
-						//if(!isset($this->raw['planets'][$source_planet]['building'][$type]) || trim($this->raw['planets'][$source_planet]['building'][$type][0]) == '')
+						$source_planet = $this->planet_info["building"][$type][4];
+						//if(!isset($this->raw["planets"][$source_planet]["building"][$type]) || trim($this->raw["planets"][$source_planet]["building"][$type][0]) == "")
 						//	return false;
 						$active_planet = $this->getActivePlanet();
 						$planets = $this->getPlanetsList();
@@ -2203,50 +3140,48 @@
 						{
 							$this->setActivePlanet($planet);
 							if($planet == $source_planet && $cancel)
-								$this->addRess($this->planet_info['building'][$type][3]);
-							if(isset($this->planet_info['building'][$type]))
-								unset($this->planet_info['building'][$type]);
+								$this->addRess($this->planet_info["building"][$type][3]);
+							if(isset($this->planet_info["building"][$type]))
+								unset($this->planet_info["building"][$type]);
 						}
 						$this->setActivePlanet($active_planet);
 					}
 					elseif($cancel)
-						$this->addRess($this->planet_info['building'][$type][3]);
+						$this->addRess($this->planet_info["building"][$type][3]);
 
 					if($cancel)
 					{
-						$this->raw['punkte'][7] -= $this->planet_info['building'][$type][3][0];
-						$this->raw['punkte'][8] -= $this->planet_info['building'][$type][3][1];
-						$this->raw['punkte'][9] -= $this->planet_info['building'][$type][3][2];
-						$this->raw['punkte'][10] -= $this->planet_info['building'][$type][3][3];
-						$this->raw['punkte'][11] -= $this->planet_info['building'][$type][3][4];
+						$this->raw["punkte"][7] -= $this->planet_info["building"][$type][3][0];
+						$this->raw["punkte"][8] -= $this->planet_info["building"][$type][3][1];
+						$this->raw["punkte"][9] -= $this->planet_info["building"][$type][3][2];
+						$this->raw["punkte"][10] -= $this->planet_info["building"][$type][3][3];
+						$this->raw["punkte"][11] -= $this->planet_info["building"][$type][3][4];
 					}
 
-					unset($this->planet_info['building'][$type]);
+					unset($this->planet_info["building"][$type]);
 					$this->changed = true;
 
 					if($cancel)
 						$this->refreshMessengerBuildingNotifications($type);
 
-					return true;
-				case 'roboter': case 'schiffe': case 'verteidigung':
-					if(!isset($this->planet_info['building']) || !isset($this->planet_info['building'][$type]) || count($this->planet_info['building'][$type]) <= 0)
-						return false;
-					unset($this->planet_info['building'][$type]);
+					break;
+				case "roboter": case "schiffe": case "verteidigung":
+					if(!isset($this->planet_info["building"]) || !isset($this->planet_info["building"][$type]) || count($this->planet_info["building"][$type]) <= 0)
+						return;
+					unset($this->planet_info["building"][$type]);
 					$this->changed = true;
 
 					if($cancel)
 						$this->refreshMessengerBuildingNotifications($type);
 
-					return true;
+					break;
 			}
 		}
 
-		function eventhandler($check_id=false, $check_gebaeude=true, $check_forschung=true, $check_roboter=true, $check_schiffe=true, $check_verteidigung=true)
-		{ /* Dummy function */ }
-
 		/**
-		  * Event handler helper function: returns the earliest item of type $type that has been built but not yet dealt with. Removes this item.
-		  * @param $type String One of gebaeude, forschung, roboter, schiffe, verteidigung
+		 * Eventhandler-Hilfsfunktion: entfernt den nächsten fertigzustellenden Gegenstand und entfernt ihn
+		 * @param string $type gebaeude, forschung, roboter, schiffe oder verteidigung
+		 * @return array|null [ Zeitpunkt; Item-ID; Ausbaustufen; Rohstoffe nach Fertigstellung aktualisieren? ]
 		*/
 
 		function getNextBuiltThing($type)
@@ -2293,20 +3228,15 @@
 			return null;
 		}
 
-		function realEventhandler()
+		/**
+		 * Stellt alle Gegenstände, die seit der letzten Ausführung fertig geworden sind, fertig.
+		 * @return void
+		*/
+
+		function eventhandler()
 		{
-			/* Array
-			(
-				[0] => Zeit
-				[1] => ID
-				[2] => Stufen hinzuzaehlen
-				[3] => Rohstoffe neu berechnen?
-			)*/
-
-			if(!$this->raw) return false;
-
 			if($this->umode())
-				return 2;
+				return;
 
 			$active_planet = $this->getActivePlanet();
 
@@ -2357,466 +3287,22 @@
 			}
 
 			$this->setActivePlanet($active_planet);
-			return true;
-		}
-
-		function isVerbuendet($user)
-		{
-			if($user == $this->getName()) return true;
-
-			if(!isset($this->raw['verbuendete'])) return false;
-			return in_array($user, $this->raw['verbuendete']);
-		}
-
-		function existsVerbuendet($user)
-		{
-			return (
-				$user == $this->getName()
-				|| (isset($this->raw['verbuendete']) && in_array($user, $this->raw['verbuendete']))
-				|| (isset($this->raw['verbuendete_bewerbungen']) && in_array($user, $this->raw['verbuendete_bewerbungen']))
-				|| (isset($this->raw['verbuendete_anfragen']) && in_array($user, $this->raw['verbuendete_anfragen']))
-			);
-		}
-
-		function renameVerbuendet($old_name, $new_name)
-		{
-			if($old_name == $new_name) return 2;
-
-			$k1 = (isset($this->raw['verbuendete']) ? array_search($old_name, $this->raw['verbuendete']) : false);
-			$k2 = (isset($this->raw['verbuendete_bewerbungen']) ? array_search($old_name, $this->raw['verbuendete_bewerbungen']) : false);
-			$k3 = (isset($this->raw['verbuendete_anfragen']) ? array_search($old_name, $this->raw['verbuendete_anfragen']) : false);
-
-			if($k1 !== false) $this->raw['verbuendete'][$k1] = $new_name;
-			if($k2 !== false) $this->raw['verbuendete_bewerbungen'][$k2] = $new_name;
-			if($k3 !== false) $this->raw['verbuendete_anfragen'][$k3] = $new_name;
-
-			$this->changed = ($k1 !== false || $k2 !== false || $k3 !== false);
-
-			return true;
-		}
-
-		function getVerbuendetList()
-		{
-			if(!isset($this->raw['verbuendete'])) return array();
-			else return $this->raw['verbuendete'];
-		}
-
-		function getVerbuendetApplicationList()
-		{
-			if(!isset($this->raw['verbuendete_bewerbungen'])) return array();
-			else return $this->raw['verbuendete_bewerbungen'];
-		}
-
-		function getVerbuendetRequestList()
-		{
-			if(!isset($this->raw['verbuendete_anfragen'])) return array();
-			else return $this->raw['verbuendete_anfragen'];
-		}
-
-		function _addVerbuendetRequest($user)
-		{
-			if($this->existsVerbuendet($user)) return false;
-
-			if(!isset($this->raw['verbuendete_anfragen'])) $this->raw['verbuendete_anfragen'] = array();
-			$this->raw['verbuendete_anfragen'][] = $user;
-
-			$this->changed = true;
-			return true;
-		}
-
-		function _removeVerbuendetRequest($user)
-		{
-			if(!isset($this->raw['verbuendete_anfragen']) || !in_array($user, $this->raw['verbuendete_anfragen']))
-				return false;
-			unset($this->raw['verbuendete_anfragen'][array_search($user, $this->raw['verbuendete_anfragen'])]);
-			$this->changed = true;
-			return true;
-		}
-
-		function _removeVerbuendetApplication($user)
-		{
-			if(!isset($this->raw['verbuendete_bewerbungen']) || !in_array($user, $this->raw['verbuendete_bewerbungen']))
-				return false;
-
-			unset($this->raw['verbuendete_bewerbungen'][array_search($user, $this->raw['verbuendete_bewerbungen'])]);
-			$this->changed = true;
-
-			return true;
-		}
-
-		function _addVerbuendet($user)
-		{
-			if($this->isVerbuendet($user)) return false;
-
-			if(!isset($this->raw['verbuendete'])) $this->raw['verbuendete'] = array();
-			$this->raw['verbuendete'][] = $user;
-			$this->changed = true;
-			return true;
-		}
-
-		function _removeVerbuendet($user)
-		{
-			if(!$this->isVerbuendet($user)) return false;
-			unset($this->raw['verbuendete'][array_search($user, $this->raw['verbuendete'])]);
-			$this->changed = true;
-			return true;
-		}
-
-		function applyVerbuendet($user, $text='')
-		{
-			if($this->existsVerbuendet($user)) return false;
-
-			$that_user = Classes::User($user);
-			if($that_user->_addVerbuendetRequest($this->getName()))
-			{
-				if(!isset($this->raw['verbuendete_bewerbungen'])) $this->raw['verbuendete_bewerbungen'] = array();
-				$this->raw['verbuendete_bewerbungen'][] = $user;
-				$this->changed = true;
-
-				$message = Classes::Message();
-				if($message->create())
-				{
-					$message->addUser($user, Message::TYPE_VERBUENDETE);
-					$message->subject($that_user->_("Anfrage auf ein Bündnis"));
-					$message->from($this->getName());
-					if(trim($text) == '')
-						$message->text(sprintf($that_user->_("Der Spieler %s hat Ihnen eine mitteilungslose Bündnisanfrage gestellt."), $this->getName()));
-					else
-						$message->text($text);
-				}
-
-				return true;
-			}
-			else return false;
-		}
-
-		function acceptVerbuendetApplication($user)
-		{
-			if(!isset($this->raw['verbuendete_anfragen']) || !in_array($user, $this->raw['verbuendete_anfragen']))
-				return false;
-
-			$user_obj = Classes::User($user);
-			if(!$user_obj->_removeVerbuendetApplication($this->getName())) return false;
-
-			unset($this->raw['verbuendete_anfragen'][array_search($user, $this->raw['verbuendete_anfragen'])]);
-
-			$user_obj->_addVerbuendet($this->getName());
-			$this->_addVerbuendet($user);
-
-			$message = Classes::Message();
-			if($message->create())
-			{
-				$message->from($this->getName());
-				$message->subject($user_obj->_("Bündnisanfrage angenommen"));
-				$message->text(sprintf($user_obj->_("Der Spieler %s hat Ihre Bündnisanfrage angenommen."), $this->getName()));
-				$message->addUser($user, Message::TYPE_VERBUENDETE);
-			}
-
-			return true;
-		}
-
-		function rejectVerbuendetApplication($user)
-		{
-			if(!isset($this->raw['verbuendete_anfragen']) || !in_array($user, $this->raw['verbuendete_anfragen']))
-				return false;
-
-			$user_obj = Classes::User($user);
-			if(!$user_obj->_removeVerbuendetApplication($this->getName())) return false;
-
-			unset($this->raw['verbuendete_anfragen'][array_search($user, $this->raw['verbuendete_anfragen'])]);
-
-			$message = Classes::Message();
-			if($message->create())
-			{
-				$message->from($this->getName());
-				$message->subject($user_obj->_("Bündnisanfrage abgelehnt"));
-				$message->text(sprintf($user_obj->_("Der Spieler %s hat Ihre Bündnisanfrage abgelehnt."), $this->getName()));
-				$message->addUser($user, Message::TYPE_VERBUENDETE);
-			}
-
-			return true;
-		}
-
-		function quitVerbuendet($user)
-		{
-			if(!$this->isVerbuendet($user)) return false;
-
-			$user_obj = Classes::User($user);
-			if($user_obj->_removeVerbuendet($this->getName()))
-			{
-				$this->_removeVerbuendet($user);
-
-				$message = Classes::Message();
-				if($message->create())
-				{
-					$message->from($this->getName());
-					$message->subject($user_obj->_("Bündnis gekündigt"));
-					$message->text(sprintf($user_obj->_("Der Spieler %s hat sein Bündnis mit Ihnen gekündigt."), $this->getName()));
-					$message->addUser($user, Message::TYPE_VERBUENDETE);
-				}
-
-				# Fremdstationierte Flotten zurueckholen
-				$this->cacheActivePlanet();
-				$user_obj->cacheActivePlanet();
-
-				foreach($user_obj->getPlanetsList() as $planet)
-				{
-					$user_obj->setActivePlanet($planet);
-					if(count($user_obj->getForeignFleetsList($this->getName())) > 0)
-						$this->callBackForeignFleet($user_obj->getPosString());
-				}
-
-				foreach($this->getPlanetsList() as $planet)
-				{
-					$this->setActivePlanet($planet);
-					if(count($this->getForeignFleetsList($user)) > 0)
-						$user_obj->callBackForeignFleet($this->getPosString());
-				}
-
-				$this->restoreActivePlanet();
-				$user_obj->restoreActivePlanet();
-
-				$this->changed = true;
-
-				return true;
-			}
-			else return false;
-		}
-
-		function verbuendetNewsletter($subject, $text)
-		{
-			if(!isset($this->raw['verbuendete']) || count($this->raw['verbuendete']) <= 0) return false;
-			if(trim($text) == '') return false;
-
-			$message = Classes::Message();
-			if($message->create())
-			{
-				$message->from($this->getName());
-				$message->subject($subject);
-				$message->text($text);
-				foreach($this->raw['verbuendete'] as $verbuendeter)
-					$message->addUser($verbuendeter, Message::TYPE_VERBUENDETE);
-			}
-			return true;
-		}
-
-		function cancelVerbuendetApplication($user)
-		{
-			if(!isset($this->raw['verbuendete_bewerbungen']) || !in_array($user, $this->raw['verbuendete_bewerbungen']))
-				return false;
-
-			$user_obj = Classes::User($user);
-			if($user_obj->_removeVerbuendetRequest($this->getName()))
-			{
-				unset($this->raw['verbuendete_bewerbungen'][array_search($user, $this->raw['verbuendete_bewerbungen'])]);
-
-				$message = Classes::Message();
-				if($message->create())
-				{
-					$message->from($this->getName());
-					$message->subject($user_obj->_("Bündnisanfrage zurückgezogen"));
-					$message->text(sprintf($user_obj->_("Der Spieler %s hat seine Bündnisanfrage an Sie zurückgezogen."), $this->getName()));
-					$message->addUser($user, Message::TYPE_VERBUENDETE);
-				}
-				$this->changed = true;
-				return true;
-			}
-			else return false;
-		}
-
-		function allianceTag($tag='', $check=true)
-		{
-			if($tag === '')
-			{
-				if(!isset($this->raw['alliance']) || trim($this->raw['alliance']) == '' || !Alliance::allianceExists($this->raw['alliance']))
-					return false;
-				else return trim($this->raw['alliance']);
-			}
-			else
-			{
-				if($tag && $check)
-				{
-					$that_alliance = Classes::Alliance($tag);
-					if(!$that_alliance->getStatus()) return false;
-				}
-				if((isset($this->raw['alliance']) && trim($this->raw['alliance']) != '') && (!$tag || $tag != $this->raw['alliance']))
-				{
-					# Aus der aktuellen Allianz austreten
-					if($check)
-					{
-						$my_alliance = Classes::Alliance(trim($this->raw['alliance']));
-						if(!$my_alliance->getStatus()) return false;
-						if(!$my_alliance->removeUser($this->getName())) return false;
-					}
-					$this->raw['alliance'] = '';
-					$this->changed = true;
-				}
-
-				if($check)
-				{
-					if($tag)
-					{
-						$that_alliance->addUser($this->getName(), $this->getScores());
-						$tag = $that_alliance->getName();
-					}
-					else $tag = '';
-				}
-
-				$this->raw['alliance'] = $tag;
-
-				if($check) $this->cancelAllianceApplication(false);
-				$this->changed = true;
-
-				$highscores = Classes::Highscores();
-				$highscores->updateUser($this->getName(), $tag);
-
-				$active_planet = $this->getActivePlanet();
-				$planets = $this->getPlanetsList();
-				foreach($planets as $planet)
-				{
-					$this->setActivePlanet($planet);
-					$pos = $this->getPos();
-					$galaxy = Classes::Galaxy($pos[0]);
-					$galaxy->setPlanetOwnerAlliance($pos[1], $pos[2], $tag);
-				}
-				$this->setActivePlanet($active_planet);
-
-				return true;
-			}
-		}
-
-		function cancelAllianceApplication($message=true)
-		{
-			if(!isset($this->raw['alliance_bewerbung']) || !$this->raw['alliance_bewerbung'])
-				return false;
-
-			$alliance_obj = Classes::Alliance($this->raw['alliance_bewerbung']);
-			if($alliance_obj->getStatus())
-			{
-				if(!$alliance_obj->deleteApplication($this->getName()))
-					return false;
-				if($message)
-				{
-					foreach($users as $user)
-					{
-						$message_obj = Classes::Message();
-						if($message_obj->create())
-						{
-							$user_obj = Classes::User($user);
-							$message_obj->from($this->getName());
-							$message_obj->subject($user_obj->_("Allianzbewerbung zurückgezogen"));
-							$message_obj->text(sprintf($user_obj->_("Der Benutzer %s hat seine Bewerbung bei Ihrer Allianz zurückgezogen."),$this->getName()));
-							$users = $alliance_obj->getUsersWithPermission(4);
-							foreach($users as $user)
-								$message_obj->addUser($user, Message::TYPE_VERBUENDETE);
-						}
-					}
-				}
-				unset($alliance_obj);
-			}
-			$this->raw['alliance_bewerbung'] = false;
-			$this->changed = true;
-			return true;
-		}
-
-		function allianceApplication($alliance=false, $text=false)
-		{
-			if($this->allianceTag()) return false;
-
-			if(!$alliance)
-			{
-				if(!isset($this->raw['alliance_bewerbung'])) return false;
-				return $this->raw['alliance_bewerbung'];
-			}
-			else
-			{
-				if(isset($this->raw['alliance_bewerbung']) && $this->raw['alliance_bewerbung'])
-					return false;
-
-				$alliance_obj = Classes::Alliance($alliance);
-				$alliance = $alliance_obj->getName();
-				if(!$alliance_obj->getStatus()) return false;
-				if(!$alliance_obj->newApplication($this->getName())) return false;
-
-				$users = $alliance_obj->getUsersWithPermission(Alliance::PERMISSION_APPLICATIONS);
-				foreach($users as $user)
-				{
-					$message = Classes::Message();
-					if($message->create())
-					{
-						$user_obj = Classes::User($user);
-						$message_text = sprintf($user_obj->_("Der Benutzer %s hat sich bei Ihrer Allianz beworben. Gehen Sie auf Ihre Allianzseite, um die Bewerbung anzunehmen oder abzulehnen."), $this->getName());
-						if(!trim($text))
-							$message_text .= "\n\n".$user_obj->_("Der Bewerber hat keinen Bewerbungstext hinterlassen.");
-						else $message_text .= "\n\n".$user_obj->_("Der Bewerber hat folgenden Bewerbungstext hinterlassen:")."\n\n".$text;
-						$message->text($message_text);
-						$message->from($this->getName());
-						$message->subject($user_obj->_('Neue Allianzbewerbung'));
-
-						$users = $alliance_obj->getUsersWithPermission(4);
-						foreach($users as $user)
-							$message->addUser($user, Message::TYPE_VERBUENDETE);
-					}
-				}
-
-				$this->raw['alliance_bewerbung'] = $alliance;
-				$this->changed = true;
-				return true;
-			}
-		}
-
-		function quitAlliance()
-		{
-			if(!$this->allianceTag()) return false;
-
-			$alliance = Classes::Alliance($this->allianceTag());
-			if($alliance->getStatus())
-			{
-				if(!$alliance->removeUser($this->getName())) return false;
-
-				$members = $alliance->getUsersList();
-				if($members)
-				{
-					foreach($members as $member)
-					{
-						$message = Classes::Message();
-						if($message->create())
-						{
-							$user = Classes::User($member);
-							$message->from($this->getName());
-							$message->subject($user->_('Benutzer aus Allianz ausgetreten'));
-							$message->text(sprintf($user->_('Der Benutzer %s hat Ihre Allianz verlassen.'), $this->getName()));
-							$message->addUser($member, Message::TYPE_VERBUENDETE);
-						}
-					}
-				}
-			}
-
-			$this->allianceTag(false);
-
-			return true;
-		}
-
-		function checkPlanetCount()
-		{
-			if(global_setting("MAX_PLANETS") > 0 && count($this->raw['planets']) < global_setting("MAX_PLANETS")) return true;
-			else return false;
 		}
 
 		function buildGebaeude($id, $rueckbau=false)
 		{
 			$this->_forceActivePlanet();
 
-			if($this->checkBuildingThing('gebaeude')) return false;
-			if($id == 'B8' && $this->checkBuildingThing('forschung')) return false;
-			if($id == 'B9' && $this->checkBuildingThing('roboter')) return false;
-			if($id == 'B10' && ($this->checkBuildingThing('schiffe') || $this->checkBuildingThing('verteidigung'))) return false;
+			if($this->checkBuildingThing("gebaeude")) return false;
+			if($id == "B8" && $this->checkBuildingThing("forschung")) return false;
+			if($id == "B9" && $this->checkBuildingThing("roboter")) return false;
+			if($id == "B10" && ($this->checkBuildingThing("schiffe") || $this->checkBuildingThing("verteidigung"))) return false;
 
-			$item_info = $this->getItemInfo($id, 'gebaeude', array("buildable", "debuildable", "ress", "time", "limit_factor"));
-			if($item_info && ((!$rueckbau && $item_info['buildable']) || ($rueckbau && $item_info['debuildable'])))
+			$item_info = $this->getItemInfo($id, "gebaeude", array("buildable", "debuildable", "ress", "time", "limit_factor"));
+			if($item_info && ((!$rueckbau && $item_info["buildable"]) || ($rueckbau && $item_info["debuildable"])))
 			{
 				# Rohstoffkosten
-				$ress = $item_info['ress'];
+				$ress = $item_info["ress"];
 
 				if($rueckbau)
 				{
@@ -2829,18 +3315,18 @@
 				# Genuegend Rohstoffe zum Ausbau
 				if(!$this->checkRess($ress)) return false;
 
-				$time = $item_info['time'];
+				$time = $item_info["time"];
 				if($rueckbau)
 					$time = $time>>1;
 				$time += time();
 
-				if(!isset($this->planet_info['building'])) $this->planet_info['building'] = array();
-				$this->planet_info['building']['gebaeude'] = array($id, $time, $rueckbau, $ress, array(time(), $item_info['limit_factor']));
+				if(!isset($this->planet_info["building"])) $this->planet_info["building"] = array();
+				$this->planet_info["building"]["gebaeude"] = array($id, $time, $rueckbau, $ress, array(time(), $item_info["limit_factor"]));
 
 				# Rohstoffe abziehen
 				$this->subtractRess($ress);
 
-				$this->refreshMessengerBuildingNotifications('gebaeude');
+				$this->refreshMessengerBuildingNotifications("gebaeude");
 
 				return true;
 			}
@@ -2851,8 +3337,8 @@
 		{
 			$this->_forceActivePlanet();
 
-			if($this->checkBuildingThing('forschung')) return false;
-			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B8') return false;
+			if($this->checkBuildingThing("forschung")) return false;
+			if(($gebaeude = $this->checkBuildingThing("gebaeude")) && $gebaeude[0] == "B8") return false;
 
 			$buildable = true;
 			$planets = $this->getPlanetsList();
@@ -2860,7 +3346,7 @@
 			foreach($planets as $planet)
 			{
 				$this->setActivePlanet($planet);
-				if(($global && $this->checkBuildingThing('forschung')) || (!$global && ($building = $this->checkBuildingThing('forschung')) && $building[0] == $id))
+				if(($global && $this->checkBuildingThing("forschung")) || (!$global && ($building = $this->checkBuildingThing("forschung")) && $building[0] == $id))
 				{
 					$buildable = false;
 					break;
@@ -2868,10 +3354,10 @@
 			}
 			$this->setActivePlanet($active_planet);
 
-			$item_info = $this->getItemInfo($id, 'forschung', array("buildable", "ress", "time_global", "time_local"));
-			if($item_info && $item_info['buildable'] && $this->checkRess($item_info['ress']))
+			$item_info = $this->getItemInfo($id, "forschung", array("buildable", "ress", "time_global", "time_local"));
+			if($item_info && $item_info["buildable"] && $this->checkRess($item_info["ress"]))
 			{
-				$build_array = array($id, time()+$item_info['time_'.($global ? 'global' : 'local')], $global, $item_info['ress']);
+				$build_array = array($id, time()+$item_info["time_".($global ? "global" : "local")], $global, $item_info["ress"]);
 				if($global)
 				{
 					$build_array[] = $this->getActivePlanet();
@@ -2880,15 +3366,15 @@
 					foreach($planets as $planet)
 					{
 						$this->setActivePlanet($planet);
-						$this->planet_info['building']['forschung'] = $build_array;
+						$this->planet_info["building"]["forschung"] = $build_array;
 					}
 					$this->setActivePlanet($active_planet);
 				}
-				else $this->planet_info['building']['forschung'] = $build_array;
+				else $this->planet_info["building"]["forschung"] = $build_array;
 
-				$this->subtractRess($item_info['ress']);
+				$this->subtractRess($item_info["ress"]);
 
-				$this->refreshMessengerBuildingNotifications('forschung');
+				$this->refreshMessengerBuildingNotifications("forschung");
 
 				$this->changed = true;
 
@@ -2904,12 +3390,12 @@
 			$anzahl = floor($anzahl);
 			if($anzahl < 0) return false;
 
-			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B9') return false;
+			if(($gebaeude = $this->checkBuildingThing("gebaeude")) && $gebaeude[0] == "B9") return false;
 
-			$item_info = $this->getItemInfo($id, 'roboter', array("buildable", "ress", "time"));
-			if(!$item_info || !$item_info['buildable']) return false;
+			$item_info = $this->getItemInfo($id, "roboter", array("buildable", "ress", "time"));
+			if(!$item_info || !$item_info["buildable"]) return false;
 
-			$ress = $item_info['ress'];
+			$ress = $item_info["ress"];
 			$ress[0] *= $anzahl;
 			$ress[1] *= $anzahl;
 			$ress[2] *= $anzahl;
@@ -2918,7 +3404,7 @@
 			if(!$this->checkRess($ress))
 			{
 				$planet_ress = $this->getRess();
-				$ress = $item_info['ress'];
+				$ress = $item_info["ress"];
 				$anzahlen = array();
 				if($ress[0] > 0) $anzahlen[] = floor($planet_ress[0]/$ress[0]);
 				if($ress[1] > 0) $anzahlen[] = floor($planet_ress[1]/$ress[1]);
@@ -2933,15 +3419,15 @@
 
 			if($anzahl <= 0) return false;
 
-			$roboter = $this->checkBuildingThing('roboter');
+			$roboter = $this->checkBuildingThing("roboter");
 			$make_new = true;
 			$last_time = time();
 			if($roboter && count($roboter) > 0)
 			{
-				$roboter_keys = array_keys($this->planet_info['building']['roboter']);
-				$last = &$this->planet_info['building']['roboter'][array_pop($roboter_keys)];
+				$roboter_keys = array_keys($this->planet_info["building"]["roboter"]);
+				$last = &$this->planet_info["building"]["roboter"][array_pop($roboter_keys)];
 				$last_time = $last[1]+$last[2]*$last[3];
-				if($last[0] == $id && $last[3] == $item_info['time'])
+				if($last[0] == $id && $last[3] == $item_info["time"])
 				{
 					$build_array = &$last;
 					$make_new = false;
@@ -2949,17 +3435,17 @@
 			}
 			if($make_new)
 			{
-				if(!isset($this->planet_info['building'])) $this->planet_info['building'] = array();
-				if(!isset($this->planet_info['building']['roboter'])) $this->planet_info['building']['roboter'] = array();
-				$build_array = &$this->planet_info['building']['roboter'][];
-				$build_array = array($id, $last_time, 0, $item_info['time']);
+				if(!isset($this->planet_info["building"])) $this->planet_info["building"] = array();
+				if(!isset($this->planet_info["building"]["roboter"])) $this->planet_info["building"]["roboter"] = array();
+				$build_array = &$this->planet_info["building"]["roboter"][];
+				$build_array = array($id, $last_time, 0, $item_info["time"]);
 			}
 
 			$build_array[2] += $anzahl;
 
 			$this->subtractRess($ress);
 
-			$this->refreshMessengerBuildingNotifications('roboter');
+			$this->refreshMessengerBuildingNotifications("roboter");
 
 			$this->changed = true;
 
@@ -2973,12 +3459,12 @@
 			$anzahl = floor($anzahl);
 			if($anzahl < 0) return false;
 
-			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B10') return false;
+			if(($gebaeude = $this->checkBuildingThing("gebaeude")) && $gebaeude[0] == "B10") return false;
 
-			$item_info = $this->getItemInfo($id, 'schiffe', array("buildable", "ress", "time"));
-			if(!$item_info || !$item_info['buildable']) return false;
+			$item_info = $this->getItemInfo($id, "schiffe", array("buildable", "ress", "time"));
+			if(!$item_info || !$item_info["buildable"]) return false;
 
-			$ress = $item_info['ress'];
+			$ress = $item_info["ress"];
 			$ress[0] *= $anzahl;
 			$ress[1] *= $anzahl;
 			$ress[2] *= $anzahl;
@@ -2987,7 +3473,7 @@
 			if(!$this->checkRess($ress))
 			{
 				$planet_ress = $this->getRess();
-				$ress = $item_info['ress'];
+				$ress = $item_info["ress"];
 				$anzahlen = array();
 				if($ress[0] > 0) $anzahlen[] = floor($planet_ress[0]/$ress[0]);
 				if($ress[1] > 0) $anzahlen[] = floor($planet_ress[1]/$ress[1]);
@@ -3002,15 +3488,15 @@
 
 			if($anzahl <= 0) return false;
 
-			$schiffe = $this->checkBuildingThing('schiffe');
+			$schiffe = $this->checkBuildingThing("schiffe");
 			$make_new = true;
 			$last_time = time();
 			if($schiffe && count($schiffe) > 0)
 			{
-				$schiffe_keys = array_keys($this->planet_info['building']['schiffe']);
-				$last = &$this->planet_info['building']['schiffe'][array_pop($schiffe_keys)];
+				$schiffe_keys = array_keys($this->planet_info["building"]["schiffe"]);
+				$last = &$this->planet_info["building"]["schiffe"][array_pop($schiffe_keys)];
 				$last_time = $last[1]+$last[2]*$last[3];
-				if($last[0] == $id && $last[3] == $item_info['time'])
+				if($last[0] == $id && $last[3] == $item_info["time"])
 				{
 					$build_array = &$last;
 					$make_new = false;
@@ -3018,17 +3504,17 @@
 			}
 			if($make_new)
 			{
-				if(!isset($this->planet_info['building'])) $this->planet_info['building'] = array();
-				if(!isset($this->planet_info['building']['schiffe'])) $this->planet_info['building']['schiffe'] = array();
-				$build_array = &$this->planet_info['building']['schiffe'][];
-				$build_array = array($id, $last_time, 0, $item_info['time']);
+				if(!isset($this->planet_info["building"])) $this->planet_info["building"] = array();
+				if(!isset($this->planet_info["building"]["schiffe"])) $this->planet_info["building"]["schiffe"] = array();
+				$build_array = &$this->planet_info["building"]["schiffe"][];
+				$build_array = array($id, $last_time, 0, $item_info["time"]);
 			}
 
 			$build_array[2] += $anzahl;
 
 			$this->subtractRess($ress);
 
-			$this->refreshMessengerBuildingNotifications('schiffe');
+			$this->refreshMessengerBuildingNotifications("schiffe");
 
 			$this->changed = true;
 
@@ -3042,12 +3528,12 @@
 			$anzahl = floor($anzahl);
 			if($anzahl < 0) return false;
 
-			if(($gebaeude = $this->checkBuildingThing('gebaeude')) && $gebaeude[0] == 'B10') return false;
+			if(($gebaeude = $this->checkBuildingThing("gebaeude")) && $gebaeude[0] == "B10") return false;
 
-			$item_info = $this->getItemInfo($id, 'verteidigung', array("buildable", "ress", "time"));
-			if(!$item_info || !$item_info['buildable']) return false;
+			$item_info = $this->getItemInfo($id, "verteidigung", array("buildable", "ress", "time"));
+			if(!$item_info || !$item_info["buildable"]) return false;
 
-			$ress = $item_info['ress'];
+			$ress = $item_info["ress"];
 			$ress[0] *= $anzahl;
 			$ress[1] *= $anzahl;
 			$ress[2] *= $anzahl;
@@ -3056,7 +3542,7 @@
 			if(!$this->checkRess($ress))
 			{
 				$planet_ress = $this->getRess();
-				$ress = $item_info['ress'];
+				$ress = $item_info["ress"];
 				$anzahlen = array();
 				if($ress[0] > 0) $anzahlen[] = floor($planet_ress[0]/$ress[0]);
 				if($ress[1] > 0) $anzahlen[] = floor($planet_ress[1]/$ress[1]);
@@ -3071,15 +3557,15 @@
 
 			if($anzahl <= 0) return false;
 
-			$verteidigung = $this->checkBuildingThing('verteidigung');
+			$verteidigung = $this->checkBuildingThing("verteidigung");
 			$make_new = true;
 			$last_time = time();
 			if($verteidigung && count($verteidigung) > 0)
 			{
-				$verteidigung_keys = array_keys($this->planet_info['building']['verteidigung']);
-				$last = &$this->planet_info['building']['verteidigung'][array_pop($verteidigung_keys)];
+				$verteidigung_keys = array_keys($this->planet_info["building"]["verteidigung"]);
+				$last = &$this->planet_info["building"]["verteidigung"][array_pop($verteidigung_keys)];
 				$last_time = $last[1]+$last[2]*$last[3];
-				if($last[0] == $id && $last[3] == $item_info['time'])
+				if($last[0] == $id && $last[3] == $item_info["time"])
 				{
 					$build_array = &$last;
 					$make_new = false;
@@ -3087,472 +3573,17 @@
 			}
 			if($make_new)
 			{
-				if(!isset($this->planet_info['building'])) $this->planet_info['building'] = array();
-				if(!isset($this->planet_info['building']['verteidigung'])) $this->planet_info['building']['verteidigung'] = array();
-				$build_array = &$this->planet_info['building']['verteidigung'][];
-				$build_array = array($id, $last_time, 0, $item_info['time']);
+				if(!isset($this->planet_info["building"])) $this->planet_info["building"] = array();
+				if(!isset($this->planet_info["building"]["verteidigung"])) $this->planet_info["building"]["verteidigung"] = array();
+				$build_array = &$this->planet_info["building"]["verteidigung"][];
+				$build_array = array($id, $last_time, 0, $item_info["time"]);
 			}
 
 			$build_array[2] += $anzahl;
 
 			$this->subtractRess($ress);
 
-			$this->refreshMessengerBuildingNotifications('verteidigung');
-
-			$this->changed = true;
-
-			return true;
-		}
-
-		function destroy()
-		{
-			# Planeten zuruecksetzen
-			$planets = $this->getPlanetsList();
-			foreach($planets as $planet)
-			{
-				$this->setActivePlanet($planet);
-				if(!$this->removePlanet()) return false;
-			}
-
-			# Buendnispartner entfernen
-			$verb_list = $this->getVerbuendetList();
-			foreach($verb_list as $verb)
-				$this->quitVerbuendet($verb);
-			$verb_list = $this->getVerbuendetApplicationList();
-			foreach($verb_list as $verb)
-				$this->cancelVerbuendetApplication($verb);
-			$verb_list = $this->getVerbuendetRequestList();
-			foreach($verb_list as $verb)
-				$this->rejectVerbuendetApplication($verb);
-
-			# Nachrichten entfernen
-			foreach(Message::getUserMessages($me->getName()) as $message_id)
-				Classes::Message($message_id)->removeUser($me->getName());
-
-			# Aus der Allianz austreten
-			if($this->allianceTag())
-			{
-				$alliance_obj = Classes::Alliance($this->allianceTag());
-				if(count($alliance_obj->getUsersList()) < 2)
-					$alliance_obj->destroy();
-				elseif($alliance_obj->checkUserPermissions($this->getName(), Alliance::PERMISSION_PERMISSIONS))
-				{
-					$bosses = 0;
-					foreach($alliance_obj->getUsersList() as $member)
-					{
-						if($alliance_obj->checkUserPermissions($member, Alliance::PERMISSION_PERMISSIONS))
-							$bosses++;
-					}
-					if($bosses < 2) $alliance_obj->destroy();
-				}
-			}
-			$this->allianceTag(false);
-
-			# Flotten zurueckrufen
-			$fleets = $this->getFleetsList();
-			foreach($fleets as $fleet)
-			{
-				$fleet_obj = Classes::Fleet($fleet);
-				foreach(array_reverse($fleet_obj->getUsersList()) as $username)
-					$fleet_obj->callBack($username);
-			}
-
-			# IM-Benachrichtigungen entfernen
-			$imfile = Classes::IMFile();
-			$imfile->removeMessages($this->getName());
-
-			# Aus den Highscores entfernen
-			$highscores = Classes::Highscores();
-			$highscores->removeEntry('users', $this->getName());
-
-			$status = (unlink($this->filename) || chmod($this->filename, 0));
-			if($status)
-			{
-				$this->changed = false;
-				return true;
-			}
-			else return false;
-		}
-
-		function recalcHighscores($recalc_gebaeude=false, $recalc_forschung=false, $recalc_roboter=false, $recalc_schiffe=false, $recalc_verteidigung=false)
-		{
-			$this->recalc_highscores[0] = ($this->recalc_highscores[0] || $recalc_gebaeude);
-			$this->recalc_highscores[1] = ($this->recalc_highscores[1] || $recalc_forschung);
-			$this->recalc_highscores[2] = ($this->recalc_highscores[2] || $recalc_roboter);
-			$this->recalc_highscores[3] = ($this->recalc_highscores[3] || $recalc_schiffe);
-			$this->recalc_highscores[4] = ($this->recalc_highscores[4] || $recalc_verteidigung);
-
-			$this->changed = true;
-			return 2;
-		}
-
-		function doRecalcHighscores($recalc_gebaeude=false, $recalc_forschung=false, $recalc_roboter=false, $recalc_schiffe=false, $recalc_verteidigung=false)
-		{
-			if($recalc_gebaeude || $recalc_forschung || $recalc_roboter || $recalc_schiffe || $recalc_verteidigung)
-			{
-				if($recalc_gebaeude) $this->raw['punkte'][0] = 0;
-				if($recalc_forschung) $this->raw['punkte'][1] = 0;
-				if($recalc_roboter) $this->raw['punkte'][2] = 0;
-				if($recalc_schiffe) $this->raw['punkte'][3] = 0;
-				if($recalc_verteidigung) $this->raw['punkte'][4] = 0;
-
-				$planets = $this->getPlanetsList();
-				$active_planet = $this->getActivePlanet();
-				foreach($planets as $planet)
-				{
-					$this->setActivePlanet($planet);
-
-					if($recalc_gebaeude)
-					{
-						$items = $this->getItemsList('gebaeude');
-						foreach($items as $item)
-						{
-							$item_info = $this->getItemInfo($item, 'gebaeude', array("scores"));
-							$this->raw['punkte'][0] += $item_info['scores'];
-						}
-					}
-
-					if($recalc_roboter)
-					{
-						$items = $this->getItemsList('roboter');
-						foreach($items as $item)
-						{
-							$item_info = $this->getItemInfo($item, 'roboter', array("scores"));
-							$this->raw['punkte'][2] += $item_info['scores'];
-						}
-					}
-
-					if($recalc_schiffe)
-					{
-						$items = $this->getItemsList('schiffe');
-						foreach($items as $item)
-						{
-							$item_info = $this->getItemInfo($item, 'schiffe', array("scores"));
-							$this->raw['punkte'][3] += $item_info['scores'];
-						}
-					}
-
-					if($recalc_verteidigung)
-					{
-						$items = $this->getItemsList('verteidigung');
-						foreach($items as $item)
-						{
-							$item_info = $this->getItemInfo($item, 'verteidigung', array("scores"));
-							$this->raw['punkte'][4] += $item_info['scores'];
-						}
-					}
-				}
-				$this->setActivePlanet($active_planet);
-
-				if($recalc_forschung)
-				{
-					$items = $this->getItemsList('forschung');
-					foreach($items as $item)
-					{
-						$item_info = $this->getItemInfo($item, 'forschung', array("scores"));
-						$this->raw['punkte'][1] += $item_info['scores'];
-					}
-				}
-
-				if($recalc_schiffe)
-				{
-					// Fremdstationierte Flotten einbeziehen
-					$koords = $this->getMyForeignFleets();
-					foreach($koords as $koord)
-					{
-						$koord = explode(":", $koord);
-						$galaxy_obj = Classes::Galaxy($koord[0]);
-						$user_obj = Classes::User($galaxy_obj->getPlanetOwner($koord[1], $koord[2]));
-						if(!$user_obj->getStatus()) continue;
-						foreach($user_obj->getForeignFleetsList($this->getName()) as $i=>$fleets)
-						{
-							foreach($fleets[0] as $id=>$count)
-							{
-								$item_info = $this->getItemInfo($id, "schiffe", array("simple_scores"));
-								$this->raw["punkte"][3] += $count*$item_info["simple_scores"];
-							}
-						}
-					}
-				}
-
-				if($recalc_schiffe || $recalc_roboter)
-				{
-					foreach($this->getFleetsList() as $flotte)
-					{
-						$fl = Classes::Fleet($flotte, false);
-						if(!$fl->getStatus()) continue;
-						if($fl->userExists($this->getName()))
-						{
-							if($recalc_schiffe)
-							{
-								$schiffe = $fl->getFleetList($this->getName());
-								if($schiffe)
-								{
-									foreach($schiffe as $id=>$count)
-									{
-										$item_info = $this->getItemInfo($id, 'schiffe', array("simple_scores"));
-										$this->raw['punkte'][3] += $count*$item_info['simple_scores'];
-									}
-								}
-							}
-							if($recalc_roboter)
-							{
-								$transport = $fl->getTransport($this->getName());
-								if($transport)
-								{
-									foreach($transport[1] as $id=>$count)
-									{
-										$item_info = $this->getItemInfo($id, 'roboter', array("simple_scores"));
-										$this->raw['punkte'][2] += $count*$item_info['simple_scores'];
-									}
-								}
-							}
-						}
-
-						if($recalc_roboter)
-						{
-							# Handel miteinbeziehen
-							$users = $fl->getUsersList();
-							foreach($users as $user)
-							{
-								$handel = $fl->getHandel($user);
-								if($handel)
-								{
-									foreach($handel[1] as $id=>$count)
-									{
-										$item_info = $this->getItemInfo($id, 'roboter', array("simple_scores"));
-										$this->raw['punkte'][2] += $count*$item_info['simple_scores'];
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-
-			$highscores = Classes::Highscores();
-			$highscores->updateUser($this->getName(), false, $this->raw["punkte"]);
-
-			$my_alliance = $this->allianceTag();
-			if($my_alliance)
-			{
-				$alliance = Classes::Alliance($my_alliance);
-				$alliance->setUserScores($this->getName(), $this->getScores());
-			}
-
-			$this->changed = true;
-
-			return true;
-		}
-
-		function maySeeKoords($user)
-		{
-			if($user == $this->getName()) return true;
-			if($this->isVerbuendet($user)) return true;
-
-			if($this->allianceTag())
-			{
-				$alliance = Classes::Alliance($this->allianceTag());
-				if(!$alliance->getStatus()) return false;
-				if(!$alliance->checkUserPermissions($this->getName(), 1)) return false;
-				if(!in_array($user, $alliance->getUsersList())) return false;
-				return true;
-			}
-		}
-
-		function rename($new_name)
-		{
-			# Ueberpruefen
-			$really_rename = (strtolower($new_name) != strtolower($this->name));
-
-			if($really_rename)
-			{
-				$new_fname = $this->save_dir.'/'.strtolower(urlencode($new_name));
-				if(file_exists($new_fname)) return false;
-			}
-
-			# Planeteneigentuemer aendern
-			$active_planet = $this->getActivePlanet();
-			foreach($this->getPlanetsList() as $planet)
-			{
-				$this->setActivePlanet($planet);
-				$pos = $this->getPos();
-				$galaxy_obj = Classes::Galaxy($pos[0]);
-				$galaxy_obj->setPlanetOwner($pos[1], $pos[2], $new_name);
-			}
-			$this->setActivePlanet($active_planet);
-
-			# Nachrichtenabsender aendern
-			# TODO
-			$message_db = Classes::MessageDatabase();
-			$message_db->renameUser($this->name, $new_name);
-			unset($message_db);
-
-			# Bei Buendnispartnern abaendern
-			Classes::resetInstances('Users');
-			foreach(array_merge($this->getVerbuendetList(), $this->getVerbuendetRequestList(), $this->getVerbuendetApplicationList()) as $username)
-			{
-				$user = new User($username);
-				$user->renameVerbuendet($this->name, $new_name);
-				unset($user);
-			}
-
-			# In Flottenbewegungen umbenennen
-			Classes::resetInstances('Fleet');
-			foreach($this->getFleetsList() as $fleet)
-			{
-				$fleet = new Fleet($fleet);
-				$fleet->renameUser($this->name, $new_name);
-			}
-
-			# In der Allianz umbenennen
-			if($this->allianceTag())
-			{
-				$alliance = Classes::Alliance($this->allianceTag());
-				$alliance->renameUser($this->name, $new_name);
-			}
-
-			# Highscores-Eintrag neu schreiben
-			$highscores = Classes::Highscores();
-			$highscores->renameUser($this->name, $new_name);
-
-			# IM-Benachrichtigungen aendern
-			$imfile = Classes::IMFile();
-			$imfile->renameUser($this->name, $new_name);
-
-			$this->raw['username'] = $new_name;
-			$this->changed = true;
-
-			if($really_rename)
-			{
-				# Datei umbenennen
-				$this->__destruct();
-				rename($this->filename, $new_fname);
-				$this->__construct($new_name);
-				$this->setActivePlanet($active_planet);
-			}
-			else $this->name = $new_name;
-
-			return true;
-		}
-
-		function lastMailSent($time=false)
-		{
-			if($time !== false)
-			{
-				$this->raw['last_mail'] = $time;
-				$this->changed = true;
-				return true;
-			}
-
-			if(!isset($this->raw['last_mail'])) return false;
-			return $this->raw['last_mail'];
-		}
-
-		/**
-		  * Stationiert eine Flotte $fleet vom Planeten $from, die dem Benutzer $user gehört, auf dem aktiven Planeten.
-		  * @param $user string Der Benutzername des Eigentümers der Flotten.
-		  * @param $fleet array Das Item-Array der Flotten. ( Item-ID => Anzahl )
-		  * @param $from string Die Herkunfskoordinaten der Flotte. Hierhin werden sie beim Abbruch zurückgesandt.
-		  * @param $speed_factor float Mit diesem Geschwindigkeitsfaktor wurden die Flotten losgeschickt, sie werden beim Abbruch genausolangsam zurückfliegen.
-		  * @return bool Erfolg
-		*/
-
-		function addForeignFleet($user, $fleet, $from, $speed_factor)
-		{
-			$this->_forceActivePlanet();
-
-			if(!isset($this->planet_info["foreign_fleets"]))
-				$this->planet_info["foreign_fleets"] = array();
-
-			if(!isset($this->planet_info["foreign_fleets"][$user]))
-			{
-				$this->planet_info["foreign_fleets"][$user] = array();
-				$user_obj = Classes::User($user);
-				if(!$user_obj->getStatus()) return false;
-				$user_obj->_addForeignCoordinates($this->getPosString());
-			}
-
-			if(count($this->planet_info["foreign_fleets"][$user]) > 0)
-				$next_i = max(array_keys($this->planet_info["foreign_fleets"][$user]))+1;
-			else
-				$next_i = 0;
-			$this->planet_info["foreign_fleets"][$user][$next_i] = array($fleet, $from, $speed_factor);
-
-			$this->changed = true;
-
-			return $next_i;
-		}
-
-		/**
-		  * Entfernt fremdstationierte Schiffe des Benutzers $username. Hat der Benutzer mehrere Flotten stationiert, wird zunächst von der ältesten abgezogen.
-		  * @param $username Der Benutzername des Eigentümers der Schiffe.
-		  * @param $id Die Item-ID des abzuziehenden Schiffstyps.
-		  * @param $count Wieviele Schiffe abgezogen werden sollen.
-		  * @return 2 Wenn nicht so viele Schiffe vorhanden waren.
-		  * @return bool Erfolg.
-		*/
-
-		function subForeignShips($username, $id, $count)
-		{
-			$this->_forceActivePlanet();
-
-			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$username]))
-				return false;
-			foreach($this->planet_info["foreign_fleets"][$username] as $i=>$fleet)
-			{
-				if(!isset($fleet[0][$id])) continue;
-				$fleet[0][$id] -= $count;
-				$count = -$fleet[0][$id];
-				if($fleet[0][$id] <= 0)
-					unset($fleet[0][$id]);
-				if(count($fleet[0]) > 0)
-					$this->planet_info["foreign_fleets"][$username][$i] = $fleet;
-				else
-					unset($this->planet_info["foreign_fleets"][$username][$i]);
-				if($count <= 0) break;
-			}
-			if(count($this->planet_info["foreign_fleets"][$username]) <= 0)
-				unset($this->planet_info["foreign_fleets"][$username]);
-			$this->changed = true;
-			if($count > 0) return 2;
-			return true;
-		}
-
-		/**
-		  * Entfernt die fremdstationierte Flotte Nummer $i des Benutzers $user. $i kann mit getForeignFleetsList() herausgefunden werden.
-		  * @param $user string Der Benutzername.
-		  * @param $i integer Die Nummer der Flotte.
-		  * @return bool Erfolg.
-		*/
-
-		function subForeignFleet($user, $i)
-		{
-			$this->_forceActivePlanet();
-
-			if(!isset($this->planet_info["foreign_fleets"]) || !isset($this->planet_info["foreign_fleets"][$user]) || !isset($this->planet_info["foreign_fleets"][$user][$i]))
-				return false;
-
-			$message_obj = Classes::Message();
-			$message_obj->create();
-
-			if($message_obj->getStatus())
-			{
-				$message_obj->text(sprintf($this->_("Der Benutzer %s hat eine fremdstationierte Flotte von Ihrem Planeten „%s“ (%s) zurückgezogen.\nDie Flotte bestand aus folgenden Schiffen: %s"), $user, $this->planetName(), vsprintf($this->_("%d:%d:%d"), $this->getPos()), $this->_i(Item::makeItemsString($this->planet_info["foreign_fleets"][$user][$i][0], true, true))));
-				$message_obj->subject(sprintf($this->_("Fremdstationierung zurückgezogen auf %s"), vsprintf($this->_("%d:%d:%d"), $this->getPos())));
-				$message_obj->from($user);
-				$message_obj->addUser($this->getName(), Message::TYPE_TRANSPORT);
-			}
-
-			unset($this->planet_info["foreign_fleets"][$user][$i]);
-
-			if(count($this->planet_info["foreign_fleets"][$user]) == 0)
-			{
-				unset($this->planet_info["foreign_fleets"][$user]);
-				$user_obj = Classes::User($user);
-				if(!$user_obj->getStatus()) return false;
-				$user_obj->_subForeignCoordinates($this->getPosString());
-			}
+			$this->refreshMessengerBuildingNotifications("verteidigung");
 
 			$this->changed = true;
 
@@ -3560,264 +3591,10 @@
 		}
 
 		/**
-		  * Gibt die Liste der Benutzer zurück, die auf diesem Planeten Flotte stationiert haben.
-		  * @return array ( Benutzername )
-		  * @return false Bei Fehlschlag.
+		 * Erneuert die Benachrichtungen fertiggestellter Gegenstände.
+		 * @param string $type gebaeude, forschung, roboter, schiffe, verteidigung
+		 * @return void
 		*/
-
-		function getForeignUsersList()
-		{
-			$this->_forceActivePlanet();
-
-			if(!isset($this->planet_info["foreign_fleets"]))
-				$this->planet_info["foreign_fleets"] = array();
-
-			return array_keys($this->planet_info["foreign_fleets"]);
-		}
-
-		/**
-		  * Gibt die Liste der fremdstationierten Flotten des Benutzers $user auf diesem Planeten zurück. Jede ankommende Fremdstationierung erhält einen eigenen Index. Um nur die Flotten einer bestimmten Fremdstationierung zu erhalten, kann $i gesetzt werden.
-		  * @param $user string Der Benutzername.
-		  * @param $i integer Der Index der Fremdstationierung.
-		  * @return array ( Index => [ ( Item-ID => Anzahl ), Herkunftsplanet, Geschwindigkeitsfaktor ] ), wenn $i null ist
-		  * @return array [ ( Item-ID => Anzahl ), Herkunftsplanet, Geschwindigkeitsfaktor ], wenn $i gesetzt ist
-		  * @return false Bei Fehler, oder wenn $i gesetzt ist, die Flotte aber nicht existiert
-		*/
-
-		function getForeignFleetsList($user, $i=null)
-		{
-			$this->_forceActivePlanet();
-
-			if(!isset($this->planet_info["foreign_fleets"]))
-				$this->planet_info["foreign_fleets"] = array();
-
-			if($i === null)
-			{
-				if(!isset($this->planet_info["foreign_fleets"][$user]))
-					return array();
-				else
-					return $this->planet_info["foreign_fleets"][$user];
-			}
-			elseif(!isset($this->planet_info["foreign_fleets"][$user]) || !isset($this->planet_info["foreign_fleets"][$user][$i]))
-				return false;
-			else
-				return $this->planet_info["foreign_fleets"][$user][$i];
-		}
-
-		/**
-		 * Speichert Koordinaten ab, unter denen der Benutzer Flotte
-		 * fremdstationiert hat. Wird von addForeignFleet auf den
-		 * stationierenden Benutzer aufgerufen.
-		*/
-
-		function _addForeignCoordinates($coords)
-		{
-			if(!isset($this->raw["foreign_coords"]))
-				$this->raw["foreign_coords"] = array();
-
-			if(in_array($coords, $this->raw["foreign_coords"]))
-				return 2;
-
-			$this->raw["foreign_coords"][] = $coords;
-
-			$this->changed = true;
-
-			return true;
-		}
-
-		/**
-		 * Loescht die Koordinaten von User::_addForeignCoordinates
-		 * wieder. Wird von subForeignFleet auf den zurueckziehenden
-		 * Benutzer ausgefuehrt.
-		*/
-
-		function _subForeignCoordinates($coords)
-		{
-			if(!isset($this->raw["foreign_coords"]))
-				$this->raw["foreign_coords"] = array();
-
-			$key = array_search($coords, $this->raw["foreign_coords"]);
-			if($key === false) return 2;
-
-			unset($this->raw["foreign_coords"][$key]);
-			$this->changed = true;
-
-			return true;
-		}
-
-		/**
-		  * Liefert die Koordinaten zurück, bei denen dieser Benutzer Flotten stationiert hat.
-		*/
-
-		function getMyForeignFleets()
-		{
-			if(!isset($this->raw["foreign_coords"]))
-				$this->raw["foreign_coords"] = array();
-
-			return array_unique($this->raw["foreign_coords"]);
-		}
-
-		/**
-		 * @todo $koords als Planet übergeben lassen
-		*/
-
-		function callBackForeignFleet($koords, $i=null)
-		{
-			$koords_a = explode(":", $koords);
-			$galaxy = Classes::Galaxy($koords_a[0]);
-			$owner = $galaxy->getPlanetOwner($koords_a[1], $koords_a[2]);
-			if(!$owner) return false;
-
-			$user_obj = Classes::User($owner);
-			if(!$user_obj->getStatus()) return false;
-			$user_obj->cacheActivePlanet();
-			$user_obj->setActivePlanet($user_obj->getPlanetByPos($koords));
-
-			$fleets = $user_obj->getForeignFleetsList($this->getName());
-			if($i !== null && !isset($fleets[$i])) return false;
-			foreach($fleets as $i2=>$fleet)
-			{
-				if($i !== null && $i != $i2) continue;
-
-				$fleet_obj = Classes::Fleet();
-				$fleet_obj->create();
-
-				if(!$fleet_obj->getStatus()) return false;
-
-				$fleet_obj->addTarget(Planet::fromString($fleet[1]), 6, true);
-				$fleet_obj->addUser($this->getName(), $koords, $fleet[2]);
-				foreach($fleet[0] as $id=>$c)
-					$fleet_obj->addFleet($id, $c, $this->getName());
-
-				if(!$user_obj->subForeignFleet($this->getName(), $i))
-					return false;
-
-				$fleet_obj->start();
-			}
-
-			$user_obj->restoreActivePlanet();
-
-			return true;
-		}
-
-		function _printRaw()
-		{
-			echo "<pre>";
-			print_r($this->raw);
-			echo "</pre>";
-		}
-
-		static function resolveName($name)
-		{
-			$instance = Classes::User($name);
-			return $instance->getName();
-		}
-
-		function getNotificationType()
-		{
-			if(!isset($this->raw['im_notification'])) return false;
-			return $this->raw['im_notification'];
-		}
-
-		function checkNewNotificationType($uin, $protocol)
-		{
-			$this->raw['im_notification_check'] = array($uin, $protocol, time());
-			$this->changed = true;
-			return true;
-		}
-
-		function doSetNotificationType($uin, $protocol)
-		{
-			if(!isset($this->raw['im_notification_check'])) return false;
-			if($this->raw['im_notification_check'][0] != $uin || $this->raw['im_notification_check'][1] != $protocol)
-				return false;
-			if(time()-$this->raw['im_notification_check'][2] > 86400) return false;
-
-			$this->raw['im_notification'] = array($this->raw['im_notification_check'][0], $this->raw['im_notification_check'][1]);
-			$this->changed = true;
-			return true;
-		}
-
-		function disableNotification()
-		{
-			$this->raw['im_notification_check'] = false;
-			$this->raw['im_notification'] = false;
-			$this->changed = true;
-			return true;
-		}
-
-		function addPosShortcut($pos)
-		{ # Fuegt ein Koordinatenlesezeichen hinzu
-			if(!is_array($this->raw['pos_shortcuts'])) $this->raw['pos_shortcuts'] = array();
-			if(in_array($pos, $this->raw['pos_shortcuts'])) return 2;
-
-			$this->raw['pos_shortcuts'][] = $pos;
-			$this->changed = true;
-			return true;
-		}
-
-		function getPosShortcutsList()
-		{ # Gibt die Liste der Koordinatenlesezeichen zurueck
-			if(!isset($this->raw['pos_shortcuts'])) return array();
-			return $this->raw['pos_shortcuts'];
-		}
-
-		function removePosShortcut($pos)
-		{ # Entfernt ein Koordinatenlesezeichen wieder
-			if(!isset($this->raw['pos_shortcuts'])) return 2;
-			$idx = array_search($pos, $this->raw['pos_shortcuts']);
-			if($idx === false) return 2;
-			unset($this->raw['pos_shortcuts'][$idx]);
-			$this->changed = true;
-			return true;
-		}
-
-		function movePosShortcutUp($pos)
-		{ # Veraendert die Reihenfolge der Lesezeichen
-			if(!isset($this->raw['pos_shortcuts'])) return false;
-
-			$idx = array_search($pos, $this->raw['pos_shortcuts']);
-			if($idx === false) return false;
-
-			$keys = array_keys($this->raw['pos_shortcuts']);
-			$keys_idx = array_search($idx, $keys);
-
-			if(!isset($keys[$keys_idx-1])) return false;
-
-			list($this->raw['pos_shortcuts'][$idx], $this->raw['pos_shortcuts'][$keys[$keys_idx-1]]) = array($this->raw['pos_shortcuts'][$keys[$keys_idx-1]], $this->raw['pos_shortcuts'][$idx]); # Confusing, ain't it? ;-)
-			$this->changed = true;
-			return true;
-		}
-
-		function movePosShortcutDown($pos)
-		{ # Veraendert die Reihenfolge der Lesezeichen
-			if(!isset($this->raw['pos_shortcuts'])) return false;
-
-			$idx = array_search($pos, $this->raw['pos_shortcuts']);
-			if($idx === false) return false;
-
-			$keys = array_keys($this->raw['pos_shortcuts']);
-			$keys_idx = array_search($idx, $keys);
-
-			if(!isset($keys[$keys_idx+1])) return false;
-
-			list($this->raw['pos_shortcuts'][$idx], $this->raw['pos_shortcuts'][$keys[$keys_idx+1]]) = array($this->raw['pos_shortcuts'][$keys[$keys_idx+1]], $this->raw['pos_shortcuts'][$idx]); # The same another time...
-			$this->changed = true;
-			return true;
-		}
-
-		function getPasswordSendID()
-		{ # Liefert eine ID zurueck, die zum Senden des Passworts benutzt werden kann
-			$send_id = md5(microtime());
-			$this->raw['email_passwd'] = $send_id;
-			$this->changed = true;
-			return $send_id;
-		}
-
-		function checkPasswordSendID($id)
-		{ # Ueberprueft, ob eine vom Benutzer eingegebene ID der letzten durch getPasswordSendID zurueckgelieferten ID entspricht
-			return (isset($this->raw['email_passwd']) && $this->raw['email_passwd'] && $this->raw['email_passwd'] == $id);
-		}
 
 		function refreshMessengerBuildingNotifications($type=false)
 		{
@@ -3825,17 +3602,17 @@
 
 			if($type == false)
 			{
-				return ($this->refreshMessengerBuildingNotifications('gebaeude')
-				&& $this->refreshMessengerBuildingNotifications('forschung')
-				&& $this->refreshMessengerBuildingNotifications('roboter')
-				&& $this->refreshMessengerBuildingNotifications('schiffe')
-				&& $this->refreshMessengerBuildingNotifications('verteidigung'));
+				return ($this->refreshMessengerBuildingNotifications("gebaeude")
+				&& $this->refreshMessengerBuildingNotifications("forschung")
+				&& $this->refreshMessengerBuildingNotifications("roboter")
+				&& $this->refreshMessengerBuildingNotifications("schiffe")
+				&& $this->refreshMessengerBuildingNotifications("verteidigung"));
 			}
 
-			if(!in_array($type, array('gebaeude', 'forschung', 'roboter', 'schiffe', 'verteidigung')))
-				return false;
+			if(!in_array($type, array("gebaeude", "forschung", "roboter", "schiffe", "verteidigung")))
+				return;
 
-			$special_id = $this->getActivePlanet().'-'.$type;
+			$special_id = $this->getActivePlanet()."-".$type;
 			$imfile = Classes::IMFile();
 			$imfile->removeMessages($this->getName(), $special_id);
 
@@ -3845,30 +3622,30 @@
 			$building = $this->checkBuildingThing($type);
 			if(!$building) return 2;
 
-			$messenger_receive = $this->checkSetting('messenger_receive');
+			$messenger_receive = $this->checkSetting("messenger_receive");
 			$messenger_settings = $this->getNotificationType();
-			$add_message = ($messenger_settings && $messenger_receive['building'][$type]);
+			$add_message = ($messenger_settings && $messenger_receive["building"][$type]);
 
 			$planet_prefix = "(".$this->planetName().", ".$this->getPosString().") ";
 
 			switch($type)
 			{
-				case 'gebaeude': case 'forschung':
-					if(!$building || ($type == 'forschung' && $building[2] && $this->getActivePlanet() != $building[4]))
+				case "gebaeude": case "forschung":
+					if(!$building || ($type == "forschung" && $building[2] && $this->getActivePlanet() != $building[4]))
 						break;
 
 					if($add_message)
 					{
 						$item_info = $this->getItemInfo($building[0], $type, array("name", "level"));
 
-						if($type == 'gebaeude')
-							$message = $planet_prefix."Gebäudebau abgeschlossen: ".$item_info['name']." (".($item_info['level']+($building[2] ? -1 : 1)).")";
+						if($type == "gebaeude")
+							$message = $planet_prefix."Gebäudebau abgeschlossen: ".$item_info["name"]." (".($item_info["level"]+($building[2] ? -1 : 1)).")";
 						else
-							$message = $planet_prefix."Forschung fertiggestellt: ".$item_info['name']." (".($item_info['level']+1).")";
+							$message = $planet_prefix."Forschung fertiggestellt: ".$item_info["name"]." (".($item_info["level"]+1).")";
 						$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $message, $special_id, $building[1]);
 					}
 					break;
-				case 'roboter': case 'schiffe': case 'verteidigung':
+				case "roboter": case "schiffe": case "verteidigung":
 					$building_number = 0;
 					$finish_time = time();
 					foreach($building as $b)
@@ -3890,12 +3667,12 @@
 					{
 						switch($type)
 						{
-							case 'roboter': $singular = 'Roboter'; $plural = 'Roboter'; $art = 'ein'; break;
-							case 'schiffe': $singular = 'Schiff'; $plural = 'Schiffe'; $art = 'ein'; break;
-							case 'verteidigung': $singular = 'Verteidigungsanlage'; $plural = 'Verteidigungsanlagen'; $art = 'eine'; break;
+							case "roboter": $singular = "Roboter"; $plural = "Roboter"; $art = "ein"; break;
+							case "schiffe": $singular = "Schiff"; $plural = "Schiffe"; $art = "ein"; break;
+							case "verteidigung": $singular = "Verteidigungsanlage"; $plural = "Verteidigungsanlagen"; $art = "eine"; break;
 						}
 
-						switch($messenger_receive['building'][$type])
+						switch($messenger_receive["building"][$type])
 						{
 							case 1:
 								foreach($building as $b)
@@ -3905,7 +3682,7 @@
 									for($i=0; $i<$b[2]; $i++)
 									{
 										$time += $b[3];
-										$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.ucfirst($art)." ".$singular." der Sorte ".$item_info['name']." wurde fertiggestellt.", $special_id, $time);
+										$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.ucfirst($art)." ".$singular." der Sorte ".$item_info["name"]." wurde fertiggestellt.", $special_id, $time);
 									}
 								}
 								break;
@@ -3913,7 +3690,7 @@
 								foreach($building as $b)
 								{
 									$item_info = $this->getItemInfo($b[0], $type, array("name"));
-									$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.$b[2]." ".($b[2]==1 ? $singular : $plural)." der Sorte ".$item_info['name']." ".($b[2]==1 ? 'wurde' : 'wurden')." fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
+									$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.$b[2]." ".($b[2]==1 ? $singular : $plural)." der Sorte ".$item_info["name"]." ".($b[2]==1 ? "wurde" : "wurden")." fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
 								}
 								break;
 							case 3:
@@ -3925,236 +3702,232 @@
 					}
 					break;
 			}
-			return true;
 		}
 
-		function resolveFleetPasswd($passwd)
+/*************************************
+*** Verbündete ***
+*************************************/
+
+		/**
+		 * Gibt zurück, ob dieser Benutzer mit dem übergebenen verbündet ist.
+		 * @param string $user
+		 * @return bool
+		*/
+
+		function isVerbuendet($user)
 		{
-			if(!isset($this->raw["flotten_passwds"]) || !isset($this->raw["flotten_passwds"][$passwd])) return null;
-			$fleet_id = $this->raw["flotten_passwds"][$passwd];
-
-			# Ueberpruefen, ob die Flotte noch die Kriterien erfuellt, ansonsten aus der Liste loeschen
-			$fleet = Classes::Fleet($fleet_id);
-			if($fleet->getCurrentType() != 3 || $fleet->isFlyingBack() || array_search($this->getName(), $fleet->getUsersList()) !== 0)
-			{
-				unset($this->raw["flotten_passwds"][$passwd]);
-				$this->changed = true;
-				return null;
-			}
-
-			return $fleet_id;
+			if($user == $this->getName()) return true;
+			return self::$sqlite->singleField("SELECT COUNT(*) FROM users_friends WHERE ( user1 = ".self::$sqlite->quote($user)." AND user2 = ".self::$sqlite->quote($this->getName())." ) OR ( user1 = ".self::$sqlite->quote($this->getName())." AND user2 = ".self::$sqlite->quote($user)." );") > 0;
 		}
 
-		function getFleetPasswd($fleet_id)
+		/**
+		 * Gibt zurück, ob ein Benutzer diesem Benutzer eine Bündnisanfrage stellt.
+		 * @param string $user
+		 * @return bool
+		*/
+
+		function isApplying($user)
 		{
-			if(!isset($this->raw["flotten_passwds"]) || ($idx = array_search($fleet_id, $this->raw["flotten_passwds"])) === false)
-				return null;
-
-			# Ueberpruefen, ob die Flotte noch die Kriterien erfuellt, ansonsten aus der Liste loeschen
-			$fleet = Classes::Fleet($fleet_id);
-			if($fleet->getCurrentType() != 3 || $fleet->isFlyingBack() || array_search($this->getName(), $fleet->getUsersList()) !== 0)
-			{
-				unset($this->raw["flotten_passwds"][$idx]);
-				$this->changed = true;
-				return null;
-			}
-
-			return $idx;
+			return self::$sqlite->singleField("SELECT COUNT(*) FROM users_friend_requests WHERE user_from = ".self::$sqlite->quote($user)." AND user_to = ".self::$sqlite->quote($this->getName()).";") > 0;
 		}
 
-		function changeFleetPasswd($fleet_id, $passwd)
+		/**
+		 * Gibt zurück, ob eine Beziehung zu dem Benutzer vorliegt, entweder dadurch, dass er verbündet ist,
+		 * oder dadurch, dass eine Bündnisanfrage von einem Benutzer zum anderen vorliegt.
+		 * @param string $user
+		 * @return bool
+		*/
+
+		function existsVerbuendet($user)
 		{
-			if(!isset($this->raw["flotten_passwds"]))
-				$this->raw["flotten_passwds"] = array();
-
-			$old_passwd = $this->getFleetPasswd($fleet_id);
-			if(($old_passwd === null || $old_passwd != $passwd) && $this->resolveFleetPasswd($passwd) !== null)
-				return false;
-
-			if($old_passwd !== null)
-				unset($this->raw["flotten_passwds"][$old_passwd]);
-
-			if($passwd)
-				$this->raw["flotten_passwds"][$passwd] = $fleet_id;
-
-			$this->changed = true;
-			return true;
-		}
-
-		function setLanguage()
-		{
-			$lang = $this->checkSetting("lang");
-			if($lang && $lang != -1)
-			{
-				$this->language_cache[] = l::language();
-				l::language($lang);
-			}
-			else
-				$this->language_cache[] = null;
-		}
-
-		function restoreLanguage()
-		{
-			if(count($this->language_cache) < 1)
-				throw new UserException("No language has been cached.");
-			$language = array_pop($this->language_cache);
-			if(!is_null($language))
-				l::language($language);
-		}
-
-		function _($message)
-		{
-			$this->setLanguage();
-			$ret = _($message);
-			$this->restoreLanguage();
-			return $ret;
-		}
-
-		function _i($message)
-		{
-			return $this->localise(array("l", "_i"), $message);
-		}
-
-		function localise($function)
-		{
-			$args = func_get_args();
-			$this->setLanguage();
-			$ret = call_user_func_array(array_shift($args), $args);
-			$this->restoreLanguage();
-			return $ret;
-		}
-
-		function ngettext($msgid1, $msgid2, $n)
-		{
-			$this->setLanguage();
-			$ret = ngettext($msgid1, $msgid2, $n);
-			$this->restoreLanguage();
-			return $ret;
-		}
-
-		function date($format, $timestamp=null)
-		{
-			$timezone = date_default_timezone_get();
-			date_default_timezone_set($this->checkSetting("timezone"));
-			if($timestamp !== null) $r = date($format, $timestamp);
-			else $r = date($format);
-			date_default_timezone_set($timezone);
-			return $r;
-		}
-
-		function getEMailAddress()
-		{
-			if(isset($this->raw["email_new"]) && $this->raw["email_new"][1] <= time())
-			{
-				$this->raw["email"] = $this->raw["email_new"][0];
-				unset($this->raw["email_new"]);
-			}
-			if(!isset($this->raw["email"]) || !$this->raw["email"])
-				return null;
-			return $this->raw["email"];
-		}
-
-		function getTemporaryEMailAddress($array=false)
-		{
-			if(!isset($this->raw["email_new"]))
-				return null;
-			if($array)
-				return $this->raw["email_new"];
-			else
-				return $this->raw["email_new"][0];
-		}
-
-		function setEMailAddress($address, $do_delay=true)
-		{
-			if($address === $this->getTemporaryEMailAddress())
+			if($this->isVerbuendet($user))
 				return true;
-			elseif($do_delay && $this->getEMailAddress() != $this->getTemporaryEMailAddress() && $this->getEMailAddress() != $address)
-				$this->raw["email_new"] = array($address, time()+global_setting("EMAIL_CHANGE_DELAY"));
-			else
-			{
-				$this->raw["email"] = $address;
-				if(isset($this->raw["email_new"]))
-					unset($this->raw["email_new"]);
-			}
-			$this->changed = true;
-			return true;
+
+			return self::$sqlite->singleField("SELECT COUNT(*) FROM users_friend_requests WHERE ( user_from = ".self::$sqlite->quote($user)." AND user_to = ".self::$sqlite->quote($this->getName())." ) OR ( user_from = ".self::$sqlite->quote($this->getName())." AND user_to = ".self::$sqlite->quote($user)." );") > 0;
 		}
 
-		function sendMail($subject, $text, $last_mail_sent=null)
+		/**
+		 * Gibt eine Liste der verbündeten Spieler zurück.
+		 * @return array(string)
+		*/
+
+		function getVerbuendetList()
 		{
-			if(!$this->getEMailAddress()) return 2;
-			$er = error_reporting();
-			error_reporting(3);
-			if(!(include_once("Mail.php")) || !(include_once("Mail/mime.php")))
-			{
-				error_reporting($er);
-				return false;
-			}
-
-			$text = sprintf($this->_("Automatisch generierte Nachricht vom %s"), $this->date(_("Y-m-d H:i:s")))."\n\n".$text;
-
-			$mime = new Mail_mime("\n");
-			if($this->checkSetting("fingerprint"))
-				$mime->setTXTBody(gpg_encrypt($text, $this->checkSetting("fingerprint")));
-			else
-				$mime->setTXTBody(GPG::sign($text));
-
-			$body = $mime->get(array("text_charset" => "utf-8", "html_charset" => "utf-8", "head_charset" => "utf-8"));
-			$hdrs = $mime->headers(array("From" => "\"".$this->_("[title_full]")."\" <".global_setting("EMAIL_FROM").">", "Subject" => $subject));
-
-			$mail = Mail::factory('mail');
-			$return = $mail->send($this->getEMailAddress(), $hdrs, $body);
-			if($return && $last_mail_sent !== null)
-				$this->lastMailSent($last_mail_sent);
-			error_reporting($er);
-			return $return;
+			return self::$sqlite->columnQuery("SELECT user1 FROM users_friends WHERE user2 = ".self::$sqlite->quote($this->getName())." UNION SELECT user2 FROM users_friends WHERE user1 = ".self::$sqlite->quote($this->getName()).";");
 		}
 
-		function challengeNeeded()
+		/**
+		 * Gibt eine Liste der Spieler, zu denen dieser eine Bündnisanfrage am Laufen hat, zurück.
+		 * @return array(string)
+		*/
+
+		function getVerbuendetApplicationList()
 		{
-			if(isset($_SESSION["admin_username"]))
-				return false;
+			return self::$sqlite->columnQuery("SELECT user_to FROM users_friend_requests WHERE user_from = ".self::$sqlite->quote($this->getName()).";");
+		}
 
-			if(!$this->permissionToAct()) return false;
+		/**
+		 * Gibt eine Liste der Spieler, die an diesem Benutzer eine Bündnisanfrage stellen, zurück.
+		 * @return array(string)
+		*/
 
-			if(!isset($this->raw["next_challenge"]))
+		function getVerbuendetRequestList()
+		{
+			return self::$sqlite->columnQuery("SELECT user_from FROM users_friend_requests WHERE user_to = ".self::$sqlite->quote($this->getName()).";");
+		}
+
+		/**
+		 * Ein Spieler bewirbt sich um ein Bündnis.
+		 * @param string $user Der bewerbende Benutzer.
+		 * @param string $text Eventueller Bewerbungstext
+		 * @return void
+		*/
+
+		function applyVerbuendet($user, $text="")
+		{
+			if($this->isApplying($user))
+			{
+				$this->acceptVerbuendetApplication($user);
+				return;
+			}
+			elseif($this->existsVerbuendet($user))
+				throw new UserException("These users are already friends.");
+
+			self::$sqlite->query("INSERT INTO users_friends ( user_from, user_to ) VALUES ( ".self::$sqlite->quote($user).", ".self::$sqlite->quote($this->getName())." );");
+
+			$message = Classes::Message(Message::create());
+			$message->addUser($this->getName(), Message::TYPE_VERBUENDETE);
+			$message->subject($this->_("Anfrage auf ein Bündnis"));
+			$message->from($user);
+			if(trim($text) == "")
+				$message->text(sprintf($this->_("Der Spieler %s hat Ihnen eine mitteilungslose Bündnisanfrage gestellt."), $user));
+			else
+				$message->text($text);
+		}
+
+		/**
+		 * Nimmt eine Bündnisanfrage an.
+		 * @param string $user Der stellende Benutzer.
+		 * @return void
+		*/
+
+		function acceptVerbuendetApplication($user)
+		{
+			if(!$this->isApplying($user))
+				throw new UserException("This user is not applying for a friendship.");
+
+			self::$sqlite->query("DELETE FROM users_friend_requests WHERE user_from = ".self::$sqlite->quote($user)." AND user_to = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->query("INSERT INTO users_friends ( user1, user2 ) VALUES ( ".self::$sqlite->quote($user).", ".self::$sqlite->quote($this->getName())." );");
+
+			$user_obj = Classes::User($user);
+			$message = Classes::Message(Message::create());
+			$message->from($this->getName());
+			$message->subject($user_obj->_("Bündnisanfrage angenommen"));
+			$message->text(sprintf($user_obj->_("Der Spieler %s hat Ihre Bündnisanfrage angenommen."), $this->getName()));
+			$message->addUser($user, Message::TYPE_VERBUENDETE);
+		}
+
+		/**
+		 * Weist eine Bündisanfrage zurück.
+		 * @param string $user Der stellende Benutzer.
+		 * @return void
+		*/
+
+		function rejectVerbuendetApplication($user)
+		{
+			if(!$this->isApplying($user))
+				throw new UserException("This user is not applying for a friendship.");
+
+			self::$sqlite->query("DELETE FROM users_friend_requests WHERE user_from = ".self::$sqlite->quote($user)." AND user_to = ".self::$sqlite->quote($this->getName()).";");
+
+			$user_obj = Classes::User($user);
+			$message = Classes::Message(Message::create());
+			$message->from($this->getName());
+			$message->subject($user_obj->_("Bündnisanfrage abgelehnt"));
+			$message->text(sprintf($user_obj->_("Der Spieler %s hat Ihre Bündnisanfrage abgelehnt."), $this->getName()));
+			$message->addUser($user, Message::TYPE_VERBUENDETE);
+		}
+
+		/**
+		 * Kündigt das Bündnis zum Benutzer $user.
+		 * @param string $user
+		 * @return void
+		*/
+
+		function quitVerbuendet($user)
+		{
+			if(!$this->isVerbuendet($user))
+				throw new UserException("These users are not friends.");
+
+			self::$sqlite->query("DELETE FROM users_friends WHERE ( user1 = ".self::$sqlite->quote($this->getName())." AND user2 = ".self::$sqlite->quote($user)." ) OR ( user1 = ".self::$sqlite->quote($user)." AND user2 = ".self::$sqlite->quote($this->getName())." );");
+
+			$user_obj = Classes::User($user);
+			$message = Classes::Message(Message::create());
+			$message->from($this->getName());
+			$message->subject($user_obj->_("Bündnis gekündigt"));
+			$message->text(sprintf($user_obj->_("Der Spieler %s hat sein Bündnis mit Ihnen gekündigt."), $this->getName()));
+			$message->addUser($user, Message::TYPE_VERBUENDETE);
+
+			# Fremdstationierte Flotten zurueckholen
+			$this->cacheActivePlanet();
+			$user_obj->cacheActivePlanet();
+
+			foreach($user_obj->getPlanetsList() as $planet)
+			{
+				$user_obj->setActivePlanet($planet);
+				if(count($user_obj->getForeignFleetsList($this->getName())) > 0)
+					$this->callBackForeignFleet($user_obj->getPosObj());
+			}
+
+			foreach($this->getPlanetsList() as $planet)
+			{
+				$this->setActivePlanet($planet);
+				if(count($this->getForeignFleetsList($user)) > 0)
+					$user_obj->callBackForeignFleet($this->getPosObj());
+			}
+
+			$this->restoreActivePlanet();
+			$user_obj->restoreActivePlanet();
+		}
+
+		/**
+		 * Der Benutzer $user zieht seine Bündnisanfrage zurück.
+		 * @param string $user Der stellende Benutzer.
+		 * @return void
+		*/
+
+		function cancelVerbuendetApplication($user)
+		{
+			if(!$this->isApplying($user))
+				throw new UserException("This user is not applying.");
+
+			$message = Classes::Message(Message::create());
+			$message->from($user);
+			$message->subject($this->_("Bündnisanfrage zurückgezogen"));
+			$message->text(sprintf($this->_("Der Spieler %s hat seine Bündnisanfrage an Sie zurückgezogen."), $user));
+			$message->addUser($this->getName(), Message::TYPE_VERBUENDETE);
+		}
+
+		/**
+		 * Liefert zurück, ob dieser Benutzer die Koordinaten der Planeten des Benutzers $user sehen darf.
+		 * Dies ist der Fall, wenn er mit dem Benutzer verbündet ist oder wenn beide in derselben Allianz
+		 * sind, die ihm dies erlaubt.
+		 * @param string $user
+		 * @return bool
+		*/
+
+		function maySeeKoords($user)
+		{
+			if($user == $this->getName()) return true;
+			if($this->isVerbuendet($user)) return true;
+
+			$tag = Alliance::userAlliance($this->getName());
+			if($tag !== false)
+			{
+				$alliance = Classes::Alliance($tag);
+				if(!$alliance->checkUserPermissions($this->getName(), 1)) return false;
+				if(!in_array($user, $alliance->getUsersList())) return false;
 				return true;
-			else return (time() >= $this->raw["next_challenge"]);
-		}
-
-		function challengePassed()
-		{
-			$this->raw["next_challenge"] = time()+rand(global_setting("CHALLENGE_MIN_TIME"), global_setting("CHALLENGE_MAX_TIME"));
-			$this->raw["challenge_failures"] = 0;
-			$this->changed = true;
-			return true;
-		}
-
-		function challengeFailed()
-		{
-			if(!isset($this->raw["challenge_failures"]))
-				$this->raw["challenge_failures"] = 0;
-			$this->raw["challenge_failures"]++;
-			$this->changed = true;
-
-			if($this->raw["challenge_failures"] > global_setting("CHALLENGE_MAX_FAILURES") && !$this->userLocked())
-				$this->lockUser(time()+global_setting("CHALLENGE_LOCK_TIME"));
-			return true;
-		}
-
-		static function getUsersCount()
-		{
-			$highscores = Classes::Highscores();
-			return $highscores->getCount('users');
-		}
-
-		static function getIngtechFactor()
-		{
-			if(file_exists(global_setting('DB_USE_OLD_INGTECH')))
-				return 1;
-			elseif(file_exists(global_setting("DB_USE_OLD_ROBTECH")))
-				return 2;
-			else
-				return 10;
+			}
 		}
 	}

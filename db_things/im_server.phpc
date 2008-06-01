@@ -73,7 +73,7 @@
 	$jabber = new Jabber(false);
 	$jabber->terminated = true;
 	$imserver = new IMServer();
-	$imfile = new IMFile();
+	$imfile = Classes::IMFile();
 
 	$unrecognised_limits = array();
 
@@ -220,7 +220,7 @@
 			{
 				$user = Classes::User($username[0]);
 				$old_settings = $user->getNotificationType();
-				if($user->getStatus() == 1 && $user->doSetNotificationType($from_cut, $transport))
+				if($user->doSetNotificationType($from_cut, $transport))
 				{
 					$imfile->removeChecks($username[0]);
 

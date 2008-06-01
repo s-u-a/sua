@@ -104,7 +104,7 @@
 <?php
 		}
 ?>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/login/info/rename.php?'.global_setting("URL_SUFFIX"))?>" method="post">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/login/info/rename.php?'.global_setting("URL_SUFFIX"))?>" method="post">
 	<fieldset>
 		<legend><?=h(_("Planeten aufgeben"))?></legend>
 		<dl class="form">
@@ -119,15 +119,12 @@
 		$foreign = 0;
 		foreach($me->getMyForeignFleets() as $koords)
 		{
-			$koords_a = explode(":", $koords);
-			$galaxy_obj = Classes::Galaxy($koords_a[0]);
-			$user_obj = Classes::User($galaxy_obj->getPlanetOwner($koords_a[1], $koords_a[2]));
-			if(!$user_obj->getStatus()) continue;
+			$user_obj = Classes::User($koords->getOwner());
 			$user_obj->cacheActivePlanet();
 			$user_obj->setActivePlanet($user_obj->getPlanetByPos($koords));
 			foreach($user_obj->getForeignFleetsList($me->getName()) as $i=>$fleet)
 			{
-				if($fleet[1] == $me->getPosString())
+				if($fleet[1]->equals($me->getPosObj()))
 					$foreign++;
 			}
 			$user_obj->restoreActivePlanet();
@@ -153,7 +150,7 @@
 		{
 			$me->setActivePlanet($planet);
 ?>
-		<li><?=htmlspecialchars(F::format_planet($me->getPosString(), $me->planetName()))?><span class="aktionen"><?php if($i != 0){?> &ndash; <a href="rename.php?up=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="hoch">[<?=h(_("Hoch"))?>]</a><?php } if($i != count($planets)-1){?> &ndash; <a href="rename.php?down=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="runter">[<?=h(_("Runter"))?>]</a><?php }?></span></li>
+		<li><?=htmlspecialchars(F::formatPlanet($me->getPosObj(), false, false))?><span class="aktionen"><?php if($i != 0){?> &ndash; <a href="rename.php?up=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="hoch">[<?=h(_("Hoch"))?>]</a><?php } if($i != count($planets)-1){?> &ndash; <a href="rename.php?down=<?=htmlspecialchars(urlencode($planet))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="runter">[<?=h(_("Runter"))?>]</a><?php }?></span></li>
 <?php
 		}
 		$me->setActivePlanet($active_planet);

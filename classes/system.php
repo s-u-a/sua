@@ -27,31 +27,54 @@
 
 	/**
 	 * Repräsentiert ein Sonnensystem im Spiel.
+	 * Kann als Iterator durchlaufen werden, Index: Planetennummer, Wert: Planetenobjekt
 	*/
 
-	class System
+	class System implements Iterator
 	{
-		private $galaxy;
-		private $system;
-		private $galaxy_obj;
+		protected static $tables = array (
+			"systems" => array (
+				"id TEXT",
+				"planets INTEGER"
+			),
+			"planets" => Planet::$tables["planets"]
+		);
 
-		/**
-		 * @param Galaxy $galaxy
-		 * @param int $system
-		*/
+		protected static $views = array (
+			"systems" => "SELECT galaxy || ':' || system AS id, COUNT(DISTINCT planet) AS planets FROM planets GROUP BY id"
+		);
 
-		function __construct(Galaxy $galaxy, $system)
+		private $active_planet;
+
+		static function idFromParams(array $params)
 		{
-			if(!$galaxy->systemExists($system))
-				throw new SystemException("System does not exist.");
-			$this->galaxy_obj = $galaxy;
-			$this->galaxy = $galaxy->getName();
-			$this->system = $system;
+			if(count($params) < 2)
+				throw new DatasetException("Insufficient parameters.");
+			return $params[0]->getGalaxy().":".$params[1];
 		}
 
-		function __toString()
+		static function paramsFromId($id)
 		{
-			return $this->galaxy.":".$this->system;
+			$arr = explode(":", $id);
+			if(count($arr) < 2)
+				throw new SystemException("Invalid ID.");
+			return array(Classes::Galaxy($arr[0]), $arr[1]);
+		}
+
+		static function create(Galaxy $galaxy, $system, $transaction=false)
+		{
+			if(self::$sqlite->singleField("SELECT COUNT(*) FROM planets WHERE galaxy = ".self::$sqlite->quote($galaxy->getGalaxy())." AND system = ".self::$sqlite->quote($system)." LIMIT 1;") > 0)
+				throw new PlanetException("This system does already exist.");
+
+			$planets = rand(10, 30);
+			for($planet=1; $planet<=$planets; $planet++)
+				self::$sqlite->query("INSERT INTO planets ( galaxy, system, planet, size_original ) VALUES ( ".self::$sqlite->quote($galaxy->getGalaxy()).", ".self::$sqlite->quote($system).", ".self::$sqlite->quote($planet).", ".self::$sqlite->quote(rand(100, 500))." );");
+			return self::idFromParams($galaxy, $system);
+		}
+
+		function destroy()
+		{
+			self::$sqlite->query("DELETE FROM planets WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem()).";");
 		}
 
 		/**
@@ -66,25 +89,12 @@
 		}
 
 		/**
-		 * @param int $planet
-		 * @return bool
-		*/
-
-		function planetExists($planet)
-		{
-			if(floor($planet) != $planet) return false;
-			if($planet < 1) return false;
-			if($planet > $this->getPlanetsCount()) return false;
-			return true;
-		}
-
-		/**
 		 * @return int
 		*/
 
 		function getGalaxy()
 		{
-			return $this->galaxy;
+			return $this->params[0]->getGalaxy();
 		}
 
 		/**
@@ -93,7 +103,7 @@
 
 		function getSystem()
 		{
-			return $this->system;
+			return $this->params[1];
 		}
 
 		/**
@@ -102,6 +112,49 @@
 
 		function getPlanetsCount()
 		{
-			return $this->galaxy_obj->getPlanetsCount($this->system);
+			return $this->getMainField("planets");
+		}
+
+		function rewind()
+		{
+			$this->active_planet = null;
+		}
+
+		function current()
+		{
+			if($this->valid())
+				return Classes::Planet($this, $this->key());
+			else
+				return false;
+		}
+
+		function key()
+		{
+			if(!isset($this->active_planet))
+				return self::$sqlite->singleField("SELECT planet FROM planets WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem())." ORDER BY planet ASC LIMIT 1;");
+			else
+				return $this->active_planet;
+		}
+
+		function next()
+		{
+			$this->active_planet = self::$sqlite->singleField("SELECT planet FROM planets WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem())." AND planet > ".self::$sqlite->quote($this->key())." ORDER BY planet ASC LIMIT 1;");
+			return $this->current();
+		}
+
+		function valid()
+		{
+			return ($this->active_planet !== false);
+		}
+
+		/**
+		 * Gibt die Koordinaten eines Systems in einem für Benutzer lesbaren Format zurück.
+		 * @param System $system
+		 * @return string
+		*/
+
+		static function format(System $planet)
+		{
+			return sprintf(_("%d:%d"), $system->getGalaxy(), $system->getSystem());
 		}
 	}

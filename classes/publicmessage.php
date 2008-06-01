@@ -29,71 +29,6 @@
 	 * Repräsentiert eine veröffentlichte Nachricht im Spiel.
 	*/
 
-	class PublicMessageDatabase extends SQLite
-	{
-		protected static $tables = array (
-			"public_messages" => array (
-				"message_id TEXT PRIMARY KEY",
-				"last_view INTEGER",
-				"sender TEXT",
-				"text TEXT",
-				"parsed TEXT",
-				"subject TEXT",
-				"html INTEGER",
-				"receiver TEXT",
-				"time INTEGER",
-				"type INTEGER"
-			)
-		);
-
-		function getField($message_id, $field_name)
-		{
-			if(!$this->messageExists($message_id)) return false;
-
-			$result = $this->singleQuery("SELECT ".$field_name." FROM public_messages WHERE message_id = ".$this->escape($message_id)." LIMIT 1;");
-			if($result) $result = $result[$field_name];
-			return $result;
-		}
-
-		function setField($message_id, $field_name, $field_value)
-		{
-			if(!$this->messageExists($message_id)) return false;
-
-			return $this->query("UPDATE public_messages SET ".$field_name." = ".$this->escape($field_value)." WHERE message_id = ".$this->escape($message_id).";");
-		}
-
-		function getNewName()
-		{
-			do $name = substr(md5(rand()), 0, 16);
-				while($this->messageExists($name));
-			return $name;
-		}
-
-		function createNewMessage($message_id)
-		{
-			$this->query("INSERT INTO public_messages ( message_id, last_view ) VALUES ( ".$this->escape($message_id).", ".$this->escape(time())." );");
-		}
-
-		function messageExists($message_id)
-		{
-			return ($this->singleField("SELECT COUNT(*) FROM public_messages WHERE message_id = ".$this->escape($message_id)." LIMIT 1;") > 0);
-		}
-
-		function messagesCount()
-		{
-			return ($this->singleField("SELECT COUNT(*) FROM public_messages;"));
-		}
-
-		function cleanUp()
-		{
-			global $public_messages_time;
-
-			$count = $this->singleField("SELECT COUNT(*) FROM public_messages WHERE last_view < ".(time()-$public_messages_time*86400).";");
-			$this->query("DELETE FROM public_messages WHERE last_view < ".(time()-$public_messages_time*86400).";");
-			return $count;
-		}
-	}
-
 	class PublicMessage extends SQLiteSet
 	{
 		protected $tables = array("public_messages" => array("message_id PRIMARY KEY", "last_view INT", "sender", "text", "parsed", "subject", "html INT", "receiver", "time", "type"));
@@ -268,5 +203,18 @@
 				return $this->getMainField("receiver");
 			else
 				$this->setMainField("receiver", $to);
+		}
+
+		/**
+		 * Löscht alle öffentlichen Nachrichten, die seit langer Zeit (global_setting("PUBLIC_MESSAGES_TIME"))
+		 * nicht mehr gelesen wurden.
+		 * @return int Die Anzahl der gelöschten Nachrichten.
+		*/
+
+		static function cleanUp()
+		{
+			$count = self::$sqlite->singleField("SELECT COUNT(*) FROM public_messages WHERE last_view < ".(time()-global_setting("PUBLIC_MESSAGES_TIME")*86400).";");
+			self::$sqlite->query("DELETE FROM public_messages WHERE last_view < ".(time()-global_setting("PUBLIC_MESSAGES_TIME")*86400).";");
+			return $count;
 		}
 	}

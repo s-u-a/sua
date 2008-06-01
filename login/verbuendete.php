@@ -32,17 +32,20 @@
 		$betreff = "B\xc3\xbcndnisrundschreiben";
 		if(isset($_POST['betreff']) && strlen(trim($_POST['betreff'])) > 0)
 			$betreff = $_POST['betreff'];
-		if($me->verbuendetNewsletter($betreff, $_POST['rundschreiben']))
-		{
+		$message = Classes::Message(Message::create());
+		$message->from($me->getName());
+		$message->subject($betreff);
+		$message->text($_POST["rundschreiben"]);
+		foreach($me->getVerbuendetList() as $verbuendeter)
+			$message->addUser($verbuendeter, Message::TYPE_VERBUENDETE);
 ?>
 <p class="successful"><?=h(_("Das Rundschreiben wurde erfolgreich verschickt."))?></p>
 <?php
-		}
 	}
 
 	if(isset($_POST['empfaenger']) && strlen(trim($_POST['empfaenger'])) > 0)
 	{
-		$_POST['empfaenger'] = User::resolveName($_POST['empfaenger']);
+		$_POST['empfaenger'] = User::datasetName($_POST['empfaenger']);
 		if(!User::exists($_POST['empfaenger']))
 			$buendnis_error = _('Dieser Spieler existiert nicht.');
 		elseif($me->existsVerbuendet($_POST['empfaenger']))
@@ -51,26 +54,25 @@
 		{
 			$text = '';
 			if(isset($_POST['mitteilung'])) $text = $_POST['mitteilung'];
-			$me->applyVerbuendet($_POST['empfaenger'], $_POST['mitteilung']);
+			Classes::User($_POST["empfaenger"])->applyVerbuendet($me->getName(), $_POST['mitteilung']);
 		}
 	}
 
 	if(isset($_GET['anfrage']) && isset($_GET['annehmen']))
 	{
-		$_GET['anfrage'] = User::resolveName($_GET['anfrage']);
+		$_GET['anfrage'] = User::datasetName($_GET['anfrage']);
 		if($_GET['annehmen']) $me->acceptVerbuendetApplication($_GET['anfrage']);
 		else $me->rejectVerbuendetApplication($_GET['anfrage']);
 	}
 
 	if(isset($_GET['bewerbung']))
 	{
-		$_GET['bewerbung'] = User::resolveName($_GET['bewerbung']);
-		$me->cancelVerbuendetApplication($_GET['bewerbung']);
+		Classes::User($_GET["bewerbung"])->cancelVerbuendetApplication($me->getName());
 	}
 
 	if(isset($_GET['kuendigen']))
 	{
-		$_GET['kuendigen'] = User::resolveName($_GET['kuendigen']);
+		$_GET['kuendigen'] = User::datasetName($_GET['kuendigen']);
 		$me->quitVerbuendet($_GET['kuendigen']);
 	}
 

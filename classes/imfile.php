@@ -142,8 +142,7 @@
 			if($time === false) $time = time();
 			$fingerprint = null;
 			$user = Classes::User($username);
-			if($user->getStatus())
-				$fingerprint = $user->checkSetting("fingerprint");
+			$fingerprint = $user->checkSetting("fingerprint");
 			$this->query("INSERT INTO notifications ( uin, time, protocol, username, message, database, special_id, fingerprint ) VALUES ( ".$this->escape($uin).", ".$this->escape($time).", ".$this->escape($protocol).", ".$this->escape($username).", ".$this->escape($message).", ".$this->escape(global_setting("DB")).", ".$this->escape($special_id).", ".$this->escape($fingerprint)." );");
 		}
 

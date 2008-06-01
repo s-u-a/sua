@@ -27,16 +27,17 @@
 	/**
 	 * Stellt statische Funktionen zur Verfügung, die Werte zur Ausgabe an den
 	 * Benutzer formatieren.
+	 * @todo CamelCase
 	*/
 
 	class F
 	{
 		/**
-		* Formatiert eine Bauzeitangabe zu einem menschlich lesbaren Format.
-		* Beispiel: 650 wird zu 10 Minuten, 50 Sekunden
-		* @param int $time2 Bauzeit in Sekunden
-		* @param bool $short Sollen Werte, die 0 sind, weggelassen werden (Beispiel: 5 Minuten, 0 Sekunden)
-		* @return string
+		 * Formatiert eine Bauzeitangabe zu einem menschlich lesbaren Format.
+		 * Beispiel: 650 wird zu 10 Minuten, 50 Sekunden
+		 * @param int $time2 Bauzeit in Sekunden
+		 * @param bool $short Sollen Werte, die 0 sind, weggelassen werden (Beispiel: 5 Minuten, 0 Sekunden)
+		 * @return string
 		*/
 
 		static function format_btime($time2, $short=false)
@@ -83,17 +84,17 @@
 		}
 
 		/**
-		* Formatiert die angegeben Rohstoffmenge zu einem menschlich lesbaren Format.
-		* @param array $ress Ein Array mit den Rohstoffmengen als Werte
-		* @param int $tabs_count Die Anzahl der einzurueckenden Tabs des HTML-Codes
-		* @param bool $tritium Soll der Array-Wert 4 beachtet werden (Tritium)
-		* @param bool $energy Soll der Array-Wert 5 beachtet werden (Energie)
-		* @param bool $_i Die Ausgabe wird so formatiert, dass sie nachtraeglich durch i_() gejagt werden kann
-		* @param User $check_availability Gibt mit HTML-Klassen an, ob so viele Rohstoffe auf dem Planeten vorhanden sind.
-		* @param string $dl_class Eine zusätzliche HTML-Klasse, die dem Element zugewiesen wird.
-		* @param string $dl_id Eine HTML-ID, die der Liste zugewiesen wird.
-		* @param User $check_limit Gibt mit HTML-Klassen an, ob die Rohstoffmenge die Speicher übersteigt
-		* @return string Eine den HTML-Code einer dl-Liste mit den formatierten Rohstoffangaben
+		 * Formatiert die angegeben Rohstoffmenge zu einem menschlich lesbaren Format.
+		 * @param array $ress Ein Array mit den Rohstoffmengen als Werte
+		 * @param int $tabs_count Die Anzahl der einzurueckenden Tabs des HTML-Codes
+		 * @param bool $tritium Soll der Array-Wert 4 beachtet werden (Tritium)
+		 * @param bool $energy Soll der Array-Wert 5 beachtet werden (Energie)
+		 * @param bool $_i Die Ausgabe wird so formatiert, dass sie nachtraeglich durch i_() gejagt werden kann
+		 * @param User $check_availability Gibt mit HTML-Klassen an, ob so viele Rohstoffe auf dem Planeten vorhanden sind.
+		 * @param string $dl_class Eine zusätzliche HTML-Klasse, die dem Element zugewiesen wird.
+		 * @param string $dl_id Eine HTML-ID, die der Liste zugewiesen wird.
+		 * @param User $check_limit Gibt mit HTML-Klassen an, ob die Rohstoffmenge die Speicher übersteigt
+		 * @return string Eine den HTML-Code einer dl-Liste mit den formatierten Rohstoffangaben
 		*/
 
 		static function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false, $_i=false, $check_availability=null, $dl_class="inline", $dl_id=null, $check_limit=null)
@@ -162,11 +163,11 @@
 		}
 
 		/**
-		* Formatiert eine Zahl in ein lesbares Format.
-		* @param float $count Die zu formatierende Zahl
-		* @param null $utf8 Ohne Auswirkungen, Kompatiblitaetsparameter
-		* @param int $round Anzahl der zu rundenden Stellen, standardmaessig 0
-		* @return string
+		 * Formatiert eine Zahl in ein lesbares Format.
+		 * @param float $count Die zu formatierende Zahl
+		 * @param null $utf8 Ohne Auswirkungen, Kompatiblitaetsparameter
+		 * @param int $round Anzahl der zu rundenden Stellen, standardmaessig 0
+		 * @return string
 		*/
 
 		static function ths($count, $utf8=null, $round=null)
@@ -632,7 +633,7 @@
 				{
 					if($show_alliance)
 					{
-						$alliance = Classes::User($username)->allianceTag();
+						$alliance = Alliance::getUserAlliance($username);
 						if($alliance)
 							$username = sprintf(_("[%s] %s"), $alliance, $username);
 					}
@@ -664,7 +665,7 @@
 				{
 					if($show_alliance)
 					{
-						$alliance = Classes::User($username)->allianceTag();
+						$alliance = Alliance::getUserAlliance($username);
 						$username = "<a href=\"".htmlspecialchars(global_setting("h_root")."/info/playerinfo.php?player=".urlencode($player)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Informationen zu diesem Spieler anzeigen"))."\" class=\"playername\">".htmlspecialchars($player)."</a>";
 						if($alliance)
 							$username = sprintf(h(_("[%s] %s")), "<a href=\"".htmlspecialchars(global_setting("h_root")."/info/allianceinfo.php?alliance=".urlencode($alliance)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Informationen zu dieser Allianz anzeigen"))."\" class=\"alliancename\">".htmlspecialchars($alliance)."</a>", $username);

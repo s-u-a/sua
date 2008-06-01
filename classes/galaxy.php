@@ -16,547 +16,126 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*
-Format einer Galaxie-Datei:
-Jedes System ist 1655 Bytes lang, die gesamte Datei also 999*1655=1653345.
-Die ersten 5 Bits eines Systems enthalten dessen Anzahl Planeten minus 10. 0 bedeutet also 10 Planeten, sind 30 Planeten (Maximum).
+	/**
+	 * @author Candid Dauth
+	 * @package sua
+	 * @subpackage storage
+	*/
 
-Darauf folgen Informationen über die Planeten.
-Zunächst 30 Angaben über die Größe des Planeten à 9 Bits (Größen von Planeten, die aufgrund der Planetenzahl im System nicht vorkommen, werden ignoriert).
-Dann 5 Auffüll-Bits, zu ignorieren.
-Dann (ab Byte 35) 30 Eigentümer à 24 Bytes.
-Dann (ab Byte 755) 30 Planetennamen à 24 Bytes.
-Dann (ab Byte 1475) 30 Allianztags à 6 Bytes.
-*/
+	namespace sua;
+	require_once dirname(dirname(__FILE__))."/engine.php";
 
-	class Galaxy implements Singleton
+	/**
+	 * Repräsentiert eine Galaxie im Spiel.
+	 * Kann als Iterator durchlaufen werden, Index: Systemnummer, Wert: Systemobjekt
+	*/
+
+	class Galaxy extends SQLiteSet implements Iterator
 	{
-		private $status = false;
-		private $file_pointer = false;
-		private $cache = array();
-		private $filesize = false;
-		private $filename = false;
-		private $galaxy = false;
+		protected static $views = array (
+			"galaxies" => "SELECT galaxy, COUNT(DISTINCT system) AS systems FROM planets GROUP BY galaxy"
+		);
+		protected static $tables = array (
+			"galaxies" => array (
+				"galaxy INTEGER",
+				"systems INTEGER"
+			),
+			"planets" => Planet::$tables["planets"]
+		);
 
-		function __construct($galaxy)
+		private $active_system;
+
+		protected static create($name=null)
 		{
-			$this->filename = Classes::Database()->getDirectory()."/universe/".$galaxy;
-			$this->galaxy = $galaxy;
-			if(is_file($this->filename) && is_readable($this->filename))
+			$name = self::datasetName($name);
+			if(self::exists($name))
+				throw new GalaxyException("This galaxy already exists.");
+
+			self::$sqlite->beginTransaction();
+			$galaxy_quote = self::$sqlite->quote($name);
+			for($system=1; $system<=999; $system++)
 			{
-				$this->filesize = $filesize = filesize($this->filename);
-				$this->file_pointer = fopen($this->filename, 'r+');
-				if(!Functions::fancyFlock($this->file_pointer, LOCK_EX))
-					$this->status = false;
-				else $this->status = 1;
+				$system_quote = self::$sqlite->quote($system);
+				$planets = rand(10, 30);
+				for($planet=1; $planet<=$planets; $planet++)
+					self::$sqlite->transactionQuery("INSERT INTO planets ( galaxy, system, planet, size_original ) VALUES ( ".$galaxy_quote.", ".$system_quote.", ".self::$sqlite->quote($planet).", ".self::$sqlite->quote(rand(100, 500))." );");
 			}
+			self::$sqlite->endTransaction();
+			return $name;
 		}
 
-		function __destruct()
+		public destroy()
 		{
-			if($this->status)
-			{
-				flock($this->file_pointer, LOCK_UN);
-				fclose($this->file_pointer);
-				$this->status = false;
-			}
+			self::$sqlite->query("DELETE FROM planets WHERE galaxy = ".self::$sqlite->quote($this->getName()).";");
 		}
 
-		function getName() # For Instances
+		protected static datasetName($name=null)
 		{
-			return $this->galaxy;
-		}
-
-		function getStatus()
-		{
-			return $this->status;
-		}
-
-		function systemExists($system)
-		{
-			if(floor($system) != $system) return false;
-			if($system < 1) return false;
-			if($system > 999) return false;
-			return true;
+			if(!isset($name))
+				$name = self::$sqlite->singleField("SELECT MAX(galaxy)+1 FROM galaxies;");
+			return parent::datasetName($name);
 		}
 
 		function getSystemsCount()
 		{
-			if(!$this->status) return false;
-			return 999;
+			return $this->getMainField("systems");
 		}
 
-		private function seekSystem($system)
+		function rewind()
 		{
-			if(!$this->status) return false;
-
-			$system = floor($system);
-			if($system < 1) return false;
-
-			$pos = ($system-1)*1655;
-			if($this->filesize < $pos+1655) return false; # System existiert nicht
-
-			fseek($this->file_pointer, $pos, SEEK_SET);
-			return true;
+			$this->active_system = null;
 		}
 
-		function getPlanetsCount($system)
+		function current()
 		{
-			if(!$this->status) return false;
-
-			$system = floor($system);
-
-			if(!isset($this->cache['getPlanetsCount'])) $this->cache['getPlanetsCount'] = array();
-			if(!isset($this->cache['getPlanetsCount'][$system]))
-			{
-				if(!$this->seekSystem($system)) return false;
-				$this->cache['getPlanetsCount'][$system] = (ord(fread($this->file_pointer, 1))>>3)+10;
-			}
-			return $this->cache['getPlanetsCount'][$system];
+			if($this->valid())
+				return Classes::System($this, $this->key());
+			else
+				return false;
 		}
 
-		function _getPlanetOwner($system, $planet)
+		function key()
 		{
-			if(!$this->status) return false;
+			if(!isset($this->active_system))
+				return self::$sqlite->singleField("SELECT system FROM planets WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." ORDER BY system ASC LIMIT 1;");
+			else
+				return $this->active_system;
+		}
 
-			$planet = floor($planet);
-			$system = floor($system);
+		function next()
+		{
+			$this->active_system = self::$sqlite->singleField("SELECT system FROM planets WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system > ".self::$sqlite->quote($this->key())." ORDER BY system ASC LIMIT 1;");
+			return $this->current();
+		}
 
-			if(!isset($this->cache['getPlanetOwner'])) $this->cache['getPlanetOwner'] = array();
-			if(!isset($this->cache['getPlanetOwner'][$system])) $this->cache['getPlanetOwner'][$system] = array();
-			if(!isset($this->cache['getPlanetOwner'][$system][$planet]))
-			{
-				$planets_count = $this->getPlanetsCount($system);
-				if(!$planets_count) return false;
-				if($planet > $planets_count || $planet < 1) return false;
-
-				if(!$this->seekSystem($system)) return false;
-
-				fseek($this->file_pointer, 35+($planet-1)*24, SEEK_CUR);
-				$this->cache['getPlanetOwner'][$system][$planet] = trim(fread($this->file_pointer, 24));
-			}
-			return $this->cache['getPlanetOwner'][$system][$planet];
+		function valid()
+		{
+			return ($this->active_system !== false);
 		}
 
 		function getPlanetOwner($system, $planet)
-		{
-			if(!$this->status) return false;
-
-			$owner = $this->_getPlanetOwner($system, $planet);
-			if(!$owner) return $owner;
-			return preg_replace('/ \([Ug]\)$/', '', $owner);
-		}
 
 		function getPlanetOwnerFlag($system, $planet)
-		{
-			if(!$this->status) return false;
-
-			$owner = $this->_getPlanetOwner($system, $planet);
-			if($owner === false) return false;
-			elseif(!$owner) return '';
-			if(preg_match('/ \(([Ug])\)$/', $owner, $result))
-				return $result[1];
-			else return '';
-		}
-
-		function _setPlanetOwner($system, $planet, $owner)
-		{
-			if($this->status != 1) return false;
-
-			$system = floor($system);
-			$planet = floor($planet);
-			$owner = trim(substr($owner, 0, 24));
-
-			$planets_count = $this->getPlanetsCount($system);
-			if(!$planets_count || $planet > $planets_count || $planet < 1) return false;
-
-			if(!$this->seekSystem($system)) return false;
-
-			fseek($this->file_pointer, 35+($planet-1)*24, SEEK_CUR);
-			if(strlen($owner) > 0 && !fwrite($this->file_pointer, $owner)) return false;
-			if(strlen($owner) < 24) fwrite($this->file_pointer, str_repeat(' ', 24-strlen($owner)));
-
-			if(!isset($this->cache['getPlanetOwner'])) $this->cache['getPlanetOwner'] = array();
-			if(!isset($this->cache['getPlanetOwner'][$system])) $this->cache['getPlanetOwner'][$system] = array();
-			$this->cache['getPlanetOwner'][$system][$planet] = $owner;
-			return true;
-		}
 
 		function setPlanetOwner($system, $planet, $owner)
-		{
-			if(!$this->status) return false;
-
-			$owner = trim(substr($owner, 0, 20));
-			$flag = $this->getPlanetOwnerFlag($system, $planet);
-			if($flag) $owner .= ' ('.$flag.')';
-			return $this->_setPlanetOwner($system, $planet, $owner);
-		}
 
 		function setPlanetOwnerFlag($system, $planet, $flag)
-		{
-			if(!$this->status) return false;
-
-			$flag = substr($flag, 0, 1);
-			$owner = $this->getPlanetOwner($system, $planet);
-			if($flag) $owner .= ' ('.$flag.')';
-			return $this->_setPlanetOwner($system, $planet, $owner);
-		}
 
 		function getPlanetName($system, $planet)
-		{
-			if(!$this->status) return false;
-
-			$planet = floor($planet);
-			$system = floor($system);
-
-			if(!isset($this->cache['getPlanetName'])) $this->cache['getPlanetName'] = array();
-			if(!isset($this->cache['getPlanetName'][$system])) $this->cache['getPlanetName'][$system] = array();
-			if(!isset($this->cache['getPlanetName'][$system][$planet]))
-			{
-				$planets_count = $this->getPlanetsCount($system);
-				if(!$planets_count) return false;
-				if($planet > $planets_count || $planet < 1) return false;
-
-				if(!$this->seekSystem($system)) return false;
-
-				fseek($this->file_pointer, 755+($planet-1)*24, SEEK_CUR);
-				$this->cache['getPlanetName'][$system][$planet] = trim(fread($this->file_pointer, 24));
-			}
-			return $this->cache['getPlanetName'][$system][$planet];
-		}
 
 		function setPlanetName($system, $planet, $name)
-		{
-			if($this->status != 1) return false;
-
-			$system = floor($system);
-			$planet = floor($planet);
-			$name = trim(substr($name, 0, 24));
-
-			$planets_count = $this->getPlanetsCount($system);
-			if(!$planets_count || $planet > $planets_count || $planet < 1) return false;
-
-			if(!$this->seekSystem($system)) return false;
-
-			fseek($this->file_pointer, 755+($planet-1)*24, SEEK_CUR);
-			if(strlen($name) > 0 && !fwrite($this->file_pointer, $name)) return false;
-			if(strlen($name) < 24) fwrite($this->file_pointer, str_repeat(' ', 24-strlen($name)));
-
-			if(!isset($this->cache['getPlanetName'])) $this->cache['getPlanetName'] = array();
-			if(!isset($this->cache['getPlanetName'][$system])) $this->cache['getPlanetName'][$system] = array();
-			$this->cache['getPlanetName'][$system][$planet] = $name;
-			return true;
-		}
 
 		function getPlanetOwnerAlliance($system, $planet)
-		{
-			if(!$this->status) return false;
-
-			$planet = floor($planet);
-			$system = floor($system);
-
-			if(!isset($this->cache['getPlanetOwnerAlliance'])) $this->cache['getPlanetOwnerAlliance'] = array();
-			if(!isset($this->cache['getPlanetOwnerAlliance'][$system])) $this->cache['getPlanetOwnerAlliance'][$system] = array();
-			if(!isset($this->cache['getPlanetOwnerAlliance'][$system][$planet]))
-			{
-				$planets_count = $this->getPlanetsCount($system);
-				if(!$planets_count) return false;
-				if($planet > $planets_count || $planet < 1) return false;
-
-				if(!$this->seekSystem($system)) return false;
-
-				fseek($this->file_pointer, 1475+($planet-1)*6, SEEK_CUR);
-				$this->cache['getPlanetOwnerAlliance'][$system][$planet] = trim(fread($this->file_pointer, 6));
-			}
-			return $this->cache['getPlanetOwnerAlliance'][$system][$planet];
-		}
 
 		function setPlanetOwnerAlliance($system, $planet, $alliance)
-		{
-			if($this->status != 1) return false;
-
-			$system = floor($system);
-			$planet = floor($planet);
-			$alliance = trim(substr($alliance, 0, 6));
-
-			$planets_count = $this->getPlanetsCount($system);
-			if(!$planets_count || $planet > $planets_count || $planet < 1) return false;
-
-			if(!$this->seekSystem($system)) return false;
-
-			fseek($this->file_pointer, 1475+($planet-1)*6, SEEK_CUR);
-			if(strlen($alliance) > 0 && !fwrite($this->file_pointer, $alliance)) return false;
-			if(strlen($alliance) < 6) fwrite($this->file_pointer, str_repeat(' ', 6-strlen($alliance)));
-
-			if(!isset($this->cache['getPlanetOwnerAlliance'])) $this->cache['getPlanetOwnerAlliance'] = array();
-			if(!isset($this->cache['getPlanetOwnerAlliance'][$system])) $this->cache['getPlanetOwnerAlliance'][$system] = array();
-			$this->cache['getPlanetOwnerAlliance'][$system][$planet] = $alliance;
-			return true;
-		}
 
 		function getPlanetSize($system, $planet)
-		{
-			if(!$this->status) return false;
-
-			$planet = floor($planet);
-			$system = floor($system);
-
-			if(!isset($this->cache['getPlanetSize'])) $this->cache['getPlanetSize'] = array();
-			if(!isset($this->cache['getPlanetSize'][$system])) $this->cache['getPlanetSize'][$system] = array();
-			if(!isset($this->cache['getPlanetSize'][$system][$planet]))
-			{
-				$planets_count = $this->getPlanetsCount($system);
-				if(!$planets_count) return false;
-				if($planet > $planets_count || $planet < 1) return false;
-
-				if(!$this->seekSystem($system)) return false;
-
-				$bit_position = 5+($planet-1)*9;
-				$byte_position = $bit_position%8;
-				fseek($this->file_pointer, ($bit_position-$byte_position)/8, SEEK_CUR);
-				$bytes = (ord(fread($this->file_pointer, 1)) << 8) | ord(fread($this->file_pointer, 1));
-				$bytes = $bytes & ((1 << (16-$byte_position))-1);
-				$bytes = $bytes >> (7-$byte_position);
-				$bytes += 100;
-				$this->cache['getPlanetSize'][$system][$planet] = $bytes;
-			}
-			return $this->cache['getPlanetSize'][$system][$planet];
-		}
 
 		function setPlanetSize($system, $planet, $size)
-		{
-			return true; # UNTESTED!!!
-
-			if($this->status != 1) return false;
-
-			$system = floor($system);
-			$planet = floor($planet);
-			$size = floor($size);
-			if($size < 100 || $size > 500) return false;
-			$size -= 100;
-
-			$planets_count = $this->getPlanetsCount($system);
-			if(!$planets_count) return false;
-			if($planet > $planets_count || $planet < 1) return false;
-
-			if(!$this->seekSystem($system)) return false;
-
-			$bit_position = 5+($planet-1)*9;
-			$byte_position = $bit_position%8;
-			fseek($this->file_pointer, $bit_position-$byte_position, SEEK_CUR);
-
-			$byte1 = ord(fread($this->file_pointer, 1));
-			$byte1 -= $byte1%(1<<(8-$byte_position));
-			$byte1 = $byte1 | ($size>>$byte_position);
-
-			$byte2 = ord(fread($this->file_pointer, 1));
-			$byte2 = $byte2 & ((1<<(6-$byte_position))-1);
-			$byte2 = $byte2 | ($size - ($size%(1<<$byte_position)));
-
-			fseek($this->file_pointer, -2, SEEK_CUR);
-			if(!fwrite($this->file_pointer, chr($byte1).chr($byte2))) return false;
-
-			if(!isset($this->cache['getPlanetSize'])) $this->cache['getPlanetSize'] = array();
-			if(!isset($this->cache['getPlanetSize'][$system])) $this->cache['getPlanetSize'][$system] = array();
-			$this->cache['getPlanetSize'][$system][$planet] = $this->cache['getPlanetSize'][$system][$planet] = array();
-		}
 
 		function resetPlanet($system, $planet)
 		{
-			if(!$this->status) return false;
-
 			return ($this->setPlanetName($system, $planet, '') && $this->_setPlanetOwner($system, $planet, '')
 			&& $this->setPlanetOwnerAlliance($system, $planet, '') && $this->setPlanetSize($system, $planet, rand(100, 500)));
-		}
-
-		function getPlanetClass($system, $planet)
-		{
-			if(!$this->status) return false;
-
-			return self::calcPlanetClass($this->galaxy, $system, $planet);
-		}
-
-		static function getGalaxiesCount()
-		{
-			$db_dir = Classes::Database()->getDirectory()."/universe/";
-			for($i=0; is_file($db_dir.($i+1)) && is_readable($db_dir.($i+1)); $i++);
-			return $i;
-		}
-
-		static function calcPlanetClass($galaxy, $system, $planet)
-		{
-			$type = (((floor($system/100)+1)*(floor(($system%100)/10)+1)*(($system%10)+1))%$planet)*$planet+($system%(($galaxy+1)*$planet));
-			return $type%20+1;
-		}
-
-		/**
-		  * Liest das Truemmerfeld an den gegebenen Koordinaten aus.
-		  * @return Array mit den Rohstoffen
-		*/
-
-		function truemmerfeldGet($system, $planet)
-		{
-			# Bekommt die Groesse eines Truemmerfelds
-
-			if(!is_file(global_setting("DB_TRUEMMERFELDER").'/'.$this->galaxy.'_'.$system.'_'.$planet))
-				return array(0, 0, 0, 0);
-			elseif(!is_readable(global_setting("DB_TRUEMMERFELDER").'/'.$this->galaxy.'_'.$system.'_'.$planet))
-				return false;
-			else
-			{
-				$string = file_get_contents(global_setting("DB_TRUEMMERFELDER").'/'.$this->galaxy.'_'.$system.'_'.$planet);
-
-				$rohstoffe = array('', '', '', '');
-
-				$index = 0;
-				for($i = 0; $i < strlen($string); $i++)
-				{
-					$bin = F::add_nulls(decbin(ord($string[$i])), 8);
-					$rohstoffe[$index] .= substr($bin, 0, -1);
-					if(!substr($bin, -1)) # Naechste Zahl
-						$index++;
-				}
-				for($rohstoff = 0; $rohstoff < 4; $rohstoff++)
-				{
-					if($rohstoffe[$rohstoff] == '')
-						$rohstoffe[$rohstoff] = 0;
-					else
-						$rohstoffe[$rohstoff] = base_convert($rohstoffe[$rohstoff], 2, 10);
-				}
-
-				return array($rohstoffe[0], $rohstoffe[1], $rohstoffe[2], $rohstoffe[3]);
-			}
-		}
-
-		/**
-		  * Fuegt dem Truemmerfeld Rohstoffe hinzu.
-		*/
-
-		function truemmerfeldAdd($system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
-		{
-			# Fuegt einem Truemmerfeld Rohstoffe hinzu
-			$old = $this->truemmerfeldGet($system, $planet);
-			if($old === false)
-				return false;
-			$old[0] += $carbon;
-			$old[1] += $aluminium;
-			$old[2] += $wolfram;
-			$old[3] += $radium;
-
-			return $this->truemmerfeldSet($system, $planet, $old[0], $old[1], $old[2], $old[3]);
-		}
-
-		/**
-		  * Zieht dem Truemmerfeld Rohstoffe ab.
-		*/
-
-		function truemmerfeldSub($system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
-		{
-			# Zieht einem Truemmerfeld Rohstoffe ab
-			$old = $this->truemmerfeldGet($system, $planet);
-			if($old === false)
-				return false;
-			$old[0] -= $carbon;
-			$old[1] -= $aluminium;
-			$old[2] -= $wolfram;
-			$old[3] -= $radium;
-
-			if($old[0] < 0)
-				$old[0] = 0;
-			if($old[1] < 0)
-				$old[1] = 0;
-			if($old[2] < 0)
-				$old[2] = 0;
-			if($old[3] < 0)
-				$old[3] = 0;
-
-			return $this->truemmerfeldSet($system, $planet, $old[0], $old[1], $old[2], $old[3]);
-		}
-
-		/**
-		  * Setzt die Rohstoffe des Truemmerfelds neu.
-		*/
-
-		function truemmerfeldSet($system, $planet, $carbon=0, $aluminium=0, $wolfram=0, $radium=0)
-		{
-			if($carbon <= 0 && $aluminium <= 0 && $wolfram <= 0 && $radium <= 0)
-			{
-				if(is_file(global_setting("DB_TRUEMMERFELDER").'/'.$this->galaxy.'_'.$system.'_'.$planet))
-					return unlink(global_setting("DB_TRUEMMERFELDER").'/'.$this->galaxy.'_'.$system.'_'.$planet);
-				else
-					return true;
-			}
-
-			$new = array(
-				base_convert($carbon, 10, 2),
-				base_convert($aluminium, 10, 2),
-				base_convert($wolfram, 10, 2),
-				base_convert($radium, 10, 2)
-			);
-
-			$string = '';
-
-			for($i = 0; $i < 4; $i++)
-			{
-				if(strlen($new[$i])%7)
-					$new[$i] = str_repeat('0', 7-strlen($new[$i])%7).$new[$i];
-
-				$strlen = strlen($new[$i]);
-				for($j = 0; $j < $strlen; $j+=7)
-				{
-					if($j == $strlen-7)
-						$suf = '0';
-					else
-						$suf = '1';
-					$string .= chr(bindec(substr($new[$i], $j, 7).$suf));
-				}
-			}
-
-			unset($new);
-
-			# Schreiben
-			$fh = fopen(global_setting("DB_TRUEMMERFELDER").'/'.$this->galaxy.'_'.$system.'_'.$planet, 'w');
-			if(!$fh)
-				return false;
-			flock($fh, LOCK_EX);
-			fwrite($fh, $string);
-			flock($fh, LOCK_UN);
-			fclose($fh);
-
-			return true;
-		}
-
-		/**
-		* Callback-Funktion fuer usort() zum Sortieren von Koordinaten nach Galaxie, System und Planet.
-		* @return 1 wenn $a > $b
-		* @return -1 wenn $a < $b
-		* @return 0 wenn $a == $b
-		*/
-
-		static function usort($a, $b)
-		{
-			$a_expl = explode(':', $a);
-			$b_expl = explode(':', $b);
-
-			if($a_expl[0] > $b_expl[0])
-				return 1;
-			elseif($a_expl[0] < $b_expl[0])
-				return -1;
-			else
-			{
-				if($a_expl[1] > $b_expl[1])
-					return 1;
-				elseif($a_expl[1] < $b_expl[1])
-					return -1;
-				else
-				{
-					if($a_expl[2] > $b_expl[2])
-						return 1;
-					elseif($a_expl[2] < $b_expl[2])
-						return -1;
-					else
-						return 0;
-				}
-			}
 		}
 	}

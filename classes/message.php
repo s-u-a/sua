@@ -286,7 +286,7 @@
 		function messageStatus($user, $status=null)
 		{
 			if(!isset($status))
-				return self::$sqlite->singleQuery("SELECT status FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+				return self::$sqlite->singleField("SELECT status FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 			else
 				self::$sqlite->query("UPDATE messages_users SET status = ".self::$sqlite->quote($status)." WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 		}
@@ -301,7 +301,7 @@
 		function messageType($user, $type=null)
 		{
 			if(!isset($type))
-				return self::$sqlite->singleQuery("SELECT type FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+				return self::$sqlite->singleField("SELECT type FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 			else
 				self::$sqlite->query("UPDATE messages_users SET type = ".self::$sqlite->quote($status)." WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
 		}
@@ -316,7 +316,7 @@
 		function removeUser($user)
 		{
 			self::$sqlite->query("DELETE FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
-			if(self::$sqlite->singleQuery("SELECT COUNT(*) FROM message_users WHERE message_id = ".self::$sqlite->quote($this->getName()).";") < 1)
+			if(self::$sqlite->singleField("SELECT COUNT(*) FROM message_users WHERE message_id = ".self::$sqlite->quote($this->getName()).";") < 1)
 				$this->destroy();
 		}
 

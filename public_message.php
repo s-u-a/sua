@@ -30,7 +30,7 @@
 	if(isset($_GET['database']) && isset($databases[$_GET['database']]))
 		define_globals($_GET['database']);
 
-	$gui = new LoginGui();
+	$gui = Classes::LoginGui();
 	if(!isset($_GET['database']) || !isset($databases[$_GET['database']]) || !isset($_GET['id']) || !PublicMessage::publicMessageExists($_GET['id']))
 		$gui->fatal(h(_("Die gewünschte Nachricht existiert nicht.")));
 

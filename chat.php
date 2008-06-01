@@ -35,7 +35,7 @@
 
 	if(!$popup)
 	{
-		$gui->setOption("base", "http://".$_SERVER["HTTP_HOST"].h_root."/software/chat/");
+		$gui->setOption("base", "http://".$_SERVER["HTTP_HOST"].global_setting("h_root")."/software/chat/");
 		$gui->init();
 ?>
 <h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Chat")))?></h2>
@@ -45,7 +45,7 @@
 	if(!isset($_REQUEST['channel']) || !isset($_REQUEST['nickname']) || !isset($channels[$_REQUEST['channel']]))
 	{
 ?>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/chat.php')?>" method="get" id="chat-form">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/chat.php')?>" method="get" id="chat-form">
 	<dl>
 		<dt class="c-kanal"><label for="i-kanal"><?=h(_("Kanal&[chat.php|1]"))?></label></dt>
 		<dd class="c-kanal"><select name="channel" id="i-kanal"<?=l::accesskey_attr(_("Kanal&[chat.php|1]"))?>>
@@ -80,7 +80,7 @@
 	{
 		if(input_el.checked)
 		{
-			open('<?=global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/chat.php'?>?channel='+encodeURIComponent(document.getElementById('i-kanal').value)+'&nickname='+encodeURIComponent(document.getElementById('i-spitzname').value)+"&popup=1", "_blank", "location=no,menubar=no,resizable=yes,scrollbars=yes,status=yes,toolbar=no");
+			open('<?=global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/chat.php'?>?channel='+encodeURIComponent(document.getElementById('i-kanal').value)+'&nickname='+encodeURIComponent(document.getElementById('i-spitzname').value)+"&popup=1", "_blank", "location=no,menubar=no,resizable=yes,scrollbars=yes,status=yes,toolbar=no");
 			return false;
 		}
 	}
@@ -112,7 +112,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=h(_("[LANG]"))?>">
 	<head>
 		<title><?=h($channels[$_REQUEST['channel']][0])?></title>
-		<base href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].h_root.'/software/chat/')?>" />
+		<base href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/software/chat/')?>" />
 		<style type="text/css">
 			html,body,#chat-applet { width:100%; height:100%; margin:0; padding:0; border-style:none; }
 		</style>

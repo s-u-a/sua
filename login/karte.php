@@ -26,13 +26,13 @@
 	require('include.php');
 
 	# Werbung deaktivieren, weil beim vielen Herumklicken sonst das Laden ewig dauert
-	$DISABLE_ADS = true;
+	$gui->setOption("disable_ads", true);
 	$gui->init();
 
-	$pos = $me->getPos();
+	$pos = $me->getPosObj();
 
-	$galaxy_n = $pos[0];
-	$system_n = $pos[1];
+	$galaxy_n = $pos->getGalaxy();
+	$system_n = $pos->getSystem();
 	if(isset($_GET["shortcut"]) && strpos($_GET["shortcut"], ":") !== false)
 		list($galaxy_n, $system_n) = explode(":", $_GET["shortcut"]);
 	else
@@ -43,7 +43,7 @@
 			$system_n = $_GET['system'];
 	}
 
-	$galaxy_count = Galaxy::getGalaxiesCount();
+	$galaxy_count = Galaxy::getNumber();
 
 	$next_galaxy = $galaxy_n+1;
 	$prev_galaxy = $galaxy_n-1;
@@ -254,7 +254,7 @@
 				if(sinfo[i]['alliance'])
 				{
 					var new_alliance1 = document.createElement('span');
-					if(sinfo[i]['alliance'] == '<?=str_replace("'", "\\'", $me->allianceTag())?>')
+					if(sinfo[i]['alliance'] == '<?=str_replace("'", "\\'", Classes::getUserAlliance($me->getName()))?>')
 						new_alliance1.className = 'allianz-eigen';
 					else
 						new_alliance1.className = 'allianz-fremd';
@@ -570,8 +570,10 @@
 </script>
 <?php
 	}
+
+	$system = Classes::System(Classes::Galaxy($galaxy_n), $system_n);
 ?>
-<h3 class="strong">Karte <span class="karte-koords" id="koords">(<?=htmlspecialchars($galaxy_n)?>:<?=htmlspecialchars($system_n)?>)</span></h3>
+<h3 class="strong"><?=sprintf(h(_("Karte %s")), "<span class=\"karte-koords\" id=\"koords\">".h(sprintf(_("(%s)"), System::format($system)))."</span>")?></h3>
 <form action="karte.php" method="get" class="karte-wahl"<?php if(!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"]){?> onsubmit="return doLookup();"<?php }?>>
 	<fieldset>
 		<legend>System</legend>
@@ -604,14 +606,12 @@
 <?php
 	foreach($shortcuts_list as $shortcut)
 	{
-		$s_pos = explode(':', $shortcut);
-		$galaxy_obj = Classes::Galaxy($s_pos[0]);
-		$owner = $galaxy_obj->getPlanetOwner($s_pos[1], $s_pos[2]);
-		$s = $shortcut.': ';
+		$owner = $shortcut->getOwner();
+		$s = Planet::format($shortcut).': ';
 		if($owner)
 		{
-			$s .= $galaxy_obj->getPlanetName($s_pos[1], $s_pos[2]).' (';
-			$alliance = $galaxy_obj->getPlanetOwnerAlliance($s_pos[1], $s_pos[2]);
+			$s .= $shortcut->getName().' (';
+			$alliance = Classes::getUserAlliance($owner);
 			if($alliance) $s .= '['.$alliance.'] ';
 			$s .= $owner.')';
 		}
@@ -641,14 +641,20 @@
 	</thead>
 	<tbody id="karte-system">
 <?php
-	$planets_count = $galaxy->getPlanetsCount($system_n);
 	$shortcut = null;
 	if(isset($_GET["shortcut"]) && count($expl = explode(":", $_GET["shortcut"])) >= 3)
 		$shortcut = $expl[2];
-	for($i=1; $i <= $planets_count; $i++)
+	foreach($system as $i=>$planet_obj)
 	{
-		$planet = array(false, $galaxy->getPlanetOwner($system_n, $i), $galaxy->getPlanetName($system_n, $i), $galaxy->getPlanetOwnerAlliance($system_n, $i), $galaxy->getPlanetOwnerFlag($system_n, $i));
-		$class = $galaxy->getPlanetClass($system_n, $i);
+		$planet = array(false, $planet_obj->getOwner(), $planet_obj->getName(), "", "");
+		$class = $planet_obj->getPlanetClass();
+
+		if($planet[1])
+		{
+			$user_obj = Classes::User($planet[1]);
+			$planet[2] = Classes::getUserAlliance($planet[1]);
+			$planet[3] = $user_obj->getFlag();
+		}
 
 		$that_uname = $planet[1];
 
@@ -673,7 +679,7 @@
 ?>
 		<tr class="<?=$class2?> planet_<?=$class?>">
 <?php
-		$truemmerfeld = $galaxy->truemmerfeldGet($system_n, $i);
+		$truemmerfeld = $planet_obj->getTruemmerfeld();
 		if($truemmerfeld !== false && array_sum($truemmerfeld) > 0)
 			$tf_string = ' <abbr title="Trümmerfeld: '.F::ths($truemmerfeld[0]).'&nbsp;Carbon, '.F::ths($truemmerfeld[1]).'&nbsp;Aluminium, '.F::ths($truemmerfeld[2]).'&nbsp;Wolfram, '.F::ths($truemmerfeld[3]).'&nbsp;Radium">T</abbr>';
 		else
@@ -684,7 +690,7 @@
 		if($planet[1])
 		{
 ?>
-			<td class="c-name"><?php if($planet[3]){?><span class="allianz<?=($planet[3] == $me->allianceTag()) ? '-eigen' : '-fremd'?>">[<a href="info/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($planet[3]))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu dieser Allianz anzeigen" class="alliancename"><?=htmlspecialchars($planet[3])?></a>]</span> <?php }?><?=htmlspecialchars($planet[2])?> <span class="playername">(<a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($that_uname))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($that_uname)?></a><?=$planet[4] ? ' ('.htmlspecialchars($planet[4]).')' : ''?>)</span></td>
+			<td class="c-name"><?php if($planet[3]){?><span class="allianz<?=($planet[3] == Alliance::getUserAlliance($me->getName())) ? '-eigen' : '-fremd'?>">[<a href="info/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($planet[3]))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu dieser Allianz anzeigen" class="alliancename"><?=htmlspecialchars($planet[3])?></a>]</span> <?php }?><?=htmlspecialchars($planet[2])?> <span class="playername">(<a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($that_uname))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Informationen zu diesem Spieler anzeigen"><?=htmlspecialchars($that_uname)?></a><?=$planet[4] ? ' ('.htmlspecialchars($planet[4]).')' : ''?>)</span></td>
 <?php
 		}
 		else

@@ -44,7 +44,7 @@
 <ul>
 	<li><?=sprintf(h(_("Setzen Sie sich per %sE-Mail%3\$s mit Candid Dauth in Verbindung.")), "<a href=\"mailto:webmaster@s-u-a.net\">", "webmaster@s-u-a.net", "</a>")?></li>
 	<li><?=sprintf(h(_("Stellen Sie ihre Frage öffentlich im %sBoard%s.")), "<a href=\"".global_setting("USE_PROTOCOL")."://board.s-u-a.net/index.php\">", "</a>")?></li>
-	<li><?=sprintf(h(_("Fragen Sie im Entwickler-Kanal des %sChats%s nach.")), "<a href=\"http://".$_SERVER['HTTP_HOST'].h_root."/chat.php\">", "</a>")?></li>
+	<li><?=sprintf(h(_("Fragen Sie im Entwickler-Kanal des %sChats%s nach.")), "<a href=\"http://".$_SERVER['HTTP_HOST'].global_setting("h_root")."/chat.php\">", "</a>")?></li>
 	<li><?=sprintf(h(_("Melden Sie Fehler im %sBugtracker%s.")), "<a href=\"https://bugs.s-u-a.net/\">", "</a>")?></li>
 </ul>
 <p><?=h(_("Es besteht selbstverständlich keine Garantie auf eine Antwort, normalerweise erfolgt eine solche aber innerhalb eines Tages."))?></p>

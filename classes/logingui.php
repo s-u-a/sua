@@ -313,8 +313,7 @@
 ?>
 			<div id="werbung">
 <?php
-			global $DISABLE_ADS;
-			if((!$me || (!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"])) && (!isset($DISABLE_ADS) || !$DISABLE_ADS) && global_setting("PROTOCOL") == 'http') # Per https keine Werbung einblenden, da Google nur http unterstuetzt und dann eine Sicherheitswarnung kommt
+			if((!$me || (!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"])) && !$this->getOption("disable_ads") && global_setting("PROTOCOL") == 'http') # Per https keine Werbung einblenden, da Google nur http unterstuetzt und dann eine Sicherheitswarnung kommt
 			{
 ?>
 				<div class="google-params" id="google-color-border-red"></div>

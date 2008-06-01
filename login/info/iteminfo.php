@@ -101,7 +101,7 @@
 		$deps = $me->getItemDeps($_GET["id"]);
 		if(count($deps) > 0)
 		{
-			Items::isort($deps);
+			Item::isort($deps);
 ?>
 	<div class="desc-deps">
 		<h3 class="strong"><?=h(_("Abhängigkeiten"))?></h3>

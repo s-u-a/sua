@@ -58,54 +58,24 @@
 				$error = _('Der Benutzername darf nicht auf (U) enden.');
 			elseif(substr($_POST['username'], -4) == ' (g)')
 				$error = _('Der Benutzername darf nicht auf (g) enden.');
+			elseif($_POST["username"] == "0")
+				$error = _("Dieser Benutzername ist nicht zulässig.");
 			else
 			{
-				$user_obj = Classes::User($_POST['username']);
-				if(!$user_obj->create())
-					$error = _('Datenbankfehler beim Anlegen des Benutzeraccounts.');
+				$user_obj = Classes::User(User::create($_POST['username']));
 
 				# Koordinaten des Hauptplaneten bestimmen
 
-				$galaxies_count = Galaxy::getGalaxiesCount();
+				$galaxies_count = Galaxy::getNumber();
 				$galaxies = array();
 				for($i=1; $i<=$galaxies_count; $i++)
 					$galaxies[] = $i;
 				shuffle($galaxies);
 
-				$koords = false;
-				foreach($galaxies as $galaxy)
+				try
 				{
-					$galaxy_obj = Classes::Galaxy($galaxy);
-					if(!$galaxy_obj->getStatus()) continue;
-					$systems_count = $galaxy_obj->getSystemsCount();
-					$systems = array();
-					for($i=1; $i<=$systems_count; $i++)
-						$systems[] = $i;
-					shuffle($systems);
+					$koords = Planet::randomFreePlanet();
 
-					foreach($systems as $system)
-					{
-						$planets_count = $galaxy_obj->getPlanetsCount($system);
-						$empty_planets = array();
-						for($i=0; $i<$planets_count; $i++)
-						{
-							if($galaxy_obj->getPlanetOwner($system, $i) === '') $empty_planets[] = $i;
-						}
-						if(count($empty_planets) > 0)
-						{
-							$koords = $galaxy.':'.$system.':'.$empty_planets[array_rand($empty_planets)];
-							break 2;
-						}
-					}
-				}
-
-				if(!$koords)
-				{
-					$error = _('Es gibt keine freien Planeten mehr.');
-					$user_obj->destroy();
-				}
-				else
-				{
 					$index = $user_obj->registerPlanet($koords);
 					if($index === false)
 					{
@@ -126,13 +96,18 @@
 						$user_obj->planetName('Hauptplanet');
 					else $user_obj->planetName($_POST['hauptplanet']);
 ?>
-<p class="successful"><?=h(sprintf(_("Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten %s."), vsprintf(_("%d:%d:%d"), explode(":", $koords))))?></p>
+<p class="successful"><?=h(sprintf(_("Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten %s."), Planet::format($koords)))?></p>
 <ul>
 	<li><a href="index.php"<?=l::accesskey_attr(_("Zurück zur Startseite&[register.php|1]"))?>><?=h(_("Zurück zur Startseite&[register.php|1]"))?></a></li>
 </ul>
 <?php
 					$gui->end();
 					exit();
+				}
+				catch(PlanetException $e)
+				{
+					$error = _('Es gibt keine freien Planeten mehr.');
+					$user_obj->destroy();
 				}
 			}
 		}
@@ -145,7 +120,7 @@
 	}
 
 ?>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].h_root.'/register.php')?>" method="post" id="register-form">
+<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/register.php')?>" method="post" id="register-form">
 	<fieldset>
 		<legend><?=h(_("Registrieren"))?></legend>
 		<dl>

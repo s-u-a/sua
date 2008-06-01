@@ -34,7 +34,7 @@
 
 	$_SESSION = array();
 	if(isset($_COOKIE[global_setting("SESSION_NAME")]) && $_COOKIE[global_setting("SESSION_NAME")] == session_id())
-		setcookie(global_setting("SESSION_NAME"), '', 0, h_root."/");
+		setcookie(global_setting("SESSION_NAME"), '', 0, global_setting("h_root")."/");
 	session_destroy();
 
 	$url = explode('/', $_SERVER['PHP_SELF']);

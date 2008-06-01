@@ -38,7 +38,6 @@
 		 * Erzeugt ein Datenset mit dem Namen $name.
 		 * @param $name string Null, wenn ein neuer Name erzeugt werden soll.
 		 * @return String Die ID des neuen Objekts (normalerweise datasetName($name))
-		 * @todo Überall auf die statische Funktion umstellen.
 		*/
 		abstract static public function create($name=null);
 
@@ -66,6 +65,14 @@
 		*/
 		abstract static public function exists($name);
 
+		static public function datasetName($name=null)
+		{
+			if($name === "0")
+				return "O";
+			else
+				return $name;
+		}
+
 		/**
 		 * @param $name Die ID des zu instanzierenden Datensets.
 		*/
@@ -76,11 +83,10 @@
 				$name = static::idFromParams(func_get_args());
 
 			$name = static::datasetName($name);
-			if(!$tables) throw new SQLiteSetException("No tables are used.");
+			$this->name = $name;
+			$this->params = static::paramsFromId($name);
 			if(!self::exists($name))
 				throw new DatasetException("Dataset does not exist.");
-			$this->name = $name;
-			$this->params = func_get_args();
 		}
 
 		/**
@@ -110,5 +116,28 @@
 				return $params[0];
 			else
 				return null;
+		}
+
+		/**
+		 * Umkehrfunktion von idFromParams().
+		 * @param string $id
+		 * @return array
+		*/
+
+		static function paramsFromId($id)
+		{
+			return array($id);
+		}
+
+		/**
+		 * Wird von Kind-Klassen aufgerufen, wenn das Datenset umbenannt wird. Der Rückgabewert von getName()
+		 * wird damit aktualisiert.
+		 * @param string $new_name
+		 * @return void
+		*/
+
+		protected function rename($new_name)
+		{
+			$this->name = $new_name;
 		}
 	}

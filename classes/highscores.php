@@ -192,7 +192,7 @@
 			elseif(!in_array($sort_field, $allowed_sort_fields[$type])) return false;
 
 			# Zuerst Punkte herausfinden
-			$r =  $this->singleQuery("SELECT ".$sort_field.",changed FROM highscores_".$type." WHERE ".$index." = ".$this->escape($id)." LIMIT 1;");
+			$r =  $this->singleLine("SELECT ".$sort_field.",changed FROM highscores_".$type." WHERE ".$index." = ".$this->escape($id)." LIMIT 1;");
 			$scores = $r[$sort_field];
 			$changed = $r['changed'];
 

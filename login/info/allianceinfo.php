@@ -27,7 +27,7 @@
 
 	$gui->init();
 
-	if(!isset($_GET['alliance']) || !Alliance::allianceExists($_GET['alliance']))
+	if(!isset($_GET['alliance']) || !Alliance::exists($_GET['alliance']))
 	{
 ?>
 <p class="error"><?=h(_("Diese Allianz gibt es nicht."))?></p>
@@ -37,17 +37,9 @@
 	{
 		$alliance = Classes::Alliance($_GET['alliance']);
 
-		if(!$alliance->getStatus())
-		{
-?>
-<p class="error"><?=h(_("Datenbankfehler."))?></p>
-<?php
-		}
-		else
-		{
-			$overall = $alliance->getTotalScores();
-			$members = $alliance->getMembersCount();
-			$average = floor($overall/$members);
+		$overall = $alliance->getTotalScores();
+		$members = $alliance->getMembersCount();
+		$average = floor($overall/$members);
 ?>
 <h2><?=h(sprintf(_("Allianzinfo „%s“"), $alliance->getName()))?></h2>
 <dl class="allianceinfo">
@@ -69,29 +61,27 @@
 <h3 id="allianzbeschreibung" class="strong"><?=h(_("Allianzbeschreibung"))?></h3>
 <div class="allianz-externes">
 <?php
-			print($alliance->getExternalDescription());
+		print($alliance->getExternalDescription());
 ?>
 </div>
 <?php
-			if(!$me->allianceTag())
+		if(!Alliance::getUserAlliance($me->getName()) && !Alliance::getUserAllianceApplication($me->getName()))
+		{
+			if($alliance->allowApplications())
 			{
-				if($alliance->allowApplications())
-				{
 ?>
 <ul class="allianz-bewerben possibilities">
 	<li><a href="../allianz.php?action=apply&amp;for=<?=htmlspecialchars(urlencode($alliance->getName()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Bei dieser Allianz bewerben&[login/info/allianceinfo.php|1]"))?>><?=h(_("Bei dieser Allianz bewerben&[login/info/allianceinfo.php|1]"))?></a></li>
 </ul>
 <?php
-				}
-				else
-				{
+			}
+			else
+			{
 ?>
 <p class="allianz-bewerben error"><?=h(_("Diese Allianz akzeptiert keine neuen Bewerbungen."))?></p>
 <?php
-				}
 			}
 		}
 	}
 
 	$gui->end();
-?>

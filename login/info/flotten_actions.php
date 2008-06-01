@@ -44,7 +44,6 @@
 			if($flotten_id)
 			{
 				$fleet = Classes::Fleet($flotten_id);
-				if(!$fleet->getStatus()) $flotten_id = false;
 				$flotten_id = $fleet->getName();
 
 				if($flotten_id)
@@ -440,14 +439,13 @@
 				$i = 0;
 				foreach($shortcuts as $shortcut)
 				{
-					$s_pos = explode(':', $shortcut);
-					$galaxy_obj = Classes::Galaxy($s_pos[0]);
-					$owner = $galaxy_obj->getPlanetOwner($s_pos[1], $s_pos[2]);
-					$s = $shortcut.': ';
+					$owner = $shortcut->getOwner();
+					$s = Planet::format($shortcut).': ';
 					if($owner)
 					{
-						$s .= $galaxy_obj->getPlanetName($s_pos[1], $s_pos[2]).' (';
-						$alliance = $galaxy_obj->getPlanetOwnerAlliance($s_pos[1], $s_pos[2]);
+						$user_obj = Classes::User($owner);
+						$s .= $shortcut->getName().' (';
+						$alliance = $user_obj->getAlliance();
 						if($alliance) $s .= '['.$alliance.'] ';
 						$s .= $owner.')';
 					}
@@ -472,7 +470,6 @@
 			if($flotten_id)
 			{
 				$fleet = Classes::Fleet($flotten_id);
-				if(!$fleet->getStatus()) $flotten_id = false;
 				$flotten_id = $fleet->getName();
 
 				if($flotten_id && ($fleet->getCurrentType() != 3 || $fleet->isFlyingBack() || array_search($me->getName(), $fleet->getUsersList()) !== 0))
@@ -531,7 +528,6 @@
 			if($flotten_id)
 			{
 				$fleet = Classes::Fleet($flotten_id);
-				if(!$fleet->getStatus()) $flotten_id = false;
 				$flotten_id = $fleet->getName();
 
 				if($flotten_id && array_search($me->getName(), $fleet->getUsersList()) !== 0)
@@ -557,41 +553,22 @@
 	</thead>
 	<tbody>
 <?php
-			// TODO: auf getTargetsInformation() rausschmeißen. Dann kann auch getArrival() statt getDepartingTime() mit $i benutzt werden.
-			$i = 0;
-			$targets = $fleet->getOldTargetsInformation();
+			$targets = $fleet->getOldTargets();
 			$old_count = count($targets);
-			$targets = array_merge($targets, $fleet->getTargetsInformation());
+			$targets = array_merge($targets, $fleet->getTargets());
 			$countdowns = array();
-			foreach($targets as $target=>$info)
+			foreach($targets as $i=>$target)
 			{
-				if($info[1]) continue;
-				if(substr($target, -1) == "T") $target = substr($target, 0, -1);
-				$target_arr = explode(":", $target);
-				$galaxy_obj = Classes::Galaxy($target_arr[0]);
-				$planet_owner = $galaxy_obj->getPlanetOwner($target_arr[1], $target_arr[2]);
-				$planet_name = $galaxy_obj->getPlanetName($target_arr[1], $target_arr[2]);
-				$planet_alliance = $galaxy_obj->getPlanetOwnerAlliance($target_arr[1], $target_arr[2]);
-
-				$koords = "<a href=\"../karte.php?galaxy=".htmlspecialchars(urlencode($target_arr[0])."&system=".urlencode($target_arr[1])."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Diesen Planeten in der Karte anzeigen"))."\">".vsprintf(h(_("%d:%d:%d")), $target_arr)."</a>";
-				if(!$planet_owner)
-					$string = sprintf(h(_("%s (unbesiedelt)")), $koords);
-				else
-				{
-					$owner = "<a href=\"playerinfo.php?player=".htmlspecialchars(urlencode($planet_owner)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Genauere Informationen anzeigen"))."\">".htmlspecialchars($planet_owner)."</a>";
-					if($planet_alliance)
-						$owner = sprintf(h(_("[%s] %s")), "<a href=\"allianceinfo.php?alliance=".htmlspecialchars(urlencode($planet_alliance)."&".global_setting("URL_SUFFIX"))."\" title=\"".h(_("Genauere Informationen anzeigen"))."\">".htmlspecialchars($planet_alliance)."</a>", $owner);
-					$string = sprintf(h(_("„%s“ (%s, Eigentümer: %s)")), htmlspecialchars($planet_name), $koords, $owner);
-				}
-				$countdowns[$i] = $fleet->getDepartingTime()+$fleet->getTime($target);
+				$type = $fleet->getTargetType($i);
+				if($type[1]) continue;
+				$countdowns[$i] = $fleet->getArrival($i);
 ?>
-		<tr id="target-<?=$i?>" class="type-<?=htmlspecialchars($info[0])?><?=$i<$old_count ? " type-weak" : ($i == $old_count ? " active" : "")?>">
-			<td class="c-ziel"><?=$string?></td>
-			<td class="c-auftrag"><?=h(_("[fleet_".$info[0]."]"))?></td>
-			<td class="c-ankunft" id="restbauzeit-<?=$i?>"><?=h(sprintf(_("Ankunft: %s"), sprintf(_("%s (Serverzeit)"), date(_("H:i:s, Y-m-d"), $countdown[$i]))))?></td>
+		<tr id="target-<?=$i?>" class="type-<?=htmlspecialchars($type[0])?><?=$i<$old_count ? " type-weak" : ($i == $old_count ? " active" : "")?>">
+			<td class="c-ziel"><?=F::formatPlanetH($target)?></td>
+			<td class="c-auftrag"><?=h(_("[fleet_".$type[0]."]"))?></td>
+			<td class="c-ankunft" id="restbauzeit-<?=$i?>"><?=h(sprintf(_("Ankunft: %s"), sprintf(_("%s (Serverzeit)"), date(_("H:i:s, Y-m-d"), $countdowns[$i]))))?></td>
 		</tr>
 <?php
-				$i++;
 			}
 ?>
 	</tbody>

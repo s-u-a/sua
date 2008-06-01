@@ -36,29 +36,21 @@
 	else
 	{
 		$user = Classes::User($_GET['player']);
-		if(!$user->getStatus())
-		{
-?>
-<p class="error"><?=h(_("Datenbankfehler."))?></p>
-<?php
-		}
-		else
-		{
-			$at = $user->allianceTag();
-			$suf = '%s';
-			if($user->userLocked()) $suf = h(_("%s (g)"));
-			elseif($user->umode()) $suf = h(_("%s (U)"));
+		$at = Alliance::getUserAlliance($_GET["player"]);
+		$suf = '%s';
+		if($user->userLocked()) $suf = h(_("%s (g)"));
+		elseif($user->umode()) $suf = h(_("%s (U)"));
 ?>
 <h2><?=sprintf(h(_("Spielerinfo „%s“")), sprintf($suf, ($at ? sprintf(h(_("[%s] %s")), "<a href=\"allianceinfo.php?alliance=".htmlspecialchars(urlencode($at).'&'.global_setting("URL_SUFFIX"))."\" title=\"".h(_("Informationen zu dieser Allianz anzeigen"))."\">".htmlspecialchars($at)."</a>", htmlspecialchars($user->getName())) : htmlspecialchars($user->getName()))))?></h2>
 <?php
-			if(isset($_SESSION["admin_username"]) && $user->getName() != $me->getName())
-			{
+		if(isset($_SESSION["admin_username"]) && $user->getName() != $me->getName())
+		{
 ?>
 <ul class="spieler-wechseln possibilities">
 	<li><a href="playerinfo.php?<?=htmlspecialchars("player=".urlencode($_GET["player"])."&switch_user=".urlencode($_GET["player"])."&".global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spieler wechseln&[login/info/playerinfo.php|2]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Spieler wechseln&[login/info/playerinfo.php|2]"))?></a></li>
 </ul>
 <?php
-			}
+		}
 ?>
 <h3 id="punkte" class="strong"><?=h(_("Punkte"))?></h3>
 <dl class="punkte">
@@ -84,12 +76,12 @@
 	<dd class="c-kampferfahrung"><?=F::ths($user->getScores(6))?></dd>
 
 	<dt class="c-gesamt"><?=h(_("Gesamt"))?></dt>
-	<dd class="c-gesamt"><?=F::ths($user->getScores())?> <span class="platz"><?=h(sprintf("(Platz %s von %s)", F::ths($user->getRank()), F::ths(User::getUsersCount())))?></span></dd>
+	<dd class="c-gesamt"><?=F::ths($user->getScores())?> <span class="platz"><?=h(sprintf("(Platz %s von %s)", F::ths($user->getRank()), F::ths(User::getNumber())))?></span></dd>
 </dl>
 <?php
-			$show_koords = $me->maySeeKoords($user->getName());
-			if($show_koords || isset($_SESSION["admin_username"]))
-			{
+		$show_koords = $me->maySeeKoords($user->getName());
+		if($show_koords || isset($_SESSION["admin_username"]))
+		{
 ?>
 <h3 id="ausgegebene-rohstoffe" class="strong"><?=h(_("Ausgegebene Rohstoffe"))?></h3>
 <dl class="punkte">
@@ -112,100 +104,100 @@
 	<dd class="c-gesamt"><?=F::ths($user->getSpentRess())?></dd>
 </dl>
 <?php
-			}
+		}
 ?>
 <h3 id="benutzerbeschreibung" class="strong"><?=h(_("Benutzerbeschreibung"))?></h3>
 <div class="benutzerbeschreibung">
 <?php
-			print($user->getUserDescription());
+		print($user->getUserDescription());
 ?>
 </div>
 <h3 id="buendnisse" class="strong"><?=h(_("Bündnisse"))?></h3>
 <?php
-			$verbuendet = $user->getVerbuendetList();
-			if(count($verbuendet) <= 0)
-			{
+		$verbuendet = $user->getVerbuendetList();
+		if(count($verbuendet) <= 0)
+		{
 ?>
 <p class="buendnisse-keine"><?=h(_("Dieser Benutzer ist derzeit in keinem Bündnis."))?></p>
 <?php
-			}
-			else
-			{
+		}
+		else
+		{
 ?>
 <ul class="buendnis-informationen paragraph">
 <?php
-				foreach($verbuendet as $verbuendeter)
-				{
+			foreach($verbuendet as $verbuendeter)
+			{
 ?>
 	<li><a href="playerinfo.php?player=<?=htmlspecialchars(urlencode($verbuendeter))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($verbuendeter)?></a></li>
 <?php
-				}
+			}
 ?>
 </ul>
 <?php
-			}
+		}
 ?>
 <h3 id="daten" class="strong"><?=h(_("Daten"))?></h3>
 <dl class="daten">
 	<dt class="c-letzte-aktivitaet"><?=h(_("Letzte Aktivität"))?></dt>
 <?php
-			$last_activity = $user->getLastActivity();
-			if($last_activity !== false)
-			{
+		$last_activity = $user->getLastActivity();
+		if($last_activity !== false)
+		{
 ?>
 	<dd class="c-letzte-aktivitaet"><?=h(sprintf(_("%s (Serverzeit)"), date(_('H:i:s, Y-m-d'), $last_activity)))?></dd>
 <?php
-			}
-			else
-			{
+		}
+		else
+		{
 ?>
 	<dd class="c-letzte-aktivitaet nie"><?=h(_("Nie"))?></dd>
 <?php
-			}
+		}
 ?>
 
 	<dt class="c-registrierung"><?=h(_("Registrierung"))?></dt>
 <?php
-			$registration_time = $user->getRegistrationTime();
-			if($registration_time !== false)
-			{
+		$registration_time = $user->getRegistrationTime();
+		if($registration_time !== false)
+		{
 ?>
 	<dd class="c-registrierung"><?=h(sprintf(_("%s (Serverzeit)"), date(_('H:i:s, Y-m-d'), $registration_time)))?></dd>
 <?php
-			}
-			else
-			{
+		}
+		else
+		{
 ?>
 	<dd class="c-registriergung unbekannt"><?=h(_("Unbekannt"))?></dd>
 <?php
-			}
+		}
 ?>
 </dl>
 <?php
-			if($show_koords || isset($_SESSION["admin_username"]))
-			{
+		if($show_koords || isset($_SESSION["admin_username"]))
+		{
 ?>
 <h3 id="planeten" class="strong"><?=h(_("Planeten"))?></h3>
 <ul class="playerinfo-planeten">
 <?php
-				$planets = $user->getPlanetsList();
-				$active_planet = $user->getActivePlanet();
-				foreach($planets as $planet)
-				{
-					$user->setActivePlanet($planet);
-					$pos = $user->getPos();
+			$planets = $user->getPlanetsList();
+			$active_planet = $user->getActivePlanet();
+			foreach($planets as $planet)
+			{
+				$user->setActivePlanet($planet);
+				$pos = $user->getPos();
 ?>
 	<li><?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($user->planetName()), "<a href=\"../karte.php?galaxy=".htmlspecialchars(urlencode($pos[0]))."&amp;system=".htmlspecialchars(urlencode($pos[1]))."&amp;".htmlspecialchars(global_setting("URL_SUFFIX"))."\" title=\"".h(_("Jenes Sonnensystem in der Karte ansehen"))."\">".h(vsprintf(_("%d:%d:%d"), $pos))."</a>")?></li>
 <?php
-				}
-				if($active_planet !== false) $user->setActivePlanet($active_planet);
+			}
+			if($active_planet !== false) $user->setActivePlanet($active_planet);
 ?>
 </ul>
 <?php
-			}
+		}
 
-			if($user->getName() != $me->getName())
-			{
+		if($user->getName() != $me->getName())
+		{
 ?>
 <h3 id="nachricht" class="strong"><?=h(_("Nachricht"))?></h3>
 <form action="../nachrichten.php?to=&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="playerinfo-nachricht" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?")?>\');');">
@@ -219,7 +211,6 @@
 	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("&Nachricht absenden[login/info/playerinfo.php|1]"))?>><?=h(_("&Nachricht absenden[login/info/playerinfo.php|1]"))?></button><input type="hidden" name="empfaenger" value="<?=htmlspecialchars($user->getName())?>" /></div>
 </form>
 <?php
-			}
 		}
 	}
 	$gui->end();

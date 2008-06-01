@@ -125,7 +125,7 @@
 			$me->setActivePlanet($fastbuild_prev);
 			define_url_suffix();
 ?>
-	<li class="c-prev"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=sprintf(h(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"), false), htmlspecialchars(F::format_planet($me->getPosString(), $me->planetName())))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"))?> rel="prev"><?=h(_("←"))?></a></li>
+	<li class="c-prev"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=sprintf(h(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"), false), htmlspecialchars($me->getActivePlanetFormatted()))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"))?> rel="prev"><?=h(_("←"))?></a></li>
 <?php
 		}
 		if($fastbuild_next !== false)
@@ -133,7 +133,7 @@
 			$me->setActivePlanet($fastbuild_next);
 			define_url_suffix();
 ?>
-	<li class="c-next"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=sprintf(h(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"), false), htmlspecialchars(F::format_planet($me->getPosString(), $me->planetName())))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"))?> rel="next"><?=h(_("→"))?></a></li>
+	<li class="c-next"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=sprintf(h(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"), false), htmlspecialchars($me->getActivePlanetFormatted()))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"))?> rel="next"><?=h(_("→"))?></a></li>
 <?php
 		}
 		$me->setActivePlanet($active_planet);

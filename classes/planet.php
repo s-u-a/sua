@@ -32,9 +32,15 @@
 
 	class Planet extends SQLiteSet
 	{
+		protected static $views = array (
+			"planet_ids" => "SELECT DISTINCT galaxy || ':' || system || ':' || planet AS pid FROM planets"
+		);
+
 		protected static $tables = array (
+			"planet_ids" => array(
+				"pid"
+			),
 			"planets" => array (
-				"pid INTEGER PRIMARY KEY AUTOINCREMENT",
 				"galaxy INTEGER",
 				"system INTEGER",
 				"planet INTEGER",
@@ -55,20 +61,39 @@
 				"size_used INTEGER"
 			),
 			"planets_items" => array (
-				"pid INTEGER",
+				"galaxy INTEGER",
+				"system INTEGER",
+				"planet INTEGER",
 				"id TEXT",
-				"level INTEGER"
+				"type TEXT",
+				"level INTEGER",
+				"scores INTEGER"
 			),
 			"planets_building" => array (
-				"pid INTEGER",
+				"galaxy INTEGER",
+				"system INTEGER",
+				"planet INTEGER",
 				"id TEXT",
+				"type TEXT",
 				"number INTEGER",
 				"start INTEGER",
 				"duration REAL",
 				"cost0 INTEGER",
 				"cost1 INTEGER",
 				"cost2 INTEGER",
-				"cost3 INTEGER"
+				"cost3 INTEGER",
+				"global INTEGER"
+			),
+			"planets_remote_fleet" => array (
+				"i INTEGER",
+				"galaxy INTEGER",
+				"system INTEGER",
+				"planet INTEGER",
+				"user TEXT",
+				"id TEXT",
+				"number INTEGER",
+				"scores INTEGER",
+				"from_pid INTEGER"
 			)
 		);
 
@@ -76,7 +101,15 @@
 		{
 			if(count($params) < 2)
 				throw new DatasetException("Insufficient parameters.");
-			return self::$sqlite->singleField("SELECT pid FROM planets WHERE galaxy = ".self::$sqlite->quote($params[0])." AND system = ".self::$sqlite->quote($params[1]).";");
+			return $params[0]->getGalaxy().":".$params[0]->getSystem().":".$params[1];
+		}
+
+		static function paramsFromId($id)
+		{
+			$params = explode(":", $id);
+			if(count($params) < 2)
+				throw new PlanetException("Invalid ID.");
+			return array(Classes::System(Classes::Galaxy($params[0]), $params[1]), $params[2]);
 		}
 
 		/**
@@ -87,9 +120,9 @@
 
 		static function create(System $system, $planet)
 		{
-			if(self::$sqlite->singleField("SELECT COUNT(*) FROM planets WHERE galaxy = ".self::$sqlite->quote($system->getGalaxy())." AND system = ".self::$sqlite->quote($system->getSystem())." AND planet = ".self::$sqlite->quote($planet)." LIMIT 1;") > 0)
+			if(self::exists(self::idFromParams(array($sytem, $planet))))
 				throw new PlanetException("This planet does already exist.");
-			self::$sqlite->query("INSERT INTO planets ( galaxy, system, planet ) VALUES ( ".self::$sqlite->quote($system->getGalaxy()).", ".self::$sqlite->quote($system->getSystem()).", ".self::$sqlite->quote($planet)." );");
+			self::$sqlite->query("INSERT INTO planets ( galaxy, system, planet, size_original ) VALUES ( ".self::$sqlite->quote($system->getGalaxy()).", ".self::$sqlite->quote($system->getSystem()).", ".self::$sqlite->quote($planet).", ".self::$sqlite->quote(rand(100, 500))." );");
 			return self::idFromParams(array($system, $planet));
 		}
 
@@ -108,7 +141,7 @@
 
 		function getGalaxy()
 		{
-			return $this->galaxy;
+			return $this->params[0]->getGalaxy();
 		}
 
 		/**
@@ -117,7 +150,7 @@
 
 		function getSystem()
 		{
-			return $this->system;
+			return $this->params[0]->getSystem();
 		}
 
 		/**
@@ -126,12 +159,12 @@
 
 		function getPlanet()
 		{
-			return $this->planet;
+			return $this->params[1];
 		}
 
 		function __toString()
 		{
-			return $this->galaxy.":".$this->system.":".$this->planet;
+			return $this->getGalaxy().":".$this->getSystem().":".$this->getPlanet();
 		}
 
 		/**
@@ -164,7 +197,7 @@
 
 		function getOwner()
 		{
-			return Classes::Galaxy($this->galaxy)->getPlanetOwner($this->system, $this->planet);
+			return $this->getMainField("user");
 		}
 
 		/**
@@ -174,7 +207,7 @@
 
 		function getName()
 		{
-			return Classes::Galaxy($this->galaxy)->getPlanetName($this->system, $this->planet);
+			return $this->getMainField("name");
 		}
 
 		/**
@@ -184,7 +217,7 @@
 
 		function getSize()
 		{
-			return Classes::Galaxy($this->galaxy)->getPlanetSize($this->system, $this->planet);
+			return $this->getMainField("size");
 		}
 
 		/**
@@ -195,7 +228,18 @@
 
 		function getPlanetClass()
 		{
-			return Galaxy::calcPlanetClass($this->galaxy, $this->system, $this->planet);
+			return Galaxy::calcPlanetClass($this);
+		}
+
+		/**
+		 * Berechnet die CSS-Klasse eines Planeten.
+		 * @param Planet $planet
+		*/
+
+		static function calcPlanetClass(Galaxy $planet)
+		{
+			$type = (((floor($planet->getSystem()/100)+1)*(floor(($planet->getSystem()%100)/10)+1)*(($planet->getSystem()%10)+1))%$planet->getPlanet())*$planet->getPlanet()+($planet->getSystem()%(($planet->getGalaxy()+1)*$planet->getPlanet()));
+			return $type%20+1;
 		}
 
 		/**
@@ -221,9 +265,57 @@
 		}
 
 		/**
+		 * Gibt einen zufälligen Planeten zurück, der noch nicht besiedelt ist.
+		 * @return Planet
+		*/
+
+		static function randomFreePlanet()
+		{
+			$result = self::$sqlite->singleField("SELECT pid FROM planets WHERE NOT owner ORDER BY RANDOM() LIMIT 1;");
+			if($result === false)
+				throw new PlanetException("No free planets available.");
+			return Classes::Planet($result);
+		}
+
+		/**
+		* Callback-Funktion fuer usort() zum Sortieren von Koordinaten nach Galaxie, System und Planet.
+		* @param Planet $a
+		* @param Planet $b
+		* @return int
+		*/
+
+		static function usort(Planet $a, Planet $b)
+		{
+			$a_expl = array($a->getGalaxy(), $a->getSystem(), $a->getPlanet());
+			$b_expl = array($b->getGalaxy(), $b->getSystem(), $b->getPlanet());
+
+			if($a_expl[0] > $b_expl[0])
+				return 1;
+			elseif($a_expl[0] < $b_expl[0])
+				return -1;
+			else
+			{
+				if($a_expl[1] > $b_expl[1])
+					return 1;
+				elseif($a_expl[1] < $b_expl[1])
+					return -1;
+				else
+				{
+					if($a_expl[2] > $b_expl[2])
+						return 1;
+					elseif($a_expl[2] < $b_expl[2])
+						return -1;
+					else
+						return 0;
+				}
+			}
+		}
+
+		/**
 		 * @todo Truemmerfelder
 		 * getTruemmerfeld()
 		 * setTruemmerfeld()
+		 * addTruemmerfeld()
 		 * subTruemmerfeld()
 		*/
 	}

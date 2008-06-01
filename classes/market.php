@@ -178,8 +178,8 @@
 			$this->query("SELECT * FROM market WHERE offered_resource = ".$this->escape($offered_resource)." AND finish = -1 AND expiration < ".$this->escape(time())." AND min_price <= ".$this->escape($this->getRate($offered_resource, $requested_resource)).";");
 			while($r = $this->nextResult())
 			{
-				$sum = $this->singleQuery("SELECT sum(amount),count(DISTINCT user) FROM market WHERE offered_resource = ".$this->escape($r['offered_resource'])." AND date >= ".$this->escape($r['date'])." AND user != ".$this->escape($r['user']).";");
-				$count = $this->singleQuery("SELECT count(DISTINCT user) FROM market WHERE offered_resource = ".$this->escape($r['offered_resource'])." AND user != ".$this->escape($r['user']).";");
+				$sum = $this->singleField("SELECT sum(amount) FROM market WHERE offered_resource = ".$this->escape($r['offered_resource'])." AND date >= ".$this->escape($r['date'])." AND user != ".$this->escape($r['user']).";");
+				$count = $this->singleField("SELECT count(DISTINCT user) FROM market WHERE offered_resource = ".$this->escape($r['offered_resource'])." AND user != ".$this->escape($r['user']).";");
 				if($sum >= global_setting('MARKET_MIN_AMOUNT')*$r['amount'] && $count > global_setting('MARKET_MIN_USERS'))
 				{
 					# Auftrag wird ausgefuehrt

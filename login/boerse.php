@@ -25,7 +25,7 @@
 
 	require('include.php');
 
-	$market = new Market();
+	$market = Classes::Market();
 
 	if(isset($_GET['cancel']))
 		$market->cancelOrder($_GET['cancel'], $me->getName());
