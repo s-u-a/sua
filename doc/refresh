@@ -1,2 +1,2 @@
 rm -rf api
-phpdoc -d ../classes -o HTML:frames:phphtmllib -t api/
+phpdoc -d ../lib/sua/classes -o HTML:frames:phphtmllib -t api/
