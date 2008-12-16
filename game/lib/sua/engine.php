@@ -33,7 +33,7 @@
 	set_time_limit(600);
 
 	# s_root ermitteln: Absoluter Pfad zum Spielverzeichnis
-	$this_filename = "/engine.php";
+	$this_filename = "/lib/sua/engine.php";
 	$__FILE__ = str_replace("\\", "/", __FILE__);
 	if(substr($__FILE__, -strlen($this_filename)) !== $this_filename)
 	{
@@ -150,6 +150,8 @@
 	global_setting("IM_UNRECOGNISED_TIME", 300); # Wieviel Zeit muss vergehen, damit dieses Limit zurückgesetzt wird?
 	global_setting("LOG", fopen("php://stderr", "w")); # File stream, in den Log-Meldungen der db_things-Scripte geschrieben werden
 	global_setting("PUBLIC_MESSAGES_TIME", 30)); # Die Zeit in Tagen, nach denen eine ungelesene öffentliche Nachricht gelöscht wird
+	global_setting("TIME_BEFORE_HOLIDAY_RETURN", 3)); # Tage, bevor ein Benutzer wieder aus dem Urlaubsmodus zurückkehren darf
+	global_setting("TIME_BEFORE_HOLIDAY_GO", 3)); # Tage, bevor ein Benutzer wieder in den Urlaubsmodus gehen kann
 
 	function __autoload($classname)
 	{
@@ -198,6 +200,14 @@
 		Message::TYPE_BENUTZERNACHRICHTEN => 5,
 		Message::TYPE_VERBUENDETE => 4,
 		Message::TYPE_POSTAUSGANG => 2
+	);
+
+	# Anzahl der Tage, nach denen ein Benutzer wegen Inaktivität benachrichtigt bzw. gelöscht wird. Die
+	# Löschung erfolgt bei der letzten Zahl des Arrays, Benachrichtigung bei allen anderen Zahlen
+	$user_inactivity = array (
+		array(21, 24, 25), # Nicht-Urlaubsmodus
+		array(175, 189), # Urlaubsmodus
+		array(7, 14) # Nie angemeldet
 	);
 
 	# Zu jeder Flottenauftragsart die zugehoerige Nachrichtensorte

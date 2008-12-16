@@ -240,47 +240,6 @@
 		}
 
 		/**
-		 * Parst die Messenger-Konfigurationsdatei und schmeisst ungueltige Eintraege hinaus.
-		 * @param $type Liefert nur die Konfiguration zum gegebenen Protokoll zurueck
-		 * @param $force_reload Soll die Konfigurationsdatei unbedingt neu eingelesen werden?
-		 * @deprecated
-		*/
-
-		static function get_messenger_info($type=false, $force_reload=false)
-		{
-			global $messengers_parsed_file;
-
-			if(!isset($messenger_parsed_file) || $force_reload)
-			{
-				$config = self::getConfig();
-				if(!isset($config["instantmessaging"])) $messenger_parsed_file = false;
-				else
-				{
-					$messenger_parsed_file = &$config["instantmessaging"];
-					foreach($messenger_parsed_file as $k=>$v)
-					{
-						if(!is_array($v) || !isset($v["server"]) || !isset($v["username"]) || !isset($v["server"]))
-						{
-							unset($messenger_parsed_file[$k]);
-							continue;
-						}
-						$messenger_parsed_file[$k]["uin"] = $v["username"];
-						if($k == "jabber") $messenger_parsed_file[$k]["uin"] .= "@".$v["server"];
-					}
-				}
-			}
-
-			if(!$messenger_parsed_file) return false;
-
-			if($type)
-			{
-				if(!isset($messenger_parsed_file[$type])) return false;
-				return $messenger_parsed_file[$type];
-			}
-			else return $messenger_parsed_file;
-		}
-
-		/**
 		 * Überprüft, ob db_things/imserver.phpc gestartet ist.
 		 * @return bool
 		*/

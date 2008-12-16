@@ -359,13 +359,12 @@ EOF
 		// TODO: Komplett neu schreiben.
 		function walkthrough_users($send_mails=true)
 		{
-			/*global $errlog;
+			global $errlog;
 			global $databases;
 			global $verbose;
 
 			fputs($errlog, "\n".time_prefix()."Walking through users for database ".global_setting("DB")."...\n");
 
-			# Rohstoffe aller Planeten aller Benutzer zusammenzaehlen
 			# Alte Nachrichten loeschen
 			$ges_ress = array(0, 0, 0, 0, 0);
 			$deleted_messages = 0;
@@ -534,7 +533,7 @@ EOF
 			fputs($errlog, "Checked ".$processed_messages_public." public messages.\n");
 			fputs($errlog, "Deleted ".$deleted_messages_public." public messages.\n");
 
-			fputs($errlog, time_prefix()."Finished.\n\n");*/
+			fputs($errlog, time_prefix()."Finished.\n\n");
 		}
 	}
 

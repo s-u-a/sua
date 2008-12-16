@@ -95,7 +95,7 @@
 
 		static function getList()
 		{
-			return self::$sqlite->columnQuery("SELECT DISTINCT ".static::_idField()." FROM ".Functions::first(static::$tables).";");
+			return self::$sqlite->singleColumn("SELECT DISTINCT ".static::_idField()." FROM ".Functions::first(static::$tables).";");
 		}
 
 		static function getNumber()
@@ -119,25 +119,43 @@
 		/**
 		 * Gibt den Wert der Spalte $field_name in der ersten in $tables definierten Tabelle zurück, wo
 		 * das ID-Feld (_idField()) dem Namen dieses Datensets entspricht.
-		 * @param string $field_name
+		 * @param string|array $field_name Kann auch ein Array von Feld-Namen sein, dann wird ein assoziatives Array der Werte zurückgeliefert
 		 * @return mixed
 		*/
 
 		protected function getMainField($field_name)
 		{
-			return self::$sqlite->singleField("SELECT ".$field_name." FROM ".Functions::first(static::$tables)." WHERE ".static::_idField()." = ".self::$sqlite->quote($this->getName()).";");
+			if(is_array($field_name))
+				$select_names = $field_name;
+			else
+				$select_names = array($field_name);
+			$return = self::$sqlite->singleField("SELECT ".implode(", ", $select_names)." FROM ".Functions::first(static::$tables)." WHERE ".static::_idField()." = ".self::$sqlite->quote($this->getName()).";");
+			if(!is_array($field_name))
+				return $return[$field_name];
+			return $return;
 		}
 
 		/**
 		 * Setzt den Wert der Spalte $field_name in der ersten in $tables definierten Tabelle dort, wo
 		 * das ID-Feld (_idField()) dem Namen dieses Datensets entspricht.
-		 * @param string $field_name
-		 * @param string $value
+		 * @param string|array $field_name
+		 * @param string|array $value
 		 * @return void
 		*/
 
 		protected function setMainField($field_name, $value)
 		{
-			self::$sqlite->query("UPDATE ".Functions::first(static::$tables)." SET ".$field_name." = ".self::$sqlite->quote($value)." WHERE ".static::_idField()." = ".self::$sqlite->quote($this->getName().";");
+			$field_names = is_array($field_name) ? $field_name : array($field_name);
+			$values = is_array($value) ? $value : array($value);
+			$set = array();
+			foreach($field_names as $k=>$v)
+			{
+				if(!isset($values[$k]))
+					throw new SQLiteSetException("setMainField: Could not find a value for field ".$v);
+				$set[] = $v." = ".$this->quote($values[$k]);
+			}
+			if(count($set) < 1)
+				throw new SQLiteSetException("No fields to update.");
+			self::$sqlite->query("UPDATE ".Functions::first(static::$tables)." SET ".implode(", ", $set)." WHERE ".static::_idField()." = ".self::$sqlite->quote($this->getName().";");
 		}
 	}

@@ -29,7 +29,7 @@
 	  * Repraesentiert eine Allianz im Spiel.
 	*/
 
-	class Alliance extends SQLiteSet
+	class Alliance extends SQLiteSet implements Iterator
 	{
 		/** Rundmail schreiben */
 		const PERMISSION_MAIL = 0;
@@ -57,6 +57,17 @@
 		/** Nach Beitrittszeit sortieren */
 		const SORTBY_ZEIT = 3;
 
+		/** Gesamtpunktzahl-Highscores */
+		const HIGHSCORES_SUM = "sum";
+
+		/** Punkteschnitt-Highscores */
+		const HIGHSCORES_AVERAGE = "average";
+
+		/**
+		 * Für die Iterator-Implementierung.
+		*/
+		private $user_list;
+
 		protected static $tables = array (
 			"alliances" => array (
 				"tag TEXT PRIMARY KEY",
@@ -66,21 +77,22 @@
 				"inner_description TEXT",
 				"inner_description_parsed TEXT",
 				"last_rename INTEGER",
-				"allow_applications INTEGER"),
+				"allow_applications INTEGER DEFAULT 1"),
 			"alliances_members" => array (
-				"tag TEXT",
-				"member TEXT UNIQUE",
+				"tag TEXT NOT NULL",
+				"member TEXT UNIQUE NOT NULL",
 				"rank TEXT",
 				"time INTEGER",
-				"permissions INTEGER"
+				"permissions INTEGER DEFAULT 0"
 			),
 			"alliances_applications" => array (
-				"tag TEXT",
-				"user TEXT UNIQUE"
+				"tag TEXT NOT NULL",
+				"user TEXT UNIQUE NOT NULL"
 			),
-			"alliance_highscores" => array (
+			"alliance_highscores_sum" => array ( // virtual
 				"tag TEXT",
 				"name TEXT",
+				"members INTEGER",
 				"gebaeude REAL",
 				"forschung REAL",
 				"roboter REAL",
@@ -88,25 +100,43 @@
 				"verteidigung REAL",
 				"flightexp REAL",
 				"battleexp REAL"
+			),
+			"alliance_highscores_average" => array ( // virtual
+				"tag TEXT",
+				"name TEXT",
+				"members INTEGER",
+				"gebaeude REAL",
+				"forschung REAL",
+				"roboter REAL",
+				"schiffe REAL",
+				"verteidigung REAL",
+				"flightexp REAL",
+				"battleexp REAL"
+			)
 		);
 
 		protected static $views = array (
-			"alliance_highscores" => "SELECT alliances_members.tag AS tag,alliances.name AS name,SUM(h_users.gebaeude) AS gebaeude,SUM(h_users.forschung) AS forschung,SUM(h_users.roboter) AS roboter,SUM(h_users.schiffe) AS schiffe,SUM(h_users.verteidigung) AS verteidigung,SUM(h_users.flightexp) AS flightexp,SUM(h_users.battleexp) AS battleexp, gebaeude+forschung+roboter+schiffe+verteidigung+flightexp+battleexp AS total FROM (SELECT tag, user FROM alliances_members LEFT OUTER JOIN ( SELECT user, gebaeude, forschung, roboter, schiffe, verteidigung, flighexp, battleexp FROM highscores ) AS h_users ON alliances_members.user = h_users.user LEFT OUTER JOIN ( SELECT tag, name FROM alliances ) as a ON alliances_members.tag = a.tag ) GROUP BY tag;",
+			"alliance_highscores_sum" => "SELECT alliances_members.tag AS tag,alliances.name AS name,COUNT(DISTINCT h_users.user) AS members,SUM(h_users.gebaeude) AS gebaeude,SUM(h_users.forschung) AS forschung,SUM(h_users.roboter) AS roboter,SUM(h_users.schiffe) AS schiffe,SUM(h_users.verteidigung) AS verteidigung,SUM(h_users.flightexp) AS flightexp,SUM(h_users.battleexp) AS battleexp, gebaeude+forschung+roboter+schiffe+verteidigung+flightexp+battleexp AS total FROM (SELECT tag, user FROM alliances_members LEFT OUTER JOIN ( SELECT user, gebaeude, forschung, roboter, schiffe, verteidigung, flighexp, battleexp FROM highscores ) AS h_users ON alliances_members.user = h_users.user LEFT OUTER JOIN ( SELECT tag, name FROM alliances ) as a ON alliances_members.tag = a.tag ) GROUP BY tag;",
+			"alliance_highscores_average" => "SELECT alliances_members.tag AS tag,alliances.name AS name,COUNT(DISTINCT h_users.user) AS members,AVG(h_users.gebaeude) AS gebaeude,AVG(h_users.forschung) AS forschung,AVG(h_users.roboter) AS roboter,AVG(h_users.schiffe) AS schiffe,AVG(h_users.verteidigung) AS verteidigung,AVG(h_users.flightexp) AS flightexp,AVG(h_users.battleexp) AS battleexp, gebaeude+forschung+roboter+schiffe+verteidigung+flightexp+battleexp AS total FROM (SELECT tag, user FROM alliances_members LEFT OUTER JOIN ( SELECT user, gebaeude, forschung, roboter, schiffe, verteidigung, flighexp, battleexp FROM highscores ) AS h_users ON alliances_members.user = h_users.user LEFT OUTER JOIN ( SELECT tag, name FROM alliances ) as a ON alliances_members.tag = a.tag ) GROUP BY tag;"
 		);
+
+		function __construct()
+		{
+			call_user_func_array(array("parent", "__construct"), func_get_args());
+
+			$this->user_list = $this->getUsersList();
+		}
 
 		static function create($name=null)
 		{
 			$name = self::datasetName($name);
 			self::$sqlite->query("INSERT INTO alliances ( tag ) VALUES ( ".self::$sqlite->quote($name)." );");
 
-			$highscores = Classes::Highscores();
-			$highscores->updateAlliance($this->name, 0, 0, 0);
-
 			return $name;
 		}
 
 		/**
-		 * Entfernt die Allianz aus der Datenbank, aus den Highscores und setzt die Allianztags der Mitglieder auf nichts.
+		 * Entfernt die Allianz aus der Datenbank.
 		 * Sendet Nachrichten an die Mitglieder, die über die Auflösung informieren.
 		 * @param string $by_whom Der Benutzername des Benutzers, der die Auflösung verursacht hat, für die Nachrichten.
 		 * @return void
@@ -144,45 +174,82 @@
 		}
 
 		/**
-		  * Gibt den Punkteschnitt der Mitglieder zurueck.
-		  * @return int
+		 * Gibt die Punkte der Allianz zurück.
+		 * @param string $i User::SCORES_* oder nichts für die Gesamtpunktzahl
+		 * @param string $highscores Alliance::HIGHSCORES_*
+		 * @return float
 		*/
 
-		function getAverageScores()
+		function getScores($i=null, $highscores=Alliance::HIGHSCORES_SUM)
 		{
-			return floor($this->getTotalScores()/$this->getMembersCount());
+			return self::$sqlite->singleField("SELECT ".$i." FROM alliance_highscores_".$highscores." WHERE tag = ".self::$sqlite->quote($this->getName())." LIMIT 1;");
 		}
 
 		/**
-		  * Gibt die Punktesumme der Mitglieder zurueck.
-		  * @return int
+		 * Gibt die Platzierung dieser Allianz in den Highscores zurück.
+		 * @param string $i User::SCORES_*, wenn die Platzierung bei einer bestimmten Punktart gemeint ist
+		 * @param string $highscores Alliance::HIGHSCORES_*
+		 * @return int
 		*/
 
-		function getTotalScores()
+		function getRankTotal($i=null, $highscores=Alliance::HIGHSCORES_SUM)
 		{
-			return self::$sqlite->singleField("SELECT SUM(score) FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName()).";");
+			if(!isset($i))
+				$i = User::SCORES_TOTAL;
+
+			return self::singleField("SELECT COUNT(*)+1 FROM alliance_highscores_".$highscores." WHERE ".$i." > ".$me->getScores($i).";");
 		}
 
 		/**
-		  * Gibt die Platzierung in den Allianzhighscores hinsichtlich des durchschnittlichen Punktestands zurueck.
-		  * @return int
+		 * Gibt die Allianz-Highscores-Liste als Array zurück. Es gilt: Platzierung = Index + $from. Standard-
+		 * wert für $from ist 1. Die Werte des Arrays sind wiederrum assoziative Arrays nach dem Format.
+		 * Der Wert mit dem Index "tag" gibt das Allianztag an, "members" die Mitgliederzahl. Die Werte mit
+		 * den Indexen User::SCORES_* geben die Punktzahl an.
+		 * @param int|null $from Die kleinste Platzierung, die zurückgegeben werden soll
+		 * @param int|null $to Die größte Platzierung, die zurückgegeben werden soll
+		 * @param string|null $sort Nach welcher Punktzahl soll sortiert werden? Standard: User::SCORES_TOTAL
+		 * @param array|string|null $fields Welche Punktzahlen/Punktzahl soll zurückgegeben werden? Standard: alle
+		 * @param string $highscores Alliance::HIGHSCORES_
+		 * @return array
 		*/
 
-		function getRankAverage()
+		static function getHighscores($from=null, $to=null, $sort=null, $fields=null, $highscores=Alliance::HIGHSCORES_SUM)
 		{
-			$highscores = Classes::Highscores();
-			return $highscores->getPosition("alliances", $this->getName(), "scores_average");
-		}
+			if(isset($from) && !is_int($from))
+				throw new InvalidArgumentsException("\$from has to be an integer.");
+			if(isset($to) && !is_int($to))
+				throw new InvalidArgumentsException("\$to has to be an integer.");
+			if(isset($sort) && !in_array($sort, $valid_fields))
+				throw new InvalidArgumentsException("Invalid sort field.");
 
-		/**
-		  * Gibt die Platzierung in den Allianzhighscores hinsichtlich der Punktesumme der Mitglieder zurueck.
-		  * @return int
-		*/
+			$query = "SELECT ";
+			if(isset($fields))
+			{
+				if(is_array($fields))
+					$query .= implode(",", array_merge(array("tag", "members"), $fields));
+				else
+					$query .= "tag,members,".$fields;
+			}
+			else
+				$query .= "*";
+			$query .= " FROM alliances_highscores_".$highscores." ORDER BY ";
+			if(isset($sort))
+				$query .= $sort;
+			else
+				$query .= "total";
+			$query .= " ASC";
 
-		function getRankTotal()
-		{
-			$highscores = Classes::Highscores();
-			return $highscores->getPosition("alliances", $this->getName(), "scores_total");
+			if(isset($from))
+			{
+				if(isset($to))
+					$query .= " LIMIT ".($to-$from+1)." OFFSET ".$from;
+				else
+					$query .= " OFFSET ".$from;
+			}
+			elseif(isset($to))
+				$query .= " LIMIT ".$to;
+
+			return self::$sqlite->arrayQuery($query);
 		}
 
 		/**
@@ -272,7 +339,7 @@
 		}
 
 		/**
-		  * Benennt die Allianz um. Aktualisiert die Highscores und Profile der Mitglieder.
+		  * Benennt die Allianz um.
 		  * @param string $new_name
 		  * @return void
 		*/
@@ -315,7 +382,7 @@
 				default: $oder = "member"; break;
 			}
 			$oder .= " ".($invert ? "DESC" : "ASC");
-			return self::$sqlite->columnQuery("SELECT member FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName())." ORDER BY ".$order.";")
+			return self::$sqlite->singleColumn("SELECT member FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName())." ORDER BY ".$order.";")
 		}
 
 		/**
@@ -368,7 +435,7 @@
 
 		function getUsersWithPermission($permission)
 		{
-			return self::$sqlite->columnQuery("SELECT member FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName())." AND ( permissions | ".(1 << $permission)." ) == 1;");
+			return self::$sqlite->singleColumn("SELECT member FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName())." AND ( permissions | ".(1 << $permission)." ) == 1;");
 		}
 
 		/**
@@ -468,7 +535,7 @@
 
 		function getApplicationsList()
 		{
-			return self::$sqlite->columnQuery("SELECT user FROM alliances_applications WHERE tag = ".self::$sqlite->quote($tag).";");
+			return self::$sqlite->singleColumn("SELECT user FROM alliances_applications WHERE tag = ".self::$sqlite->quote($tag).";");
 		}
 
 		/**
@@ -606,7 +673,7 @@
 
 		static function findAlliance($search_string)
 		{
-			return self::$sqlite->columnQuery("SELECT tag FROM alliances WHERE tag GLOB ".$this->quote($search_string).";");
+			return self::$sqlite->singleColumn("SELECT tag FROM alliances WHERE tag GLOB ".$this->quote($search_string).";");
 		}
 
 		/**
@@ -630,4 +697,23 @@
 		{
 			return self::$sqlite->singleField("SELECT tag FROM alliances_applications WHERE user = ".self::$sqlite->quote($user)." LIMIT 1;");
 		}
+
+		/**
+		 * Zur internen Verwendung, wenn ein Benutzer umbenannt wird.
+		 * @param string $old_name
+		 * @param string $new_name
+		 * @return void
+		 * @see User::rename()
+		*/
+
+		static function renameUser($old_name, $new_name)
+		{
+			self::$sqlite->backgroundQuery("UPDATE alliances_members SET member = ".self::$sqlite->quote($new_name)." WHERE member = ".self::$sqlite->quote($old_name).";");
+			self::$sqlite->backgroundQuery("UPDATE alliances_applications SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($old_name).";");
+
+		function rewind() { reset($this->users_list); return $this->current(); }
+		function current() { return current($this->users_list); }
+		function key() { return key($this->users_list); }
+		function next() { return next($this->users_list); }
+		function valid() { return key($this->users_list) !== false; }
 	}

@@ -118,6 +118,7 @@
 		function rewind()
 		{
 			$this->active_planet = null;
+			return $this->current();
 		}
 
 		function current()

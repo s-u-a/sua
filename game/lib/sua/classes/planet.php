@@ -32,68 +32,52 @@
 
 	class Planet extends SQLiteSet
 	{
-		protected static $views = array (
-			"planet_ids" => "SELECT DISTINCT galaxy || ':' || system || ':' || planet AS pid FROM planets"
-		);
-
 		protected static $tables = array (
-			"planet_ids" => array(
-				"pid"
-			),
 			"planets" => array (
-				"galaxy INTEGER",
-				"system INTEGER",
-				"planet INTEGER",
-				"size_original INTEGER",
+				"galaxy INTEGER NOT NULL",
+				"system INTEGER NOT NULL",
+				"planet INTEGER NOT NULL",
+				"size_original INTEGER DEFAULT 0",
 				"user TEXT",
 				"name TEXT",
-				"ress0 REAL",
-				"ress1 REAL",
-				"ress2 REAL",
-				"ress3 REAL",
-				"ress4 REAL",
+				"ress0 REAL DEFAULT 0",
+				"ress1 REAL DEFAULT 0",
+				"ress2 REAL DEFAULT 0",
+				"ress3 REAL DEFAULT 0",
+				"ress4 REAL DEFAULT 0",
 				"last_refresh INTEGER",
-				"tf0 REAL",
-				"tf1 REAL",
-				"tf2 REAL",
-				"tf3 REAL",
-				"size INTEGER",
-				"size_used INTEGER"
+				"tf0 REAL DEFAULT 0",
+				"tf1 REAL DEFAULT 0",
+				"tf2 REAL DEFAULT 0",
+				"tf3 REAL DEFAULT 0",
+				"size INTEGER DEFAULT 0",
+				"index INTEGER NOT NULL"
 			),
 			"planets_items" => array (
-				"galaxy INTEGER",
-				"system INTEGER",
-				"planet INTEGER",
-				"id TEXT",
-				"type TEXT",
-				"level INTEGER",
-				"scores INTEGER"
+				"galaxy INTEGER NOT NULL",
+				"system INTEGER NOT NULL",
+				"planet INTEGER NOT NULL",
+				"id TEXT NOT NULL",
+				"type TEXT NOT NULL",
+				"level INTEGER DEFAULT 0",
+				"scores INTEGER DEFAULT 0",
+				"fields INTEGER DEFAULT 0",
+				"prod_factor INTEGER DEFAULT 1 NOT NULL"
 			),
-			"planets_building" => array (
-				"galaxy INTEGER",
-				"system INTEGER",
-				"planet INTEGER",
-				"id TEXT",
-				"type TEXT",
-				"number INTEGER",
-				"start INTEGER",
-				"duration REAL",
-				"cost0 INTEGER",
-				"cost1 INTEGER",
-				"cost2 INTEGER",
-				"cost3 INTEGER",
-				"global INTEGER"
-			),
-			"planets_remote_fleet" => array (
-				"i INTEGER",
-				"galaxy INTEGER",
-				"system INTEGER",
-				"planet INTEGER",
-				"user TEXT",
-				"id TEXT",
-				"number INTEGER",
-				"scores INTEGER",
-				"from_pid INTEGER"
+			"planets_building" => array ( // Gerade bauende Gegenstände
+				"galaxy INTEGER NOT NULL",
+				"system INTEGER NOT NULL",
+				"planet INTEGER NOT NULL",
+				"id TEXT NOT NULL", // Item-ID
+				"type TEXT NOT NULL", // gebaeude, forschung, roboter, schiffe, verteidigung
+				"number INTEGER NOT NULL", // Anzahl der zu bauenden Roboter, Schiffe oder Verteidigungsanlagen dieses Typs
+				"start INTEGER NOT NULL", // Zeitstempel, wann der Bau gestartet wurde
+				"duration REAL NOT NULL", // Bauzeit eines einzelnen Gegenstandes
+				"cost0 INTEGER DEFAULT 0", // Ausgegebene Kosten, Carbon (wissenswert bei Abbruch von Gebäude oder Forschung
+				"cost1 INTEGER DEFAULT 0", // Kosten, Aluminium
+				"cost2 INTEGER DEFAULT 0", // Kosten, Wolfram
+				"cost3 INTEGER DEFAULT 0", // Kosten, Radium
+				"global INTEGER DEFAULT 0" // Bei Forschung: 1: Es wird global geforscht.
 			)
 		);
 
@@ -112,6 +96,11 @@
 			return array(Classes::System(Classes::Galaxy($params[0]), $params[1]), $params[2]);
 		}
 
+		static function _idField()
+		{
+			return "galaxy || ':' || system || ':' || planet";
+		}
+
 		/**
 		 * Besiedelt den Planeten.
 		 * @param System $system
@@ -128,11 +117,15 @@
 
 		/**
 		 * Entfernt den Planeten.
-		 * @todo
 		*/
 
 		function destroy()
 		{
+			if($this->getOwner())
+				$this->decolonise();
+			self::$sqlite->query("DELETE FROM planets WHERE ".$this->sqlCond().";");
+			self::$sqlite->query("DELETE FROM planets_items WHERE ".$this->sqlCond().";");
+			self::$sqlite->query("DELETE FROM planets_building WHERE ".$this->sqlCond().";");
 		}
 
 		/**
@@ -165,6 +158,16 @@
 		function __toString()
 		{
 			return $this->getGalaxy().":".$this->getSystem().":".$this->getPlanet();
+		}
+
+		/**
+		 * Baut die Koordinaten in eine SQL-Abfrage ein.
+		 * @return string
+		*/
+
+		private function sqlCond()
+		{
+			return "galaxy = ".$this->quote($this->getGalaxy())." AND system = ".$this->quote($this->getSystem())." AND planet = ".$this->quote($this->getPlanet());
 		}
 
 		/**
@@ -212,12 +215,46 @@
 
 		/**
 		 * Gibt die Größe des Planeten zurück.
+		 * @param bool $original Die ursprüngliche Größe? (Ohne Ingenieurswissenschaft)
 		 * @return int
 		*/
 
-		function getSize()
+		function getSize($original=false)
 		{
-			return $this->getMainField("size");
+			return $this->getMainField($original ? "size_original" : "size");
+		}
+
+		/**
+		 * Gibt zurück, wieviele Felder auf diesem Planeten bereits bebaut sind.
+		 * @return int
+		*/
+
+		function getUsedFields()
+		{
+			return self::$sqlite->singleField("SELECT SUM(fields) FROM planets_items WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem())." AND planet = ".self::$sqlite->quote($this->getPlanet()).";");
+		}
+
+		/**
+		 * Gibt zurück, wieviele Felder auf diesem Planeten noch zur Verfügung stehen.
+		 * @return int
+		*/
+
+		function getRemainingFields()
+		{
+			$this->_forceActivePlanet();
+
+			return ($this->planet_info["size"][1]-$this->planet_info["size"][0]);
+		}
+
+		/**
+		 * Setzt die Planetengröße neu.
+		 * @param int $size
+		 * @return void
+		*/
+
+		function _setFields($size)
+		{
+			$this->setMainField("size", $size);
 		}
 
 		/**
@@ -271,7 +308,7 @@
 
 		static function randomFreePlanet()
 		{
-			$result = self::$sqlite->singleField("SELECT pid FROM planets WHERE NOT owner ORDER BY RANDOM() LIMIT 1;");
+			$result = self::$sqlite->singleField("SELECT pid FROM planets WHERE NOT user ORDER BY RANDOM() LIMIT 1;");
 			if($result === false)
 				throw new PlanetException("No free planets available.");
 			return Classes::Planet($result);
@@ -312,10 +349,1247 @@
 		}
 
 		/**
-		 * @todo Truemmerfelder
-		 * getTruemmerfeld()
-		 * setTruemmerfeld()
-		 * addTruemmerfeld()
-		 * subTruemmerfeld()
+		 * Gibt ein Array mit Planeten zurück, die diesem Benutzer gehören. Dieses Array ist so sortiert,
+		 * wie der Benutzer es eingestellt hat.
+		 * @param string $user
+		 * @return array(Planet)
 		*/
+
+		static function getPlanetsByUser($user)
+		{
+			$return = array();
+			self::$sqlite->query("SELECT galaxy,system,planet FROM planets WHERE user = ".self::$sqlite->quote($user)." ORDER BY i ASC;");
+			while(($r = self::$sqlite->nextResult()) !== false)
+				$return[] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
+			return $return;
+		}
+
+		/**
+		 * Liest das Trümmerfeld des Planeten aus.
+		 * @return array 0 => Carbon, 1 => Aluminium ...
+		*/
+
+		function getTruemmerfeld()
+		{
+			return array($this->getMainField("tf0"), $this->getMainField("tf1"), $this->getMainField("tf2"), $this->getMainField("tf3"));
+		}
+
+		/**
+		 * Setzt das Trümmerfeld des Planeten neu.
+		 * @param array $ress 0 => Carbon, 1 => Aluminium, 2 => Wolfram, 3 => Radium
+		 * @return void
+		*/
+
+		function setTruemmerfeld($ress)
+		{
+			$this->setMainField("tf0", $ress[0]);
+			$this->setMainField("tf1", $ress[1]);
+			$this->setMainField("tf2", $ress[2]);
+			$this->setMainField("tf3", $ress[3]);
+		}
+
+		/**
+		 * Fügt dem Trümmerfeld Rohstoffe hinzu.
+		 * @param array $ress 0 => Carbon, 1 => Aluminium, 2 => Wolfram, 3 => Radium
+		 * @return void
+		*/
+
+		function addTruemmerfeld($ress)
+		{
+			$current = $this->getTruemmerfeld();
+			$this->setTruemmerfeld(array($current[0]+$ress[0], $current[1]+$ress[1], $current[2]+$ress[2], $current[3]+$ress[3]));
+		}
+
+		/**
+		 * Zieht Rohstoffe vom Trümmerfeld ab.
+		 * @param array $ress 0 => Carbon, 1 => Aluminium, 2 => Wolfram, 3 => Radium
+		 * @return void
+		*/
+
+		function subTruemmerfeld($ress)
+		{
+			$current = $this->getTruemmerfeld();
+			$this->setTruemmerfeld(array($current[0]-$ress[0], $current[1]-$ress[1], $current[2]-$ress[2], $current[3]-$ress[3]));
+		}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+		/**
+		 * Löscht den Planeten aus der Planetenliste des Benutzers. Hierzu werden folgende Aktionen durch-
+		 * geführt:
+		 * • Fremde Flotten zu diesem Planeten zurückschicken
+		 * • Auf diesem Planeten fremdstationierte Flotten zurückschicken
+		 * • Planeten auflösen inklusive fremdstationierter Flotten von diesem Planeten
+		 * @todo Was ist mit Flotten, die von diesem Planeten kommen?
+		 * @return void
+		 * @todo Alter Name removePlanet
+		*/
+
+		function decolonise()
+		{
+			global $types_message_types;
+
+			# Fremdstationierte Flotten auf diesem Planeten zurueckschicken
+			foreach(Fleet::getFleetsPositionedOnPlanet($this) as $fleet)
+			{
+				$fleet_obj = Classes::Fleet($fleet);
+				foreach($fleets_obj->getUsersList() as $user)
+					$fleet_obj->callBack($user);
+			}
+
+			Fleet::planetRemoved($this);
+
+			# Planeten aus der Karte loeschen
+			$this_pos = $this->getPos();
+
+			self::$sqlite->backgroundQuery("UPDATE planets SET user = NULL, name = NULL, size = size_original, ress0 = 0, ress1 = 0, ress2 = 0, ress3 = 0, ress4 = 0 WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem())." AND planet = ".self::$sqlite->quote($this->getPlanet()));
+			self::$sqlite->backgroundQuery("DELETE FROM planets_items WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem())." AND planet = ".self::$sqlite->quote($this->getPlanet()));
+			self::$sqlite->backgroundQuery("DELETE FROM planets_building WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem())." AND planet = ".self::$sqlite->quote($this->getPlanet()));
+		}
+
+		/**
+		 * Fügt einen Planeten in die Liste der Planeten des Benutzers ein.
+		 * @param string $user Der Benutzername.
+		 * @return int Der Index des neuen Planeten.
+		*/
+
+		function colonise($user)
+		{
+			$user_obj = Classes::User($user);
+			if(!$user_obj->checkPlanetCount())
+				throw new PlanetException("Planet limit reached.", PlanetException::ERROR_PLANETCOUNT);
+
+			if($this->getOwner())
+				throw new PlanetException("This planet is already colonised.");
+
+			$this->setMainField("user", $user_obj->getName());
+			$this->setMainField("name", $user_obj->_("Kolonie"));
+
+			if(count($this->getPlanetsByUser($user)) <= 0) $size = 375;
+			else $size = $this->getSize(true);
+			$size = floor($size*($user_obj->getItemLevel("F9", "forschung")/Item::getIngtechFactor()+1));
+			$this->setMainField("size", $size);
+
+			$index = $this->singleField("SELECT MAX(index) FROM planets WHERE user = ".$this->quote($user));
+			if($index === false)
+				$index = 0;
+			else
+				$index++;
+			$this->setMainField("index", $index);
+
+			return $index;
+		}
+
+		/**
+		 * Verändert die Reihenfolge der Planetenliste des Benutzers. Schiebt
+		 * den Planeten mit dem Index $planet um eins nach oben.
+		 * @return void
+		 * @throw PlanetException Wenn der Planet bereits oben in der Liste steht.
+		*/
+
+		function moveUp()
+		{
+			$owner = $this->getMainField("user");
+			if(!$owner)
+				throw PlanetException("This planet is not colonised.");
+			$current_index = $this->getMainField("index");
+			$next_index = $this->singleLine("SELECT galaxy,system,planet,index FROM planets WHERE index < ".$this->quote($current_index)." ORDER BY index DESC LIMIT 1;");
+			if(!$next_index)
+				throw new UserException("This planet is on the top.");
+			$this->backgroundQuery("UPDATE planets SET index = ".$this->quote($current_index)." WHERE galaxy = ".$this->quote($next_index["galaxy"])." AND system = ".$this->quote($next_index["system"])." AND planet = ".$this->quote($next_index["planet"]).";");
+			$this->backgroundQuery("UPDATE planets SET index = ".$this->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
+		}
+
+		/**
+		 * Verändert die Reihenfolge der Planetenliste des Benutzers. Schiebt
+		 * den Planeten mit dem Index $planet um eins nach unten.
+		 * @return void
+		 * @throw UserException Wenn der Planet bereits unten in der Liste steht.
+		*/
+
+		function moveDown()
+		{
+			$owner = $this->getMainField("user");
+			if(!$owner)
+				throw PlanetException("This planet is not colonised.");
+			$current_index = $this->getMainField("index");
+			$next_index = $this->singleLine("SELECT galaxy,system,planet,index FROM planets WHERE index > ".$this->quote($current_index)." ORDER BY index ASC LIMIT 1;");
+			if(!$next_index)
+				throw new UserException("This planet is on the bottom.");
+			$this->backgroundQuery("UPDATE planets SET index = ".$this->quote($current_index)." WHERE galaxy = ".$this->quote($next_index["galaxy"])." AND system = ".$this->quote($next_index["system"])." AND planet = ".$this->quote($next_index["planet"]).";");
+			$this->backgroundQuery("UPDATE planets SET index = ".$this->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
+		}
+
+		/**
+		 * Setzt oder liest den Namen des Planeten.
+		 * @param string $name Der neue Name.
+		 * @return void
+		*/
+
+		function setName($name)
+		{
+			$this->setMainField("name", $name);
+		}
+
+		/**
+		 * Gibt die Rohstoffbestände auf dem aktiven Planeten zurück.
+		 * @param bool $refresh Soll Planet->refreshRess() ausgeführt werden?
+		 * @return array(int)
+		*/
+
+		function getRess($refresh=true)
+		{
+			if($refresh)
+				$this->refreshRess();
+
+			$ress = $this->getMainField(array("ress0", "ress1", "ress2", "ress3", "ress4"));
+
+			if($refresh)
+			{
+				$prod = $this->getProduction();
+				$ress[5] = $prod[5];
+			}
+
+			return $ress;
+		}
+
+		/**
+		 * Fügt den Rohstoffbeständen des Planeten Rohstoffe hinzu.
+		 * @param array $ress Array mit Rohstoffen
+		 * @return void
+		*/
+
+		function addRess(array $ress)
+		{
+			$cur = $this->getMainField(array("ress0", "ress1", "ress2", "ress3", "ress4"));
+			if(isset($ress[0])) $cur[0] += $ress[0];
+			if(isset($ress[1])) $cur[1] += $ress[1];
+			if(isset($ress[2])) $cur[2] += $ress[2];
+			if(isset($ress[3])) $cur[3] += $ress[3];
+			if(isset($ress[4])) $cur[4] += $ress[4];
+			$this->setMainField(array("ress0", "ress1", "ress2", "ress3", "ress4"), $cur);
+		}
+
+		/**
+		 * Zieht Rohstoffe vom Bestand auf dem aktiven Planeten ab.
+		 * @param array $ress Das Rohstoff-Array
+		 * @param bool $make_scores Sollen die Rohstoffe zu den ausgegebenen Punkten gezählt werden?
+		 * @return void
+		*/
+
+		function subtractRess(array $ress, $make_scores=true)
+		{
+			$ress_m = array();
+			foreach($ress as $k=>$v)
+				$ress_m[$k] = -$v;
+			$this->addRess($ress_m);
+
+			if($make_scores)
+			{
+				$user_obj = Classes::User($this->getOwner());
+				$user_obj->_addSpentRess($ress);
+			}
+		}
+
+		/**
+		 * Überprüft, ob die angegebenen Rohstoffe auf dem Planeten vorhanden sind.
+		 * @param array $ress Rohstoff-Array
+		 * @param bool $refresh Siehe Planet->getRess()
+		 * @return bool
+		*/
+
+		function checkRess(array $ress, $refresh=true)
+		{
+			$cur = $this->getRess($refresh);
+			if(isset($ress[0]) && $ress[0] > $cur[0]) return false;
+			if(isset($ress[1]) && $ress[1] > $cur[1]) return false;
+			if(isset($ress[2]) && $ress[2] > $cur[2]) return false;
+			if(isset($ress[3]) && $ress[3] > $cur[3]) return false;
+			if(isset($ress[4]) && $ress[4] > $cur[4]) return false;
+
+			return true;
+		}
+
+		/**
+		 * Erneuert die Rohstoffbestände auf diesem Planeten. Der Zeitpunkt der
+		 * letzten Erneuerung wurde zwischengespeichert, die Produktion seither
+		 * wird nun hinzugefügt.
+		 * @param int $time Bestand zu diesem Zeitpunkt statt zum aktuellen verwenden
+		 * @throw UserException Die letzte Aktualisierung ist neuer als $time
+		 * @return void
+		*/
+
+		protected function refreshRess($time=null)
+		{
+			$last_refresh = $this->getMainField("last_refresh");
+			if($last_refresh >= $time)
+				throw new PlanetException("Last refresh is in the future.");
+
+			$prod = $this->getProduction($time !== false);
+			$limit = $this->getProductionLimit($time !== false);
+			$cur = $this->getRess($time !== false);
+
+			$f = ($time-$last_refresh)/3600;
+
+			for($i=0; $i<=4; $i++)
+			{
+				if($cur[$i] >= $limit[$i])
+					continue;
+				$cur[$i] += $prod[$i]*$f;
+				$cur[$i] > $limit[$i])
+					$cur[$i] = $limit[$i];
+			}
+
+			$this->setMainField(array("ress0", "ress1", "ress2", "ress3", "ress4"), $cur);
+			$this->setMainField("last_refresh", $time);
+		}
+
+		/**
+		 * Gibt den eingestellten Produktionsfaktor eines Gebäudes zurück.
+		 * @param string $gebaeude Die Item-ID.
+		 * @return float
+		*/
+
+		function getProductionFactor($gebaeude)
+		{
+			$factor = $this->singleField("SELECT prod_factor FROM planets_items WHERE ".$this->sqlCond()." AND id = ".$this->quote($gebaeude)." LIMIT 1;");
+			if(!$factor)
+				$factor = 1;
+			return $factor;
+		}
+
+		/**
+		 * Setzt den Produktionsfaktor eines Gebäudes.
+		 * @param string $gebaeude Die Item-ID
+		 * @param float $factor
+		 * @return void
+		*/
+
+		function setProductionFactor($gebaeude, $factor)
+		{
+			$factor = (float) $factor;
+
+			if($factor < 0) $factor = 0;
+			if($factor > 1) $factor = 1;
+
+			$this->backgroundQuery("UPDATE planets_items SET prod_factor = ".$this->quote($factor)." WHERE ".$this->sqlCond()." AND id = ".$this->quote($gebaeude).";");
+		}
+
+		/**
+		 * Gibt zurück, wieviel pro Stunde produziert wird.
+		 * @return array [ Carbon, Aluminium, Wolfram, Radium, Tritium, Energie, Unterproduktionsfaktor Energie, Energiemaximum erreicht? ]
+		*/
+
+		function getProduction()
+		{
+			$prod = array(0,0,0,0,0,0,0,false);
+			$owner = $this->getOwner();
+			if($owner)
+			{
+				$owner_obj = Classes::User($owner);
+				if($owner_obj->permissionToAct())
+				{
+					$gebaeude = $user_obj->getItemsList("gebaeude");
+
+					$energie_prod = 0;
+					$energie_need = 0;
+					foreach($gebaeude as $id)
+					{
+						$item = $user_obj->getItemInfo($id, "gebaeude", array("prod"), false, null, $this);
+						if($item["prod"][5] < 0) $energie_need -= $item["prod"][5];
+						elseif($item["prod"][5] > 0) $energie_prod += $item["prod"][5];
+
+						$prod[0] += $item["prod"][0];
+						$prod[1] += $item["prod"][1];
+						$prod[2] += $item["prod"][2];
+						$prod[3] += $item["prod"][3];
+						$prod[4] += $item["prod"][4];
+					}
+
+					$limit = $this->getProductionLimit();
+					if($energie_prod > $limit[5])
+					{
+						$energie_prod = $limit[5];
+						$prod[7] = true;
+					}
+
+					$f = 1;
+					if($energie_need > $energie_prod) # Nicht genug Energie
+					{
+						$f = $energie_prod/$energie_need;
+						$prod[0] *= $f;
+						$prod[1] *= $f;
+						$prod[2] *= $f;
+						$prod[3] *= $f;
+						$prod[4] *= $f;
+					}
+
+					$prod[5] = $energie_prod-$energie_need;
+
+					foreach(global_setting("MIN_PRODUCTION") as $k=>$v)
+					{
+						if(!isset($prod[$k])) $prod[$k] = 0;
+						if($prod[$k] < $v) $prod[$k] = $v;
+					}
+
+					Functions::stdround($prod[0]);
+					Functions::stdround($prod[1]);
+					Functions::stdround($prod[2]);
+					Functions::stdround($prod[3]);
+					Functions::stdround($prod[4]);
+					Functions::stdround($prod[5]);
+
+					$prod[6] = $f;
+				}
+			}
+			return $prod;
+		}
+
+		/**
+		 * Gibt die maximalen Produktionsmengen für Rohstoffe und Energie zurück.
+		 * @return array(float)
+		*/
+
+		function getProductionLimit()
+		{
+			$this->_forceActivePlanet();
+
+			$limit = global_setting("PRODUCTION_LIMIT_INITIAL");
+			$steps = global_setting("PRODUCTION_LIMIT_STEPS");
+			$limit[0] += $this->getItemLevel("R02", "roboter")*$steps[0];
+			$limit[1] += $this->getItemLevel("R03", "roboter")*$steps[1];
+			$limit[2] += $this->getItemLevel("R04", "roboter")*$steps[2];
+			$limit[3] += $this->getItemLevel("R05", "roboter")*$steps[3];
+			$limit[4] += $this->getItemLevel("R06", "roboter")*$steps[4];
+			$limit[5] += $this->getItemLevel("F3", "forschung")*$steps[5];
+
+			return $limit;
+		}
+
+		/**
+		 * Gibt die aktuelle Ausbaustufe (Gebäude, Forschung) bzw. die Anzahl
+		 * (Roboter, Schiffe, Verteidigung) des Items auf diesem Planeten zurück.
+		 * @param string $id
+		 * @param string $type gebaeude, forschung, roboter, schiffe oder verteidigung
+		 * @return int
+		*/
+
+		function getItemLevel($id, $type=null)
+		{
+			if($type === false || $type === null)
+				$type = Item::getItemType($id);
+
+			if($type == "forschung") // Forschungen sind global, deswegen im Benutzerobjekt gespeichert
+			{
+				$user_obj = Classes::User($this->getOwner());
+				return $user_obj->getItemLevel($id);
+			}
+
+			$level = $this->singleField("SELECT level FROM planets_items WHERE = ".$this->sqlCond()." AND id = ".$this->quote($id)." AND type = ".$this->quote($type)." LIMIT 1;");
+			if($level === false)
+				$level = 0;
+			return $level;
+		}
+
+		/**
+		 * Verschiebt alle Fertigstellungszeiten auf diesem Planeten um $seconds Sekunden nach hinten. Zur internen Verwendung, wenn
+		 * der Urlaubsmodus beendet wurde.
+		 * @param int $seconds
+		 * @return void
+		 * @see User::umode()
+		 * @todo
+		*/
+
+		function _delayBuildingThings($seconds)
+		{
+			$this->backgroundQuery("UPDATE planets_building SET start = start + ".$this->quote($seconds)." WHERE ".$this->sqlCond().";");
+		}
+
+		/**
+		 * Zur internen Verwendung, wenn ein Benutzer umbenannt wird.
+		 * @param string $old_name
+		 * @param string $new_name
+		 * @return void
+		 * @see User::rename()
+		*/
+
+		static function renameUser($old_name, $new_name)
+		{
+			self::$sqlite->backgroundQuery("UPDATE planets SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($old_name).";");
+		}
+
+		/**
+		 * Zur internen Verwendung, wenn eine neue Ausbaustufe der Ingenieurswissenschaft fertiggestellt wird. Die Planeten eines Benutzers
+		 * werden um einen Faktor vergrößert.
+		 * @param string $user
+		 * @param float $factor
+		 * @return void
+		*/
+
+		static function increaseSize($user, $factor)
+		{
+			$this->backgroundQuery("UPDATE planets SET size = CEIL(size*".$this->quote($factor).") WHERE user = ".$this->quote($user).";");
+		}
+
+		/**
+		 * Zur internen Verwendung bei Fertigstellung einer neuen Ausbaustufe der Roboterbautechnik. Verkürzt alle Bauzeiten entsprechend
+		 * den neuen Auswirkungen der Roboter.
+		 * @param string $user
+		 * @return void
+		 * @todo
+		*/
+
+		static function newRobtechFactor($user)
+		{
+			/*
+			foreach(Planet::getPlanetsByUser($this->getName()) as $planet)
+			{
+				$building = $this->checkBuildingThing("gebaeude");
+				$robs = $this->getItemLevel("R01", "roboter", false);
+				if($robs > 0 && $building && $building[1] > $time)
+				{
+					$f_1 = pow(1-0.00125*($this->getItemLevel("F2", false, false)-$value), $robs);
+					$f_2 = pow(1-0.00125*$this->getItemLevel("F2", false, false), $robs);
+					$remaining = ($building[1]-$time)*$f_2/$f_1;
+					$this->raw["building"]["gebaeude"][1] = $time+$remaining;
+				}
+			}
+			*/
+		}
+
+		/**
+		 * Verändert die Ausbaustufe/Anzahl des Items.
+		 * @param string $id
+		 * @param int $value Wird zur aktuellen Stufe hinzugezählt
+		 * @param string $type gebaeude, forschung, roboter, schiffe, verteidigung
+		 * @param int $time Ausbau geschah zu diesem Zeitpunkt, wichtig für den Eventhandler zum Beispiel bei der Verkürzung der laufenden Bauzeit
+		 * @return void
+		 * @todo
+		*/
+
+		function changeItemLevel($id, $value=1, $type=null, $time=null)
+		{
+			if($value == 0) return;
+
+			if(!isset($time)) $time = time();
+
+			$recalc = array(
+				"gebaeude" => 0,
+				"forschung" => 1,
+				"roboter" => 2,
+				"schiffe" => 3,
+				"verteidigung" => 4
+			);
+
+			if(!isset($type))
+				$type = Item::getItemType($id);
+
+			if(!isset($this->items[$type])) $this->items[$type] = array();
+			if(isset($this->items[$type][$id])) $this->items[$type][$id] += $value;
+			else $this->items[$type][$id] = $value;
+
+			$this->recalc_highscores[$recalc[$type]] = true;
+
+			# Felder belegen
+			if($type == "gebaeude")
+			{
+				$item_info = $this->getItemInfo($id, "gebaeude", array("fields"));
+				if($item_info["fields"] > 0)
+					$this->changeUsedFields($item_info["fields"]*$value);
+			}
+
+			switch($id)
+			{
+				# Ingeneurswissenschaft: Planeten vergroessern
+				case "F9":
+					$planets = $this->getPlanetsList();
+					$active_planet = $this->getActivePlanet();
+					foreach($planets as $planet)
+					{
+						$this->setActivePlanet($planet);
+						$size = ceil($this->getSize()/(($this->getItemLevel("F9", false, false)-$value)/Item::getIngtechFactor()+1));
+						$this->setFields(floor($size*($this->getItemLevel("F9", false, false)/Item::getIngtechFactor()+1)));
+					}
+					$this->setActivePlanet($active_planet);
+					break;
+
+				# Bauroboter: Laufende Bauzeit verkuerzen (TODO?)
+				/*case "R01":
+					$max_rob_limit = floor($this->getBasicFields()/2);
+					$counting_after = $this->items[$type][$id];
+					$counting_before = $counting_after-$value;
+					if($counting_after > $max_rob_limit) $counting_after = $max_rob_limit;
+					if($counting_before > $max_rob_limit) $counting_before = $max_rob_limit;
+					$counting_value = $counting_after-$counting_before;
+
+					$building = $this->checkBuildingThing("gebaeude");
+					if($building && $building[1] > $time)
+					{
+						$f = pow(1-0.00125*$this->getItemLevel("F2", "forschung", false), $counting_value);
+						$old_finished = $building[4][0]-$building[1];
+						$old_remaining = ($building[1]-$time)*$building[4][1];
+						$new_remaining = $old_remaining*$f;
+						if(($old_finished*$f)+$new_remaining < global_setting("MIN_BUILDING_TIME"))
+						{
+							$this->planet_info["building"]["gebaeude"][4][1] = $new_remaining/(global_setting("MIN_BUILDING_TIME")-($old_finished*$f));
+							$new_remaining = global_setting("MIN_BUILDING_TIME")-($old_finished*$f);
+						}
+						else
+							$this->planet_info["building"]["gebaeude"][4][1] = 1;
+						$this->planet_info["building"]["gebaeude"][1] = $time+$new_remaining;
+					}
+
+					break;*/
+
+				# Roboterbautechnik: Auswirkungen der Bauroboter aendern
+				case "F2":
+					$planets = $this->getPlanetsList();
+					$active_planet = $this->getActivePlanet();
+					foreach($planets as $planet)
+					{
+						$this->setActivePlanet($planet);
+
+						$building = $this->checkBuildingThing("gebaeude");
+						$robs = $this->getItemLevel("R01", "roboter", false);
+						if($robs > 0 && $building && $building[1] > $time)
+						{
+							$f_1 = pow(1-0.00125*($this->getItemLevel("F2", false, false)-$value), $robs);
+							$f_2 = pow(1-0.00125*$this->getItemLevel("F2", false, false), $robs);
+							$remaining = ($building[1]-$time)*$f_2/$f_1;
+							$this->raw["building"]["gebaeude"][1] = $time+$remaining;
+						}
+					}
+					$this->setActivePlanet($active_planet);
+
+					break;
+			}
+
+			$this->changed = true;
+		}
+
+		/**
+		 * Gibt Informationen über die im Bau befindlichen Dinge auf diesem Planeten zurück.
+		 * Das Rückgabe-Array hat bei Gebäuden und Forschung das folgende Format:
+		 * [ Item-ID; Fertigstellungszeitpunkt; Globale Forschung?/Gebäuderückbau?; Verbrauchte Rohstoffe; Planetenindex der globalen Forschung ]
+		 * Bei Robotern, Schiffen und Verteidigungsanlagen ist das Format wie folgt:
+		 * ( [ Item-ID; Startzeit; Anzahl; Bauzeit pro Stück ] )
+		 * @param string $type gebaeude, forschung, roboter, schiffe oder verteidigung
+		 * @return array
+		 * @todo
+		*/
+
+		function checkBuildingThing($type)
+		{
+			$this->_forceActivePlanet();
+
+			switch($type)
+			{
+				case "gebaeude": case "forschung":
+					if(!isset($this->planet_info["building"]) || !isset($this->planet_info["building"][$type]) || trim($this->planet_info["building"][$type][0]) == "")
+						return false;
+					return $this->planet_info["building"][$type];
+				case "roboter": case "schiffe": case "verteidigung":
+					if(!isset($this->planet_info["building"]) || !isset($this->planet_info["building"][$type]) || count($this->planet_info["building"][$type]) <= 0)
+						return array();
+					return $this->planet_info["building"][$type];
+				default: return false;
+			}
+		}
+
+		/**
+		 * Bricht die aktuell im Bau befindlichen Gegenstände des angegebenen Typs ab.
+		 * @param string $type gebaeude, forschung, roboter, schiffe, verteidigung
+		 * @param bool $cancel Wenn true, werden die Rohstoffe bei Gebäude und Forschung rückerstattet.
+		 * @return void
+		 * @todo
+		*/
+
+		function removeBuildingThing($type, $cancel=true)
+		{
+			$this->_forceActivePlanet();
+
+			switch($type)
+			{
+				case "gebaeude": case "forschung":
+					if(!isset($this->planet_info["building"]) || !isset($this->planet_info["building"][$type]) || trim($this->planet_info["building"][$type][0]) == "")
+						return;
+
+					if($type == "forschung" && $this->planet_info["building"][$type][2])
+					{
+						$source_planet = $this->planet_info["building"][$type][4];
+						//if(!isset($this->raw["planets"][$source_planet]["building"][$type]) || trim($this->raw["planets"][$source_planet]["building"][$type][0]) == "")
+						//	return false;
+						$active_planet = $this->getActivePlanet();
+						$planets = $this->getPlanetsList();
+						foreach($planets as $planet)
+						{
+							$this->setActivePlanet($planet);
+							if($planet == $source_planet && $cancel)
+								$this->addRess($this->planet_info["building"][$type][3]);
+							if(isset($this->planet_info["building"][$type]))
+								unset($this->planet_info["building"][$type]);
+						}
+						$this->setActivePlanet($active_planet);
+					}
+					elseif($cancel)
+						$this->addRess($this->planet_info["building"][$type][3]);
+
+					if($cancel)
+					{
+						$this->raw["punkte"][7] -= $this->planet_info["building"][$type][3][0];
+						$this->raw["punkte"][8] -= $this->planet_info["building"][$type][3][1];
+						$this->raw["punkte"][9] -= $this->planet_info["building"][$type][3][2];
+						$this->raw["punkte"][10] -= $this->planet_info["building"][$type][3][3];
+						$this->raw["punkte"][11] -= $this->planet_info["building"][$type][3][4];
+					}
+
+					unset($this->planet_info["building"][$type]);
+					$this->changed = true;
+
+					if($cancel)
+						$this->refreshMessengerBuildingNotifications($type);
+
+					break;
+				case "roboter": case "schiffe": case "verteidigung":
+					if(!isset($this->planet_info["building"]) || !isset($this->planet_info["building"][$type]) || count($this->planet_info["building"][$type]) <= 0)
+						return;
+					unset($this->planet_info["building"][$type]);
+					$this->changed = true;
+
+					if($cancel)
+						$this->refreshMessengerBuildingNotifications($type);
+
+					break;
+			}
+		}
+
+		/**
+		 * Eventhandler-Hilfsfunktion: entfernt den nächsten fertigzustellenden Gegenstand und entfernt ihn
+		 * @param string $type gebaeude, forschung, roboter, schiffe oder verteidigung
+		 * @return array|null [ Zeitpunkt; Item-ID; Ausbaustufen; Rohstoffe nach Fertigstellung aktualisieren? ]
+		 * @todo
+		*/
+
+		function getNextBuiltThing($type)
+		{
+			$building = $this->checkBuildingThing($type, false);
+
+			switch($type)
+			{
+				case "gebaeude":
+				case "forschung":
+				{
+					if($building !== false && $building[1] <= time() && $this->removeBuildingThing($type, false))
+					{
+						$stufen = 1;
+						if($type == "gebaeude" && $building[2]) $stufen = -1;
+						$this->changed = true;
+						return array($building[1], $building[0], $stufen, true);
+					}
+					break;
+				}
+				case "roboter":
+				case "schiffe":
+				case "verteidigung":
+				{
+					if($building && count($building) > 0)
+					{
+						$keys = array_keys($building);
+						$first_key = array_shift($keys);
+						$time = $building[$first_key][1]+$building[$first_key][3];
+						if($time <= time())
+						{
+							$this->planet_info["building"][$type][$first_key][2]--;
+							if($this->planet_info["building"][$type][$first_key][2] <= 0)
+								unset($this->planet_info["building"][$type][$first_key]);
+							else
+								$this->planet_info["building"][$type][$first_key][1] = $time;
+							$this->changed = true;
+							return array($time, $building[$first_key][0], 1, $type == "roboter");
+						}
+					}
+					break;
+				}
+			}
+			return null;
+		}
+
+		/**
+		 * Stellt alle Gegenstände, die seit der letzten Ausführung fertig geworden sind, fertig.
+		 * @return void
+		 * @todo
+		*/
+
+		function eventhandler()
+		{
+			if($this->umode())
+				return;
+
+			$active_planet = $this->getActivePlanet();
+
+			$min = null;
+			$planets = $this->getPlanetsList();
+			$next = array();
+
+			foreach($planets as $planet)
+			{
+				$this->setActivePlanet($planet);
+				$next[$planet] = array(
+					"gebaeude" => $this->getNextBuiltThing("gebaeude"),
+					"forschung" => $this->getNextBuiltThing("forschung"),
+					"roboter" => $this->getNextBuiltThing("roboter"),
+					"schiffe" => $this->getNextBuiltThing("schiffe"),
+					"verteidigung" => $this->getNextBuiltThing("verteidigung")
+				);
+			}
+
+			while(true)
+			{
+				foreach($planets as $planet)
+				{
+					foreach($next[$planet] as $i=>$arr)
+					{
+						if($arr !== null && ($min === null || $arr[0] < $next[$min[0]][$min[1]][0]))
+							$min = array($planet, $i);
+					}
+				}
+
+				if($min === null)
+					break;
+
+				$action = &$next[$min[0]][$min[1]];
+
+				$this->setActivePlanet($min[0]);
+
+				if($action[3])
+					$this->refreshRess($action[0]);
+
+				$this->changeItemLevel($action[1], $action[2], $min[1], $action[0]);
+
+				$next[$min[0]][$min[1]] = $this->getNextBuiltThing($min[1]);
+
+				$min = null;
+
+				$this->changed = true;
+			}
+
+			$this->setActivePlanet($active_planet);
+		}
+
+		function buildGebaeude($id, $rueckbau=false)
+		{
+			$this->_forceActivePlanet();
+
+			if($this->checkBuildingThing("gebaeude")) return false;
+			if($id == "B8" && $this->checkBuildingThing("forschung")) return false;
+			if($id == "B9" && $this->checkBuildingThing("roboter")) return false;
+			if($id == "B10" && ($this->checkBuildingThing("schiffe") || $this->checkBuildingThing("verteidigung"))) return false;
+
+			$item_info = $this->getItemInfo($id, "gebaeude", array("buildable", "debuildable", "ress", "time", "limit_factor"));
+			if($item_info && ((!$rueckbau && $item_info["buildable"]) || ($rueckbau && $item_info["debuildable"])))
+			{
+				# Rohstoffkosten
+				$ress = $item_info["ress"];
+
+				if($rueckbau)
+				{
+					$ress[0] = $ress[0]>>1;
+					$ress[1] = $ress[1]>>1;
+					$ress[2] = $ress[2]>>1;
+					$ress[3] = $ress[3]>>1;
+				}
+
+				# Genuegend Rohstoffe zum Ausbau
+				if(!$this->checkRess($ress)) return false;
+
+				$time = $item_info["time"];
+				if($rueckbau)
+					$time = $time>>1;
+				$time += time();
+
+				if(!isset($this->planet_info["building"])) $this->planet_info["building"] = array();
+				$this->planet_info["building"]["gebaeude"] = array($id, $time, $rueckbau, $ress, array(time(), $item_info["limit_factor"]));
+
+				# Rohstoffe abziehen
+				$this->subtractRess($ress);
+
+				$this->refreshMessengerBuildingNotifications("gebaeude");
+
+				return true;
+			}
+			return false;
+		}
+
+		function buildForschung($id, $global)
+		{
+			$this->_forceActivePlanet();
+
+			if($this->checkBuildingThing("forschung")) return false;
+			if(($gebaeude = $this->checkBuildingThing("gebaeude")) && $gebaeude[0] == "B8") return false;
+
+			$buildable = true;
+			$planets = $this->getPlanetsList();
+			$active_planet = $this->getActivePlanet();
+			foreach($planets as $planet)
+			{
+				$this->setActivePlanet($planet);
+				if(($global && $this->checkBuildingThing("forschung")) || (!$global && ($building = $this->checkBuildingThing("forschung")) && $building[0] == $id))
+				{
+					$buildable = false;
+					break;
+				}
+			}
+			$this->setActivePlanet($active_planet);
+
+			$item_info = $this->getItemInfo($id, "forschung", array("buildable", "ress", "time_global", "time_local"));
+			if($item_info && $item_info["buildable"] && $this->checkRess($item_info["ress"]))
+			{
+				$build_array = array($id, time()+$item_info["time_".($global ? "global" : "local")], $global, $item_info["ress"]);
+				if($global)
+				{
+					$build_array[] = $this->getActivePlanet();
+
+					$planets = $this->getPlanetsList();
+					foreach($planets as $planet)
+					{
+						$this->setActivePlanet($planet);
+						$this->planet_info["building"]["forschung"] = $build_array;
+					}
+					$this->setActivePlanet($active_planet);
+				}
+				else $this->planet_info["building"]["forschung"] = $build_array;
+
+				$this->subtractRess($item_info["ress"]);
+
+				$this->refreshMessengerBuildingNotifications("forschung");
+
+				$this->changed = true;
+
+				return true;
+			}
+			return false;
+		}
+
+		function buildRoboter($id, $anzahl)
+		{
+			$this->_forceActivePlanet();
+
+			$anzahl = floor($anzahl);
+			if($anzahl < 0) return false;
+
+			if(($gebaeude = $this->checkBuildingThing("gebaeude")) && $gebaeude[0] == "B9") return false;
+
+			$item_info = $this->getItemInfo($id, "roboter", array("buildable", "ress", "time"));
+			if(!$item_info || !$item_info["buildable"]) return false;
+
+			$ress = $item_info["ress"];
+			$ress[0] *= $anzahl;
+			$ress[1] *= $anzahl;
+			$ress[2] *= $anzahl;
+			$ress[3] *= $anzahl;
+
+			if(!$this->checkRess($ress))
+			{
+				$planet_ress = $this->getRess();
+				$ress = $item_info["ress"];
+				$anzahlen = array();
+				if($ress[0] > 0) $anzahlen[] = floor($planet_ress[0]/$ress[0]);
+				if($ress[1] > 0) $anzahlen[] = floor($planet_ress[1]/$ress[1]);
+				if($ress[2] > 0) $anzahlen[] = floor($planet_ress[2]/$ress[2]);
+				if($ress[3] > 0) $anzahlen[] = floor($planet_ress[3]/$ress[3]);
+				$anzahl = min($anzahlen);
+				$ress[0] *= $anzahl;
+				$ress[1] *= $anzahl;
+				$ress[2] *= $anzahl;
+				$ress[3] *= $anzahl;
+			}
+
+			if($anzahl <= 0) return false;
+
+			$roboter = $this->checkBuildingThing("roboter");
+			$make_new = true;
+			$last_time = time();
+			if($roboter && count($roboter) > 0)
+			{
+				$roboter_keys = array_keys($this->planet_info["building"]["roboter"]);
+				$last = &$this->planet_info["building"]["roboter"][array_pop($roboter_keys)];
+				$last_time = $last[1]+$last[2]*$last[3];
+				if($last[0] == $id && $last[3] == $item_info["time"])
+				{
+					$build_array = &$last;
+					$make_new = false;
+				}
+			}
+			if($make_new)
+			{
+				if(!isset($this->planet_info["building"])) $this->planet_info["building"] = array();
+				if(!isset($this->planet_info["building"]["roboter"])) $this->planet_info["building"]["roboter"] = array();
+				$build_array = &$this->planet_info["building"]["roboter"][];
+				$build_array = array($id, $last_time, 0, $item_info["time"]);
+			}
+
+			$build_array[2] += $anzahl;
+
+			$this->subtractRess($ress);
+
+			$this->refreshMessengerBuildingNotifications("roboter");
+
+			$this->changed = true;
+
+			return true;
+		}
+
+		function buildSchiffe($id, $anzahl)
+		{
+			$this->_forceActivePlanet();
+
+			$anzahl = floor($anzahl);
+			if($anzahl < 0) return false;
+
+			if(($gebaeude = $this->checkBuildingThing("gebaeude")) && $gebaeude[0] == "B10") return false;
+
+			$item_info = $this->getItemInfo($id, "schiffe", array("buildable", "ress", "time"));
+			if(!$item_info || !$item_info["buildable"]) return false;
+
+			$ress = $item_info["ress"];
+			$ress[0] *= $anzahl;
+			$ress[1] *= $anzahl;
+			$ress[2] *= $anzahl;
+			$ress[3] *= $anzahl;
+
+			if(!$this->checkRess($ress))
+			{
+				$planet_ress = $this->getRess();
+				$ress = $item_info["ress"];
+				$anzahlen = array();
+				if($ress[0] > 0) $anzahlen[] = floor($planet_ress[0]/$ress[0]);
+				if($ress[1] > 0) $anzahlen[] = floor($planet_ress[1]/$ress[1]);
+				if($ress[2] > 0) $anzahlen[] = floor($planet_ress[2]/$ress[2]);
+				if($ress[3] > 0) $anzahlen[] = floor($planet_ress[3]/$ress[3]);
+				$anzahl = min($anzahlen);
+				$ress[0] *= $anzahl;
+				$ress[1] *= $anzahl;
+				$ress[2] *= $anzahl;
+				$ress[3] *= $anzahl;
+			}
+
+			if($anzahl <= 0) return false;
+
+			$schiffe = $this->checkBuildingThing("schiffe");
+			$make_new = true;
+			$last_time = time();
+			if($schiffe && count($schiffe) > 0)
+			{
+				$schiffe_keys = array_keys($this->planet_info["building"]["schiffe"]);
+				$last = &$this->planet_info["building"]["schiffe"][array_pop($schiffe_keys)];
+				$last_time = $last[1]+$last[2]*$last[3];
+				if($last[0] == $id && $last[3] == $item_info["time"])
+				{
+					$build_array = &$last;
+					$make_new = false;
+				}
+			}
+			if($make_new)
+			{
+				if(!isset($this->planet_info["building"])) $this->planet_info["building"] = array();
+				if(!isset($this->planet_info["building"]["schiffe"])) $this->planet_info["building"]["schiffe"] = array();
+				$build_array = &$this->planet_info["building"]["schiffe"][];
+				$build_array = array($id, $last_time, 0, $item_info["time"]);
+			}
+
+			$build_array[2] += $anzahl;
+
+			$this->subtractRess($ress);
+
+			$this->refreshMessengerBuildingNotifications("schiffe");
+
+			$this->changed = true;
+
+			return true;
+		}
+
+		function buildVerteidigung($id, $anzahl)
+		{
+			$this->_forceActivePlanet();
+
+			$anzahl = floor($anzahl);
+			if($anzahl < 0) return false;
+
+			if(($gebaeude = $this->checkBuildingThing("gebaeude")) && $gebaeude[0] == "B10") return false;
+
+			$item_info = $this->getItemInfo($id, "verteidigung", array("buildable", "ress", "time"));
+			if(!$item_info || !$item_info["buildable"]) return false;
+
+			$ress = $item_info["ress"];
+			$ress[0] *= $anzahl;
+			$ress[1] *= $anzahl;
+			$ress[2] *= $anzahl;
+			$ress[3] *= $anzahl;
+
+			if(!$this->checkRess($ress))
+			{
+				$planet_ress = $this->getRess();
+				$ress = $item_info["ress"];
+				$anzahlen = array();
+				if($ress[0] > 0) $anzahlen[] = floor($planet_ress[0]/$ress[0]);
+				if($ress[1] > 0) $anzahlen[] = floor($planet_ress[1]/$ress[1]);
+				if($ress[2] > 0) $anzahlen[] = floor($planet_ress[2]/$ress[2]);
+				if($ress[3] > 0) $anzahlen[] = floor($planet_ress[3]/$ress[3]);
+				$anzahl = min($anzahlen);
+				$ress[0] *= $anzahl;
+				$ress[1] *= $anzahl;
+				$ress[2] *= $anzahl;
+				$ress[3] *= $anzahl;
+			}
+
+			if($anzahl <= 0) return false;
+
+			$verteidigung = $this->checkBuildingThing("verteidigung");
+			$make_new = true;
+			$last_time = time();
+			if($verteidigung && count($verteidigung) > 0)
+			{
+				$verteidigung_keys = array_keys($this->planet_info["building"]["verteidigung"]);
+				$last = &$this->planet_info["building"]["verteidigung"][array_pop($verteidigung_keys)];
+				$last_time = $last[1]+$last[2]*$last[3];
+				if($last[0] == $id && $last[3] == $item_info["time"])
+				{
+					$build_array = &$last;
+					$make_new = false;
+				}
+			}
+			if($make_new)
+			{
+				if(!isset($this->planet_info["building"])) $this->planet_info["building"] = array();
+				if(!isset($this->planet_info["building"]["verteidigung"])) $this->planet_info["building"]["verteidigung"] = array();
+				$build_array = &$this->planet_info["building"]["verteidigung"][];
+				$build_array = array($id, $last_time, 0, $item_info["time"]);
+			}
+
+			$build_array[2] += $anzahl;
+
+			$this->subtractRess($ress);
+
+			$this->refreshMessengerBuildingNotifications("verteidigung");
+
+			$this->changed = true;
+
+			return true;
+		}
+
+		/**
+		 * Erneuert die Benachrichtungen fertiggestellter Gegenstände.
+		 * @param string $type gebaeude, forschung, roboter, schiffe, verteidigung
+		 * @return void
+		 * @todo
+		*/
+
+		function refreshMessengerBuildingNotifications($type=false)
+		{
+			$this->_forceActivePlanet();
+
+			if($type == false)
+			{
+				return ($this->refreshMessengerBuildingNotifications("gebaeude")
+				&& $this->refreshMessengerBuildingNotifications("forschung")
+				&& $this->refreshMessengerBuildingNotifications("roboter")
+				&& $this->refreshMessengerBuildingNotifications("schiffe")
+				&& $this->refreshMessengerBuildingNotifications("verteidigung"));
+			}
+
+			if(!in_array($type, array("gebaeude", "forschung", "roboter", "schiffe", "verteidigung")))
+				return;
+
+			$special_id = $this->getActivePlanet()."-".$type;
+			$imfile = Classes::IMFile();
+			$imfile->removeMessages($this->getName(), $special_id);
+
+			$reload_stack = Classes::ReloadStack();
+			$reload_stack->reset($this->getName(), $special_id);
+
+			$building = $this->checkBuildingThing($type);
+			if(!$building) return 2;
+
+			$messenger_receive = $this->checkSetting("messenger_receive");
+			$messenger_settings = $this->getNotificationType();
+			$add_message = ($messenger_settings && $messenger_receive["building"][$type]);
+
+			$planet_prefix = "(".$this->planetName().", ".$this->getPosString().") ";
+
+			switch($type)
+			{
+				case "gebaeude": case "forschung":
+					if(!$building || ($type == "forschung" && $building[2] && $this->getActivePlanet() != $building[4]))
+						break;
+
+					if($add_message)
+					{
+						$item_info = $this->getItemInfo($building[0], $type, array("name", "level"));
+
+						if($type == "gebaeude")
+							$message = $planet_prefix."Gebäudebau abgeschlossen: ".$item_info["name"]." (".($item_info["level"]+($building[2] ? -1 : 1)).")";
+						else
+							$message = $planet_prefix."Forschung fertiggestellt: ".$item_info["name"]." (".($item_info["level"]+1).")";
+						$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $message, $special_id, $building[1]);
+					}
+					break;
+				case "roboter": case "schiffe": case "verteidigung":
+					$building_number = 0;
+					$finish_time = time();
+					foreach($building as $b)
+					{
+						$building_number += $b[2];
+						while($building_number > global_setting("RELOAD_LIMIT"))
+						{
+							$building_number -= global_setting("RELOAD_LIMIT");
+							$b[2] -= global_setting("RELOAD_LIMIT");
+							if($b[2] >= 0) $finish_time += global_setting("RELOAD_LIMIT")*$b[3];
+							else $finish_time -= $b[2]*$b[3];
+							$reload_stack->addReload($this->getName(), $finish_time, $special_id);
+						}
+						if($b[2] > 0)
+							$finish_time += $b[2]*$b[3];
+					}
+
+					if($add_message)
+					{
+						switch($type)
+						{
+							case "roboter": $singular = "Roboter"; $plural = "Roboter"; $art = "ein"; break;
+							case "schiffe": $singular = "Schiff"; $plural = "Schiffe"; $art = "ein"; break;
+							case "verteidigung": $singular = "Verteidigungsanlage"; $plural = "Verteidigungsanlagen"; $art = "eine"; break;
+						}
+
+						switch($messenger_receive["building"][$type])
+						{
+							case 1:
+								foreach($building as $b)
+								{
+									$item_info = $this->getItemInfo($b[0], $type, array("name"));
+									$time = $b[1];
+									for($i=0; $i<$b[2]; $i++)
+									{
+										$time += $b[3];
+										$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.ucfirst($art)." ".$singular." der Sorte ".$item_info["name"]." wurde fertiggestellt.", $special_id, $time);
+									}
+								}
+								break;
+							case 2:
+								foreach($building as $b)
+								{
+									$item_info = $this->getItemInfo($b[0], $type, array("name"));
+									$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.$b[2]." ".($b[2]==1 ? $singular : $plural)." der Sorte ".$item_info["name"]." ".($b[2]==1 ? "wurde" : "wurden")." fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
+								}
+								break;
+							case 3:
+								$keys = array_keys($building);
+								$b = $building[array_pop($keys)];
+								$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix."Alle ".$plural." wurden fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
+								break;
+						}
+					}
+					break;
+			}
+		}
 	}

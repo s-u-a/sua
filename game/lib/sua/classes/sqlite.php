@@ -136,6 +136,19 @@
 		}
 
 		/**
+		 * Wrapper für die Funktion $this->connection->query(). Stellt vielleicht Sachen mit dem Query-String an und fängt Exceptions ab.
+		 * @param string $query
+		 * @return PDOStatement
+		 * @see PDO::query
+		*/
+
+		private function queryWrapper($query)
+		{
+			try { $result = $this->connection->query($query); }
+			catch(PDOException $e) { $this->printException($e, $query); }
+		}
+
+		/**
 		 * Führt einen Query aus, ohne dass sein Ergebnis für nextResult() und lastRowsAffected() gespeichert wird.
 		 * @param string $query
 		 * @return void
@@ -143,8 +156,7 @@
 
 		function backgroundQuery($query)
 		{
-			try { $result = $this->connection->query($query); }
-			catch(PDOException $e) { $this->printException($e, $query); }
+			$result = $this->queryWrapper($query);
 			$result->closeCursor();
 		}
 
@@ -158,8 +170,7 @@
 		{
 			if($this->last_result)
 				$this->last_result->closeCursor();
-			try { $this->last_result = $this->connection->query($query); }
-			catch(PDOException $e) { $this->printException($e, $query); }
+			$this->last_result = $this->queryWrapper($query);
 		}
 
 		/**
@@ -198,8 +209,7 @@
 
 		function arrayQuery($query)
 		{
-			try { $result = $this->connection->query($query); }
-			catch(PDOException $e) { $this->printException($e, $query); }
+			$result = $this->queryWrapper($query);
 			$data = $result->fetchAll(PDO::FETCH_ASSOC);
 			$result->closeCursor();
 			return $data;
@@ -211,10 +221,9 @@
 		 * @return array
 		*/
 
-		function columnQuery($query)
+		function singleColumn($query)
 		{
-			try { $result = $this->connection->query($query); }
-			catch(PDOException $e) { $this->printException($e, $query); }
+			$result = $this->queryWrapper($query);
 			$result = array();
 			while(($row = $result->fetch(PDO::FETCH_NUM)) !== false)
 			{
@@ -233,8 +242,7 @@
 
 		function singleLine($query)
 		{
-			try { $result = $this->connection->query($query); }
-			catch(PDOException $e) { $this->printException($e, $query); }
+			$result = $this->queryWrapper($query);
 			$data = $result->fetch(PDO::FETCH_ASSOC);
 			$result->closeCursor();
 			return $data;
@@ -248,8 +256,7 @@
 
 		function singleField($query)
 		{
-			try { $result = $this->connection->query($query); }
-			catch(PDOException $e) { $this->printException($e, $query); }
+			$result = $this->queryWrapper($query);
 			$data = $result->fetchColumn();
 			$result->closeCursor();
 			return $data;
@@ -322,10 +329,7 @@
 			$calls = array_pop($this->transactions);
 			$this->connection->beginTransaction();
 			foreach($calls as $q)
-			{
-				try { $this->connection->query($q); }
-				catch(PDOException $e) { $this->printException($e, $q); }
-			}
+				$this->queryWrapper($q);
 			return $this->connection->commit();
 		}
 

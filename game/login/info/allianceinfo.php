@@ -36,10 +36,6 @@
 	else
 	{
 		$alliance = Classes::Alliance($_GET['alliance']);
-
-		$overall = $alliance->getTotalScores();
-		$members = $alliance->getMembersCount();
-		$average = floor($overall/$members);
 ?>
 <h2><?=h(sprintf(_("Allianzinfo „%s“"), $alliance->getName()))?></h2>
 <dl class="allianceinfo">
@@ -50,13 +46,13 @@
 	<dd class="c-name"><?=htmlspecialchars($alliance->name())?></dd>
 
 	<dt class="c-mitglieder"><?=h(_("Mitglieder"))?></dt>
-	<dd class="c-mitglieder"><?=htmlspecialchars($members)?></dd>
+	<dd class="c-mitglieder"><?=ths($alliance->getMembersCount())?></dd>
 
 	<dt class="c-punkteschnitt"><?=h(_("Punkteschnitt"))?></dt>
-	<dd class="c-punkteschnitt"><?=F::ths($average)?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), F::ths($alliance->getRankAverage()), F::ths(Alliance::getNumber())))?>)</span></dd>
+	<dd class="c-punkteschnitt"><?=F::ths($alliance->getScores(Alliance::HIGHSCORES_AVERAGE))?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), F::ths($alliance->getRank(Alliance::HIGHSCORES_AVERAGE)), F::ths(Alliance::getNumber())))?>)</span></dd>
 
 	<dt class="c-gesamtpunkte"><?=h(_("Gesamtpunkte"))?></dt>
-	<dd class="c-gesamtpunkte"><?=F::ths($overall)?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), F::ths($alliance->getRankTotal()), F::ths(Alliance::getNumber())))?></span></dd>
+	<dd class="c-gesamtpunkte"><?=F::ths($alliance->getScores(Alliance::HIGHSCORES_SUM))?> <span class="platz"><?=h(sprintf(_("(Platz %s von %s)"), F::ths($alliance->getRank(Alliance::HIGHSCORES_SUM)), F::ths(Alliance::getNumber())))?></span></dd>
 </dl>
 <h3 id="allianzbeschreibung" class="strong"><?=h(_("Allianzbeschreibung"))?></h3>
 <div class="allianz-externes">

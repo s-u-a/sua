@@ -34,7 +34,7 @@
 			delete_request();
 	}
 
-	$flotten = $me->getFleetsList();
+	$flotten = Fleet::visibleToUser($me->getName());
 
 	$gui->setOption("notify", true);
 	$gui->init();
@@ -252,7 +252,7 @@
 	<li class="planet-<?=htmlspecialchars($class)?><?=($planet == $active_planet) ? ' active' : ''?>"><?=($planet != $active_planet) ? '<a href="index.php?'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=htmlspecialchars($me->planetName())?><?=($planet != $active_planet) ? '</a>' : ''?> <span class="koords">(<?=htmlspecialchars($me->getPosString())?>)</span>
 		<dl class="planet-info">
 			<dt class="c-felder"><?=h(_("Felder"))?></dt>
-			<dd class="c-felder"><?=F::ths($me->getUsedFields())?> <span class="gesamtgroesse">(<?=F::ths($me->getTotalFields())?>)</span></dd>
+			<dd class="c-felder"><?=F::ths($PLANET->getUsedFields())?> <span class="gesamtgroesse">(<?=F::ths($PLANET->getSize())?>)</span></dd>
 <?php
 		if($show_building['gebaeude'])
 		{
@@ -267,7 +267,7 @@
 <?php
 				$countdowns[] = array('ge-'.$planet, $building_gebaeude[1], global_setting("h_root")."/login/gebaeude.php?".global_setting("URL_SUFFIX"));
 			}
-			elseif($me->getRemainingFields() <= 0)
+			elseif($PLANET->getRemainingFields() <= 0)
 			{
 ?>
 			<dd class="c-gebaeudebau ausgebaut"><?=h(_("Ausgebaut"))?></dd>

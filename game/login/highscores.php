@@ -23,55 +23,63 @@
 	*/
 	namespace sua::frontend;
 
-	require('include.php');
+	require("include.php");
 
 	$gui->init();
 
-	if(isset($_GET['alliances']) && $_GET['alliances'])
+	$by = (isset($_GET["by"]) ? $_GET["by"], "0");
+	$alliances = false;
+	if(isset($_GET["which"]))
 	{
-		$mode = 'alliances';
-		$mode_prefix = 'alliances='.urlencode($_GET['alliances']).'&';
-		$sort = $_GET["alliances"];
+		if($_GET["which"] == "alliances_avg")
+			$alliances = Alliance::HIGHSCORES_AVERAGE;
+		elseif($_GET["which"] = "alliances_sum")
+			$alliances = Alliance::HIGHSCORES_SUM;
 	}
+
+	if($alliances)
+		$class = "Alliance";
 	else
+		$class = "User";
+
+
+	$which_param = (isset($_GET["which"]) ? "which=".urlencode($_GET["which"])."&" : "");
+
+	switch($by)
 	{
-		$mode = 'users';
-		if(isset($_GET["users"]) && in_array($_GET["users"], array("0", "1", "2", "3", "4", "5", "6")))
-		{
-			$mode_prefix = "users=".urlencode($_GET["users"]);
-			$sort = $_GET["users"];
-		}
-		else
-		{
-			$mode_prefix = '';
-			$sort = false;
-		}
+		case "1": $field = User::SCORES_GEBAEUDE; break;
+		case "2": $field = User::SCORES_FORSCHUNG; break;
+		case "3": $field = User::SCORES_ROBOTER; break;
+		case "4": $field = User::SCORES_SCHIFFE; break;
+		case "5": $field = User::SCORES_VERTEIDIGUNG; break;
+		case "6": $field = User::SCORES_FLIGHTEXP; break;
+		case "7": $field = User::SCORES_BATTLEEXP; break;
+		default: $field = User::SCORES_TOTAL; break;
 	}
 ?>
 <ul class="highscores-modi tabs">
-	<li class="c-spieler<?=($mode=='users' && $sort === false) ? ' active' :''?>"><a href="highscores.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spieler&[login/highscores.php|1]"))?>><?=h(_("Spieler&[login/highscores.php|1]"))?></a></li>
-	<li class="c-allianzen<?=($mode=='alliances') ? ' active' : ''?>"><a href="highscores.php?alliances=1&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Allianzen&[login/highscores.php|1]"))?>><?=h(_("Allianzen&[login/highscores.php|1]"))?></a></li>
-	<li class="c-spieler-gebaeude<?=($mode=='users' && $sort==="0") ? ' active' :''?>"><a href="highscores.php?users=0&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spieler (Gebäude)&[login/highscores.php|1]"))?>><?=h(_("Spieler (Gebäude)&[login/highscores.php|1]"))?></a></li>
-	<li class="c-spieler-forschung<?=($mode=='users' && $sort==="1") ? ' active' :''?>"><a href="highscores.php?users=1&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spieler (Forschung)&[login/highscores.php|1]"))?>><?=h(_("Spieler (Forschung)&[login/highscores.php|1]"))?></a></li>
-	<li class="c-spieler-roboter<?=($mode=='users' && $sort==="2") ? ' active' :''?>"><a href="highscores.php?users=2&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spieler (Roboter)&[login/highscores.php|1]"))?>><?=h(_("Spieler (Roboter)&[login/highscores.php|1]"))?></a></li>
-	<li class="c-spieler-schiffe<?=($mode=='users' && $sort==="3") ? ' active' :''?>"><a href="highscores.php?users=3&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spieler (Flotte)&[login/highscores.php|1]"))?>><?=h(_("Spieler (Flotte)&[login/highscores.php|1]"))?></a></li>
-	<li class="c-spieler-verteidigung<?=($mode=='users' && $sort==="4") ? ' active' :''?>"><a href="highscores.php?users=4&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spieler (Verteidigung)&[login/highscores.php|1]"))?>><?=h(_("Spieler (Verteidigung)&[login/highscores.php|1]"))?></a></li>
-	<li class="c-spieler-flugerfahrung<?=($mode=='users' && $sort==="5") ? ' active' :''?>"><a href="highscores.php?users=5&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spieler (Flugerfahrung)&[login/highscores.php|1]"))?>><?=h(_("Spieler (Flugerfahrung)&[login/highscores.php|1]"))?></a></li>
-	<li class="c-spieler-kampferfahrung<?=($mode=='users' && $sort==="6") ? ' active' :''?>"><a href="highscores.php?users=6&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spieler (Kampferfahrung)&[login/highscores.php|1]"))?>><?=h(_("Spieler (Kampferfahrung)&[login/highscores.php|1]"))?></a></li>
+	<li class="c-spieler<?=(!$alliances) ? " active" :""?>"><a href="highscores.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spieler&[login/highscores.php|1]"))?>><?=h(_("Spieler&[login/highscores.php|1]"))?></a></li>
+	<li class="c-allianzen-schnitt<?=($alliances == Alliance::HIGHSCORES_AVG) ? " active" : ""?>"><a href="highscores.php?which=alliances_avg&amp;by=<?=htmlspecialchars(urlencode($by))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Allianzen (Durchschnitt)&[login/highscores.php|1]"))?>><?=h(_("Allianzen (Durchschnitt)&[login/highscores.php|1]"))?></a></li>
+	<li class="c-allianzen-summe<?=($alliances == Alliance::HIGHSCORES_SUM) ? " active" : ""?>"><a href="highscores.php?which=alliances_sum&amp;by=<?=htmlspecialchars(urlencode($by))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Allianzen (Summe)&[login/highscores.php|1]"))?>><?=h(_("Allianzen (Summe)&[login/highscores.php|1]"))?></a></li>
+	<li class="c-spieler-gesamt<?=($by=="0") ? " active" :""?>"><a href="highscores.php?<?=htmlspecialchars($which_param)?><?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Gesamt&[login/highscores.php|1]"))?>><?=h(_("Gesamt&[login/highscores.php|1]"))?></a></li>
+	<li class="c-spieler-gebaeude<?=($by=="1") ? " active" :""?>"><a href="highscores.php?<?=htmlspecialchars($which_param)?>by=1&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Gebäude&[login/highscores.php|1]"))?>><?=h(_("Gebäude&[login/highscores.php|1]"))?></a></li>
+	<li class="c-spieler-forschung<?=($by=="2") ? " active" :""?>"><a href="highscores.php?<?=htmlspecialchars($which_param)?>by=2&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Forschung&[login/highscores.php|1]"))?>><?=h(_("Forschung&[login/highscores.php|1]"))?></a></li>
+	<li class="c-spieler-roboter<?=($by=="3") ? " active" :""?>"><a href="highscores.php?<?=htmlspecialchars($which_param)?>by=3&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Roboter&[login/highscores.php|1]"))?>><?=h(_("Roboter&[login/highscores.php|1]"))?></a></li>
+	<li class="c-spieler-schiffe<?=($by=="4") ? " active" :""?>"><a href="highscores.php?<?=htmlspecialchars($which_param)?>by=4&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Flotte&[login/highscores.php|1]"))?>><?=h(_("Flotte&[login/highscores.php|1]"))?></a></li>
+	<li class="c-spieler-verteidigung<?=($by=="5") ? " active" :""?>"><a href="highscores.php?<?=htmlspecialchars($which_param)?>by=5&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Verteidigung&[login/highscores.php|1]"))?>><?=h(_("Verteidigung&[login/highscores.php|1]"))?></a></li>
+	<li class="c-spieler-flugerfahrung<?=($by=="6") ? " active" :""?>"><a href="highscores.php?<?=htmlspecialchars($which_param)?>by=6&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Flugerfahrung&[login/highscores.php|1]"))?>><?=h(_("Flugerfahrung&[login/highscores.php|1]"))?></a></li>
+	<li class="c-spieler-kampferfahrung<?=($by=="7") ? " active" :""?>"><a href="highscores.php?<?=htmlspecialchars($which_param)?>by=7&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Kampferfahrung&[login/highscores.php|1]"))?>><?=h(_("Kampferfahrung&[login/highscores.php|1]"))?></a></li>
 </ul>
 <?php
-	$highscores = Classes::Highscores();
-	$count = $highscores->getCount($mode);
+	$count = $class::getNumber();
 	$start = 1;
-	if(isset($_GET['start']) && $_GET['start'] <= $count && $_GET['start'] >= 1)
-		$start = floor($_GET['start']);
+	if(isset($_GET["start"]) && $_GET["start"] <= $count && $_GET["start"] >= 1)
+		$start = floor($_GET["start"]);
 
-	$sort_field = null;
-	if($mode == "alliances" && $sort == '2') $sort_field = 'scores_total';
-	elseif($mode == "users" && $sort !== false) $sort_field = "scores_".$sort;
-	$score_field = null;
-	if($mode == "users" && $sort !== false) $score_field = "scores_".$sort;
-	$list = $highscores->getList($mode, $start, $start+global_setting("HIGHSCORES_PERPAGE"), $sort_field, $score_field);
+	if($alliances)
+		$list = $class::getHighscores($start, $start+global_setting("HIGHSCORES_PERPAGE"), $field, $by, $by, $alliances);
+	else
+		$list = $class::getHighscores($start, $start+global_setting("HIGHSCORES_PERPAGE"), $field, $by, $by);
 
 	if($count > global_setting("HIGHSCORES_PERPAGE"))
 	{
@@ -99,99 +107,87 @@
 </ul>
 <?php
 	}
-
-	if($mode == 'users')
-	{
 ?>
-<table class="highscores spieler">
+<table class="highscores <?=$alliances ? "allianzen" : "spieler"?>">
 	<thead>
 		<tr>
 			<th class="c-platz"><?=h(_("Platz"))?></th>
-			<th class="c-spieler"><?=h(_("Spieler"))?></th>
+			<th class="c-<?=$alliances ? "allianz" : "spieler"?>"><?=h($alliances ? _("Allianz") : _("Spieler"))?></th>
+<?php
+	if(!$alliances)
+	{
+?>
 			<th class="c-allianz"><?=h(_("Allianz"))?></th>
-			<th class="c-punktzahl"><?=h(_("Punktzahl"))?><?php if($sort!==false){?> (<?=h(_("[scores_".$sort."]"))?>)<?php }?></th>
-		</tr>
-	</thead>
 <?php
 	}
-	else
+?>
+			<th class="c-punktzahl"><?=h(_("Punktzahl"))?> (<?=h(_("[scores_".$by."]"))?>)</th>
+<?php
+	if($alliances)
 	{
 ?>
-<table class="highscores allianzen">
-	<thead>
-		<tr>
-			<th class="c-platz"><?=h(_("Platz"))?></th>
-			<th class="c-allianz"><?=h(_("Allianz"))?></th>
-			<th class="c-punkteschnitt"><?=($_GET['alliances']=='2') ? '<a href="highscores.php?alliances=1&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'">'.h(_("Punkteschnitt")).'</a>' : h(_('Punkteschnitt'))?></th>
-			<th class="c-gesamtpunkte"><?=($_GET['alliances']=='2') ? h(_('Gesamtpunkte')) : '<a href="highscores.php?alliances=2&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'">'.h(_("Gesamtpunkte")).'</a>'?></th>
 			<th class="c-mitglieder"><?=h(_("Mitglieder"))?></th>
-		</tr>
-	</thead>
 <?php
 	}
 ?>
+		</tr>
+	</thead>
 	<tbody>
 <?php
 	for($i=0; list(,$info)=each($list); $i++)
 	{
-		if($mode == 'users')
+		if(!$alliances)
 		{
-			$class = 'fremd';
-			if($info['username'] == $me->getName())
-				$class = 'eigen';
-			elseif($me->isVerbuendet($info['username']))
-				$class = 'verbuendet';
-
-			$alliance_class = 'fremd';
-			if($info['alliance'] && Classes::getUserAlliance($me->getName()) == $info['alliance'])
-				$alliance_class = 'eigen';
-
-			$info2 = $info;
-			unset($info2["username"]);
-			unset($info2["alliance"]);
-			$scores = array_shift($info2);
-?>
-		<tr class="<?=$class?> allianz-<?=$alliance_class?>">
-			<th class="c-platz"><?=F::ths($start+$i)?></th>
-			<td class="c-spieler"><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($info['username']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>" class="playername"><?=htmlspecialchars($info['username'])?></a></td>
-<?php
-			if($info['alliance'])
-			{
-?>
-			<td class="c-allianz"><a href="info/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($info['alliance']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu dieser Allianz anzeigen"))?>" class="alliancename"><?=htmlspecialchars($info['alliance'])?></a></td>
-<?php
-			}
-			else
-			{
-?>
-			<td class="c-allianz keine"></td>
-<?php
-			}
-?>
-			<td class="c-punktzahl number"><?=F::ths($scores)?></td>
-		</tr>
-<?php
+			$class = "fremd";
+			if($info["username"] == $me->getName())
+				$class = "eigen";
+			elseif($me->isVerbuendet($info["username"]))
+				$class = "verbuendet";
 		}
 		else
 		{
-			$class = 'fremd';
-			if($info['tag'] == Classes::getUserAlliance($me->getName()))
-				$class = 'verbuendet';
-
+			$class = "fremd";
+			if($info["tag"] == Classes::getUserAlliance($me->getName()))
+				$class = "verbuendet";
+		}
 ?>
-		<tr class="<?=$class?>">
+		<tr class="<?=$class?> allianz-<?=$alliance_class?>">
 			<th class="c-platz"><?=F::ths($start+$i)?></th>
-			<td class="c-allianz"><a href="info/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($info['tag']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu dieser Allianz anzeigen"))?>"><?=htmlspecialchars($info['tag'])?></a></td>
-			<td class="c-punkteschnitt number"><?=F::ths($info['scores_average'])?></td>
-			<td class="c-gesamtpunkte number"><?=F::ths($info['scores_total'])?></td>
-			<td class="c-mitglieder number"><?=F::ths($info['members_count'])?></td>
+			<td class="c-<?=$alliances ? "allianz" : "spieler"?>"><a href="info/<?=$alliances ? "alliance" : "player"?>info.php?<?=$alliances ? "alliance" : "player"?>=<?=htmlspecialchars(urlencode($info[$alliances ? "tag" : "user"]))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>" class="<?=$alliances ? "alliance" : "player")?>name"><?=htmlspecialchars($info[$alliances ? "tag" : "user"])?></a></td>
+<?php
+			if(!$alliances)
+			{
+				if($info["alliance"])
+				{
+					$alliance_class = "fremd";
+					if($info["alliance"] && Classes::getUserAlliance($me->getName()) == $info["alliance"])
+						$alliance_class = "eigen";
+?>
+			<td class="c-allianz"><a href="info/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($info["alliance"]))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu dieser Allianz anzeigen"))?>" class="alliancename"><?=htmlspecialchars($info["alliance"])?></a></td>
+<?php
+				}
+				else
+				{
+?>
+			<td class="c-allianz keine"></td>
+<?php
+				}
+			}
+?>
+			<td class="c-punktzahl number"><?=F::ths($info[$field])?></td>
+<?php
+			if($alliances)
+			{
+?>
+			<td class="c-mitglieder number"><?=F::ths($info["members"])?></td>
+<?php
+			}
+?>
 		</tr>
 <?php
-		}
 	}
 ?>
 	</tbody>
 </table>
 <?php
 	$gui->end();
-?>

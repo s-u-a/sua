@@ -28,7 +28,7 @@
 	require_once('include.php');
 
 	$max_flotten = $me->getMaxParallelFleets();
-	$my_flotten = $me->getCurrentParallelFleets();
+	$my_flotten = Fleet::userSlots($me->getName());
 
 	class LoginFlottenException extends SuaException
 	{
@@ -213,12 +213,17 @@
 			$buendnisflug_user = Classes::User($_POST["buendnis_benutzername"]);
 			if($buendnisflug_user->getName() == $me->getName())
 				throw new LoginFlottenException(_("Ungültiger Benutzername."), 0, LoginFlottenException::TYPE_FLEETS);
-			$buendnisflug_id = $buendnisflug_user->resolveFleetPasswd($_POST["buendnis_flottenpasswort"]);
-			if($buendnisflug_id === null)
+			try
+			{
+				$buendnisflug_id = $buendnisflug_user->resolveFleetPasswd($_POST["buendnis_flottenpasswort"]);
+			}
+			catch(UserException $e)
+			{
 				throw new LoginFlottenException(_("Ungültiges Flottenpasswort."), 0, LoginFlottenException::TYPE_FLEETS);
+			}
 
 			$buendnisflug_fleet = Classes::Fleet($buendnisflug_id);
-			if(in_array($me->getName(), $buendnisflug_fleet->getUsersList()))
+			if($buendnisflug_fleet->userExists($me->getName()))
 				throw new LoginFlottenException(_("Sie sind bereits Teil des Bündnisflugs."));
 			$target_koords = array(explode(":", $buendnisflug_fleet->getCurrentTarget()));
 			$target_planets = array(Classes::Planet(Classes::System(Classes::Galaxy($target_koords[0]), $target_koords[1]), $target_koords[2]));

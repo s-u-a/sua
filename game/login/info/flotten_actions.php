@@ -485,24 +485,21 @@
 				exit();
 			}
 
-			if(isset($_POST["fleet_passwd"]))
+			if(isset($_POST["fleet_passwd"]) && ($_POST["fleet_passwd"] = trim($_POST["fleet_passwd"])) != $fleet->password())
 			{
-				$passwd = $me->getFleetPasswd($flotten_id);
-				$_POST["fleet_passwd"] = trim($_POST["fleet_passwd"]);
-				if($_POST["fleet_passwd"] != $passwd && $me->resolveFleetPasswd($_POST["fleet_passwd"]) !== null)
+				try
+				{
+					$me->resolveFleetPasswd($_POST["fleet_passwd"]);
+					$fleet->password(trim($_POST["fleet_passwd"]));
+				}
+				catch(UserException $e)
 				{
 ?>
 <p class="error"><?=h(_("Dieses Passwort wurde schon für eine andere Flotte verwendet."))?></p>
 <?php
 				}
-				elseif(!$me->changeFleetPasswd($flotten_id, trim($_POST["fleet_passwd"])))
-				{
-?>
-<p class="error"><?=h(_("Das Passwort konnte nicht geändert werden."))?></p>
-<?php
-				}
 			}
-			$passwd = $me->getFleetPasswd($flotten_id);
+			$passwd = $fleet->password();
 ?>
 <p class="buendnisangriff-beschreibung-1"><?=h(_("Hier können Sie der ausgewählten Flotte ein Flottenpasswort zuweisen, welches es anderen Spielern ermöglicht, Ihrem Angriff eigene Flotten beizusteuern. Möchte ein anderer Spieler dem Flottenverbund beitreten, so muss er im Flottenmenü Ihren Benutzernamen in Verbindung mit dem hier festgelegten Passwort angeben. Übermitteln Sie ihm hierzu das Passwort selbst, zum Beispiel durch eine Nachricht."))?></p>
 <p class="buendnisangriff-beschreibung-2"><?=h(_("Beachten Sie, dass ein Spieler dem Flottenverbund nicht mehr beitreten kann, wenn seine Flugzeit zum ausgewählten Ziel länger ist als die verbleibende Flugzeit der Flotte."))?></p>

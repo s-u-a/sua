@@ -571,4 +571,29 @@
 		{
 			return str_replace(".", "-", microtime(true));
 		}
+
+		/**
+		 * Gibt die Summe der Summen der Arrays im Array $array zurück.
+		 * @param array $array Array von Arrays von Zahlen
+		 * @return float
+		*/
+
+		function array_sum_r(array $array)
+		{
+			$sum = 0;
+			foreach($array as $val)
+				$sum += array_sum($val);
+			return $sum;
+		}
+
+		/**
+		 * Gibt eine Zeile mit dem aktuellen Datum an die Logdatei aus.
+		 * @param string $message
+		 * @return void
+		*/
+
+		function log($message)
+		{
+			fputs(global_setting("LOG"), date("Y-m-d\\TH:i:s")." ".$message."\n");
+		}
 	}

@@ -34,11 +34,9 @@
 	{
 		if(!$database['enabled'] || $database['dummy']) continue;
 		define_globals($dbid);
-		$highscores = Classes::Highscores();
-		$players += $highscores->getCount('users');
-		$alliances += $highscores->getCount('alliances');
+		$players += User::getNumber();
+		$alliances += Alliance::getNumber();
 		$databases_count++;
-		unset($highscores);
 	}
 
 	$items = Classes::Items();

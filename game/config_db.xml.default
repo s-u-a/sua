@@ -1,0 +1,1071 @@
+<?xml version="1.0"?>
+<!DOCTYPE config [
+	<!ELEMENT config (section | setting)*>
+	<!ELEMENT section (section | setting)*>
+	<!ATTLIST section
+		name CDATA #REQUIRED
+	>
+	<!ELEMENT setting (#PCDATA)>
+	<!ATTLIST setting
+		name CDATA #REQUIRED
+	>
+]>
+<config>
+	<setting name="name">Runde 1</setting>
+	<setting name="hostname"></setting>
+	<setting name="disable_noobprotection">false</setting>
+	<section name="global_factors">
+		<setting name="time">1</setting>
+		<setting name="production">1</setting>
+		<setting name="costs">1</setting>
+	</section>
+	<section name="items">
+		<section name="gebaeude">
+			<section name="B0">
+				<section name="ress">
+					<setting name="0">40</setting>
+					<setting name="1">15</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+				</section>
+				<setting name="time">145</setting>
+				<section name="deps">
+				</section>
+				<section name="prod">
+					<setting name="0">40</setting>
+					<setting name="1">0</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+					<setting name="4">0</setting>
+					<setting name="5">-5</setting>
+				</section>
+				<setting name="fields">1</setting>
+			</section>
+			<section name="B1">
+				<section name="ress">
+					<setting name="0">63</setting>
+					<setting name="1">20</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+				</section>
+				<setting name="time">205</setting>
+				<section name="deps">
+				</section>
+				<section name="prod">
+					<setting name="0">0</setting>
+					<setting name="1">26</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+					<setting name="4">0</setting>
+					<setting name="5">-7</setting>
+				</section>
+				<setting name="fields">1</setting>
+			</section>
+			<section name="B2">
+				<section name="ress">
+					<setting name="0">120</setting>
+					<setting name="1">50</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+				</section>
+				<setting name="time">358</setting>
+				<section name="deps">
+					<setting name="B0">3</setting>
+					<setting name="B1">2</setting>
+				</section>
+				<section name="prod">
+					<setting name="0">0</setting>
+					<setting name="1">0</setting>
+					<setting name="2">16</setting>
+					<setting name="3">0</setting>
+					<setting name="4">0</setting>
+					<setting name="5">-10</setting>
+				</section>
+				<setting name="fields">1</setting>
+			</section>
+			<section name="B3">
+				<section name="ress">
+					<setting name="0">250</setting>
+					<setting name="1">130</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+				</section>
+				<setting name="time">468</setting>
+				<section name="deps">
+					<setting name="B0">6</setting>
+					<setting name="B1">5</setting>
+					<setting name="B2">3</setting>
+				</section>
+				<section name="prod">
+					<setting name="0">0</setting>
+					<setting name="1">0</setting>
+					<setting name="2">0</setting>
+					<setting name="3">5</setting>
+					<setting name="4">0</setting>
+					<setting name="5">-40</setting>
+				</section>
+				<setting name="fields">1</setting>
+			</section>
+			<section name="B4">
+				<section name="ress">
+					<setting name="0">300</setting>
+					<setting name="1">170</setting>
+					<setting name="2">120</setting>
+					<setting name="3">0</setting>
+				</section>
+				<setting name="time">605</setting>
+				<section name="deps">
+					<setting name="B2">1</setting>
+					<setting name="F0">1</setting>
+				</section>
+				<section name="prod">
+					<setting name="0">0</setting>
+					<setting name="1">0</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+					<setting name="4">4</setting>
+					<setting name="5">-35</setting>
+				</section>
+				<setting name="fields">2</setting>
+			</section>
+			<section name="B5">
+				<section name="ress">
+					<setting name="0">150</setting>
+					<setting name="1">70</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+				</section>
+				<setting name="time">155</setting>
+				<section name="deps">
+				</section>
+				<section name="prod">
+					<setting name="0">0</setting>
+					<setting name="1">0</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+					<setting name="4">0</setting>
+					<setting name="5">62</setting>
+				</section>
+				<setting name="fields">1</setting>
+			</section>
+			<section name="B6">
+				<section name="ress">
+					<setting name="0">1000</setting>
+					<setting name="1">500</setting>
+					<setting name="2">300</setting>
+					<setting name="3">0</setting>
+				</section>
+				<setting name="time">1340</setting>
+				<section name="deps">
+					<setting name="F3">3</setting>
+				</section>
+				<section name="prod">
+					<setting name="0">0</setting>
+					<setting name="1">0</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+					<setting name="4">0</setting>
+					<setting name="5">97</setting>
+				</section>
+				<setting name="fields">0</setting>
+			</section>
+			<section name="B7">
+				<section name="ress">
+					<setting name="0">5000000</setting>
+					<setting name="1">5000000</setting>
+					<setting name="2">5000000</setting>
+					<setting name="3">5000000</setting>
+				</section>
+				<setting name="time">542230</setting>
+				<section name="deps">
+					<setting name="B2">30</setting>
+					<setting name="F3">15</setting>
+					<setting name="F9">1</setting>
+				</section>
+				<section name="prod">
+					<setting name="0">0</setting>
+					<setting name="1">60000</setting>
+					<setting name="2">40000</setting>
+					<setting name="3">15000</setting>
+					<setting name="4">0</setting>
+					<setting name="5">10000</setting>
+				</section>
+				<setting name="fields">3</setting>
+			</section>
+			<section name="B8">
+				<section name="ress">
+					<setting name="0">100</setting>
+					<setting name="1">80</setting>
+					<setting name="2">60</setting>
+					<setting name="3">50</setting>
+				</section>
+				<setting name="time">745</setting>
+				<section name="deps">
+					<setting name="B2">5</setting>
+					<setting name="B3">2</setting>
+				</section>
+				<section name="prod">
+					<setting name="0">0</setting>
+					<setting name="1">0</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+					<setting name="4">0</setting>
+					<setting name="5">0</setting>
+				</section>
+				<setting name="fields">1</setting>
+			</section>
+			<section name="B9">
+				<section name="ress">
+					<setting name="0">60</setting>
+					<setting name="1">50</setting>
+					<setting name="2">20</setting>
+					<setting name="3">10</setting>
+				</section>
+				<setting name="time">625</setting>
+				<section name="deps">
+					<setting name="B8">2</setting>
+				</section>
+				<section name="prod">
+					<setting name="0">0</setting>
+					<setting name="1">0</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+					<setting name="4">0</setting>
+					<setting name="5">0</setting>
+				</section>
+				<setting name="fields">1</setting>
+			</section>
+			<section name="B10">
+				<section name="ress">
+					<setting name="0">80</setting>
+					<setting name="1">70</setting>
+					<setting name="2">60</setting>
+					<setting name="3">20</setting>
+				</section>
+				<setting name="time">863</setting>
+				<section name="deps">
+					<setting name="B4">2</setting>
+					<setting name="F0">1</setting>
+					<setting name="F6">1</setting>
+				</section>
+				<section name="prod">
+					<setting name="0">0</setting>
+					<setting name="1">0</setting>
+					<setting name="2">0</setting>
+					<setting name="3">0</setting>
+					<setting name="4">0</setting>
+					<setting name="5">0</setting>
+				</section>
+				<setting name="fields">1</setting>
+			</section>
+		</section>
+		<section name="forschung">
+			<section name="F0">
+				<section name="ress">
+					<setting name="0">600</setting>
+					<setting name="1">500</setting>
+					<setting name="2">0</setting>
+					<setting name="3">100</setting>
+				</section>
+				<setting name="time">665</setting>
+				<section name="deps">
+					<setting name="B8">1</setting>
+				</section>
+			</section>
+			<section name="F1">
+				<section name="ress">
+					<setting name="0">1250</setting>
+					<setting name="1">1000</setting>
+					<setting name="2">500</setting>
+					<setting name="3">333</setting>
+				</section>
+				<setting name="time">1133</setting>
+				<section name="deps">
+					<setting name="B8">1</setting>
+					<setting name="B10">2</setting>
+					<setting name="F0">1</setting>
+				</section>
+			</section>
+			<section name="F2">
+				<section name="ress">
+					<setting name="0">2000</setting>
+					<setting name="1">1000</setting>
+					<setting name="2">120</setting>
+					<setting name="3">55</setting>
+				</section>
+				<setting name="time">545</setting>
+				<section name="deps">
+					<setting name="B8">2</setting>
+					<setting name="B9">1</setting>
+				</section>
+			</section>
+			<section name="F3">
+				<section name="ress">
+					<setting name="0">1000</setting>
+					<setting name="1">500</setting>
+					<setting name="2">350</setting>
+					<setting name="3">0</setting>
+				</section>
+				<setting name="time">320</setting>
+				<section name="deps">
+					<setting name="B5">3</setting>
+					<setting name="B8">2</setting>
+				</section>
+			</section>
+			<section name="F4">
+				<section name="ress">
+					<setting name="0">2400</setting>
+					<setting name="1">1255</setting>
+					<setting name="2">1000</setting>
+					<setting name="3">233</setting>
+				</section>
+				<setting name="time">500</setting>
+				<section name="deps">
+					<setting name="B8">2</setting>
+					<setting name="B10">3</setting>
+					<setting name="F0">2</setting>
+				</section>
+			</section>
+			<section name="F5">
+				<section name="ress">
+					<setting name="0">2300</setting>
+					<setting name="1">1144</setting>
+					<setting name="2">700</setting>
+					<setting name="3">300</setting>
+				</section>
+				<setting name="time">513</setting>
+				<section name="deps">
+					<setting name="B8">2</setting>
+					<setting name="B10">3</setting>
+					<setting name="F0">2</setting>
+				</section>
+			</section>
+			<section name="F10">
+				<section name="ress">
+					<setting name="0">10000</setting>
+					<setting name="1">5000</setting>
+					<setting name="2">2500</setting>
+					<setting name="3">3000</setting>
+				</section>
+				<setting name="time">20733</setting>
+				<section name="deps">
+					<setting name="B8">10</setting>
+					<setting name="B10">5</setting>
+					<setting name="F5">3</setting>
+				</section>
+			</section>
+			<section name="F6">
+				<section name="ress">
+					<setting name="0">2000</setting>
+					<setting name="1">1000</setting>
+					<setting name="2">500</setting>
+					<setting name="3">222</setting>
+				</section>
+				<setting name="time">303</setting>
+				<section name="deps">
+					<setting name="B8">3</setting>
+					<setting name="F3">2</setting>
+				</section>
+			</section>
+			<section name="F7">
+				<section name="ress">
+					<setting name="0">10000</setting>
+					<setting name="1">3333</setting>
+					<setting name="2">1000</setting>
+					<setting name="3">600</setting>
+				</section>
+				<setting name="time">913</setting>
+				<section name="deps">
+					<setting name="B8">7</setting>
+					<setting name="F3">5</setting>
+				</section>
+			</section>
+			<section name="F8">
+				<section name="ress">
+					<setting name="0">1508549</setting>
+					<setting name="1">1547298</setting>
+					<setting name="2">663875</setting>
+					<setting name="3">503226</setting>
+				</section>
+				<setting name="time">172832</setting>
+				<section name="deps">
+					<setting name="B8">20</setting>
+					<setting name="F3">12</setting>
+				</section>
+			</section>
+			<section name="F9">
+				<section name="ress">
+					<setting name="0">415140368</setting>
+					<setting name="1">247140344</setting>
+					<setting name="2">125590584</setting>
+					<setting name="3">81514736</setting>
+				</section>
+				<setting name="time">604800</setting>
+				<section name="deps">
+					<setting name="B8">30</setting>
+					<setting name="F2">20</setting>
+				</section>
+			</section>
+			<section name="F11">
+				<section name="ress">
+					<setting name="0">200000</setting>
+					<setting name="1">130000</setting>
+					<setting name="2">100000</setting>
+					<setting name="3">75000</setting>
+				</section>
+				<setting name="time">24015</setting>
+				<section name="deps">
+					<setting name="B8">20</setting>
+					<setting name="B10">15</setting>
+					<setting name="F0">5</setting>
+					<setting name="F2">6</setting>
+				</section>
+			</section>
+		</section>
+		<section name="roboter">
+			<section name="R01">
+				<section name="ress">
+					<setting name="0">51893</setting>
+					<setting name="1">43095</setting>
+					<setting name="2">32933</setting>
+					<setting name="3">19463</setting>
+				</section>
+				<setting name="time">51365</setting>
+				<section name="deps">
+					<setting name="B9">2</setting>
+					<setting name="F2">1</setting>
+				</section>
+			</section>
+			<section name="R02">
+				<section name="ress">
+					<setting name="0">76329</setting>
+					<setting name="1">58921</setting>
+					<setting name="2">49892</setting>
+					<setting name="3">28979</setting>
+				</section>
+				<setting name="time">72985</setting>
+				<section name="deps">
+					<setting name="B9">5</setting>
+					<setting name="F2">2</setting>
+				</section>
+			</section>
+			<section name="R03">
+				<section name="ress">
+					<setting name="0">72984</setting>
+					<setting name="1">75893</setting>
+					<setting name="2">53876</setting>
+					<setting name="3">30532</setting>
+				</section>
+				<setting name="time">80493</setting>
+				<section name="deps">
+					<setting name="B9">7</setting>
+					<setting name="F2">5</setting>
+				</section>
+			</section>
+			<section name="R04">
+				<section name="ress">
+					<setting name="0">75823</setting>
+					<setting name="1">65239</setting>
+					<setting name="2">73189</setting>
+					<setting name="3">34892</setting>
+				</section>
+				<setting name="time">92893</setting>
+				<section name="deps">
+					<setting name="B9">10</setting>
+					<setting name="F2">7</setting>
+				</section>
+			</section>
+			<section name="R05">
+				<section name="ress">
+					<setting name="0">79894</setting>
+					<setting name="1">69093</setting>
+					<setting name="2">58398</setting>
+					<setting name="3">55892</setting>
+				</section>
+				<setting name="time">105842</setting>
+				<section name="deps">
+					<setting name="B9">14</setting>
+					<setting name="F2">10</setting>
+				</section>
+			</section>
+			<section name="R06">
+				<section name="ress">
+					<setting name="0">102985</setting>
+					<setting name="1">90439</setting>
+					<setting name="2">84902</setting>
+					<setting name="3">182232</setting>
+				</section>
+				<setting name="time">60194</setting>
+				<section name="deps">
+					<setting name="B9">20</setting>
+					<setting name="F2">17</setting>
+					<setting name="F3">15</setting>
+				</section>
+			</section>
+		</section>
+		<section name="schiffe">
+			<section name="S0">
+				<section name="ress">
+					<setting name="0">10000</setting>
+					<setting name="1">7500</setting>
+					<setting name="2">7500</setting>
+					<setting name="3">0</setting>
+				</section>
+				<setting name="time">3125</setting>
+				<section name="deps">
+					<setting name="B10">2</setting>
+					<setting name="F6">2</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">7500</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">0</setting>
+				<setting name="def">300</setting>
+				<setting name="speed">950</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">20000</setting>
+			</section>
+			<section name="S1">
+				<section name="ress">
+					<setting name="0">30000</setting>
+					<setting name="1">20000</setting>
+					<setting name="2">20000</setting>
+					<setting name="3">0</setting>
+				</section>
+				<setting name="time">4878</setting>
+				<section name="deps">
+					<setting name="B10">6</setting>
+					<setting name="F6">5</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">50000</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">0</setting>
+				<setting name="def">500</setting>
+				<setting name="speed">1200</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">56000</setting>
+			</section>
+			<section name="S2">
+				<section name="ress">
+					<setting name="0">90000</setting>
+					<setting name="1">60000</setting>
+					<setting name="2">55000</setting>
+					<setting name="3">0</setting>
+				</section>
+				<setting name="time">6800</setting>
+				<section name="deps">
+					<setting name="B10">11</setting>
+					<setting name="F6">10</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">180000</setting>
+					<setting name="1">3</setting>
+				</section>
+				<setting name="att">0</setting>
+				<setting name="def">650</setting>
+				<setting name="speed">1500</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">164000</setting>
+			</section>
+			<section name="S3">
+				<section name="ress">
+					<setting name="0">30000</setting>
+					<setting name="1">20000</setting>
+					<setting name="2">15000</setting>
+					<setting name="3">5000</setting>
+				</section>
+				<setting name="time">6745</setting>
+				<section name="deps">
+					<setting name="B10">6</setting>
+					<setting name="F5">2</setting>
+					<setting name="F6">5</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">35000</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">0</setting>
+				<setting name="def">600</setting>
+				<setting name="speed">650</setting>
+				<section name="types">
+					<setting name="0">2</setting>
+					<setting name="1">3</setting>
+					<setting name="2">4</setting>
+					<setting name="3">6</setting>
+				</section>
+				<setting name="mass">56000</setting>
+			</section>
+			<section name="S5">
+				<section name="ress">
+					<setting name="0">0</setting>
+					<setting name="1">7500</setting>
+					<setting name="2">5000</setting>
+					<setting name="3">0</setting>
+				</section>
+				<setting name="time">1245</setting>
+				<section name="deps">
+					<setting name="B10">3</setting>
+					<setting name="F1">3</setting>
+					<setting name="F6">3</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">0</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">0</setting>
+				<setting name="def">200</setting>
+				<setting name="speed">600000</setting>
+				<section name="types">
+					<setting name="0">5</setting>
+					<setting name="1">6</setting>
+				</section>
+				<setting name="mass">10000</setting>
+			</section>
+			<section name="S6">
+				<section name="ress">
+					<setting name="0">75000</setting>
+					<setting name="1">50000</setting>
+					<setting name="2">22000</setting>
+					<setting name="3">14000</setting>
+				</section>
+				<setting name="time">7250</setting>
+				<section name="deps">
+					<setting name="B10">6</setting>
+					<setting name="F6">5</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">0</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">0</setting>
+				<setting name="def">2500</setting>
+				<setting name="speed">500</setting>
+				<section name="types">
+					<setting name="0">1</setting>
+					<setting name="1">6</setting>
+				</section>
+				<setting name="mass">128800</setting>
+			</section>
+			<section name="S7">
+				<section name="ress">
+					<setting name="0">12500</setting>
+					<setting name="1">9000</setting>
+					<setting name="2">3000</setting>
+					<setting name="3">1200</setting>
+				</section>
+				<setting name="time">3655</setting>
+				<section name="deps">
+					<setting name="B10">5</setting>
+					<setting name="F4">1</setting>
+					<setting name="F6">2</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">500</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">100</setting>
+				<setting name="def">350</setting>
+				<setting name="speed">850</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">20560</setting>
+			</section>
+			<section name="S8">
+				<section name="ress">
+					<setting name="0">18000</setting>
+					<setting name="1">13000</setting>
+					<setting name="2">6500</setting>
+					<setting name="3">3000</setting>
+				</section>
+				<setting name="time">5485</setting>
+				<section name="deps">
+					<setting name="B10">6</setting>
+					<setting name="F4">2</setting>
+					<setting name="F6">3</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">750</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">140</setting>
+				<setting name="def">450</setting>
+				<setting name="speed">600</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">32400</setting>
+			</section>
+			<section name="S9">
+				<section name="ress">
+					<setting name="0">30000</setting>
+					<setting name="1">20000</setting>
+					<setting name="2">12500</setting>
+					<setting name="3">6525</setting>
+				</section>
+				<setting name="time">7135</setting>
+				<section name="deps">
+					<setting name="B10">7</setting>
+					<setting name="F4">4</setting>
+					<setting name="F6">4</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">1000</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">280</setting>
+				<setting name="def">1000</setting>
+				<setting name="speed">700</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">55220</setting>
+			</section>
+			<section name="S10">
+				<section name="ress">
+					<setting name="0">24000</setting>
+					<setting name="1">16000</setting>
+					<setting name="2">10000</setting>
+					<setting name="3">5500</setting>
+				</section>
+				<setting name="time">5298</setting>
+				<section name="deps">
+					<setting name="B10">6</setting>
+					<setting name="F4">3</setting>
+					<setting name="F6">3</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">1500</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">230</setting>
+				<setting name="def">1000</setting>
+				<setting name="speed">550</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">44400</setting>
+			</section>
+			<section name="S11">
+				<section name="ress">
+					<setting name="0">31000</setting>
+					<setting name="1">21000</setting>
+					<setting name="2">13000</setting>
+					<setting name="3">7500</setting>
+				</section>
+				<setting name="time">7268</setting>
+				<section name="deps">
+					<setting name="B10">8</setting>
+					<setting name="F4">5</setting>
+					<setting name="F6">4</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">2500</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">300</setting>
+				<setting name="def">1300</setting>
+				<setting name="speed">470</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">58000</setting>
+			</section>
+			<section name="S12">
+				<section name="ress">
+					<setting name="0">41000</setting>
+					<setting name="1">28000</setting>
+					<setting name="2">18000</setting>
+					<setting name="3">10000</setting>
+				</section>
+				<setting name="time">8625</setting>
+				<section name="deps">
+					<setting name="B10">10</setting>
+					<setting name="F4">7</setting>
+					<setting name="F6">5</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">3500</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">350</setting>
+				<setting name="def">1700</setting>
+				<setting name="speed">420</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">77600</setting>
+			</section>
+			<section name="S13">
+				<section name="ress">
+					<setting name="0">45000</setting>
+					<setting name="1">30000</setting>
+					<setting name="2">20000</setting>
+					<setting name="3">12000</setting>
+				</section>
+				<setting name="time">7565</setting>
+				<section name="deps">
+					<setting name="B10">14</setting>
+					<setting name="F4">9</setting>
+					<setting name="F7">3</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">2000</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">430</setting>
+				<setting name="def">1600</setting>
+				<setting name="speed">170</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">85600</setting>
+			</section>
+			<section name="S14">
+				<section name="ress">
+					<setting name="0">60000</setting>
+					<setting name="1">40000</setting>
+					<setting name="2">28000</setting>
+					<setting name="3">16000</setting>
+				</section>
+				<setting name="time">9095</setting>
+				<section name="deps">
+					<setting name="B10">17</setting>
+					<setting name="F4">10</setting>
+					<setting name="F7">5</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">3000</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">550</setting>
+				<setting name="def">2150</setting>
+				<setting name="speed">110</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">115200</setting>
+			</section>
+			<section name="S15">
+				<section name="ress">
+					<setting name="0">87000</setting>
+					<setting name="1">60000</setting>
+					<setting name="2">40000</setting>
+					<setting name="3">24000</setting>
+				</section>
+				<setting name="time">14498</setting>
+				<section name="deps">
+					<setting name="B10">20</setting>
+					<setting name="F4">12</setting>
+					<setting name="F7">8</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">5000</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">800</setting>
+				<setting name="def">3200</setting>
+				<setting name="speed">85</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">168800</setting>
+			</section>
+			<section name="S16">
+				<section name="ress">
+					<setting name="0">500000</setting>
+					<setting name="1">350000</setting>
+					<setting name="2">250000</setting>
+					<setting name="3">140000</setting>
+				</section>
+				<setting name="time">36875</setting>
+				<section name="deps">
+					<setting name="B10">30</setting>
+					<setting name="F4">15</setting>
+					<setting name="F5">10</setting>
+					<setting name="F8">3</setting>
+				</section>
+				<section name="trans">
+					<setting name="0">10000</setting>
+					<setting name="1">0</setting>
+				</section>
+				<setting name="att">2500</setting>
+				<setting name="def">11000</setting>
+				<setting name="speed">30</setting>
+				<section name="types">
+					<setting name="0">3</setting>
+					<setting name="1">4</setting>
+					<setting name="2">6</setting>
+				</section>
+				<setting name="mass">992000</setting>
+			</section>
+		</section>
+		<section name="verteidigung">
+			<section name="V0">
+				<section name="ress">
+					<setting name="0">12500</setting>
+					<setting name="1">9000</setting>
+					<setting name="2">3000</setting>
+					<setting name="3">1200</setting>
+				</section>
+				<setting name="time">4575</setting>
+				<section name="deps">
+					<setting name="B10">3</setting>
+					<setting name="F4">1</setting>
+					<setting name="F5">2</setting>
+				</section>
+				<setting name="att">100</setting>
+				<setting name="def">400</setting>
+			</section>
+			<section name="V1">
+				<section name="ress">
+					<setting name="0">18000</setting>
+					<setting name="1">12500</setting>
+					<setting name="2">6000</setting>
+					<setting name="3">3000</setting>
+				</section>
+				<setting name="time">4813</setting>
+				<section name="deps">
+					<setting name="B10">4</setting>
+					<setting name="F4">2</setting>
+					<setting name="F5">3</setting>
+				</section>
+				<setting name="att">175</setting>
+				<setting name="def">600</setting>
+			</section>
+			<section name="V2">
+				<section name="ress">
+					<setting name="0">50000</setting>
+					<setting name="1">45000</setting>
+					<setting name="2">45000</setting>
+					<setting name="3">20000</setting>
+				</section>
+				<setting name="time">5435</setting>
+				<section name="deps">
+					<setting name="B10">7</setting>
+					<setting name="F4">5</setting>
+					<setting name="F5">7</setting>
+					<setting name="F6">3</setting>
+				</section>
+				<setting name="att">400</setting>
+				<setting name="def">950</setting>
+			</section>
+			<section name="V6">
+				<section name="ress">
+					<setting name="0">100000</setting>
+					<setting name="1">70000</setting>
+					<setting name="2">50000</setting>
+					<setting name="3">25000</setting>
+				</section>
+				<setting name="time">6000</setting>
+				<section name="deps">
+					<setting name="B10">8</setting>
+					<setting name="F4">7</setting>
+					<setting name="F5">9</setting>
+				</section>
+				<setting name="att">650</setting>
+				<setting name="def">1200</setting>
+			</section>
+			<section name="V3">
+				<section name="ress">
+					<setting name="0">250000</setting>
+					<setting name="1">175000</setting>
+					<setting name="2">100000</setting>
+					<setting name="3">50000</setting>
+				</section>
+				<setting name="time">7363</setting>
+				<section name="deps">
+					<setting name="B10">18</setting>
+					<setting name="F4">13</setting>
+					<setting name="F5">15</setting>
+					<setting name="F6">10</setting>
+				</section>
+				<setting name="att">1000</setting>
+				<setting name="def">2000</setting>
+			</section>
+			<section name="V4">
+				<section name="ress">
+					<setting name="0">375000</setting>
+					<setting name="1">300000</setting>
+					<setting name="2">200000</setting>
+					<setting name="3">300000</setting>
+				</section>
+				<setting name="time">8455</setting>
+				<section name="deps">
+					<setting name="B10">22</setting>
+					<setting name="F4">15</setting>
+					<setting name="F5">17</setting>
+					<setting name="F7">5</setting>
+				</section>
+				<setting name="att">1500</setting>
+				<setting name="def">3500</setting>
+			</section>
+			<section name="V5">
+				<section name="ress">
+					<setting name="0">1000000</setting>
+					<setting name="1">750000</setting>
+					<setting name="2">600000</setting>
+					<setting name="3">400000</setting>
+				</section>
+				<setting name="time">10043</setting>
+				<section name="deps">
+					<setting name="B10">25</setting>
+					<setting name="F4">20</setting>
+					<setting name="F5">19</setting>
+					<setting name="F3">12</setting>
+				</section>
+				<setting name="att">2500</setting>
+				<setting name="def">9000</setting>
+			</section>
+			<section name="V7">
+				<section name="ress">
+					<setting name="0">25000</setting>
+					<setting name="1">20000</setting>
+					<setting name="2">5000</setting>
+					<setting name="3">5000</setting>
+				</section>
+				<setting name="time">2154</setting>
+				<section name="deps">
+					<setting name="B10">6</setting>
+					<setting name="F1">6</setting>
+					<setting name="F4">7</setting>
+				</section>
+				<setting name="att">0</setting>
+				<setting name="def">400</setting>
+			</section>
+		</section>
+	</section>
+</config>

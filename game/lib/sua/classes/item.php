@@ -184,17 +184,18 @@
 		/**
 		 * Überprüft, ob der Benutzer $user alle Abhängigkeiten dieses Gegenstandes
 		 * erfüllt hat.
-		 * @param User $user
+		 * @param string $user
+		 * @param Planet $planet
 		 * @param bool $run_eventhandler Wird an User->getItemLevel weitergegeben, siehe dort.
 		 * @return bool
 		*/
 
-		function checkDependencies($user, $run_eventhandler=true)
+		function checkDependencies($user, $planet=null)
 		{
 			$deps = $this->getInfo("deps");
 			foreach($deps as $id=>$min_level)
 			{
-				if($user->getItemLevel($id, false, $run_eventhandler) < $min_level)
+				if($user->getItemLevel($id, false, $planet) < $min_level)
 					return false;
 			}
 			return true;

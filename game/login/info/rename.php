@@ -35,7 +35,7 @@
 	}
 
 	# Herausfinden, ob eigene Flotten zu/von diesem Planeten unterwegs sind
-	$flotte_unterwegs = $me->checkOwnFleetWithPlanet();
+	$flotte_unterwegs = count(Fleet::userFleetsToPlanet($me->getName(), $me->getPosObj()));
 	$planets = $me->getPlanetsList();
 
 	if(isset($_POST['password']) && !$flotte_unterwegs && count($planets) > 1)

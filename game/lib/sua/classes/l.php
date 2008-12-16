@@ -84,7 +84,7 @@
 		 * Setzt die Sprach-Locale fuer die uebergebene Sprache. Dadurch liefert gettext die Nachrichten in der neuen Sprache zurueck.
 		 * @param string $lang
 		 * @param bool $die Das Script wird beendet, wenn die Sprache nicht ausgewählt werden kann
-		 * @return bool Konnte die Sprache gesetzt werden?
+		 * @return string|bool Konnte die Sprache gesetzt werden?
 		*/
 
 		static function language($lang=null, $die=false)
@@ -110,13 +110,27 @@
 		}
 
 		/**
+		 * Setzt oder liest die aktuelle Zeitzone.
+		 * @param string $timezone
+		 * @return string|null
+		*/
+
+		static function timezone($timezone=null)
+		{
+			if(isset($timezone))
+				date_default_timezone_set($timezone);
+			else
+				return date_default_timezone_get();
+		}
+
+		/**
 		 * Ersetzt Dinge wie [item_B0] durch den entsprechenden gettext-String.
 		 * @param string $string
 		 * @param bool $links Sollen die Dinge durch Links auf die Beschreibung ersetzt werden?
 		 * @return string
 		*/
 
-		static function _i($string, $links=true)
+		static function _I($string, $links=true)
 		{
 			return preg_replace("/\\[(item|ress)_([a-zA-Z0-9]+)([-a-zA-Z0-9_]*)\\]/e", ($links?"'<a href=\"".global_setting("h_root")."/login/info/description.php?id=\$2&amp;".htmlspecialchars(global_setting("URL_SUFFIX"))."\">'.h(":"")."_('\$0')".($links?").'</a>'" : ""), $string);
 		}

@@ -24,9 +24,12 @@
 
 	namespace sua;
 	require_once dirname(dirname(__FILE__))."/engine.php";
-	
+
 	/**
 	 * Die Funktionen dieses Interfaces werden benötigt, damit Classes::Singleton() die Klassen instanzieren kann.
+	 * Singleton darf nicht einfach so abgeschafft werden. Das könnte zu Endlosschleifen werden, denkbar wäre zum Beispiel, dass
+	 * der Konstruktor der Planet-Klasse deren Eventhandler aufruft, dieser etwas im User-Objekt macht und das Planet-Objekte erzeugt,
+	 * deren Konstruktoren bei Singleton nicht extra aufgerufen werden müssen, und der Eventhandler dann zu Endlosschleifen führen würde.
 	*/
 
 	interface Singleton

@@ -173,7 +173,7 @@
 		 * @return void
 		*/
 
-		function renameUser($old_name, $new_name)
+		static function renameUser($old_name, $new_name)
 		{
 			self::$sqlite->query("UPDATE messages_users SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($old_name).";");
 			self::$sqlite->query("UPDATE message_recipients SET recipient = ".self::$sqlite->quote($new_name)." WHERE recipient = ".self::$sqlite->quote($old_name).";");
@@ -337,7 +337,7 @@
 
 		function getUsersList()
 		{
-			return self::$sqlite->columnQuery("SELECT user FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName()).";");
+			return self::$sqlite->singleColumn("SELECT user FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName()).";");
 		}
 
 		/**
@@ -359,29 +359,25 @@
 
 		function getRecipients()
 		{
-			return self::$sqlite->columnQuery("SELECT recipient FROM messages_recipients WHERE message_id = ".self::$sqlite->quote($this->getName()).";");
+			return self::$sqlite->singleColumn("SELECT recipient FROM messages_recipients WHERE message_id = ".self::$sqlite->quote($this->getName()).";");
 		}
 
 		/**
 		 * Benachrichtigt die per addUser() hinzugefügten Benutzer auf Wunsch per Instant Messaging über den Eingang der Nachricht.
 		 * @return void
+		 * @todo
 		*/
 
 		private function IMNotify()
 		{
 			if(count($this->im_check_notify) > 0)
 			{
-				$imfile = Classes::IMFile();
 				foreach($this->im_check_notify as $user=>$type)
 				{
 					$user_obj = Classes::User($user);
-					$im_settings = $user_obj->getNotificationType();
-					if($im_settings)
-					{
-						$im_receive = $user_obj->checkSetting('messenger_receive');
-						if($im_receive['messages'][$type])
-							$imfile->addMessage($im_settings[0], $im_settings[1], $user, sprintf($this->from() ? $user_obj->_("Sie haben eine neue Nachricht der Sorte %s von %s erhalten. Der Betreff lautet: %s") : $user_obj->_("Sie haben eine neue Nachricht der Sorte %s erhalten. Der Betreff lautet: %3\$s"), $user_obj->_("[message_".$type."]"), $this->from(), $this->subject()));
-					}
+					$im_receive = $user_obj->checkSetting('messenger_receive');
+					if($im_receive['messages'][$type])
+						IMServer::sendMessage($user, sprintf($this->from() ? $user_obj->_("Sie haben eine neue Nachricht der Sorte %s von %s erhalten. Der Betreff lautet: %s") : $user_obj->_("Sie haben eine neue Nachricht der Sorte %s erhalten. Der Betreff lautet: %3\$s"), $user_obj->_("[message_".$type."]"), $this->from(), $this->subject()));
 					unset($this->im_check_notify[$user]);
 				}
 			}
@@ -407,7 +403,7 @@
 
 		static function getUserMessages($user, $type=null, $status=null)
 		{
-			return self::$sqlite->columnQuery("SELECT DISTINCT message_id FROM messages_users WHERE user = ".self::$sqlite->quote($user).(isset($type) ? " AND type = ".self::$sqlite->quote($type)).(isset($status) ? " AND status = ".self::$sqlite->quote($status)).";");
+			return self::$sqlite->singleColumn("SELECT DISTINCT message_id FROM messages_users WHERE user = ".self::$sqlite->quote($user).(isset($type) ? " AND type = ".self::$sqlite->quote($type)).(isset($status) ? " AND status = ".self::$sqlite->quote($status)).";");
 		}
 
 		/**
@@ -437,5 +433,34 @@
 				$times[$id] = self::$sqlite->singleField("SELECT time FROM messages WHERE message_id = ".self::$sqlite->quote($id)." LIMIT 1;");
 			asort($times, SORT_NUMERIC);
 			return array_keys($times);
+		}
+
+		/**
+		 * Löscht alle gelesenen (nicht archivierten) Nachrichten, die das maximale Nachrichtenalter überschreiten.
+		 * @global $message_type_times
+		 * @return int Die Anzahl der gelöschten Nachrichten. (In mehreren Postfächern gelöschte Nachrichten werden auch mehrfach gelöscht.)
+		*/
+
+		static function cleanUp()
+		{
+			global $message_type_times;
+
+			self::$sqlite->query("SELECT message_id,user,type FROM messages_users WHERE status = ".self::$sqlite->quote(self::STATUS_ALT)." NATURAL JOIN ( SELECT message_id, time AS time FROM messages );");
+
+			$i = 0;
+			while(($r = self::$sqlite->nextResult()) !== false)
+			{
+				if(!isset($message_type_times[$r["type"]]))
+					continue;
+
+				if(time()-$time > $message_type_times[$r["type"]]*86400)
+				{
+					$message = Classes::Message($r["message_id"]);
+					$message->removeUser($r["user"]);
+					$i++;
+				}
+			}
+
+			return $i;
 		}
 	}

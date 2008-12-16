@@ -27,68 +27,70 @@
 
 	/**
 	 * Repräsentiert eine Flotte im Spiel.
+	 * @todo Fremdstationierung einbauen. Flotten, bei denen kein Ziel auf NOT finished steht, sind fremdstationiert. Muss auch bei callBack() noch korrigiert werden.
 	*/
 
 	class Fleet extends SQLiteSet
 	{
 		protected static $tables = array (
 			"fleets" => array (
-				"fleet_id TEXT PRIMARY KEY"
+				"fleet_id TEXT PRIMARY KEY",
+				"password TEXT"
 			),
 			"fleets_targets" => array (
-				"i INTEGER",
-				"fleet_id TEXT",
-				"galaxy INTEGER",
-				"system INTEGER",
-				"planet INTEGER",
-				"type INTEGER",
-				"flying_back INTEGER",
-				"arrival INTEGER",
-				"finished INTEGER"
+				"i INTEGER NOT NULL",
+				"fleet_id TEXT NOT NULL",
+				"galaxy INTEGER NOT NULL",
+				"system INTEGER NOT NULL",
+				"planet INTEGER NOT NULL",
+				"type INTEGER NOT NULL",
+				"flying_back INTEGER DEFAULT 0",
+				"arrival INTEGER NOT NULL",
+				"finished INTEGER DEFAULT 0"
 			),
 		    "fleets_users" => array (
-				"i INTEGER",
-				"fleet_id TEXT",
-				"user TEXT",
-				"from_galaxy INTEGER",
-				"from_system INTEGER",
-				"from_planet INTEGER",
-				"factor REAL",
-				"ress0 INTEGER",
-				"ress1 INTEGER",
-				"ress2 INTEGER",
-				"ress3 INTEGER",
-				"ress4 INTEGER",
-				"ress_tritium INTEGER",
-				"hress0 INTEGER",
-				"hress1 INTEGER",
-				"hress2 INTEGER",
-				"hress3 INTEGER",
-				"hress4 INTEGER",
-				"used_tritium INTEGER",
-				"dont_put_ress INTEGER",
-				"departing INTEGER"
+				"i INTEGER NOT NULL",
+				"fleet_id TEXT NOT NULL",
+				"user TEXT NOT NULL",
+				"from_galaxy INTEGER NOT NULL",
+				"from_system INTEGER NOT NULL",
+				"from_planet INTEGER NOT NULL",
+				"factor REAL DEFAULT 1",
+				"ress0 INTEGER DEFAULT 0",
+				"ress1 INTEGER DEFAULT 0",
+				"ress2 INTEGER DEFAULT 0",
+				"ress3 INTEGER DEFAULT 0",
+				"ress4 INTEGER DEFAULT 0",
+				"ress_tritium INTEGER DEFAULT 0",
+				"hress0 INTEGER DEFAULT 0",
+				"hress1 INTEGER DEFAULT 0",
+				"hress2 INTEGER DEFAULT 0",
+				"hress3 INTEGER DEFAULT 0",
+				"hress4 INTEGER DEFAULT 0",
+				"used_tritium INTEGER DEFAULT 0",
+				"dont_put_ress INTEGER DEFAULT 0",
+				"departing INTEGER DEFAULT 0"
 			),
 		    "fleets_users_rob" => array (
-				"fleet_id TEXT",
-				"user TEXT",
-				"id TEXT",
-				"number INTEGER",
-				"scores INTEGER"
+				"fleet_id TEXT NOT NULL",
+				"user TEXT NOT NULL",
+				"id TEXT NOT NULL",
+				"number INTEGER DEFAULT 0",
+				"scores INTEGER DEFAULT 0"
 			),
 		    "fleets_users_hrob" => array (
-				"fleet_id TEXT",
-				"user TEXT",
-				"id TEXT",
-				"number INTEGER",
-				"scores INTEGER"
+				"fleet_id TEXT NOT NULL",
+				"user TEXT NOT NULL",
+				"id TEXT NOT NULL",
+				"number INTEGER DEFAULT 0",
+				"scores INTEGER DEFAULT 0"
 			),
 		    "fleets_users_fleet" => array (
-				"fleet_id TEXT",
-				"user TEXT",
-				"id TEXT",
-				"number INTEGER",
-				"scores INTEGER"
+				"fleet_id TEXT NOT NULL",
+				"user TEXT NOT NULL",
+				"id TEXT NOT NULL",
+				"number INTEGER DEFAULT 0",
+				"scores INTEGER DEFAULT 0"
 			)
 		);
 
@@ -153,11 +155,6 @@
 
 		function destroy()
 		{
-			foreach(self::$sqlite->columnQuery("SELECT DISTINCT user FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";") as $username)
-			{
-				$user = Classes::User($username);
-				$user->unsetFleet($this->getName());
-			}
 			foreach(array_keys(self::$tables) as $table)
 				self::$sqlite->query("DELETE FROM ".$table." WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";");
 		}
@@ -170,7 +167,7 @@
 
 		static function getArrivedFleets()
 		{
-			return self::$sqlite->columnQuery("SELECT DISTINCT fleet_id FROM fleets_targets WHERE arrival <= ".self::$sqlite->quote(time())." AND NOT finished ORDER BY arrival ASC;");
+			return self::$sqlite->singleColumn("SELECT DISTINCT fleet_id FROM fleets_targets WHERE arrival <= ".self::$sqlite->quote(time())." AND NOT finished ORDER BY arrival ASC;");
 		}
 
 		/**
@@ -274,13 +271,12 @@
 			if(!$this->status) return false;
 
 			$users = $this->getUsersList();
-			$first_user = Functions::First($users);
-			if($user === null) $user = $first_user;
-
-			if($user != $first_user)
+			if(!isset($user))
+				$user = $this->getFirstUser();
+			elseif(!$this->isFirstUser($user))
 				return 1;
 
-			$slots = self::$sqlite->singleField("SELECT COUNT(*) FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT flying_back;");
+			$slots = self::$sqlite->singleField("SELECT COUNT(*) FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT flying_back AND NOT finished;");
 			if($slots < 1) $slots = 1;
 			return $slots;
 		}
@@ -297,17 +293,8 @@
 		{
 			$i = 1+self::$sqlite->singleField("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
 			self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back ) VALUES ( ".self::$sqlite->quote($i).", ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($pos->getGalaxy()).", ".self::$sqlite->quote($pos->getSystem()).", ".self::$sqlite->quote($pos->getPlanet()).", ".self::$sqlite->quote($type).", ".self::$sqlite->quote($flying_back ? 1 : 0)." );");
-
-			# Eintragen in die Flottenliste des Benutzers
-			if($this->started() && (!$back || $type != self::TYPE_SAMMELN))
-			{
-				$owner = $pos->getOwner();
-				if($owner)
-				{
-					$user = Classes::User($owner);
-					$user->addFleet($this->getName());
-				}
-			}
+			
+			
 		}
 
 		/**
@@ -469,13 +456,6 @@
 
 			$i = 1+self::$sqlite->singleField("SELECT i FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
 			self::$sqlite->query("INSERT INTO fleets_users ( i, fleet_id, user, from_galaxy, from_system, from_planet, factor ) VALUES ( ".self::$sqlite->quote($i).", ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($from->getGalaxy()).", ".self::$sqlite->quote($from->getSystem()).", ".self::$sqlite->quote($from->getPlanet()).", ".self::$sqlite->quote($factor)." );");
-
-			# Eintragen in die Flottenliste des Benutzers
-			if($this->started())
-			{
-				$user = Classes::User($user);
-				$user->addFleet($this->getName());
-			}
 		}
 
 		/**
@@ -860,7 +840,7 @@
 
 		function getUsersList()
 		{
-			return self::$sqlite->columnQuery("SELECT DISTINCT user FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";");
+			return self::$sqlite->singleColumn("SELECT DISTINCT user FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";");
 		}
 
 		/**
@@ -929,13 +909,6 @@
 			}
 
 			self::$sqlite->query("UPDATE fleets_users SET departing = ".self::$sqlite->quote(time())." WHERE fleet_id = ".self::$sqlite->quote($this->getName()).";");
-
-			# Bei den Benutzern eintragen
-			foreach($this->getVisibleUsers() as $user)
-			{
-				$user_obj = Classes::User($user);
-				$user_obj->addFleet($this->getName());
-			}
 		}
 
 		/**
@@ -1042,6 +1015,125 @@
 		}
 
 		/**
+		 * Gibt ein Flotten-Array mit Flotten-IDs zurück, die der Benutzer $user sehen darf.
+		 * @param string $user
+		 * @return array
+		*/
+
+		static function visibleToUser($user)
+		{
+			$planets_query = array();
+			foreach(Planet::getPlanetsByUser($user) as $planet)
+				$planets_query[] = "( galaxy = ".self::$sqlite->quote($planet->getGalaxy())." AND system = ".self::$sqlite->quote($planet->getSystem())." AND planet = ".self::$sqlite->quote($planet->getPlanet())." )";
+
+			return self::$sqlite->singleColumn("SELECT DISTINCT fleet_id FROM ( SELECT fleet_id FROM fleets_users WHERE user = ".self::$sqlite->quote($user)." UNION ALL SELECT fleet_id FROM fleets_targets WHERE type != ".self::$sqlite->quote(self::TYPE_SAMMELN)." AND ( ".implode(" OR ", $planets_query)." ) );");
+		}
+
+		/**
+		 * Gibt zurück, wieviele Flotten des Benutzers $user noch zu einem fremden Planeten unterwegs ist.
+		 * Nützlich, um festzustellen, ob der Urlaubsmodus möglich ist.
+		 * @param string $user
+		 * @return int
+		*/
+
+		static function ownFleetsToForeignPlanet($user)
+		{
+			$planets_query = array();
+			foreach(Planet::getPlanetsByUser($user) as $planet)
+				$planets_query[] = "( galaxy = ".self::$sqlite->quote($planet->getGalaxy())." AND system = ".self::$sqlite->quote($planet->getSystem())." AND planet = ".self::$sqlite->quote($planet->getPlanet())." )";
+
+			return self::$sqlite->singleField("SELECT COUNT(DISTINCT fleet_id) FROM ( SELECT fleet_id FROM ( SELECT DISTINCT fleet_id FROM fleets_targets EXCEPT ( SELECT fleet_id FROM fleets_targets WHERE ".implode(" OR ", $planets_query)." ) ) NATURAL JOIN ( SELECT fleet_id, user FROM fleets_users ) ) WHERE user != ".self::$sqlite->query($user).";");
+		}
+
+		/**
+		 * Gibt zurück, welche Flotten des Benutzers $user oder anderer Benutzer sich auf dem Weg zum
+		 * Planeten $planet befinden.
+		 * @param string $user
+		 * @param Planet $planet
+		 * @param bool $not_match Nur Flotten zurückgeben, bei denen $user _nicht_ mitfliegt
+		 * @return array
+		*/
+
+		static function userFleetsToPlanet($user, Planet $planet, $not_match=false)
+		{
+			$query = "";
+			if($not_match)
+				$query .= "SELECT fleet_id FROM ( SELECT DISTINCT fleet_id FROM fleets_users EXCEPT ";
+			$query .= "SELECT DISTINCT fleet_id FROM fleets_users WHERE user = ".self::$sqlite->quote($user)." ";
+			if($not_match)
+				$query .= ") ";
+			$query .= "INTERSECT SELECT DISTINCT fleet_id FROM fleets_targets WHERE galaxy = ".self::$sqlite->quote($planet->getGalaxy())." AND system = ".self::$sqlite->quote($planet->getSystem())." AND planet = ".self::$sqlite->quote($planet->getPlanet())." AND NOT finished;");
+			return self::$sqlite->singleColumn($query);
+		}
+
+		/**
+		 * Gibt zurück, wieviele Slots die Flotten des Benutzers $user belegen.
+		 * @param string $user
+		 * @return int
+		*/
+
+		static function userSlots($user)
+		{
+			$fleets = 0;
+			foreach(self::visibleToUser($user) as $flotte)
+			{
+				$fl = Classes::Fleet($flotte);
+				if(!$fl->userExists($user))
+					continue;
+
+				$fleets += $fl->getNeededSlots($user);
+			}
+
+			return $fleets;
+		}
+		
+		/**
+		 * Gibt alle Flotten zurück, die gerade auf einem bestimmten Planeten fremdstationiert sind.
+		 * @param Planet $planet
+		 * @return array
+		*/
+		
+		static function getFleetsPositionedOnPlanet(Planet $planet)
+		{
+			return self::$sqlite->singleColumn("SELECT fleet_id FROM ( SELECT fleet_id,galaxy,system,planet,finished FROM fleets_targets ORDER BY i DESC GROUP BY fleet_id ) WHERE galaxy = ".self::$sqlite->quote($planet->getGalaxy())." AND system = ".self::$sqlite->quote($planet->getSystem())." AND planet = ".self::$sqlite->quote($planet->getPlanet())." AND finished");
+		}
+		
+		/**
+		 * Ein Planet wurde aufgelöst. Das Ziel wird bei allen Flotten entfernt. Diejenigen, bei denen das
+		 * Ziel als Stationieren eingetragen war, erhalten den Rückflug stattdessen als Ziel.
+		 * Fremdstationierte Flotten, die diesen Planeten als Startplaneten haben, werden entfernt.
+		 * @param Planet $planet
+		 * @return void
+		*/
+		
+		static function planetRemoved(Planet $planet)
+		{
+			// Stationierungen auf diesen Planeten
+			self::$sqlite->query("SELECT DISTINCT fleet_id,arrival FROM fleets_targets WHERE galaxy = ".self::$sqlite->quote($planet->getGalaxy())." AND system = ".self::$sqlite->quote($planet->getSystem())." AND planet = ".self::$sqlite->quote($planet->getPlanet())." AND NOT finished AND ( type = ".self::TYPE_STATIONIEREN." OR flying_back = 1 );");
+			while(($r = self::$sqlite->nextResult()) !== false)
+			{
+				$fleet = Classes::Fleet($r["fleet_id"]);
+				$from = $fleet->from($fleet->getFirstUser());
+				if($from->equals($planet))
+					$fleet->destroy();
+				
+		}
+
+		/**
+		 * Liest oder setzt das Verbundflotten-Passwort dieser Flotte.
+		 * @param string $new_password
+		 * @return string|null
+		*/
+
+		function password($new_password=null)
+		{
+			if(!isset($new_password))
+				return $this->getMainField("password");
+			else
+				$this->setMainField("password", $new_password);
+		}
+
+		/**
 		 * Ruft die Flotten des Benutzers $user aus der Flotte zurück. Ist dies der letzte Benutzer, wird
 		 * die Flotte entfernt. Es wird eine neue Flotte erzeugt, mit der die Schiffe zurückfliegen.
 		 * @param string $user
@@ -1142,8 +1234,6 @@
 				$i = 1;
 			self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished ) VALUES ( ".self::$sqlite->quote($i).", ".self::$sqlite->quote($new_fleet).", ".self::$sqlite->quote($start->getGalaxy()).", ".self::$sqlite->quote($start->getSystem()).", ".self::$sqlite->quote($start->getPlanet()).", ".self::$sqlite->quote($this->getCurrentType()).", 1, ".self::$sqlite->quote(time()+$back_time).", 0 );");
 
-			Classes::User($user)->addFleet($new_fleet);
-
 			if(count($this->getUsersList()) < 1)
 			{
 				# Aus der Datenbank entfernen
@@ -1158,14 +1248,6 @@
 				# Letztes Ziel muss stationieren, Ursprungsplaneten des Benutzers hinzufuegen
 				if($this->getCurrentType() != self::TYPE_STATIONIEREN)
 					$this->addTarget($this->getLastTarget($this->getFirstUser()), $this->getCurrentType(), true);
-			}
-
-			# Flotte bei allen entfernen, zu denen sie nicht mehr fliegt
-			$new_visible_users = $this->getVisibleUsers();
-			foreach($visible_users as $u)
-			{
-				if(!in_array($u, $new_visible_users))
-					Classes::User($u)->unsetFleet($this->getName());
 			}
 		}
 
@@ -1356,7 +1438,6 @@
 									else
 									{
 										self::$sqlite->transactionQuery("DELETE FROM fleets_users WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($username).";");
-										Classes::User($username)->unsetFleet($this->getName());
 									}
 								}
 								else
@@ -1366,8 +1447,6 @@
 										self::$sqlite->transactionQuery("INSERT INTO fleets_users_fleet ( fleet_id, user, id, number ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($username).", ".self::$sqlite->quote($id).", ".self::$sqlite->quote($number).");");
 									self::$sqlite->transactionQuery("UPDATE fleets_users SET ress0 = ".self::$sqlite->quote($angreifer2[$username][1][0]).", ress1 = ".self::$sqlite->quote($angreifer2[$username][1][1]).", ress2 = ".self::$sqlite->quote($angreifer2[$username][1][2]).", ress3 = ".self::$sqlite->quote($angreifer2[$username][1][3]).", ress4 = ".self::$sqlite->quote($angreifer2[$username][1][4])." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($username).";");
 								}
-								$user_obj = Classes::User($username);
-								$user_obj->recalcHighscores(false, false, false, true, false);
 							}
 							self::$sqlite->endTransaction();
 
@@ -1581,7 +1660,7 @@
 								$message_text .= "\t\t<h4 class=\"strong\">%2\$s</h4>\n";
 								$message_text .= "\t\t<dl class=\"planet_".$target->getPlanetClass()."\">\n";
 								$message_text .= "\t\t\t<dt class=\"c-felder\">%3\$s</dt>\n";
-								$message_text .= "\t\t\t<dd class=\"c-felder\">".F::ths($target_user->getTotalFields())."</dd>\n";
+								$message_text .= "\t\t\t<dd class=\"c-felder\">".F::ths($target->getSize())."</dd>\n";
 								$message_text .= "\t\t</dl>\n";
 								$message_text .= "\t</div>\n";
 
@@ -1749,9 +1828,6 @@
 										self::$sqlite->query("DELETE FROM fleets_users_hrob WHERE fleet_id = ".self::$sqlite->query($this->getName())." AND user = ".self::$sqlite->query($username).";");
 									}
 								}
-
-								if(isset($destroyed[$username]) && $destroyed[$username] > 0)
-									$u->recalcHighscores(false, false, false, true, false);
 							}
 						}
 					}
@@ -1777,21 +1853,12 @@
 					self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished ) SELECT 1, ".self::$sqlite->quote($new_fleet).", galaxy, system, planet, type, flying_back, arrival, 1 FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;");
 					self::$sqlite->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished ) VALUES ( 2, ".self::$sqlite->quote($new_fleet).", ".self::$sqlite->quote($from->getGalaxy()).", ".self::$sqlite->quote($from->getSystem()).", ".self::$sqlite->quote($from->getPlanet()).", ".self::$sqlite->quote($this->getCurrentType()).", 1, ".self::$sqlite->quote(2*$this->getNextArrival()-$this->getStartTime($user)).", 0);");
 					self::$sqlite->query("UPDATE fleets_users SET fleet_id = ".self::$sqlite->quote($new_fleet)." WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
-					$user_obj->addFleet($new_fleet);
 				}
 
 				if($further)
 				{
 					$i = self::$sqlite->singleField("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND NOT FINISHED ORDER BY i ASC LIMIT 1;");
 					self::$sqlite->query("UPDATE fleets_targets SET finished = 1 WHERE fleet_id = ".self::$sqlite->quote($this->getName())." AND i = ".self::$sqlite->quote($i).";");
-				}
-
-				# Von den Benutzern entfernen
-				$new_visible_users = $this->getVisibleUsers();
-				foreach($visible_users as $u)
-				{
-					if(!in_array($u, $new_visible_users))
-						Classes::User($u)->unsetFleet($this->getName());
 				}
 
 				if(!$further) $this->destroy();
@@ -1940,7 +2007,7 @@
 						$user_obj->restoreLanguage();
 					}
 
-					if(array_sum_r($schiffe_other) > 0)
+					if(Functions::array_sum_r($schiffe_other) > 0)
 					{
 						$message_text .= $user_obj->_("Folgende Schiffe werden fremdstationiert:")."\n";
 						foreach($schiffe_other as $user=>$schiffe)
@@ -2777,17 +2844,8 @@
 						else $target_user->subForeignShips($username, $id, $count-$count2);
 					}
 				}
-				$user_obj->recalcHighscores(false, false, false, true, true);
 			}
 
 			return $angreifer_return;
 		}
-	}
-
-	function array_sum_r($array)
-	{
-		$sum = 0;
-		foreach($array as $val)
-			$sum += array_sum($val);
-		return $sum;
 	}

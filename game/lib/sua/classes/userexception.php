@@ -30,5 +30,4 @@
 
 	class UserException extends SuaException
 	{
-		const ERROR_PLANETCOUNT = 1;
 	}

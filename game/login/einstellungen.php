@@ -30,8 +30,8 @@
 	$receive_settings = $me->checkSetting('receive');
 	$show_building = $me->checkSetting('show_building');
 
-	$messengers = Config::get_messenger_info();
-	$messenger_settings = $me->getNotificationType();
+	$db_config = Classes::Database()->getConfig();
+	$messengers = isset($db_config["instantmessaging"]) ? $db_config["instantmessaging"] : array();
 	$messenger_receive = $me->checkSetting('messenger_receive');
 
 	$error = array();
@@ -188,11 +188,7 @@
 		$me->setEMailAddress($_POST['email']);
 
 	if(isset($_POST["remove_fingerprint"]))
-	{
 		$me->setSetting("fingerprint", false);
-		$imfile = Classes::IMFile();
-		$imfile->changeFingerprint($me->getName(), "");
-	}
 
 	if(isset($_FILES["gpg"]) && !$_FILES["gpg"]["error"] && ($gpg = GPG::init()))
 	{
@@ -202,8 +198,6 @@
 		else
 			$error[] = _("Das war kein gültiger GPG-Schlüssel.");
 		unlink($_FILES["gpg"]["tmp_name"]);
-		$imfile = Classes::IMFile();
-		$imfile->changeFingerprint($me->getName(), $info["fingerprint"]);
 	}
 
 	if(isset($_POST['new-password']) && isset($_POST['new-password2']) && (isset($_SESSION["admin_username"]) && isset($_POST["change-password"]) || isset($_POST['old-password']) && ($_POST['old-password'] != $_POST['new-password'] || $_POST['new-password'] != $_POST['new-password2'])))
@@ -217,26 +211,14 @@
 			$me->setPassword($_POST['new-password']);
 	}
 
-	if((!$messenger_settings && isset($_POST['im-protocol']) && isset($messengers[$_POST['im-protocol']]) && isset($_POST['im-uin']) && trim($_POST['im-uin'])) || ($messenger_settings && ((isset($_POST['im-protocol']) && trim($_POST['im-protocol']) != $messenger_settings[1]) || (isset($_POST['im-uin']) && trim($_POST['im-uin']) != $messenger_settings[0]))))
+	if(isset($_POST["im-protocol"]) && isset($_POST["im-uin"]) && (trim($_POST["im-protocol"]) != $me->checkSetting("im-protocol") || trim($_POST["im-uin"]) != $me->checkSetting("im-uin")))
 	{
-		if((isset($_POST['im-protocol']) && !isset($messengers[$_POST['im-protocol']])) || (isset($_POST['im-uin']) && !trim($_POST['im-uin'])))
-		{
-			# IM deaktivieren
-			$me->disableNotification();
-			$imfile = Classes::IMFile();
-			$imfile->removeMessages($me->getName());
-		}
+		if(strlen(trim($_POST["im-uin"])) > 0)
+			$imfile->addCheck(trim($_POST["im-protocol"]), trim($_POST["im-uin"]), $me->getName());
 		else
 		{
-			$new_uin = (isset($_POST['im-uin']) ? trim($_POST['im-uin']) : $messenger_settings[0]);
-			$new_protocol = ((isset($_POST['im-protocol']) && isset($messengers[$_POST['im-protocol']])) ? trim($_POST['im-protocol']) : $messenger_settings[1]);
-
-			if((!isset($messengers[$new_protocol]['blocked']) || !in_array(strtolower($new_uin), explode(',', strtolower(trim($messengers[$new_protocol]['blocked']))))) && $me->checkNewNotificationType($new_uin, $new_protocol))
-			{
-				$imfile = Classes::IMFile();
-				$rand_id = $imfile->addCheck($new_uin, $new_protocol, $me->getName());
-				$imfile->addMessage($new_uin, $new_protocol, $me->getName(), "Sie erhalten diese Nachricht, weil jemand in Stars Under Attack diesen Account zur Benachrichtigung eingetragen hat. Ignorieren Sie die Nachricht, wenn Sie die Eintragung nicht vornehmen möchten. Um die Einstellung zu bestätigen, antworten Sie bitte auf diese Nachricht folgenden Code: ".$rand_id);
-			}
+			$me->setSetting("im-protocol", $_POST["im-protocol");
+			$me->setSetting("im-uin", $_POST["im-uin");
 		}
 	}
 
@@ -528,7 +510,8 @@
 <?php
 		}
 
-		if($messenger_settings && isset($messengers[$messenger_settings[1]]) && isset($messengers[$messenger_settings[1]]["uin"]))
+		$messenger_settings = array($me->checkSetting("im-uin"), $me->checkSetting("im-protocol"));
+		if(isset($messengers[$messenger_settings[1]]) && isset($messengers[$messenger_settings[1]]["uin"]))
 		{
 ?>
 		<p id="im-uin" class="infobox"><?=sprintf(h(_("Die UIN des IM-Bots lautet %s.")), "<strong>".htmlspecialchars($messengers[$messenger_settings[1]]["uin"])."</strong>")?></p>
@@ -551,15 +534,14 @@
 		$im_addrs_js = array();
 		foreach($messengers as $protocol=>$minfo)
 		{
-			$name = (isset($minfo['name']) ? $minfo['name'] : $protocol);
 			$im_addrs_js[] = "'".JS::jsentities($protocol)."' : '".JS::jsentities($minfo["uin"])."'";
 ?>
-					<option value="<?=htmlspecialchars($protocol)?>"<?=($messenger_settings && $messenger_settings[1] == $protocol) ? ' selected="selected"' : ''?>><?=htmlspecialchars($name)?></option>
+					<option value="<?=htmlspecialchars($protocol)?>"<?=($messenger_settings[1] == $protocol) ? ' selected="selected"' : ''?>><?=htmlspecialchars(_("[messenger_".$protocol."]"))?></option>
 <?php
 		}
 ?>
 				</select>
-				<input type="text" name="im-uin" id="i-im-uin" title="<?=h(_("UIN"))?>"<?=$messenger_settings ? ' value="'.htmlspecialchars($messenger_settings[0]).'"' : ''?> tabindex="<?=$tabindex++?>" />
+				<input type="text" name="im-uin" id="i-im-uin" title="<?=h(_("UIN"))?>"<?=$messenger_settings[0] ? ' value="'.htmlspecialchars($messenger_settings[0]).'"' : ''?> tabindex="<?=$tabindex++?>" />
 			</dd>
 <?php
 	}

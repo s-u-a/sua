@@ -189,6 +189,18 @@
 		}
 
 		/**
+		 * Gibt den Hostname zurück, unter dem die Datenbank aufrufbar ist.
+		 * @return string
+		*/
+
+		function getHostname()
+		{
+			if(!isset($this->settings["database"]))
+				throw new DatabaseException("No hostname defined.");
+			return $this->settings["database"];
+		}
+
+		/**
 		* Initialisiert die Standardwerte fuer die globalen Einstellungen.
 		* Kann mehrmals aufgerufen werden, zum Beispiel, um auf eine andere
 		* Datenbank umzustellen.
@@ -251,7 +263,7 @@
 		/**
 		 * Gibt zurueck, ob eine Handlungssperre in der Datenbank vorliegt.
 		 * @return int|boolean Wird ein Integer zurückgegeben, so gibt dieser an, bis wann die Sperre gilt.
-		 * @todo Muss die neue Konfigurationsdatei und die neue Namenskonvention verwenden.
+		 * @todo Muss die neue Konfigurationsdatei und die neue Namenskonvention verwenden. Neuer Name: locked()
 		*/
 
 		static function database_locked()

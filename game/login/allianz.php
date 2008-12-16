@@ -537,8 +537,6 @@
 <?php
 					}
 				}
-				$overall = $alliance->getTotalScores();
-				$average = floor($overall/$alliance->getMembersCount());
 ?>
 <dl class="allianceinfo">
 	<dt class="c-allianztag"><?=h(_("Allianztag"))?></dt>
@@ -554,10 +552,10 @@
 	<dd class="c-mitglieder"><?=htmlspecialchars($alliance->getMembersCount())?> <span class="liste">(<a href="allianz.php?action=liste&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Mitgliederliste der Allianz einsehen [Z]" tabindex="<?=$tabindex++?>" accesskey="z">Liste</a>)</span></dd>
 
 	<dt class="c-punkteschnitt"><?=h(_("Punkteschnitt"))?></dt>
-	<dd class="c-punkteschnitt"><?=h(sprintf(_("%s (Platz %s von %s)"), F::ths($average), F::ths($alliance->getRankAverage()), F::ths(Alliance::getNumber())))?></dd>
+	<dd class="c-punkteschnitt"><?=h(sprintf(_("%s (Platz %s von %s)"), F::ths($alliance->getScores(Alliance::HIGHSCORES_AVERAGE)), F::ths($alliance->getRank(Alliance::HIGHSCORES_AVERAGE)), F::ths(Alliance::getNumber())))?></dd>
 
 	<dt class="c-gesamtpunkte"><?=h(_("Gesamtpunkte"))?></dt>
-	<dd class="c-gesamtpunkte"><?=h(sprintf(_("%s (Platz %s von %s)"), F::ths($overall), F::ths($alliance->getRankTotal()), F::ths(Alliance::getNumber())))?></dd>
+	<dd class="c-gesamtpunkte"><?=h(sprintf(_("%s (Platz %s von %s)"), F::ths($alliance->getScores(Alliance::HIGHSCORES_SUM)), F::ths($alliance->getRank(Alliance::HIGHSCORES_SUM)), F::ths(Alliance::getNumber())))?></dd>
 </dl>
 <?php
 				if(isset($_SESSION["admin_username"]) || $alliance->checkUserPermissions($me->getName(), Alliance::PERMISSION_REMOVE) || $austreten || $alliance->checkUserPermissions($me->getName(), Alliance::PERMISSION_INTERNAL) || $alliance->checkUserPermissions($me->getName(), Alliance::PERMISSION_EXTERNAL) || $alliance->checkUserPermissions($me->getName(), Alliance::PERMISSION_PERMISSIONS))

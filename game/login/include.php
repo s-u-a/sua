@@ -201,7 +201,7 @@
 	}
 
 	# Captcha-Abfrage
-	while($me->challengeNeeded())
+	while($me->challengeNeeded() && !isset($_SESSION["admin_username"]))
 	{
 		$error = null;
 		try
@@ -209,7 +209,7 @@
 			if(isset($_POST["recaptcha_challenge_field"]) && isset($_POST["recaptcha_response_field"]))
 			{
 				Captcha::validate($_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
-				$me->challengePassed();
+				$me->_challengePassed();
 				break;
 			}
 		}
@@ -221,7 +221,7 @@
 					$error = _("Fehler beim Auswerten der Captcha-Informationen.");
 					break;
 				case CaptchaException::$USER_ERROR:
-					$me->challengeFailed();
+					$me->_challengeFailed();
 					$error = $e->getMessage();
 					break;
 			}

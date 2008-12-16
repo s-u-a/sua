@@ -31,4 +31,5 @@
 
 	class PlanetException extends SuaException
 	{
+		const ERROR_PLANETCOUNT = 1;
 	}
