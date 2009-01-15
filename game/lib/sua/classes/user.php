@@ -320,46 +320,61 @@
 		 * Gibt die Benutzereinstellung mit der ID $setting zurück.
 		 * @param string $setting
 		 * @return mixed
-		 * @todo Standard-Einstellungen überall übernehmen
 		*/
 
 		function checkSetting($setting)
 		{
-			/*$settings = array("skin" => false, "schrift" => true,
-				"sonden" => 1, "ress_refresh" => 0,
-				"fastbuild" => false, "shortcuts" => false,
-				"tooltips" => false,
-				"noads" => false, "show_extern" => false,
-				"notify" => false,
-				"extended_buildings" => false,
-				"fastbuild_full" => false,
-				"receive" => array(
-					1 => array(true, true),
-					2 => array(true, false),
-					3 => array(true, false),
-					4 => array(true, true),
-					5 => array(true, false)
-				),
-				"show_building" => array(
-					"gebaeude" => 1,
-					"forschung" => 1,
-					"roboter" => 0,
-					"schiffe" => 0,
-					"verteidigung" => 0
-				),
-				"prod_show_days" => 1,
-				"messenger_receive" => array(
-					"messages" => array(1=>true, 2=>true, 3=>true, 4=>true, 5=>true, 6=>true, 7=>true),
-					"building" => array("gebaeude" => 1, "forschung" => 1, "roboter" => 3, "schiffe" => 3, "verteidigung" => 3)
-				),
-				"lang" => l::language(),
-				"fingerprint" => false,
-				"gpg_im" => false,
-				"timezone" => date_default_timezone_get()
-			);*/
 			$value = self::$sqlite->singleField("SELECT value FROM users_settings WHERE user = ".self::$sqlite->quote($this->getName())." AND setting = ".self::$sqlite->quote($setting)." LIMIT 1;");
 			if($value === false)
-				return null;
+			{
+				switch($setting)
+				{
+					case "skin":
+					case "fastbuild":
+					case "shortcuts":
+					case "tooltips":
+					case "noads":
+					case "show_extern":
+					case "notify":
+					case "extended_buildings":
+					case "fastbuild_full":
+					case "fingerprint":
+					case "gpg_im":
+						return false;
+					case "schrift":
+						return true;
+					case "receive":
+						return array(
+							1 => array(true, true),
+							2 => array(true, false),
+							3 => array(true, false),
+							4 => array(true, true),
+							5 => array(true, false)
+						);
+					case "show_building":
+						return array(
+							"gebaeude" => 1,
+							"forschung" => 1,
+							"roboter" => 0,
+							"schiffe" => 0,
+							"verteidigung" => 0
+						);
+					case "prod_show_days":
+						return 1;
+					case "messenger_receive":
+						return array(
+							"messages" => array(1=>true, 2=>true, 3=>true, 4=>true, 5=>true, 6=>true, 7=>true),
+							"building" => array("gebaeude" => 1, "forschung" => 1, "roboter" => 3, "schiffe" => 3, "verteidigung" => 3)
+						);
+					case "lang":
+						return l::language();
+					case "timezone":
+						return date_default_timezone_get();
+					default:
+						return null;
+				}
+			}
+
 			return unserialize($value);
 		}
 

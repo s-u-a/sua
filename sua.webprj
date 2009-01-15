@@ -404,9 +404,7 @@
     <item url="game/.settings/org.eclipse.php.core.prefs" uploadstatus="1" />
     <item url="game/.settings/org.eclipse.php.core.projectOptions.prefs" uploadstatus="1" />
     <item url="game/.settings/org.eclipse.wst.validation.prefs" uploadstatus="1" />
-    <item url="game/setup/" uploadstatus="1" />
     <item url="game/software/" uploadstatus="1" />
-    <item url="game/templates/" uploadstatus="1" />
     <item url="game/config.db" uploadstatus="1" />
     <item url="game/config_db.xml.default" uploadstatus="1" />
     <item url="game/config.xml" uploadstatus="1" />
@@ -430,8 +428,8 @@
     <item url="homepage/po/refresh_tmp.php" uploadstatus="1" />
     <item url="homepage/po/sua.pot" uploadstatus="1" />
     <item url="homepage/setup/" uploadstatus="1" />
-    <item url="skins/" uploadstatus="1" />
     <item url="game/lib/sua/classes/imserver.php" uploadstatus="1" />
     <item url="game/lib/sua/classes/imserverexception.php" uploadstatus="1" />
+    <item url="homepage/config.xml" />
   </project>
 </webproject>

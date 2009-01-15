@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE config [
+	<!ELEMENT config (section | setting)*>
+	<!ELEMENT section (section | setting)*>
+	<!ATTLIST section
+		name CDATA #REQUIRED
+	>
+	<!ELEMENT setting (#PCDATA)>
+	<!ATTLIST setting
+		name CDATA #REQUIRED
+	>
+]>
+<config>
+	<setting name="libdir">lib/</setting>
+	<!--<setting name="hostname"></setting>-->
+</config>

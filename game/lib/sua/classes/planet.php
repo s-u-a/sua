@@ -798,7 +798,6 @@
 		 * @param int $seconds
 		 * @return void
 		 * @see User::umode()
-		 * @todo
 		*/
 
 		function _delayBuildingThings($seconds)
@@ -865,7 +864,6 @@
 		 * @param string $type gebaeude, forschung, roboter, schiffe, verteidigung
 		 * @param int $time Ausbau geschah zu diesem Zeitpunkt, wichtig für den Eventhandler zum Beispiel bei der Verkürzung der laufenden Bauzeit
 		 * @return void
-		 * @todo
 		*/
 
 		function changeItemLevel($id, $value=1, $type=null, $time=null)
@@ -874,22 +872,14 @@
 
 			if(!isset($time)) $time = time();
 
-			$recalc = array(
-				"gebaeude" => 0,
-				"forschung" => 1,
-				"roboter" => 2,
-				"schiffe" => 3,
-				"verteidigung" => 4
-			);
-
 			if(!isset($type))
 				$type = Item::getItemType($id);
 
-			if(!isset($this->items[$type])) $this->items[$type] = array();
-			if(isset($this->items[$type][$id])) $this->items[$type][$id] += $value;
-			else $this->items[$type][$id] = $value;
-
-			$this->recalc_highscores[$recalc[$type]] = true;
+			// TODO: Punkte und belegte Felder aktualisieren
+			if($this->singleField("SELECT COUNT(*) FROM planets_items WHERE ".$this->sqlCond()." AND id = ".$this->quote($id).";") > 0)
+				$this->backgroundQuery("UPDATE planets_items SET level = level+".$this->quote($value)." WHERE ".$this->sqlCond()." AND id = ".$this->quote($id).";");
+			else
+				$this->backgroundQuery("INSERT INTO planets_items ( galaxy, system, planet, id, level ) VALUES ( ".$this->quote($this->getGalaxy()).", ".$this->quote($this->getSystem()).", ".$this->quote($this->getPlanet()).", ".$this->quote($id).", ".$this->quote($value)." );");
 
 			# Felder belegen
 			if($type == "gebaeude")
@@ -901,8 +891,8 @@
 
 			switch($id)
 			{
-				# Ingeneurswissenschaft: Planeten vergroessern
-				case "F9":
+				# Ingeneurswissenschaft: Planeten vergroessern TODO
+				/*case "F9":
 					$planets = $this->getPlanetsList();
 					$active_planet = $this->getActivePlanet();
 					foreach($planets as $planet)
@@ -912,9 +902,9 @@
 						$this->setFields(floor($size*($this->getItemLevel("F9", false, false)/Item::getIngtechFactor()+1)));
 					}
 					$this->setActivePlanet($active_planet);
-					break;
+					break;*/
 
-				# Bauroboter: Laufende Bauzeit verkuerzen (TODO?)
+				# Bauroboter: Laufende Bauzeit verkuerzen (TODO: Algorithmus scheint nicht zu stimmen)
 				/*case "R01":
 					$max_rob_limit = floor($this->getBasicFields()/2);
 					$counting_after = $this->items[$type][$id];
@@ -942,8 +932,8 @@
 
 					break;*/
 
-				# Roboterbautechnik: Auswirkungen der Bauroboter aendern
-				case "F2":
+				# Roboterbautechnik: Auswirkungen der Bauroboter aendern TODO
+				/*case "F2":
 					$planets = $this->getPlanetsList();
 					$active_planet = $this->getActivePlanet();
 					foreach($planets as $planet)
@@ -962,10 +952,8 @@
 					}
 					$this->setActivePlanet($active_planet);
 
-					break;
+					break;*/
 			}
-
-			$this->changed = true;
 		}
 
 		/**
@@ -1176,6 +1164,8 @@
 
 			$this->setActivePlanet($active_planet);
 		}
+
+		// TODO: Die ganzen build*-Funktionen zusammen fassen
 
 		function buildGebaeude($id, $rueckbau=false)
 		{
@@ -1477,119 +1467,3 @@
 
 			return true;
 		}
-
-		/**
-		 * Erneuert die Benachrichtungen fertiggestellter Gegenstände.
-		 * @param string $type gebaeude, forschung, roboter, schiffe, verteidigung
-		 * @return void
-		 * @todo
-		*/
-
-		function refreshMessengerBuildingNotifications($type=false)
-		{
-			$this->_forceActivePlanet();
-
-			if($type == false)
-			{
-				return ($this->refreshMessengerBuildingNotifications("gebaeude")
-				&& $this->refreshMessengerBuildingNotifications("forschung")
-				&& $this->refreshMessengerBuildingNotifications("roboter")
-				&& $this->refreshMessengerBuildingNotifications("schiffe")
-				&& $this->refreshMessengerBuildingNotifications("verteidigung"));
-			}
-
-			if(!in_array($type, array("gebaeude", "forschung", "roboter", "schiffe", "verteidigung")))
-				return;
-
-			$special_id = $this->getActivePlanet()."-".$type;
-			$imfile = Classes::IMFile();
-			$imfile->removeMessages($this->getName(), $special_id);
-
-			$reload_stack = Classes::ReloadStack();
-			$reload_stack->reset($this->getName(), $special_id);
-
-			$building = $this->checkBuildingThing($type);
-			if(!$building) return 2;
-
-			$messenger_receive = $this->checkSetting("messenger_receive");
-			$messenger_settings = $this->getNotificationType();
-			$add_message = ($messenger_settings && $messenger_receive["building"][$type]);
-
-			$planet_prefix = "(".$this->planetName().", ".$this->getPosString().") ";
-
-			switch($type)
-			{
-				case "gebaeude": case "forschung":
-					if(!$building || ($type == "forschung" && $building[2] && $this->getActivePlanet() != $building[4]))
-						break;
-
-					if($add_message)
-					{
-						$item_info = $this->getItemInfo($building[0], $type, array("name", "level"));
-
-						if($type == "gebaeude")
-							$message = $planet_prefix."Gebäudebau abgeschlossen: ".$item_info["name"]." (".($item_info["level"]+($building[2] ? -1 : 1)).")";
-						else
-							$message = $planet_prefix."Forschung fertiggestellt: ".$item_info["name"]." (".($item_info["level"]+1).")";
-						$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $message, $special_id, $building[1]);
-					}
-					break;
-				case "roboter": case "schiffe": case "verteidigung":
-					$building_number = 0;
-					$finish_time = time();
-					foreach($building as $b)
-					{
-						$building_number += $b[2];
-						while($building_number > global_setting("RELOAD_LIMIT"))
-						{
-							$building_number -= global_setting("RELOAD_LIMIT");
-							$b[2] -= global_setting("RELOAD_LIMIT");
-							if($b[2] >= 0) $finish_time += global_setting("RELOAD_LIMIT")*$b[3];
-							else $finish_time -= $b[2]*$b[3];
-							$reload_stack->addReload($this->getName(), $finish_time, $special_id);
-						}
-						if($b[2] > 0)
-							$finish_time += $b[2]*$b[3];
-					}
-
-					if($add_message)
-					{
-						switch($type)
-						{
-							case "roboter": $singular = "Roboter"; $plural = "Roboter"; $art = "ein"; break;
-							case "schiffe": $singular = "Schiff"; $plural = "Schiffe"; $art = "ein"; break;
-							case "verteidigung": $singular = "Verteidigungsanlage"; $plural = "Verteidigungsanlagen"; $art = "eine"; break;
-						}
-
-						switch($messenger_receive["building"][$type])
-						{
-							case 1:
-								foreach($building as $b)
-								{
-									$item_info = $this->getItemInfo($b[0], $type, array("name"));
-									$time = $b[1];
-									for($i=0; $i<$b[2]; $i++)
-									{
-										$time += $b[3];
-										$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.ucfirst($art)." ".$singular." der Sorte ".$item_info["name"]." wurde fertiggestellt.", $special_id, $time);
-									}
-								}
-								break;
-							case 2:
-								foreach($building as $b)
-								{
-									$item_info = $this->getItemInfo($b[0], $type, array("name"));
-									$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix.$b[2]." ".($b[2]==1 ? $singular : $plural)." der Sorte ".$item_info["name"]." ".($b[2]==1 ? "wurde" : "wurden")." fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
-								}
-								break;
-							case 3:
-								$keys = array_keys($building);
-								$b = $building[array_pop($keys)];
-								$imfile->addMessage($messenger_settings[0], $messenger_settings[1], $this->getName(), $planet_prefix."Alle ".$plural." wurden fertiggestellt.", $special_id, $b[1]+$b[2]*$b[3]);
-								break;
-						}
-					}
-					break;
-			}
-		}
-	}
