@@ -18,11 +18,11 @@
 	/**
 	 * Zeigt eine veröffentlichte Nachricht an.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage helpers
 	*/
 
-	namespace sua::frontend;
+	namespace sua\homepage;
 
 	require('engine.php');
 
@@ -42,21 +42,21 @@
 	if($message->from() != '')
 	{
 ?>
-	<dt class="c-absender"><?=h(_("Absender"))?></dt>
+	<dt class="c-absender"><?=l::h(_("Absender"))?></dt>
 	<dd class="c-absender"><?=htmlspecialchars($message->from())?></dd>
 <?php
 	}
 ?>
-	<dt class="c-empfaenger"><?=h(_("Empfänger"))?></dt>
+	<dt class="c-empfaenger"><?=l::h(_("Empfänger"))?></dt>
 	<dd class="c-empfaenger"><?=htmlspecialchars($message->to())?></dd>
 
-	<dt class="c-betreff"><?=h(_("Betreff"))?></dt>
+	<dt class="c-betreff"><?=l::h(_("Betreff"))?></dt>
 	<dd class="c-betreff"><?=htmlspecialchars($message->subject())?></dd>
 
-	<dt class="c-zeit"><?=h(_("Zeit"))?></dt>
+	<dt class="c-zeit"><?=l::h(_("Zeit"))?></dt>
 	<dd class="c-zeit"><?=date(_('H:i:s, Y-m-d'), $message->time())?></dd>
 
-	<dt class="c-nachricht"><?=h(_("Nachricht"))?></dt>
+	<dt class="c-nachricht"><?=l::h(_("Nachricht"))?></dt>
 	<dd class="c-nachricht">
 <?php
 		print("\t\t\t\t".preg_replace("/\r\n|\r|\n/", "\n\t\t\t\t", $message->text()));

@@ -18,11 +18,14 @@
 	/**
 	 * Startseite mit News.
 	 * @author Candid Dauth
-	 * @package sua-frontend
-	 * @subpackage home
+	 * @package sua
+	 * @subpackage homepage
 	*/
 
-	namespace sua::frontend;
+	namespace sua\homepage;
+
+	use \sua\l;
+	use \sua\h;
 
 	require('include.php');
 
@@ -40,7 +43,7 @@
 	$gui->setOption("meta", true);
 	$gui->init();
 ?>
-<h2><?=h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Neuigkeiten")))?></h2>
+<h2><?=l::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Neuigkeiten")))?></h2>
 <?php
 	$news_array = array();
 	// TODO

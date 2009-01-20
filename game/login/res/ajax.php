@@ -18,10 +18,10 @@
 	/**
 	 * Empfängt alle AJAX-Requests aus dem Spiel und beantwortet sie.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage login-helpers
 	*/
-	namespace sua::frontend;
+	namespace sua\frontend;
 
 	$LOGIN = true;
 	define('ignore_action', true);

@@ -18,15 +18,42 @@
 	/**
 	 * Include-Datei zum Login, sorgt dafür, dass der Benutzer angemeldet ist.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage login
+	 * @todo Function::changeHostname hier ausführen
 	*/
-	namespace sua::frontend;
+	namespace sua\frontend;
+
+	error_reporting(4095);
+	ignore_user_abort(true);
+
+	# 10 Minuten sollten wohl auch bei hoher Serverlast genuegen
+	set_time_limit(600);
+
+	/*
+	l::language("de_DE", true);
+
+	HTTPOutput::sendContentType();
+	HTTPOutput::disableMagicQuotes();
+
+	$config = Classes::Config(dirname(__FILE__)."/config.xml");
+	$config_arr = $config->getConfig();
+	// Richtigen Hostname sicherstellen
+	if(isset($config_arr["hostname"]) && $config_arr["hostname"] && $_SERVER["HTTP_HOST"] != $config_arr["hostname"])
+		Functions::changeHostname($config_arr["hostname"]);
+
+	if(isset($config_arr["timezone"]))
+		date_default_timezone_set($config_arr["timezone"]);
+	*/
 
 	$__FILE__ = str_replace("\\", "/", __FILE__);
 	$include_filename = dirname($__FILE__).'/../engine.php';
 	$LOGIN = true;
 	require_once($include_filename);
+
+	if(!isset($_COOKIE["use_cookies"]) && !headers_sent())
+		setcookie("use_cookies", "1", time()+4838400, global_setting("h_root")."/");
+	ini_set("session.use_cookies", "0");
 
 	$resume = false;
 	$del_email_passwd = false;

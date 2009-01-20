@@ -18,10 +18,10 @@
 	/**
 	 * Meldet den Benutzer ab und löscht die Session.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage login
 	*/
-	namespace sua::frontend;
+	namespace sua\frontend;
 
 	require('../../engine.php');
 

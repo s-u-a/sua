@@ -18,10 +18,10 @@
 	/**
 	 * Handelsbörse, auf der Rohstoffe eingetauscht werden können.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage login
 	*/
-	namespace sua::frontend;
+	namespace sua\frontend;
 
 	require('include.php');
 
@@ -42,10 +42,10 @@
 		"672" => .4
 	);
 ?>
-<h2><?=h(_("Handelsbörse"))?></h2>
-<p><?=h(_("Hier können Sie einen Rohstoffbetrag bieten und einen Mindestbetrag an Rohstoffen dafür verlangen. Eine unabhängige Händlergesellschaft (besteht nicht aus reellen Spielern) wird sich um den Auftrag kümmern, sobald der Kurs Ihren Handelsauftrag zulässt. Jedoch wird der Handel nicht sofort durchgeführt, die Handelsgesellschaft entscheidet, wann die den Auftrag annimmt."))?></p>
-<p><?=h(_("Je größer die Rohstoffmenge ist, die Sie handeln wollen, desto länger dauert es, bis die Handelsgesellschaft den Auftrag annimmt. Je länger Sie Ihr Angebot aufrecht erhalten wollen, desto mehr Gebühren müssen Sie für den Handel zahlen. Bei einer geringen Lebensdauer kann es passieren, dass die Handelsgesellschaft den Auftrag überhaupt nicht annimmt."))?></p>
-<p><?=h(_("Der Handelskurs wird durch Angebot und Nachfrage bestimmt. Wenn viele Spieler nur wenig für eine Rohstoffmenge haben wollen, sinkt deren Preis, wenn sie viel dafür verlangen, steigt der Preis. Wenn aber viele den Rohstoff haben wollen, steigt der Preis, wenn sie viel dafür bieten; er sinkt, wenn sie wenig dafür bieten."))?></p>
+<h2><?=l::h(_("Handelsbörse"))?></h2>
+<p><?=l::h(_("Hier können Sie einen Rohstoffbetrag bieten und einen Mindestbetrag an Rohstoffen dafür verlangen. Eine unabhängige Händlergesellschaft (besteht nicht aus reellen Spielern) wird sich um den Auftrag kümmern, sobald der Kurs Ihren Handelsauftrag zulässt. Jedoch wird der Handel nicht sofort durchgeführt, die Handelsgesellschaft entscheidet, wann die den Auftrag annimmt."))?></p>
+<p><?=l::h(_("Je größer die Rohstoffmenge ist, die Sie handeln wollen, desto länger dauert es, bis die Handelsgesellschaft den Auftrag annimmt. Je länger Sie Ihr Angebot aufrecht erhalten wollen, desto mehr Gebühren müssen Sie für den Handel zahlen. Bei einer geringen Lebensdauer kann es passieren, dass die Handelsgesellschaft den Auftrag überhaupt nicht annimmt."))?></p>
+<p><?=l::h(_("Der Handelskurs wird durch Angebot und Nachfrage bestimmt. Wenn viele Spieler nur wenig für eine Rohstoffmenge haben wollen, sinkt deren Preis, wenn sie viel dafür verlangen, steigt der Preis. Wenn aber viele den Rohstoff haben wollen, steigt der Preis, wenn sie viel dafür bieten; er sinkt, wenn sie wenig dafür bieten."))?></p>
 <script type="text/javascript">
 // <![CDATA[
 	var prices = {
@@ -91,7 +91,7 @@
 	}
 // ]]>
 </script>
-<h3 class="boerse-auftraege-heading strong" id="handelsauftraege"><?=h(_("Handelsaufträge"))?></h3>
+<h3 class="boerse-auftraege-heading strong" id="handelsauftraege"><?=l::h(_("Handelsaufträge"))?></h3>
 <?php
 	if(isset($_POST['res_offered']) && isset($_POST['amount']) && isset($_POST['res_requested']) && isset($_POST['min_price']) && isset($_POST['duration']) && in_array($_POST['res_offered'], array("1", "2", "3", "4", "5")) && in_array($_POST['res_requested'], array("1", "2", "3", "4", "5")) && $_POST['res_offered'] != $_POST['res_requested'] && $_POST['amount'] > 0 && in_array($_POST['duration'], array("1", "12", "24", "48", "168", "336", "672")))
 	{
@@ -100,7 +100,7 @@
 		if($incl_tax > $cur_ress[$_POST['res_offered']-1])
 		{
 ?>
-<p class="error"><?=h(_("Sie können nicht mehr anbieten als Sie besitzen."))?></p>
+<p class="error"><?=l::h(_("Sie können nicht mehr anbieten als Sie besitzen."))?></p>
 <?php
 		}
 		else
@@ -110,7 +110,7 @@
 			$market->addOrder($me->getName(), $me->getActivePlanet(), $_POST['res_offered'], $_POST['amount'], $_POST['res_requested'], $_POST['min_price']/$_POST['amount'], time()+$_POST['duration']*3600);
 			$me->addRess($ress);
 ?>
-<p class="successful"><?=h(_("Der Auftrag wurde hinzugefügt."))?></p>
+<p class="successful"><?=l::h(_("Der Auftrag wurde hinzugefügt."))?></p>
 <?php
 		}
 	}
@@ -123,12 +123,12 @@
 <table class="boerse-auftraege">
 	<thead>
 		<tr>
-			<th class="c-planet"><?=h(_("Planet"))?></th>
-			<th class="c-gebot"><?=h(_("Gebot"))?></th>
-			<th class="c-mindestertrag"><?=h(_("Mindestertrag"))?></th>
-			<th class="c-gueltigkeit"><?=h(_("Gültigkeit"))?></th>
-			<th class="c-status"><?=h(_("Status"))?></th>
-			<th class="c-zurueckziehen"><?=h(_("Zurückziehen"))?></th>
+			<th class="c-planet"><?=l::h(_("Planet"))?></th>
+			<th class="c-gebot"><?=l::h(_("Gebot"))?></th>
+			<th class="c-mindestertrag"><?=l::h(_("Mindestertrag"))?></th>
+			<th class="c-gueltigkeit"><?=l::h(_("Gültigkeit"))?></th>
+			<th class="c-status"><?=l::h(_("Status"))?></th>
+			<th class="c-zurueckziehen"><?=l::h(_("Zurückziehen"))?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -144,8 +144,8 @@
 ?>
 		<tr class="gebot-<?=htmlspecialchars($order['offered_resource'])?> ertrag-<?=htmlspecialchars($order['requested_resource'])?>">
 			<td class="c-planet"><a href="boerse.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" tabindex="<?=$tabindex++?>"><?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), "<span class=\"koords\">".htmlspecialchars($me->getPosString())."</span>")?></td>
-			<td class="c-gebot"><span class="zahl"><?=F::ths($order['amount'])?></span> <?=h(_("[ress_".($order['offered_resource']-1)."]"))?></td>
-			<td class="c-mindestertrag"><span class="zahl"><?=F::ths($order['amount']*$order['min_price'])?></span> <?=h(_("[ress_".($order['requested_resource']-1)."]"))?></td>
+			<td class="c-gebot"><span class="zahl"><?=F::ths($order['amount'])?></span> <?=l::h(_("[ress_".($order['offered_resource']-1)."]"))?></td>
+			<td class="c-mindestertrag"><span class="zahl"><?=F::ths($order['amount']*$order['min_price'])?></span> <?=l::h(_("[ress_".($order['requested_resource']-1)."]"))?></td>
 			<td class="c-gueltigkeit" id="restbauzeit-boerse-<?=htmlspecialchars($i)?>"><?=sprintf(h(_("%s (Serverzeit)")), htmlspecialchars(date(_('H:i:s, Y-m-d'), $order['expiration'])))?></td>
 <?php
 			$countdowns["boerse-".$i] = $order['expiration'];
@@ -153,8 +153,8 @@
 			if($order['finish'] == -1)
 			{
 ?>
-			<td class="c-status waiting"><?=h(_("Warte auf Händler"))?></td>
-			<td class="c-zurueckziehen waiting"><a href="boerse.php?cancel=<?=htmlspecialchars(urlencode($order['id']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=h(_("Zurückziehen"))?></a></td>
+			<td class="c-status waiting"><?=l::h(_("Warte auf Händler"))?></td>
+			<td class="c-zurueckziehen waiting"><a href="boerse.php?cancel=<?=htmlspecialchars(urlencode($order['id']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=l::h(_("Zurückziehen"))?></a></td>
 <?php
 			}
 			else
@@ -191,35 +191,35 @@
 ?>
 <form action="boerse.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>#handelsauftraege" method="post" class="boerse-auftrag">
 	<fieldset>
-		<legend><?=h(_("Neuen Handelsauftrag anlegen"))?></legend>
+		<legend><?=l::h(_("Neuen Handelsauftrag anlegen"))?></legend>
 		<dl class="form">
-			<dt class="c-angebot"><label for="i-angebot-rohstoff"><?=h(_("Angeb&ot[login/boerse.php|1]"))?></label></dt>
+			<dt class="c-angebot"><label for="i-angebot-rohstoff"><?=l::h(_("Angeb&ot[login/boerse.php|1]"))?></label></dt>
 			<dd class="c-angebot">
 				<select name="res_offered" id="i-angebot-rohstoff" onchange="refresh_offers(); refresh_costs();" onkeypress="onchange()" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Angebot&[login/boerse.php|1]"))?>>
-					<option value="1"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 1){?> selected="selected"<?php }?>><?=h(_("[ress_0]"))?></option>
-					<option value="2"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 2){?> selected="selected"<?php }?>><?=h(_("[ress_1]"))?></option>
-					<option value="3"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 3){?> selected="selected"<?php }?>><?=h(_("[ress_2]"))?></option>
-					<option value="4"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 4){?> selected="selected"<?php }?>><?=h(_("[ress_3]"))?></option>
-					<option value="5"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 5){?> selected="selected"<?php }?>><?=h(_("[ress_4]"))?></option>
+					<option value="1"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 1){?> selected="selected"<?php }?>><?=l::h(_("[ress_0]"))?></option>
+					<option value="2"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 2){?> selected="selected"<?php }?>><?=l::h(_("[ress_1]"))?></option>
+					<option value="3"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 3){?> selected="selected"<?php }?>><?=l::h(_("[ress_2]"))?></option>
+					<option value="4"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 4){?> selected="selected"<?php }?>><?=l::h(_("[ress_3]"))?></option>
+					<option value="5"<?php if(isset($_POST['res_offered']) && $_POST['res_offered'] == 5){?> selected="selected"<?php }?>><?=l::h(_("[ress_4]"))?></option>
 				</select>
 				<input type="text" id="i-menge" name="amount" value="<?=isset($_POST['amount']) ? htmlspecialchars($_POST['amount']) : 0?>" onchange="refresh_costs();" onkeypress="onchange();" onclick="onchange();" tabindex="<?=$tabindex++?>" />
 			</dd>
 
-			<dt class="c-gewuenschter-rohstoff"><label for="i-gewuenschter-rohstoff"><?=h(_("Gewünschter Rohstoff&[login/boerse.php|1]"))?></label></dt>
+			<dt class="c-gewuenschter-rohstoff"><label for="i-gewuenschter-rohstoff"><?=l::h(_("Gewünschter Rohstoff&[login/boerse.php|1]"))?></label></dt>
 			<dd class="c-gewuenschter-rohstoff">
 				<select name="res_requested" id="i-gewuenschter-rohstoff" onchange="refresh_costs();" onkeypress="onchange();" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Gewünschter Rohstoff&[login/boerse.php|1]"))?>>
-					<option value="1"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 1){?> selected="selected"<?php }?>><?=h(_("[ress_0]"))?></option>
-					<option value="2"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 2){?> selected="selected"<?php }?>><?=h(_("[ress_1]"))?></option>
-					<option value="3"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 3){?> selected="selected"<?php }?>><?=h(_("[ress_2]"))?></option>
-					<option value="4"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 4){?> selected="selected"<?php }?>><?=h(_("[ress_3]"))?></option>
-					<option value="5"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 5){?> selected="selected"<?php }?>><?=h(_("[ress_4]"))?></option>
+					<option value="1"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 1){?> selected="selected"<?php }?>><?=l::h(_("[ress_0]"))?></option>
+					<option value="2"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 2){?> selected="selected"<?php }?>><?=l::h(_("[ress_1]"))?></option>
+					<option value="3"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 3){?> selected="selected"<?php }?>><?=l::h(_("[ress_2]"))?></option>
+					<option value="4"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 4){?> selected="selected"<?php }?>><?=l::h(_("[ress_3]"))?></option>
+					<option value="5"<?php if(isset($_POST['res_requested']) && $_POST['res_requested'] == 5){?> selected="selected"<?php }?>><?=l::h(_("[ress_4]"))?></option>
 				</select>
 			</dd>
 
-			<dt class="c-minimale-menge"><label for="i-minimale-menge"><?=h(_("Minimale Menge&[login/boerse.php|1]"))?></label></dt>
+			<dt class="c-minimale-menge"><label for="i-minimale-menge"><?=l::h(_("Minimale Menge&[login/boerse.php|1]"))?></label></dt>
 			<dd class="c-minimale-menge"><input type="text" id="i-minimale-menge" name="min_price" value="<?=isset($_POST['min_price']) ? htmlspecialchars($_POST['min_price']) : 0?>" onchange="refresh_costs();" onkeypress="onchange();" onclick="onchange();" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Minimale Menge&[login/boerse.php|1]"))?> /></dd>
 
-			<dt class="c-angebotsdauer"><label for="i-angebotsdauer"><?=h(_("Angebotsdauer&[login/boerse.php|1]"))?></label></dt>
+			<dt class="c-angebotsdauer"><label for="i-angebotsdauer"><?=l::h(_("Angebotsdauer&[login/boerse.php|1]"))?></label></dt>
 			<dd class="c-angebotsdauer">
 				<select name="duration" id="i-angebotsdauer" onchange="refresh_costs();" onkeypress="onchange();" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Angebotsdauer&[login/boerse.php|1]"))?>>
 					<option value="1"<?php if(isset($_POST['duration']) && $_POST['duration'] == 1){?> selected="selected"<?php }?>><?=sprintf(h(_("Eine Stunde (%s %%)")), 5)?></option>
@@ -232,13 +232,13 @@
 				</select>
 			</dd>
 
-			<dt class="c-aktueller-ertrag"><?=h(_("Aktueller Ertrag"))?></dt>
+			<dt class="c-aktueller-ertrag"><?=l::h(_("Aktueller Ertrag"))?></dt>
 			<dd class="c-aktueller-ertrag" id="aktueller-ertrag">0</dd>
 
-			<dt class="c-zusaetzliche-gebuehren"><?=h(_("Zusätzliche Gebühren"))?></dt>
+			<dt class="c-zusaetzliche-gebuehren"><?=l::h(_("Zusätzliche Gebühren"))?></dt>
 			<dd class="c-zusaetzliche-gebuehren" id="zusaetzliche-gebuehren">0</dd>
 		</dl>
-		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Auftrag aufgeben&[login/boerse.php|1]"))?>><?=h(_("Auftrag aufgeben&[login/boerse.php|1]"))?></button></div>
+		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Auftrag aufgeben&[login/boerse.php|1]"))?>><?=l::h(_("Auftrag aufgeben&[login/boerse.php|1]"))?></button></div>
 	</fieldset>
 </form>
 <?php
@@ -248,61 +248,61 @@
 	refresh_offers();
 	refresh_costs();
 </script>
-<h3 class="boerse-kurs-heading" class="strong"><?=h(_("Kurs"))?></h3>
+<h3 class="boerse-kurs-heading" class="strong"><?=l::h(_("Kurs"))?></h3>
 <table class="boerse-kurs">
 	<thead>
 		<tr>
-			<th class="c-von" rowspan="2"><?=h(_("von"))?></th>
-			<th class="c-nach" colspan="5"><?=h(_("nach"))?></th>
+			<th class="c-von" rowspan="2"><?=l::h(_("von"))?></th>
+			<th class="c-nach" colspan="5"><?=l::h(_("nach"))?></th>
 		</tr>
 		<tr>
-			<th class="c-carbon"><?=h(_("[ress_0]"))?></th>
-			<th class="c-aluminium"><?=h(_("[ress_1]"))?></th>
-			<th class="c-wolfram"><?=h(_("[ress_2]"))?></th>
-			<th class="c-radium"><?=h(_("[ress_3]"))?></th>
-			<th class="c-tritium"><?=h(_("[ress_4]"))?></th>
+			<th class="c-carbon"><?=l::h(_("[ress_0]"))?></th>
+			<th class="c-aluminium"><?=l::h(_("[ress_1]"))?></th>
+			<th class="c-wolfram"><?=l::h(_("[ress_2]"))?></th>
+			<th class="c-radium"><?=l::h(_("[ress_3]"))?></th>
+			<th class="c-tritium"><?=l::h(_("[ress_4]"))?></th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr class="r-carbon">
-			<th class="c-von"><?=h(_("[ress_0]"))?></th>
-			<td class="c-carbon disabled"><?=h(_("—"))?></td>
+			<th class="c-von"><?=l::h(_("[ress_0]"))?></th>
+			<td class="c-carbon disabled"><?=l::h(_("—"))?></td>
 			<td class="c-aluminium"><?=F::ths($market->getRate(1, 2), 2)?></td>
 			<td class="c-wolfram"><?=F::ths($market->getRate(1, 3), 2)?></td>
 			<td class="c-radium"><?=F::ths($market->getRate(1, 4), 2)?></td>
 			<td class="c-tritium"><?=F::ths($market->getRate(1, 5), 2)?></td>
 		</tr>
 		<tr class="r-aluminium">
-			<th class="c-von"><?=h(_("[ress_1]"))?></th>
+			<th class="c-von"><?=l::h(_("[ress_1]"))?></th>
 			<td class="c-carbon"><?=F::ths($market->getRate(2, 1), 2)?></td>
-			<td class="c-aluminium disabled"><?=h(_("—"))?></td>
+			<td class="c-aluminium disabled"><?=l::h(_("—"))?></td>
 			<td class="c-wolfram"><?=F::ths($market->getRate(2, 3), 2)?></td>
 			<td class="c-radium"><?=F::ths($market->getRate(2, 4), 2)?></td>
 			<td class="c-tritium"><?=F::ths($market->getRate(2, 5), 2)?></td>
 		</tr>
 		<tr class="r-wolfram">
-			<th class="c-von"><?=h(_("[ress_2]"))?>m</th>
+			<th class="c-von"><?=l::h(_("[ress_2]"))?>m</th>
 			<td class="c-carbon"><?=F::ths($market->getRate(3, 1), 2)?></td>
 			<td class="c-aluminium"><?=F::ths($market->getRate(3, 2), 2)?></td>
-			<td class="c-wolfram disabled"><?=h(_("—"))?></td>
+			<td class="c-wolfram disabled"><?=l::h(_("—"))?></td>
 			<td class="c-radium"><?=F::ths($market->getRate(3, 4), 2)?></td>
 			<td class="c-tritium"><?=F::ths($market->getRate(3, 5), 2)?></td>
 		</tr>
 		<tr class="r-radium">
-			<th class="c-von"><?=h(_("[ress_3]"))?></th>
+			<th class="c-von"><?=l::h(_("[ress_3]"))?></th>
 			<td class="c-carbon"><?=F::ths($market->getRate(4, 1), 2)?></td>
 			<td class="c-aluminium"><?=F::ths($market->getRate(4, 2), 2)?></td>
 			<td class="c-wolfram"><?=F::ths($market->getRate(4, 3), 2)?></td>
-			<td class="c-radium disabled"><?=h(_("—"))?></td>
+			<td class="c-radium disabled"><?=l::h(_("—"))?></td>
 			<td class="c-tritium"><?=F::ths($market->getRate(4, 5), 2)?></td>
 		</tr>
 		<tr class="r-tritium">
-			<th class="c-von"><?=h(_("[ress_4]"))?></th>
+			<th class="c-von"><?=l::h(_("[ress_4]"))?></th>
 			<td class="c-carbon"><?=F::ths($market->getRate(5, 1), 2)?></td>
 			<td class="c-aluminium"><?=F::ths($market->getRate(5, 2), 2)?></td>
 			<td class="c-wolfram"><?=F::ths($market->getRate(5, 3), 2)?></td>
 			<td class="c-radium"><?=F::ths($market->getRate(5, 4), 2)?></td>
-			<td class="c-tritium disabled"><?=h(_("—"))?></td>
+			<td class="c-tritium disabled"><?=l::h(_("—"))?></td>
 		</tr>
 	</tbody>
 </table>

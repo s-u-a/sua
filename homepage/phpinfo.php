@@ -18,12 +18,11 @@
 	/**
 	 * Führt phpinfo() aus, nachdem alle Spielparameter initialisiert sind.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage helpers
 	*/
 
-	namespace sua::frontend;
+	namespace sua\frontend;
 
-	require("engine.php");
-	l::language("de_DE");
+	require("include.php");
 	phpinfo();

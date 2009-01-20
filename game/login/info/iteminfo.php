@@ -18,10 +18,10 @@
 	/**
 	 * Zeigt die Beschreibung eines Gegenstandes an.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage login
 	*/
-	namespace sua::frontend;
+	namespace sua\frontend;
 
 	require('../include.php');
 
@@ -33,7 +33,7 @@
 	if(!$item || !$item->getInfo())
 	{
 ?>
-<p class="error"><?=h(_("Dieser Gegenstand existiert nicht."))?></p>
+<p class="error"><?=l::h(_("Dieser Gegenstand existiert nicht."))?></p>
 <?php
 	}
 	else
@@ -45,7 +45,7 @@
 			$lvl = "%s";
 ?>
 <div class="desc desc-<?=htmlspecialchars($_GET['id'])?> desc-<?=htmlspecialchars($type)?>">
-	<h2><?=h(sprintf($lvl, _("[item_".$_GET["id"]."]"), F::ths($me->getItemLevel($_GET["id"]))))?></h2>
+	<h2><?=l::h(sprintf($lvl, _("[item_".$_GET["id"]."]"), F::ths($me->getItemLevel($_GET["id"]))))?></h2>
 	<div class="desc-desc">
 <?php
 		function repl_nl($nls)
@@ -70,7 +70,7 @@
 		{
 ?>
 	<dl class="item-info lines">
-		<dt class="item-kosten"><?=h(_("Kosten"))?></dt>
+		<dt class="item-kosten"><?=l::h(_("Kosten"))?></dt>
 		<dd class="item-kosten">
 <?php
 			echo F::format_ress($item_info['ress'], 3, false, false, false, $me);
@@ -81,17 +81,17 @@
 			if($type == 'forschung')
 			{
 ?>
-		<dt class="item-bauzeit forschung-lokal"><?=h(_("Bauzeit lokal"))?></dt>
+		<dt class="item-bauzeit forschung-lokal"><?=l::h(_("Bauzeit lokal"))?></dt>
 		<dd class="item-bauzeit forschung-lokal"><?=F::format_btime($item_info['time_local'])?></dd>
 
-		<dt class="item-bauzeit forschung-global"><?=h(_("Bauzeit global"))?></dt>
+		<dt class="item-bauzeit forschung-global"><?=l::h(_("Bauzeit global"))?></dt>
 		<dd class="item-bauzeit forschung-global"><?=F::format_btime($item_info['time_global'])?></dd>
 <?php
 			}
 			else
 			{
 ?>
-		<dt class="item-bauzeit"><?=h(_("Bauzeit"))?></dt>
+		<dt class="item-bauzeit"><?=l::h(_("Bauzeit"))?></dt>
 		<dd class="item-bauzeit"><?=F::format_btime($item_info['time'])?></dd>
 	</dl>
 <?php
@@ -104,7 +104,7 @@
 			Item::isort($deps);
 ?>
 	<div class="desc-deps">
-		<h3 class="strong"><?=h(_("Abhängigkeiten"))?></h3>
+		<h3 class="strong"><?=l::h(_("Abhängigkeiten"))?></h3>
 		<ul class="deps paragraph">
 <?php
 			foreach($deps as $id=>$level)
@@ -123,17 +123,17 @@
 		{
 ?>
 	<div class="desc-values">
-		<h3 class="strong"><?=h(_("Eigenschaften"))?></h3>
+		<h3 class="strong"><?=l::h(_("Eigenschaften"))?></h3>
 		<table class="table-small">
 			<thead>
 				<tr>
-					<th><?=h(_("Eigenschaft"))?></th>
-					<th><?=h(_("Wert"))?></th>
+					<th><?=l::h(_("Eigenschaft"))?></th>
+					<th><?=l::h(_("Wert"))?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<th><?=h(_("Benötigte Felderzahl"))?></th>
+					<th><?=l::h(_("Benötigte Felderzahl"))?></th>
 					<td><?=F::ths($item->getInfo('fields'))?></td>
 				</tr>
 			</tbody>
@@ -145,46 +145,46 @@
 			{
 ?>
 	<div class="desc-prod">
-		<h3 class="strong"><?=h(_("Produktion pro Stunde"))?></h3>
+		<h3 class="strong"><?=l::h(_("Produktion pro Stunde"))?></h3>
 		<table class="table-small">
 			<thead>
 				<tr>
-					<th class="c-stufe"><?=h(_("Stufe"))?></th>
+					<th class="c-stufe"><?=l::h(_("Stufe"))?></th>
 <?php
 				if($prod[0] != 0)
 				{
 ?>
-					<th class="c-carbon"><?=h(_("[ress_0]"))?></th>
+					<th class="c-carbon"><?=l::h(_("[ress_0]"))?></th>
 <?php
 				}
 				if($prod[1] != 0)
 				{
 ?>
-					<th class="c-aluminium"><?=h(_("[ress_1]"))?></th>
+					<th class="c-aluminium"><?=l::h(_("[ress_1]"))?></th>
 <?php
 				}
 				if($prod[2] != 0)
 				{
 ?>
-					<th class="c-wolfram"><?=h(_("[ress_2]"))?></th>
+					<th class="c-wolfram"><?=l::h(_("[ress_2]"))?></th>
 <?php
 				}
 				if($prod[3] != 0)
 				{
 ?>
-					<th class="c-radium"><?=h(_("[ress_3]"))?></th>
+					<th class="c-radium"><?=l::h(_("[ress_3]"))?></th>
 <?php
 				}
 				if($prod[4] != 0)
 				{
 ?>
-					<th class="c-tritium"><?=h(_("[ress_4]"))?></th>
+					<th class="c-tritium"><?=l::h(_("[ress_4]"))?></th>
 <?php
 				}
 				if($prod[5] != 0)
 				{
 ?>
-					<th class="c-energie"><?=h(_("[ress_5]"))?></th>
+					<th class="c-energie"><?=l::h(_("[ress_5]"))?></th>
 <?php
 				}
 ?>
@@ -266,45 +266,45 @@
 			$trans = $item->getInfo('trans');
 ?>
 	<div class="desc-values">
-		<h3 class="strong"><?=h(_("Eigenschaften"))?></h3>
+		<h3 class="strong"><?=l::h(_("Eigenschaften"))?></h3>
 		<table class="table-small">
 			<thead>
 				<tr>
-					<th><?=h(_("Eigenschaft"))?></th>
-					<th><?=h(_("Ursprungswert"))?></th>
-					<th><?=h(_("Wert"))?></th>
+					<th><?=l::h(_("Eigenschaft"))?></th>
+					<th><?=l::h(_("Ursprungswert"))?></th>
+					<th><?=l::h(_("Wert"))?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<th><?=h(_("Transportkapazität"))?></th>
-					<td><?=h(sprintf(_("%s Tonnen, %s Roboter"), F::ths($trans[0]), F::ths($trans[1])))?></td>
-					<td><?=h(sprintf(_("%s Tonnen, %s Roboter"), F::ths($item_info["trans"][0]), F::ths($item_info["trans"][1])))?></td>
+					<th><?=l::h(_("Transportkapazität"))?></th>
+					<td><?=l::h(sprintf(_("%s Tonnen, %s Roboter"), F::ths($trans[0]), F::ths($trans[1])))?></td>
+					<td><?=l::h(sprintf(_("%s Tonnen, %s Roboter"), F::ths($item_info["trans"][0]), F::ths($item_info["trans"][1])))?></td>
 				</tr>
 				<tr>
-					<th><?=h(_("Angriffsstärke"))?></th>
+					<th><?=l::h(_("Angriffsstärke"))?></th>
 					<td><?=F::ths($item->getInfo('att'))?></td>
 					<td><?=F::ths($item_info["att"])?></td>
 				</tr>
 				<tr>
-					<th><?=h(_("Schild"))?></th>
+					<th><?=l::h(_("Schild"))?></th>
 					<td><?=F::ths($item->getInfo('def'))?></td>
 					<td><?=F::ths($item_info["def"])?></td>
 				</tr>
 				<tr>
-					<th><?=h(_("Antriebsstärke"))?></th>
-					<td><?=F::ths($item->getInfo('speed'))?><?=h(_("[unit_separator]"))?><abbr title="<?=h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $item->getInfo("speed")))?>"><?=h(_("µOr⁄s²"))?></abbr></td>
-					<td><?=F::ths($item_info["speed"])?><?=h(_("[unit_separator]"))?><abbr title="<?=h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $item->getInfo("speed")))?>"><?=h(_("µOr⁄s²"))?></abbr></td>
+					<th><?=l::h(_("Antriebsstärke"))?></th>
+					<td><?=F::ths($item->getInfo('speed'))?><?=l::h(_("[unit_separator]"))?><abbr title="<?=l::h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $item->getInfo("speed")))?>"><?=l::h(_("µOr⁄s²"))?></abbr></td>
+					<td><?=F::ths($item_info["speed"])?><?=l::h(_("[unit_separator]"))?><abbr title="<?=l::h(ngettext("Mikroorbit pro Quadratsekunde", "Mikroorbits pro Quadratsekunde", $item->getInfo("speed")))?>"><?=l::h(_("µOr⁄s²"))?></abbr></td>
 				</tr>
 				<tr>
-					<th><?=h(_("Unterstützte Auftragsarten"))?></th>
+					<th><?=l::h(_("Unterstützte Auftragsarten"))?></th>
 					<td colspan="2">
 						<ul>
 <?php
 			foreach($item->getInfo('types') as $t)
 			{
 ?>
-							<li><?=h(_("[fleet_".$t."]"))?></li>
+							<li><?=l::h(_("[fleet_".$t."]"))?></li>
 <?php
 			}
 ?>
@@ -321,23 +321,23 @@
 		{
 ?>
 	<div class="desc-values">
-		<h3 class="strong"><?=h(_("Eigenschaften"))?></h3>
+		<h3 class="strong"><?=l::h(_("Eigenschaften"))?></h3>
 		<table class="table-small">
 			<thead>
 				<tr>
-					<th><?=h(_("Eigenschaft"))?></th>
-					<th><?=h(_("Ursprungswert"))?></th>
-					<th><?=h(_("Wert"))?></th>
+					<th><?=l::h(_("Eigenschaft"))?></th>
+					<th><?=l::h(_("Ursprungswert"))?></th>
+					<th><?=l::h(_("Wert"))?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
-					<th><?=h(_("Angriffsstärke"))?></th>
+					<th><?=l::h(_("Angriffsstärke"))?></th>
 					<td><?=F::ths($item->getInfo('att'))?></td>
 					<td><?=F::ths($item_info["att"])?></td>
 				</tr>
 				<tr>
-					<th><?=h(_("Schild"))?></th>
+					<th><?=l::h(_("Schild"))?></th>
 					<td><?=F::ths($item->getInfo('def'))?></td>
 					<td><?=F::ths($item_info["def"])?></td>
 				</tr>

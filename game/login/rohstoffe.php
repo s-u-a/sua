@@ -18,10 +18,10 @@
 	/**
 	 * Produktion einsehen und beeinflussen.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage login
 	*/
-	namespace sua::frontend;
+	namespace sua\frontend;
 
 	require('include.php');
 

@@ -18,16 +18,64 @@
 	/**
 	 * Include-Datei für die Hauptseite.
 	 * @author Candid Dauth
-	 * @package sua-frontend
-	 * @subpackage home
+	 * @package sua
+	 * @subpackage homepage
 	*/
 
-	namespace sua::frontend;
+	namespace sua\homepage;
+
+	use sua\l;
+	use sua\Classes;
+	use sua\Functions;
+	use sua\HTTPOutput;
+
+	error_reporting(4095);
+	ignore_user_abort(true);
 
 	$__FILE__ = str_replace("\\", "/", __FILE__);
-	$include_filename = dirname($__FILE__).'/engine.php';
+	$include_filename = dirname($__FILE__).'/lib/sua/engine.php';
 	require_once($include_filename);
 
 	l::language("de_DE", true);
+
+	HTTPOutput::sendContentType();
+	HTTPOutput::disableMagicQuotes();
+
+	$config = Classes::Config(dirname(__FILE__)."/config.xml");
+	$config_arr = $config->getConfig();
+	// Richtigen Hostname sicherstellen
+	if(isset($config_arr["hostname"]) && $config_arr["hostname"] && $_SERVER["HTTP_HOST"] != $config_arr["hostname"])
+		Functions::changeHostname($config_arr["hostname"]);
+
+	if(isset($config_arr["timezone"]))
+		date_default_timezone_set($config_arr["timezone"]);
+
 	$gui = Classes::HomeGui();
-?>
+
+	if(isset($config_arr["databases"]))
+		$gui->setOption("databases", $config_arr["databases"]);
+
+	# SSL auf Wunsch abschalten
+	if(isset($_GET["nossl"]))
+	{
+		if($_GET["nossl"] && (!isset($_COOKIE["use_ssl"]) || $_COOKIE["use_ssl"]))
+		{
+			setcookie("use_ssl", "0", time()+4838400, global_setting("h_root")."/");
+			$_COOKIE["use_ssl"] = "0";
+		}
+		elseif(!$_GET["nossl"] && isset($_COOKIE["use_ssl"]) && !$_COOKIE["use_ssl"])
+		{
+			setcookie("use_ssl", "1", time()+4838400, global_setting("h_root")."/");
+			$_COOKIE["use_ssl"] = "1";
+		}
+	}
+
+	$gui->setOption("protocol", (!isset($_COOKIE["use_ssl"]) || $_COOKIE["use_ssl"]) ? "https" : "http");
+	define("s_root", dirname(__FILE__));
+	define("h_root", HTTPOutput::getHPath(s_root));
+	$gui->setOption("h_root", h_root);
+
+	$tabindex = 1;
+
+	if(!isset($_COOKIE["use_cookies"]) && !headers_sent())
+		setcookie("use_cookies", "1", time()+4838400, h_root."/");

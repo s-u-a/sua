@@ -19,11 +19,11 @@
 	 * Gibt den öffentlichen GPG-Schlüssel des Spiels aus, der für E-Mails und IM-
 	 * Nachrichten verwendet wird.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage helpers
 	*/
 
-	namespace sua::frontend;
+	namespace sua\homepage;
 
 	require("engine.php");
 

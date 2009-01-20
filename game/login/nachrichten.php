@@ -18,10 +18,10 @@
 	/**
 	 * Nachrichtensystem
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage login
 	*/
-	namespace sua::frontend;
+	namespace sua\frontend;
 
 	require('include.php');
 
@@ -35,7 +35,7 @@
 	{
 		# Neue Nachricht verfassen
 ?>
-<h2><a href="nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Nachrichtenkategorienübersicht"))?>"<?=l::accesskey_attr(_("Nachrichten [&W][login/nachrichten.php|1]"))?> tabindex="<?=$tabindex+4?>"><?=h(_("Nachrichten [&W][login/nachrichten.php|1]"))?></a></h2>
+<h2><a href="nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Zurück zur Nachrichtenkategorienübersicht"))?>"<?=l::accesskey_attr(_("Nachrichten [&W][login/nachrichten.php|1]"))?> tabindex="<?=$tabindex+4?>"><?=l::h(_("Nachrichten [&W][login/nachrichten.php|1]"))?></a></h2>
 <?php
 		$error = '';
 		$show_form = true;
@@ -76,7 +76,7 @@
 					$message->addUser($me->getName(), 8);
 				}
 ?>
-<p class="successful"><?=h(_("Die Nachricht wurde erfolgreich versandt."))?></p>
+<p class="successful"><?=l::h(_("Die Nachricht wurde erfolgreich versandt."))?></p>
 <?php
 				$show_form = false;
 				unset($message);
@@ -96,9 +96,9 @@
 ?>
 <form action="nachrichten.php?to=&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="nachrichten-neu" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=JS::jsentities(_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?"))?>\');');">
 	<fieldset>
-		<legend><?=h(_("Nachricht verfassen"))?></legend>
+		<legend><?=l::h(_("Nachricht verfassen"))?></legend>
 		<dl class="form">
-			<dt class="c-empfaenger"><label for="empfaenger-input"><?=h(_("Empfänger [&Z][login/nachrichten.php|1]"))?></label></dt>
+			<dt class="c-empfaenger"><label for="empfaenger-input"><?=l::h(_("Empfänger [&Z][login/nachrichten.php|1]"))?></label></dt>
 <?php
 			$empfaenger = $_GET['to'];
 			if(isset($_POST['empfaenger']))
@@ -122,14 +122,14 @@
 			}
 ?>
 
-			<dt class="c-betreff"><label for="betreff-input"><?=h(_("Betreff [&J][login/nachrichten.php|1]"))?></label></dt>
+			<dt class="c-betreff"><label for="betreff-input"><?=l::h(_("Betreff [&J][login/nachrichten.php|1]"))?></label></dt>
 			<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" value="<?=htmlspecialchars($betreff)?>" maxlength="30" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Betreff [&J][login/nachrichten.php|1]"))?> /></dd>
 
-			<dt class="c-inhalt"><label for="inhalt-input"><?=h(_("Inhalt [&X][login/nachrichten.php|1]"))?></label></dt>
+			<dt class="c-inhalt"><label for="inhalt-input"><?=l::h(_("Inhalt [&X][login/nachrichten.php|1]"))?></label></dt>
 			<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Inhalt [&X][login/nachrichten.php|1]"))?>><?=isset($_POST['inhalt']) ? preg_replace("/[\n\r\t]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($_POST['inhalt'])) : ''?></textarea></dd>
 		</dl>
 	</fieldset>
-	<div class="button"><button type="submit"<?=l::accesskey_attr(_("Abse&nden[login/nachrichten.php|1]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Abse&nden[login/nachrichten.php|1]"))?></button></div>
+	<div class="button"><button type="submit"<?=l::accesskey_attr(_("Abse&nden[login/nachrichten.php|1]"))?> tabindex="<?=$tabindex++?>"><?=l::h(_("Abse&nden[login/nachrichten.php|1]"))?></button></div>
 </form>
 <?php
 			$tabindex++; # Oben für den Back-Link verwendet
@@ -153,13 +153,13 @@
 		{
 			# Nachricht anzeigen
 ?>
-<h2><a href="nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Nachrichtenkategorienübersicht"))?>" tabindex="<?=$tabindex+6?>"<?=l::accesskey_attr(_("Nachrichten [&W][login/nachrichten.php|2]"))?>><?=h(_("Nachrichten [&W][login/nachrichten.php|2]"))?></a>: <a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(sprintf(_("Zurück zur Nachrichtenübersicht: %s"), _("[message_".$_GET["type"]."]")))?>" tabindex="<?=$tabindex+5?>"<?=l::accesskey_attr(_("%s [&O][login/nachrichten.php|2]"))?>><?=h(sprintf(_("%s [&O][login/nachrichten.php|2]"), _("[message_".$_GET['type']."]")))?></a></h2>
+<h2><a href="nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Zurück zur Nachrichtenkategorienübersicht"))?>" tabindex="<?=$tabindex+6?>"<?=l::accesskey_attr(_("Nachrichten [&W][login/nachrichten.php|2]"))?>><?=l::h(_("Nachrichten [&W][login/nachrichten.php|2]"))?></a>: <a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(sprintf(_("Zurück zur Nachrichtenübersicht: %s"), _("[message_".$_GET["type"]."]")))?>" tabindex="<?=$tabindex+5?>"<?=l::accesskey_attr(_("%s [&O][login/nachrichten.php|2]"))?>><?=l::h(sprintf(_("%s [&O][login/nachrichten.php|2]"), _("[message_".$_GET['type']."]")))?></a></h2>
 <?php
 			$message = Classes::Message($_GET['message']);
 			if(!$message->mayRead($me->getName()))
 			{
 ?>
-<p class="error"><?=h(_("Diese Nachricht existiert nicht."))?></p>
+<p class="error"><?=l::h(_("Diese Nachricht existiert nicht."))?></p>
 <?php
 			}
 			else
@@ -193,13 +193,13 @@
 					if($unread_prev !== false)
 					{
 ?>
-	<li class="c-prev"><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($unread_prev))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Vorige &ungelesene Nachricht[login/nachrichten.php|2]"), false)?>"<?=l::accesskey_attr(_("Vorige &ungelesene Nachricht[login/nachrichten.php|2]"))?> tabindex="<?=$tabindex+4?>"><?=h(_("←"))?></a></li>
+	<li class="c-prev"><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($unread_prev))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Vorige &ungelesene Nachricht[login/nachrichten.php|2]"), false)?>"<?=l::accesskey_attr(_("Vorige &ungelesene Nachricht[login/nachrichten.php|2]"))?> tabindex="<?=$tabindex+4?>"><?=l::h(_("←"))?></a></li>
 <?php
 					}
 					if($unread_next !== false)
 					{
 ?>
-	<li class="c-next"><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($unread_next))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Nächste ungelesene Nachricht [&Q][login/nachrichten.php|2]"), false)?>"<?=l::accesskey_attr(_("Nächste ungelesene Nachricht [&Q][login/nachrichten.php|2]"))?> tabindex="<?=$tabindex+3?>"><?=h(_("→"))?></a></li>
+	<li class="c-next"><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($unread_next))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Nächste ungelesene Nachricht [&Q][login/nachrichten.php|2]"), false)?>"<?=l::accesskey_attr(_("Nächste ungelesene Nachricht [&Q][login/nachrichten.php|2]"))?> tabindex="<?=$tabindex+3?>"><?=l::h(_("→"))?></a></li>
 <?php
 					}
 ?>
@@ -212,21 +212,21 @@
 				if(trim($message->from()) != '')
 				{
 ?>
-	<dt class="c-absender"><?=h(_("Absender"))?></dt>
-	<dd class="c-absender"><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($message->from()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($message->from())?></a></dd>
+	<dt class="c-absender"><?=l::h(_("Absender"))?></dt>
+	<dd class="c-absender"><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($message->from()))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($message->from())?></a></dd>
 
 <?php
 				}
 				if($type == Message::TYPE_POSTAUSGANG && $message->getRecipients())
 				{
 ?>
-	<dt class="c-empfaenger"><?=h(_("Empfänger"))?></dt>
+	<dt class="c-empfaenger"><?=l::h(_("Empfänger"))?></dt>
 	<dd class="c-empfaenger"><ul>
 <?php
 					foreach($message->getRecipients() as $recipient)
 					{
 ?>
-		<li><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($recipient)."&".global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($recipient)?></a></dd>
+		<li><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($recipient)."&".global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($recipient)?></a></dd>
 <?php
 					}
 ?>
@@ -237,13 +237,13 @@
 				$subject = trim($message->subject());
 				if(strlen($subject) <= 0) $subject = "Kein Betreff";
 ?>
-	<dt class="c-betreff"><?=h(_("Betreff"))?></dt>
+	<dt class="c-betreff"><?=l::h(_("Betreff"))?></dt>
 	<dd class="c-betreff"><?=htmlspecialchars($subject)?></dd>
 
-	<dt class="c-zeit"><?=h(_("Zeit"))?></dt>
+	<dt class="c-zeit"><?=l::h(_("Zeit"))?></dt>
 	<dd class="c-zeit"><?=date(_('H:i:s, Y-m-d'), $message->getTime())?></dd>
 
-	<dt class="c-nachricht"><?=h(_("Nachricht"))?></dt>
+	<dt class="c-nachricht"><?=l::h(_("Nachricht"))?></dt>
 	<dd class="c-nachricht">
 <?php
 				function repl_links($a, $b, $c)
@@ -293,8 +293,8 @@
 				{
 ?>
 <ul class="nachrichten-verbuendeten-links actions">
-	<li class="c-verbuendete"><a href="verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Zur Verbündetenseite&[login/nachrichten.php|2]"))?>><?=h(_("Zur Verbündetenseite&[login/nachrichten.php|2]"))?></a></li>
-	<li class="c-allianz"><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Zur Allianzseite&[login/nachrichten.php|2]"))?>><?=h(_("Zur Allianzseite&[login/nachrichten.php|2]"))?></a></li>
+	<li class="c-verbuendete"><a href="verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Zur Verbündetenseite&[login/nachrichten.php|2]"))?>><?=l::h(_("Zur Verbündetenseite&[login/nachrichten.php|2]"))?></a></li>
+	<li class="c-allianz"><a href="allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Zur Allianzseite&[login/nachrichten.php|2]"))?>><?=l::h(_("Zur Allianzseite&[login/nachrichten.php|2]"))?></a></li>
 </ul>
 <?php
 				}
@@ -311,7 +311,7 @@
 		<?=global_setting("URL_FORMULAR")."\n"?>
 		<input type="hidden" name="to" value="<?=htmlspecialchars($message->from())?>" />
 		<input type="hidden" name="subject" value="<?=htmlspecialchars($re_betreff)?>" />
-		<button type="submit"<?=l::accesskey_attr(_("Ant&worten[login/nachrichten.php|2]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Ant&worten[login/nachrichten.php|2]"))?></button>
+		<button type="submit"<?=l::accesskey_attr(_("Ant&worten[login/nachrichten.php|2]"))?> tabindex="<?=$tabindex++?>"><?=l::h(_("Ant&worten[login/nachrichten.php|2]"))?></button>
 	</div>
 </form>
 <?php
@@ -320,7 +320,7 @@
 					$tabindex++;
 ?>
 <form action="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="nachricht-loeschen-formular">
-	<div><input type="hidden" name="message[<?=htmlspecialchars($_GET['message'])?>]" value="on" /><input type="submit" name="delete" tabindex="<?=$tabindex++?>" value="<?=h(_("Lösche&n[login/nachrichten.php|2]"), false)?>"<?=l::accesskey_attr(_("Lösche&n[login/nachrichten.php|2"))?> /> <input type="submit" name="archive" tabindex="<?=$tabindex++?>" value="<?=h(_("Archivieren&[login/nachrichten.php|2]"))?>"<?=l::accesskey_attr(_("Archivieren&[login/nachrichten.php|2]"))?> /></div>
+	<div><input type="hidden" name="message[<?=htmlspecialchars($_GET['message'])?>]" value="on" /><input type="submit" name="delete" tabindex="<?=$tabindex++?>" value="<?=l::h(_("Lösche&n[login/nachrichten.php|2]"), false)?>"<?=l::accesskey_attr(_("Lösche&n[login/nachrichten.php|2"))?> /> <input type="submit" name="archive" tabindex="<?=$tabindex++?>" value="<?=l::h(_("Archivieren&[login/nachrichten.php|2]"))?>"<?=l::accesskey_attr(_("Archivieren&[login/nachrichten.php|2]"))?> /></div>
 </form>
 <?php
 				$tabindex += 4;
@@ -332,13 +332,13 @@
 					if(!User::exists($_POST['weiterleitung-to']))
 					{
 ?>
-<p class="error"><?=h(_("Der Empfänger, den Sie eingegeben haben, existiert nicht."))?></p>
+<p class="error"><?=l::h(_("Der Empfänger, den Sie eingegeben haben, existiert nicht."))?></p>
 <?php
 					}
 					elseif($_POST['weiterleitung-to'] == $me->getName())
 					{
 ?>
-<p class="error"><?=h(_("Sie können sich nicht selbst eine Nachricht schicken."))?></p>
+<p class="error"><?=l::h(_("Sie können sich nicht selbst eine Nachricht schicken."))?></p>
 <?php
 					}
 					else
@@ -369,7 +369,7 @@
 						$weiterleitung_message->addUser(User::datasetName($to_user->getName()));
 						$weiterleitung_message->html($message->html());
 ?>
-<p class="successful"><?=h(_("Die Nachricht wurde erfolgreich weitergeleitet."))?></p>
+<p class="successful"><?=l::h(_("Die Nachricht wurde erfolgreich weitergeleitet."))?></p>
 <?php
 						unset($_POST['weiterleitung-to']);
 						unset($weiterleitung_message);
@@ -399,19 +399,19 @@
 				{
 ?>
 <ul id="nachricht-veroeffentlichen" class="possibilities">
-	<li><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($_GET['message']))?>&amp;publish=1&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>#nachricht-veroeffentlichen"<?=l::accesskey_attr(_("Nachricht veröffentlichen&[login/nachrichten.php|2]"))?>><?=h(_("Nachricht veröffentlichen&[login/nachrichten.php|2]"))?></a></li>
+	<li><a href="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($_GET['message']))?>&amp;publish=1&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>#nachricht-veroeffentlichen"<?=l::accesskey_attr(_("Nachricht veröffentlichen&[login/nachrichten.php|2]"))?>><?=l::h(_("Nachricht veröffentlichen&[login/nachrichten.php|2]"))?></a></li>
 </ul>
 <?php
 				}
 ?>
 <form action="nachrichten.php?type=<?=htmlspecialchars(urlencode($_GET['type']))?>&amp;message=<?=htmlspecialchars(urlencode($_GET['message']))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>#nachricht-weiterleiten-formular" method="post" id="nachricht-weiterleiten-formular" class="nachricht-weiterleiten-formular">
 	<fieldset>
-		<legend><?=h(_("Nachricht weiterleiten"))?></legend>
+		<legend><?=l::h(_("Nachricht weiterleiten"))?></legend>
 		<dl class="form">
-			<dt><label for="empfaenger-input"><?=h(_("Empfänger [&X][login/nachrichten.php|2]"))?></label></dt>
+			<dt><label for="empfaenger-input"><?=l::h(_("Empfänger [&X][login/nachrichten.php|2]"))?></label></dt>
 			<dd><input type="text" id="empfaenger-input" name="weiterleitung-to" value="<?=isset($_POST['weiterleitung-to']) ? htmlspecialchars($_POST['weiterleitung-to']) : ''?>"<?=l::accesskey_attr(_("Empfänger [&X][login/nachrichten.php|2]"))?> tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
-		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Weiterleiten&[login/nachrichten.php|2]"))?>><?=h(_("Weiterleiten&[login/nachrichten.php|2]"))?></button></div>
+		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Weiterleiten&[login/nachrichten.php|2]"))?>><?=l::h(_("Weiterleiten&[login/nachrichten.php|2]"))?></button></div>
 	</fieldset>
 </form>
 <script type="text/javascript">
@@ -424,7 +424,7 @@
 		{
 			# Nachrichtenuebersicht einer Kategorie anzeigen
 ?>
-<h2><a href="nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Zurück zur Nachrichtenkategorienübersicht"))?>"<?=l::accesskey_attr(_("Nachrichten [&W][login/nachrichten.php|3]"))?> tabindex="<?=$tabindex+4?>"><?=h(_("Nachrichten [&W][login/nachrichten.php|3]"))?></a>: <?=h(_("[message_".$_GET['type']."]"))?></h2>
+<h2><a href="nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Zurück zur Nachrichtenkategorienübersicht"))?>"<?=l::accesskey_attr(_("Nachrichten [&W][login/nachrichten.php|3]"))?> tabindex="<?=$tabindex+4?>"><?=l::h(_("Nachrichten [&W][login/nachrichten.php|3]"))?></a>: <?=l::h(_("[message_".$_GET['type']."]"))?></h2>
 <?php
 			if(isset($_POST['message']) && is_array($_POST['message']))
 			{
@@ -473,9 +473,9 @@
 		<thead>
 			<tr>
 				<th class="c-auswaehlen"></th>
-				<th class="c-betreff"><?=h(_("Betreff"))?></th>
+				<th class="c-betreff"><?=l::h(_("Betreff"))?></th>
 				<th class="c-<?=$_GET["type"] == Message::TYPE_POSTAUSGANG ? "empfaenger" : "absender"?>"><?=$_GET["type"] == Message::TYPE_POSTAUSGANG ? h(_("Empfänger")) : h(_("Absender"))?></th>
-				<th class="c-datum"><?=h(_("Datum"))?></th>
+				<th class="c-datum"><?=l::h(_("Datum"))?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -511,11 +511,11 @@
 				<td class="c-auswaehlen">
 					<script type="text/javascript">
 						// <![CDATA[
-						document.write('<button onclick="toggle_selection(); return false;" class="auswahl-button"<?=l::accesskey_attr(_("Auswahl umkehren [&O][login/nachrichten.php|3]"))?> tabindex="<?=$tabindex?>"><abbr title="<?=h(_("Auswahl umkehren [&O][login/nachrichten.php|3]"))?>"><?=h(_("A[uswahl umkehren]"))?></abbr></button>');
+						document.write('<button onclick="toggle_selection(); return false;" class="auswahl-button"<?=l::accesskey_attr(_("Auswahl umkehren [&O][login/nachrichten.php|3]"))?> tabindex="<?=$tabindex?>"><abbr title="<?=l::h(_("Auswahl umkehren [&O][login/nachrichten.php|3]"))?>"><?=l::h(_("A[uswahl umkehren]"))?></abbr></button>');
 						// ]]>
 					</script>
 				</td>
-				<td colspan="3"><input type="submit" name="delete" class="loeschen-button"<?=l::accesskey_attr(_("Lösche&n[login/nachrichten.php|3]"))?> tabindex="<?=$tabindex+1?>" value="<?=h(_("Lösche&n[login/nachrichten.php|3]"), false)?>" /> <input type="submit" name="read" class="als-gelesen-markieren-button" tabindex="<?=$tabindex+2?>"<?=l::accesskey_attr(_("Als gelesen markieren [&U][login/nachrichten.php|3]"))?> value="<?=h(_("Als gelesen markieren [&U][login/nachrichten.php|3]"), false)?>" /> <input type="submit" name="archive" class="archivieren-button"<?=l::accesskey_attr(_("Archivieren&[login/nachrichten.php|3]"))?> tabindex="<?=$tabindex+3?>" value="<?=h(_("Archivieren&[login/nachrichten.php|3]"))?>" /></td>
+				<td colspan="3"><input type="submit" name="delete" class="loeschen-button"<?=l::accesskey_attr(_("Lösche&n[login/nachrichten.php|3]"))?> tabindex="<?=$tabindex+1?>" value="<?=l::h(_("Lösche&n[login/nachrichten.php|3]"), false)?>" /> <input type="submit" name="read" class="als-gelesen-markieren-button" tabindex="<?=$tabindex+2?>"<?=l::accesskey_attr(_("Als gelesen markieren [&U][login/nachrichten.php|3]"))?> value="<?=l::h(_("Als gelesen markieren [&U][login/nachrichten.php|3]"), false)?>" /> <input type="submit" name="archive" class="archivieren-button"<?=l::accesskey_attr(_("Archivieren&[login/nachrichten.php|3]"))?> tabindex="<?=$tabindex+3?>" value="<?=l::h(_("Archivieren&[login/nachrichten.php|3]"))?>" /></td>
 			</tr>
 		</tfoot>
 	</table>
@@ -545,36 +545,36 @@
 		else
 			$ges_ncount[2] = 'leer type-empty';
 ?>
-<h2><?=h(_("Nachrichten"))?></h2>
+<h2><?=l::h(_("Nachrichten"))?></h2>
 <ul class="nachrichten-neu-link possibilities">
-	<li><a href="nachrichten.php?to=&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("&Neue Nachricht[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("&Neue Nachricht[login/nachrichten.php|4]"))?></a></li>
+	<li><a href="nachrichten.php?to=&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("&Neue Nachricht[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=l::h(_("&Neue Nachricht[login/nachrichten.php|4]"))?></a></li>
 </ul>
 <dl class="nachrichten-kategorien categories">
-	<dt class="c-kaempfe <?=$ncount[Message::TYPE_KAEMPFE][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_KAEMPFE)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("K&ämpfe[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("K&ämpfe[login/nachrichten.php|4]"))?></a></dt>
+	<dt class="c-kaempfe <?=$ncount[Message::TYPE_KAEMPFE][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_KAEMPFE)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("K&ämpfe[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=l::h(_("K&ämpfe[login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-kaempfe <?=$ncount[Message::TYPE_KAEMPFE][2]?>"><?=htmlspecialchars($ncount[Message::TYPE_KAEMPFE][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[1][1])?>)</span></dd>
 
-	<dt class="c-spionage <?=$ncount[Message::TYPE_SPIONAGE][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_SPIONAGE)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spi&onage[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Spi&onage[login/nachrichten.php|4]"))?></a></dt>
+	<dt class="c-spionage <?=$ncount[Message::TYPE_SPIONAGE][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_SPIONAGE)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spi&onage[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=l::h(_("Spi&onage[login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-spionage <?=$ncount[Message::TYPE_SPIONAGE][2]?>"><?=htmlspecialchars($ncount[Message::TYPE_SPIONAGE][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[2][1])?>)</span></dd>
 
-	<dt class="c-transport <?=$ncount[Message::TYPE_TRANSPORT][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_TRANSPORT)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Transport [&J][login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Transport [&J][login/nachrichten.php|4]"))?></a></dt>
+	<dt class="c-transport <?=$ncount[Message::TYPE_TRANSPORT][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_TRANSPORT)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Transport [&J][login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=l::h(_("Transport [&J][login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-transport <?=$ncount[Message::TYPE_TRANSPORT][2]?>"><?=htmlspecialchars($ncount[Message::TYPE_TRANSPORT][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[3][1])?>)</span></dd>
 
-	<dt class="c-sammeln <?=$ncount[Message::TYPE_SAMMELN][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_SAMMELN)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Sammeln [&Q][login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Sammeln [&Q][login/nachrichten.php|4]"))?></a></dt>
+	<dt class="c-sammeln <?=$ncount[Message::TYPE_SAMMELN][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_SAMMELN)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Sammeln [&Q][login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=l::h(_("Sammeln [&Q][login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-sammeln <?=$ncount[Message::TYPE_SAMMELN][2]?>"><?=htmlspecialchars($ncount[Message::TYPE_SAMMELN][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[4][1])?>)</span></dd>
 
-	<dt class="c-besiedelung <?=$ncount[Message::TYPE_BESIEDELUNG][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_BESIEDELUNG)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Besiedel&ung[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Besiedel&ung[login/nachrichten.php|4]"))?></a></dt>
+	<dt class="c-besiedelung <?=$ncount[Message::TYPE_BESIEDELUNG][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_BESIEDELUNG)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Besiedel&ung[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=l::h(_("Besiedel&ung[login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-besiedelung <?=$ncount[Message::TYPE_BESIEDELUNG][2]?>"><?=htmlspecialchars($ncount[Message::TYPE_BESIEDELUNG][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[5][1])?>)</span></dd>
 
-	<dt class="c-benutzernachrichten <?=$ncount[Message::TYPE_BENUTZERNACHRICHTEN][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_BENUTZERNACHRICHTEN)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Benut&zernachrichten[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Benut&zernachrichten[login/nachrichten.php|4]"))?></a></dt>
+	<dt class="c-benutzernachrichten <?=$ncount[Message::TYPE_BENUTZERNACHRICHTEN][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_BENUTZERNACHRICHTEN)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Benut&zernachrichten[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=l::h(_("Benut&zernachrichten[login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-benutzernachrichten <?=$ncount[Message::TYPE_BENUTZERNACHRICHTEN][2]?>"><?=htmlspecialchars($ncount[Message::TYPE_BENUTZERNACHRICHTEN][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[6][1])?>)</span></dd>
 
-	<dt class="c-verbeundete <?=$ncount[Message::TYPE_VERBUENDETE][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_VERBUENDETE)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Verb&ündete[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Verb&ündete[login/nachrichten.php|4]"))?></a></dt>
+	<dt class="c-verbeundete <?=$ncount[Message::TYPE_VERBUENDETE][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_VERBUENDETE)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Verb&ündete[login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=l::h(_("Verb&ündete[login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-verbuendete <?=$ncount[Message::TYPE_VERBUENDETE][2]?>"><?=htmlspecialchars($ncount[Message::TYPE_VERBUENDETE][0])?> <span class="gesamt">(<?=htmlspecialchars($ncount[7][1])?>)</span></dd>
 
-	<dt class="c-postausgang foot <?=$ncount[Message::TYPE_POSTAUSGANG][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_POSTAUSGANG)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Postausgang [&W][login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=h(_("Postausgang [&W][login/nachrichten.php|4]"))?></a></dt>
+	<dt class="c-postausgang foot <?=$ncount[Message::TYPE_POSTAUSGANG][2]?>"><a href="nachrichten.php?type=<?=htmlspecialchars(Message::TYPE_POSTAUSGANG)?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Postausgang [&W][login/nachrichten.php|4]"))?> tabindex="<?=$tabindex++?>"><?=l::h(_("Postausgang [&W][login/nachrichten.php|4]"))?></a></dt>
 	<dd class="c-postausgang foot <?=$ncount[Message::TYPE_POSTAUSGANG][2]?>"><?=htmlspecialchars($ncount[Message::TYPE_POSTAUSGANG][1])?></dd>
 
-	<dt class="c-gesamt foot <?=$ges_ncount[2]?>"><?=h(_("Gesamt"))?></dt>
+	<dt class="c-gesamt foot <?=$ges_ncount[2]?>"><?=l::h(_("Gesamt"))?></dt>
 	<dd class="c-gesamt foot <?=$ges_ncount[2]?>"><?=htmlspecialchars($ges_ncount[0])?> <span class="gesamt">(<?=htmlspecialchars($ges_ncount[1])?>)</span></dd>
 </dl>
 <?php

@@ -18,10 +18,10 @@
 	/**
 	 * Verbündete verwalten.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage login
 	*/
-	namespace sua::frontend;
+	namespace sua\frontend;
 
 	require('include.php');
 
@@ -39,7 +39,7 @@
 		foreach($me->getVerbuendetList() as $verbuendeter)
 			$message->addUser($verbuendeter, Message::TYPE_VERBUENDETE);
 ?>
-<p class="successful"><?=h(_("Das Rundschreiben wurde erfolgreich verschickt."))?></p>
+<p class="successful"><?=l::h(_("Das Rundschreiben wurde erfolgreich verschickt."))?></p>
 <?php
 	}
 
@@ -80,16 +80,16 @@
 	if(count($anfragen) > 0)
 	{
 ?>
-<h3 class="strong"><?=h(_("Anfragen von anderen Spielern"))?></h3>
+<h3 class="strong"><?=l::h(_("Anfragen von anderen Spielern"))?></h3>
 <dl class="buendnisse-anfragen buendnisse-liste player-list-actions">
 <?php
 		foreach($anfragen as $anfrage)
 		{
 ?>
-	<dt><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($anfrage))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($anfrage)?></a></dt>
+	<dt><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($anfrage))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($anfrage)?></a></dt>
 	<dd><ul>
-		<li><a href="verbuendete.php?anfrage=<?=htmlspecialchars(urlencode($anfrage))?>&amp;annehmen=1&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=h(_("Annehmen"))?></a></li>
-		<li><a href="verbuendete.php?anfrage=<?=htmlspecialchars(urlencode($anfrage))?>&amp;annehmen=0&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=h(_("Ablehnen"))?></a></li>
+		<li><a href="verbuendete.php?anfrage=<?=htmlspecialchars(urlencode($anfrage))?>&amp;annehmen=1&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=l::h(_("Annehmen"))?></a></li>
+		<li><a href="verbuendete.php?anfrage=<?=htmlspecialchars(urlencode($anfrage))?>&amp;annehmen=0&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=l::h(_("Ablehnen"))?></a></li>
 	</ul></dd>
 <?php
 		}
@@ -102,15 +102,15 @@
 	if(count($bewerbungen) > 0)
 	{
 ?>
-<h3 class="strong"><?=h(_("Bewerbungen bei anderen Spielern"))?></h3>
+<h3 class="strong"><?=l::h(_("Bewerbungen bei anderen Spielern"))?></h3>
 <dl class="buendnisse-bewerbungen buendnisse-liste player-list-actions">
 <?php
 		foreach($bewerbungen as $bewerbung)
 		{
 ?>
-	<dt><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($bewerbung)?></a></dt>
+	<dt><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($bewerbung)?></a></dt>
 	<dd><ul>
-		<li><a href="verbuendete.php?bewerbung=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=h(_("Zurückziehen"))?></a></li>
+		<li><a href="verbuendete.php?bewerbung=<?=htmlspecialchars(urlencode($bewerbung))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"><?=l::h(_("Zurückziehen"))?></a></li>
 	</ul></dd>
 <?php
 		}
@@ -119,13 +119,13 @@
 <?php
 	}
 ?>
-<h2><?=h(_("Bündnisse"))?></h2>
+<h2><?=l::h(_("Bündnisse"))?></h2>
 <?php
 	$verbuendete = $me->getVerbuendetList();
 	if(count($verbuendete) <= 0)
 	{
 ?>
-<p class="buendnisse-keine"><?=h(_("Sie sind derzeit mit keinen Spielern verbündet."))?></p>
+<p class="buendnisse-keine"><?=l::h(_("Sie sind derzeit mit keinen Spielern verbündet."))?></p>
 <?php
 	}
 	else
@@ -136,9 +136,9 @@
 		foreach($verbuendete as $name)
 		{
 ?>
-	<dt><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($name)?></a></dt>
+	<dt><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($name)?></a></dt>
 	<dd><ul>
-		<li><a href="verbuendete.php?kuendigen=<?=htmlspecialchars(urlencode($name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="return confirm('<?=JS::jsentities(sprintf(_("Wollen Sie das Bündnis mit dem Spieler %s wirklich kündigen?"), $name))?>');"><?=h(_("Kündigen"))?></a></li>
+		<li><a href="verbuendete.php?kuendigen=<?=htmlspecialchars(urlencode($name))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" onclick="return confirm('<?=JS::jsentities(sprintf(_("Wollen Sie das Bündnis mit dem Spieler %s wirklich kündigen?"), $name))?>');"><?=l::h(_("Kündigen"))?></a></li>
 	</ul></dd>
 <?php
 		}
@@ -146,21 +146,21 @@
 </dl>
 <form action="verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="buendnisse-rundschreiben" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=JS::jsentities(_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?"))?>\');');">
 	<fieldset>
-		<legend><?=h(_("Bündnisrundschreiben"))?></legend>
+		<legend><?=l::h(_("Bündnisrundschreiben"))?></legend>
 		<dl class="form">
-			<dt class="c-betreff"><label for="betreff-input"><?=h(_("Betreff [&J][login/verbuendete.php|1]"))?></label></dt>
+			<dt class="c-betreff"><label for="betreff-input"><?=l::h(_("Betreff [&J][login/verbuendete.php|1]"))?></label></dt>
 			<dd class="c-betreff"><input type="text" name="betreff" id="betreff-input" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Betreff [&J][login/verbuendete.php|1]"))?> /></dd>
 
-			<dt class="c-text"><label for="text-textarea"><?=h(_("Te&xt[login/verbuendete.php|1]"))?></label></dt>
+			<dt class="c-text"><label for="text-textarea"><?=l::h(_("Te&xt[login/verbuendete.php|1]"))?></label></dt>
 			<dd class="c-text"><textarea name="rundschreiben" id="text-textarea" rows="6" cols="35"<?=l::accesskey_attr(_("Te&xt[login/verbuendete.php|1]"))?> tabindex="<?=$tabindex++?>"></textarea></dd>
 		</dl>
-		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("R&undschreiben verschicken[login/verbuendete.php|1]"))?>><?=h(_("R&undschreiben verschicken[login/verbuendete.php|1]"))?></button></div>
+		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("R&undschreiben verschicken[login/verbuendete.php|1]"))?>><?=l::h(_("R&undschreiben verschicken[login/verbuendete.php|1]"))?></button></div>
 	</fieldset>
 </form>
 <?php
 	}
 ?>
-<h3 class="strong"><?=h(_("Neues Bündnis eingehen"))?></h3>
+<h3 class="strong"><?=l::h(_("Neues Bündnis eingehen"))?></h3>
 <?php
 	if(isset($buendnis_error) && strlen(trim($buendnis_error)) > 0)
 	{
@@ -173,13 +173,13 @@
 ?>
 <form action="verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="buendnisse-eingehen">
 	<dl class="form">
-		<dt class="c-spieler"><label for="spieler-input"><?=h(_("Spieler [&Z][login/verbuendete.php|1]"))?></label></dt>
+		<dt class="c-spieler"><label for="spieler-input"><?=l::h(_("Spieler [&Z][login/verbuendete.php|1]"))?></label></dt>
 		<dd class="c-spieler"><input type="text" name="empfaenger" id="spieler-input" value="<?=(isset($_POST['empfaenger']) ? htmlspecialchars($_POST['empfaenger']) : '')?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Spieler [&Z][login/verbuendete.php|1]"))?> /></dd>
 
-		<dt class="c-mitteilung"><label for="mitteilung-textarea"><?=h(_("Mitteilung [&O][login/verbuendete.php|1]"))?></label></dt>
+		<dt class="c-mitteilung"><label for="mitteilung-textarea"><?=l::h(_("Mitteilung [&O][login/verbuendete.php|1]"))?></label></dt>
 		<dd class="c-mitteilung"><textarea rows="5" cols="30" name="mitteilung" id="mitteilung-textarea" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Mitteilung [&O][login/verbuendete.php|1]"))?>><?=(isset($_POST['mitteilung']) ? preg_replace("/[\t\r\n]/e", '\'&#\'.ord(\'$0\').\';\'', htmlspecialchars($_POST['mitteilung'])) : '')?></textarea></dd>
 	</dl>
-	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("A&nfrage absenden[login/verbuendete.php|1]"))?>><?=h(_("A&nfrage absenden[login/verbuendete.php|1]"))?></button></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("A&nfrage absenden[login/verbuendete.php|1]"))?>><?=l::h(_("A&nfrage absenden[login/verbuendete.php|1]"))?></button></div>
 </form>
 <script type="text/javascript">
 	activate_users_list(document.getElementById('spieler-input'));

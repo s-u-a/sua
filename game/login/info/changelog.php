@@ -18,10 +18,10 @@
 	/**
 	 * Zeigt das Changelog des Spiels an.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage login
 	*/
-	namespace sua::frontend;
+	namespace sua\frontend;
 
 	$LOGIN_NOT_NEEDED = true;
 	require('../include.php');
@@ -34,7 +34,7 @@
 
 	$changelog = preg_split("/\r\n|\r|\n/", $changelog);
 ?>
-<h2 id="changelog"><?=h(_("Changelog"))?></h2>
+<h2 id="changelog"><?=l::h(_("Changelog"))?></h2>
 <ol class="changelog whole-page">
 <?php
 	foreach($changelog as $log)

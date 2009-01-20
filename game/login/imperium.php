@@ -18,10 +18,10 @@
 	/**
 	 * Imperiumsübersicht, zeigt den Status aller eigenen Planeten an.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage login
 	*/
-	namespace sua::frontend;
+	namespace sua\frontend;
 
 	require('include.php');
 
@@ -52,26 +52,26 @@
 ?>
 <h2>Imperium</h2>
 <ul class="imperium-modi tabs">
-	<li class="c-rohstoffe<?=($action == 'ress') ? ' active' : ''?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'ress') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?><?=l::accesskey_attr(_("Rohstoffe&[login/imperium.php|1]"))?>><?=h(_("Rohstoffe&[login/imperium.php|1]"))?></a></li>
-	<li class="c-roboter<?=($action == 'roboter') ? ' active' : ''?>"><a href="imperium.php?action=roboter&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'roboter') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?><?=l::accesskey_attr(_("Roboter&[login/imperium.php|1]"))?>><?=h(_("Roboter&[login/imperium.php|1]"))?></a></li>
-	<li class="c-flotte<?=($action == 'flotte') ? ' active' : ''?>"><a href="imperium.php?action=flotte&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'flotten') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?><?=l::accesskey_attr(_("Flotten&[login/imperium.php|1]"))?>><?=h(_("Flotten&[login/imperium.php|1]"))?></a></li>
+	<li class="c-rohstoffe<?=($action == 'ress') ? ' active' : ''?>"><a href="imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'ress') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?><?=l::accesskey_attr(_("Rohstoffe&[login/imperium.php|1]"))?>><?=l::h(_("Rohstoffe&[login/imperium.php|1]"))?></a></li>
+	<li class="c-roboter<?=($action == 'roboter') ? ' active' : ''?>"><a href="imperium.php?action=roboter&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'roboter') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?><?=l::accesskey_attr(_("Roboter&[login/imperium.php|1]"))?>><?=l::h(_("Roboter&[login/imperium.php|1]"))?></a></li>
+	<li class="c-flotte<?=($action == 'flotte') ? ' active' : ''?>"><a href="imperium.php?action=flotte&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=($action == 'flotten') ? '' : ' tabindex="'.htmlspecialchars($tabindex++).'"'?><?=l::accesskey_attr(_("Flotten&[login/imperium.php|1]"))?>><?=l::h(_("Flotten&[login/imperium.php|1]"))?></a></li>
 </ul>
 <?php
 	switch($action)
 	{
 		case 'ress':
 ?>
-<h3 id="rohstoffvorraete" class="strong"><?=h(_("Rohstoffvorräte"))?></h3>
+<h3 id="rohstoffvorraete" class="strong"><?=l::h(_("Rohstoffvorräte"))?></h3>
 <table class="imperium-tabelle imperium-rohstoffvorraete">
 	<thead>
 		<tr>
-			<th class="c-planet separator-right"><?=h(_("Planet"))?></th>
-			<th class="c-carbon"><?=h(_("[ress_0]"))?></th>
-			<th class="c-aluminium"><?=h(_("[ress_1]"))?></th>
-			<th class="c-wolfram"><?=h(_("[ress_2]"))?></th>
-			<th class="c-radium"><?=h(_("[ress_3]"))?></th>
-			<th class="c-tritium"><?=h(_("[ress_4]"))?></th>
-			<th class="c-gesamt"><?=h(_("Gesamt"))?></th>
+			<th class="c-planet separator-right"><?=l::h(_("Planet"))?></th>
+			<th class="c-carbon"><?=l::h(_("[ress_0]"))?></th>
+			<th class="c-aluminium"><?=l::h(_("[ress_1]"))?></th>
+			<th class="c-wolfram"><?=l::h(_("[ress_2]"))?></th>
+			<th class="c-radium"><?=l::h(_("[ress_3]"))?></th>
+			<th class="c-tritium"><?=l::h(_("[ress_4]"))?></th>
+			<th class="c-gesamt"><?=l::h(_("Gesamt"))?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -106,7 +106,7 @@
 	</tbody>
 	<tfoot class="gesamt">
 		<tr>
-			<th class="c-planet separator-right"><?=h(_("Gesamt"))?></th>
+			<th class="c-planet separator-right"><?=l::h(_("Gesamt"))?></th>
 			<td class="c-carbon number"><?=F::ths($ges[0])?></td>
 			<td class="c-aluminium number"><?=F::ths($ges[1])?></td>
 			<td class="c-wolfram number"><?=F::ths($ges[2])?></td>
@@ -116,18 +116,18 @@
 		</tr>
 	</tfoot>
 </table>
-<h3 id="rohstoffproduktion" class="strong"><?=h(_("Rohstoffproduktion pro Stunde"))?></h3>
+<h3 id="rohstoffproduktion" class="strong"><?=l::h(_("Rohstoffproduktion pro Stunde"))?></h3>
 <table class="imperium-tabelle imperium-rohstoffproduktion">
 	<thead>
 		<tr>
-			<th class="c-planet separator-right"><?=h(_("Planet"))?></th>
-			<th class="c-carbon"><?=h(_("[ress_0]"))?></th>
-			<th class="c-aluminium"><?=h(_("[ress_1]"))?></th>
-			<th class="c-wolfram"><?=h(_("[ress_2]"))?></th>
-			<th class="c-radium"><?=h(_("[ress_3]"))?></th>
-			<th class="c-tritium"><?=h(_("[ress_4]"))?></th>
-			<th class="c-gesamt"><?=h(_("Gesamt"))?></th>
-			<th class="c-energie"><?=h(_("[ress_5]"))?></th>
+			<th class="c-planet separator-right"><?=l::h(_("Planet"))?></th>
+			<th class="c-carbon"><?=l::h(_("[ress_0]"))?></th>
+			<th class="c-aluminium"><?=l::h(_("[ress_1]"))?></th>
+			<th class="c-wolfram"><?=l::h(_("[ress_2]"))?></th>
+			<th class="c-radium"><?=l::h(_("[ress_3]"))?></th>
+			<th class="c-tritium"><?=l::h(_("[ress_4]"))?></th>
+			<th class="c-gesamt"><?=l::h(_("Gesamt"))?></th>
+			<th class="c-energie"><?=l::h(_("[ress_5]"))?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -175,7 +175,7 @@
 	</tbody>
 	<tfoot class="gesamt">
 		<tr class="gesamt-stuendlich">
-			<th class="c-planet separator-right"><?=h(_("Gesamt"))?></th>
+			<th class="c-planet separator-right"><?=l::h(_("Gesamt"))?></th>
 			<td class="c-carbon number <?=get_prod_class($ges[0])?>"><?=F::ths($ges[0])?></td>
 			<td class="c-aluminium number <?=get_prod_class($ges[1])?>"><?=F::ths($ges[1])?></td>
 			<td class="c-wolfram number <?=get_prod_class($ges[2])?>"><?=F::ths($ges[2])?></td>
@@ -266,39 +266,39 @@
 </script>
 <h3 id="ausgegebene-rohstoffe" class="strong">Ausgegebene Rohstoffe</h3>
 <dl class="punkte">
-	<dt class="c-carbon"><?=h(_("[ress_0]"))?></dt>
+	<dt class="c-carbon"><?=l::h(_("[ress_0]"))?></dt>
 	<dd class="c-carbon"><?=F::ths($me->getSpentRess(0))?></dd>
 
-	<dt class="c-eisenerz"><?=h(_("[ress_1]"))?></dt>
+	<dt class="c-eisenerz"><?=l::h(_("[ress_1]"))?></dt>
 	<dd class="c-eisenerz"><?=F::ths($me->getSpentRess(1))?></dd>
 
-	<dt class="c-wolfram"><?=h(_("[ress_2]"))?></dt>
+	<dt class="c-wolfram"><?=l::h(_("[ress_2]"))?></dt>
 	<dd class="c-wolfram"><?=F::ths($me->getSpentRess(2))?></dd>
 
-	<dt class="c-radium"><?=h(_("[ress_3]"))?></dt>
+	<dt class="c-radium"><?=l::h(_("[ress_3]"))?></dt>
 	<dd class="c-radium"><?=F::ths($me->getSpentRess(3))?></dd>
 
-	<dt class="c-tritium"><?=h(_("[ress_4]"))?></dt>
+	<dt class="c-tritium"><?=l::h(_("[ress_4]"))?></dt>
 	<dd class="c-tritium"><?=F::ths($me->getSpentRess(4))?></dd>
 
-	<dt class="c-gesamt"><?=h(_("Gesamt"))?></dt>
+	<dt class="c-gesamt"><?=l::h(_("Gesamt"))?></dt>
 	<dd class="c-gesamt"><?=F::ths($me->getSpentRess())?></dd>
 </dl>
 <?php
 			break;
 		case 'roboter':
 ?>
-<h3 id="roboterzahlen" class="strong"><?=h(_("Roboterzahlen"))?></h3>
+<h3 id="roboterzahlen" class="strong"><?=l::h(_("Roboterzahlen"))?></h3>
 <table class="imperium-tabelle imperium-roboterzahlen">
 	<thead>
 		<tr>
-			<th class="c-planet separator-right"><?=h(_("Planet"))?></th>
+			<th class="c-planet separator-right"><?=l::h(_("Planet"))?></th>
 <?php
 			$roboter = $me->getItemsList('roboter');
 			foreach($roboter as $id)
 			{
 ?>
-			<th class="c-<?=htmlspecialchars($id)?>"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=h(_("[item_".$id."]"))?></a></th>
+			<th class="c-<?=htmlspecialchars($id)?>"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Genauere Informationen anzeigen"))?>"><?=l::h(_("[item_".$id."]"))?></a></th>
 <?php
 			}
 ?>
@@ -348,7 +348,7 @@
 	</tbody>
 	<tfoot class="gesamt">
 		<tr>
-			<th class="c-planet separator-right"><?=h(_("Gesamt"))?></th>
+			<th class="c-planet separator-right"><?=l::h(_("Gesamt"))?></th>
 <?php
 			foreach($roboter as $id)
 			{
@@ -360,12 +360,12 @@
 		</tr>
 	</tfoot>
 </table>
-<h3 id="roboter-auswirkungsgrade" class="strong"><?=h(_("Roboter-Auswirkungsgrade"))?></h3>
+<h3 id="roboter-auswirkungsgrade" class="strong"><?=l::h(_("Roboter-Auswirkungsgrade"))?></h3>
 <dl class="imperium-roboter-auswirkungsgrade">
-	<dt class="c-bauroboter"><?=h(_("Bauroboter"))?></dt>
+	<dt class="c-bauroboter"><?=l::h(_("Bauroboter"))?></dt>
 	<dd class="c-bauroboter"><?=sprintf(h(_("%s %% pro Roboter")), F::ths($me->getItemLevel('F2', 'forschung')*0.125, null, 3))?></dd>
 
-	<dt class="c-minenroboter"><?=h(_("Minenroboter"))?></dt>
+	<dt class="c-minenroboter"><?=l::h(_("Minenroboter"))?></dt>
 <?php
 			if(file_exists(global_setting("DB_USE_OLD_ROBTECH")))
 			{
@@ -385,11 +385,11 @@
 			break;
 		case 'flotte':
 ?>
-<h3 id="stationierte-flotten" class="strong"><?=h(_("Stationierte Flotten"))?></h3>
+<h3 id="stationierte-flotten" class="strong"><?=l::h(_("Stationierte Flotten"))?></h3>
 <table class="imperium-tabelle imperium-stationierte-flotten">
 	<thead>
 		<tr>
-			<th class="c-einheit separator-right"><?=h(_("Einheit"))?></th>
+			<th class="c-einheit separator-right"><?=l::h(_("Einheit"))?></th>
 <?php
 			$planets = $me->getPlanetsList();
 			foreach($planets as $planet)
@@ -401,7 +401,7 @@
 <?php
 			}
 ?>
-			<th class="c-gesamt"><?=h(_("Gesamt"))?></th>
+			<th class="c-gesamt"><?=l::h(_("Gesamt"))?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -414,7 +414,7 @@
 				$this_ges = 0;
 ?>
 		<tr>
-			<th class="c-einheit separator-right"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=h(_("[item_".$id."]"))?></a></th>
+			<th class="c-einheit separator-right"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id).'&'.global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Genauere Informationen anzeigen"))?>"><?=l::h(_("[item_".$id."]"))?></a></th>
 <?php
 				foreach($planets as $i=>$planet)
 				{
@@ -437,7 +437,7 @@
 	</tbody>
 	<tfoot class="gesamt">
 		<tr>
-			<th class="c-einheit separator-right"><?=h(_("Gesamt"))?></th>
+			<th class="c-einheit separator-right"><?=l::h(_("Gesamt"))?></th>
 <?php
 			foreach($planets as $i=>$planet)
 			{
@@ -450,21 +450,21 @@
 		</tr>
 	</tfoot>
 </table>
-<h3 id="forschungsverbesserungen" class="strong"><?=h(_("Forschungsverbesserungen"))?></h3>
+<h3 id="forschungsverbesserungen" class="strong"><?=l::h(_("Forschungsverbesserungen"))?></h3>
 <dl class="imperium-schiffe-auswirkungsgrade">
-	<dt class="c-antriebe"><?=h(_("Antriebe"))?></dt>
+	<dt class="c-antriebe"><?=l::h(_("Antriebe"))?></dt>
 	<dd class="c-antriebe"><?=F::ths((pow(1.025, $me->getItemLevel('F6', 'forschung'))*pow(1.05, $me->getItemLevel('F7', 'forschung'))*pow(1.5, $me->getItemLevel('F8', 'forschung'))-1)*100, null, 3)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 
-	<dt class="c-waffen"><?=h(_("Waffen"))?></dt>
+	<dt class="c-waffen"><?=l::h(_("Waffen"))?></dt>
 	<dd class="c-waffen"><?=F::ths((pow(1.05, $me->getItemLevel('F4', 'forschung'))-1)*100, null, 3)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 
-	<dt class="c-schilde"><?=h(_("Schilde"))?></dt>
+	<dt class="c-schilde"><?=l::h(_("Schilde"))?></dt>
 	<dd class="c-schilde"><?=F::ths((pow(1.05, $me->getItemLevel('F5', 'forschung'))-1)*100, null, 3)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 
-	<dt class="c-schadensminderung-durch-schilde"><?=h(_("Schadensminderung durch Schilde"))?></dt>
+	<dt class="c-schadensminderung-durch-schilde"><?=l::h(_("Schadensminderung durch Schilde"))?></dt>
 	<dd class="c-schadensminderung-durch-schilde"><?=F::ths((1-pow(.95, $me->getItemLevel('F10', 'forschung')))*100, null, 3)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 
-	<dt class="c-laderaumvergroesserung"><?=h(_("Laderaumvergrößerung"))?></dt>
+	<dt class="c-laderaumvergroesserung"><?=l::h(_("Laderaumvergrößerung"))?></dt>
 	<dd class="c-laderaumvergroesserung"><?=F::ths((pow(1.2, $me->getItemLevel('F11', 'forschung'))-1)*100, null, 3)?>&thinsp;<abbr title="Prozent">%</abbr></dd>
 </dl>
 <?php

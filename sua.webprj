@@ -404,7 +404,6 @@
     <item url="game/.settings/org.eclipse.php.core.prefs" uploadstatus="1" />
     <item url="game/.settings/org.eclipse.php.core.projectOptions.prefs" uploadstatus="1" />
     <item url="game/.settings/org.eclipse.wst.validation.prefs" uploadstatus="1" />
-    <item url="game/software/" uploadstatus="1" />
     <item url="game/config.db" uploadstatus="1" />
     <item url="game/config_db.xml.default" uploadstatus="1" />
     <item url="game/config.xml" uploadstatus="1" />
@@ -430,6 +429,200 @@
     <item url="homepage/setup/" uploadstatus="1" />
     <item url="game/lib/sua/classes/imserver.php" uploadstatus="1" />
     <item url="game/lib/sua/classes/imserverexception.php" uploadstatus="1" />
-    <item url="homepage/config.xml" />
+    <item url="homepage/config.xml" uploadstatus="1" />
+    <item url="lib/" uploadstatus="1" />
+    <item url="lib/jabberclass/" uploadstatus="1" />
+    <item url="lib/openid/" uploadstatus="1" />
+    <item url="lib/pjirc/" uploadstatus="1" />
+    <item url="lib/pjirc/img/" uploadstatus="1" />
+    <item url="lib/sarissa/" uploadstatus="1" />
+    <item url="lib/sua/" uploadstatus="1" />
+    <item url="lib/sua/classes/" uploadstatus="1" />
+    <item url="homepage/config.xml.example" uploadstatus="1" />
+    <item url="homepage/LICENSE" uploadstatus="1" />
+    <item url="lib/jabberclass/class_ConnectionSocket.php" uploadstatus="1" />
+    <item url="lib/jabberclass/class_Jabber.php" uploadstatus="1" />
+    <item url="lib/jabberclass/class_SHA1Library.php" uploadstatus="1" />
+    <item url="lib/jabberclass/class_XMLParser.php" uploadstatus="1" />
+    <item url="lib/jabberclass/jabber_example.php" uploadstatus="1" />
+    <item url="lib/jabberclass/LICENSE" uploadstatus="1" />
+    <item url="lib/jabberclass/README" uploadstatus="1" />
+    <item url="lib/openid/class.openid.v3.php" uploadstatus="1" />
+    <item url="lib/openid/openid_component_2008-02-06.zip" uploadstatus="1" />
+    <item url="lib/pjirc/img/ange.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/arbre.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/argh.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/ballon.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/biere.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/bombe.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/bouche.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/bouqin.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/cadeau.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/chien.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/clin-oeuil.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/clin-oeuil-langue.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/coeur-brise.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/coeur.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/comprends-pas.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/content.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/cool.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/diable.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/dwchat.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/enerve1.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/enerve2.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/femme.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/fille.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/fleur.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/fume.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/garcon.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/grognon.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/halloween.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/hamburger.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/homme.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/langue.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/lettre.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/lit.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/love.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/lune.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/mecontent.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/newbie.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/OH-1.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/OH-2.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/OH-3.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/ordi.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/pere-noel.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/pleure.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/poisson.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/pomme.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/portable.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/pouce-non.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/pouce-oui.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/roll-eyes.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/rouge.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/sapin.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/sleep.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/soleil.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/sourire.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/terre.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/triste.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/verre-eau.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/verre-vin.gif" uploadstatus="1" />
+    <item url="lib/pjirc/img/yinyang.gif" uploadstatus="1" />
+    <item url="lib/pjirc/english.lng" uploadstatus="1" />
+    <item url="lib/pjirc/IRCApplet.class" uploadstatus="1" />
+    <item url="lib/pjirc/irc.cab" uploadstatus="1" />
+    <item url="lib/pjirc/irc.jar" uploadstatus="1" />
+    <item url="lib/pjirc/pixx.cab" uploadstatus="1" />
+    <item url="lib/pjirc/pixx-english.lng" uploadstatus="1" />
+    <item url="lib/pjirc/pixx.jar" uploadstatus="1" />
+    <item url="lib/sarissa/sarissa.js" uploadstatus="1" />
+    <item url="lib/sua/classes/allianceexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/alliance.php" uploadstatus="1" />
+    <item url="lib/sua/classes/captchaexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/captcha.php" uploadstatus="1" />
+    <item url="lib/sua/classes/classes.php" uploadstatus="1" />
+    <item url="lib/sua/classes/config.php" uploadstatus="1" />
+    <item url="lib/sua/classes/databaseexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/database.php" uploadstatus="1" />
+    <item url="lib/sua/classes/datasetexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/dataset.php" uploadstatus="1" />
+    <item url="lib/sua/classes/fleetexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/fleet.php" uploadstatus="1" />
+    <item url="lib/sua/classes/fleet.php.11265.backup" uploadstatus="1" />
+    <item url="lib/sua/classes/f.php" uploadstatus="1" />
+    <item url="lib/sua/classes/functions.php" uploadstatus="1" />
+    <item url="lib/sua/classes/galaxyexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/galaxy.php" uploadstatus="1" />
+    <item url="lib/sua/classes/gpgexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/gpg.php" uploadstatus="1" />
+    <item url="lib/sua/classes/guiexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/gui.php" uploadstatus="1" />
+    <item url="lib/sua/classes/homegui.php" uploadstatus="1" />
+    <item url="lib/sua/classes/imserverexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/imserver.php" uploadstatus="1" />
+    <item url="lib/sua/classes/imserver.php.22610.backup" uploadstatus="1" />
+    <item url="lib/sua/classes/ioexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/itemexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/item.php" uploadstatus="1" />
+    <item url="lib/sua/classes/js.php" uploadstatus="1" />
+    <item url="lib/sua/classes/logingui.php" uploadstatus="1" />
+    <item url="lib/sua/classes/l.php" uploadstatus="1" />
+    <item url="lib/sua/classes/market.php" uploadstatus="1" />
+    <item url="lib/sua/classes/message.php" uploadstatus="1" />
+    <item url="lib/sua/classes/planetexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/planet.php" uploadstatus="1" />
+    <item url="lib/sua/classes/planet.php.11265.backup" uploadstatus="1" />
+    <item url="lib/sua/classes/publicmessage.php" uploadstatus="1" />
+    <item url="lib/sua/classes/reloadstack.php" uploadstatus="1" />
+    <item url="lib/sua/classes/serializedexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/serialized.php" uploadstatus="1" />
+    <item url="lib/sua/classes/setupgui.php" uploadstatus="1" />
+    <item url="lib/sua/classes/singleton.php" uploadstatus="1" />
+    <item url="lib/sua/classes/sqliteexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/sqlite.php" uploadstatus="1" />
+    <item url="lib/sua/classes/sqlitesetexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/sqliteset.php" uploadstatus="1" />
+    <item url="lib/sua/classes/staticinit.php" uploadstatus="1" />
+    <item url="lib/sua/classes/suaexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/systemexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/system.php" uploadstatus="1" />
+    <item url="lib/sua/classes/userexception.php" uploadstatus="1" />
+    <item url="lib/sua/classes/user.php" uploadstatus="1" />
+    <item url="lib/sua/engine.php" uploadstatus="1" />
+    <item url="lib/sua/LICENSE" uploadstatus="1" />
+    <item url="lib/sua/classes/sua/" />
+    <item url="lib/sua/classes/sua/allianceexception.php" />
+    <item url="lib/sua/classes/sua/alliance.php" />
+    <item url="lib/sua/classes/sua/captchaexception.php" />
+    <item url="lib/sua/classes/sua/captcha.php" />
+    <item url="lib/sua/classes/sua/classes.php" />
+    <item url="lib/sua/classes/sua/config.php" />
+    <item url="lib/sua/classes/sua/databaseexception.php" />
+    <item url="lib/sua/classes/sua/database.php" />
+    <item url="lib/sua/classes/sua/datasetexception.php" />
+    <item url="lib/sua/classes/sua/dataset.php" />
+    <item url="lib/sua/classes/sua/fleetexception.php" />
+    <item url="lib/sua/classes/sua/fleet.php" />
+    <item url="lib/sua/classes/sua/fleet.php.11265.backup" />
+    <item url="lib/sua/classes/sua/f.php" />
+    <item url="lib/sua/classes/sua/functions.php" />
+    <item url="lib/sua/classes/sua/galaxyexception.php" />
+    <item url="lib/sua/classes/sua/galaxy.php" />
+    <item url="lib/sua/classes/sua/gpgexception.php" />
+    <item url="lib/sua/classes/sua/gpg.php" />
+    <item url="lib/sua/classes/sua/guiexception.php" />
+    <item url="lib/sua/classes/sua/gui.php" />
+    <item url="lib/sua/classes/sua/homegui.php" />
+    <item url="lib/sua/classes/sua/imserverexception.php" />
+    <item url="lib/sua/classes/sua/imserver.php" />
+    <item url="lib/sua/classes/sua/imserver.php.22610.backup" />
+    <item url="lib/sua/classes/sua/ioexception.php" />
+    <item url="lib/sua/classes/sua/itemexception.php" />
+    <item url="lib/sua/classes/sua/item.php" />
+    <item url="lib/sua/classes/sua/js.php" />
+    <item url="lib/sua/classes/sua/logingui.php" />
+    <item url="lib/sua/classes/sua/l.php" />
+    <item url="lib/sua/classes/sua/market.php" />
+    <item url="lib/sua/classes/sua/message.php" />
+    <item url="lib/sua/classes/sua/planetexception.php" />
+    <item url="lib/sua/classes/sua/planet.php" />
+    <item url="lib/sua/classes/sua/planet.php.11265.backup" />
+    <item url="lib/sua/classes/sua/publicmessage.php" />
+    <item url="lib/sua/classes/sua/reloadstack.php" />
+    <item url="lib/sua/classes/sua/serializedexception.php" />
+    <item url="lib/sua/classes/sua/serialized.php" />
+    <item url="lib/sua/classes/sua/setupgui.php" />
+    <item url="lib/sua/classes/sua/singleton.php" />
+    <item url="lib/sua/classes/sua/sqliteexception.php" />
+    <item url="lib/sua/classes/sua/sqlite.php" />
+    <item url="lib/sua/classes/sua/sqlitesetexception.php" />
+    <item url="lib/sua/classes/sua/sqliteset.php" />
+    <item url="lib/sua/classes/sua/staticinit.php" />
+    <item url="lib/sua/classes/sua/suaexception.php" />
+    <item url="lib/sua/classes/sua/systemexception.php" />
+    <item url="lib/sua/classes/sua/system.php" />
+    <item url="lib/sua/classes/sua/userexception.php" />
+    <item url="lib/sua/classes/sua/user.php" />
+    <item url="lib/sua/classes/sua/httpoutput.php" />
   </project>
 </webproject>

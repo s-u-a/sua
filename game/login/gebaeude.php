@@ -18,10 +18,10 @@
 	/**
 	 * Gebäude in Auftrag geben.
 	 * @author Candid Dauth
-	 * @package sua-frontend
+	 * @package sua
 	 * @subpackage login
 	*/
-	namespace sua::frontend;
+	namespace sua\frontend;
 
 	require('include.php');
 
@@ -112,7 +112,7 @@
 
 	$gui->init();
 ?>
-<h2><?=h(_("Gebäude"))?></h2>
+<h2><?=l::h(_("Gebäude"))?></h2>
 <?php
 	if(($fastbuild_prev !== false || $fastbuild_next !== false) && $me->permissionToAct())
 	{
@@ -125,7 +125,7 @@
 			$me->setActivePlanet($fastbuild_prev);
 			define_url_suffix();
 ?>
-	<li class="c-prev"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=sprintf(h(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"), false), htmlspecialchars($me->getActivePlanetFormatted()))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"))?> rel="prev"><?=h(_("←"))?></a></li>
+	<li class="c-prev"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=sprintf(h(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"), false), htmlspecialchars($me->getActivePlanetFormatted()))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"))?> rel="prev"><?=l::h(_("←"))?></a></li>
 <?php
 		}
 		if($fastbuild_next !== false)
@@ -133,7 +133,7 @@
 			$me->setActivePlanet($fastbuild_next);
 			define_url_suffix();
 ?>
-	<li class="c-next"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=sprintf(h(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"), false), htmlspecialchars($me->getActivePlanetFormatted()))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"))?> rel="next"><?=h(_("→"))?></a></li>
+	<li class="c-next"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=sprintf(h(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"), false), htmlspecialchars($me->getActivePlanetFormatted()))?>" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"))?> rel="next"><?=l::h(_("→"))?></a></li>
 <?php
 		}
 		$me->setActivePlanet($active_planet);
@@ -153,7 +153,7 @@
 			continue;
 ?>
 <div class="item gebaeude" id="item-<?=htmlspecialchars($id)?>">
-	<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($geb['name'])?></a> <span class="stufe">(<?=sprintf(h(_("Stufe %s")), F::ths($geb['level']))?>)</span></h3>
+	<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($geb['name'])?></a> <span class="stufe">(<?=sprintf(h(_("Stufe %s")), F::ths($geb['level']))?>)</span></h3>
 <?php
 		if($me->permissionToAct() && ($geb['buildable'] || $geb['debuildable']) && !($building = $me->checkBuildingThing('gebaeude')) && ($id != 'B8' || !$me->checkBuildingThing('forschung')) && ($id != 'B9' || !$me->checkBuildingThing('roboter')) && ($id != 'B10' || (!$me->checkBuildingThing('schiffe') && !$me->checkBuildingThing('verteidigung'))))
 		{
@@ -186,7 +186,7 @@
 		elseif($building && $building[0] == $id)
 		{
 ?>
-	<div class="restbauzeit" id="restbauzeit-<?=htmlspecialchars($building[0])?>"><?=F::format_ftime($building[1], $me)?> <a href="gebaeude.php?cancel=<?=htmlspecialchars(urlencode($building[0]))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen"><?=h(_("Abbrechen"))?></a></div>
+	<div class="restbauzeit" id="restbauzeit-<?=htmlspecialchars($building[0])?>"><?=F::format_ftime($building[1], $me)?> <a href="gebaeude.php?cancel=<?=htmlspecialchars(urlencode($building[0]))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen"><?=l::h(_("Abbrechen"))?></a></div>
 <?php
 			if(!$me->umode())
 			{
@@ -199,14 +199,14 @@
 		}
 ?>
 	<dl class="lines">
-		<dt class="item-kosten"><?=h(_("Kosten"))?></dt>
+		<dt class="item-kosten"><?=l::h(_("Kosten"))?></dt>
 		<dd class="item-kosten">
 <?php
 		echo F::format_ress($geb['ress'], 3, false, false, false, $me);
 ?>
 		</dd>
 
-		<dt class="item-bauzeit"><?=h(_("Bauzeit"))?></dt>
+		<dt class="item-bauzeit"><?=l::h(_("Bauzeit"))?></dt>
 		<dd class="item-bauzeit"><?=F::format_btime($geb['time'])?></dd>
 <?php
 		if($me->checkSetting("extended_buildings"))
@@ -214,14 +214,14 @@
 			$geb_next = $me->getItemInfo($id, "gebaeude", array("prod"), null, $geb["level"]+1);
 ?>
 
-		<dt class="item-produktion-aktuell"><?=h(_("Produktion aktuell"))?></dt>
+		<dt class="item-produktion-aktuell"><?=l::h(_("Produktion aktuell"))?></dt>
 		<dd class="item-produktion-aktuell">
 <?php
 			echo F::format_ress($geb["prod"], 3, true, true);
 ?>
 		</dd>
 
-		<dt class="item-produktion-naechste-stufe"><?=h(_("Nächste Stufe"))?></dt>
+		<dt class="item-produktion-naechste-stufe"><?=l::h(_("Nächste Stufe"))?></dt>
 		<dd class="item-produktion-naechste-stufe">
 <?php
 			echo F::format_ress($geb_next["prod"], 3, true, true);
