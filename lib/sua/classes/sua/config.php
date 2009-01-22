@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage config
 	*/
 
 	namespace sua;
@@ -32,7 +31,7 @@
 	class Config
 	{
 		private $config;
-		private static $defaultFile;
+		private static $defaultConfig;
 
 		/**
 		 * Konvertiert eine Konfigurations-XML-Datei in ein Konfigurations-Array.
@@ -163,6 +162,75 @@
 		}
 
 		/**
+		 * Gibt einen Wert aus der Konfiguration zurück. Es werden beliebig viele Parameter übergeben, die den Pfad im Config-Array
+		 * angeben.
+		 * @return string|null Null, wenn der Wert nicht existiert
+		*/
+
+		function getConfigValue()
+		{
+			try
+			{
+				return call_user_func_array(array($this, "getConfigValueE"), func_get_args());
+			}
+			catch(ConfigException $e)
+			{
+				if($e->getCode() == ConfigException::VALUE_NOT_FOUND)
+					return null;
+				throw $e;
+			}
+		}
+
+		/**
+		 * Wie Config::getConfigValue(), wirft aber eine Exception, wenn der Konfigurationswert nicht gefunden wurde.
+		 * @throw ConfigException
+		 * @return string
+		*/
+
+		function getConfigValueE()
+		{
+			$ref = &$this->config;
+			foreach(func_get_args() as $arg)
+			{
+				if(!isset($ref[$arg]))
+					throw new ConfigException("Config value not found.", ConfigException::VALUE_NOT_FOUND);
+				$ref = &$ref[$arg];
+			}
+			return $ref;
+		}
+
+		/**
+		 * Setzt einen Wert in der Konfiguration. Wie Config::getConfigValue(), der letzte Wert ist allerdings
+		 * der neue Wert für die Einstellung. Ist der neue Wert null, wird der Eintrag gelöscht, falls er existiert.
+		 * @return void
+		*/
+
+		function setConfigValue()
+		{
+			$path = func_get_args();
+			if(count($path) < 2)
+				throw new InvalidArgumentException("Expecting at least 2 arguments.");
+
+			$new_value = array_pop($path);
+			$last_arg = array_pop($path);
+			$ref = &$this->config;
+			foreach($path as $arg)
+			{
+				if(!isset($ref[$arg]))
+					$ref[$arg] = array();
+				$ref = &$ref[$arg];
+			}
+			if(!isset($new_value))
+			{
+				if(isset($ref[$last_arg]))
+					unset($ref[$last_arg]);
+			}
+			else
+				$ref = $new_value;
+			$this->setConfig(null);
+		}
+
+		/**
 		 * Gibt die Konfiguration zurück.
 		 * @return array
 		*/
@@ -174,82 +242,28 @@
 
 		/**
 		 * Speichert eine neue Spielkonfiguration ab.
-		 * @param array $config
+		 * @param array|null $config Wenn null, wird die aktuelle Konfiguration neu geschrieben (hauptsächlich zur internen Verwendung)
 		 * @return void
 		*/
 
-		function setConfig(array $config)
+		function setConfig($config)
 		{
-			self::configToFile($this->filename, $config);
-			file_put_contents($this->filename.".cache", serialize(self::$config));
-			$this->config = $config;
+			$write_config = (isset($config) ? $config : $this->config);
+			self::configToFile($this->filename, $write_config);
+			file_put_contents($this->filename.".cache", serialize($write_config));
+			if(isset($config))
+				$this->config = $config;
 		}
 
 		/**
-		 * Sucht nach installierten Skins und liefert ein Array des folgenden
-		 * Formats zurueck:
-		 * ( ID => [ Name, ( Einstellungsname => ( moeglicher Wert ) ) ] )
-		 * @return array
-		 * @todo Weg hier.
+		 * Gibt ein Config-Objekt der config.xml im Lib-Verzeichnis zurück.
+		 * @return Config
 		*/
 
-		static function getSkins()
+		static function getLibConfig()
 		{
-			# Vorgegebene Skins-Liste bekommen
-			$skins = array();
-			if(is_dir(global_setting("s_root")."/login/res/style") && is_readable(global_setting("s_root")."/login/res/style"))
-			{
-				$dh = opendir(global_setting("s_root")."/login/res/style");
-				while(($fname = readdir($dh)) !== false)
-				{
-					if($fname[0] == ".") continue;
-					$path = global_setting("s_root")."/login/res/style/".$fname;
-					if(!is_dir($path) || !is_readable($path)) continue;
-					if(!is_file($path."/types") || !is_readable($path."/types")) continue;
-					$skins_file = preg_split("/\r\n|\r|\n/", file_get_contents($path."/types"));
-					$new_skin = &$skins[$fname];
-					$new_skin = array(array_shift($skins_file), array());
-					foreach($skins_file as $skins_line)
-					{
-						$skins_line = explode("\t", $skins_line);
-						if(count($skins_line) < 2)
-							continue;
-						$new_skin[1][array_shift($skins_line)] = $skins_line;
-					}
-					unset($new_skin);
-				}
-				closedir($dh);
-			}
-			return $skins;
-		}
-
-		/**
-		 * Liefert die Spielversion zurueck.
-		 * @return string
-		 * @todo Weg hier?
-		*/
-
-		static function getVersion()
-		{
-			$version = "";
-			if(is_file(global_setting("DB_VERSION")) && is_readable(global_setting("DB_VERSION")))
-				$version = trim(file_get_contents(global_setting("DB_VERSION")));
-			return $version;
-		}
-
-		/**
-		 * Überprüft, ob db_things/imserver.phpc gestartet ist.
-		 * @todo Weg hier.
-		 * @return bool
-		*/
-
-		static function imserverRunning()
-		{
-			if(!is_file(global_setting("DB_IMSERVER_PIDFILE")) || !is_readable(global_setting("DB_IMSERVER_PIDFILE")))
-				return false;
-			$fh = fopen(global_setting("DB_IMSERVER_PIDFILE"), "r");
-			$running = !flock($fh, LOCK_EX + LOCK_NB);
-			if(!$running) flock($fh, LOCK_UN);
-			return $running;
+			if(!self::$defaultConfig)
+				self::$defaultConfig = Classes::Config(LIBDIR."/config.xml");
+			return self::$defaultConfig;
 		}
 	}

@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage storage
 	*/
 
 	namespace sua;
@@ -180,7 +179,7 @@
 			{
 				$sum = $this->singleField("SELECT sum(amount) FROM market WHERE offered_resource = ".$this->escape($r['offered_resource'])." AND date >= ".$this->escape($r['date'])." AND user != ".$this->escape($r['user']).";");
 				$count = $this->singleField("SELECT count(DISTINCT user) FROM market WHERE offered_resource = ".$this->escape($r['offered_resource'])." AND user != ".$this->escape($r['user']).";");
-				if($sum >= global_setting('MARKET_MIN_AMOUNT')*$r['amount'] && $count > global_setting('MARKET_MIN_USERS'))
+				if($sum >= Config::getLibConfig()->getConfigValueE("market", "min_amount")*$r['amount'] && $count > Config::getLibConfig()->getConfigValueE("market", "min_amount"))
 				{
 					# Auftrag wird ausgefuehrt
 					$this->acceptOrder($r['id'], $transaction);
@@ -198,7 +197,7 @@
 		public function acceptOrder($id, $transaction=false)
 		{
 			# TODO: Benachrichtigung
-			$q = "UPDATE market SET finish = ".$this->escape(time()+global_setting('MARKET_DELAY'))." WHERE id = ".$this->escape($id).";";
+			$q = "UPDATE market SET finish = ".$this->escape(time()+Config::getLibConfig()->getConfigValueE("market", "delay"))." WHERE id = ".$this->escape($id).";";
 			if($transaction)
 				$this->transactionQuery($q);
 			else

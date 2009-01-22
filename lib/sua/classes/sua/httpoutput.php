@@ -55,7 +55,7 @@
 				$document_root = substr($_SERVER["SCRIPT_FILENAME"], 0, -strlen($_SERVER["PHP_SELF"]));
 			elseif(isset($_SERVER["DOCUMENT_ROOT"]) && substr($directory, strlen($tmp = realpath($_SERVER["DOCUMENT_ROOT"]))) == $tmp)
 				$document_root = $_SERVER["DOCUMENT_ROOT"];
-			else $document_root = "/";
+			else $document_root = "/"; // TODO: Hier eine Exception werfen?
 			if(substr($document_root, -1) == "/")
 				$document_root = substr($document_root, 0, -1);
 			$document_root = realpath($document_root);
@@ -92,10 +92,11 @@
 
 		/**
 		 * Sendet den richtigen Content-Type mit Charset.
+		 * @param boolean $xhtml Soll, wenn der Browser es unterstützt, ein XHTML-Mime-Type statt HTML gesendet werden?
 		 * @return void
 		*/
 
-		public static function sendContentType()
+		public static function sendContentType($xhtml=true)
 		{
 			// TODO: Get rid of document.write and innerHTML
 			//if(isset($_SERVER["HTTP_ACCEPT"]) && strpos($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml") !== false)
@@ -112,5 +113,18 @@
 		public static function enableGZip()
 		{
 			ob_start("ob_gzhandler");
+		}
+
+		/**
+		 * Gibt zurück, welches Protokoll gerade verwendet wird, entweder http oder https.
+		 * @return string
+		*/
+
+		public static function getProtocol()
+		{
+			if(isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")
+				return "https";
+			else
+				return "http";
 		}
 	}

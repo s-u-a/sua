@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage storage
 	*/
 
 	namespace sua;
@@ -336,7 +335,7 @@
 		}
 
 		/**
-		 * Gibt eine Exception an das globale Logfile (global_setting("LOG")) aus und leitet sie dann weiter. Diese Funktion
+		 * Gibt eine Exception an das globale Logfile (@see Logger) aus und leitet sie dann weiter. Diese Funktion
 		 * wird in allen Query-Funktionen ausgeführt, wenn eine PDOException auftaucht, damit der Fehler dokumentiert wird.
 		 * @param Exception $exception
 		 * @param string $query Der Query, der die Exception verursacht hat.
@@ -345,7 +344,7 @@
 
 		function printException(Exception $exception, $query)
 		{
-			fputs(global_setting("LOG"), "\nPDO error, query: ".$query);
+			Logger::log("PDO error, query: ".$query);
 			throw $exception;
 		}
 	}

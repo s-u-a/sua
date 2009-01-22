@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage storage
 	*/
 
 	namespace sua;
@@ -195,7 +194,7 @@
 			{
 				$this->setMainField("text", $text);
 				if(!$this->html())
-					$this->setMainField("parsed_text", F::parse_html($text));
+					$this->setMainField("parsed_text", F::parseHTML($text));
 			}
 		}
 

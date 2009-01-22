@@ -30,7 +30,7 @@
 	if(!isset($_GET['player']) || !User::exists($_GET['player']))
 	{
 ?>
-<p class="error"><?=l::h(_("Diesen Spieler gibt es nicht."))?></p>
+<p class="error"><?=L::h(_("Diesen Spieler gibt es nicht."))?></p>
 <?php
 	}
 	else
@@ -47,78 +47,78 @@
 		{
 ?>
 <ul class="spieler-wechseln possibilities">
-	<li><a href="playerinfo.php?<?=htmlspecialchars("player=".urlencode($_GET["player"])."&switch_user=".urlencode($_GET["player"])."&".global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Spieler wechseln&[login/info/playerinfo.php|2]"))?> tabindex="<?=$tabindex++?>"><?=l::h(_("Spieler wechseln&[login/info/playerinfo.php|2]"))?></a></li>
+	<li><a href="playerinfo.php?<?=htmlspecialchars("player=".urlencode($_GET["player"])."&switch_user=".urlencode($_GET["player"])."&".global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("Spieler wechseln&[login/info/playerinfo.php|2]"))?> tabindex="<?=$tabindex++?>"><?=L::h(_("Spieler wechseln&[login/info/playerinfo.php|2]"))?></a></li>
 </ul>
 <?php
 		}
 ?>
-<h3 id="punkte" class="strong"><?=l::h(_("Punkte"))?></h3>
+<h3 id="punkte" class="strong"><?=L::h(_("Punkte"))?></h3>
 <dl class="punkte">
-	<dt class="c-gebaeude"><?=l::h(_("[scores_0]"))?></dt>
+	<dt class="c-gebaeude"><?=L::h(_("[scores_0]"))?></dt>
 	<dd class="c-gebaeude"><?=F::ths($user->getScores(0))?></dd>
 
-	<dt class="c-forschung"><?=l::h(_("[scores_1]"))?></dt>
+	<dt class="c-forschung"><?=L::h(_("[scores_1]"))?></dt>
 	<dd class="c-forschung"><?=F::ths($user->getScores(1))?></dd>
 
-	<dt class="c-roboter"><?=l::h(_("[scores_2]"))?></dt>
+	<dt class="c-roboter"><?=L::h(_("[scores_2]"))?></dt>
 	<dd class="c-roboter"><?=F::ths($user->getScores(2))?></dd>
 
-	<dt class="c-flotte"><?=l::h(_("[scores_3]"))?></dt>
+	<dt class="c-flotte"><?=L::h(_("[scores_3]"))?></dt>
 	<dd class="c-flotte"><?=F::ths($user->getScores(3))?></dd>
 
-	<dt class="c-verteidigung"><?=l::h(_("[scores_4]"))?></dt>
+	<dt class="c-verteidigung"><?=L::h(_("[scores_4]"))?></dt>
 	<dd class="c-verteidigung"><?=F::ths($user->getScores(4))?></dd>
 
-	<dt class="c-flugerfahrung"><?=l::h(_("[scores_5]"))?></dt>
+	<dt class="c-flugerfahrung"><?=L::h(_("[scores_5]"))?></dt>
 	<dd class="c-flugerfahrung"><?=F::ths($user->getScores(5))?></dd>
 
-	<dt class="c-kampferfahrung"><?=l::h(_("[scores_6]"))?></dt>
+	<dt class="c-kampferfahrung"><?=L::h(_("[scores_6]"))?></dt>
 	<dd class="c-kampferfahrung"><?=F::ths($user->getScores(6))?></dd>
 
-	<dt class="c-gesamt"><?=l::h(_("Gesamt"))?></dt>
-	<dd class="c-gesamt"><?=F::ths($user->getScores())?> <span class="platz"><?=l::h(sprintf("(Platz %s von %s)", F::ths($user->getRank()), F::ths(User::getNumber())))?></span></dd>
+	<dt class="c-gesamt"><?=L::h(_("Gesamt"))?></dt>
+	<dd class="c-gesamt"><?=F::ths($user->getScores())?> <span class="platz"><?=L::h(sprintf("(Platz %s von %s)", F::ths($user->getRank()), F::ths(User::getNumber())))?></span></dd>
 </dl>
 <?php
 		$show_koords = $me->maySeeKoords($user->getName());
 		if($show_koords || isset($_SESSION["admin_username"]))
 		{
 ?>
-<h3 id="ausgegebene-rohstoffe" class="strong"><?=l::h(_("Ausgegebene Rohstoffe"))?></h3>
+<h3 id="ausgegebene-rohstoffe" class="strong"><?=L::h(_("Ausgegebene Rohstoffe"))?></h3>
 <dl class="punkte">
-	<dt class="c-carbon"><?=l::h(_("[ress_0]"))?></dt>
+	<dt class="c-carbon"><?=L::h(_("[ress_0]"))?></dt>
 	<dd class="c-carbon"><?=F::ths($user->getSpentRess(0))?></dd>
 
-	<dt class="c-eisenerz"><?=l::h(_("[ress_1]"))?></dt>
+	<dt class="c-eisenerz"><?=L::h(_("[ress_1]"))?></dt>
 	<dd class="c-eisenerz"><?=F::ths($user->getSpentRess(1))?></dd>
 
-	<dt class="c-wolfram"><?=l::h(_("[ress_2]"))?></dt>
+	<dt class="c-wolfram"><?=L::h(_("[ress_2]"))?></dt>
 	<dd class="c-wolfram"><?=F::ths($user->getSpentRess(2))?></dd>
 
-	<dt class="c-radium"><?=l::h(_("[ress_3]"))?></dt>
+	<dt class="c-radium"><?=L::h(_("[ress_3]"))?></dt>
 	<dd class="c-radium"><?=F::ths($user->getSpentRess(3))?></dd>
 
-	<dt class="c-tritium"><?=l::h(_("[ress_4]"))?></dt>
+	<dt class="c-tritium"><?=L::h(_("[ress_4]"))?></dt>
 	<dd class="c-tritium"><?=F::ths($user->getSpentRess(4))?></dd>
 
-	<dt class="c-gesamt"><?=l::h(_("Gesamt"))?></dt>
+	<dt class="c-gesamt"><?=L::h(_("Gesamt"))?></dt>
 	<dd class="c-gesamt"><?=F::ths($user->getSpentRess())?></dd>
 </dl>
 <?php
 		}
 ?>
-<h3 id="benutzerbeschreibung" class="strong"><?=l::h(_("Benutzerbeschreibung"))?></h3>
+<h3 id="benutzerbeschreibung" class="strong"><?=L::h(_("Benutzerbeschreibung"))?></h3>
 <div class="benutzerbeschreibung">
 <?php
 		print($user->getUserDescription());
 ?>
 </div>
-<h3 id="buendnisse" class="strong"><?=l::h(_("Bündnisse"))?></h3>
+<h3 id="buendnisse" class="strong"><?=L::h(_("Bündnisse"))?></h3>
 <?php
 		$verbuendet = $user->getVerbuendetList();
 		if(count($verbuendet) <= 0)
 		{
 ?>
-<p class="buendnisse-keine"><?=l::h(_("Dieser Benutzer ist derzeit in keinem Bündnis."))?></p>
+<p class="buendnisse-keine"><?=L::h(_("Dieser Benutzer ist derzeit in keinem Bündnis."))?></p>
 <?php
 		}
 		else
@@ -129,7 +129,7 @@
 			foreach($verbuendet as $verbuendeter)
 			{
 ?>
-	<li><a href="playerinfo.php?player=<?=htmlspecialchars(urlencode($verbuendeter))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($verbuendeter)?></a></li>
+	<li><a href="playerinfo.php?player=<?=htmlspecialchars(urlencode($verbuendeter))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($verbuendeter)?></a></li>
 <?php
 			}
 ?>
@@ -137,38 +137,38 @@
 <?php
 		}
 ?>
-<h3 id="daten" class="strong"><?=l::h(_("Daten"))?></h3>
+<h3 id="daten" class="strong"><?=L::h(_("Daten"))?></h3>
 <dl class="daten">
-	<dt class="c-letzte-aktivitaet"><?=l::h(_("Letzte Aktivität"))?></dt>
+	<dt class="c-letzte-aktivitaet"><?=L::h(_("Letzte Aktivität"))?></dt>
 <?php
 		$last_activity = $user->getLastActivity();
 		if($last_activity !== false)
 		{
 ?>
-	<dd class="c-letzte-aktivitaet"><?=l::h(sprintf(_("%s (Serverzeit)"), date(_('H:i:s, Y-m-d'), $last_activity)))?></dd>
+	<dd class="c-letzte-aktivitaet"><?=L::h(sprintf(_("%s (Serverzeit)"), date(_('H:i:s, Y-m-d'), $last_activity)))?></dd>
 <?php
 		}
 		else
 		{
 ?>
-	<dd class="c-letzte-aktivitaet nie"><?=l::h(_("Nie"))?></dd>
+	<dd class="c-letzte-aktivitaet nie"><?=L::h(_("Nie"))?></dd>
 <?php
 		}
 ?>
 
-	<dt class="c-registrierung"><?=l::h(_("Registrierung"))?></dt>
+	<dt class="c-registrierung"><?=L::h(_("Registrierung"))?></dt>
 <?php
 		$registration_time = $user->getRegistrationTime();
 		if($registration_time !== false)
 		{
 ?>
-	<dd class="c-registrierung"><?=l::h(sprintf(_("%s (Serverzeit)"), date(_('H:i:s, Y-m-d'), $registration_time)))?></dd>
+	<dd class="c-registrierung"><?=L::h(sprintf(_("%s (Serverzeit)"), date(_('H:i:s, Y-m-d'), $registration_time)))?></dd>
 <?php
 		}
 		else
 		{
 ?>
-	<dd class="c-registriergung unbekannt"><?=l::h(_("Unbekannt"))?></dd>
+	<dd class="c-registriergung unbekannt"><?=L::h(_("Unbekannt"))?></dd>
 <?php
 		}
 ?>
@@ -177,7 +177,7 @@
 		if($show_koords || isset($_SESSION["admin_username"]))
 		{
 ?>
-<h3 id="planeten" class="strong"><?=l::h(_("Planeten"))?></h3>
+<h3 id="planeten" class="strong"><?=L::h(_("Planeten"))?></h3>
 <ul class="playerinfo-planeten">
 <?php
 			$planets = $user->getPlanetsList();
@@ -199,16 +199,16 @@
 		if($user->getName() != $me->getName())
 		{
 ?>
-<h3 id="nachricht" class="strong"><?=l::h(_("Nachricht"))?></h3>
+<h3 id="nachricht" class="strong"><?=L::h(_("Nachricht"))?></h3>
 <form action="../nachrichten.php?to=&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post" class="playerinfo-nachricht" onsubmit="this.setAttribute('onsubmit', 'return confirm(\'<?=_("Doppelklickschutz: Sie haben ein zweites Mal auf „Absenden“ geklickt. Dadurch wird die Nachricht auch ein zweites Mal abgeschickt. Sind Sie sicher, dass Sie diese Aktion durchführen wollen?")?>\');');">
 	<dl class="form">
-		<dt class="c-betreff"><label for="betreff-input"><?=l::h(_("Betreff&[login/info/playerinfo.php|1]"))?></label></dt>
-		<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" maxlength="30" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Betreff&[login/info/playerinfo.php|1]"))?> /></dd>
+		<dt class="c-betreff"><label for="betreff-input"><?=L::h(_("Betreff&[login/info/playerinfo.php|1]"))?></label></dt>
+		<dd class="c-betreff"><input type="text" id="betreff-input" name="betreff" maxlength="30" tabindex="<?=$tabindex++?>"<?=L::accesskeyAttr(_("Betreff&[login/info/playerinfo.php|1]"))?> /></dd>
 
-		<dt class="c-inhalt"><label for="inhalt-input"><?=l::h(_("Inhalt&[login/info/playerinfo.php|1]"))?></label></dt>
-		<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("Inhalt&[login/info/playerinfo.php|1]"))?>></textarea></dd>
+		<dt class="c-inhalt"><label for="inhalt-input"><?=L::h(_("Inhalt&[login/info/playerinfo.php|1]"))?></label></dt>
+		<dd class="c-inhalt"><textarea id="inhalt-input" name="inhalt" cols="50" rows="10" tabindex="<?=$tabindex++?>"<?=L::accesskeyAttr(_("Inhalt&[login/info/playerinfo.php|1]"))?>></textarea></dd>
 	</dl>
-	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=l::accesskey_attr(_("&Nachricht absenden[login/info/playerinfo.php|1]"))?>><?=l::h(_("&Nachricht absenden[login/info/playerinfo.php|1]"))?></button><input type="hidden" name="empfaenger" value="<?=htmlspecialchars($user->getName())?>" /></div>
+	<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"<?=L::accesskeyAttr(_("&Nachricht absenden[login/info/playerinfo.php|1]"))?>><?=L::h(_("&Nachricht absenden[login/info/playerinfo.php|1]"))?></button><input type="hidden" name="empfaenger" value="<?=htmlspecialchars($user->getName())?>" /></div>
 </form>
 <?php
 		}

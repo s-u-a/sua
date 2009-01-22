@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage gui
 	*/
 
 	namespace sua;
@@ -49,7 +48,7 @@
 		 * @return string
 		*/
 
-		static function aimplode_js(array $array)
+		static function aimplodeJS(array $array)
 		{
 			$string = array();
 			foreach($array as $k=>$v)
@@ -64,7 +63,7 @@
 		 * @return string
 		*/
 
-		static function aimplode_url(array $array, $prefix="%s")
+		static function aimplodeURL(array $array, $prefix="%s")
 		{
 			$string = array();
 			foreach($array as $k=>$v)

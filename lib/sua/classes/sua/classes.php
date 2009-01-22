@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage storage
 	*/
 
 	namespace sua;
@@ -47,7 +46,6 @@
 		 * @param string $classname
 		 * @param array $args
 		 * @return Object
-		 * @todo Auch für nicht-Singleton-Dinge soll das funktionieren, is_subclass_of() scheint aber nicht mit Interfaces zu funktionieren
 		*/
 
 		static function __callStatic($classname, $args)
@@ -58,7 +56,7 @@
 			{
 				if(!isset(self::$objectInstances)) self::$objectInstances = array();
 				if(!isset(self::$objectInstances[$classname])) self::$objectInstances[$classname] = array();
-				$p1 = $classname_full::datasetName($classname_full::idFromParams($args));
+				$p1 = $classname_fulL::datasetName($classname_fulL::idFromParams($args));
 				if(!isset(self::$objectInstances[$classname][$p1]))
 				{
 					$instance = new $classname_full($p1);

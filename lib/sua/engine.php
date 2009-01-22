@@ -24,12 +24,21 @@
 
 	namespace sua
 	{
-		# s_root ermitteln: Absoluter Pfad zum Spielverzeichnis
-		define("libdir", dirname(__FILE__));
+		const VERSION = "1.1.0 svn";
 
+		# s_root ermitteln: Absoluter Pfad zum Spielverzeichnis
+		define("LIBDIR", dirname(__FILE__));
+
+		$include_path = explode(":", get_include_path());
 		# PEAR einbinden (wenn es nicht im System installiert ist, kann man es ins lib-Verzeichnis legen)
-		if(is_dir(libdir."/../pear"))
-			set_include_path(".:".libdir."/../pear/:".get_include_path());
+		if(is_dir(LIBDIR."/../pear"))
+			array_unshift($include_path, LIBDIR."/../pear/");
+		# ZEND einbinden (benötigt für OpenID)
+		if(is_dir(LIBDIR."/../zend"))
+			array_unshift($include_path, LIBDIR."/../zend/");
+		array_unshift($include_path, ".");
+		set_include_path(implode(":", array_unique($include_path)));
+		unset($include_path);
 
 		/*$GDB_DIR = global_setting("s_root")."/database.global";
 		global_setting("GDB_DIR", $GDB_DIR);
@@ -77,7 +86,28 @@
 		global_setting("LOG", fopen("php://stderr", "w")); # File stream, in den Log-Meldungen der db_things-Scripte geschrieben werden
 		global_setting("PUBLIC_MESSAGES_TIME", 30); # Die Zeit in Tagen, nach denen eine ungelesene öffentliche Nachricht gelöscht wird
 		global_setting("TIME_BEFORE_HOLIDAY_RETURN", 3); # Tage, bevor ein Benutzer wieder aus dem Urlaubsmodus zurückkehren darf
-		global_setting("TIME_BEFORE_HOLIDAY_GO", 3); # Tage, bevor ein Benutzer wieder in den Urlaubsmodus gehen kann*/
+		global_setting("TIME_BEFORE_HOLIDAY_GO", 3); # Tage, bevor ein Benutzer wieder in den Urlaubsmodus gehen kann
+
+		global_setting('DB_LOCKED', $DB_DIR.'/locked');
+			global_setting('DB_ALLIANCES', $DB_DIR.'/alliances');
+			global_setting('DB_PLAYERS', $DB_DIR.'/players');
+			global_setting('DB_UNIVERSE', $DB_DIR.'/universe');
+			global_setting('DB_ITEMS', $DB_DIR.'/items');
+			global_setting('DB_ITEM_DB', $DB_DIR.'/items.db');
+			global_setting('DB_TRUEMMERFELDER', $DB_DIR.'/truemmerfelder');
+			global_setting('DB_HANDEL', $DB_DIR.'/handel');
+			global_setting('DB_HANDELSKURS', $DB_DIR.'/handelskurs');
+			global_setting('DB_ADMINS', $DB_DIR.'/admins');
+			global_setting('DB_NONOOBS', $DB_DIR.'/nonoobs');
+			global_setting('DB_ADMIN_LOGFILE', $DB_DIR.'/admin_logfile');
+			global_setting('DB_NO_STRICT_ROB_LIMITS', $DB_DIR.'/no_strict_rob_limits');
+			global_setting('DB_GLOBAL_TIME_FACTOR', $DB_DIR.'/global_time_factor');
+			global_setting('DB_GLOBAL_PROD_FACTOR', $DB_DIR.'/global_prod_factor');
+			global_setting('DB_GLOBAL_COST_FACTOR', $DB_DIR.'/global_cost_factor');
+			global_setting('DB_USE_OLD_INGTECH', $DB_DIR.'/use_old_ingtech');
+			global_setting('DB_USE_OLD_ROBTECH', $DB_DIR.'/use_old_robtech');
+			global_setting('DB_NO_ATTS', $DB_DIR.'/no_atts');
+			global_setting("DB_SQLITE", $DB_DIR."/sqlite");*/
 
 		# TODO: Die folgenden Dinge in eine globale Einstellung auslagern
 

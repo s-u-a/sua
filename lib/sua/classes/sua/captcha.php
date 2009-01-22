@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage gui
 	*/
 
 	namespace sua;
@@ -42,15 +41,17 @@
 		{
 			$t = str_repeat("\t", $tabs);
 			$options = array("tabindex" => $tabindex++, "lang" => _("[LANG]"));
-			$url_prefix = (global_setting("PROTOCOL") == "https" ? "https://api-secure" : "http://api");
+			$url_prefix = (HTTPOutput::getProtocol() == "https" ? "https://api-secure" : "http://api");
 
 			if(isset($_SERVER["REMOTE_ADDR"]) && !preg_match("/^\\d+\\.\\d+\\.\\d+\\.\\d+\$/", $_SERVER["REMOTE_ADDR"]))
 			{
+				/* IPv6-Workaround: Ein Bild wird über IPv4 geladen, das die IPv4-Adresse in die Session speichert, da recaptcha noch
+				 * nicht mit IPv6 funktioniert. */
 				try
 				{
 					$img_src = self::getConfig("ipv4");
 ?>
-<?=$t?><img src="<?=htmlspecialchars(global_setting("PROTOCOL")."://".$img_src)?>?session=<?=htmlspecialchars(urlencode(session_id()))?>" alt="" class="script" />
+<?=$t?><img src="<?=htmlspecialchars(HTTPOutput::getProtocol()."://".$img_src)?>?session=<?=htmlspecialchars(urlencode(session_id()))?>" alt="" class="script" />
 <?php
 				}
 				catch(CaptchaException $e){}
@@ -59,20 +60,20 @@
 <?=$t?><form action="<?=htmlspecialchars($_SERVER["REQUEST_URI"])?>" method="post" class="captcha">
 <?=$t?>	<script type="text/javascript">
 <?=$t?>	// <![CDATA[
-<?=$t?>		var RecaptchaOptions = <?=JS::aimplode_js($options)?>;
+<?=$t?>		var RecaptchaOptions = <?=JS::aimplodeJS($options)?>;
 <?=$t?>	// ]]>
 <?=$t?>	</script>
 <?=$t?>	<script type="text/javascript" src="<?=htmlspecialchars($url_prefix)?>.recaptcha.net/challenge?k=<?=htmlspecialchars(urlencode(self::getConfig("public")))?>"></script>
 <?=$t?>	<noscript>
 <?=$t?>		<iframe src="<?=htmlspecialchars($url_prefix)?>.recaptcha.net/noscript?k=<?=htmlspecialchars(urlencode(self::getConfig("public")))?>"></iframe><br>
 <?=$t?>		<dl class="form">
-<?=$t?>			<dt class="c-generierter-code"><label for="i-generierter-code"><?=l::h(_("Generierter Code"))?></label></dt>
+<?=$t?>			<dt class="c-generierter-code"><label for="i-generierter-code"><?=L::h(_("Generierter Code"))?></label></dt>
 <?=$t?>			<dd class="c-generierter-code"><textarea name="recaptcha_challenge_field" id="i-generierter-code" tabindex="<?=$tabindex++?>"></textarea></dd>
 <?=$t?>		</dl>
-<?=$t?>		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"><?=l::h(_("Okay"))?></button><input type="hidden" name="recaptcha_response_field" value="manual_challenge"></button>
+<?=$t?>		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"><?=L::h(_("Okay"))?></button><input type="hidden" name="recaptcha_response_field" value="manual_challenge"></button>
 <?=$t?>	</noscript>
 <?php
-			F::make_hidden_fields($_POST, $tabs+1);
+			F::makeHiddenFields($_POST, $tabs+1);
 ?>
 <?=$t?></form>
 <?php
@@ -80,18 +81,19 @@
 
 		/**
 		 * Überprüft, ob die Eingaben, die der Benutzer ins Captcha::challenge()-Formular
-		 * gemacht hat, stimmen.
+		 * gemacht hat, stimmen. Wegen der IPv6-Inkompatibilität von recaptcha sollte
+		 * $_SESSION["ipv4"] die IPv4-Adresse enthalten, sofern das Spiel über IPv6 aufgerufen werden kann.
 		 * @param string $challenge Der Wert von $_POST["recaptcha_challenge_field"] nach Absenden des Formulars.
 		 * @param string $response Der Wert von $_POST["recaptcha_response_field"] nach Absenden des Formulars.
 		 * @return void
-		 * @throw CaptchaException Wenn die Validierung fehlgeschlagen ist (unterschiedliche Fehlercodes, definiert als CaptchaExceptions::$*_ERROR)
+		 * @throw CaptchaException Wenn die Validierung fehlgeschlagen ist (unterschiedliche Fehlercodes, definiert als CaptchaExceptions::*_ERROR)
 		*/
 
 		static function validate($challenge, $response)
 		{
 			$fh = fsockopen("api-verify.recaptcha.net", 80, $errno, $errstr);
 			if(!$fh)
-				throw new CaptchaException($errno.": ".$errstr, CaptchaException::$HTTP_ERROR);
+				throw new CaptchaException($errno.": ".$errstr, CaptchaException::HTTP_ERROR);
 			$request = array(
 				"privatekey" => self::getConfig("private"),
 				"remoteip" => isset($_SESSION["ipv4"]) ? $_SESSION["ipv4"] : $_SERVER["REMOTE_ADDR"],
@@ -110,14 +112,14 @@
 			$line = fgets($fh);
 			$http = explode(" ", trim($line));
 			if($http[1] != "200")
-				throw new CaptchaException("Server sent HTTP status line: ".$line, CaptchaException::$HTTP_ERROR);
+				throw new CaptchaException("Server sent HTTP status line: ".$line, CaptchaException::HTTP_ERROR);
 
 			while(($line = fgets($fh)) !== "\r\n");
 			$line1 = fgets($fh);
 			if(trim($line1) != "true")
 			{
 				$line2 = fgets($fh);
-				throw new CaptchaException(self::resolveErrorMessage(trim($line2)), CaptchaException::$USER_ERROR);
+				throw new CaptchaException(self::resolveErrorMessage(trim($line2)), CaptchaException::USER_ERROR);
 			}
 		}
 
@@ -132,7 +134,7 @@
 		{
 			$fh = fsockopen("api.recaptcha.net", 80, $errno, $errstr);
 			if(!$fh)
-				throw new CaptchaException($errno.": ".$errstr, CaptchaException::$HTTP_ERROR);
+				throw new CaptchaException($errno.": ".$errstr, CaptchaException::HTTP_ERROR);
 
 			fwrite($fh, "GET /challenge?error=".urlencode($string)." HTTP/1.0\r\n");
 			fwrite($fh, "Host: api.recaptcha.net\r\n");
@@ -141,7 +143,7 @@
 			$line = fgets($fh);
 			$http = explode(" ", trim($line));
 			if($http[1] != "200")
-				throw new CaptchaException("Server sent HTTP status line: ".$line, CaptchaException::$HTTP_ERROR);
+				throw new CaptchaException("Server sent HTTP status line: ".$line, CaptchaException::HTTP_ERROR);
 
 			while(($line = fgets($fh)) !== "\r\n");
 
@@ -150,7 +152,7 @@
 				$content .= fread($fh, 1024);
 
 			if(!preg_match("/document\\.write \\('(.*?[^\\\\])'\);/", $content, $m))
-				throw new CaptchaException("Server sent unknown JavaScript code.", CaptchaException::$HTTP_ERROR);
+				throw new CaptchaException("Server sent unknown JavaScript code.", CaptchaException::HTTP_ERROR);
 
 			return $message = preg_replace("/\\\\(.)/", "\$1", $m[1]);
 		}
@@ -167,13 +169,13 @@
 		{
 			$config = Config::getConfig();
 			if(!isset($config["captcha"]))
-				throw new CaptchaException("Captchas are not configured.", CaptchaException::$CONFIG_ERROR);
+				throw new CaptchaException("Captchas are not configured.", CaptchaException::CONFIG_ERROR);
 			$config = &$config["captcha"];
 
 			if($index === null)
 				return $config;
 			if(!isset($config[$index]))
-				throw new CaptchaException("Configuration setting ".$index." missing.", CaptchaException::$CONFIG_ERROR);
+				throw new CaptchaException("Configuration setting ".$index." missing.", CaptchaException::CONFIG_ERROR);
 			return $config[$index];
 		}
 	}

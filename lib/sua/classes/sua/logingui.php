@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage gui
 	*/
 
 	namespace sua;
@@ -31,6 +30,7 @@
 	 * - User user: Ein User-Objekt, für den die GUI dargestellt werden soll. Von diesem werden Informationen wie verfügbare Rohstoffe genommen.
 	 * - bool notify: Kopfleiste über neue Nachrichten unabhängig von der Benutzereinstellung hierzu anzeigen (auf der Übersichtsseite)
 	 * - array ignore_messages: Die Nachrichten-IDs in diesem Array werden nicht von der Benachrichtigung für neue Nachrichten beachtet
+	 * @todo Auslagern
 	*/
 
 	class LoginGui extends Gui
@@ -48,7 +48,7 @@
 <?='<?xml version="1.0" encoding="UTF-8"?>'."\n"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=l::h(_("[LANG]"))?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=L::h(_("[LANG]"))?>">
 	<head>
 		<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 <!--
@@ -67,12 +67,12 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 -->
-		<title><?=l::h(_("[title_abbr_full]"))?></title>
+		<title><?=L::h(_("[title_abbr_full]"))?></title>
 		<script type="text/javascript">
 			var url_suffix = '<?=JS::jsentities(global_setting("URL_SUFFIX"))?>';
 			var ths_utf8 = '<?=JS::jsentities(_("[thousand_separator]"))?>';
 			var h_root = '<?=JS::jsentities(global_setting("h_root"))?>';
-			var list_min_chars = '<?=JS::jsentities(global_setting("LIST_MIN_CHARS"))?>';
+			var list_min_chars = '<?=JS::jsentities(Config::getLibConfig()->getConfigValue("list_min_chars"))?>';
 			var res_ids = [ 'carbon', 'aluminium', 'wolfram', 'radium', 'tritium' ];
 <?php
 			if($me)
@@ -154,9 +154,9 @@
 			{
 ?>
 		<ul id="links-down" class="cross-navigation">
-			<li><a href="#inner-content"<?=l::accesskey_attr(_("Zum Inhalt&[login/include.php|1]"))?>><?=l::h(_("Zum Inhalt&[login/include.php|1]"))?></a></li>
-			<li><a href="#navigation"<?=l::accesskey_attr(_("Zur Navigation&[login/include.php|1]"))?>><?=l::h(_("Zur Navigation&[login/include.php|1]"))?></a></li>
-			<li><a href="#time"<?=l::accesskey_attr(_("Zu den Spieldaten&[login/include.php|1]"))?>><?=l::h(_("Zu den Spieldaten&[login/include.php|1]"))?></a></li>
+			<li><a href="#inner-content"<?=L::accesskeyAttr(_("Zum Inhalt&[login/include.php|1]"))?>><?=L::h(_("Zum Inhalt&[login/include.php|1]"))?></a></li>
+			<li><a href="#navigation"<?=L::accesskeyAttr(_("Zur Navigation&[login/include.php|1]"))?>><?=L::h(_("Zur Navigation&[login/include.php|1]"))?></a></li>
+			<li><a href="#time"<?=L::accesskeyAttr(_("Zu den Spieldaten&[login/include.php|1]"))?>><?=L::h(_("Zu den Spieldaten&[login/include.php|1]"))?></a></li>
 		</ul>
 		<hr class="separator" />
 <?php
@@ -165,7 +165,7 @@
 		<div id="content-9" class="<?=htmlspecialchars($class)?>">
 <?php
 			if($me)
-				echo F::format_ress($me->getRess(), 3, true, true, false, null, "inline bar", "ress", $me);
+				echo F::formatRess($me->getRess(), 3, true, true, false, null, "inline bar", "ress", $me);
 ?>
 			<div id="content-10" class="<?=htmlspecialchars($class)?>"><div id="content-11" class="<?=htmlspecialchars($class)?>"><div id="content-12" class="<?=htmlspecialchars($class)?>"><div id="content-13" class="<?=htmlspecialchars($class)?>">
 <?php
@@ -174,7 +174,7 @@
 			{
 				if($l !== true) $locked_until = $l;
 ?>
-				<p id="gesperrt-hinweis" class="spiel error"><strong><?=l::h(_("Das Spiel ist derzeit gesperrt."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=l::h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s'), $locked_until))))?></span><?php }?></p>
+				<p id="gesperrt-hinweis" class="spiel error"><strong><?=L::h(_("Das Spiel ist derzeit gesperrt."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=L::h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s'), $locked_until))))?></span><?php }?></p>
 				<hr class="separator" />
 <?php
 			}
@@ -183,14 +183,14 @@
 				$l = $me->lockedUntil();
 				if($l) $locked_until = $l;
 ?>
-				<p id="gesperrt-hinweis" class="account error"><strong><?=l::h(_("Ihr Benutzeraccount ist gesperrt."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=l::h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s'), $locked_until))))?></span><?php }?></p>
+				<p id="gesperrt-hinweis" class="account error"><strong><?=L::h(_("Ihr Benutzeraccount ist gesperrt."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=L::h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s'), $locked_until))))?></span><?php }?></p>
 				<hr class="separator" />
 <?php
 			}
 			elseif($me && $me->umode())
 			{
 ?>
-				<p id="gesperrt-hinweis" class="urlaub error"><strong><?=l::h(_("Ihr Benutzeraccount befindet sich im Urlaubsmodus."))?></strong></p>
+				<p id="gesperrt-hinweis" class="urlaub error"><strong><?=L::h(_("Ihr Benutzeraccount befindet sich im Urlaubsmodus."))?></strong></p>
 				<hr class="separator" />
 <?php
 			}
@@ -198,7 +198,7 @@
 			{
 				if($l !== true) $locked_until = $l;
 ?>
-				<p id="gesperrt-hinweis" class="flotten error"><strong><?=l::h(_("Es herrscht eine Flottensperre für feindliche Flüge."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=l::h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s'), $locked_until))))?></span><?php }?></p>
+				<p id="gesperrt-hinweis" class="flotten error"><strong><?=L::h(_("Es herrscht eine Flottensperre für feindliche Flüge."))?></strong><?php if($locked_until){?> <span id="restbauzeit-sperre"><?=L::h(sprintf(_("bis %s"), sprintf(_("%s (Serverzeit)"), date(_('Y-m-d, H:i:s'), $locked_until))))?></span><?php }?></p>
 				<hr class="separator" />
 <?php
 			}
@@ -219,13 +219,13 @@
 				$active_planet_1 = $active_planet+1;
 				if($active_planet_1 > max($me->getPlanetsList())) $active_planet_1 = 0;
 ?>
-				<h1><?php if($active_planet_0 != $active_planet){?><a href="?<?=htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$active_planet_0, global_setting("URL_SUFFIX")))?>" title="<?=l::h(_("Zum vorigen Planeten wechseln&[login/include.php|1]"), false)?>"<?=l::accesskey_attr(_("Zum vorigen Planeten wechseln&[login/include.php|1]"))?>><?=l::h(_("←"))?></a> <?php }?><?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), vsprintf(h(_("%d:%d:%d")), $me->getPos()))?><?php if($active_planet_1 != $active_planet){?> <a href="?<?=htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$active_planet_1, global_setting("URL_SUFFIX")))?>" title="<?=l::h(_("Zum nächsten Planeten wechseln&[login/include.php|1]"), false)?>"<?=l::accesskey_attr(_("Zum nächsten Planeten wechseln&[login/include.php|1]"))?>><?=l::h(_("→"))?></a><?php }?></h1>
+				<h1><?php if($active_planet_0 != $active_planet){?><a href="?<?=htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$active_planet_0, global_setting("URL_SUFFIX")))?>" title="<?=L::h(_("Zum vorigen Planeten wechseln&[login/include.php|1]"), false)?>"<?=L::accesskeyAttr(_("Zum vorigen Planeten wechseln&[login/include.php|1]"))?>><?=L::h(_("←"))?></a> <?php }?><?=sprintf(h(_("„%s“ (%s)")), htmlspecialchars($me->planetName()), vsprintf(h(_("%d:%d:%d")), $me->getPos()))?><?php if($active_planet_1 != $active_planet){?> <a href="?<?=htmlspecialchars(preg_replace("/((^|&)planet=)\d+/", "\${1}".$active_planet_1, global_setting("URL_SUFFIX")))?>" title="<?=L::h(_("Zum nächsten Planeten wechseln&[login/include.php|1]"), false)?>"<?=L::accesskeyAttr(_("Zum nächsten Planeten wechseln&[login/include.php|1]"))?>><?=L::h(_("→"))?></a><?php }?></h1>
 <?php
 			}
 			else
 			{
 ?>
-				<h1><?=l::h(_("[title_full]"))?></h1>
+				<h1><?=L::h(_("[title_full]"))?></h1>
 <?php
 			}
 
@@ -276,7 +276,7 @@
 					$link .= global_setting("URL_SUFFIX");
 ?>
 				<hr class="separator" />
-				<p id="neue-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/login/'.$link)?>" title="<?=$title?>"<?=l::accesskey_attr(ngettext("Sie haben %s neue &Nachricht.[login/include.php|2]", "Sie haben %s neue &Nachrichten.[login/include.php|2]", $ges_ncount))?>><?=l::h(sprintf(ngettext("Sie haben %s neue &Nachricht.[login/include.php|2]", "Sie haben %s neue &Nachrichten.[login/include.php|2]", $ges_ncount), $ges_ncount))?></a></p>
+				<p id="neue-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/login/'.$link)?>" title="<?=$title?>"<?=L::accesskeyAttr(ngettext("Sie haben %s neue &Nachricht.[login/include.php|2]", "Sie haben %s neue &Nachrichten.[login/include.php|2]", $ges_ncount))?>><?=L::h(sprintf(ngettext("Sie haben %s neue &Nachricht.[login/include.php|2]", "Sie haben %s neue &Nachrichten.[login/include.php|2]", $ges_ncount), $ges_ncount))?></a></p>
 <?php
 				}
 			}
@@ -313,7 +313,7 @@
 ?>
 			<div id="werbung">
 <?php
-			if((!$me || (!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"])) && !$this->getOption("disable_ads") && global_setting("PROTOCOL") == 'http') # Per https keine Werbung einblenden, da Google nur http unterstuetzt und dann eine Sicherheitswarnung kommt
+			if((!$me || (!isset($_SESSION["disable_javascript"]) || !$_SESSION["disable_javascript"])) && !$this->getOption("disable_ads") && HTTPOutput::getProtocol() == 'http') # Per https keine Werbung einblenden, da Google nur http unterstuetzt und dann eine Sicherheitswarnung kommt
 			{
 ?>
 				<div class="google-params" id="google-color-border-red"></div>
@@ -386,8 +386,8 @@
 		<hr class="separator" />
 
 		<ul id="links-up-1" class="cross-navigation">
-			<li><a href="#ress"<?=l::accesskey_attr(_("Zur Rohstoffanzeige&[login/include.php|1]"))?>><?=l::h(_("Zur Rohstoffanzeige&[login/include.php|1]"))?></a></li>
-			<li><a href="#inner-content"><?=l::h(_("Zum Inhalt&[login/include.php|1]"))?></a></li>
+			<li><a href="#ress"<?=L::accesskeyAttr(_("Zur Rohstoffanzeige&[login/include.php|1]"))?>><?=L::h(_("Zur Rohstoffanzeige&[login/include.php|1]"))?></a></li>
+			<li><a href="#inner-content"><?=L::h(_("Zum Inhalt&[login/include.php|1]"))?></a></li>
 		</ul>
 <?php
 			}
@@ -402,7 +402,7 @@
 		<div id="navigation">
 			<form action="<?=htmlspecialchars($_SERVER['PHP_SELF'])?>" method="get" id="change-planet">
 				<fieldset>
-					<legend><?=l::h(_("Planeten wechseln"))?></legend>
+					<legend><?=L::h(_("Planeten wechseln"))?></legend>
 <?php
 				foreach($_GET as $key=>$val)
 				{
@@ -412,7 +412,7 @@
 <?php
 				}
 ?>
-					<select name="planet" onchange="if(this.value != <?=$me->getActivePlanet()?>) this.form.submit();" onkeyup="if(this.value != <?=$me->getActivePlanet()?>) this.form.submit();"<?=l::accesskey_attr(_("Ihre &Planeten[login/include.php|3]"))?> title="<?=l::h(_("Ihre &Planeten[login/include.php|3]"), false)?>">
+					<select name="planet" onchange="if(this.value != <?=$me->getActivePlanet()?>) this.form.submit();" onkeyup="if(this.value != <?=$me->getActivePlanet()?>) this.form.submit();"<?=L::accesskeyAttr(_("Ihre &Planeten[login/include.php|3]"))?> title="<?=L::h(_("Ihre &Planeten[login/include.php|3]"), false)?>">
 <?php
 				$active_planet = $me->getActivePlanet();
 				$planets = $me->getPlanetsList();
@@ -426,42 +426,42 @@
 				$me->setActivePlanet($active_planet);
 ?>
 					</select>
-					<noscript><div><button type="submit"><?=l::h(_("Wechseln"))?></button></div></noscript>
+					<noscript><div><button type="submit"><?=L::h(_("Wechseln"))?></button></div></noscript>
 				</fieldset>
 			</form>
 			<hr class="separator" id="navigation-separator-1" />
 			<ul id="main-navigation">
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/index.php') ? ' class="active"' : ''?> id="navigation-index"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/index.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("&Übersicht[login/include.php|3]"))?>><?=l::h(_("&Übersicht[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/rohstoffe.php') ? ' class="active"' : ''?> id="navigation-rohstoffe"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/rohstoffe.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("&Rohstoffe[login/include.php|3]"))?>><?=l::h(_("&Rohstoffe[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/gebaeude.php') ? ' class="active"' : ''?> id="navigation-gebaeude"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("&Gebäude[login/include.php|3]"))?>><?=l::h(_("&Gebäude[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/forschung.php') ? ' class="active"' : ''?> id="navigation-forschung"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/forschung.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("&Forschung[login/include.php|3]"))?>><?=l::h(_("&Forschung[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/roboter.php') ? ' class="active"' : ''?> id="navigation-roboter"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/roboter.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Ro&boter[login/include.php|3]"))?>><?=l::h(_("Ro&boter[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/flotten.php') ? ' class="active"' : ''?> id="navigation-flotten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/flotten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("F&lotten[login/include.php|3]"))?>><?=l::h(_("F&lotten[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/schiffswerft.php') ? ' class="active"' : ''?> id="navigation-schiffswerft"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/schiffswerft.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("&Schiffswerft[login/include.php|3]"))?>><?=l::h(_("&Schiffswerft[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/verteidigung.php') ? ' class="active"' : ''?> id="navigation-verteidigung"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/verteidigung.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("&Verteidigung[login/include.php|3]"))?>><?=l::h(_("&Verteidigung[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/boerse.php') ? ' class="active"' : ''?> id="navigation-boerse"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/boerse.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Han&delsbörse[login/include.php|3]"))?>><?=l::h(_("Han&delsbörse[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("I&mperium[login/include.php|3]"))?>><?=l::h(_("I&mperium[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/index.php') ? ' class="active"' : ''?> id="navigation-index"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/index.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("&Übersicht[login/include.php|3]"))?>><?=L::h(_("&Übersicht[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/rohstoffe.php') ? ' class="active"' : ''?> id="navigation-rohstoffe"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/rohstoffe.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("&Rohstoffe[login/include.php|3]"))?>><?=L::h(_("&Rohstoffe[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/gebaeude.php') ? ' class="active"' : ''?> id="navigation-gebaeude"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("&Gebäude[login/include.php|3]"))?>><?=L::h(_("&Gebäude[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/forschung.php') ? ' class="active"' : ''?> id="navigation-forschung"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/forschung.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("&Forschung[login/include.php|3]"))?>><?=L::h(_("&Forschung[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/roboter.php') ? ' class="active"' : ''?> id="navigation-roboter"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/roboter.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("Ro&boter[login/include.php|3]"))?>><?=L::h(_("Ro&boter[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/flotten.php') ? ' class="active"' : ''?> id="navigation-flotten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/flotten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("F&lotten[login/include.php|3]"))?>><?=L::h(_("F&lotten[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/schiffswerft.php') ? ' class="active"' : ''?> id="navigation-schiffswerft"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/schiffswerft.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("&Schiffswerft[login/include.php|3]"))?>><?=L::h(_("&Schiffswerft[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/verteidigung.php') ? ' class="active"' : ''?> id="navigation-verteidigung"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/verteidigung.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("&Verteidigung[login/include.php|3]"))?>><?=L::h(_("&Verteidigung[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/boerse.php') ? ' class="active"' : ''?> id="navigation-boerse"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/boerse.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("Han&delsbörse[login/include.php|3]"))?>><?=L::h(_("Han&delsbörse[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/imperium.php') ? ' class="active"' : ''?> id="navigation-imperium"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/imperium.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("I&mperium[login/include.php|3]"))?>><?=L::h(_("I&mperium[login/include.php|3]"))?></a></li>
 			</ul>
 			<hr class="separator" id="navigation-separator-2" />
 			<ul id="action-navigation">
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/karte.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("&Karte[login/include.php|3]"))?>><?=l::h(_("&Karte[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/allianz.php') ? ' class="active"' : ''?> id="navigation-allianz"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("All&ianz[login/include.php|3]"))?>><?=l::h(_("All&ianz[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("V&erbündete[login/include.php|3]"))?>><?=l::h(_("V&erbündete[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/highscores.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("&Highscores[login/include.php|3]"))?>><?=l::h(_("&Highscores[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Na&chrichten[login/include.php|3]"))?>><?=l::h(_("Na&chrichten[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/forschungsbaum.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/forschungsbaum.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Forschungsb&aum[login/include.php|3]"))?>><?=l::h(_("Forschungsb&aum[login/include.php|3]"))?></a></li>
-				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/einstellungen.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Eins&tellungen[login/include.php|3]"))?>><?=l::h(_("Eins&tellungen[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/karte.php') ? ' class="active"' : ''?> id="navigation-karte"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/karte.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("&Karte[login/include.php|3]"))?>><?=L::h(_("&Karte[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/allianz.php') ? ' class="active"' : ''?> id="navigation-allianz"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/allianz.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("All&ianz[login/include.php|3]"))?>><?=L::h(_("All&ianz[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/verbuendete.php') ? ' class="active"' : ''?> id="navigation-verbuendete"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/verbuendete.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("V&erbündete[login/include.php|3]"))?>><?=L::h(_("V&erbündete[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/highscores.php') ? ' class="active"' : ''?> id="navigation-highscores"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/highscores.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("&Highscores[login/include.php|3]"))?>><?=L::h(_("&Highscores[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/nachrichten.php') ? ' class="active"' : ''?> id="navigation-nachrichten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/nachrichten.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("Na&chrichten[login/include.php|3]"))?>><?=L::h(_("Na&chrichten[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/forschungsbaum.php') ? ' class="active"' : ''?> id="navigation-abhaengigkeiten"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/forschungsbaum.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("Forschungsb&aum[login/include.php|3]"))?>><?=L::h(_("Forschungsb&aum[login/include.php|3]"))?></a></li>
+				<li<?=($_SERVER['PHP_SELF'] == global_setting("h_root").'/login/einstellungen.php') ? ' class="active"' : ''?> id="navigation-einstellungen"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/einstellungen.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("Eins&tellungen[login/include.php|3]"))?>><?=L::h(_("Eins&tellungen[login/include.php|3]"))?></a></li>
 <?php
 				if(isset($_SESSION['admin_username']))
 				{
 ?>
-				<li id="navigation-abmelden"><a href="<?=htmlspecialchars('https://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/admin/index.php"<?=l::accesskey_attr(_("Adminbereich&[login/include.php|3]"))?>><?=l::h(_("Adminbereich&[login/include.php|3]"))?></a></li>
+				<li id="navigation-abmelden"><a href="<?=htmlspecialchars('https://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/admin/index.php"<?=L::accesskeyAttr(_("Adminbereich&[login/include.php|3]"))?>><?=L::h(_("Adminbereich&[login/include.php|3]"))?></a></li>
 <?php
 				}
 				else
 				{
 ?>
-				<li id="navigation-abmelden"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/info/logout.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=l::accesskey_attr(_("Abmelden&[login/include.php|3]"))?>><?=l::h(_("Abmelden&[login/include.php|3]"))?></a></li>
+				<li id="navigation-abmelden"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/info/logout.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>"<?=L::accesskeyAttr(_("Abmelden&[login/include.php|3]"))?>><?=L::h(_("Abmelden&[login/include.php|3]"))?></a></li>
 <?php
 				}
 ?>
@@ -472,10 +472,10 @@
 ?>
 			<hr class="separator" id="navigation-separator-3" />
 			<ul id="external-navigation">
-				<li id="navigation-board"><a href="<?=htmlspecialchars(global_setting("USE_PROTOCOL"))?>://board.s-u-a.net/"<?=l::accesskey_attr(_("Board&[login/include.php|3]"))?>><?=l::h(_("Board&[login/include.php|3]"))?></a></li>
-				<li id="navigation-faq"><a href="http://<?=htmlspecialchars(Config::get_default_hostname().global_setting("h_root"))?>/faq.php"<?=l::accesskey_attr(_("FAQ&[login/include.php|3]"))?>><?=l::h(_("FAQ&[login/include.php|3]"))?></a></li>
-				<li id="navigation-chat"><a href="http://<?=htmlspecialchars(Config::get_default_hostname().global_setting("h_root"))?>/chat.php"<?=l::accesskey_attr(_("Chat&[login/include.php|3]"))?>><?=l::h(_("Chat&[login/include.php|3]"))?></a></li>
-				<li id="navigation-developers"><a href="http://dev.s-u-a.net/"<?=l::accesskey_attr(_("Entwicklerseite&[login/include.php|3]"))?>><?=l::h(_("Entwicklerseite&[login/include.php|3]"))?></a></li>
+				<li id="navigation-board"><a href="<?=htmlspecialchars(global_setting("USE_PROTOCOL"))?>://board.s-u-a.net/"<?=L::accesskeyAttr(_("Board&[login/include.php|3]"))?>><?=L::h(_("Board&[login/include.php|3]"))?></a></li>
+				<li id="navigation-faq"><a href="http://<?=htmlspecialchars(Config::get_default_hostname().global_setting("h_root"))?>/faq.php"<?=L::accesskeyAttr(_("FAQ&[login/include.php|3]"))?>><?=L::h(_("FAQ&[login/include.php|3]"))?></a></li>
+				<li id="navigation-chat"><a href="http://<?=htmlspecialchars(Config::get_default_hostname().global_setting("h_root"))?>/chat.php"<?=L::accesskeyAttr(_("Chat&[login/include.php|3]"))?>><?=L::h(_("Chat&[login/include.php|3]"))?></a></li>
+				<li id="navigation-developers"><a href="http://dev.s-u-a.net/"<?=L::accesskeyAttr(_("Entwicklerseite&[login/include.php|3]"))?>><?=L::h(_("Entwicklerseite&[login/include.php|3]"))?></a></li>
 			</ul>
 <?php
 				}
@@ -488,7 +488,7 @@
 		<hr class="separator" />
 
 		<dl class="inline bar" id="time">
-			<dt><?=l::h(_("Serverzeit"))?></dt>
+			<dt><?=L::h(_("Serverzeit"))?></dt>
 			<dd id="time-server"><?=date(_("H:i:s"), time()+1)?></dd>
 		</dl>
 <?php
@@ -537,7 +537,7 @@
 			if(global_setting("VERSION"))
 			{
 ?>
-			<li class="version"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/info/changelog.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Changelog anzeigen&[login/include.php|4]"), false)?>"<?=l::accesskey_attr(_("Changelog anzeigen&[login/include.php|4]"))?>><?=sprintf(h(_("Version %s")), htmlspecialchars(global_setting("VERSION")))?></a></li>
+			<li class="version"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root"))?>/login/info/changelog.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Changelog anzeigen&[login/include.php|4]"), false)?>"<?=L::accesskeyAttr(_("Changelog anzeigen&[login/include.php|4]"))?>><?=sprintf(h(_("Version %s")), htmlspecialchars(global_setting("VERSION")))?></a></li>
 <?php
 			}
 ?>
@@ -550,8 +550,8 @@
 		<hr class="separator" />
 
 		<ul id="links-up-2" class="cross-navigation">
-			<li><a href="#ress"><?=l::h(_("Zur Rohstoffanzeige&[login/include.php|1]"))?></a></li>
-			<li><a href="#inner-content"><?=l::h(_("Zum Inhalt&[login/include.php|1]"))?></a></li>
+			<li><a href="#ress"><?=L::h(_("Zur Rohstoffanzeige&[login/include.php|1]"))?></a></li>
+			<li><a href="#inner-content"><?=L::h(_("Zum Inhalt&[login/include.php|1]"))?></a></li>
 		</ul>
 <?php
 			}
@@ -673,15 +673,15 @@
 				if(strlen($query_string) > 0) $query_string = "?".$query_string;
 				$request_uri = preg_replace("/\\?.*/", $query_string, $_SERVER["REQUEST_URI"]);
 ?>
-<p class="error notloggedin"><?=l::h((isset($_REQUEST["username"]) && isset($_REQUEST["password"])) ? _("Anmeldung fehlgeschlagen. Haben Sie sich bereits registriert und Ihren Benutzernamen und Ihr Passwort korrekt in die zugehörigen Felder beim Anmelden-Button eingetragen? Haben Sie Groß-Klein-Schreibung beim Passwort beachtet?") : _("Sie sind nicht angemeldet."))?></p>
+<p class="error notloggedin"><?=L::h((isset($_REQUEST["username"]) && isset($_REQUEST["password"])) ? _("Anmeldung fehlgeschlagen. Haben Sie sich bereits registriert und Ihren Benutzernamen und Ihr Passwort korrekt in die zugehörigen Felder beim Anmelden-Button eingetragen? Haben Sie Groß-Klein-Schreibung beim Passwort beachtet?") : _("Sie sind nicht angemeldet."))?></p>
 <form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL")."://".$_SERVER["HTTP_HOST"].$request_uri)?>" method="post" class="notloggedin">
 	<fieldset>
 		<dl class="form">
-			<dt class="c-benutzername"><label for="i-username"><?=l::h(_("&Benutzername[login/include.php|5]"))?></label></dt>
-			<dd class="c-benutzername"><input type="text" name="username" id="i-username" value="<?=htmlspecialchars(isset($_REQUEST["username"]) ? $_REQUEST["username"] : (isset($_SESSION["username"]) ? $_SESSION["username"] : ""))?>"<?=l::accesskey_attr(_("&Benutzername[login/include.php|5]"))?> /></dd>
+			<dt class="c-benutzername"><label for="i-username"><?=L::h(_("&Benutzername[login/include.php|5]"))?></label></dt>
+			<dd class="c-benutzername"><input type="text" name="username" id="i-username" value="<?=htmlspecialchars(isset($_REQUEST["username"]) ? $_REQUEST["username"] : (isset($_SESSION["username"]) ? $_SESSION["username"] : ""))?>"<?=L::accesskeyAttr(_("&Benutzername[login/include.php|5]"))?> /></dd>
 
-			<dt class="c-passwort"><label for="i-password"><?=l::h(_("&Passwort[login/include.php|5]"))?></label></dt>
-			<dd class="c-passwort"><input type="password" name="password" id="i-password"<?=l::accesskey_attr(_("&Passwort[login/include.php|5]"))?> /></dd>
+			<dt class="c-passwort"><label for="i-password"><?=L::h(_("&Passwort[login/include.php|5]"))?></label></dt>
+			<dd class="c-passwort"><input type="password" name="password" id="i-password"<?=L::accesskeyAttr(_("&Passwort[login/include.php|5]"))?> /></dd>
 		</dl>
 		<div class="button">
 			<input type="hidden" name="database" value="<?=htmlspecialchars($used_database)?>" />
@@ -692,9 +692,9 @@
 				{
 					if(isset($post[$k])) unset($post[$k]);
 				}
-				F::make_hidden_fields($post, 3);
+				F::makeHiddenFields($post, 3);
 ?>
-			<button type="submit"<?=l::accesskey_attr(_("&Anmelden[login/include.php|5]"))?>><?=l::h(_("&Anmelden[login/include.php|5]"))?></button>
+			<button type="submit"<?=L::accesskeyAttr(_("&Anmelden[login/include.php|5]"))?>><?=L::h(_("&Anmelden[login/include.php|5]"))?></button>
 		</div>
 	</fieldset>
 </form>

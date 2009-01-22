@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage exceptions
 	*/
 
 	namespace sua;
@@ -29,21 +28,18 @@
 	{
 		/**
 		 * Beim Überprüfen des Captchas ist ein Verbindungsfehler aufgetreten.
-		 * @var integer
 		*/
-		static $HTTP_ERROR = 1;
+		const HTTP_ERROR = 1;
 
 		/**
 		 * Die Captcha-Konfiguration ist fehlerhaft.
-		 * @var integer
 		*/
-		static $CONFIG_ERROR = 2;
+		const CONFIG_ERROR = 2;
 
 		/**
 		 * Der Benutzer hat falsche Daten eingegeben.
-		 * @var integer
 		*/
-		static $USER_ERROR = 3;
+		const USER_ERROR = 3;
 
 		function __construct($message = null, $code = 0)
 		{

@@ -46,41 +46,41 @@
 
 	$gui->init();
 ?>
-<h2><?=l::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Features")))?></h2>
+<h2><?=L::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Features")))?></h2>
 <ul>
-	<li><?=l::h(sprintf(ngettext("%s Gebäudetyp", "%s Gebäudetypen", count($items->getItemsList('gebaeude'))), F::ths(count($items->getItemsList('gebaeude')))))?></li>
-	<li><?=l::h(sprintf(ngettext("%s Forschungsmöglichkeit", "%s Forschungsmöglichkeiten", count($items->getItemsList('forschung'))), F::ths(count($items->getItemsList('forschung')))))?></li>
-	<li><?=l::h(sprintf(ngettext("%s Roboter", "%s verschiedene Roboter", count($items->getItemsList('roboter'))), F::ths(count($items->getItemsList('roboter')))))?></li>
-	<li><?=l::h(sprintf(ngettext("%s Raumschiffklasse", "%s Raumschiffklassen", count($items->getItemsList('schiffe'))), F::ths(count($items->getItemsList('schiffe')))))?></li>
-	<li><?=l::h(sprintf(ngettext("%s Verteidigungsanlage", "%s Verteidigungsanlagen", count($items->getItemsList('verteidigung'))), F::ths(count($items->getItemsList('verteidigung')))))?></li>
-	<li><?=l::h(_("Das Spiel läuft in Echtzeit, es gibt keine lästigen Eventhandler-Wartezeiten."))?></li>
-	<li><?=l::h(_("Forschung lässt sich global oder lokal durchführen."))?></li>
-	<li><?=l::h(_("Ausgeklügeltes Allianzsystem"))?></li>
-	<li><?=l::h(_("Schließen Sie Bündnisse mit einzelnen Spielern."))?></li>
-	<li><?=l::h(_("Variabler Handelskurs, der sich den Zuständen im Universum anpasst"))?></li>
-	<li><?=l::h(_("Handelssystem: Geben Sie sich nähernden Transporten Rohstoffe mit auf den Rückweg."))?></li>
-	<li><?=l::h(_("Komfortable Einstellungsmöglichkeiten, die das Spielen erleichtern"))?></li>
+	<li><?=L::h(sprintf(ngettext("%s Gebäudetyp", "%s Gebäudetypen", count($items->getItemsList('gebaeude'))), F::ths(count($items->getItemsList('gebaeude')))))?></li>
+	<li><?=L::h(sprintf(ngettext("%s Forschungsmöglichkeit", "%s Forschungsmöglichkeiten", count($items->getItemsList('forschung'))), F::ths(count($items->getItemsList('forschung')))))?></li>
+	<li><?=L::h(sprintf(ngettext("%s Roboter", "%s verschiedene Roboter", count($items->getItemsList('roboter'))), F::ths(count($items->getItemsList('roboter')))))?></li>
+	<li><?=L::h(sprintf(ngettext("%s Raumschiffklasse", "%s Raumschiffklassen", count($items->getItemsList('schiffe'))), F::ths(count($items->getItemsList('schiffe')))))?></li>
+	<li><?=L::h(sprintf(ngettext("%s Verteidigungsanlage", "%s Verteidigungsanlagen", count($items->getItemsList('verteidigung'))), F::ths(count($items->getItemsList('verteidigung')))))?></li>
+	<li><?=L::h(_("Das Spiel läuft in Echtzeit, es gibt keine lästigen Eventhandler-Wartezeiten."))?></li>
+	<li><?=L::h(_("Forschung lässt sich global oder lokal durchführen."))?></li>
+	<li><?=L::h(_("Ausgeklügeltes Allianzsystem"))?></li>
+	<li><?=L::h(_("Schließen Sie Bündnisse mit einzelnen Spielern."))?></li>
+	<li><?=L::h(_("Variabler Handelskurs, der sich den Zuständen im Universum anpasst"))?></li>
+	<li><?=L::h(_("Handelssystem: Geben Sie sich nähernden Transporten Rohstoffe mit auf den Rückweg."))?></li>
+	<li><?=L::h(_("Komfortable Einstellungsmöglichkeiten, die das Spielen erleichtern"))?></li>
 <?php
 	if($show_im)
 	{
 ?>
-	<li><?=l::h(_("Lassen Sie sich per Instant Messenger über Ereignisse benachrichtigen."))?></li>
+	<li><?=L::h(_("Lassen Sie sich per Instant Messenger über Ereignisse benachrichtigen."))?></li>
 <?php
 	}
 ?>
-	<li><?=l::h(_("Völlige Ummodellierbarkeit des Designs durch Skins"))?></li>
-	<li><?=l::h(_("Flug- und Kampferfahrungspunkte verschaffen Vorteil"))?></li>
-	<li><?=l::h(_("HTTPS schützt vertrauliche Daten"))?></li>
-	<li><?=l::h(_("Lassen Sie Flotten von einem Planeten zum nächsten und von dort zu einem weiteren fliegen."))?></li>
-	<li><?=l::h(_("Stationieren Sie Flotten bei Ihren Verbündeten, um diesen zu unterstützen."))?></li>
-	<li><?=l::h(_("Fliegen Sie gemeinsame Angriffe mit Ihren Verbündeten."))?></li>
-	<li><?=l::h(sprintf(ngettext("derzeit %s Spieler", "derzeit %s Spieler", $players), $players))?></li>
-	<li><?=l::h(sprintf(ngettext("derzeit %s Allianz", "derzeit %s Allianzen", $alliances), $alliances))?></li>
+	<li><?=L::h(_("Völlige Ummodellierbarkeit des Designs durch Skins"))?></li>
+	<li><?=L::h(_("Flug- und Kampferfahrungspunkte verschaffen Vorteil"))?></li>
+	<li><?=L::h(_("HTTPS schützt vertrauliche Daten"))?></li>
+	<li><?=L::h(_("Lassen Sie Flotten von einem Planeten zum nächsten und von dort zu einem weiteren fliegen."))?></li>
+	<li><?=L::h(_("Stationieren Sie Flotten bei Ihren Verbündeten, um diesen zu unterstützen."))?></li>
+	<li><?=L::h(_("Fliegen Sie gemeinsame Angriffe mit Ihren Verbündeten."))?></li>
+	<li><?=L::h(sprintf(ngettext("derzeit %s Spieler", "derzeit %s Spieler", $players), $players))?></li>
+	<li><?=L::h(sprintf(ngettext("derzeit %s Allianz", "derzeit %s Allianzen", $alliances), $alliances))?></li>
 <?php
 	if($databases_count > 1)
 	{
 ?>
-	<li><?=l::h(sprintf(ngettext("derzeit %s Runde", "derzeit %s verschiedene Runden", $databases_count), F::ths($databases_count)))?></li>
+	<li><?=L::h(sprintf(ngettext("derzeit %s Runde", "derzeit %s verschiedene Runden", $databases_count), F::ths($databases_count)))?></li>
 <?php
 	}
 ?>
@@ -88,20 +88,20 @@
 <?php
 	$i = 1;
 ?>
-<h3><?=l::h(_("Screenshots"))?></h3>
+<h3><?=L::h(_("Screenshots"))?></h3>
 <ul class="screenshots">
-	<li><a href="images/screenshots/screenshot_01.png"><img src="images/screenshots/preview_01.jpg" alt="<?=l::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
-	<li><a href="images/screenshots/screenshot_02.png"><img src="images/screenshots/preview_02.jpg" alt="<?=l::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
-	<li><a href="images/screenshots/screenshot_03.png"><img src="images/screenshots/preview_03.jpg" alt="<?=l::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
-	<li><a href="images/screenshots/screenshot_04.png"><img src="images/screenshots/preview_04.jpg" alt="<?=l::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
-	<li><a href="images/screenshots/screenshot_05.png"><img src="images/screenshots/preview_05.jpg" alt="<?=l::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
-	<li><a href="images/screenshots/screenshot_06.png"><img src="images/screenshots/preview_06.jpg" alt="<?=l::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
-	<li><a href="images/screenshots/screenshot_07.png"><img src="images/screenshots/preview_07.jpg" alt="<?=l::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
-	<li><a href="images/screenshots/screenshot_08.png"><img src="images/screenshots/preview_08.jpg" alt="<?=l::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
-	<li><a href="images/screenshots/screenshot_09.png"><img src="images/screenshots/preview_09.jpg" alt="<?=l::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
-	<li><a href="images/screenshots/screenshot_10.png"><img src="images/screenshots/preview_10.jpg" alt="<?=l::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
-	<li><a href="images/screenshots/screenshot_11.png"><img src="images/screenshots/preview_11.jpg" alt="<?=l::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
-	<li><a href="images/screenshots/screenshot_12.png"><img src="images/screenshots/preview_12.jpg" alt="<?=l::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
+	<li><a href="images/screenshots/screenshot_01.png"><img src="images/screenshots/preview_01.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
+	<li><a href="images/screenshots/screenshot_02.png"><img src="images/screenshots/preview_02.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
+	<li><a href="images/screenshots/screenshot_03.png"><img src="images/screenshots/preview_03.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
+	<li><a href="images/screenshots/screenshot_04.png"><img src="images/screenshots/preview_04.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
+	<li><a href="images/screenshots/screenshot_05.png"><img src="images/screenshots/preview_05.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
+	<li><a href="images/screenshots/screenshot_06.png"><img src="images/screenshots/preview_06.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
+	<li><a href="images/screenshots/screenshot_07.png"><img src="images/screenshots/preview_07.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
+	<li><a href="images/screenshots/screenshot_08.png"><img src="images/screenshots/preview_08.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
+	<li><a href="images/screenshots/screenshot_09.png"><img src="images/screenshots/preview_09.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
+	<li><a href="images/screenshots/screenshot_10.png"><img src="images/screenshots/preview_10.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
+	<li><a href="images/screenshots/screenshot_11.png"><img src="images/screenshots/preview_11.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
+	<li><a href="images/screenshots/screenshot_12.png"><img src="images/screenshots/preview_12.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
 </ul>
 <?php
 	$gui->end();

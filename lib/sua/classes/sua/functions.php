@@ -18,7 +18,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage tools
 	*/
 
 	namespace sua;
@@ -569,13 +568,20 @@
 		}
 
 		/**
-		 * Gibt eine Zeile mit dem aktuellen Datum an die Logdatei aus.
-		 * @param string $message
-		 * @return void
+		 * Konvertiert einen vom Benutzer eingegebenen String in einen Boolean-Wert. Werte wie „no“ oder „false“
+		 * werden zu false.
+		 * @param string $string
+		 * @throw UnexpectedValueException Der übergebene Wert wurde nicht erkannt.
+		 * @return boolean
 		*/
 
-		function log($message)
+		function string2boolean($string)
 		{
-			fputs(global_setting("LOG"), date("Y-m-d\\TH:i:s")." ".$message."\n");
+			if(in_array(strtolower($string), array("yes", "y", "1", "true", "on", "enabled", "enable")))
+				return true;
+			elseif(!$string || in_array(strtolower($string), array("no", "n", "false", "off", "disabled", "disable")))
+				return false;
+			else
+				throw UnexpectedValueException("String could not be converted to a boolean.");
 		}
 	}

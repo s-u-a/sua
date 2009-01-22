@@ -624,5 +624,9 @@
     <item url="lib/sua/classes/sua/userexception.php" />
     <item url="lib/sua/classes/sua/user.php" />
     <item url="lib/sua/classes/sua/httpoutput.php" />
+    <item url="lib/sua/classes/sua/configexception.php" />
+    <item url="lib/sua/config.xml" />
+    <item url="lib/sua/config.dtd" />
+    <item url="lib/sua/classes/sua/Logger.php" />
   </project>
 </webproject>

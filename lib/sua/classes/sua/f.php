@@ -18,7 +18,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage gui
 	*/
 
 	namespace sua;
@@ -27,7 +26,6 @@
 	/**
 	 * Stellt statische Funktionen zur Verfügung, die Werte zur Ausgabe an den
 	 * Benutzer formatieren.
-	 * @todo CamelCase
 	*/
 
 	class F
@@ -40,7 +38,7 @@
 		 * @return string
 		*/
 
-		static function format_btime($time2, $short=false)
+		static function formatBTime($time2, $short=false)
 		{
 			# Formatiert eine in Punkten angegebene Bauzeitangabe,
 			# sodass diese auf den Seiten angezeigt werden kann
@@ -97,7 +95,7 @@
 		 * @return string Eine den HTML-Code einer dl-Liste mit den formatierten Rohstoffangaben
 		*/
 
-		static function format_ress($ress, $tabs_count=0, $tritium=false, $energy=false, $_i=false, $check_availability=null, $dl_class="inline", $dl_id=null, $check_limit=null)
+		static function formatRess($ress, $tabs_count=0, $tritium=false, $energy=false, $_i=false, $check_availability=null, $dl_class="inline", $dl_id=null, $check_limit=null)
 		{
 			# Erstellt eine Definitionsliste aus der uebergebenen
 			# Rohstoffanzahl, beispielsweise fuer die Rohstoffkosten
@@ -207,7 +205,7 @@
 		 * @return string
 		*/
 
-		static function add_nulls($count, $len)
+		static function addNulls($count, $len)
 		{
 			while(strlen($count) < $len)
 				$count = '0'.$count;
@@ -223,9 +221,9 @@
 		 * @return string
 		*/
 
-		static function parse_html($string)
+		static function parseHTML($string)
 		{
-			$root = self::parse_html_get_element_information('div');
+			$root = self::parseHTML_getElementInformation('div');
 
 			$remaining_string = str_replace("\t", " ", preg_replace("/\r\n|\r|\n/", "\n", $string));
 			$string = '';
@@ -262,7 +260,7 @@
 				}
 
 				$element_name = strtolower($match[1]);
-				$info = self::parse_html_get_element_information($element_name);
+				$info = self::parseHTML_getElementInformation($element_name);
 				if(!$info)
 				{
 					$string .= '&lt;';
@@ -270,7 +268,7 @@
 					continue;
 				}
 				if(count($open_elements))
-					$parent_info = self::parse_html_get_element_information($open_elements[count($open_elements)-1]);
+					$parent_info = self::parseHTML_getElementInformation($open_elements[count($open_elements)-1]);
 				else
 					$parent_info = $root;
 
@@ -337,17 +335,17 @@
 			$string = '';
 			$open_elements = array();
 			$p_open = false;
-			$span = self::parse_html_get_element_information('span');
+			$span = self::parseHTML_getElementInformation('span');
 			while(($next_bracket = strpos($remaining_string, '<')) !== false)
 			{
 				if($next_bracket != 0)
 				{
 					$part = substr($remaining_string, 0, $next_bracket);
 					if(count($open_elements))
-						$parent_info = self::parse_html_get_element_information($open_elements[count($open_elements)-1]);
+						$parent_info = self::parseHTML_getElementInformation($open_elements[count($open_elements)-1]);
 					else
 						$parent_info = $root;
-					if(self::parse_html_trim($part) != '' && in_array('span', $parent_info[0]))
+					if(self::parseHTML_trim($part) != '' && in_array('span', $parent_info[0]))
 					{
 						if(!$p_open && count($open_elements) <= 0)
 						{
@@ -359,9 +357,9 @@
 							if(count($open_elements) <= 0)
 							{
 								if(substr($part, -1) == "\n")
-									$string .= preg_replace('/[\n]+/e', 'F::parse_html_repl_nl(strlen(\'$0\'))', substr($part, 0, -1));
+									$string .= preg_replace('/[\n]+/e', 'F::parseHTML_replNL(strlen(\'$0\'))', substr($part, 0, -1));
 								else
-									$string .= preg_replace('/[\n]+/e', 'F::parse_html_repl_nl(strlen(\'$0\'))', $part);
+									$string .= preg_replace('/[\n]+/e', 'F::parseHTML_replNL(strlen(\'$0\'))', $part);
 							}
 							else
 							{
@@ -405,7 +403,7 @@
 					$string .= '<p>';
 					$p_open = true;
 				}
-				$string .= preg_replace('/[\n]+/e', 'F::parse_html_repl_nl(strlen(\'$0\'))', $remaining_string);
+				$string .= preg_replace('/[\n]+/e', 'F::parseHTML_replNL(strlen(\'$0\'))', $remaining_string);
 			}
 			if($p_open)
 				$string .= '</p>';
@@ -426,7 +424,7 @@
 		 * @return array(string)
 		*/
 
-		static function parse_html_get_element_information($element)
+		private static function parseHTML_getElementInformation($element)
 		{
 			$elements = array(
 				'div' => array('br div span table h4 h5 h6 a img em strong var code abbr acronym address blockquote cite dl dfn hr bdo ins kbd ul ol q samp var p', 'class title xml:lang dir datafld datasrc dataformates'),
@@ -492,7 +490,7 @@
 		 * @return string
 		*/
 
-		static function parse_html_nls($string, $minus1)
+		private static function parseHTML_nls($string, $minus1)
 		{
 			$string2 = $string;
 			$string = preg_replace('/[\n]+/e', 'repl_nl(strlen(\'$0\')-$minus1);', htmlspecialchars($player_info['description']));
@@ -500,12 +498,12 @@
 		}
 
 		/**
-		 * Hilfsfunktion fuer parse_html_nls(). Ersetzt einen String aus Zeilenumbruechen je nach deren Anzahl durch &lt;br /&gt; oder &lt;/p&gt;(&lt;br /&gt;)*&lt;p&gt;.
+		 * Hilfsfunktion fuer parseHTML_nls(). Ersetzt einen String aus Zeilenumbruechen je nach deren Anzahl durch &lt;br /&gt; oder &lt;/p&gt;(&lt;br /&gt;)*&lt;p&gt;.
 		 * @param int $len
 		 * @return string
 		*/
 
-		static function parse_html_repl_nl($len)
+		private static function parseHTML_replNL($len)
 		{
 			if($len == 1)
 				return "<br />";
@@ -521,7 +519,7 @@
 		 * @return string
 		*/
 
-		static function parse_html_trim($string)
+		private static function parseHTML_trim($string)
 		{
 			while(strlen($string) > 0 && $string[0] === ' ')
 				$string = substr($string, 1);
@@ -552,12 +550,13 @@
 		 * @param string $a Praefix, zum Beispiel &lt;a href=&quot;
 		 * @param string $b Die URL, die ersetzt werden soll
 		 * @param string $c Suffix, zum Beispiel &quot;>
+		 * @param string $url_suffix URL-Suffix, zum Beispiel mit der Session-ID
 		 * @return string $a.$b.$c
 		*/
 
-		static function message_repl_links($a, $b, $c)
+		static function messageReplLinks($a, $b, $c, $url_suffix="")
 		{
-			if(!global_setting("URL_SUFFIX"))
+			if(!$url_suffix)
 				return $a.$b.$c;
 
 			$url2 = html_entity_decode($b);
@@ -577,7 +576,7 @@
 
 				if($url[1] != '')
 					$url[1] .= '&';
-				$url[1] .= global_setting("URL_SUFFIX");
+				$url[1] .= $url_suffix;
 
 				$url2 = $url[0].'?'.$url[1];
 				if($url[2] != '')
@@ -594,7 +593,7 @@
 		 * @param string $prefix printf-Ausdruck, mit dem die Feldnamen ausgegeben werden (zum Beispiel feld[%s], um ein Array zu übertragen). Standardmäßig %s.
 		*/
 
-		static function make_hidden_fields($array, $tabs=0, $prefix="%s")
+		static function makeHiddenFields($array, $tabs=0, $prefix="%s")
 		{
 			$t = str_repeat("\t", $tabs);
 			foreach($array as $k=>$v)
@@ -648,6 +647,7 @@
 		 * @param bool $show_owner Den Planeteneigentümer anzeigen?
 		 * @param bool $show_alliance Die Allianz des Eigentümers anzeigen?
 		 * @return string
+		 * @todo Die URLs irgendwie auslagern?
 		*/
 
 		static function formatPlanetH(Planet $planet, $show_owner=true, $show_alliance=true)
@@ -681,7 +681,7 @@
 		 * @param User $user Wird benötigt, um die Zeit beim Urlaubsmodus anzuhalten
 		*/
 
-		static function format_ftime($time, $user=null)
+		static function formatFTime($time, $user=null)
 		{
 			if($user && $user->umode())
 			{

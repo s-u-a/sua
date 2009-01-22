@@ -42,21 +42,21 @@
 	if($message->from() != '')
 	{
 ?>
-	<dt class="c-absender"><?=l::h(_("Absender"))?></dt>
+	<dt class="c-absender"><?=L::h(_("Absender"))?></dt>
 	<dd class="c-absender"><?=htmlspecialchars($message->from())?></dd>
 <?php
 	}
 ?>
-	<dt class="c-empfaenger"><?=l::h(_("Empfänger"))?></dt>
+	<dt class="c-empfaenger"><?=L::h(_("Empfänger"))?></dt>
 	<dd class="c-empfaenger"><?=htmlspecialchars($message->to())?></dd>
 
-	<dt class="c-betreff"><?=l::h(_("Betreff"))?></dt>
+	<dt class="c-betreff"><?=L::h(_("Betreff"))?></dt>
 	<dd class="c-betreff"><?=htmlspecialchars($message->subject())?></dd>
 
-	<dt class="c-zeit"><?=l::h(_("Zeit"))?></dt>
+	<dt class="c-zeit"><?=L::h(_("Zeit"))?></dt>
 	<dd class="c-zeit"><?=date(_('H:i:s, Y-m-d'), $message->time())?></dd>
 
-	<dt class="c-nachricht"><?=l::h(_("Nachricht"))?></dt>
+	<dt class="c-nachricht"><?=L::h(_("Nachricht"))?></dt>
 	<dd class="c-nachricht">
 <?php
 		print("\t\t\t\t".preg_replace("/\r\n|\r|\n/", "\n\t\t\t\t", $message->text()));

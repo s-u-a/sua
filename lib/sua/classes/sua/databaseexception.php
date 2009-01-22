@@ -18,7 +18,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage exceptions
 	*/
 
 	namespace sua;
@@ -31,4 +30,6 @@
 
 	class DatabaseException extends SuaException
 	{
+		/** Die Datenbank hat die falsche Version und kann deshalb nicht geöffnet werden. */
+		const WRONG_VERSION = 1;
 	}

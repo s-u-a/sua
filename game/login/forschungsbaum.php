@@ -41,8 +41,8 @@
 <table class="deps table-2" id="deps-<?=htmlspecialchars($type)?>">
 	<thead>
 		<tr>
-			<th class="c-item"><?=l::h($heading)?></th>
-			<th class="c-deps"><?=l::h(_("Abhängigkeiten"))?></th>
+			<th class="c-item"><?=L::h($heading)?></th>
+			<th class="c-deps"><?=L::h(_("Abhängigkeiten"))?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -53,7 +53,7 @@
 			$item_info = $me->getItemInfo($item, $type, array("deps"));
 ?>
 		<tr id="deps-<?=htmlspecialchars($item)?>">
-			<td class="c-item"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($item))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Genauere Informationen anzeigen"))?>"><?=l::h(_("[item_".$item."]"))?></a></td>
+			<td class="c-item"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($item))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Genauere Informationen anzeigen"))?>"><?=L::h(_("[item_".$item."]"))?></a></td>
 <?php
 			if(!isset($item_info['deps']) || count($item_info['deps']) <= 0)
 			{

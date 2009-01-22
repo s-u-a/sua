@@ -15,6 +15,7 @@
     You should have received a copy of the GNU Affero General Public License
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 	/**
 	 * @author Candid Dauth
 	 * @package sua
@@ -24,11 +25,10 @@
 	require_once dirname(dirname(dirname(__FILE__)))."/engine.php";
 
 	/**
-	 * Es ist ein Problem mit der SQLite-Datenbank des Spiels aufgetreten. Tritt
-	 * zum Beispiel auf, wenn ein columnQuery ausgeführt wird, der Query aber keine
-	 * Spalte geliefert hat.
+	 * Es ist ein Fehler mit einer Konfiguration aufgetreten.
 	*/
 
-	class SQLiteException extends SuaException
+	class ConfigException extends SuaException
 	{
+		const VALUE_NOT_FOUND = 1; /// Ein angeforderter Konfigurationswert wurde nicht gefunden
 	}

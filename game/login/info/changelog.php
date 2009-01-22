@@ -34,7 +34,7 @@
 
 	$changelog = preg_split("/\r\n|\r|\n/", $changelog);
 ?>
-<h2 id="changelog"><?=l::h(_("Changelog"))?></h2>
+<h2 id="changelog"><?=L::h(_("Changelog"))?></h2>
 <ol class="changelog whole-page">
 <?php
 	foreach($changelog as $log)

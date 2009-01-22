@@ -38,7 +38,7 @@
 		$gui->setOption("base", "http://".$_SERVER["HTTP_HOST"].global_setting("h_root")."/software/chat/");
 		$gui->init();
 ?>
-<h2><?=l::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Chat")))?></h2>
+<h2><?=L::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Chat")))?></h2>
 <?php
 	}
 
@@ -47,22 +47,22 @@
 ?>
 <form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/chat.php')?>" method="get" id="chat-form">
 	<dl>
-		<dt class="c-kanal"><label for="i-kanal"><?=l::h(_("Kanal&[chat.php|1]"))?></label></dt>
-		<dd class="c-kanal"><select name="channel" id="i-kanal"<?=l::accesskey_attr(_("Kanal&[chat.php|1]"))?>>
+		<dt class="c-kanal"><label for="i-kanal"><?=L::h(_("Kanal&[chat.php|1]"))?></label></dt>
+		<dd class="c-kanal"><select name="channel" id="i-kanal"<?=L::accesskeyAttr(_("Kanal&[chat.php|1]"))?>>
 <?php
 		foreach($channels as $id=>$info)
 		{
 ?>
-			<option value="<?=htmlspecialchars($id)?>"><?=l::h($info[0])?></option>
+			<option value="<?=htmlspecialchars($id)?>"><?=L::h($info[0])?></option>
 <?php
 		}
 ?>
 		</select></dd>
 
-		<dt class="c-spitzname"><label for="i-spitzname"><?=l::h(_("Spitzname&[chat.php|1]"))?></label></dt>
-		<dd class="c-spitzname"><input type="text" name="nickname" id="i-spitzname"<?=l::accesskey_attr(_("Spitzname&[chat.php|1]"))?> /></dd>
+		<dt class="c-spitzname"><label for="i-spitzname"><?=L::h(_("Spitzname&[chat.php|1]"))?></label></dt>
+		<dd class="c-spitzname"><input type="text" name="nickname" id="i-spitzname"<?=L::accesskeyAttr(_("Spitzname&[chat.php|1]"))?> /></dd>
 	</dl>
-	<div><button type="submit"<?=l::accesskey_attr(_("Verbinden&[chat.php|1]"))?>><?=l::h(_("Verbinden&[chat.php|1]"))?></button></div>
+	<div><button type="submit"<?=L::accesskeyAttr(_("Verbinden&[chat.php|1]"))?>><?=L::h(_("Verbinden&[chat.php|1]"))?></button></div>
 </form>
 <script type="text/javascript">
 // <![CDATA[
@@ -86,7 +86,7 @@
 	}
 // ]]>
 </script>
-<p id="chat-hinweis"><?=l::h(_("Sie erreichen die Kanäle alternativ mit einem beliebigen IRC-Client."))?></p>
+<p id="chat-hinweis"><?=L::h(_("Sie erreichen die Kanäle alternativ mit einem beliebigen IRC-Client."))?></p>
 <dl id="chat-irc-liste">
 <?php
 		foreach($channels as $id=>$info)
@@ -109,9 +109,9 @@
 <?='<?xml version="1.0" encoding="UTF-8"?>'."\n"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=l::h(_("[LANG]"))?>">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=L::h(_("[LANG]"))?>">
 	<head>
-		<title><?=l::h($channels[$_REQUEST['channel']][0])?></title>
+		<title><?=L::h($channels[$_REQUEST['channel']][0])?></title>
 		<base href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/software/chat/')?>" />
 		<style type="text/css">
 			html,body,#chat-applet { width:100%; height:100%; margin:0; padding:0; border-style:none; }
@@ -123,7 +123,7 @@
 		else
 		{
 ?>
-<h3><?=l::h($channels[$_REQUEST['channel']][0])?></h3>
+<h3><?=L::h($channels[$_REQUEST['channel']][0])?></h3>
 <?php
 		}
 ?>

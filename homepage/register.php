@@ -30,7 +30,7 @@
 
 	$gui->init();
 ?>
-<h2><?=l::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Registrieren")))?></h2>
+<h2><?=L::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Registrieren")))?></h2>
 <?php
 	if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['password2']) && isset($_POST['database']) && isset($databases[$_POST['database']]) && $databases[$_POST['database']]['enabled'])
 	{
@@ -96,9 +96,9 @@
 						$user_obj->planetName('Hauptplanet');
 					else $user_obj->planetName($_POST['hauptplanet']);
 ?>
-<p class="successful"><?=l::h(sprintf(_("Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten %s."), Planet::format($koords)))?></p>
+<p class="successful"><?=L::h(sprintf(_("Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten %s."), Planet::format($koords)))?></p>
 <ul>
-	<li><a href="index.php"<?=l::accesskey_attr(_("Zurück zur Startseite&[register.php|1]"))?>><?=l::h(_("Zurück zur Startseite&[register.php|1]"))?></a></li>
+	<li><a href="index.php"<?=L::accesskeyAttr(_("Zurück zur Startseite&[register.php|1]"))?>><?=L::h(_("Zurück zur Startseite&[register.php|1]"))?></a></li>
 </ul>
 <?php
 					$gui->end();
@@ -122,10 +122,10 @@
 ?>
 <form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/register.php')?>" method="post" id="register-form">
 	<fieldset>
-		<legend><?=l::h(_("Registrieren"))?></legend>
+		<legend><?=L::h(_("Registrieren"))?></legend>
 		<dl>
-			<dt><label for="runde"><?=l::h(_("Runde&[register.php|2]"))?></label></dt>
-			<dd><select name="database" id="runde"<?=l::accesskey_attr(_("Runde&[register.php|2]"))?>>
+			<dt><label for="runde"><?=L::h(_("Runde&[register.php|2]"))?></label></dt>
+			<dd><select name="database" id="runde"<?=L::accesskeyAttr(_("Runde&[register.php|2]"))?>>
 <?php
 	foreach($databases as $id=>$info)
 	{
@@ -137,24 +137,24 @@
 ?>
 			</select></dd>
 
-			<dt><label for="username"><?=l::h(_("Benutzername&[register.php|2]"))?></label></dt>
-			<dd><input type="text" id="username" name="username"<?=l::accesskey_attr(_("Benutzername&[register.php|2]"))?><?=isset($_POST['username']) ? ' value="'.htmlspecialchars($_POST['username']).'"' : ''?> maxlength="24" /></dd>
+			<dt><label for="username"><?=L::h(_("Benutzername&[register.php|2]"))?></label></dt>
+			<dd><input type="text" id="username" name="username"<?=L::accesskeyAttr(_("Benutzername&[register.php|2]"))?><?=isset($_POST['username']) ? ' value="'.htmlspecialchars($_POST['username']).'"' : ''?> maxlength="24" /></dd>
 
-			<dt><label for="password"><?=l::h(_("Passwort&[register.php|2]"))?></label></dt>
-			<dd><input type="password" id="password" name="password"<?=l::accesskey_attr(_("Passwort&[register.php|2]"))?> /></dd>
+			<dt><label for="password"><?=L::h(_("Passwort&[register.php|2]"))?></label></dt>
+			<dd><input type="password" id="password" name="password"<?=L::accesskeyAttr(_("Passwort&[register.php|2]"))?> /></dd>
 
-			<dt><label for="password2"><?=l::h(_("Passwort wiederholen&[register.php|2]"))?></label></dt>
-			<dd><input type="password" id="password2" name="password2"<?=l::accesskey_attr(_("Passwort wiederholen&[register.php|2]"))?> /></dd>
+			<dt><label for="password2"><?=L::h(_("Passwort wiederholen&[register.php|2]"))?></label></dt>
+			<dd><input type="password" id="password2" name="password2"<?=L::accesskeyAttr(_("Passwort wiederholen&[register.php|2]"))?> /></dd>
 
-			<dt><label for="email"><?=l::h(_("E-Mail-Adresse&[register.php|2]"))?></label></dt>
-			<dd><input type="text" name="email" id="email"<?=l::accesskey_attr(_("E-Mail-Adresse&[register.php|2]"))?><?=isset($_POST['email']) ? ' value="'.htmlspecialchars($_POST['email']).'"' : ''?> /></dd>
+			<dt><label for="email"><?=L::h(_("E-Mail-Adresse&[register.php|2]"))?></label></dt>
+			<dd><input type="text" name="email" id="email"<?=L::accesskeyAttr(_("E-Mail-Adresse&[register.php|2]"))?><?=isset($_POST['email']) ? ' value="'.htmlspecialchars($_POST['email']).'"' : ''?> /></dd>
 
-			<dt><label for="hauptplanet"><?=l::h(_("Gewünschter Name des Hauptplaneten&[register.php|2]"))?></label></dt>
-			<dd><input type="text" id="hauptplanet" name="hauptplanet"<?=l::accesskey_attr(_("Gewünschter Name des Hauptplaneten&[register.php|2]"))?><?=isset($_POST['hauptplanet']) ? ' value="'.htmlspecialchars($_POST['hauptplanet']).'"' : ''?> maxlength="24" /></dd>
+			<dt><label for="hauptplanet"><?=L::h(_("Gewünschter Name des Hauptplaneten&[register.php|2]"))?></label></dt>
+			<dd><input type="text" id="hauptplanet" name="hauptplanet"<?=L::accesskeyAttr(_("Gewünschter Name des Hauptplaneten&[register.php|2]"))?><?=isset($_POST['hauptplanet']) ? ' value="'.htmlspecialchars($_POST['hauptplanet']).'"' : ''?> maxlength="24" /></dd>
 		</dl>
-		<div><input type="checkbox" class="checkbox" name="nutzungsbedingungen" id="nutzungsbedingungen"<?=l::accesskey_attr(_("Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]"))?> /> <label for="nutzungsbedingungen"><?=sprintf(h(_("Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]")), "<a href=\"rules.php\">", "</a>")?></label></div>
+		<div><input type="checkbox" class="checkbox" name="nutzungsbedingungen" id="nutzungsbedingungen"<?=L::accesskeyAttr(_("Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]"))?> /> <label for="nutzungsbedingungen"><?=sprintf(h(_("Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]")), "<a href=\"rules.php\">", "</a>")?></label></div>
 		<ul>
-			<li><button type="submit"<?=l::accesskey_attr(_("Registrieren&[register.php|2]"))?>><?=l::h(_("Registrieren&[register.php|2]"))?></button></li>
+			<li><button type="submit"<?=L::accesskeyAttr(_("Registrieren&[register.php|2]"))?>><?=L::h(_("Registrieren&[register.php|2]"))?></button></li>
 		</ul>
 	</fieldset>
 </form>

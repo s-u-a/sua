@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage storage
 	*/
 
 	namespace sua;
@@ -727,7 +726,16 @@
 
 					$prod[5] = $energie_prod-$energie_need;
 
-					foreach(global_setting("MIN_PRODUCTION") as $k=>$v)
+					$lib_config = Config::getLibConfig();
+					$min_production = array(
+						$lib_config->getConfigValue("users", "min_production", "ress0"),
+						$lib_config->getConfigValue("users", "min_production", "ress1"),
+						$lib_config->getConfigValue("users", "min_production", "ress2"),
+						$lib_config->getConfigValue("users", "min_production", "ress3"),
+						$lib_config->getConfigValue("users", "min_production", "ress4")
+					);
+
+					foreach($min_production as $k=>$v)
 					{
 						if(!isset($prod[$k])) $prod[$k] = 0;
 						if($prod[$k] < $v) $prod[$k] = $v;
@@ -755,8 +763,23 @@
 		{
 			$this->_forceActivePlanet();
 
-			$limit = global_setting("PRODUCTION_LIMIT_INITIAL");
-			$steps = global_setting("PRODUCTION_LIMIT_STEPS");
+			$lib_config = Config::getLibConfig();
+			$limit = array(
+				$lib_config->getConfigValue("users", "production_limit", "initial", "ress0"),
+				$lib_config->getConfigValue("users", "production_limit", "initial", "ress1"),
+				$lib_config->getConfigValue("users", "production_limit", "initial", "ress2"),
+				$lib_config->getConfigValue("users", "production_limit", "initial", "ress3"),
+				$lib_config->getConfigValue("users", "production_limit", "initial", "ress4"),
+				$lib_config->getConfigValue("users", "production_limit", "initial", "energy")
+			);
+			$steps = array(
+				$lib_config->getConfigValue("users", "production_limit", "steps", "ress0"),
+				$lib_config->getConfigValue("users", "production_limit", "steps", "ress1"),
+				$lib_config->getConfigValue("users", "production_limit", "steps", "ress2"),
+				$lib_config->getConfigValue("users", "production_limit", "steps", "ress3"),
+				$lib_config->getConfigValue("users", "production_limit", "steps", "ress4"),
+				$lib_config->getConfigValue("users", "production_limit", "steps", "energy")
+			);
 			$limit[0] += $this->getItemLevel("R02", "roboter")*$steps[0];
 			$limit[1] += $this->getItemLevel("R03", "roboter")*$steps[1];
 			$limit[2] += $this->getItemLevel("R04", "roboter")*$steps[2];
@@ -920,10 +943,11 @@
 						$old_finished = $building[4][0]-$building[1];
 						$old_remaining = ($building[1]-$time)*$building[4][1];
 						$new_remaining = $old_remaining*$f;
-						if(($old_finished*$f)+$new_remaining < global_setting("MIN_BUILDING_TIME"))
+						$min_building_time = Config::getLibConfig()->getConfigValue("users", "min_building_time");
+						if(($old_finished*$f)+$new_remaining < $min_building_time)
 						{
-							$this->planet_info["building"]["gebaeude"][4][1] = $new_remaining/(global_setting("MIN_BUILDING_TIME")-($old_finished*$f));
-							$new_remaining = global_setting("MIN_BUILDING_TIME")-($old_finished*$f);
+							$this->planet_info["building"]["gebaeude"][4][1] = $new_remaining/($min_building_time-($old_finished*$f));
+							$new_remaining = $min_building_time-($old_finished*$f);
 						}
 						else
 							$this->planet_info["building"]["gebaeude"][4][1] = 1;

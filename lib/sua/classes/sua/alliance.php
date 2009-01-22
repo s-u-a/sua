@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage storage
 	*/
 
 	namespace sua;
@@ -286,7 +285,7 @@
 		function setExternalDescription($description)
 		{
 			$this->setMainField("description", $description);
-			$this->setMainField("description_parsed", F::parse_html($description));
+			$this->setMainField("description_parsed", F::parseHTML($description));
 		}
 
 		/**
@@ -298,7 +297,7 @@
 		function setInternalDescription($description)
 		{
 			$this->setMainField("inner_description", $description);
-			$this->setMainField("inner_description_parsed", F::parse_html($description));
+			$this->setMainField("inner_description_parsed", F::parseHTML($description));
 		}
 
 		/**
@@ -335,7 +334,7 @@
 		{
 			$last_rename = $this->getMainField("last_rename");
 			if(!$last_rename) return true;
-			return (time()-$last_rename >= global_setting("ALLIANCE_RENAME_PERIOD")*86400);
+			return (time()-$last_rename >= Config::getLibConfig()->getConfigValueE("users", "alliance_rename_period")*86400);
 		}
 
 		/**

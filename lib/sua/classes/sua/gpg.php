@@ -18,7 +18,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage tools
 	*/
 
 	namespace sua;

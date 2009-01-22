@@ -36,7 +36,7 @@
 	$include_filename = dirname($__FILE__).'/lib/sua/engine.php';
 	require_once($include_filename);
 
-	l::language("de_DE", true);
+	L::language("de_DE", true);
 
 	HTTPOutput::sendContentType();
 	HTTPOutput::disableMagicQuotes();

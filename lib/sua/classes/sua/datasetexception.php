@@ -18,7 +18,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage exceptions
 	*/
 
 	namespace sua;
@@ -31,4 +30,6 @@
 
 	class DatasetException extends SuaException
 	{
+		/** Es wurde noch keine Datenbank per Dataset::setDatabase() gesetzt. */
+		const NO_DATABASE = 1;
 	}

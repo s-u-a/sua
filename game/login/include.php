@@ -19,8 +19,6 @@
 	 * Include-Datei zum Login, sorgt dafür, dass der Benutzer angemeldet ist.
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage login
-	 * @todo Function::changeHostname hier ausführen
 	*/
 	namespace sua\frontend;
 
@@ -30,8 +28,8 @@
 	# 10 Minuten sollten wohl auch bei hoher Serverlast genuegen
 	set_time_limit(600);
 
-	/*
-	l::language("de_DE", true);
+	/* TODO
+	L::language("de_DE", true);
 
 	HTTPOutput::sendContentType();
 	HTTPOutput::disableMagicQuotes();
@@ -172,7 +170,7 @@
 	$me = Classes::User($_SESSION['username']);
 
 	$_SESSION['username'] = $me->getName();
-	l::language($me->checkSetting("lang"));
+	L::language($me->checkSetting("lang"));
 	date_default_timezone_set($me->checkSetting("timezone"));
 	$gui->setOption("user", $me);
 
@@ -244,10 +242,10 @@
 		{
 			switch($e->getCode())
 			{
-				case CaptchaException::$HTTP_ERROR:
+				case CaptchaException::HTTP_ERROR:
 					$error = _("Fehler beim Auswerten der Captcha-Informationen.");
 					break;
-				case CaptchaException::$USER_ERROR:
+				case CaptchaException::USER_ERROR:
 					$me->_challengeFailed();
 					$error = $e->getMessage();
 					break;
@@ -314,3 +312,41 @@
 		global_setting("URL_FORMULAR", $url_formular_g);
 		global_setting("URL_SESSION_SUFFIX", implode("&", $url_session_suffix_g));
 	}
+
+	/**
+		 * Sucht nach installierten Skins und liefert ein Array des folgenden
+		 * Formats zurueck:
+		 * ( ID => [ Name, ( Einstellungsname => ( moeglicher Wert ) ) ] )
+		 * @return array
+		 * @todo
+		*/
+
+		function getSkins()
+		{
+			# Vorgegebene Skins-Liste bekommen
+			$skins = array();
+			if(is_dir(global_setting("s_root")."/login/res/style") && is_readable(global_setting("s_root")."/login/res/style"))
+			{
+				$dh = opendir(global_setting("s_root")."/login/res/style");
+				while(($fname = readdir($dh)) !== false)
+				{
+					if($fname[0] == ".") continue;
+					$path = global_setting("s_root")."/login/res/style/".$fname;
+					if(!is_dir($path) || !is_readable($path)) continue;
+					if(!is_file($path."/types") || !is_readable($path."/types")) continue;
+					$skins_file = preg_split("/\r\n|\r|\n/", file_get_contents($path."/types"));
+					$new_skin = &$skins[$fname];
+					$new_skin = array(array_shift($skins_file), array());
+					foreach($skins_file as $skins_line)
+					{
+						$skins_line = explode("\t", $skins_line);
+						if(count($skins_line) < 2)
+							continue;
+						$new_skin[1][array_shift($skins_line)] = $skins_line;
+					}
+					unset($new_skin);
+				}
+				closedir($dh);
+			}
+			return $skins;
+		}

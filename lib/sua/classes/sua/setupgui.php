@@ -16,6 +16,10 @@
     along with Stars Under Attack.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+	/**
+	 * @todo Auslagern
+	*/
+
 	abstract class SetupGui extends Gui
 	{
 		protected $module_run = false;

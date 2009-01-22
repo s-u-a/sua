@@ -59,7 +59,7 @@
 			if(!$flotten_id)
 			{
 ?>
-<p class="error"><?=l::h(_("Ungültigen Transport ausgewählt."))?></p>
+<p class="error"><?=L::h(_("Ungültigen Transport ausgewählt."))?></p>
 <?php
 				$gui->end();
 				exit();
@@ -68,7 +68,7 @@
 			if(!$me->permissionToAct())
 			{
 ?>
-<p class="error"><?=l::h(_("Sie haben keine Berechtigung, Flottenaufträge aufzugeben."))?></p>
+<p class="error"><?=L::h(_("Sie haben keine Berechtigung, Flottenaufträge aufzugeben."))?></p>
 <?php
 				$gui->end();
 				exit();
@@ -94,7 +94,7 @@
 ?>
 <form action="flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.global_setting("URL_SUFFIX"))?>" method="post" class="handel <?=$class?>">
 	<fieldset>
-		<legend><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($username).'&'.global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($username)?></a></legend>
+		<legend><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($username).'&'.global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($username)?></a></legend>
 <?php
 				$trans = $fleet->getTransportCapacity($username);
 				$handel = $fleet->getHandel($username);
@@ -254,8 +254,8 @@
 				{
 ?>
 		<dl>
-			<dt class="c-rohstoffe-behalten"><label for="i-rohstoffe-behalten"><?=l::h(_("Transportgut der Flotte nicht abliefern"))?></label></dt>
-			<dd class="c-rohstoffe-behalten"><input type="checkbox" id="i-rohstoffe-behalten" name="keepres"<?=$keepres ? " checked=\"checked\"" : ""?> title="<?=l::h(_("Diese Funktion erleichtert es Ihnen, mit einer Flugroute Rohstoffe von mehreren Planeten einzusammeln."))?>" /></dd>
+			<dt class="c-rohstoffe-behalten"><label for="i-rohstoffe-behalten"><?=L::h(_("Transportgut der Flotte nicht abliefern"))?></label></dt>
+			<dd class="c-rohstoffe-behalten"><input type="checkbox" id="i-rohstoffe-behalten" name="keepres"<?=$keepres ? " checked=\"checked\"" : ""?> title="<?=L::h(_("Diese Funktion erleichtert es Ihnen, mit einer Flugroute Rohstoffe von mehreren Planeten einzusammeln."))?>" /></dd>
 		</dl>
 <?php
 				}
@@ -263,17 +263,17 @@
 		<table>
 			<thead>
 				<tr>
-					<th class="c-gut"><?=l::h(_("Gut"))?></th>
-					<th class="c-einlagern"><?=l::h(_("Einlagern"))?></th>
+					<th class="c-gut"><?=L::h(_("Gut"))?></th>
+					<th class="c-einlagern"><?=L::h(_("Einlagern"))?></th>
 <?php
 				if(!$verb)
 				{
 ?>
-					<th class="c-bereits-eingelagert"><?=l::h(_("Bereits eingelagert"))?></th>
+					<th class="c-bereits-eingelagert"><?=L::h(_("Bereits eingelagert"))?></th>
 <?php
 				}
 ?>
-					<th class="c-verfuegbar"><?=l::h(_("Verfügbar"))?></th>
+					<th class="c-verfuegbar"><?=L::h(_("Verfügbar"))?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -282,7 +282,7 @@
 				{
 ?>
 				<tr class="c-carbon">
-					<th class="c-gut"><label for="handel-<?=$no?>-0-0"><?=l::h(_("[ress_0]"))?></label></th>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-0"><?=L::h(_("[ress_0]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[0][0]" id="handel-<?=$no?>-0-0" value="<?php printf($value, $handel[0][0])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
@@ -295,7 +295,7 @@
 					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-0').value=Math.floor(res_now['handel-<?=$no?>'][0]);" id="handel-<?=$no?>-carbon"><?=F::ths($available_ress[0])?></a></td>
 				</tr>
 				<tr class="c-aluminium">
-					<th class="c-gut"><label for="handel-<?=$no?>-0-1"><?=l::h(_("[ress_1]"))?></label></th>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-1"><?=L::h(_("[ress_1]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[0][1]" id="handel-<?=$no?>-0-1" value="<?php printf($value, $handel[0][1])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
@@ -308,7 +308,7 @@
 					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-1').value=Math.floor(res_now['handel-<?=$no?>'][1]);" id="handel-<?=$no?>-aluminium"><?=F::ths($available_ress[1])?></a></td>
 				</tr>
 				<tr class="c-wolfram">
-					<th class="c-gut"><label for="handel-<?=$no?>-0-2"><?=l::h(_("[ress_2]"))?></label></th>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-2"><?=L::h(_("[ress_2]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[0][2]" id="handel-<?=$no?>-0-2" value="<?php printf($value, $handel[0][2])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
@@ -321,7 +321,7 @@
 					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-2').value=Math.floor(res_now['handel-<?=$no?>'][2]);" id="handel-<?=$no?>-wolfram"><?=F::ths($available_ress[2])?></a></td>
 				</tr>
 				<tr class="c-radium">
-					<th class="c-gut"><label for="handel-<?=$no?>-0-3"><?=l::h(_("[ress_3]"))?></label></th>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-3"><?=L::h(_("[ress_3]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[0][3]" id="handel-<?=$no?>-0-3" value="<?php printf($value, $handel[0][3])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
@@ -334,7 +334,7 @@
 					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-0-3').value=Math.floor(res_now['handel-<?=$no?>'][3]);" id="handel-<?=$no?>-radium"><?=F::ths($available_ress[3])?></a></td>
 				</tr>
 				<tr class="c-tritium">
-					<th class="c-gut"><label for="handel-<?=$no?>-0-4"><?=l::h(_("[ress_4]"))?></label></th>
+					<th class="c-gut"><label for="handel-<?=$no?>-0-4"><?=L::h(_("[ress_4]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[0][4]" id="handel-<?=$no?>-0-4" value="<?php printf($value, $handel[0][4])?>"<?=$disabled?> /></td>
 <?php
 					if(!$verb)
@@ -356,7 +356,7 @@
 						if(isset($handel[1][$id])) $h = $handel[1][$id];
 ?>
 				<tr class="c-ro-<?=htmlspecialchars($id)?>">
-					<th class="c-gut"><label for="handel-<?=$no?>-1-<?=$id?>"><?=l::h(_("[item_".$id."]"))?></label></th>
+					<th class="c-gut"><label for="handel-<?=$no?>-1-<?=$id?>"><?=L::h(_("[item_".$id."]"))?></label></th>
 					<td class="c-einlagern"><input type="text" name="handel[1][<?=$id?>]" id="handel-<?=$no?>-1-<?=$id?>" value="<?=htmlspecialchars($h)?>" /></td>
 					<td class="c-verfuegbar"><a onclick="document.getElementById('handel-<?=$no?>-1-<?=JS::jsentities($id)?>').value=<?=$available_robs[$id]?>"><?=F::ths($available_robs[$id])?></a></td>
 				</tr>
@@ -371,7 +371,7 @@
 ?>
 			<tfoot>
 				<tr>
-					<td colspan="<?=3-$verb?>" class="button"><button type="submit"><?=l::h(_("Handel ändern"))?></button></td>
+					<td colspan="<?=3-$verb?>" class="button"><button type="submit"><?=L::h(_("Handel ändern"))?></button></td>
 				</tr>
 			</tfoot>
 <?php
@@ -426,14 +426,14 @@
 			if($count <= 0)
 			{
 ?>
-<p class="nothingtodo"><?=l::h(_("Sie haben keine Planetenlesezeichen gespeichert. In der Karte können Sie Lesezeichen anlegen."))?></p>
+<p class="nothingtodo"><?=L::h(_("Sie haben keine Planetenlesezeichen gespeichert. In der Karte können Sie Lesezeichen anlegen."))?></p>
 <?php
 			}
 			else
 			{
 ?>
 <fieldset>
-	<legend><?=l::h(_("Lesezeichen verwalten"))?></legend>
+	<legend><?=L::h(_("Lesezeichen verwalten"))?></legend>
 	<ol class="shortcuts-verwalten order-list">
 <?php
 				$i = 0;
@@ -451,7 +451,7 @@
 					}
 					else $s .= '['._("unbesiedelt").']';
 ?>
-		<li><?=htmlspecialchars($s)?> <span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="hoch">[<?=l::h(_("Hoch"))?>]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="runter">[<?=l::h(_("Runter"))?>]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="loeschen">[<?=l::h(_("Löschen"))?>]</a></span></li>
+		<li><?=htmlspecialchars($s)?> <span class="aktionen"><?php if($i>0){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;up=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="hoch">[<?=L::h(_("Hoch"))?>]</a><?php } if($i<$count-1){?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;down=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="runter">[<?=L::h(_("Runter"))?>]</a><?php }?> &ndash; <a href="flotten_actions.php?action=shortcuts&amp;remove=<?=htmlspecialchars(urlencode($shortcut))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="loeschen">[<?=L::h(_("Löschen"))?>]</a></span></li>
 <?php
 					$i++;
 				}
@@ -479,7 +479,7 @@
 			if(!$flotten_id)
 			{
 ?>
-<p class="error"><?=l::h(_("Ungültigen Angriff ausgewählt."))?></p>
+<p class="error"><?=L::h(_("Ungültigen Angriff ausgewählt."))?></p>
 <?php
 				$gui->end();
 				exit();
@@ -495,21 +495,21 @@
 				catch(UserException $e)
 				{
 ?>
-<p class="error"><?=l::h(_("Dieses Passwort wurde schon für eine andere Flotte verwendet."))?></p>
+<p class="error"><?=L::h(_("Dieses Passwort wurde schon für eine andere Flotte verwendet."))?></p>
 <?php
 				}
 			}
 			$passwd = $fleet->password();
 ?>
-<p class="buendnisangriff-beschreibung-1"><?=l::h(_("Hier können Sie der ausgewählten Flotte ein Flottenpasswort zuweisen, welches es anderen Spielern ermöglicht, Ihrem Angriff eigene Flotten beizusteuern. Möchte ein anderer Spieler dem Flottenverbund beitreten, so muss er im Flottenmenü Ihren Benutzernamen in Verbindung mit dem hier festgelegten Passwort angeben. Übermitteln Sie ihm hierzu das Passwort selbst, zum Beispiel durch eine Nachricht."))?></p>
-<p class="buendnisangriff-beschreibung-2"><?=l::h(_("Beachten Sie, dass ein Spieler dem Flottenverbund nicht mehr beitreten kann, wenn seine Flugzeit zum ausgewählten Ziel länger ist als die verbleibende Flugzeit der Flotte."))?></p>
-<p class="buendnisangriff-beschreibung-3"><?=l::h(_("Wenn hier kein Passwort eingetragen ist, ist die Flottenverbundfunktion für diese Flotte deaktiviert."))?></p>
+<p class="buendnisangriff-beschreibung-1"><?=L::h(_("Hier können Sie der ausgewählten Flotte ein Flottenpasswort zuweisen, welches es anderen Spielern ermöglicht, Ihrem Angriff eigene Flotten beizusteuern. Möchte ein anderer Spieler dem Flottenverbund beitreten, so muss er im Flottenmenü Ihren Benutzernamen in Verbindung mit dem hier festgelegten Passwort angeben. Übermitteln Sie ihm hierzu das Passwort selbst, zum Beispiel durch eine Nachricht."))?></p>
+<p class="buendnisangriff-beschreibung-2"><?=L::h(_("Beachten Sie, dass ein Spieler dem Flottenverbund nicht mehr beitreten kann, wenn seine Flugzeit zum ausgewählten Ziel länger ist als die verbleibende Flugzeit der Flotte."))?></p>
+<p class="buendnisangriff-beschreibung-3"><?=L::h(_("Wenn hier kein Passwort eingetragen ist, ist die Flottenverbundfunktion für diese Flotte deaktiviert."))?></p>
 <form action="flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($_GET['id']).'&'.global_setting("URL_SUFFIX"))?>" method="post" class="buendnisangriff">
 	<dl class="form">
-		<dt><label for="i-flottenpasswort"><?=l::h(_("Flottenpasswort&[login/info/flotten_actions.php|1]"))?></label></dt>
-		<dd><input type="text" name="fleet_passwd"<?php if($passwd !== null){?> value="<?=htmlspecialchars($passwd)?>"<?php }?><?=l::accesskey_attr(_("Flottenpasswort&[login/info/flotten_actions.php|1]"))?> /></dd>
+		<dt><label for="i-flottenpasswort"><?=L::h(_("Flottenpasswort&[login/info/flotten_actions.php|1]"))?></label></dt>
+		<dd><input type="text" name="fleet_passwd"<?php if($passwd !== null){?> value="<?=htmlspecialchars($passwd)?>"<?php }?><?=L::accesskeyAttr(_("Flottenpasswort&[login/info/flotten_actions.php|1]"))?> /></dd>
 	</dl>
-	<div class="button"><button type="submit"<?=l::accesskey_attr(_("Speichern&[login/info/flotten_actions.php|1]"))?>><?=l::h(_("Speichern&[login/info/flotten_actions.php|1]"))?></button></div>
+	<div class="button"><button type="submit"<?=L::accesskeyAttr(_("Speichern&[login/info/flotten_actions.php|1]"))?>><?=L::h(_("Speichern&[login/info/flotten_actions.php|1]"))?></button></div>
 </form>
 <?php
 			break;
@@ -517,7 +517,7 @@
 		case "route":
 		{
 ?>
-<h2 id="flugroute"><?=l::h(_("Flugroute"))?></h2>
+<h2 id="flugroute"><?=L::h(_("Flugroute"))?></h2>
 <?php
 			if(!isset($_GET['id'])) $flotten_id = false;
 			else $flotten_id = $_GET['id'];
@@ -534,7 +534,7 @@
 			if(!$flotten_id)
 			{
 ?>
-<p class="error"><?=l::h(_("Ungültigen Flug ausgewählt."))?></p>
+<p class="error"><?=L::h(_("Ungültigen Flug ausgewählt."))?></p>
 <?php
 				$gui->end();
 				exit();
@@ -543,9 +543,9 @@
 <table class="route paragraph">
 	<thead>
 		<tr>
-			<th class="c-ziel"><?=l::h(_("Ziel"))?></th>
-			<th class="c-auftrag"><?=l::h(_("Auftrag"))?></th>
-			<th class="c-ankunft"><?=l::h(_("Ankunft"))?></th>
+			<th class="c-ziel"><?=L::h(_("Ziel"))?></th>
+			<th class="c-auftrag"><?=L::h(_("Auftrag"))?></th>
+			<th class="c-ankunft"><?=L::h(_("Ankunft"))?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -562,8 +562,8 @@
 ?>
 		<tr id="target-<?=$i?>" class="type-<?=htmlspecialchars($type[0])?><?=$i<$old_count ? " type-weak" : ($i == $old_count ? " active" : "")?>">
 			<td class="c-ziel"><?=F::formatPlanetH($target)?></td>
-			<td class="c-auftrag"><?=l::h(_("[fleet_".$type[0]."]"))?></td>
-			<td class="c-ankunft" id="restbauzeit-<?=$i?>"><?=l::h(sprintf(_("Ankunft: %s"), sprintf(_("%s (Serverzeit)"), date(_("H:i:s, Y-m-d"), $countdowns[$i]))))?></td>
+			<td class="c-auftrag"><?=L::h(_("[fleet_".$type[0]."]"))?></td>
+			<td class="c-ankunft" id="restbauzeit-<?=$i?>"><?=L::h(sprintf(_("Ankunft: %s"), sprintf(_("%s (Serverzeit)"), date(_("H:i:s, Y-m-d"), $countdowns[$i]))))?></td>
 		</tr>
 <?php
 			}
@@ -588,7 +588,7 @@
 		default:
 		{
 ?>
-<p class="error"><?=l::h(_("Ungültige Aktion."))?></p>
+<p class="error"><?=L::h(_("Ungültige Aktion."))?></p>
 <?php
 			break;
 		}

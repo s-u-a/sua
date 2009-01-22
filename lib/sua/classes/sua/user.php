@@ -18,7 +18,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage storage
 	*/
 
 	namespace sua;
@@ -34,7 +33,6 @@
 	 * Gegenstände, die einem Benutzer gehören, handelt, sollten also die Item-Funktionen
 	 * der User-Klasse verwendet werden, in Hinblick auf eine etwaige Implementierung von
 	 * Völkern.
-	 * @todo Alle Funktionen/Methoden, die sich auf einen Planeten beziehen, nach Planet auslagern.
 	 * @todo Überlegen: Eventhandler muss auf allen Planeten ausgeführt werden, da Forschungen auf einem Planeten alle anderen beeinflussen
 	*/
 
@@ -86,7 +84,7 @@
 				"used_ress_3 INTEGER DEFAULT 0", // ~ Radium
 				"used_ress_4 INTEGER DEFAULT 0", // ~ Tritium
 				"description TEXT", // Selbst eingegebene Benutzerbeschreibung
-				"description_parsed TEXT", // F::parse_html() auf die Benutzerbeschreibung
+				"description_parsed TEXT", // F::parseHTML() auf die Benutzerbeschreibung
 				"locked INTEGER DEFAULT 0", // -1: Gesperrt auf Weiteres; 0: entsperrt; alles andere: Zeitstempel, bis wann die Sperre gilt
 				"holidays INTEGER DEFAULT 0", // 0: Kein Urlaubsmodus; 1: Urlaubsmodus
 				"holidays_changed INTEGER", // Zeitstempel, wann der Urlaubsstatus zuletzt geändert wurde
@@ -154,7 +152,7 @@
 				throw new UserException("This user does already exist.");
 
 			self::$sqlite->query("INSERT INTO users ( user, registration ) VALUES ( ".self::$sqlite->quote($name).", ".self::$sqlite->quote(time())." );");
-			self::$sqlite->query("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sqlite->quote($name).", ".self::$sqlite->quote("lang").", ".self::$sqlite->quote(l::language())." );");
+			self::$sqlite->query("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sqlite->quote($name).", ".self::$sqlite->quote("lang").", ".self::$sqlite->quote(L::language())." );");
 
 			return $name;
 		}
@@ -367,7 +365,7 @@
 							"building" => array("gebaeude" => 1, "forschung" => 1, "roboter" => 3, "schiffe" => 3, "verteidigung" => 3)
 						);
 					case "lang":
-						return l::language();
+						return L::language();
 					case "timezone":
 						return date_default_timezone_get();
 					default:
@@ -410,7 +408,7 @@
 				$unparsed = $this->getMainField("description");
 				if($unparsed)
 				{
-					$parsed = F::parse_html($unparsed);
+					$parsed = F::parseHTML($unparsed);
 					$this->setMainField("description_parsed", $parsed);
 				}
 			}
@@ -426,7 +424,7 @@
 		function setUserDescription($description)
 		{
 			$this->setMainField("description", $description);
-			$this->setMainField("description_parsed", F::parse_html($description));
+			$this->setMainField("description_parsed", F::parseHTML($description));
 		}
 
 		/**
@@ -567,9 +565,9 @@
 			if(!$holidays_change) return true;
 
 			if($this->umode())
-				return time()-$holidays_change > global_setting("TIME_BEFORE_HOLIDAY_RETURN")*86400;
+				return time()-$holidays_change > Config::getLibConfig()->getConfigValue("users", "holidays_days_before_return")*86400;
 			else
-				return time()-$holidays_change > global_setting("TIME_BEFORE_HOLIDAY_GO")*86400;
+				return time()-$holidays_change > Config::getLibConfig()->getConfigValue("users", "holidays_days_before_reenter")*86400;
 		}
 
 		/**
@@ -598,9 +596,9 @@
 		function getUmodeReturnTime()
 		{
 			if($this->umode())
-				return $this->getUmodeEnteringTime()+global_setting("TIME_BEFORE_HOLIDAY_RETURN")*86400;
+				return $this->getUmodeEnteringTime()+Config::getLibConfig()->getConfigValue("users", "holidays_days_before_return")*86400;
 			else
-				return time()+global_setting("TIME_BEFORE_HOLIDAY_RETURN")*86400;
+				return time()+Config::getLibConfig()->getConfigValue("users", "holidays_days_before_return")*86400;
 		}
 
 		/**
@@ -721,8 +719,8 @@
 			$lang = $this->checkSetting("lang");
 			if($lang)
 			{
-				$next[0] = l::language();
-				l::language($lang);
+				$next[0] = L::language();
+				L::language($lang);
 			}
 			else
 				$next[0] = null;
@@ -730,8 +728,8 @@
 			$timezone = $this->checkSetting("timezone");
 			if($timezone)
 			{
-				$next[1] = l::timezone();
-				l::timezone($this->checkSetting("timezone"));
+				$next[1] = L::timezone();
+				L::timezone($this->checkSetting("timezone"));
 			}
 			else
 				$next[1] = null;
@@ -748,9 +746,9 @@
 				throw new UserException("No language has been cached.");
 			$language = array_pop($this->language_cache);
 			if(!is_null($language[0]))
-				l::language($language[0]);
+				L::language($language[0]);
 			if(!is_null($language[1]))
-				l::timezone($language[1]);
+				L::timezone($language[1]);
 		}
 
 		/**
@@ -765,7 +763,7 @@
 		}
 
 		/**
-		 * l::_I() benutzerlokalisiert.
+		 * L::_I() benutzerlokalisiert.
 		 * @param string $message
 		 * @return string
 		*/
@@ -861,7 +859,7 @@
 			if($address == $this->getEMailAddress())
 				return;
 
-			self::$sqlite->backgroundQuery("INSERT INTO users_email ( user, email, valid_from ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($email).", ".self::$sqlite->quote(time()+($do_delay ? global_setting("EMAIL_CHANGE_DELAY") : 0))." );");
+			self::$sqlite->backgroundQuery("INSERT INTO users_email ( user, email, valid_from ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($email).", ".self::$sqlite->quote(time()+($do_delay ? Config::getLibConfig()->getConfigValue("users", "email_change_delay") : 0))." );");
 		}
 
 		/**
@@ -891,9 +889,9 @@
 				$mime->setTXTBody(GPG::sign($text));
 
 			$body = $mime->get(array("text_charset" => "utf-8", "html_charset" => "utf-8", "head_charset" => "utf-8"));
-			$hdrs = $mime->headers(array("From" => "\"".$this->_("[title_full]")."\" <".global_setting("EMAIL_FROM").">", "Subject" => $subject));
+			$hdrs = $mime->headers(array("From" => "\"".$this->_("[title_full]")."\" <".Config::getLibConfig()->getConfigValue("email_from").">", "Subject" => $subject));
 
-			$mail = Mail::factory("mail");
+			$mail = MaiL::factory("mail");
 			$return = $mail->send($this->getEMailAddress(), $hdrs, $body);
 			error_reporting($er);
 		}
@@ -919,7 +917,8 @@
 
 		function _challengePassed()
 		{
-			$this->setMainField("next_challenge", time()+rand(global_setting("CHALLENGE_MIN_TIME"), global_setting("CHALLENGE_MAX_TIME")));
+			$lib_config = Config::getLibConfig();
+			$this->setMainField("next_challenge", time()+rand($lib_config->getConfigValueE("captcha", "min_time"), $lib_config->getConfigValueE("captcha", "max_time")));
 			$this->setMainField("challenge_failures", 0);
 		}
 
@@ -934,8 +933,9 @@
 			$failures++;
 			$this->setMainField("challenge_failures", $failures);
 
-			if($failures > global_setting("CHALLENGE_MAX_FAILURES") && !$this->userLocked())
-				$this->lockUser(time()+global_setting("CHALLENGE_LOCK_TIME"));
+			$lib_config = Config::getLibConfig();
+			if($failures > $lib_config->getConfigValueE("captcha", "max_failures") && !$this->userLocked())
+				$this->lockUser(time()+$lib_config->getConfigValueE("captcha", "lock_time"));
 		}
 
 		/**
@@ -982,7 +982,14 @@
 
 		function checkPlanetCount()
 		{
-			return (global_setting("MAX_PLANETS") > 0 && count($this->getPlanetsList()) < global_setting("MAX_PLANETS"));
+			try
+			{
+				return (count($this->getPlanetsList()) < Config::getLibConfig()->getConfigValueE("users", "max_planets"));
+			}
+			catch(ConfigException $e)
+			{
+				return true;
+			}
 		}
 
 		/**
@@ -1280,8 +1287,12 @@
 				}
 			}*/
 
-			$database_config = Classes::Database(global_setting("DB"))->getConfig();
-			$global_factors = isset($database_config["global_factors"]) ? $database_config["global_factors"] : array();
+			$lib_config = Config::getLibConfig();
+			$global_factors = array(
+				"time" => $lib_config->getConfigValue("users", "global_factors", "time"),
+				"production" => $lib_config->getConfigValue("users", "global_factors", "production"),
+				"costs" => $lib_config->getConfigValue("users", "global_factors", "costs")
+			);
 
 			if(isset($info["time"]) && isset($global_factors["time"]))
 				$info["time"] *= $global_factors["time"];
@@ -1302,6 +1313,8 @@
 				$info["ress"][3] *= $global_factors["costs"];
 			}
 
+			$min_building_time = Config::getLibConfig()->getConfigValue("users", "min_building_time");
+
 			switch($type)
 			{
 				case "gebaeude":
@@ -1321,54 +1334,35 @@
 						$info["prod"][4] *= $level_f*$percent_f;
 						$info["prod"][5] *= $level_f*$percent_f;
 
-						$use_old_robtech = file_exists(global_setting("DB_USE_OLD_ROBTECH"));
-						if($use_old_robtech)
-							$minen_rob = 1+0.0003125*$this->getItemLevel("F2", "forschung");
-						else
-							$minen_rob = sqrt($this->getItemLevel("F2", "forschung"))/250;
-						if($use_old_robtech && $minen_rob > 1 || !$use_old_robtech && $minen_rob > 0)
+						$minen_rob = sqrt($this->getItemLevel("F2", "forschung"))/250;
+						if($minen_rob > 0)
 						{
-							$use_max_limit = !file_exists(global_setting("DB_NO_STRICT_ROB_LIMITS"));
+							$use_max_limit = !Functions::string2boolean(Config::getLibConfig()->getConfigValue("users", "no_max_rob_limit"));
 
 							$rob = $this->getItemLevel("R02", "roboter");
 							if($rob > $this->getItemLevel("B0", "gebaeude")) $rob = $this->getItemLevel("B0", "gebaeude");
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
-							if($use_old_robtech)
-								$info["prod"][0] *= pow($minen_rob, $rob);
-							else
-								$info["prod"][0] *= 1+$minen_rob*$rob;
+							$info["prod"][0] *= 1+$minen_rob*$rob;
 
 							$rob = $this->getItemLevel("R03", "roboter");
 							if($rob > $this->getItemLevel("B1", "gebaeude")) $rob = $this->getItemLevel("B1", "gebaeude");
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
-							if($use_old_robtech)
-								$info["prod"][1] *= pow($minen_rob, $rob);
-							else
-								$info["prod"][1] *= 1+$minen_rob*$rob;
+							$info["prod"][1] *= 1+$minen_rob*$rob;
 
 							$rob = $this->getItemLevel("R04", "roboter");
 							if($rob > $this->getItemLevel("B2", "gebaeude")) $rob = $this->getItemLevel("B2", "gebaeude");
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
-							if($use_old_robtech)
-								$info["prod"][2] *= pow($minen_rob, $rob);
-							else
-								$info["prod"][2] *= 1+$minen_rob*$rob;
+							$info["prod"][2] *= 1+$minen_rob*$rob;
 
 							$rob = $this->getItemLevel("R05", "roboter");
 							if($rob > $this->getItemLevel("B3", "gebaeude")) $rob = $this->getItemLevel("B3", "gebaeude");
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
-							if($use_old_robtech)
-								$info["prod"][3] *= pow($minen_rob, $rob);
-							else
-								$info["prod"][3] *= 1+$minen_rob*$rob;
+							$info["prod"][3] *= 1+$minen_rob*$rob;
 
 							$rob = $this->getItemLevel("R06", "roboter");
 							if($rob > $this->getItemLevel("B4", "gebaeude")*2) $rob = $this->getItemLevel("B4", "gebaeude")*2;
 							if($use_max_limit && $rob > $max_rob_limit) $rob = $max_rob_limit;
-							if($use_old_robtech)
-								$info["prod"][4] *= pow($minen_rob, $rob);
-							else
-								$info["prod"][4] *= 1+$minen_rob*$rob;
+							$info["prod"][4] *= 1+$minen_rob*$rob;
 						}
 					}
 
@@ -1406,8 +1400,8 @@
 
 					if($calc["limit_factor"])
 					{
-						if($info["time"] < global_setting("MIN_BUILDING_TIME"))
-							$info["limit_factor"] = $info["time"]/global_setting("MIN_BUILDING_TIME");
+						if($info["time"] < $min_building_time)
+							$info["limit_factor"] = $info["time"]/$min_building_time;
 						else
 							$info["limit_factor"] = 1;
 					}
@@ -1477,15 +1471,15 @@
 
 					if($calc["limit_factor_local"])
 					{
-						if($info["time_local"] < global_setting("MIN_BUILDING_TIME"))
-							$info["limit_factor_local"] = $info["time_local"]/global_setting("MIN_BUILDING_TIME");
+						if($info["time_local"] < $min_building_time)
+							$info["limit_factor_local"] = $info["time_local"]/$min_building_time;
 						else
 							$info["limit_factor_local"] = 1;
 					}
 					if($calc["limit_factor_global"])
 					{
-						if($info["time_global"] < global_setting("MIN_BUILDING_TIME"))
-							$info["limit_factor_global"] = $info["time_global"]/global_setting("MIN_BUILDING_TIME");
+						if($info["time_global"] < $min_building_time)
+							$info["limit_factor_global"] = $info["time_global"]/$min_building_time;
 						else
 							$info["limit_factor_global"] = 1;
 					}
@@ -1515,8 +1509,8 @@
 
 					if($calc["limit_factor"])
 					{
-						if($info["time"] < global_setting("MIN_BUILDING_TIME"))
-							$info["limit_factor"] = $info["time"]/global_setting("MIN_BUILDING_TIME");
+						if($info["time"] < $min_building_time)
+							$info["limit_factor"] = $info["time"]/$min_building_time;
 						else
 							$info["limit_factor"] = 1;
 					}
@@ -1551,8 +1545,8 @@
 
 					if($calc["limit_factor"])
 					{
-						if($info["time"] < global_setting("MIN_BUILDING_TIME"))
-							$info["limit_factor"] = $info["time"]/global_setting("MIN_BUILDING_TIME");
+						if($info["time"] < $min_building_time)
+							$info["limit_factor"] = $info["time"]/$min_building_time;
 						else
 							$info["limit_factor"] = 1;
 					}
@@ -1587,8 +1581,8 @@
 
 					if($calc["limit_factor"])
 					{
-						if($info["time"] < global_setting("MIN_BUILDING_TIME"))
-							$info["limit_factor"] = $info["time"]/global_setting("MIN_BUILDING_TIME");
+						if($info["time"] < $min_building_time)
+							$info["limit_factor"] = $info["time"]/$min_building_time;
 						else
 							$info["limit_factor"] = 1;
 					}
@@ -1605,10 +1599,10 @@
 			# Mindestbauzeit zwoelf Sekunden aufgrund von Serverbelastung
 			if($type == "forschung")
 			{
-				if($calc["time_local"] && $info["time_local"] < global_setting("MIN_BUILDING_TIME")) $info["time_local"] = global_setting("MIN_BUILDING_TIME");
-				if($calc["time_global"] && $info["time_global"] < global_setting("MIN_BUILDING_TIME")) $info["time_global"] = global_setting("MIN_BUILDING_TIME");
+				if($calc["time_local"] && $info["time_local"] < $min_building_time) $info["time_local"] = $min_building_time;
+				if($calc["time_global"] && $info["time_global"] < $min_building_time) $info["time_global"] = $min_building_time;
 			}
-			elseif($calc["time"] && $info["time"] < global_setting("MIN_BUILDING_TIME")) $info["time"] = global_setting("MIN_BUILDING_TIME");
+			elseif($calc["time"] && $info["time"] < $min_building_time) $info["time"] = $min_building_time;
 
 			return $info;
 		}

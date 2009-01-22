@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage storage
 	*/
 
 	namespace sua;
@@ -716,9 +715,8 @@
 
 			$add_factor = 1;
 			if($factor) $add_factor = $this->factor($user);
-			$database_config = Classes::Database(global_setting("DB"))->getConfig();
-			if(isset($database_config["global_factors"]) && isset($database_config["global_factors"]["costs"]))
-				$add_factor *= $database_config["global_factors"]["costs"];
+			try { $add_factor *= Config::getLibConfig()->getConfigValueE("users", "global_factors", "costs"); }
+			catch(ConfigException $e) { }
 
 			return $add_factor*self::getDistance($from, $to)*$mass/1000000;
 		}
@@ -785,12 +783,15 @@
 
 			$time = sqrt(self::getDistance($from, $to)/$speed)*2;
 
-			$database_config = Classes::Database(global_setting("DB"))->getConfig();
-			if(isset($database_config["global_factors"]) && isset($database_config["global_factors"]["time"]))
-				$time *= $database_config["global_factors"]["time"];
+			try { $time *= Config::getLibConfig()->getConfigValueE("users", "global_factors", "time"); }
+			catch(ConfigException $e) { }
 
-			if($use_min_time && $time < global_setting("MIN_BUILDING_TIME"))
-				$time = global_setting("MIN_BUILDING_TIME");
+			if($use_min_time)
+			{
+				$min_time = Config::getLibConfig()->getConfigValue("users", "min_building_time");
+				if($time < $min_time)
+					$time = $min_time;
+			}
 
 			return $time;
 		}
@@ -1410,7 +1411,7 @@
 								$user_obj = Classes::User($username);
 								$message = Classes::Message(Message::create());
 								$message->subject(sprintf($user_obj->_("Abbau auf %s"), $next_target_nt));
-								$message->text(sprintf("<div class=\"nachricht-sammeln\">\n\t<p>".sprintf(h($user_obj->_("Ihre Flotte erreicht das Trümmerfeld auf %s und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s.")), htmlspecialchars($next_target_nt), F::ths($trans_total), h(sprintf($user_obj->_("%1\$s %5\$s, %2\$s %6\$s, %3\$s %7\$s und %4s %8\$s"), F::ths($rtrans[0]), F::ths($rtrans[1]), F::ths($rtrans[2]), F::ths($rtrans[3]), $user_obj->_("[ress_0]"), $user_obj->_("[ress_1]"), $user_obj->_("[ress_2]"), $user_obj->_("[ress_3]"))))."</p>\n\t<h3 class=\"strong\">".h(_("Verbleibende Rohstoffe im Trümmerfeld"))."</h3>\n".$user_obj->_i(F::format_ress($tr_verbl, 1, false, false, true, false, "ress-block"))."</div>"));
+								$message->text(sprintf("<div class=\"nachricht-sammeln\">\n\t<p>".sprintf(h($user_obj->_("Ihre Flotte erreicht das Trümmerfeld auf %s und belädt die %s Tonnen Sammlerkapazität mit folgenden Rohstoffen: %s.")), htmlspecialchars($next_target_nt), F::ths($trans_total), h(sprintf($user_obj->_("%1\$s %5\$s, %2\$s %6\$s, %3\$s %7\$s und %4s %8\$s"), F::ths($rtrans[0]), F::ths($rtrans[1]), F::ths($rtrans[2]), F::ths($rtrans[3]), $user_obj->_("[ress_0]"), $user_obj->_("[ress_1]"), $user_obj->_("[ress_2]"), $user_obj->_("[ress_3]"))))."</p>\n\t<h3 class=\"strong\">".h(_("Verbleibende Rohstoffe im Trümmerfeld"))."</h3>\n".$user_obj->_i(F::formatRess($tr_verbl, 1, false, false, true, false, "ress-block"))."</div>"));
 								$message->addUser($username, Message::TYPE_SAMMELN);
 								$message->html(true);
 							}
@@ -1753,7 +1754,7 @@
 										$next = &$message_text2[];
 										$next = "\t<div id=\"spionage-rohstoffe\">\n";
 										$next .= "\t\t<h4 class=\"strong\">%12\$s</h4>\n";
-										$next .= F::format_ress($target_user->getRess(), 2, true, false, true, null, "ress-block");
+										$next .= F::formatRess($target_user->getRess(), 2, true, false, true, null, "ress-block");
 										$next .= "\t</div>\n";
 										unset($next);
 								}

@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage storage
 	*/
 
 	namespace sua;
@@ -42,9 +41,9 @@
 		static protected $defaults = array(
 			"gebaeude" => array("ress" => array(0,0,0,0), "time" => 0, "deps" => array(), "prod" => array(0,0,0,0,0,0), "fields" => 0),
 			"forschung" => array("ress" => array(0,0,0,0), "time" => 0, "deps" => array()),
-			"roboter": array("ress" => array(0,0,0,0), "time" => 0, "deps" => array()),
-			"schiffe": array("ress" => array(0,0,0,0), "time" => 0, "deps" => array(), "trans" => array(0,0), "att" => 0, "def" => 0, "speed" => 1, "types" => array()),
-			"verteidigung": array("ress" => array(0,0,0,0), "time" => 0, "deps" => array(), "att" => 0, "def" => 0)
+			"roboter" => array("ress" => array(0,0,0,0), "time" => 0, "deps" => array()),
+			"schiffe" => array("ress" => array(0,0,0,0), "time" => 0, "deps" => array(), "trans" => array(0,0), "att" => 0, "def" => 0, "speed" => 1, "types" => array()),
+			"verteidigung" => array("ress" => array(0,0,0,0), "time" => 0, "deps" => array(), "att" => 0, "def" => 0)
 		);
 
 		/**
@@ -226,7 +225,7 @@
 		 * eine Anzahl zuordnet.
 		 * @param array $items ( ID => Anzahl )
 		 * @param bool $html Wenn false, wird htmlspecialchars() nicht auf den Text ausgeführt
-		 * @param bool $_i Wenn true, wird ein String zurückgegeben, der erst mit l::_i() lokalisiert wird
+		 * @param bool $_i Wenn true, wird ein String zurückgegeben, der erst mit L::_i() lokalisiert wird
 		 * @return string
 		*/
 
@@ -299,9 +298,10 @@
 		 * @param array $items ( ID => Anzahl )
 		 * @param int $tabs So viele Tabulatoren werden vor den Code gehängt.
 		 * @return void
+		 * @todo URLs auslagern
 		*/
 
-		static function makeItemList(array $items, $tabs=0)
+		static function makeItemList(array $items, $tabs=0, $url_suffix="")
 		{
 			$tabs_str = str_repeat("\t", $tabs);
 ?>
@@ -311,7 +311,7 @@
 			{
 				$item = Classes::Item($id);
 ?>
-<?=$tabs_str?>	<dt class="c-<?=htmlspecialchars($id)?>"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item->getInfo("name"))?></a></dt>
+<?=$tabs_str?>	<dt class="c-<?=htmlspecialchars($id)?>"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item->getInfo("name"))?></a></dt>
 <?=$tabs_str?>	<dd class="c-<?=htmlspecialchars($id)?>"><?=F::ths($count)?></dd>
 <?php
 			}
@@ -356,9 +356,10 @@
 
 		static function getIngtechFactor()
 		{
-			if(file_exists(global_setting("DB_USE_OLD_INGTECH")))
+			$compatibility = Config::getLibConfig()->getConfigValue("users", "ingrobtech_compatibility");
+			if($compatibility == "2")
 				return 1;
-			elseif(file_exists(global_setting("DB_USE_OLD_ROBTECH")))
+			elseif($compatibility == "1")
 				return 2;
 			else
 				return 10;

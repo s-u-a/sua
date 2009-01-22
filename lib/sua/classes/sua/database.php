@@ -18,7 +18,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage config
 	*/
 
 	namespace sua;
@@ -31,8 +30,19 @@
 
 	class Database
 	{
-		private $directory; /// Datenbankverzeichnis
-		private $settings; /// Konfiguration der Datenbank selbst
+		/**
+		 * Die aktuelle Datenbankversion, also die, mit der diese Version des Spiels umgehen kann. Hat eine Datenbank eine andere
+		 * Version, so wird die Öffnung verweigert.
+		*/
+		const currentDatabaseVersion = 9;
+
+		/** Das Datenbankverzeichnis dieser Datenbank
+		  * @var string */
+		private $directory;
+
+		/** Die Konfigurationsdatei dieser Datenbank
+		  * @var Config */
+		private $settings;
 
 		/**
 		 * @param string $directory Das Datenbankverzeichnis
@@ -44,27 +54,24 @@
 				throw new DatabaseException("Database directory does not exist.");
 			$this->directory = $directory;
 
+			$database_version = $this->getDatabaseVersion();
+			if($database_version != self::currentDatabaseVersion)
+				throw new DatabaseException("Wrong database version ".$database_version.". Expected ".self::currentDatabaseVersion.". Maybe run update_database?", DatabaseException::WRONG_VERSION);
+
 			if(!is_file($this->directory."/config.xml") || !is_readable($this->directory."/config.xml"))
 				throw new DatabaseException("The directory ".$this->directory." does not contain any readable configuration file.");
 
-			if(!is_file($this->directory."/config.db") || filemtime($this->directory."/config.db") < filemtime($this->directory."/config.xml"))
-			{
-				$this->settings = Config::fileToConfig($this->directory."/config.xml");
-				file_put_contents($this->directory."/config.db", serialize($this->settings));
-			}
-			else
-				$this->settings = unserialize(file_get_contents($this->directory."/config.db"));
+			$this->config = Classes::Config($this->directory."/config.xml");
 		}
 
 		/**
-		 * Liefert die Konfiguration der Datenbank (config.xml im Datenbankverzeichnis)
-		 * als Array zurück.
-		 * @return array
+		 * Liefert die Konfiguration der Datenbank (config.xml im Datenbankverzeichnis) zurück.
+		 * @return Config
 		*/
 
 		function getConfig()
 		{
-			return $this->settings;
+			return $this->config;
 		}
 
 		/**
@@ -78,136 +85,10 @@
 		}
 
 		/**
-		 * Gibt den Titel der Datenbank an, also die Bezeichnung, die für den
-		 * Benutzer sichtbar sein soll (der Name des Universums/der Runde).
-		 * Ist kein Titel konfiguriert, wird die ID benutzt.
-		 * @return string
-		*/
-
-		function getTitle()
-		{
-			if(isset($this->settings["name"]))
-				return $this->settings["name"];
-			else return $this->id;
-		}
-
-		/**
-		 * Gibt den Hostname zurück, unter dem die Datenbank aufrufbar ist.
-		 * @return string
-		*/
-
-		function getHostname()
-		{
-			if(!isset($this->settings["database"]))
-				throw new DatabaseException("No hostname defined.");
-			return $this->settings["database"];
-		}
-
-		/**
-		* Initialisiert die Standardwerte fuer die globalen Einstellungen.
-		* Kann mehrmals aufgerufen werden, zum Beispiel, um auf eine andere
-		* Datenbank umzustellen.
-		* @deprecated
-		*/
-
-		function defineGlobals()
-		{ # Setzt diverse Spielkonstanten zu einer bestimmten Datenbank
-			static $instances_cache;
-
-			if(!isset($instances_cache)) $instances_cache = array();
-
-			// Instanzen-Cache auslagern, damit keine Konflikte entstehen
-			// TODO: Das soll wenn überhaupt in Classes geschehen
-			/*$old_db = global_setting('DB');
-			if($old_db && isset($GLOBALS['objectInstances']) && $GLOBALS['objectInstances'])
-			{
-				$db_obj = Classes::Database($old_db);
-				$instances[$db_obj->alias()] = &$GLOBALS['objectInstances'];
-				unset($GLOBALS['objectInstances']);
-			}
-
-			if(isset($instances[$this->alias()]))
-				$GLOBALS['objectInstances'] = &$instances[$this->alias()];
-			else
-				$GLOBALS['objectInstances'] = array();*/
-
-			global_setting('DB', $this->id);
-
-			$DB_DIR = $this->config['directory'];
-			if(substr($DB_DIR, 0, 1) != '/')
-				$DB_DIR = global_setting("s_root").'/'.$DB_DIR;
-
-			global_setting('DB_DIR', $DB_DIR);
-
-			global_setting('DB_LOCKED', $DB_DIR.'/locked');
-			global_setting('DB_ALLIANCES', $DB_DIR.'/alliances');
-			global_setting('DB_PLAYERS', $DB_DIR.'/players');
-			global_setting('DB_UNIVERSE', $DB_DIR.'/universe');
-			global_setting('DB_ITEMS', $DB_DIR.'/items');
-			global_setting('DB_ITEM_DB', $DB_DIR.'/items.db');
-			global_setting('DB_TRUEMMERFELDER', $DB_DIR.'/truemmerfelder');
-			global_setting('DB_HANDEL', $DB_DIR.'/handel');
-			global_setting('DB_HANDELSKURS', $DB_DIR.'/handelskurs');
-			global_setting('DB_ADMINS', $DB_DIR.'/admins');
-			global_setting('DB_NONOOBS', $DB_DIR.'/nonoobs');
-			global_setting('DB_ADMIN_LOGFILE', $DB_DIR.'/admin_logfile');
-			global_setting('DB_NO_STRICT_ROB_LIMITS', $DB_DIR.'/no_strict_rob_limits');
-			global_setting('DB_GLOBAL_TIME_FACTOR', $DB_DIR.'/global_time_factor');
-			global_setting('DB_GLOBAL_PROD_FACTOR', $DB_DIR.'/global_prod_factor');
-			global_setting('DB_GLOBAL_COST_FACTOR', $DB_DIR.'/global_cost_factor');
-			global_setting('DB_USE_OLD_INGTECH', $DB_DIR.'/use_old_ingtech');
-			global_setting('DB_USE_OLD_ROBTECH', $DB_DIR.'/use_old_robtech');
-			global_setting('DB_NO_ATTS', $DB_DIR.'/no_atts');
-			global_setting("DB_SQLITE", $DB_DIR."/sqlite");
-			return true;
-		}
-
-		/**
-		 * Gibt zurueck, ob eine Handlungssperre in der Datenbank vorliegt.
-		 * @return int|boolean Wird ein Integer zurückgegeben, so gibt dieser an, bis wann die Sperre gilt.
-		 * @todo Muss die neue Konfigurationsdatei und die neue Namenskonvention verwenden. Neuer Name: locked()
-		*/
-
-		static function database_locked()
-		{
-			if(!file_exists(global_setting("DB_LOCKED"))) return false;
-
-			if(!is_readable(global_setting("DB_LOCKED"))) return true;
-
-			$until = trim(file_get_contents(global_setting("DB_LOCKED")));
-			if($until && time() > $until)
-			{
-				unlink(global_setting("DB_LOCKED"));
-				return false;
-			}
-			return ($until ? $until : true);
-		}
-
-		/**
-		 * Gibt zurueck, ob eine Flottensperre in der Datenbank vorliegt.
-		 * @return int|boolean Wird ein Integer zurückgegeben, so gibt dieser an, bis wann die Sperre gilt.
-		 * @todo Muss die neue Konfigurationsdatei und die neue Namenskonvention verwenden.
-		*/
-
-		static function fleets_locked()
-		{
-			if(!file_exists(global_setting("DB_NO_ATTS"))) return false;
-
-			if(!is_readable(global_setting("DB_NO_ATTS"))) return true;
-
-			$until = trim(file_get_contents(global_setting("DB_NO_ATTS")));
-			if($until && time() > $until)
-			{
-				unlink(global_setting("DB_NO_ATTS"));
-				return false;
-			}
-			return ($until ? $until : true);
-		}
-
-		/**
 		 * Liefert die im Datenbankverzeichnis eingetragene Version zurück.
-		 * In der Datenbank wird eine Versionsnummer gespeichert, die global_setting("DATABASE_VERSION")
+		 * In der Datenbank wird eine Versionsnummer gespeichert, die Database::currentDatabaseVersion
 		 * entsprechen muss, um Konflikte zu vermeiden, wenn das Datenbankschema geändert wird.
+		 * Die Version steht in der Datei .version im Datenbankverzeichnis.
 		 * @return int
 		*/
 
@@ -221,7 +102,7 @@
 			}
 			elseif(file_exists($this->getDirectory().'/highscores') && !file_exists($this->getDirectory().'/highscores_alliances') && !file_exists($this->getDirectory().'/highscores_alliances2')) $current_version = '4';
 			elseif(file_exists($this->getDirectory().'/events') && @sqlite_open($this->getDirectory().'/events')) $current_version = '3';
-			elseif(is_dir(global_setting("DB_DIR").'/fleets')) $current_version = '2';
+			elseif(is_dir($this->getDirectory().'/fleets')) $current_version = '2';
 			else $current_version = '1';
 
 			return $current_version;

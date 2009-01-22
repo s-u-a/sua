@@ -65,7 +65,7 @@
 
 	$gui->init();
 ?>
-<h2><?=l::h(_("Forschung"))?></h2>
+<h2><?=L::h(_("Forschung"))?></h2>
 <?php
 	foreach($forschungen as $id)
 	{
@@ -79,7 +79,7 @@
 			$buildable_global = false; # Es wird schon wo geforscht
 ?>
 <div class="item forschung" id="item-<?=htmlspecialchars($id)?>">
-	<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=l::h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(<?=sprintf(h(_("Level %s")), F::ths($item_info['level']))?>)</span></h3>
+	<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(<?=sprintf(h(_("Level %s")), F::ths($item_info['level']))?>)</span></h3>
 <?php
 		if((!($building_geb = $me->checkBuildingThing('gebaeude')) || $building_geb[0] != 'B8') && $item_info['buildable'] && $me->permissionToAct() && !($building = $me->checkBuildingThing('forschung')) && !in_array($id, $laufende_forschungen) && $item_info['deps-okay'])
 		{
@@ -87,12 +87,12 @@
 			$buildable_global = ($buildable_global && $enough_ress);
 ?>
 	<ul>
-		<li class="item-ausbau forschung-lokal <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="forschung.php?lokal='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=l::h(_("Lokal weiterentwickeln"))?><?=$enough_ress ? '</a>' : ''?></li>
+		<li class="item-ausbau forschung-lokal <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="forschung.php?lokal='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=L::h(_("Lokal weiterentwickeln"))?><?=$enough_ress ? '</a>' : ''?></li>
 <?php
 			if(count($laufende_forschungen) <= 0)
 			{
 ?>
-		<li class="item-ausbau forschung-global <?=$buildable_global ? 'genug' : 'fehlend'?>"><?=$buildable_global ? '<a href="forschung.php?global='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=l::h(_("Global weiterentwickeln"))?><?=$buildable_global ? '</a>' : ''?></li>
+		<li class="item-ausbau forschung-global <?=$buildable_global ? 'genug' : 'fehlend'?>"><?=$buildable_global ? '<a href="forschung.php?global='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=L::h(_("Global weiterentwickeln"))?><?=$buildable_global ? '</a>' : ''?></li>
 <?php
 			}
 ?>
@@ -102,7 +102,7 @@
 		elseif($building && $building[0] == $id)
 		{
 ?>
-	<div class="restbauzeit" id="restbauzeit-<?=htmlspecialchars($id)?>"><?=htmlspecialchars(F::format_ftime($building[1], $me))?> <a href="forschung.php?cancel=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen"><?=l::h(_("Abbrechen"))?></a></div>
+	<div class="restbauzeit" id="restbauzeit-<?=htmlspecialchars($id)?>"><?=htmlspecialchars(F::formatFTime($building[1], $me))?> <a href="forschung.php?cancel=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen"><?=L::h(_("Abbrechen"))?></a></div>
 <?php
 			if(!$me->umode())
 			{
@@ -115,18 +115,18 @@
 		}
 ?>
 	<dl class="lines">
-		<dt class="item-kosten"><?=l::h(_("Kosten"))?></dt>
+		<dt class="item-kosten"><?=L::h(_("Kosten"))?></dt>
 		<dd class="item-kosten">
 <?php
-		echo F::format_ress($item_info['ress'], 3, false, false, false, $me);
+		echo F::formatRess($item_info['ress'], 3, false, false, false, $me);
 ?>
 		</dd>
 
-		<dt class="item-bauzeit forschung-lokal"><?=l::h(_("Bauzeit lokal"))?></dt>
-		<dd class="item-bauzeit forschung-lokal"><?=F::format_btime($item_info['time_local'])?></dd>
+		<dt class="item-bauzeit forschung-lokal"><?=L::h(_("Bauzeit lokal"))?></dt>
+		<dd class="item-bauzeit forschung-lokal"><?=F::formatBTime($item_info['time_local'])?></dd>
 
-		<dt class="item-bauzeit forschung-global"><?=l::h(_("Bauzeit global"))?></dt>
-		<dd class="item-bauzeit forschung-global"><?=F::format_btime($item_info['time_global'])?></dd>
+		<dt class="item-bauzeit forschung-global"><?=L::h(_("Bauzeit global"))?></dt>
+		<dd class="item-bauzeit forschung-global"><?=F::formatBTime($item_info['time_global'])?></dd>
 	</dl>
 </div>
 <?php

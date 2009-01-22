@@ -29,11 +29,11 @@
 	 * anzupassen.
 	*/
 
-	class l implements StaticInit
+	class L implements StaticInit
 	{
 		static function init()
 		{
-			bindtextdomain("sua", libdir."/locale");
+			bindtextdomain("sua", LIBDIR."/locale");
 			bind_textdomain_codeset("sua", "utf-8");
 			textdomain("sua");
 		}
@@ -66,7 +66,7 @@
 		 * @return string Zum Beispiel ' accesskey="a"'. Wenn kein Tastenkuerzel existiert, ''.
 		*/
 
-		static function accesskey_attr($message)
+		static function accesskeyAttr($message)
 		{
 			if(!preg_match("/&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)/", $message, $m))
 				return "";
@@ -79,7 +79,7 @@
 		* @return string Zum Beispiel ' title="[A]"'. Wenn kein Tastenkuerzel existiert, ''.
 		*/
 
-		static function accesskey_title($message)
+		static function accesskeyTitle($message)
 		{
 			if(!preg_match("/&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)/", $message, $m))
 				return "";
@@ -118,7 +118,7 @@
 		/**
 		 * Setzt oder liest die aktuelle Zeitzone.
 		 * @param string $timezone
-		 * @return string|null
+		 * @return string|void
 		*/
 
 		static function timezone($timezone=null)

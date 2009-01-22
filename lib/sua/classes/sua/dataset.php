@@ -18,7 +18,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage storage
 	*/
 
 	namespace sua;
@@ -34,9 +33,9 @@
 		private $name;
 		protected $params;
 
-		/// Das Datenbankverzeichnis, in dem erzeugt werdende Datasets standardmäßig liegen sollen. Sollte nur einmal gesetzt werden,
-		/// da es sonst Verwirrungen mit Singleton geben könnte.
-		public static $databaseDirectory = null;
+		/** Die Datenbank, in der die Dataset-Objekte gespeichert werden.
+		  * @var Database */
+		private static $database = null;
 
 		/**
 		 * Erzeugt ein Datenset mit dem Namen $name.
@@ -143,5 +142,32 @@
 		protected function rename($new_name)
 		{
 			$this->name = $new_name;
+		}
+
+		/**
+		 * Setzt die Datenbank, in der die Datasets alle liegen, da es viel zu umständlich ist, für jedes
+		 * Dataset eine Datenbank mitzugeben. Kann im Moment nur einmal ausgeführt werden.
+		 * @param Database $database
+		 * @return void
+		*/
+
+		public static final function setDatabase(Database $database)
+		{
+			if(self::$database)
+				throw new DatasetException("The database may only be set once.");
+			self::$database = $database;
+		}
+
+		/**
+		 * Gibt die Datenbank zurück, die mit Dataset::setDatabase() gesetzt wurde.
+		 * @throw DatasetException Es wurde noch keine Datenbank gesetzt. (DatasetException::NO_DATABASE)
+		 * @return void
+		*/
+
+		public static final function getDatabase()
+		{
+			if(!self::$database)
+				throw new DatasetException("No database has been set.", DatasetException::NO_DATABASE);
+			return self::$database;
 		}
 	}

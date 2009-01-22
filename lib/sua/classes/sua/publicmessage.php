@@ -19,7 +19,6 @@
 	/**
 	 * @author Candid Dauth
 	 * @package sua
-	 * @subpackage storage
 	*/
 
 	namespace sua;
@@ -112,7 +111,7 @@
 			if($this->html())
 				$this->setMainField("parsed", $text);
 			else
-				$this->setMainField("parsed", F::parse_html($text));
+				$this->setMainField("parsed", F::parseHTML($text));
 		}
 
 		/**
@@ -206,15 +205,18 @@
 		}
 
 		/**
-		 * Löscht alle öffentlichen Nachrichten, die seit langer Zeit (global_setting("PUBLIC_MESSAGES_TIME"))
+		 * Löscht alle öffentlichen Nachrichten, die seit langer Zeit (public_messages_time in der Konfiguration)
 		 * nicht mehr gelesen wurden.
 		 * @return int Die Anzahl der gelöschten Nachrichten.
 		*/
 
 		static function cleanUp()
 		{
-			$count = self::$sqlite->singleField("SELECT COUNT(*) FROM public_messages WHERE last_view < ".(time()-global_setting("PUBLIC_MESSAGES_TIME")*86400).";");
-			self::$sqlite->query("DELETE FROM public_messages WHERE last_view < ".(time()-global_setting("PUBLIC_MESSAGES_TIME")*86400).";");
+			$public_messages_time = Config::getLibConfig()->getConfigValue("public_messages_time");
+			if(!$public_messages_time)
+				return 0;
+			$count = self::$sqlite->singleField("SELECT COUNT(*) FROM public_messages WHERE last_view < ".(time()-$public_messages_time*86400).";");
+			self::$sqlite->query("DELETE FROM public_messages WHERE last_view < ".(time()-$public_messages_time*86400).";");
 			return $count;
 		}
 	}

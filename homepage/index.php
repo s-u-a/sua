@@ -43,7 +43,7 @@
 	$gui->setOption("meta", true);
 	$gui->init();
 ?>
-<h2><?=l::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Neuigkeiten")))?></h2>
+<h2><?=L::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Neuigkeiten")))?></h2>
 <?php
 	$news_array = array();
 	// TODO
