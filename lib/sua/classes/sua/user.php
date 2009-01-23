@@ -783,9 +783,12 @@
 		function localise($function)
 		{
 			$args = func_get_args();
+			$old_text_domain = textdomain();
+			textdomain("sua");
 			$this->setLanguage();
 			$ret = call_user_func_array(array_shift($args), $args);
 			$this->restoreLanguage();
+			textdomain($old_text_domain);
 			return $ret;
 		}
 
