@@ -29,14 +29,8 @@
 	 * anzupassen.
 	*/
 
-	class L implements StaticInit
+	class L
 	{
-		static function init()
-		{
-			bindtextdomain("sua", LIBDIR."/locale");
-			bind_textdomain_codeset("sua", "utf-8");
-		}
-
 		/**
 		 * Hebt in einem String $text Tastenkuerzel, welche durch ein voranstehendes &amp; gekennzeichnet sind, hervor, und Kodiert HTML-Steuerzeichen mit htmlspecialchars().
 		 * @param string $text

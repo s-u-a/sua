@@ -97,3 +97,8 @@
 
 	bindtextdomain("sua-homepage", dirname(__FILE__)."/locale");
 	bind_textdomain_codeset("sua-homepage", "utf-8");
+
+	const TEXTDOMAIN = "sua-homepage";
+	function _($message) { return gettext($message); }
+	function gettext($message) { return dgettext(TEXTDOMAIN, $message); }
+	function ngettext($msgid1, $msgid2, $n) { return dngettext(TEXTDOMAIN, $msgid1, $msgid2, $n); }

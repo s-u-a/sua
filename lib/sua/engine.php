@@ -151,6 +151,14 @@
 			print file_get_contents($_SERVER["SCRIPT_FILENAME"]);
 			exit(0);
 		}
+
+		bindtextdomain("sua", LIBDIR."/locale");
+		bind_textdomain_codeset("sua", "utf-8");
+
+		const TEXTDOMAIN = "sua";
+		function _($message) { return gettext($message); }
+		function gettext($message) { return dgettext(TEXTDOMAIN, $message); }
+		function ngettext($msgid1, $msgid2, $n) { return dngettext(TEXTDOMAIN, $msgid1, $msgid2, $n); }
 	}
 
 	namespace
