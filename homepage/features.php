@@ -24,12 +24,15 @@
 
 	namespace sua\homepage;
 
+	use sua\L;
+
 	require('include.php');
 
 	$players = 0;
 	$alliances = 0;
 	$databases_count = 0;
-	$databases = Config::get_databases();
+	// TODO
+	/*$databases = Config::get_databases();
 	foreach($databases as $dbid=>$database)
 	{
 		if(!$database['enabled'] || $database['dummy']) continue;
@@ -42,9 +45,9 @@
 	$items = Classes::Items();
 
 	$messengers = Config::get_messenger_info();
-	$show_im = isset($messengers['jabber']);
+	$show_im = isset($messengers['jabber']);*/
 
-	$gui->init();
+	$GUI->init();
 ?>
 <h2><?=L::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Features")))?></h2>
 <ul>
@@ -104,5 +107,5 @@
 	<li><a href="images/screenshots/screenshot_12.png"><img src="images/screenshots/preview_12.jpg" alt="<?=L::h(sprintf(_("Screenshot %s"), $i++))?>" /></a></li>
 </ul>
 <?php
-	$gui->end();
+	$GUI->end();
 ?>

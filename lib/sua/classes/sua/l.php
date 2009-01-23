@@ -35,7 +35,6 @@
 		{
 			bindtextdomain("sua", LIBDIR."/locale");
 			bind_textdomain_codeset("sua", "utf-8");
-			textdomain("sua");
 		}
 
 		/**
@@ -61,16 +60,31 @@
 		}
 
 		/**
-		 * Liefert den HTML-Code des Attributs fuer das in $message angegebene Tastenkuerzel (durch ein voranstehende & gekennzeichnet) zurueck.
+		 * Liefert den Inhalt des Accesskey-Attributs für das in $message angegebene Tastenkürzel (durch ein voranstehendes & gekennzeichnet
+		 * zurück.
+		 * @param string $message
+		 * @return string|null Null, wenn kein Tastenkürzel existiert
+		*/
+
+		static function accesskey($message)
+		{
+			if(!preg_match("/&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)/", $message, $m))
+				return null;
+			return str_replace(array("Ä", "Ö", "Ü"), array("ä", "ö", "ü"), strtolower($m[1]));
+		}
+
+		/**
+		 * Liefert den HTML-Code des Attributs fuer das in $message angegebene Tastenkuerzel (durch ein voranstehendes & gekennzeichnet) zurueck.
 		 * @param string $message
 		 * @return string Zum Beispiel ' accesskey="a"'. Wenn kein Tastenkuerzel existiert, ''.
 		*/
 
 		static function accesskeyAttr($message)
 		{
-			if(!preg_match("/&([a-zA-Z0-9]|ä|ö|ü|Ä|Ö|Ü|ß)/", $message, $m))
+			$accesskey = self::accessKey($message);
+			if(!isset($accesskey))
 				return "";
-			return " accesskey=\"".htmlspecialchars(str_replace(array("Ä", "Ö", "Ü"), array("ä", "ö", "ü"), strtolower($m[1])))."\"";
+			return " accesskey=\"".htmlspecialchars($accesskey)."\"";
 		}
 
 		/**

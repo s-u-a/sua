@@ -32,6 +32,11 @@
 	error_reporting(4095);
 	ignore_user_abort(true);
 
+	$include_path = explode(":", get_include_path());
+	array_unshift($include_path, dirname(__FILE__)."/classes/");
+	array_unshift($include_path, ".");
+	set_include_path(implode(":", array_unique($include_path)));
+
 	require_once(dirname(__FILE__).'/lib/sua/engine.php');
 
 	L::language("de_DE", true);
@@ -51,7 +56,7 @@
 		date_default_timezone_set($timezone);
 	unset($timezone);
 
-	$GUI = Classes::HomeGui();
+	$GUI = Classes::__callStatic("homepage\HomeGui");
 
 	$GUI->setOption("databases", $CONFIG->getConfigValue("databases"));
 
@@ -76,7 +81,19 @@
 
 	$GUI->setOption("protocol", (!isset($_COOKIE["use_ssl"]) || $_COOKIE["use_ssl"]) ? "https" : "http");
 
+	# OpenID verwenden?
+	if(isset($_GET["use_openid"]))
+	{
+		$_COOKIE["use_openid"] = $_GET["use_openid"] ? "1" : "0";
+		setcookie("use_openid", $_COOKIE["use_openid"], time()+4838400, HROOT."/");
+	}
+
+	$GUI->setOption("openid", (isset($_COOKIE["use_openid"]) && $_COOKIE["use_openid"]));
+
 	$TABINDEX = 1;
 
 	if(!isset($_COOKIE["use_cookies"]) && !headers_sent())
 		setcookie("use_cookies", "1", time()+4838400, HROOT."/");
+
+	bindtextdomain("sua-homepage", dirname(__FILE__)."/locale");
+	bind_textdomain_codeset("sua-homepage", "utf-8");

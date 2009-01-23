@@ -54,6 +54,8 @@
 			while(true)
 			{
 				$name = $el->getAttribute("name");
+				if(isset($cur_conf[$name]))
+					throw new ConfigException("Double definition of setting/section “".$name."”.");
 				if($el->nodeName == "setting")
 				{
 					$value = $el->firstChild ? $el->firstChild->data : "";

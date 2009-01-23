@@ -37,6 +37,9 @@
 		# Benötigt für Zend (benötigt für OpenID)
 		array_unshift($include_path, LIBDIR."/../");
 
+		# Klassen der lib
+		array_unshift($include_path, LIBDIR."/classes/");
+
 		array_unshift($include_path, ".");
 		set_include_path(implode(":", array_unique($include_path)));
 		unset($include_path);
@@ -154,8 +157,19 @@
 	{
 		function __autoload($classname)
 		{
-			$fname = dirname(__FILE__)."/classes/".str_replace("\\", "/", strtolower($classname)).".php";
-			if(!is_file($fname)) return false;
+			$fname = str_replace("\\", "/", strtolower(preg_replace("/^\\\\/", "", $classname))).".php";
+			$exists = false;
+			foreach(explode(":", get_include_path()) as $path)
+			{
+				if(is_file($path."/".$fname))
+				{
+					$exists = true;
+					break;
+				}
+			}
+			if(!$exists)
+				return;
+
 			include_once($fname);
 			if(in_array("sua\StaticInit", class_implements($classname)))
 				$classname::init();

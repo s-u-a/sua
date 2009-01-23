@@ -48,9 +48,9 @@
 		 * @return Object
 		*/
 
-		static function __callStatic($classname, $args)
+		static function __callStatic($classname, $args=array())
 		{
-			$classname_full = "\\sua\\".$classname;
+			$classname_full = $classname[0] == "\\" ? $classname : "\\sua\\".$classname;
 
 			if(in_array("sua\\Singleton", class_implements($classname_full)))
 			{

@@ -18,15 +18,16 @@
 	/**
 	 * Die Regeln im Spiel.
 	 * @author Candid Dauth
-	 * @package sua
-	 * @subpackage homepage
+	 * @package sua-homepage
 	*/
 
 	namespace sua\homepage;
 
+	use sua\L;
+
 	require('include.php');
 
-	$gui->init();
+	$GUI->init();
 ?>
 <h2><?=L::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Regeln")))?></h2>
 <h3 id="p1"><?=L::h(sprintf(_("§ %d: %s"), 1, _("Allgemeine Nutzungsbedingungen")))?></h3>
@@ -63,5 +64,5 @@
 <h3 id="p6"><?=L::h(sprintf(_("§ %d: %s"), 6, _("Änderung der Nutzungsbedingungen")))?></h3>
 <p id="p6-1"><?=L::h(sprintf(_("(%2\$d) %3\$s"), 6, 1, sprintf(_("Der Betreiber von %s behält sich das Recht vor, diese Nutzungsbedingungen jederzeit zu ändern. Er verpflichtet sich jedoch, dies spätestens zwei Wochen vor Inkrafttreten der Änderungen auf der Startseite anzukündigen."), _("[title_abbr]"))))?></p>
 <?php
-	$gui->end();
+	$GUI->end();
 ?>

@@ -68,6 +68,7 @@ body { min-height:100%; width:100%; }
 #login-form-data dd,#login-form-data li,#login-form-data div,#login-form-data dl { display:inline; margin:0; }
 #login-form input,#login-form button,#login-form select { display:inline; color:#919193; }
 #login-form-data input,#login-form-data button,#login-form-data select { width:90px; }
+#login-form-data input.openid { width:180px; }
 #login-form input:hover,#login-form input:focus,#login-form button:hover,#login-form button:focus,#login-form select:hover,#login-form select:focus { color:#b1b1b3; }
 #login-form input[type=hidden] { visibility:hidden; }
 #login-form ul { list-style-type:none; margin:0; padding:0; }
@@ -124,3 +125,5 @@ fieldset { border:1px solid #777; padding:.5em; }
 
 .error { text-align:center; font-weight:bold; color:#f00; }
 .successful { text-align:center; font-weight:bold; color:#47f; }
+
+input.openid { background-image:url('images/openid-icon-small.gif'); background-repeat:no-repeat; background-position:0 50%; padding-left:18px; }

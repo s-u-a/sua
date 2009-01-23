@@ -210,9 +210,9 @@
 							if(count($open_elements) <= 0)
 							{
 								if(substr($part, -1) == "\n")
-									$string .= preg_replace('/[\n]+/e', 'F::parseHTML_replNL(strlen(\'$0\'))', substr($part, 0, -1));
+									$string .= preg_replace('/[\n]+/e', '\sua\FormattedString::parseHTML_replNL(strlen(\'$0\'))', substr($part, 0, -1));
 								else
-									$string .= preg_replace('/[\n]+/e', 'F::parseHTML_replNL(strlen(\'$0\'))', $part);
+									$string .= preg_replace('/[\n]+/e', '\sua\FormattedString::parseHTML_replNL(strlen(\'$0\'))', $part);
 							}
 							else
 							{
@@ -256,7 +256,7 @@
 					$string .= '<p>';
 					$p_open = true;
 				}
-				$string .= preg_replace('/[\n]+/e', 'F::parseHTML_replNL(strlen(\'$0\'))', $remaining_string);
+				$string .= preg_replace('/[\n]+/e', '\sua\FormattedString::parseHTML_replNL(strlen(\'$0\'))', $remaining_string);
 			}
 			if($p_open)
 				$string .= '</p>';

@@ -20,15 +20,17 @@
 	 * @package sua
 	*/
 
-	namespace sua;
-	require_once dirname(dirname(dirname(__FILE__)))."/engine.php";
+	namespace sua\homepage;
+	require_once dirname(dirname(dirname(dirname(__FILE__))))."/include.php";
+
+	use sua\L;
+	use sua\JS;
 
 	/**
 	 * Erstellt die GUI der Hauptseite.
-	 * @todo Auslagern ins homepage-Projekt
 	*/
 
-	class HomeGui extends Gui
+	class HomeGui extends \sua\Gui
 	{
 		/**
 		 * Implementiert Gui::htmlHead(). Gibt HTML-Head, Überschrift und Login-Formular aus.
@@ -110,7 +112,7 @@
 			<form action="<?=htmlspecialchars($this->getOption("protocol").'://'.$_SERVER['HTTP_HOST'].$this->getOption("h_root").'/login_redirect.php?action=login')?>" method="post" id="login-form">
 				<fieldset id="login-form-data">
 					<legend><?=L::h(_("Anmelden"))?></legend>
-					<dl>
+					<dl id="login-form-dl">
 						<dt class="c-runde"><label for="login-runde"><?=L::h(_("Runde&[include.php|2]"))?></label></dt>
 						<dd class="c-runde"><select name="database" id="login-runde"<?=L::accesskeyAttr(_("Runde&[include.php|2]"))?> onchange="updateLoginAction()" onkeyup="updateLoginAction()">
 <?php
@@ -128,11 +130,25 @@
 ?>
 						</select></dd>
 
-						<dt class="c-name"><label for="login-username"><?=L::h(_("Name&[include.php|2]"))?></label></dt>
-						<dd class="c-name"><input type="text" id="login-username" name="username"<?=L::accesskeyAttr(_("Name&[include.php|2]"))?> /></dd>
+<?php
+			if($this->getOption("openid"))
+			{
+?>
+						<dt class="c-openid" id="login-openid-dt"><label for="login-openid"><?=L::h(_("OpenID&[include.php|2]"))?></label></dt>
+						<dd class="c-openid" id="login-openid-dd"><input type="text" id="login-openid" name="openid" class="openid"<?=L::accesskeyAttr(_("OpenID&[include.php|2]"))?> /></dd>
+<?php
+			}
+			else
+			{
+?>
+						<dt class="c-name" id="login-name-dt"><label for="login-username"><?=L::h(_("Name&[include.php|2]"))?></label></dt>
+						<dd class="c-name" id="login-name-dd"><input type="text" id="login-username" name="username"<?=L::accesskeyAttr(_("Name&[include.php|2]"))?> /></dd>
 
-						<dt class="c-passwort"><label for="login-password"><?=L::h(_("Passwort&[include.php|2]"))?></label></dt>
-						<dd class="c-passwort"><input type="password" id="login-password" name="password"<?=L::accesskeyAttr(_("Passwort&[include.php|2]"))?> /></dd>
+						<dt class="c-passwort" id="login-passwort-dt"><label for="login-password"><?=L::h(_("Passwort&[include.php|2]"))?></label></dt>
+						<dd class="c-passwort" id="login-passwort-dd"><input type="password" id="login-password" name="password"<?=L::accesskeyAttr(_("Passwort&[include.php|2]"))?> /></dd>
+<?php
+			}
+?>
 					</dl>
 					<div class="c-anmelden">
 						<button type="submit"<?=L::accesskeyAttr(_("Anmelden&[include.php|2]"))?>><?=L::h(_("Anmelden&[include.php|2]"))?></button>
@@ -145,17 +161,31 @@
 			if($this->getOption("protocol") == "https")
 			{
 ?>
-						<noscript><li class="c-ssl-abschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=1"<?=L::accesskeyAttr(_("SSL abschalten&[include.php|3]"))?>><?=L::h(_("SSL abschalten&[include.php|3]"))?></a></li></noscript>
+						<noscript><li class="c-ssl-abschalten"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']."?".(isset($_GET["openid"]) ? "openid=".urlencode($_GET["openid"])."&" : ""))?>nossl=1"<?=L::accesskeyAttr(_("SSL abschalten&[include.php|3]"))?>><?=L::h(_("SSL abschalten&[include.php|3]"))?></a></li></noscript>
 <?php
 			}
 			else
 			{
 ?>
-						<noscript><li class="c-ssl-einschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=0"<?=L::accesskeyAttr(_("SSL einschalten&[include.php|3]"))?>><?=L::h(_("SSL einschalten&[include.php|3]"))?></a></li></noscript>
+						<noscript><li class="c-ssl-einschalten"><a href="http://<?=htmlspecialchars($_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']."?".(isset($_GET["openid"]) ? "openid=".urlencode($_GET["openid"])."&" : ""))?>?nossl=0"<?=L::accesskeyAttr(_("SSL einschalten&[include.php|3]"))?>><?=L::h(_("SSL einschalten&[include.php|3]"))?></a></li></noscript>
 <?php
 			}
 ?>
 						<li class="c-ssl-zertifikat-installieren"><a href="http://www.cacert.org/certs/root.crt"<?=L::accesskeyAttr(_("SSL-Zertifikat installieren&[include.php|3]"))?>><?=L::h(_("SSL-Zertifikat installieren&[include.php|3]"))?></a></li>
+<?php
+			if($this->getOption("openid"))
+			{
+?>
+						<noscript><li class="c-passwortanmeldung"><a href="http://<?=htmlspecialchars($_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"]."?".(isset($_GET["nossl"]) ? "nossl=".urlencode($_GET["nossl"])."&" : ""))?>openid=0"<?=L::accesskeyAttr(_("Passwortanmeldung&[include.php|3]"))?>><?=L::h(_("Passwortanmeldung&[include.php|3]"))?></a></li></noscript>
+<?php
+			}
+			else
+			{
+?>
+						<noscript><li class="c-openid-anmeldung"><a href="http://<?=htmlspecialchars($_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"]."?".(isset($_GET["nossl"]) ? "nossl=".urlencode($_GET["nossl"])."&" : ""))?>openid=1"<?=L::accesskeyAttr(_("OpenID-Anmeldung&[include.php|3]"))?>><?=L::h(_("OpenID-Anmeldung&[include.php|3]"))?></a></li></noscript>
+<?php
+			}
+?>
 					</ul>
 				</fieldset>
 				<fieldset id="login-form-options">
@@ -185,14 +215,24 @@
 				l.appendChild(document.createTextNode('<?=JS::jsentities(_("Optionen"))?>'));
 				document.getElementById("login-form-data").getElementsByTagName("ul")[0].appendChild(l);
 
+				/* SSL-Option */
 				var el1 = document.createElement("label");
-				el1.appendChild(document.createTextNode('<?=JS::jsentities(_("SSL deaktivieren"))?>'));
+				el1.appendChild(document.createTextNode('<?=JS::jsentities(_("SSL deaktivieren&[include.php|3]"))?>'));
 				el1.htmlFor = "i-ssl-deaktivieren";
 				var el2 = document.createElement("dt");
 				el2.className = "c-ssl-deaktivieren";
 				el2.appendChild(el1);
 
 				var el3 = document.createElement("input");
+<?php
+			$accesskey = L::accesskey(_("SSL deaktivieren&[include.php|3]"));
+			if(isset($accesskey))
+			{
+?>
+				el3.accessKey = '<?=JS::jsentities($accesskey)?>';
+<?php
+			}
+?>
 				el3.class = "checkbox";
 				el3.type = "checkbox";
 				el3.id = "i-ssl-deaktivieren";
@@ -212,6 +252,155 @@
 
 				document.getElementById("login-form-options").appendChild(el2);
 				document.getElementById("login-form-options").appendChild(el4);
+
+				/* OpenID-Option */
+				var el1 = document.createElement("label");
+				el1.appendChild(document.createTextNode('<?=JS::jsentities(_("OpenID aktivieren&[include.php|3]"))?>'));
+				el1.htmlFor = "i-openid-aktivieren";
+				var el2 = document.createElement("dt");
+				el2.className = "c-openid-aktivieren";
+				el2.appendChild(el1);
+
+				var el3 = document.createElement("input");
+<?php
+			$accesskey = L::accesskey(_("OpenID aktivieren&[include.php|3]"));
+			if(isset($accesskey))
+			{
+?>
+				el3.accessKey = '<?=JS::jsentities($accesskey)?>';
+<?php
+			}
+?>
+				el3.class = "checkbox";
+				el3.type = "checkbox";
+				el3.id = "i-openid-aktivieren";
+				el3.title = '<?=JS::jsentities(_("Anmeldung über OpenID statt mit einem Passwort."))?>';
+				el3.onclick = function(){updateOpenIDSelection();};
+<?php
+			if($this->getOption("openid"))
+			{
+?>
+				el3.checked = true;
+<?php
+			}
+?>
+				var el4 = document.createElement("dd");
+				el4.className = "c-openid-aktivieren";
+				el4.appendChild(el3);
+
+				document.getElementById("login-form-options").appendChild(el2);
+				document.getElementById("login-form-options").appendChild(el4);
+
+				function updateOpenIDSelection()
+				{
+					var els = [
+						document.getElementById("login-openid-dt"),
+						document.getElementById("login-openid-dd"),
+						document.getElementById("login-name-dt"),
+						document.getElementById("login-name-dd"),
+						document.getElementById("login-passwort-dt"),
+						document.getElementById("login-passwort-dd")
+					];
+
+					for(var i=0; i<els.length; i++)
+					{
+						if(els[i])
+							els[i].parentNode.removeChild(els[i]);
+					}
+
+
+					if(document.getElementById("i-openid-aktivieren").checked)
+					{
+						var el1 = document.createElement("label");
+						el1.appendChild(document.createTextNode('<?=JS::jsentities(_("OpenID&[include.php|2]"))?>')); // TODO: Tastenkürzel gescheit anzeigen lassen
+						var el2 = document.createElement("dt");
+						el2.className = "c-openid";
+						el2.id = "login-openid-dt";
+						el2.appendChild(el1);
+
+						var el3 = document.createElement("input");
+						el3.type = "text";
+						el3.id = "login-openid";
+						el3.name = "openid";
+						el3.className = "openid";
+<?php
+			$accesskey = L::accesskey(_("OpenID&[include.php|2]"));
+			if(isset($accesskey))
+			{
+?>
+						el3.accessKey = '<?=JS::jsentities($accesskey)?>';
+<?php
+			}
+?>
+						var el4 = document.createElement("dd");
+						el4.className = "c-openid";
+						el4.id = "login-openid-dd";
+						el4.appendChild(el3);
+
+						document.getElementById("login-form-dl").appendChild(el2);
+						document.getElementById("login-form-dl").appendChild(el4);
+					}
+					else
+					{
+						var el1 = document.createElement("label");
+						el1.appendChild(document.createTextNode('<?=JS::jsentities(_("Name&[include.php|2]"))?>')); // TODO: Tastenkürzel gescheit anzeigen lassen
+						var el2 = document.createElement("dt");
+						el2.className = "c-name";
+						el2.id = "login-name-dt";
+						el2.appendChild(el1);
+
+						var el3 = document.createElement("input");
+						el3.type = "text";
+						el3.id = "login-username";
+						el3.name = "username";
+<?php
+			$accesskey = L::accesskey(_("Name&[include.php|2]"));
+			if(isset($accesskey))
+			{
+?>
+						el3.accessKey = '<?=JS::jsentities($accesskey)?>';
+<?php
+			}
+?>
+						var el4 = document.createElement("dd");
+						el4.className = "c-name";
+						el4.id = "login-name-dd";
+						el4.appendChild(el3);
+
+						document.getElementById("login-form-dl").appendChild(el2);
+						document.getElementById("login-form-dl").appendChild(el4);
+
+						var el1 = document.createElement("label");
+						el1.appendChild(document.createTextNode('<?=JS::jsentities(_("Passwort&[include.php|2]"))?>')); // TODO: Tastenkürzel gescheit anzeigen lassen
+						var el2 = document.createElement("dt");
+						el2.className = "c-passwort";
+						el2.id = "login-passwort-dt";
+						el2.appendChild(el1);
+
+						var el3 = document.createElement("input");
+						el3.type = "password";
+						el3.id = "login-password";
+						el3.name = "password";
+<?php
+			$accesskey = L::accesskey(_("Passwort&[include.php|2]"));
+			if(isset($accesskey))
+			{
+?>
+						el3.accessKey = '<?=JS::jsentities($accesskey)?>';
+<?php
+			}
+?>
+						var el4 = document.createElement("dd");
+						el4.className = "c-passwort";
+						el4.id = "login-passwort-dd";
+						el4.appendChild(el3);
+
+						document.getElementById("login-form-dl").appendChild(el2);
+						document.getElementById("login-form-dl").appendChild(el4);
+					}
+
+					document.cookie = "use_openid="+(document.getElementById('i-openid-aktivieren').checked ? "1" : "0")+";expires="+(new Date((new Date()).getTime()+4838400)).toGMTString()+";path="+'<?=JS::jsentities($this->getOption("h_root"))?>'+"/";
+				}
 
 				updateLoginAction();
 			// ]]>

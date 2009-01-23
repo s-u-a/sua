@@ -1,1 +1,1 @@
-../../../po/de_DE.mo
+link ../../de_DE.mo

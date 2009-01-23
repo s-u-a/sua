@@ -87,7 +87,7 @@
 		 * @param int $tabs_count Die Anzahl der einzurueckenden Tabs des HTML-Codes
 		 * @param bool $tritium Soll der Array-Wert 4 beachtet werden (Tritium)
 		 * @param bool $energy Soll der Array-Wert 5 beachtet werden (Energie)
-		 * @param bool $_i Die Ausgabe wird so formatiert, dass sie nachtraeglich durch i_() gejagt werden kann
+		 * @param bool $_i Die Ausgabe wird so formatiert, dass sie nachtraeglich durch _i() gejagt werden kann
 		 * @param User $check_availability Gibt mit HTML-Klassen an, ob so viele Rohstoffe auf dem Planeten vorhanden sind.
 		 * @param string $dl_class Eine zusätzliche HTML-Klasse, die dem Element zugewiesen wird.
 		 * @param string $dl_id Eine HTML-ID, die der Liste zugewiesen wird.

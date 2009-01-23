@@ -26,8 +26,6 @@
 	use \sua\l;
 	use \sua\h;
 
-	ob_start();
-
 	require('include.php');
 
 	function repl_nl($nls)
@@ -43,48 +41,38 @@
 
 	$GUI->setOption("meta", true);
 	$GUI->init();
-
-	if(count($_GET) == 0)
-	{
-		include("Zend/OpenId/Consumer.php");
-		$openid = new \Zend_OpenId_Consumer();
-		$openid->login("http://cdauth.de/", "index.php");
-	}
 ?>
 <h2><?=L::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Neuigkeiten")))?></h2>
 <?php
-	$news_array = array();
-	// TODO
-	//if(is_file(global_setting("DB_NEWS")) && filesize(global_setting("DB_NEWS")) > 0 && is_readable(global_setting("DB_NEWS")))
-	//	$news_array = array_reverse(unserialize(gzuncompress(file_get_contents(global_setting("DB_NEWS")))));
-
-	foreach($news_array as $news)
+	$news_array = $CONFIG->getConfigValue("news");
+	if($news_array)
 	{
-		if(!is_array($news) || !isset($news['text_parsed']))
-			continue;
+		foreach($news_array as $news)
+		{
+			$title = 'Kein Titel';
+			if(isset($news['title']) && trim($news['title']) != '')
+				$title = trim($news['title']);
 
-		$title = 'Kein Titel';
-		if(isset($news['title']) && trim($news['title']) != '')
-			$title = trim($news['title']);
-
-		$author = '';
-		if(isset($news['author']) && trim($news['author']) != '')
-			$author = trim($news['author']);
+			$author = '';
+			if(isset($news['author']) && trim($news['author']) != '')
+				$author = trim($news['author']);
 ?>
 <div class="news">
 	<h3><?=htmlspecialchars($title)?><?=($author != '') ? ' <span class="author">('.htmlspecialchars($author).')</span>' : ''?></h3>
 <?php
-		if(isset($news['time']))
-		{
+			if(isset($news['time']) && $news["time"] instanceof \sua\Date)
+			{
 ?>
-	<div class="time"><?=date(_('Y-m-d, H:i:s'), $news['time'])?></div>
+	<div class="time"><?=htmlspecialchars($news["time"]->getLocalised())?></div>
 <?php
-		}
+			}
 
-	print("\t".str_replace("\n", "\n\t", $news['text_parsed']));
+			if(isset($news["text"]) && $news["text"] instanceof \sua\FormattedString)
+				print("\t".str_replace("\n", "\n\t", $news["text"]->getHTML()));
 ?>
 </div>
 <?php
+		}
 	}
 
 	$GUI->end();

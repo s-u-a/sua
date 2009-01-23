@@ -29,7 +29,7 @@
 
 	class Date
 	{
-		private var $time;
+		private $time;
 
 		/**
 		 * Führt strtotime() mit $time aus.
@@ -69,5 +69,15 @@
 		function getFormattedGMT()
 		{
 			return gmdate("Y-m-d\\TH:i:s\\Z", $this->time);
+		}
+
+		/**
+		 * Gibt die Zeit im lokalen Zeitformat zurück.
+		 * @return string
+		*/
+
+		function getLocalised()
+		{
+			return date(_("Y-m-d\\TH:i:s"), $this->time);
 		}
 	}

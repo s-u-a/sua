@@ -129,16 +129,17 @@
 		}
 
 		/**
-		 * Leitet so auf eine URL weiter, dass alle GET- und POST-Daten erhalten bleiben.
+		 * Leitet auf eine URL weiter.
 		 * @param string $new_url
+		 * @param boolean $keep_post_data POST-Daten erhalten?
 		 * @return void
 		*/
 
-		static function changeURL($new_url)
+		static function changeURL($new_url, $keep_post_data=true)
 		{
-			header('Location: '.$new_url, true, 307);
+			header('Location: '.$new_url, true, $keep_post_data ? 307 : 303);
 
-			if(count($_POST) > 0)
+			if(count($_POST) > 0 && $keep_post_data)
 			{
 				echo '<form action="'.htmlspecialchars($new_url).'" method="post">';
 				foreach($_POST as $key=>$val)
