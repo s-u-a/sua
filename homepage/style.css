@@ -69,6 +69,7 @@ body { min-height:100%; width:100%; }
 #login-form input,#login-form button,#login-form select { display:inline; color:#919193; }
 #login-form-data input,#login-form-data button,#login-form-data select { width:90px; }
 #login-form input:hover,#login-form input:focus,#login-form button:hover,#login-form button:focus,#login-form select:hover,#login-form select:focus { color:#b1b1b3; }
+#login-form input[type=hidden] { visibility:hidden; }
 #login-form ul { list-style-type:none; margin:0; padding:0; }
 #login-form a { color:#888; }
 #login-form a:hover,#login-form a:focus { color:#aaa; }

@@ -18,14 +18,15 @@
 	/**
 	 * Startseite mit News.
 	 * @author Candid Dauth
-	 * @package sua
-	 * @subpackage homepage
+	 * @package sua-homepage
 	*/
 
 	namespace sua\homepage;
 
 	use \sua\l;
 	use \sua\h;
+
+	ob_start();
 
 	require('include.php');
 
@@ -40,8 +41,15 @@
 			return "\n\t</p>\n".str_repeat('<br />', $len-2)."\n\t<p>\n\t\t";
 	}
 
-	$gui->setOption("meta", true);
-	$gui->init();
+	$GUI->setOption("meta", true);
+	$GUI->init();
+
+	if(count($_GET) == 0)
+	{
+		include("Zend/OpenId/Consumer.php");
+		$openid = new \Zend_OpenId_Consumer();
+		$openid->login("http://cdauth.de/", "index.php");
+	}
 ?>
 <h2><?=L::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Neuigkeiten")))?></h2>
 <?php
@@ -79,5 +87,5 @@
 <?php
 	}
 
-	$gui->end();
+	$GUI->end();
 ?>

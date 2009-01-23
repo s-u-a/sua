@@ -30,36 +30,6 @@
 	class Functions
 	{
 		/**
-		 * Leitet so auf die gleiche URL unter einem anderen Hostname weiter, alle GET- und POST-Daten sollen erhalten bleiben.
-		 * Ist der Hostname bereits aufgerufen, wird nichts unternommen.
-		 * @param string $hostname Der neue Hostname.
-		 * @return void
-		*/
-
-		static function changeHostname($hostname)
-		{
-			if(isset($_SERVER["HTTP_HOST"]) && $_SERVER["HTTP_HOST"] == $hostname)
-				return;
-
-			$url = (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on" ? "https" : "http").$hostname.$_SERVER["PHP_SELF"];
-			if($_SERVER['QUERY_STRING'] != '')
-				$url .= '?'.$_SERVER['QUERY_STRING'];
-			header('Location: '.$url, true, 307);
-
-			if(count($_POST) > 0)
-			{
-				echo '<form action="'.htmlspecialchars($url).'" method="post">';
-				foreach($_POST as $key=>$val)
-					echo '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($val).'" />';
-				echo '<button type="submit">'.htmlspecialchars($url).'</button>';
-				echo '</form>';
-			}
-			else
-				echo 'HTTP redirect: <a href="'.htmlspecialchars($url).'">'.htmlspecialchars($url).'</a>';
-			die();
-		}
-
-		/**
 		 * Liefert das Produkt der Array-Werte zurück.
 		 * @param array(float) $array
 		 * @return float
@@ -514,19 +484,6 @@
 			$times[$string][1] = $time;
 			$times[""][0]++;
 			$times[""][1] = $time;
-		}
-
-		/**
-		 * Konvertiert eine Benutzereingabe zu einer Booleanvariable. Eingaben wie
-		 * „no“ oder „false“ werden zu false konvertiert, alle unbekannten Eingaben
-		 * zu true.
-		 * @param string $string
-		 * @return bool
-		*/
-
-		static function string2boolean($string)
-		{
-			return $string && !in_array($string, array("no", "false", "disabled", "disable", "off", "nein", "n"));
 		}
 
 		/**

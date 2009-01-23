@@ -38,7 +38,7 @@
 	$config_arr = $config->getConfig();
 	// Richtigen Hostname sicherstellen
 	if(isset($config_arr["hostname"]) && $config_arr["hostname"] && $_SERVER["HTTP_HOST"] != $config_arr["hostname"])
-		Functions::changeHostname($config_arr["hostname"]);
+		HTTPOutput::changeHostname($config_arr["hostname"]);
 
 	if(isset($config_arr["timezone"]))
 		date_default_timezone_set($config_arr["timezone"]);

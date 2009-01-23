@@ -84,7 +84,7 @@
 				"used_ress_3 INTEGER DEFAULT 0", // ~ Radium
 				"used_ress_4 INTEGER DEFAULT 0", // ~ Tritium
 				"description TEXT", // Selbst eingegebene Benutzerbeschreibung
-				"description_parsed TEXT", // F::parseHTML() auf die Benutzerbeschreibung
+				"description_parsed TEXT", // FormattedString::parseHTML() auf die Benutzerbeschreibung
 				"locked INTEGER DEFAULT 0", // -1: Gesperrt auf Weiteres; 0: entsperrt; alles andere: Zeitstempel, bis wann die Sperre gilt
 				"holidays INTEGER DEFAULT 0", // 0: Kein Urlaubsmodus; 1: Urlaubsmodus
 				"holidays_changed INTEGER", // Zeitstempel, wann der Urlaubsstatus zuletzt geändert wurde
@@ -408,7 +408,7 @@
 				$unparsed = $this->getMainField("description");
 				if($unparsed)
 				{
-					$parsed = F::parseHTML($unparsed);
+					$parsed = FormattedString::parseHTML($unparsed);
 					$this->setMainField("description_parsed", $parsed);
 				}
 			}
@@ -424,7 +424,7 @@
 		function setUserDescription($description)
 		{
 			$this->setMainField("description", $description);
-			$this->setMainField("description_parsed", F::parseHTML($description));
+			$this->setMainField("description_parsed", FormattedString::parseHTML($description));
 		}
 
 		/**
@@ -1337,7 +1337,7 @@
 						$minen_rob = sqrt($this->getItemLevel("F2", "forschung"))/250;
 						if($minen_rob > 0)
 						{
-							$use_max_limit = !Functions::string2boolean(Config::getLibConfig()->getConfigValue("users", "no_max_rob_limit"));
+							$use_max_limit = !Config::getLibConfig()->getConfigValue("users", "no_max_rob_limit");
 
 							$rob = $this->getItemLevel("R02", "roboter");
 							if($rob > $this->getItemLevel("B0", "gebaeude")) $rob = $this->getItemLevel("B0", "gebaeude");

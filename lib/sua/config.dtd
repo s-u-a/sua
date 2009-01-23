@@ -1,0 +1,10 @@
+<!ELEMENT config (section | setting)*>
+<!ELEMENT section (section | setting)*>
+<!ATTLIST section
+	name CDATA #REQUIRED
+>
+<!ELEMENT setting (#PCDATA)>
+<!ATTLIST setting
+	name CDATA #REQUIRED
+	type (string|number|date|boolean|formatted) "string"
+>

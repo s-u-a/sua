@@ -127,4 +127,55 @@
 			else
 				return "http";
 		}
+
+		/**
+		 * Leitet so auf eine URL weiter, dass alle GET- und POST-Daten erhalten bleiben.
+		 * @param string $new_url
+		 * @return void
+		*/
+
+		static function changeURL($new_url)
+		{
+			header('Location: '.$new_url, true, 307);
+
+			if(count($_POST) > 0)
+			{
+				echo '<form action="'.htmlspecialchars($new_url).'" method="post">';
+				foreach($_POST as $key=>$val)
+					echo '<input type="hidden" name="'.htmlspecialchars($key).'" value="'.htmlspecialchars($val).'" />';
+				echo '<button type="submit">HTTP redirect: '.htmlspecialchars($new_url).'</button>';
+				echo '</form>';
+			}
+			else
+				echo 'HTTP redirect: <a href="'.htmlspecialchars($new_url).'">'.htmlspecialchars($new_url).'</a>';
+			die();
+		}
+
+		/**
+		 * Leitet auf die gleiche URL unter einem anderen Hostname weiter, alle GET- und POST-Daten sollen erhalten bleiben.
+		 * Ist der Hostname bereits aufgerufen, wird nichts unternommen.
+		 * @param string $hostname Der neue Hostname.
+		 * @return void
+		*/
+
+		static function changeHostname($hostname)
+		{
+			if(isset($_SERVER["HTTP_HOST"]) && $_SERVER["HTTP_HOST"] == $hostname)
+				return;
+
+			$url = self::getProtocol()."://".$hostname.$_SERVER["PHP_SELF"];
+			if($_SERVER['QUERY_STRING'] != '')
+				$url .= '?'.$_SERVER['QUERY_STRING'];
+			self::changeURL($url);
+		}
+
+		/**
+		 * Gibt die vollständige aufgerufene URL zurück.
+		 * @return string
+		*/
+
+		static function getURL()
+		{
+			return self::getProtocol."://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
+		}
 	}

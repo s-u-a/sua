@@ -73,7 +73,28 @@
 		<base href="<?=htmlspecialchars($this->getOption("base"))?>" />
 <?php
 			}
+
+			$databases = $this->getOption("databases");
+			$databases_js = array();
+			if($databases)
+			{
+				foreach($databases as $id=>$info)
+				{
+					if(!isset($info["urls"]) || !isset($info["urls"]["login"]))
+						continue;
+					$databases_js[$id] = $info["urls"]["login"];
+				}
+			}
 ?>
+		<script type="text/javascript">
+			var databases = <?=JS::aimplodeJS($databases_js)?>;
+			function updateLoginAction()
+			{
+				document.getElementById("login-form").action = (!document.getElementById('i-ssl-deaktivieren') || !document.getElementById('i-ssl-deaktivieren').checked ? "https" : "http")+"://"+databases[document.getElementById("login-runde").value];
+				if(document.getElementById('i-ssl-deaktivieren'))
+					document.cookie = "use_ssl="+(document.getElementById('i-ssl-deaktivieren').checked ? "0" : "1")+";expires="+(new Date((new Date()).getTime()+4838400)).toGMTString()+";path="+'<?=JS::jsentities($this->getOption("h_root"))?>'+"/";
+			}
+		</script>
 	</head>
 	<body><div id="main-container">
 		<h1 id="logo"><a href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].$this->getOption("h_root").'/')?>" title="<?=L::h(_("Zurück zur Startseite"))?>"<?=L::accesskeyAttr(_("[title_full]&[include.php|1]"))?>><?=L::h(_("[title_full]&[include.php|1]"))?></a></h1>
@@ -86,20 +107,21 @@
 		<div id="content2-0"><div id="content2-1"><div id="content2-2"><div id="content2-3">
 		<div id="content3-0"><div id="content3-1"><div id="content3-2"><div id="content3-3">
 		<div id="content4-1"><div id="content4-2"><div id="content4-3">
-			<form action="<?=htmlspecialchars($this->getOption("protocol").'://'.$_SERVER['HTTP_HOST'].$this->getOption("h_root").'/login/index.php')?>" method="post" id="login-form">
+			<form action="<?=htmlspecialchars($this->getOption("protocol").'://'.$_SERVER['HTTP_HOST'].$this->getOption("h_root").'/login_redirect.php?action=login')?>" method="post" id="login-form">
 				<fieldset id="login-form-data">
 					<legend><?=L::h(_("Anmelden"))?></legend>
 					<dl>
 						<dt class="c-runde"><label for="login-runde"><?=L::h(_("Runde&[include.php|2]"))?></label></dt>
-						<dd class="c-runde"><select name="database" id="login-runde"<?=L::accesskeyAttr(_("Runde&[include.php|2]"))?>>
+						<dd class="c-runde"><select name="database" id="login-runde"<?=L::accesskeyAttr(_("Runde&[include.php|2]"))?> onchange="updateLoginAction()" onkeyup="updateLoginAction()">
 <?php
-			$databases = $this->getOption("databases");
 			if($databases)
 			{
 				foreach($databases as $id=>$info)
 				{
+					if(!isset($info["urls"]) || !isset($info["urls"]["login"]))
+						continue;
 ?>
-							<option value="<?=htmlspecialchars($id)?>"><?=htmlspecialchars($info['name'])?></option>
+							<option value="<?=htmlspecialchars($id)?>"><?=htmlspecialchars(isset($info["name"]) ? $info['name'] : $id)?></option>
 <?php
 				}
 			}
@@ -112,7 +134,10 @@
 						<dt class="c-passwort"><label for="login-password"><?=L::h(_("Passwort&[include.php|2]"))?></label></dt>
 						<dd class="c-passwort"><input type="password" id="login-password" name="password"<?=L::accesskeyAttr(_("Passwort&[include.php|2]"))?> /></dd>
 					</dl>
-					<div class="c-anmelden"><button type="submit"<?=L::accesskeyAttr(_("Anmelden&[include.php|2]"))?>><?=L::h(_("Anmelden&[include.php|2]"))?></button></div>
+					<div class="c-anmelden">
+						<button type="submit"<?=L::accesskeyAttr(_("Anmelden&[include.php|2]"))?>><?=L::h(_("Anmelden&[include.php|2]"))?></button>
+						<input type="hidden" name="referrer" value="<?=htmlspecialchars($_SERVER["REQUEST_URI"])?>" />
+					</div>
 					<ul>
 						<li class="c-registrieren"><a href="http://<?=$_SERVER['HTTP_HOST'].$this->getOption("h_root")?>/register.php"<?=L::accesskeyAttr(_("Registrieren&[include.php|2]"))?>><?=L::h(_("Registrieren&[include.php|2]"))?></a></li>
 						<li class="c-passwort-vergessen"><a href="http://<?=$_SERVER['HTTP_HOST'].$this->getOption("h_root")?>/passwd.php"<?=L::accesskeyAttr(_("Passwort vergessen?&[include.php|2]"))?>><?=L::h(_("Passwort vergessen?&[include.php|2]"))?></a></li>
@@ -120,13 +145,13 @@
 			if($this->getOption("protocol") == "https")
 			{
 ?>
-						<li class="c-ssl-abschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=1"<?=L::accesskeyAttr(_("SSL abschalten&[include.php|3]"))?>><?=L::h(_("SSL abschalten&[include.php|3]"))?></a></li>
+						<noscript><li class="c-ssl-abschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=1"<?=L::accesskeyAttr(_("SSL abschalten&[include.php|3]"))?>><?=L::h(_("SSL abschalten&[include.php|3]"))?></a></li></noscript>
 <?php
 			}
 			else
 			{
 ?>
-						<li class="c-ssl-einschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=0"<?=L::accesskeyAttr(_("SSL einschalten&[include.php|3]"))?>><?=L::h(_("SSL einschalten&[include.php|3]"))?></a></li>
+						<noscript><li class="c-ssl-einschalten"><a href="http://<?=$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']?>?nossl=0"<?=L::accesskeyAttr(_("SSL einschalten&[include.php|3]"))?>><?=L::h(_("SSL einschalten&[include.php|3]"))?></a></li></noscript>
 <?php
 			}
 ?>
@@ -135,7 +160,7 @@
 				</fieldset>
 				<fieldset id="login-form-options">
 					<legend><?=L::h(_("Optionen"))?></legend>
-					<dl>
+					<dl id="login-form-options-dl">
 						<dt class="c-javascript"><label for="i-javascript"><?=L::h(_("JavaScript deaktivieren"))?></label></dt>
 						<dd class="c-javascript"><input class="checkbox" type="checkbox" name="options[javascript]" id="i-javascript" title="<?=L::h(_("Mit dieser Option können Sie alle fortwährenden JavaScript-Änderungen (zum Beispiel die Uhr) deaktivieren. Nützlich an langsamen Terminals."))?>" /></dd>
 
@@ -159,6 +184,36 @@
 				l.href = "javascript:toggleOptions()";
 				l.appendChild(document.createTextNode('<?=JS::jsentities(_("Optionen"))?>'));
 				document.getElementById("login-form-data").getElementsByTagName("ul")[0].appendChild(l);
+
+				var el1 = document.createElement("label");
+				el1.appendChild(document.createTextNode('<?=JS::jsentities(_("SSL deaktivieren"))?>'));
+				el1.htmlFor = "i-ssl-deaktivieren";
+				var el2 = document.createElement("dt");
+				el2.className = "c-ssl-deaktivieren";
+				el2.appendChild(el1);
+
+				var el3 = document.createElement("input");
+				el3.class = "checkbox";
+				el3.type = "checkbox";
+				el3.id = "i-ssl-deaktivieren";
+				el3.title = '<?=JS::jsentities(_("Schalten Sie hiermit die Verschlüsselung der Seite ab, sollte es Probleme damit geben."))?>';
+				el3.onclick = function(){updateLoginAction();};
+<?php
+			if($this->getOption("protocol") != "https")
+			{
+?>
+				el3.checked = true;
+<?php
+			}
+?>
+				var el4 = document.createElement("dd");
+				el4.className = "c-ssl-deaktivieren";
+				el4.appendChild(el3);
+
+				document.getElementById("login-form-options").appendChild(el2);
+				document.getElementById("login-form-options").appendChild(el4);
+
+				updateLoginAction();
 			// ]]>
 			</script>
 			<div id="innercontent1-1"><div id="innercontent1-2"><div id="innercontent1-3">

@@ -24,10 +24,50 @@
 	require_once dirname(dirname(dirname(__FILE__)))."/engine.php";
 
 	/**
-	 * Allgemeine Oberklasse für Exceptions, die zum Spiel gehören und deren Ursprung
-	 * im Quellcode des Spiels zu finden ist.
+	 * Repräsentiert einen Zeitstempel.
 	*/
 
-	class SuaException extends \Exception
+	class Date
 	{
+		private var $time;
+
+		/**
+		 * Führt strtotime() mit $time aus.
+		 * @param string|int|null $time Wenn null, wird die aktuelle Zeit genommen.
+		*/
+
+		function __construct($time=null)
+		{
+			if(!isset($time))
+				$this->time = time();
+			elseif(is_numeric($time))
+				$this->time = $time;
+			else
+				$this->time = strtotime($time);
+		}
+
+		/**
+		 * Gibt die Zeit im Standardformat zurück.
+		 * @return string
+		*/
+
+		function getFormatted()
+		{
+			$return = date("Y-m-d\\TH:i:s", $this->time);
+			if(!date("Z"))
+				$return .= "Z";
+			else
+				$return .= date(" P");
+			return $return;
+		}
+
+		/**
+		 * Gibt die Zeit im Standardformat zurück, als GMT-Zeit.
+		 * @return string
+		*/
+
+		function getFormattedGMT()
+		{
+			return gmdate("Y-m-d\\TH:i:s\\Z", $this->time);
+		}
 	}

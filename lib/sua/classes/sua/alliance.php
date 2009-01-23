@@ -285,7 +285,7 @@
 		function setExternalDescription($description)
 		{
 			$this->setMainField("description", $description);
-			$this->setMainField("description_parsed", F::parseHTML($description));
+			$this->setMainField("description_parsed", FormattedString::parseHTML($description));
 		}
 
 		/**
@@ -297,7 +297,7 @@
 		function setInternalDescription($description)
 		{
 			$this->setMainField("inner_description", $description);
-			$this->setMainField("inner_description_parsed", F::parseHTML($description));
+			$this->setMainField("inner_description_parsed", FormattedString::parseHTML($description));
 		}
 
 		/**

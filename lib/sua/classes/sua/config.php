@@ -55,7 +55,27 @@
 			{
 				$name = $el->getAttribute("name");
 				if($el->nodeName == "setting")
-					$cur_conf[$name] = $el->firstChild ? $el->firstChild->data : "";
+				{
+					$value = $el->firstChild ? $el->firstChild->data : "";
+					switch($el->getAttribute("type"))
+					{
+						case "date":
+							$cur_conf[$name] = Classes::Date($value);
+							break;
+						case "number":
+							$cur_conf[$name] = 0+$value;
+							break;
+						case "boolean":
+							$cur_conf[$name] = Functions::string2boolean($value);
+							break;
+						case "formatted":
+							$cur_conf[$name] = Classes::FormattedString($value);
+							break;
+						default:
+							$cur_conf[$name] = $value;
+							break;
+					}
+				}
 				elseif($el->nodeName == "section")
 					$cur_conf[$name] = array();
 
@@ -128,7 +148,20 @@
 						$xml .= $tabs."</section>\n";
 				}
 				else
-					$xml .= $tabs."<setting name=\"".htmlspecialchars($name)."\">".htmlspecialchars($cur_config[$name])."</setting>\n";
+				{
+					$xml .= $tabs."<setting name=\"".htmlspecialchars($name)."\"";
+					if($cur_config[$name] instanceof Date)
+						$xml .= " type=\"date\">".htmlspecialchars($cur_config[$name]->getFormattedGMT());
+					elseif($cur_config[$name] instanceof FormattedString)
+						$xml .= " type=\"formatted\">".htmlspecialchars($cur_config[$name]->getRawString());
+					elseif(is_bool($cur_config[$name]))
+						$xml .= " type=\"boolean\">".($cur_config[$name] ? "yes" : "no");
+					elseif(is_numeric($cur_config[$name]))
+						$xml .= " type=\"number\">".htmlspecialchars($cur_config[$name]);
+					else
+						$xml .= htmlspecialchars($cur_config[$name]);
+					$xml .= "</setting>\n";
+				}
 
 				while(next($cur_config) === false)
 				{

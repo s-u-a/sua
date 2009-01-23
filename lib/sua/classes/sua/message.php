@@ -194,7 +194,7 @@
 			{
 				$this->setMainField("text", $text);
 				if(!$this->html())
-					$this->setMainField("parsed_text", F::parseHTML($text));
+					$this->setMainField("parsed_text", FormattedString::parseHTML($text));
 			}
 		}
 

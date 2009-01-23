@@ -33,9 +33,10 @@
 		# PEAR einbinden (wenn es nicht im System installiert ist, kann man es ins lib-Verzeichnis legen)
 		if(is_dir(LIBDIR."/../pear"))
 			array_unshift($include_path, LIBDIR."/../pear/");
-		# ZEND einbinden (benötigt für OpenID)
-		if(is_dir(LIBDIR."/../zend"))
-			array_unshift($include_path, LIBDIR."/../zend/");
+
+		# Benötigt für Zend (benötigt für OpenID)
+		array_unshift($include_path, LIBDIR."/../");
+
 		array_unshift($include_path, ".");
 		set_include_path(implode(":", array_unique($include_path)));
 		unset($include_path);
