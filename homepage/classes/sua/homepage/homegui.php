@@ -17,7 +17,7 @@
 */
 	/**
 	 * @author Candid Dauth
-	 * @package sua
+	 * @package sua-homepage
 	*/
 
 	namespace sua\homepage;

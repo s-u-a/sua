@@ -18,11 +18,13 @@
 	/**
 	 * Stellt ein Java-Applet zum Chat bereit.
 	 * @author Candid Dauth
-	 * @package sua
-	 * @subpackage homepage
+	 * @package sua-homepage
 	*/
 
 	namespace sua\homepage;
+
+	use sua\L;
+	use sua\JS;
 
 	require('include.php');
 
@@ -35,8 +37,8 @@
 
 	if(!$popup)
 	{
-		$gui->setOption("base", "http://".$_SERVER["HTTP_HOST"].global_setting("h_root")."/software/chat/");
-		$gui->init();
+		$GUI->setOption("base", "http://".$_SERVER["HTTP_HOST"].HROOT."/software/chat/");
+		$GUI->init();
 ?>
 <h2><?=L::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Chat")))?></h2>
 <?php
@@ -45,7 +47,7 @@
 	if(!isset($_REQUEST['channel']) || !isset($_REQUEST['nickname']) || !isset($channels[$_REQUEST['channel']]))
 	{
 ?>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/chat.php')?>" method="get" id="chat-form">
+<form action="<?=htmlspecialchars($GUI->getOption("protocol").'://'.$_SERVER['HTTP_HOST'].HROOT.'/chat.php')?>" method="get" id="chat-form">
 	<dl>
 		<dt class="c-kanal"><label for="i-kanal"><?=L::h(_("Kanal&[chat.php|1]"))?></label></dt>
 		<dd class="c-kanal"><select name="channel" id="i-kanal"<?=L::accesskeyAttr(_("Kanal&[chat.php|1]"))?>>
@@ -80,7 +82,7 @@
 	{
 		if(input_el.checked)
 		{
-			open('<?=global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/chat.php'?>?channel='+encodeURIComponent(document.getElementById('i-kanal').value)+'&nickname='+encodeURIComponent(document.getElementById('i-spitzname').value)+"&popup=1", "_blank", "location=no,menubar=no,resizable=yes,scrollbars=yes,status=yes,toolbar=no");
+			open('<?=$GUI->getOption("protocol").'://'.$_SERVER['HTTP_HOST'].HROOT.'/chat.php'?>?channel='+encodeURIComponent(document.getElementById('i-kanal').value)+'&nickname='+encodeURIComponent(document.getElementById('i-spitzname').value)+"&popup=1", "_blank", "location=no,menubar=no,resizable=yes,scrollbars=yes,status=yes,toolbar=no");
 			return false;
 		}
 	}
@@ -94,7 +96,7 @@
 			if(!isset($info[3])) $info[3] = 6667;
 ?>
 	<dt><?=$info[0]?></dt>
-	<dd><a href="irc://<?=htmlspecialchars($info[1])?>:<?=htmlspecialchars($info[3])?>/<?=htmlspecialchars($info[2])?>"><?=sprintf(h(_("%s auf %s, Port %d")), htmlspecialchars($info[2]), htmlspecialchars($info[1]), htmlspecialchars($info[3]))?></a></dd>
+	<dd><a href="irc://<?=htmlspecialchars($info[1])?>:<?=htmlspecialchars($info[3])?>/<?=htmlspecialchars($info[2])?>"><?=sprintf(L::h(_("%s auf %s, Port %d")), htmlspecialchars($info[2]), htmlspecialchars($info[1]), htmlspecialchars($info[3]))?></a></dd>
 <?php
 		}
 ?>
@@ -112,7 +114,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?=L::h(_("[LANG]"))?>">
 	<head>
 		<title><?=L::h($channels[$_REQUEST['channel']][0])?></title>
-		<base href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/software/chat/')?>" />
+		<base href="<?=htmlspecialchars('http://'.$_SERVER['HTTP_HOST'].HROOT.'/software/chat/')?>" />
 		<style type="text/css">
 			html,body,#chat-applet { width:100%; height:100%; margin:0; padding:0; border-style:none; }
 		</style>
@@ -177,5 +179,6 @@
 		}
 	}
 
-	$gui->end();
+	if(!$popup)
+		$GUI->end();
 ?>

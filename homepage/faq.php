@@ -18,18 +18,20 @@
 	/**
 	 * Die Hilfe zum Spiel.
 	 * @author Candid Dauth
-	 * @package sua
-	 * @subpackage homepage
+	 * @package sua-homepage
 	*/
 
 	namespace sua\homepage;
 
+	use \sua\L;
+	use \sua\F;
+
 	require('include.php');
 
-	$gui->init();
+	$GUI->init();
 ?>
 <h2><?=L::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("FAQ")))?></h2>
-<p><?=sprintf(h(_("Hier eine Liste häufig gestellter Fragen. Sollte die Frage, die Sie suchen, nicht dabei sein, schreiben Sie einfach ins %sBoard%s.")), "<a href=\"".global_setting("USE_PROTOCOL")."://board.s-u-a.net/index.php\">", "</a>")?></p>
+<p><?=sprintf(L::h(_("Hier eine Liste häufig gestellter Fragen. Sollte die Frage, die Sie suchen, nicht dabei sein, schreiben Sie einfach ins %sBoard%s.")), "<a href=\"".htmlspecialchars($GUI->getOption("protocol"))."://board.s-u-a.net/index.php\">", "</a>")?></p>
 <ol id="question-list">
 	<li><a href="#requirements"><?=L::h(sprintf(_("Was brauche ich, um %s zu spielen?"), _("title_abbr")))?></a></li>
 	<li><a href="#register"><?=L::h(_("Wie kann ich mich anmelden?"))?></a></li>
@@ -72,16 +74,16 @@
 <div class="faq" id="register">
 	<h3><?=L::h(_("Wie kann ich mich anmelden?"))?></h3>
 	<p><?=L::h(_("Bereits registrierte Benutzer müssen das Formular, das auf der rechten Seite zu sehen ist, einfach nur ausfüllen (mit Benutzernamen und Passwort) und auf „Anmelden“ klicken."))?></p>
-	<p><?=sprintf(h(_("Noch nicht registrierte Benutzer wählen bitte in der Hauptnavigation „%sRegistrieren%s“ aus, füllen das dortige Formular aus und klicken auf „registrieren“. Danach können Sie sich, wie oben beschrieben, anmelden.")), "<a href=\"register.php\">", "</a>")?></p>
+	<p><?=sprintf(L::h(_("Noch nicht registrierte Benutzer wählen bitte in der Hauptnavigation „%sRegistrieren%s“ aus, füllen das dortige Formular aus und klicken auf „registrieren“. Danach können Sie sich, wie oben beschrieben, anmelden.")), "<a href=\"register.php\">", "</a>")?></p>
 </div>
 
 <div class="faq" id="certification">
 	<h3><?=L::h(_("Warum bekomme ich immer eine Meldung „Ungültiges Zertifikat“?"))?></h3>
-	<p><?=sprintf(h(_("Diese Meldung ist nichts Schlimmes, Sie erhalten sie, weil das Zertifikat der sicheren HTTP-Verbindung nicht für teures Geld bei irgendeinem Anbieter signiert wurde, sondern nur von der %sCAcert%s-Organisation unterzeichnet ist, welche in vielen Browsern nicht in der Liste der vertrauenswürdigen Firmen aufgeführt ist. Sie können die Warnung jedenfalls getrost ignorieren.")), "<a href=\"http://cacert.org/\">", "</a>")?></p>
+	<p><?=sprintf(L::h(_("Diese Meldung ist nichts Schlimmes, Sie erhalten sie, weil das Zertifikat der sicheren HTTP-Verbindung nicht für teures Geld bei irgendeinem Anbieter signiert wurde, sondern nur von der %sCAcert%s-Organisation unterzeichnet ist, welche in vielen Browsern nicht in der Liste der vertrauenswürdigen Firmen aufgeführt ist. Sie können die Warnung jedenfalls getrost ignorieren.")), "<a href=\"http://cacert.org/\">", "</a>")?></p>
 	<p><?=L::h(_("Falls Sie sich von der Meldung gestört fühlen, haben Sie folgende Möglichkeiten, sie zu vermeiden."))?></p>
 	<ul>
 		<li><?=L::h(_("Sie verzichten auf eine verschlüsselte Verbindung, indem Sie rechts auf der Seite SSL abschalten. Dies ist aber weniger sicher und ist deshalb nicht empfohlen."))?></li>
-		<li><?=sprintf(h(_("Sie laden sich das Zertifikat herunter und installieren es bei sich. Keine Sorge, das Zertifikat ist nur eine kleine Textdatei, die auf Ihrem Computer unter den etlichen anderen Zertifikaten, die schon auf Ihrem Betriebssystem vorinstalliert sind, gespeichert wird. Es kann keinerlei Schaden anrichten. Um die Installation zu starten, %söffnen Sie das Zertifikat%s und folgen den Anweisungen. (In manchen Browsern müssen Sie zusätzlich noch auf „Öffnen“ klicken.)")), "<a href=\"http://www.cacert.org/certs/root.crt\">", "</a>")?></li>
+		<li><?=sprintf(L::h(_("Sie laden sich das Zertifikat herunter und installieren es bei sich. Keine Sorge, das Zertifikat ist nur eine kleine Textdatei, die auf Ihrem Computer unter den etlichen anderen Zertifikaten, die schon auf Ihrem Betriebssystem vorinstalliert sind, gespeichert wird. Es kann keinerlei Schaden anrichten. Um die Installation zu starten, %söffnen Sie das Zertifikat%s und folgen den Anweisungen. (In manchen Browsern müssen Sie zusätzlich noch auf „Öffnen“ klicken.)")), "<a href=\"http://www.cacert.org/certs/root.crt\">", "</a>")?></li>
 	</ul>
 </div>
 
@@ -99,11 +101,25 @@
 
 <div class="faq" id="planets">
 	<h3><?=L::h(_("Kann man mehrere Planeten haben?"))?></h3>
-	<p><?=L::h(sprintf(ngettext("Ja, selbstverständlich. Derzeit können Sie maximal %s Planet haben.", "Ja, selbstverständlich. Derzeit können Sie maximal %s Planeten haben.", global_setting("MAX_PLANETS")), F::ths(global_setting("MAX_PLANETS"))))?></p>
+<?php
+	$max_planets = \sua\Config::getLibConfig()->getConfigValue("users", "max_planets");
+	if(!$max_planets)
+	{
+?>
+	<p><?=L::h(_("Ja, selbstverständlich. Derzeit existiert keine Begrenzung der Zahl der Planeten."))?></p>
+<?php
+	}
+	else
+	{
+?>
+	<p><?=L::h(sprintf(ngettext("Derzeit können Sie nur einen Planeten haben.", "Ja, selbstverständlich. Derzeit können Sie maximal %s Planeten haben.", $max_planets), F::ths($max_planets)))?></p>
+<?php
+	}
+?>
 	<p><?=L::h(sprintf(_("Wenn Sie mit der Spionagesonde einen leeren Planeten ausspionieren, können Sie nachsehen, wieviele Felder dieser hat. Die Felderzahl variiert dabei unabhängig von der Position des Planeten, die Felderzahl beträgt %s–%s Felder. Haben Sie einen Planeten gefunden, den Sie besiedeln möchten, können Sie einem Besiedelungsschiff den Auftrag dazu erteilen."), 100, 500))?></p>
 	<p><?=L::h(_("Optional können Sie dem Besiedelungsschiff zusätzliche Flotte mitschicken, diese wird nach der Besiedelung rückkehren. (Anders als das Besiedelungsschiff, dieses wird bei der Besiedelung abgebaut, um ein Startkapital auf dem Planeten zur Verfügung zu stellen.) Auf diese Weise können Sie auf dem neuen Planeten sofort Rohstoffe und Roboter durch die Transportkapazität der Flotte bereitstellen."))?></p>
 	<p><?=L::h(_("Überlegen Sie sich gut, wo Sie Ihre Planeten platzieren. Wenn Sie vorhaben, auf bestimmten Kolonien nur bestimmte Minen auszubauen, ist es möglicherweise sinnvoll für Sie, Ihre Planeten nah beieinander zu halten, um schnell Rohstoffe zwischen den Kolonien hin- und herzuschicken. Wenn Sie sich mehr auf den Handel spezialisieren möchten, ist es vielleicht geschickt, in jeder Galaxie mindestens einen Planeten zu besitzen, damit der Transport vom und zum Kunden nicht so lange dauert."))?></p>
-	<p><?=L::h(sprintf(ngettext("Einige Spieler bevorzugen es, ein oder zwei Kolonien des %s-Planet-Limits offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – solche Kolonien werden temporär besiedelt und auf %sproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann.", "Einige Spieler bevorzugen es, ein oder zwei Kolonien des %s-Planeten-Limits offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – solche Kolonien werden temporär besiedelt und auf %sproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann.", global_setting("MAX_PLANETS")), F::ths(global_setting("MAX_PLANETS")), _("Tritium")))?></p>
+	<p><?=L::h(sprintf(ngettext("Einige Spieler bevorzugen es, ein oder zwei Kolonien des %s-Planet-Limits offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – solche Kolonien werden temporär besiedelt und auf %sproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann.", "Einige Spieler bevorzugen es, ein oder zwei Kolonien des %s-Planeten-Limits offenzulassen, um später sogenannte „Raidkolonien“ besetzen zu können – solche Kolonien werden temporär besiedelt und auf %sproduktion spezialisiert, damit in einem Krieg der Feind schneller und billiger angeflogen werden kann.", $max_planets), F::ths($max_planets), _("Tritium")))?></p>
 </div>
 
 <div class="faq" id="umode">
@@ -116,7 +132,7 @@
 
 <div class="faq" id="times">
 	<h3><?=L::h(_("Wie kann man die Bauzeiten verkürzen?"))?></h3>
-	<p><?=sprintf(h(_("Gebäudebauzeiten können Sie durch Roboter verkürzen. (→ %sWie funktionieren die Roboter?%s)")), "<a href=\"#robots\">", "</a>")?></p>
+	<p><?=sprintf(L::h(_("Gebäudebauzeiten können Sie durch Roboter verkürzen. (→ %sWie funktionieren die Roboter?%s)")), "<a href=\"#robots\">", "</a>")?></p>
 	<p><?=L::h(_("Die Zeiten der lokalen Forschung werden pro Ausbaulevel des Forschungslabors um 2,5 % verkürzt. Zusätzlich wirkt auf die globale Forschung jeder Ausbaulevel eines jeden Forschungslabors auf einem anderen Planeten um 1 %."))?></p>
 	<p><?=L::h(_("Roboterbauzeiten verkürzen Sie durch den Ausbau der Roboterfabrik. Jede Ausbaustufe der Roboterfabrik verschnellert den Bau Ihrer Roboter um 5 %."))?></p>
 	<p><?=L::h(_("Jeder Ausbaulevel Ihrer Werft verkürzt außerdem die Bauzeit von Schiffen und Verteidigungsanlangen um 2,5 %."))?></p>
@@ -130,7 +146,7 @@
 <div class="faq" id="avatars">
 	<h3><?=L::h(_("Wie füge ich ein Bild in meine Allianz- oder Benutzerbeschreibung ein?"))?></h3>
 	<p><?=L::h(_("Sie haben die Möglichkeit, XHTML-Code in Nachrichten, Allianzbeschreibungen und Spielerbeschreibungen einzugeben. Sofern der Code korrekt ist, wird er dann vom Browser interpretiert."))?></p>
-	<p><?=sprintf(h(_("Ein Bild können Sie einfügen, indem Sie folgenden Code in Ihre Allianzbeschreibung einfügen: %s – als Pfad sollten Sie normalerweise eine Adresse angeben, die mit %s beginnt, das heißt, dass Sie das Bild auf einen öffentlich erreichbaren Webspace hinaufladen müssen. Denken Sie daran, wenn Sie ein Bild von Ihrer Festplatte einbinden (also als Pfad etwas wie %s oder %s angeben), wird die Datei auf der Festplatte eines Anderen höchstwahrscheinlich nicht vorhanden sein und deswegen nicht angezeigt werden. Ein Alternativtext muss aus Rücksicht auf Browser, die keine Bilder darstellen können/sollen, angegeben werden. Stellen Sie sich einfach vor, jemand sieht nichts davon, dass Sie versucht haben ein Bild einzubinden, sondern sieht den Alternativtext, den Sie angegeben haben, im normalen Fließtext stehen. Überlegen Sie nun, was für ein Text für einen solchen Benutzer am sinnvollsten wäre, mit Texten wie „Logo“, „Bild“ oder gar „Alternativtext“ wird niemand wirklich etwas anfangen können. Und lassen Sie sich bloß nicht durch die Tatsache verwirren, dass der Internet Explorer den Alternativtext teilweise auch anzeigt, obwohl das Bild geladen werden kann!")), "<code class=\"xhtml\">&lt;img src=&quot;<var>[".h(_("Pfad zum Bild"))."]</var>&quot; alt=&quot;<var>[".h(_("Alternativtext"))."]</var>&quot; /&gt;</code>", "<code>http://</code>", "<code>C:\\".h(_("…"))."</code>", "<code>/home/".h(_("…"))."</code>")?></p>
+	<p><?=sprintf(L::h(_("Ein Bild können Sie einfügen, indem Sie folgenden Code in Ihre Allianzbeschreibung einfügen: %s – als Pfad sollten Sie normalerweise eine Adresse angeben, die mit %s beginnt, das heißt, dass Sie das Bild auf einen öffentlich erreichbaren Webspace hinaufladen müssen. Denken Sie daran, wenn Sie ein Bild von Ihrer Festplatte einbinden (also als Pfad etwas wie %s oder %s angeben), wird die Datei auf der Festplatte eines Anderen höchstwahrscheinlich nicht vorhanden sein und deswegen nicht angezeigt werden. Ein Alternativtext muss aus Rücksicht auf Browser, die keine Bilder darstellen können/sollen, angegeben werden. Stellen Sie sich einfach vor, jemand sieht nichts davon, dass Sie versucht haben ein Bild einzubinden, sondern sieht den Alternativtext, den Sie angegeben haben, im normalen Fließtext stehen. Überlegen Sie nun, was für ein Text für einen solchen Benutzer am sinnvollsten wäre, mit Texten wie „Logo“, „Bild“ oder gar „Alternativtext“ wird niemand wirklich etwas anfangen können. Und lassen Sie sich bloß nicht durch die Tatsache verwirren, dass der Internet Explorer den Alternativtext teilweise auch anzeigt, obwohl das Bild geladen werden kann!")), "<code class=\"xhtml\">&lt;img src=&quot;<var>[".L::h(_("Pfad zum Bild"))."]</var>&quot; alt=&quot;<var>[".L::h(_("Alternativtext"))."]</var>&quot; /&gt;</code>", "<code>http://</code>", "<code>C:\\".L::h(_("…"))."</code>", "<code>/home/".L::h(_("…"))."</code>")?></p>
 	<p><?=L::h(_("Es stehen zusätzlich übrigens folgende XHTML-1.1-Elemente mit allen semantisch ausschlaggebenden Attributen zur Verfügung:"))?></p>
 	<ul>
 		<li><code>table</code> (<code>thead</code>, <code>tbody</code>, <code>tfoot</code>, <code>tr</code>, <code>th</code>, <code>td</code>, <code>caption</code>)</li>
@@ -180,13 +196,13 @@
 
 <div class="faq" id="administrators">
 	<h3><?=L::h(_("Wie kann ich die Administratoren erreichen?"))?></h3>
-	<p><?=sprintf(h(_("Ab und zu treiben sich unsere Administratoren und Entwickler im %s#sua-dev-Channel auf irc.epd-me.net%s herum. Jener Kanal wird hauptsächlich für Entwicklergespräche zwischen den %s-Entwicklern verwendet.")), "<a href=\"irc://irc.epd-me.net/#sua-dev\">", "</a>", h(_("title_abbr")))?></p>
-	<p><?=sprintf(h(_("Beachten Sie: Der Developer-Channel sollte nicht zum Klatsch und Tratsch verwendet werden, dazu ist der %sallgemeine Chat%s da. Sollten sich zu viele Leute nicht an diese Regel halten, kann es vorkommen, dass der Entwickler-Channel auf „moderated“ geschaltet wird, das heißt, dass ein Administrator Ihnen zuerst manuell erlauben muss, etwas zu schreiben, nachdem Sie den Kanal betreten haben.")), "<a href=\"#chat\">", "</a>")?></p>
+	<p><?=sprintf(L::h(_("Ab und zu treiben sich unsere Administratoren und Entwickler im %s#sua-dev-Channel auf irc.epd-me.net%s herum. Jener Kanal wird hauptsächlich für Entwicklergespräche zwischen den %s-Entwicklern verwendet.")), "<a href=\"irc://irc.epd-me.net/#sua-dev\">", "</a>", L::h(_("title_abbr")))?></p>
+	<p><?=sprintf(L::h(_("Beachten Sie: Der Developer-Channel sollte nicht zum Klatsch und Tratsch verwendet werden, dazu ist der %sallgemeine Chat%s da. Sollten sich zu viele Leute nicht an diese Regel halten, kann es vorkommen, dass der Entwickler-Channel auf „moderated“ geschaltet wird, das heißt, dass ein Administrator Ihnen zuerst manuell erlauben muss, etwas zu schreiben, nachdem Sie den Kanal betreten haben.")), "<a href=\"#chat\">", "</a>")?></p>
 </div>
 
 <div class="faq" id="name">
 	<h3><?=L::h(_("Kann ich meinen Namen ändern?"))?></h3>
-	<p><?=sprintf(h(_("Namensänderungen sind eher unerwünscht (Benutzer könnten sich auf diese Weise vor anderen „verstecken“ oder Verwirrung auslösen), weswegen das Spiel es Spielern nicht erlaubt, Ihren Benutzernamen zu ändern. Sollte es dennoch einen Grund geben, der für eine Namensänderung spricht (Accountübernahme, etc.), kann ein Administrator Ihren Namen ändern. (→ %sWie kann ich die Administratoren erreichen?%s)")), "<a href=\"#administrators\">", "</a>")?></p>
+	<p><?=sprintf(L::h(_("Namensänderungen sind eher unerwünscht (Benutzer könnten sich auf diese Weise vor anderen „verstecken“ oder Verwirrung auslösen), weswegen das Spiel es Spielern nicht erlaubt, Ihren Benutzernamen zu ändern. Sollte es dennoch einen Grund geben, der für eine Namensänderung spricht (Accountübernahme, etc.), kann ein Administrator Ihren Namen ändern. (→ %sWie kann ich die Administratoren erreichen?%s)")), "<a href=\"#administrators\">", "</a>")?></p>
 </div>
 
 <div class="faq" id="universe">
@@ -198,7 +214,7 @@
 	<h3><?=L::h(_("Bei einem Gebäude/Forschung fehlt der Ausbauknopf oder bei meinen Robotern/Schiffen/Verteidigungsanlagen fehlt das Ausbaufeld."))?></h3>
 	<p><?=L::h(_("Ein solcher Fall kann viele Ursachen haben. Dies hier stellt eine kleine Auswahl dar."))?></p>
 	<ul>
-		<li><?=sprintf(h(_("Der Planet ist ausgebaut. Ein Weiterbau der meisten Gebäude ist somit nicht möglich. Entwickeln Sie %s oder bauen Sie Gebäude zurück, um wieder freie Felder zu erlangen.")), _("[item_F9_acc_def]"))?></li>
+		<li><?=sprintf(L::h(_("Der Planet ist ausgebaut. Ein Weiterbau der meisten Gebäude ist somit nicht möglich. Entwickeln Sie %s oder bauen Sie Gebäude zurück, um wieder freie Felder zu erlangen.")), _("[item_F9_acc_def]"))?></li>
 		<li><?=L::h(_("Das Gebäude, das Sie ausbauen wollen, ist derzeit in Benutzung. Warten Sie, bis alle laufenden Forschungen/Roboter/Raumschiffe/Verteidigungsanlagen fertiggestellt sind."))?></li>
 		<li><?=L::h(_("Das Gebäude, in dem Sie etwas bauen möchten, wird gerade ausgebaut. Sie können deswegen nicht forschen oder keine Roboter/Raumschiffe/Verteidigungsanlangen in Auftrag geben."))?></li>
 		<li><?=L::h(_("Sie haben nicht die nötigen Abhängigkeiten erfüllt. Die Forschung/Roboter/Raumschiffe/Verteidigungsanlagen werden nur angezeigt, weil Sie diese bereits entwickelt/auf dem Planeten stationiert haben. Sie können aber keine weiteren dieser Gegenstände bauen. Schauen Sie sich den Forschungsbaum an und erfüllen Sie alle Forderungen."))?></li>
@@ -209,16 +225,15 @@
 
 <div class="faq" id="distance">
 	<h3><?=L::h(_("Wie berechnet sich die Entfernung zwischen zwei Planeten?"))?></h3>
-	<p><?=sprintf(h(_("Entfernungen in %s werden in %s angegeben. Ein %s bezeichnet dabei die Entfernung zum eigenen Trümmerfeld.")), h(_("title_abbr")), "<abbr title=\"".h(_("Orbits"))."\">".h(_("Or"))."</abbr>", h(ngettext("Orbit", "Orbits", 1)))?></p>
-	<p><?=sprintf(h(_("Planeten innerhalb des Sonnensystems sind in einer Reihe angeordnet. Die Distanz zum nächsten Planeten beträgt hierbei %s, die zum übernächsten %s, und so weiter.")), F::ths(10).h(_("[unit_separator]"))."<abbr title=\"".h(ngettext("Orbit", "Orbits", 10))."\">".h(_("Or"))."</abbr>", F::ths(20).h(_("[unit_separator]"))."<abbr title=\"".h(ngettext("Orbit", "Orbits", 20))."\">".h(_("Or"))."</abbr>")?></p>
-	<p><?=sprintf(h(_("Die Entfernung zu einem Planeten in derselben Galaxie, aber in einem anderen Sonnensystem gestaltet sich etwas schwieriger. Sie müssen sich eine Galaxie in %s als riesigen Quader vorstellen, der eine Seitenlänge von %s hat. Stellen Sie sich ein dreidimensionales Koordinatensystem vor, in welchem die Längeneinheiten der x-, der y- und der z-Achse jeweils %s sind. Die Koordinaten eines Sonnensystems sind nun einfach herausfinden, das Sonnensystem 123 hat zum Beispiel die Koordinaten (1|2|3), also (%s|%s|%s). Sollten Sie sich gut in der Mathematik und der Geometrie auskennen, werden Sie nun wissen, wie sich der Abstand zwischen zwei Sonnensystemen berechnet.")), h(_("title_abbr")), F::ths(9000).h(_("[unit_separator]"))."<abbr title=\"".h(ngettext("Orbit", "Orbits", 9000))."\">".h(_("Or"))."</abbr>", h(_("title_abbr")), F::ths(1000).h(_("[unit_separator]"))."<abbr title=\"".h(ngettext("Orbit", "Orbits", 1000))."\">".h(_("Or"))."</abbr>", h(_("title_abbr")), F::ths(1000).h(_("[unit_separator]"))."<abbr title=\"".h(ngettext("Orbit", "Orbits", 1000))."\">".h(_("Or"))."</abbr>", h(_("title_abbr")), F::ths(2000).h(_("[unit_separator]"))."<abbr title=\"".h(ngettext("Orbit", "Orbits", 2000))."\">".h(_("Or"))."</abbr>", h(_("title_abbr")), F::ths(3000).h(_("[unit_separator]"))."<abbr title=\"".h(ngettext("Orbit", "Orbits", 3000))."\">".h(_("Or"))."</abbr>")?></p>
-	<p><?=sprintf(h(_("Wenn Sie mit einem Raumschiff in eine andere Galaxie fliegen wollen, müssen Sie größere Distanzen zurücklegen. Stellen Sie sich einen riesigen Kreis vor, auf dem die Galaxien gleichmäßig verteilt sind. Das Raumschiff nimmt in diesem Kreis den kürzesten Weg (&bdquo;Luftlinie&ldquo;) zur Zielgalaxie. Für die Mathematiker unter uns: Die Größe des Kreises wird so ausgelegt, dass der Abstand von einer Galaxie zur nächsten auf der Kreislinie entlang genau %s entspricht.")), F::ths(30000).h(_("[unit_separator]"))."<abbr title=\"".h(ngettext("Orbit", "Orbits", 30000))."\">".h(_("Or"))."</abbr>")?></p>
+	<p><?=sprintf(L::h(_("Entfernungen in %s werden in %s angegeben. Ein %s bezeichnet dabei die Entfernung zum eigenen Trümmerfeld.")), L::h(_("title_abbr")), "<abbr title=\"".L::h(_("Orbits"))."\">".L::h(_("Or"))."</abbr>", L::h(ngettext("Orbit", "Orbits", 1)))?></p>
+	<p><?=sprintf(L::h(_("Planeten innerhalb des Sonnensystems sind in einer Reihe angeordnet. Die Distanz zum nächsten Planeten beträgt hierbei %s, die zum übernächsten %s, und so weiter.")), F::ths(10).L::h(_("[unit_separator]"))."<abbr title=\"".L::h(ngettext("Orbit", "Orbits", 10))."\">".L::h(_("Or"))."</abbr>", F::ths(20).L::h(_("[unit_separator]"))."<abbr title=\"".L::h(ngettext("Orbit", "Orbits", 20))."\">".L::h(_("Or"))."</abbr>")?></p>
+	<p><?=sprintf(L::h(_("Die Entfernung zu einem Planeten in derselben Galaxie, aber in einem anderen Sonnensystem gestaltet sich etwas schwieriger. Sie müssen sich eine Galaxie in %s als riesigen Quader vorstellen, der eine Seitenlänge von %s hat. Stellen Sie sich ein dreidimensionales Koordinatensystem vor, in welchem die Längeneinheiten der x-, der y- und der z-Achse jeweils %s sind. Die Koordinaten eines Sonnensystems sind nun einfach herausfinden, das Sonnensystem 123 hat zum Beispiel die Koordinaten (1|2|3), also (%s|%s|%s). Sollten Sie sich gut in der Mathematik und der Geometrie auskennen, werden Sie nun wissen, wie sich der Abstand zwischen zwei Sonnensystemen berechnet.")), L::h(_("title_abbr")), F::ths(9000).L::h(_("[unit_separator]"))."<abbr title=\"".L::h(ngettext("Orbit", "Orbits", 9000))."\">".L::h(_("Or"))."</abbr>", L::h(_("title_abbr")), F::ths(1000).L::h(_("[unit_separator]"))."<abbr title=\"".L::h(ngettext("Orbit", "Orbits", 1000))."\">".L::h(_("Or"))."</abbr>", L::h(_("title_abbr")), F::ths(1000).L::h(_("[unit_separator]"))."<abbr title=\"".L::h(ngettext("Orbit", "Orbits", 1000))."\">".L::h(_("Or"))."</abbr>", L::h(_("title_abbr")), F::ths(2000).L::h(_("[unit_separator]"))."<abbr title=\"".L::h(ngettext("Orbit", "Orbits", 2000))."\">".L::h(_("Or"))."</abbr>", L::h(_("title_abbr")), F::ths(3000).L::h(_("[unit_separator]"))."<abbr title=\"".L::h(ngettext("Orbit", "Orbits", 3000))."\">".L::h(_("Or"))."</abbr>")?></p>
+	<p><?=sprintf(L::h(_("Wenn Sie mit einem Raumschiff in eine andere Galaxie fliegen wollen, müssen Sie größere Distanzen zurücklegen. Stellen Sie sich einen riesigen Kreis vor, auf dem die Galaxien gleichmäßig verteilt sind. Das Raumschiff nimmt in diesem Kreis den kürzesten Weg (&bdquo;Luftlinie&ldquo;) zur Zielgalaxie. Für die Mathematiker unter uns: Die Größe des Kreises wird so ausgelegt, dass der Abstand von einer Galaxie zur nächsten auf der Kreislinie entlang genau %s entspricht.")), F::ths(30000).L::h(_("[unit_separator]"))."<abbr title=\"".L::h(ngettext("Orbit", "Orbits", 30000))."\">".L::h(_("Or"))."</abbr>")?></p>
 </div>
 
 <div class="faq" id="download">
 	<h3><?=L::h(_("Wie kann ich mir das Spiel herunterladen?"))?></h3>
-	<p><?=sprintf(h(_("Besuchen Sie doch einmal die %s%s-Entwicklerseiten%s, dort finden Sie weitere Informationen, wie Sie das Spiel bekommen können.")), "<a href=\"http://dev.s-u-a.net/\">", h(_("title_abbr")), "</a>")?></p>
+	<p><?=sprintf(L::h(_("Besuchen Sie doch einmal die %s%s-Entwicklerseiten%s, dort finden Sie weitere Informationen, wie Sie das Spiel bekommen können.")), "<a href=\"http://dev.s-u-a.net/\">", L::h(_("title_abbr")), "</a>")?></p>
 </div>
 <?php
-	$gui->end();
-?>
+	$GUI->end();

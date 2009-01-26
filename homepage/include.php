@@ -18,8 +18,7 @@
 	/**
 	 * Include-Datei für die Hauptseite.
 	 * @author Candid Dauth
-	 * @package sua
-	 * @subpackage homepage
+	 * @package sua-homepage
 	*/
 
 	namespace sua\homepage;
@@ -95,10 +94,9 @@
 	if(!isset($_COOKIE["use_cookies"]) && !headers_sent())
 		setcookie("use_cookies", "1", time()+4838400, HROOT."/");
 
-	bindtextdomain("sua-homepage", dirname(__FILE__)."/locale");
-	bind_textdomain_codeset("sua-homepage", "utf-8");
-
 	const TEXTDOMAIN = "sua-homepage";
+	bindtextdomain(TEXTDOMAIN, dirname(__FILE__)."/locale");
+	bind_textdomain_codeset(TEXTDOMAIN, "utf-8");
 	function _($message) { return gettext($message); }
 	function gettext($message) { return dgettext(TEXTDOMAIN, $message); }
 	function ngettext($msgid1, $msgid2, $n) { return dngettext(TEXTDOMAIN, $msgid1, $msgid2, $n); }

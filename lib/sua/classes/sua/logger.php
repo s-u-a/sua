@@ -31,11 +31,11 @@
 
 	class Logger implements StaticInit
 	{
-		private $listeners = array();
+		private static $listeners = array();
 
 		static function init()
 		{
-			self::$listeners[] = function($message){ foreach(preg_split("/\r\n|\r|\n/", $message) as $line) fputs(STDERR, date("Y-m-d\\TH:i:s")."\t".$line); };
+			self::$listeners[] = function($message){ foreach(preg_split("/\r\n|\r|\n/", $message) as $line){ $print = date("Y-m-d\\TH:i:s")."\t".$line; if(defined("STDERR")) fputs(STDERR, $print); else echo $print; } };
 		}
 
 		/**

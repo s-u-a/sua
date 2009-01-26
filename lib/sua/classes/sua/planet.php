@@ -50,7 +50,7 @@
 				"tf2 REAL DEFAULT 0",
 				"tf3 REAL DEFAULT 0",
 				"size INTEGER DEFAULT 0",
-				"index INTEGER NOT NULL"
+				"user_index INTEGER NOT NULL" // Bestimmt die Reihenfolge der Planeten eines Benutzers
 			),
 			"planets_items" => array (
 				"galaxy INTEGER NOT NULL",
@@ -101,15 +101,17 @@
 		}
 
 		/**
-		 * Besiedelt den Planeten.
-		 * @param System $system
-		 * @param int $planet
+		 * Erzeugt einen Planeten.
+		 * @param string $name Galaxie ":" System ":" Planet
+		 * @return void
 		*/
 
-		static function create(System $system, $planet)
+		static function create($name=null)
 		{
-			if(self::exists(self::idFromParams(array($sytem, $planet))))
+			if(self::exists($name))
 				throw new PlanetException("This planet does already exist.");
+			$name = self::datasetName($name);
+			list($system, $planet) = self::paramsFromId($name);
 			self::$sqlite->query("INSERT INTO planets ( galaxy, system, planet, size_original ) VALUES ( ".self::$sqlite->quote($system->getGalaxy()).", ".self::$sqlite->quote($system->getSystem()).", ".self::$sqlite->quote($planet).", ".self::$sqlite->quote(rand(100, 500))." );");
 			return self::idFromParams(array($system, $planet));
 		}
@@ -470,12 +472,12 @@
 			$size = floor($size*($user_obj->getItemLevel("F9", "forschung")/Item::getIngtechFactor()+1));
 			$this->setMainField("size", $size);
 
-			$index = $this->singleField("SELECT MAX(index) FROM planets WHERE user = ".$this->quote($user));
+			$index = $this->singleField("SELECT MAX(user_index) FROM planets WHERE user = ".$this->quote($user));
 			if($index === false)
 				$index = 0;
 			else
 				$index++;
-			$this->setMainField("index", $index);
+			$this->setMainField("user_index", $index);
 
 			return $index;
 		}
@@ -492,12 +494,12 @@
 			$owner = $this->getMainField("user");
 			if(!$owner)
 				throw PlanetException("This planet is not colonised.");
-			$current_index = $this->getMainField("index");
-			$next_index = $this->singleLine("SELECT galaxy,system,planet,index FROM planets WHERE index < ".$this->quote($current_index)." ORDER BY index DESC LIMIT 1;");
+			$current_index = $this->getMainField("user_index");
+			$next_index = $this->singleLine("SELECT galaxy,system,planet,user_index FROM planets WHERE user_index < ".$this->quote($current_index)." ORDER BY user_index DESC LIMIT 1;");
 			if(!$next_index)
 				throw new UserException("This planet is on the top.");
-			$this->backgroundQuery("UPDATE planets SET index = ".$this->quote($current_index)." WHERE galaxy = ".$this->quote($next_index["galaxy"])." AND system = ".$this->quote($next_index["system"])." AND planet = ".$this->quote($next_index["planet"]).";");
-			$this->backgroundQuery("UPDATE planets SET index = ".$this->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
+			$this->backgroundQuery("UPDATE planets SET user_index = ".$this->quote($current_index)." WHERE galaxy = ".$this->quote($next_index["galaxy"])." AND system = ".$this->quote($next_index["system"])." AND planet = ".$this->quote($next_index["planet"]).";");
+			$this->backgroundQuery("UPDATE planets SET user_index = ".$this->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
 		}
 
 		/**
@@ -512,12 +514,12 @@
 			$owner = $this->getMainField("user");
 			if(!$owner)
 				throw PlanetException("This planet is not colonised.");
-			$current_index = $this->getMainField("index");
-			$next_index = $this->singleLine("SELECT galaxy,system,planet,index FROM planets WHERE index > ".$this->quote($current_index)." ORDER BY index ASC LIMIT 1;");
+			$current_index = $this->getMainField("user_index");
+			$next_index = $this->singleLine("SELECT galaxy,system,planet,user_index FROM planets WHERE user_index > ".$this->quote($current_index)." ORDER BY user_index ASC LIMIT 1;");
 			if(!$next_index)
 				throw new UserException("This planet is on the bottom.");
-			$this->backgroundQuery("UPDATE planets SET index = ".$this->quote($current_index)." WHERE galaxy = ".$this->quote($next_index["galaxy"])." AND system = ".$this->quote($next_index["system"])." AND planet = ".$this->quote($next_index["planet"]).";");
-			$this->backgroundQuery("UPDATE planets SET index = ".$this->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
+			$this->backgroundQuery("UPDATE planets SET user_index = ".$this->quote($current_index)." WHERE galaxy = ".$this->quote($next_index["galaxy"])." AND system = ".$this->quote($next_index["system"])." AND planet = ".$this->quote($next_index["planet"]).";");
+			$this->backgroundQuery("UPDATE planets SET user_index = ".$this->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
 		}
 
 		/**
@@ -636,7 +638,7 @@
 				if($cur[$i] >= $limit[$i])
 					continue;
 				$cur[$i] += $prod[$i]*$f;
-				$cur[$i] > $limit[$i])
+				if($cur[$i] > $limit[$i])
 					$cur[$i] = $limit[$i];
 			}
 
@@ -1491,3 +1493,4 @@
 
 			return true;
 		}
+	}

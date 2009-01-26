@@ -18,8 +18,7 @@
 	/**
 	 * Listet die Features des Spiels auf.
 	 * @author Candid Dauth
-	 * @package sua
-	 * @subpackage homepage
+	 * @package sua-homepage
 	*/
 
 	namespace sua\homepage;

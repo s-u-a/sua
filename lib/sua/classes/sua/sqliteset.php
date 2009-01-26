@@ -30,7 +30,7 @@
 	 * Implementiert die Dataset-Funktionen.
 	*/
 
-	abstract class SQLiteSet extends Dataset
+	abstract class SQLiteSet extends Dataset implements StaticInit
 	{
 		/**
 		 * Eine SQLite-Instanz, die die Datenbank bedient.
@@ -50,16 +50,23 @@
 
 		private static $tables_checked = array();
 
-		/**
-		 * @todo Testen
-		*/
-
-		function __construct()
+		static function init()
 		{
-			parent::__construct();
+			static $added_to_dataset;
+
+			if(!isset($added_to_dataset) || !$added_to_dataset)
+			{
+				Dataset::addDatabaseChangeListener(function(){ SQLiteSet::init(); });
+				$added_to_dataset = true;
+			}
+
 			if(!self::$sqlite)
-				self::$sqlite = Classes::SQLite(Dataset::$databaseDirectory);
-			if(!in_array(get_class($this), self::$tables_checked))
+			{
+				try { self::$sqlite = Classes::SQLite(Dataset::getDatabase()); }
+				catch(DatasetException $e) { }
+			}
+
+			if(self::$sqlite)
 				static::checkTables();
 		}
 

@@ -50,7 +50,8 @@
 				return $config;
 
 			$el = $dom->firstChild->nextSibling->firstChild;
-			while($el->nodeType != 1) $el = $el->nextSibling;
+			while($el && $el->nodeType != 1) $el = $el->nextSibling;
+			if(!$el) return $config;
 			while(true)
 			{
 				$name = $el->getAttribute("name");
@@ -228,7 +229,7 @@
 			foreach(func_get_args() as $arg)
 			{
 				if(!isset($ref[$arg]))
-					throw new ConfigException("Config value not found.", ConfigException::VALUE_NOT_FOUND);
+					throw new ConfigException("Config value “".implode("/", func_get_args())."” not found.", ConfigException::VALUE_NOT_FOUND);
 				$ref = &$ref[$arg];
 			}
 			return $ref;

@@ -92,7 +92,7 @@
 		 * @return int
 		*/
 
-		static function getDatabaseVersion()
+		function getDatabaseVersion()
 		{
 			if(is_file($this->getDirectory().'/.version'))
 			{

@@ -32,6 +32,7 @@
 	{
 		private $name;
 		protected $params;
+		private static $setdatabase_handlers = array();
 
 		/** Die Datenbank, in der die Dataset-Objekte gespeichert werden.
 		  * @var Database */
@@ -88,7 +89,7 @@
 			$name = static::datasetName($name);
 			$this->name = $name;
 			$this->params = static::paramsFromId($name);
-			if(!self::exists($name))
+			if(!static::exists($name))
 				throw new DatasetException("Dataset does not exist.");
 		}
 
@@ -156,6 +157,8 @@
 			if(self::$database)
 				throw new DatasetException("The database may only be set once.");
 			self::$database = $database;
+			foreach(self::$setdatabase_handlers as $handler)
+				$handler();
 		}
 
 		/**
@@ -169,5 +172,17 @@
 			if(!self::$database)
 				throw new DatasetException("No database has been set.", DatasetException::NO_DATABASE);
 			return self::$database;
+		}
+
+		/**
+		 * Fügt eine Funktion hinzu, die ausgeführt werden soll, wenn Dataset::setDatabase() ausgeführt
+		 * wird.
+		 * @param callback $handler
+		 * @return void
+		*/
+
+		public static final function addDatabaseChangeListener($handler)
+		{
+			self::$setdatabase_handlers[] = $handler;
 		}
 	}

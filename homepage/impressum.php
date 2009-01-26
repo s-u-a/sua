@@ -18,8 +18,7 @@
 	/**
 	 * Zeigt das Impressum des Spiels.
 	 * @author Candid Dauth
-	 * @package sua
-	 * @subpackage homepage
+	 * @package sua-homepage
 	*/
 
 	namespace sua\homepage;

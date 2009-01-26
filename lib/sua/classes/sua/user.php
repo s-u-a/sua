@@ -36,7 +36,7 @@
 	 * @todo Überlegen: Eventhandler muss auf allen Planeten ausgeführt werden, da Forschungen auf einem Planeten alle anderen beeinflussen
 	*/
 
-	class User extends Serialized implements Iterator
+	class User extends SQLiteSet implements \Iterator,StaticInit
 	{
 		/** Gebäudepunkte */
 		const SCORES_GEBAEUDE = "gebaeude";
@@ -133,12 +133,21 @@
 				"user TEXT NOT NULL",
 				"email TEXT",
 				"valid_from INT"
+			),
+			"users_openid" => array ( // OpenID-Accounts, die zu Benutzern gehören
+				"user TEXT NOT NULL",
+				"openid TEXT NOT NULL"
 			)
 		);
 
 		protected static $views = array (
 			"highscores" => "SELECT h_users.user AS user, h_gebaeude.scores AS gebaeude, h_forschung.scores AS forschung, h_roboter.scores AS roboter, h_schiffe.scores AS schiffe, h_verteidigung.scores AS verteidigung, h_users.flightexp AS flightexp, h_users.battleexp AS battleexp, gebaeude + forschung + roboter + schiffe + verteidigung + flightexp + battleexp AS total FROM ( SELECT user, flightexp, battleexp FROM users ) AS h_users LEFT OUTER JOIN ( SELECT user,scores FROM planets_items WHERE type = 'gebaeude' GROUP BY user ) AS h_gebaeude ON h_gebaeude.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM users_research GROUP BY user ) AS h_forschung ON h_forschung.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM ( SELECT user,scores FROM planets_items WHERE type = 'roboter' UNION ALL SELECT user,scores FROM fleets_users_rob UNION ALL SELECT user,scores FROM fleets_users_hrob ) GROUP BY user ) AS h_roboter ON h_roboter.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM ( SELECT user,scores FROM planets_items WHERE type = 'schiffe' UNION ALL SELECT user,scores FROM fleets_users_fleet UNION ALL SELECT user,scores FROM planet_remote_fleet ) GROUP BY user ) AS h_schiffe ON h_schiffe.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM planets_items WHERE type = 'verteidigung' GROUP BY user ) AS h_verteidigung ON h_verteidigung.user = h_users.user"
 		);
+
+		static function init()
+		{
+			__autoload("\sua\Planet"); // Die View oben hängt von den Tabellen der Planet-Klasse ab
+		}
 
 		/**
 		 * Implementiert Dataset::create().
@@ -315,6 +324,81 @@
 		}
 
 		/**
+		 * Gibt zurück, ob ein Passwort gesetzt ist. Wenn kein Passwort gesetzt ist, kann nur über
+		 * OpenID authentifiziert werden.
+		 * @return boolean
+		*/
+
+		function passwordIsSet()
+		{
+			$hash_sha1 = $this->getMainField("password_sha1");
+			$hash_md5 = $this->getMainField("password_md5");
+
+			if(preg_match("/^[a-z0-9]{32}\$/", $hash_sha1))
+				return true;
+			elseif(preg_match("/^[a-z0-9]{32}\$/", $hash_md5))
+				return true;
+			else
+				return false;
+		}
+
+		/**
+		 * Gibt den Benutzernamen zurück, zu dem die OpenID gehört.
+		 * @param string $openid
+		 * @return string|null
+		*/
+
+		static function getUserByOpenId($openid)
+		{
+			$openid = self::$sqlite->singleField("SELECT user FROM users_openid WHERE openid = ".self::$sqlite->quote($openid)." LIMIT 1;");
+			if(!$openid)
+				return null;
+			return $openid;
+		}
+
+		/**
+		 * Fügt eine OpenID zum Benutzeraccount hinzu. Bevor dies durchgeführt wird, sollte authentifiziert werden.
+		 * @param string $openid
+		 * @return void
+		 * @throw UserException Die OpenId wird bereits verwendet.
+		*/
+
+		function addOpenId($openid)
+		{
+			if(self::getUserByOpenId($openid))
+				throw new UserException("This OpenID is already used by another account.");
+			self::$sqlite->backgroundQuery("INSERT INTO users_openid ( user, openid ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($openid)." );");
+		}
+
+		/**
+		 * Gibt alle gespeicherten OpenIDs dieses Benutzer zurück.
+		 * @return array
+		*/
+
+		function getOpenIds()
+		{
+			return self::$sqlite->singleColumn("SELECT openid FROM users_openid WHERE user = ".self::$sqlite->quote($this->getName()).";");
+		}
+
+		/**
+		 * Entfernt eine OpenID aus dem Benutzeraccount.
+		 * @param string $openid
+		 * @return void
+		 * @throw UserException Die OpenId existiert nicht in diesem Benutzeraccount.
+		 * @throw UserException Dies ist die einzige OpenId und es ist kein Passwort gesetzt.
+		*/
+
+		function removeOpenId($openid)
+		{
+			$openids = $this->getOpenIds();
+			if(!in_array($openid, $openids))
+				throw new UserException("This OpenID is not assigned to this user.");
+			if(count($openids) < 2 && !$this->passwordIsSet())
+				throw new UserException("This OpenID may not be removed unless a password is set.");
+			self::$sqlite->backgroundQuery("DELETE FROM users_openid WHERE user = ".self::$sqlite->quote($this->getName())." AND openid = ".self::$sqlite->quote($openid).";");
+		}
+
+		/**
 		 * Gibt die Benutzereinstellung mit der ID $setting zurück.
 		 * @param string $setting
 		 * @return mixed
@@ -385,7 +469,7 @@
 
 		function setSetting($setting, $value)
 		{
-			if(self::$sqlite->singleField("SELECT COUNT(*) FROM users_settings WHERE user = ".self::$sqlite->quote($this->getName())." AND setting = ".self::$sqlite->quote($setting)." LIMIT 1;") > 0);
+			if(self::$sqlite->singleField("SELECT COUNT(*) FROM users_settings WHERE user = ".self::$sqlite->quote($this->getName())." AND setting = ".self::$sqlite->quote($setting)." LIMIT 1;") > 0)
 				self::$sqlite->backgroundQuery("UPDATE users_settings SET value = ".self::$sqlite->quote(serialize($value))." WHERE user = ".self::$sqlite->quote($this->getName())." AND setting = ".self::$sqlite->quote($setting)." LIMIT 1;");
 			else
 				self::$sqlite->backgroundQuery("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($setting).", ".self::$sqlite->quote($value)." );");
@@ -854,7 +938,7 @@
 		{
 			if($address === $this->getTemporaryEMailAddress() && $do_delay)
 				return;
-			self::$sqlite->backgroundQuery("DELETE FROM users_email WHERE user = ".self::$sqlite->quote($this->getName())." AND valid_from > ".self::$sqlite->quote(time()).";")
+			self::$sqlite->backgroundQuery("DELETE FROM users_email WHERE user = ".self::$sqlite->quote($this->getName())." AND valid_from > ".self::$sqlite->quote(time()).";");
 
 			if($address == $this->getEMailAddress())
 				return;

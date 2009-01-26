@@ -35,19 +35,19 @@
 		 * Die Verbindung zur Datenbank.
 		 * @var PDO
 		*/
-		private static $connection = false;
+		private $connection = false;
 
 		/**
 		 * Die Rückgabe des letzten SQLite->query()-Aufrufs für SQLite->nextResult() und SQLite->lastRowsAffected().
 		 * @var PDOStatement
 		*/
-		private static $last_result = false;
+		private $last_result = false;
 
 		/**
 		 * Zweidimensionales Array, enthält die Queries der einzelnen Transaktionen, die gerade geöffnet sind.
 		 * @var array(array(string))
 		*/
-		private static $transactions = array();
+		private $transactions = array();
 
 		/**
 		 * Öffnet die SQLite-Datenbank mit dem Dateinamen $filename. Alternativ kann auch ein Datenbankobjekt übergeben werden, dann
@@ -77,6 +77,54 @@
 
 		function checkTables($tables, $views=null)
 		{
+			if(isset($tables))
+			{
+				foreach($tables as $table=>$cols)
+				{
+					if(isset($views) && isset($views[$table]))
+						continue;
+
+					if($this->singleField("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=".$this->escape($table).";") < 1)
+						$this->query("CREATE TABLE ".$table." ( ".implode(", ", $cols)." );");
+					try
+					{
+						$q = "SELECT ";
+						foreach(array_values($cols) as $i=>$c)
+						{
+							list($c) = explode(" ", $c, 2);
+							if($i != 0) $q .= ",";
+							$q .= $c;
+						}
+						$q .= " FROM ".$table." LIMIT 1;";
+						$this->query($q);
+					}
+					catch(PDOException $e)
+					{
+						if(strpos($e, "no such column") === false) throw $e;
+
+						$add_cols = array();
+						foreach($cols as $c)
+						{
+							list($cf) = explode(" ", $c, 2);
+							try
+							{
+								$this->query("SELECT ".$cf." FROM ".$table." LIMIT 1;");
+							}
+							catch(PDOException $e)
+							{
+								if(strpos($e, "no such column") === false) throw $e;
+								$add_cols[] = $c;
+							}
+						}
+						foreach($add_cols as $c)
+						{
+							$this->query("ALTER TABLE ".$table." ADD COLUMN ".$c.";");
+							$this->query("VACUUM");
+						}
+					}
+				}
+			}
+
 			if(isset($views))
 			{
 				foreach($views as $key=>$create)
@@ -86,51 +134,6 @@
 					{
 						$this->query("DROP VIEW IF EXISTS ".$key.";");
 						$this->query($view_statement);
-					}
-				}
-			}
-
-			foreach($tables as $table=>$cols)
-			{
-				if(isset($views) && isset($views[$table]))
-					continue;
-
-				if($this->singleField("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=".$this->escape($table).";") < 1)
-					$this->query("CREATE TABLE ".$table." ( ".implode(", ", $cols)." );");
-				try
-				{
-					$q = "SELECT ";
-					foreach(array_values($cols) as $i=>$c)
-					{
-						list($c) = explode(" ", $c, 2);
-						if($i != 0) $q .= ",";
-						$q .= $c;
-					}
-					$q .= " FROM ".$table." LIMIT 1;";
-					$this->query($q);
-				}
-				catch(PDOException $e)
-				{
-					if(strpos($e, "no such column") === false) throw $e;
-
-					$add_cols = array();
-					foreach($cols as $c)
-					{
-						list($cf) = explode(" ", $c, 2);
-						try
-						{
-							$this->query("SELECT ".$cf." FROM ".$table." LIMIT 1;");
-						}
-						catch(PDOException $e)
-						{
-							if(strpos($e, "no such column") === false) throw $e;
-							$add_cols[] = $c;
-						}
-					}
-					foreach($add_cols as $c)
-					{
-						$this->query("ALTER TABLE ".$table." ADD COLUMN ".$c.";");
-						$this->query("VACUUM");
 					}
 				}
 			}
@@ -145,8 +148,8 @@
 
 		private function queryWrapper($query)
 		{
-			try { $result = $this->connection->query($query); }
-			catch(PDOException $e) { $this->printException($e, $query); }
+			try { return $this->connection->query($query); }
+			catch(\PDOException $e) { $this->printException($e, $query); }
 		}
 
 		/**
@@ -342,7 +345,7 @@
 		 * @throw Exception $exception
 		*/
 
-		function printException(Exception $exception, $query)
+		function printException(\Exception $exception, $query)
 		{
 			Logger::log("PDO error, query: ".$query);
 			throw $exception;

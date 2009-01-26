@@ -18,8 +18,7 @@
 	/**
 	 * Formular zur Registrierung.
 	 * @author Candid Dauth
-	 * @package sua
-	 * @subpackage homepage
+	 * @package sua-homepage
 	*/
 
 	namespace sua\homepage;

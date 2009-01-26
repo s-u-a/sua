@@ -74,7 +74,7 @@
 				throw new SerializedException("File does not exist.");
 			else
 			{
-				$this->file_pointer = fopen($this->location, 'r+b'));
+				$this->file_pointer = fopen($this->location, 'r+b');
 				if(!$this->file_pointer || !Functions::fancyFlock($this->file_pointer, LOCK_EX))
 					throw new SerializedException("File is not openable.");
 				$this->read();
