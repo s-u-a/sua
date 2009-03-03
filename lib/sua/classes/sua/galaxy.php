@@ -29,7 +29,7 @@
 	 * Kann als Iterator durchlaufen werden, Index: Systemnummer, Wert: Systemobjekt
 	*/
 
-	class Galaxy extends SQLiteSet implements Iterator
+	class Galaxy extends SQLiteSet implements \Iterator,StaticInit
 	{
 		protected static $views = array (
 			"galaxies" => "SELECT galaxy, COUNT(DISTINCT system) AS systems FROM planets GROUP BY galaxy"
@@ -38,13 +38,18 @@
 			"galaxies" => array (
 				"galaxy INTEGER",
 				"systems INTEGER"
-			),
-			"planets" => Planet::$tables["planets"]
+			)
 		);
+
+		static function init()
+		{
+			__autoload("\sua\Planet");
+			parent::init();
+		}
 
 		private $active_system;
 
-		protected static create($name=null)
+		static function create($name=null)
 		{
 			$name = self::datasetName($name);
 			if(self::exists($name))
@@ -63,16 +68,21 @@
 			return $name;
 		}
 
-		public destroy()
+		public function destroy()
 		{
 			self::$sqlite->query("DELETE FROM planets WHERE galaxy = ".self::$sqlite->quote($this->getName()).";");
 		}
 
-		protected static datasetName($name=null)
+		static function datasetName($name=null)
 		{
 			if(!isset($name))
 				$name = self::$sqlite->singleField("SELECT MAX(galaxy)+1 FROM galaxies;");
 			return parent::datasetName($name);
+		}
+
+		function getGalaxy()
+		{
+			return $this->getName();
 		}
 
 		function getSystemsCount()
@@ -110,31 +120,5 @@
 		function valid()
 		{
 			return ($this->active_system !== false);
-		}
-
-		function getPlanetOwner($system, $planet)
-
-		function getPlanetOwnerFlag($system, $planet)
-
-		function setPlanetOwner($system, $planet, $owner)
-
-		function setPlanetOwnerFlag($system, $planet, $flag)
-
-		function getPlanetName($system, $planet)
-
-		function setPlanetName($system, $planet, $name)
-
-		function getPlanetOwnerAlliance($system, $planet)
-
-		function setPlanetOwnerAlliance($system, $planet, $alliance)
-
-		function getPlanetSize($system, $planet)
-
-		function setPlanetSize($system, $planet, $size)
-
-		function resetPlanet($system, $planet)
-		{
-			return ($this->setPlanetName($system, $planet, '') && $this->_setPlanetOwner($system, $planet, '')
-			&& $this->setPlanetOwnerAlliance($system, $planet, '') && $this->setPlanetSize($system, $planet, rand(100, 500)));
 		}
 	}

@@ -23,140 +23,115 @@
 
 	namespace sua\homepage;
 
+	use \sua\Config;
+	use \sua\L;
+	use \sua\HTTPOutput;
+	use \sua\JS;
+
 	require('include.php');
 
-	$databases = Config::get_databases();
-
-	$gui->init();
+	$GUI->init();
 ?>
 <h2><?=L::h(sprintf(_("%s – %s [s-u-a.net heading]"), _("[title_abbr]"), _("Registrieren")))?></h2>
 <?php
-	if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['password2']) && isset($_POST['database']) && isset($databases[$_POST['database']]) && $databases[$_POST['database']]['enabled'])
+	if(isset($_REQUEST["error"]))
 	{
-		define_globals($_POST['database']);
-
-		$error = '';
-
-		if(!isset($_POST['nutzungsbedingungen']) || !$_POST['nutzungsbedingungen'])
-			$error = _('Sie müssen die Nutzungsbedingungen lesen und akzeptieren, um am Spiel teilnehmen zu können.');
-		elseif(strlen(trim($_POST['username'])) > 24)
-			$error = _('Der Benutzername darf maximal 24 Bytes groß sein.');
-		elseif(strlen(trim($_POST['hauptplanet'])) > 24)
-			$error = _('Der Name des Hauptplanets darf maximal 24 Bytes groß sein.');
-		elseif(preg_match('/[\xf8-\xff\x00-\x1f\x7f]/', $_POST['username'])) # Steuerzeichen
-			$error = _('Der Benutzername enthält ungültige Zeichen.');
-		elseif($_POST['password'] != $_POST['password2'])
-			$error = _('Die beiden Passworte stimmen nicht überein.');
-		else
+		switch($_REQUEST["error"])
 		{
-			$_POST['username'] = str_replace("\x0a", ' ', trim($_POST['username'])); # nbsp
-
-			if(User::UserExists($_POST['username']))
+			case "1":
+				$error = _('Sie müssen die Nutzungsbedingungen lesen und akzeptieren, um am Spiel teilnehmen zu können.');
+				break;
+			case "2":
+				$error = _('Der Benutzername enthält ungültige Zeichen.');
+				break;
+			case "3":
+				$error = _('Die beiden Passworte stimmen nicht überein.');
+				break;
+			case "4":
 				$error = _('Dieser Spieler existiert bereits. Bitte wählen Sie einen anderen Namen.');
-			elseif(substr($_POST['username'], -4) == ' (U)')
+				break;
+			case "5":
 				$error = _('Der Benutzername darf nicht auf (U) enden.');
-			elseif(substr($_POST['username'], -4) == ' (g)')
+				break;
+			case "6":
 				$error = _('Der Benutzername darf nicht auf (g) enden.');
-			elseif($_POST["username"] == "0")
+				break;
+			case "7":
 				$error = _("Dieser Benutzername ist nicht zulässig.");
-			else
-			{
-				$user_obj = Classes::User(User::create($_POST['username']));
-
-				# Koordinaten des Hauptplaneten bestimmen
-
-				$galaxies_count = Galaxy::getNumber();
-				$galaxies = array();
-				for($i=1; $i<=$galaxies_count; $i++)
-					$galaxies[] = $i;
-				shuffle($galaxies);
-
-				try
-				{
-					$koords = Planet::randomFreePlanet();
-
-					$index = $user_obj->registerPlanet($koords);
-					if($index === false)
-					{
-						$error = _('Der Hauptplanet konnte nicht besiedelt werden.');
-						$user_obj->destroy();
-					}
-
-					$user_obj->setActivePlanet($index);
-
-					$user_obj->addRess(array(20000, 10000, 7500, 5000, 2000));
-					$user_obj->setPassword($_POST['password']);
-
-					if(isset($_POST['email']))
-						$user_obj->setEMailAddress($_POST['email']);
-
-					# Planetenname
-					if(trim($_POST['hauptplanet']) == '')
-						$user_obj->planetName('Hauptplanet');
-					else $user_obj->planetName($_POST['hauptplanet']);
-?>
-<p class="successful"><?=L::h(sprintf(_("Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten %s."), Planet::format($koords)))?></p>
-<ul>
-	<li><a href="index.php"<?=L::accesskeyAttr(_("Zurück zur Startseite&[register.php|1]"))?>><?=L::h(_("Zurück zur Startseite&[register.php|1]"))?></a></li>
-</ul>
-<?php
-					$gui->end();
-					exit();
-				}
-				catch(PlanetException $e)
-				{
-					$error = _('Es gibt keine freien Planeten mehr.');
-					$user_obj->destroy();
-				}
-			}
+				break;
+			case "8":
+				$error = _('Es gibt keine freien Planeten mehr.');
+				break;
+			default:
+				$error = _("Registrierung fehlgeschlagen.");
 		}
-		if($error != '')
-		{
 ?>
 <p class="error"><?=htmlspecialchars($error)?></p>
 <?php
-		}
 	}
-
 ?>
-<form action="<?=htmlspecialchars(global_setting("USE_PROTOCOL").'://'.$_SERVER['HTTP_HOST'].global_setting("h_root").'/register.php')?>" method="post" id="register-form">
+<form action="<?=htmlspecialchars($GUI->getOption("protocol").'://'.$_SERVER['HTTP_HOST'].HROOT.'/login_redirect.php?action=register')?>" method="post" id="register-form">
 	<fieldset>
 		<legend><?=L::h(_("Registrieren"))?></legend>
 		<dl>
 			<dt><label for="runde"><?=L::h(_("Runde&[register.php|2]"))?></label></dt>
-			<dd><select name="database" id="runde"<?=L::accesskeyAttr(_("Runde&[register.php|2]"))?>>
+			<dd><select name="database" id="runde"<?=L::accesskeyAttr(_("Runde&[register.php|2]"))?> onchange="updateSSL()" onkeyup="onchange()">
 <?php
-	foreach($databases as $id=>$info)
+	$databases = $CONFIG->getConfigValue("databases");
+	$databases_js = array();
+	if($databases)
 	{
-		if(!$info['enabled'] || $info['dummy']) continue;
+		$databases_js = array();
+		if($databases)
+		{
+			foreach($databases as $id=>$info)
+			{
+				if(!isset($info["urls"]) || !isset($info["urls"]["register"]))
+					continue;
+				$databases_js[$id] = $info["urls"]["register"];
 ?>
-				<option value="<?=htmlspecialchars($id)?>"<?=(isset($_POST['database']) && $_POST['database'] == $id) ? ' selected="selected"' : ''?>><?=htmlspecialchars($info['name'])?></option>
+				<option value="<?=htmlspecialchars($id)?>"<?=(isset($_REQUEST['database']) && $_REQUEST['database'] == $id) ? ' selected="selected"' : ''?>><?=htmlspecialchars($info['name'])?></option>
 <?php
+			}
+		}
 	}
 ?>
 			</select></dd>
 
-			<dt><label for="username"><?=L::h(_("Benutzername&[register.php|2]"))?></label></dt>
-			<dd><input type="text" id="username" name="username"<?=L::accesskeyAttr(_("Benutzername&[register.php|2]"))?><?=isset($_POST['username']) ? ' value="'.htmlspecialchars($_POST['username']).'"' : ''?> maxlength="24" /></dd>
+			<dt><label for="i-username"><?=L::h(_("Benutzername&[register.php|2]"))?></label></dt>
+			<dd><input type="text" id="i-username" name="username"<?=L::accesskeyAttr(_("Benutzername&[register.php|2]"))?><?=isset($_REQUEST['username']) ? ' value="'.htmlspecialchars($_REQUEST['username']).'"' : ''?> maxlength="24" /></dd>
 
-			<dt><label for="password"><?=L::h(_("Passwort&[register.php|2]"))?></label></dt>
-			<dd><input type="password" id="password" name="password"<?=L::accesskeyAttr(_("Passwort&[register.php|2]"))?> /></dd>
+			<dt><label for="i-password"><?=L::h(_("Passwort&[register.php|2]"))?></label></dt>
+			<dd><input type="password" id="i-password" name="password"<?=L::accesskeyAttr(_("Passwort&[register.php|2]"))?> /></dd>
 
 			<dt><label for="password2"><?=L::h(_("Passwort wiederholen&[register.php|2]"))?></label></dt>
 			<dd><input type="password" id="password2" name="password2"<?=L::accesskeyAttr(_("Passwort wiederholen&[register.php|2]"))?> /></dd>
 
 			<dt><label for="email"><?=L::h(_("E-Mail-Adresse&[register.php|2]"))?></label></dt>
-			<dd><input type="text" name="email" id="email"<?=L::accesskeyAttr(_("E-Mail-Adresse&[register.php|2]"))?><?=isset($_POST['email']) ? ' value="'.htmlspecialchars($_POST['email']).'"' : ''?> /></dd>
+			<dd><input type="text" name="email" id="email"<?=L::accesskeyAttr(_("E-Mail-Adresse&[register.php|2]"))?><?=isset($_REQUEST['email']) ? ' value="'.htmlspecialchars($_REQUEST['email']).'"' : ''?> /></dd>
 
 			<dt><label for="hauptplanet"><?=L::h(_("Gewünschter Name des Hauptplaneten&[register.php|2]"))?></label></dt>
-			<dd><input type="text" id="hauptplanet" name="hauptplanet"<?=L::accesskeyAttr(_("Gewünschter Name des Hauptplaneten&[register.php|2]"))?><?=isset($_POST['hauptplanet']) ? ' value="'.htmlspecialchars($_POST['hauptplanet']).'"' : ''?> maxlength="24" /></dd>
+			<dd><input type="text" id="hauptplanet" name="hauptplanet"<?=L::accesskeyAttr(_("Gewünschter Name des Hauptplaneten&[register.php|2]"))?><?=isset($_REQUEST['hauptplanet']) ? ' value="'.htmlspecialchars($_REQUEST['hauptplanet']).'"' : ''?> maxlength="24" /></dd>
 		</dl>
-		<div><input type="checkbox" class="checkbox" name="nutzungsbedingungen" id="nutzungsbedingungen"<?=L::accesskeyAttr(_("Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]"))?> /> <label for="nutzungsbedingungen"><?=sprintf(h(_("Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]")), "<a href=\"rules.php\">", "</a>")?></label></div>
+		<div>
+			<input type="checkbox" class="checkbox" name="nutzungsbedingungen" id="nutzungsbedingungen"<?=isset($_REQUEST["nutzungsbedingungen"]) && $_REQUEST["nutzungsbedingungen"] ? " checked=\"checked\"" : ""?><?=L::accesskeyAttr(_("Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]"))?> /> <label for="nutzungsbedingungen"><?=sprintf(L::h(_("Ich habe die %sNutzungsbedingungen%s gelesen und akzeptiere sie.&[register.php|2]")), "<a href=\"rules.php\">", "</a>")?></label>
+			<input type="hidden" name="referrer" value="<?=htmlspecialchars(HTTPOutput::getURL(false))?>" />
+		</div>
 		<ul>
 			<li><button type="submit"<?=L::accesskeyAttr(_("Registrieren&[register.php|2]"))?>><?=L::h(_("Registrieren&[register.php|2]"))?></button></li>
 		</ul>
 	</fieldset>
 </form>
+<script type="text/javascript">
+	var databases_register = <?=JS::aimplodeJS($databases_js)?>;
+	ssl_callbacks.push(
+		function(enable_ssl)
+		{
+			document.getElementById("register-form").action = (enable_ssl ? "https" : "http")+"://"+databases_register[document.getElementById("runde").value];
+		}
+	);
+	updateSSL();
+</script>
 <?php
-	$gui->end();
+	$GUI->end();
 ?>

@@ -69,24 +69,22 @@
 
 		public static function disableMagicQuotes()
 		{
-			$stripslashes_r = function&(&$var, $stripslashes_r)
-			{ # Macht rekursiv in einem Array addslashes() rueckgaengig
-				if(is_array($var))
-				{
-					foreach($var as $key=>$val)
-						$stripslashes_r($var[$key], $stripslashes_r);
-				}
-				else
-					$var = stripslashes($var);
-				return $var;
-			};
-
-			# magic_quotes_gpc abschalten
 			if(get_magic_quotes_gpc())
 			{
-				$stripslashes_r($_POST, $stripslashes_r);
-				$stripslashes_r($_GET, $stripslashes_r);
-				$stripslashes_r($_COOKIE, $stripslashes_r);
+				$in = array(&$_GET, &$_POST, &$_COOKIE, &$_FILES, &$_REQUEST);
+				while(list($k,$v) = each($in))
+				{
+					foreach($v as $key => $val)
+					{
+						if(!is_array($val))
+						{
+							$in[$k][$key] = stripslashes($val);
+							continue;
+						}
+						$in[] = &$in[$k][$key];
+					}
+				}
+				unset($in);
 			}
 		}
 
@@ -99,9 +97,9 @@
 		public static function sendContentType($xhtml=true)
 		{
 			// TODO: Get rid of document.write and innerHTML
-			//if(isset($_SERVER["HTTP_ACCEPT"]) && strpos($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml") !== false)
-				//header("Content-type: application/xhtml+xml; charset=UTF-8");
-			//else
+			if($xhtml && isset($_SERVER["HTTP_ACCEPT"]) && strpos($_SERVER["HTTP_ACCEPT"], "application/xhtml+xml") !== false)
+				header("Content-type: application/xhtml+xml; charset=UTF-8");
+			else
 				header("Content-type: text/html; charset=UTF-8");
 		}
 
@@ -137,7 +135,8 @@
 
 		static function changeURL($new_url, $keep_post_data=true)
 		{
-			header('Location: '.$new_url, true, $keep_post_data ? 307 : 303);
+			if(!defined("DEBUG") || !DEBUG)
+				header('Location: '.$new_url, true, $keep_post_data ? 307 : 303);
 
 			if(count($_POST) > 0 && $keep_post_data)
 			{
@@ -171,12 +170,85 @@
 		}
 
 		/**
+		 * Entfernt alle GET- und POST-Daten aus der URL.
+		 * @return void
+		*/
+
+		static function removeRequest()
+		{
+			self::changeURL(self::getProtocol()."://".$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"], false);
+		}
+
+		/**
 		 * Gibt die vollständige aufgerufene URL zurück.
+		 * @param boolean $query_string Sollen die GET-Parameter mitgeliefert werden?
 		 * @return string
 		*/
 
-		static function getURL()
+		static function getURL($query_string=true)
 		{
-			return self::getProtocol."://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
+			return self::getProtocol()."://".$_SERVER["HTTP_HOST"].($query_string ? $_SERVER["REQUEST_URI"] : $_SERVER["PHP_SELF"]);
+		}
+
+		/**
+		 * Konvertiert einen Query-String (zum Beispiel $_SERVER["QUERY_STRING"]) in ein Array (zum Beispiel
+		 * $_GET).
+		 * @param string $string
+		 * @param boolean $multidimensional Sollen URL-Parameter wie test[0] so bleiben oder auch in ein Array konvertiert werden?
+		 * @return array
+		*/
+
+		static function queryStringToArray($string, $multidimensional=true)
+		{
+			$return = array();
+			$parts = preg_split("/[&;]/", $string);
+			foreach($parts as $part)
+			{
+				$part = explode("=", $part, 2);
+				if(count($part) < 2)
+					continue;
+				$part[0] = urldecode($part[0]);
+				$part[1] = urldecode($part[1]);
+				if($multidimensional && preg_match("/(\\[[^\\]]*\\])+\$/", $part[0], $m))
+				{
+					$value = &$return[substr($part[0], 0, -strlen($m[0]))];
+					$array_dimensions = explode("][", substr($m[0], 1, -1));
+				}
+				else
+				{
+					$value = &$return[$part[0]];
+					$array_dimensions = array();
+				}
+
+				foreach($array_dimensions as $array_dimension)
+				{
+					if(!isset($value)) $value = array();
+					$value = &$value[$array_dimension];
+				}
+
+				$value = $part[1];
+			}
+			return $return;
+		}
+
+		/**
+		 * Konvertiert ein Array (wie $_GET) in einen Query-String (zum Beispiel $_SERVER["QUERY_STRING"]).
+		 * @param array $array
+		 * @param string $pattern Ein sprintf-Pattern, durch das die Array-Indexe geleitet werden.
+		 * @return string
+		*/
+
+		static function arrayToQueryString(array $array, $pattern="%s")
+		{
+			$return = array();
+			foreach($array as $k=>$v)
+			{
+				$index = sprintf($pattern, rawurlencode($k));
+				if(is_array($v))
+					$return[] = self::arrayToQueryString($v, str_replace("%", "%%", $index)."[%s]");
+				else
+					$return[] = $index."=".urlencode($v);
+			}
+			return implode("&", $return);
 		}
 	}

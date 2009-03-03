@@ -35,7 +35,7 @@
 
 		static function init()
 		{
-			self::$listeners[] = function($message){ foreach(preg_split("/\r\n|\r|\n/", $message) as $line){ $print = date("Y-m-d\\TH:i:s")."\t".$line; if(defined("STDERR")) fputs(STDERR, $print); else echo $print; } };
+			self::$listeners[] = function($message){ foreach(preg_split("/\r\n|\r|\n/", $message) as $line){ $print = date("Y-m-d\\TH:i:s")."\t".$line; if(defined("STDERR")) fputs(STDERR, $print)."\n"; else echo $print."<br />\n"; } };
 		}
 
 		/**

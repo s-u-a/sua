@@ -26,6 +26,7 @@
 	use \sua\User;
 	use \sua\SuaException;
 	use \sua\Classes;
+	use \sua\HTTPOutput;
 
 	require_once("lib/sua/engine.php");
 
@@ -33,28 +34,28 @@
 		setcookie("use_cookies", "1", time()+4838400, global_setting("h_root")."/");
 	ini_set("session.use_cookies", "0");
 
-	$session_timeout = Config::getLibConfig()->getConfigValue("session_timeout");
 	if(isset($_GET[session_name()]))
 		unset($_GET[session_name()]);
-	if(isset($_COOKIE[session_name()]))
-	{
-		session_id($_COOKIE[session_name()]);
-		session_start();
-		if(!isset($_SESSION["username"]) || (isset($_SESSION["last_click"]) && $session_timeout && time()-$_SESSION["last_click"] > $session_timeout))
-		{
-			unset($_COOKIE[session_name()]);
-			session_regenerate_id(true);
-		}
-	}
-	else
-		session_start();
 
-	try
+	require("include.php");
+
+	if(HTTPOutput::getProtocol() != "https" && (!isset($_COOKIE["use_ssl"]) || $_COOKIE["use_ssl"]))
 	{
-		require("include.php");
+		setcookie("use_ssl", "0", time()+4838400, HROOT."/");
+		$_COOKIE["use_ssl"] = "0";
 	}
-	catch(UserException $e)
+	elseif(HTTPOutput::getProtocol() == "https" && isset($_COOKIE["use_ssl"]) && !$_COOKIE["use_ssl"])
 	{
+		setcookie("use_ssl", "1", time()+4838400, HROOT."/");
+		$_COOKIE["use_ssl"] = "1";
+	}
+	$GUI->setOption("protocol", HTTPOutput::getProtocol());
+
+	if(isset($_REQUEST["keep_post"]))
+	{
+		$GUI->setOption("login_keep_post", true);
+		if(isset($_GET["keep_post"]) && !isset($_POST["keep_post"]))
+			$_POST["keep_post"] = $_GET["keep_post"];
 	}
 
 	$username = null;
@@ -98,7 +99,7 @@
 	}
 	catch(SuaException $e)
 	{
-		$GUI->setOption("login_error", $e->getMessage());
+		$GUI->setOption("error", $e->getMessage());
 	}
 
 	if($username)
@@ -109,17 +110,25 @@
 		if(!isset($_REQUEST["options"]) || !isset($_REQUEST["options"]["ipcheck"]))
 			$_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
 
-		$_SESSION['use_protocol'] = HTTPOutput::getProcotol();
 		$_SESSION["init"] = time();
 		if(isset($_REQUEST["options"]) && isset($_REQUEST["options"]["javascript"]))
+		{
 			$_SESSION["disable_javascript"] = true;
+			$GUI->setOption("disable_javascript", true);
+		}
 		if(isset($_REQUEST["referrer"]))
 			$_SESSION["homepage_url"] = $_REQUEST["referrer"];
+
+		$_SESSION["last_click"] = time();
 
 		if(!isset($_COOKIE[session_name()]))
 			setcookie(session_name(), session_id(), 0, HROOT."/");
 
-		if($last_request = $user_obj->lastRequest())
+		var_dump($_SESSION);
+
+		if(isset($_REQUEST["resume"]))
+			HTTPOutput::changeURL($_REQUEST["resume"]);
+		elseif($last_request = $user_obj->lastRequest())
 		{
 			$url = 'http://'.$_SERVER["HTTP_HOST"].HROOT.$last_request;
 

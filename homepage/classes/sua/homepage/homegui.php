@@ -90,11 +90,27 @@
 ?>
 		<script type="text/javascript">
 			var databases = <?=JS::aimplodeJS($databases_js)?>;
-			function updateLoginAction()
+			var ssl_callbacks = [ ];
+			var openid_callbacks = [ ];
+
+			function updateSSL()
 			{
-				document.getElementById("login-form").action = (!document.getElementById('i-ssl-deaktivieren') || !document.getElementById('i-ssl-deaktivieren').checked ? "https" : "http")+"://"+databases[document.getElementById("login-runde").value];
 				if(document.getElementById('i-ssl-deaktivieren'))
+				{
 					document.cookie = "use_ssl="+(document.getElementById('i-ssl-deaktivieren').checked ? "0" : "1")+";expires="+(new Date((new Date()).getTime()+4838400)).toGMTString()+";path="+'<?=JS::jsentities($this->getOption("h_root"))?>'+"/";
+					for(var i=0; i<ssl_callbacks.length; i++)
+						ssl_callbacks[i](!document.getElementById('i-ssl-deaktivieren').checked);
+				}
+			}
+
+			function updateOpenID()
+			{
+				if(document.getElementById("i-openid-aktivieren"))
+				{
+					document.cookie = "use_openid="+(document.getElementById('i-openid-aktivieren').checked ? "1" : "0")+";expires="+(new Date((new Date()).getTime()+4838400)).toGMTString()+";path="+'<?=JS::jsentities($this->getOption("h_root"))?>'+"/";
+					for(var i=0; i<openid_callbacks.length; i++)
+						openid_callbacks[i](document.getElementById("i-openid-aktivieren").checked);
+				}
 			}
 		</script>
 	</head>
@@ -141,7 +157,7 @@
 			else
 			{
 ?>
-						<dt class="c-name" id="login-name-dt"><label for="login-username"><?=L::h(_("Name&[include.php|2]"))?></label></dt>
+						<dt class="c-name" id="login-name-dt"><label for="login-usealert(rname"><?=L::h(_("Name&[include.php|2]"))?></label></dt>
 						<dd class="c-name" id="login-name-dd"><input type="text" id="login-username" name="username"<?=L::accesskeyAttr(_("Name&[include.php|2]"))?> /></dd>
 
 						<dt class="c-passwort" id="login-passwort-dt"><label for="login-password"><?=L::h(_("Passwort&[include.php|2]"))?></label></dt>
@@ -237,7 +253,7 @@
 				el3.type = "checkbox";
 				el3.id = "i-ssl-deaktivieren";
 				el3.title = '<?=JS::jsentities(_("Schalten Sie hiermit die Verschlüsselung der Seite ab, sollte es Probleme damit geben."))?>';
-				el3.onclick = function(){updateLoginAction();};
+				el3.onclick = function(){updateSSL();};
 <?php
 			if($this->getOption("protocol") != "https")
 			{
@@ -275,7 +291,7 @@
 				el3.type = "checkbox";
 				el3.id = "i-openid-aktivieren";
 				el3.title = '<?=JS::jsentities(_("Anmeldung über OpenID statt mit einem Passwort."))?>';
-				el3.onclick = function(){updateOpenIDSelection();};
+				el3.onclick = function(){updateOpenID();};
 <?php
 			if($this->getOption("openid"))
 			{
@@ -291,7 +307,12 @@
 				document.getElementById("login-form-options").appendChild(el2);
 				document.getElementById("login-form-options").appendChild(el4);
 
-				function updateOpenIDSelection()
+				function updateLoginAction(enable_ssl)
+				{
+					document.getElementById("login-form").action = (enable_ssl ? "https" : "http")+"://"+databases[document.getElementById("login-runde").value];
+				}
+
+				function updateOpenIDSelection(enable_openid)
 				{
 					var els = [
 						document.getElementById("login-openid-dt"),
@@ -309,7 +330,7 @@
 					}
 
 
-					if(document.getElementById("i-openid-aktivieren").checked)
+					if(enable_openid)
 					{
 						var el1 = document.createElement("label");
 						el1.appendChild(document.createTextNode('<?=JS::jsentities(_("OpenID&[include.php|2]"))?>')); // TODO: Tastenkürzel gescheit anzeigen lassen
@@ -398,11 +419,13 @@
 						document.getElementById("login-form-dl").appendChild(el2);
 						document.getElementById("login-form-dl").appendChild(el4);
 					}
-
-					document.cookie = "use_openid="+(document.getElementById('i-openid-aktivieren').checked ? "1" : "0")+";expires="+(new Date((new Date()).getTime()+4838400)).toGMTString()+";path="+'<?=JS::jsentities($this->getOption("h_root"))?>'+"/";
 				}
 
-				updateLoginAction();
+				ssl_callbacks.push(updateLoginAction);
+				openid_callbacks.push(updateOpenIDSelection);
+
+				updateSSL();
+				updateOpenID();
 			// ]]>
 			</script>
 			<div id="innercontent1-1"><div id="innercontent1-2"><div id="innercontent1-3">

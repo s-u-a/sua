@@ -73,11 +73,16 @@
 
 		static function init()
 		{
-			$db_config = Classes::Database()->getConfig();
+			$db_config = Dataset::getDatabase()->getConfig();
 			if(!isset($config["items"]))
 				self::$config = array();
 			else
 				self::$config = $config["items"];
+		}
+
+		static function datasetName($id=null)
+		{
+			return $id;
 		}
 
 		/**
@@ -114,7 +119,7 @@
 		{
 			$this->item = $id;
 
-			$config = Classes::Database()->getConfig();
+			$config = Dataset::getDatabase()->getConfig();
 			if(!isset($config["items"]))
 				throw new ItemException("No items are configured.");
 

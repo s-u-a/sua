@@ -98,7 +98,7 @@
 						$q .= " FROM ".$table." LIMIT 1;";
 						$this->query($q);
 					}
-					catch(PDOException $e)
+					catch(\PDOException $e)
 					{
 						if(strpos($e, "no such column") === false) throw $e;
 
@@ -110,7 +110,7 @@
 							{
 								$this->query("SELECT ".$cf." FROM ".$table." LIMIT 1;");
 							}
-							catch(PDOException $e)
+							catch(\PDOException $e)
 							{
 								if(strpos($e, "no such column") === false) throw $e;
 								$add_cols[] = $c;
@@ -148,7 +148,18 @@
 
 		private function queryWrapper($query)
 		{
-			try { return $this->connection->query($query); }
+			try
+			{
+				if(defined("DEBUG") && DEBUG)
+					$time = microtime(true);
+				$result = $this->connection->query($query);
+				if(defined("DEBUG") && DEBUG)
+				{
+					$time = microtime(true)-$time;
+					Logger::log("Query “".$query."” took ".round($time, 6)." seconds.");
+				}
+				return $result;
+			}
 			catch(\PDOException $e) { $this->printException($e, $query); }
 		}
 
@@ -187,7 +198,7 @@
 		{
 			if(!$this->last_result) return false;
 
-			return $this->last_result->fetch(PDO::FETCH_ASSOC);
+			return $this->last_result->fetch(\PDO::FETCH_ASSOC);
 		}
 
 		/**
@@ -214,7 +225,7 @@
 		function arrayQuery($query)
 		{
 			$result = $this->queryWrapper($query);
-			$data = $result->fetchAll(PDO::FETCH_ASSOC);
+			$data = $result->fetchAll(\PDO::FETCH_ASSOC);
 			$result->closeCursor();
 			return $data;
 		}
@@ -228,14 +239,14 @@
 		function singleColumn($query)
 		{
 			$result = $this->queryWrapper($query);
-			$result = array();
-			while(($row = $result->fetch(PDO::FETCH_NUM)) !== false)
+			$return = array();
+			while(($row = $result->fetch(\PDO::FETCH_NUM)) !== false)
 			{
 				if(!isset($row[0]))
 					throw SQLiteException("No columns were queried.");
-				$result[] = $row[0];
+				$return[] = $row[0];
 			}
-			return $result;
+			return $return;
 		}
 
 		/**
@@ -247,7 +258,7 @@
 		function singleLine($query)
 		{
 			$result = $this->queryWrapper($query);
-			$data = $result->fetch(PDO::FETCH_ASSOC);
+			$data = $result->fetch(\PDO::FETCH_ASSOC);
 			$result->closeCursor();
 			return $data;
 		}

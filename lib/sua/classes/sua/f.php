@@ -77,7 +77,7 @@
 			if(!$short || $seconds != 0)
 				$return[] = sprintf(ngettext("%s Sekunde", "%s Sekunden", $seconds), $seconds);
 
-			$return = h(implode(' ', $return));
+			$return = L::h(implode(' ', $return));
 			return $return;
 		}
 
@@ -91,7 +91,7 @@
 		 * @param User $check_availability Gibt mit HTML-Klassen an, ob so viele Rohstoffe auf dem Planeten vorhanden sind.
 		 * @param string $dl_class Eine zusätzliche HTML-Klasse, die dem Element zugewiesen wird.
 		 * @param string $dl_id Eine HTML-ID, die der Liste zugewiesen wird.
-		 * @param User $check_limit Gibt mit HTML-Klassen an, ob die Rohstoffmenge die Speicher übersteigt
+		 * @param Planet $check_limit Gibt mit HTML-Klassen an, ob die Rohstoffmenge die Speicher übersteigt
 		 * @return string Eine den HTML-Code einer dl-Liste mit den formatierten Rohstoffangaben
 		*/
 
@@ -138,22 +138,22 @@
 			if($energy) $class[5] .= ($ress[5]<0)?" ress-negativ":"";
 
 			$return = $tabs."<dl class=\"ress ".htmlspecialchars($dl_class)."\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."\"" : "").">\n";
-			$return .= $tabs."\t<dt class=\"ress-carbon".$class[0]."\">".($_i ? "[ress_0]" : h(_("[ress_0]")))."</dt>\n";
+			$return .= $tabs."\t<dt class=\"ress-carbon".$class[0]."\">".($_i ? "[ress_0]" : L::h(_("[ress_0]")))."</dt>\n";
 			$return .= $tabs."\t<dd class=\"ress-carbon".$class[0]."\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."-carbon\"" : "").">".F::ths($ress[0])."</dd>\n";
-			$return .= $tabs."\t<dt class=\"ress-aluminium".$class[1]."\">".($_i ? "[ress_1]" : h(_("[ress_1]")))."</dt>\n";
+			$return .= $tabs."\t<dt class=\"ress-aluminium".$class[1]."\">".($_i ? "[ress_1]" : L::h(_("[ress_1]")))."</dt>\n";
 			$return .= $tabs."\t<dd class=\"ress-aluminium".$class[1]."\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."-aluminium\"" : "").">".F::ths($ress[1])."</dd>\n";
-			$return .= $tabs."\t<dt class=\"ress-wolfram".$class[2]."\">".($_i ? "[ress_2]" : h(_("[ress_2]")))."</dt>\n";
+			$return .= $tabs."\t<dt class=\"ress-wolfram".$class[2]."\">".($_i ? "[ress_2]" : L::h(_("[ress_2]")))."</dt>\n";
 			$return .= $tabs."\t<dd class=\"ress-wolfram".$class[2]."\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."-wolfram\"" : "").">".F::ths($ress[2])."</dd>\n";
-			$return .= $tabs."\t<dt class=\"ress-radium".$class[3]."".($tritium ? "" : " ress-last")."\">".($_i ? "[ress_3]" : h(_("[ress_3]")))."</dt>\n";
+			$return .= $tabs."\t<dt class=\"ress-radium".$class[3]."".($tritium ? "" : " ress-last")."\">".($_i ? "[ress_3]" : L::h(_("[ress_3]")))."</dt>\n";
 			$return .= $tabs."\t<dd class=\"ress-radium".$class[3]."".($tritium ? "" : " ress-last")."\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."-radium\"" : "").">".F::ths($ress[3])."</dd>\n";
 			if($tritium)
 			{
-				$return .= $tabs."\t<dt class=\"ress-tritium".$class[4]."".($energy ? "" : " ress-last")."\">".($_i ? "[ress_4]" : h(_("[ress_4]")))."</dt>\n";
+				$return .= $tabs."\t<dt class=\"ress-tritium".$class[4]."".($energy ? "" : " ress-last")."\">".($_i ? "[ress_4]" : L::h(_("[ress_4]")))."</dt>\n";
 				$return .= $tabs."\t<dd class=\"ress-tritium".$class[4]."".($energy ? "" : " ress-last")."\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."-tritium\"" : "").">".F::ths($ress[4])."</dd>\n";
 			}
 			if($energy)
 			{
-				$return .= $tabs."\t<dt class=\"ress-energie".$class[5]." ress-last\">".($_i ? "[ress_5]" : h(_("[ress_5]")))."</dt>\n";
+				$return .= $tabs."\t<dt class=\"ress-energie".$class[5]." ress-last\">".($_i ? "[ress_5]" : L::h(_("[ress_5]")))."</dt>\n";
 				$return .= $tabs."\t<dd class=\"ress-energie".$class[5]." ress-last\"".($dl_id !== null ? " id=\"".htmlspecialchars($dl_id)."-energy\"" : "").">".F::ths($ress[5])."</dd>\n";
 			}
 			$return .= $tabs."</dl>\n";

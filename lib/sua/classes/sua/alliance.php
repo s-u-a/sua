@@ -28,7 +28,7 @@
 	  * Repraesentiert eine Allianz im Spiel.
 	*/
 
-	class Alliance extends SQLiteSet implements Iterator
+	class Alliance extends SQLiteSet implements \Iterator
 	{
 		/** Rundmail schreiben */
 		const PERMISSION_MAIL = 0;
@@ -115,8 +115,8 @@
 		);
 
 		protected static $views = array (
-			"alliance_highscores_sum" => "SELECT alliances_members.tag AS tag,alliances.name AS name,COUNT(DISTINCT h_users.user) AS members,SUM(h_users.gebaeude) AS gebaeude,SUM(h_users.forschung) AS forschung,SUM(h_users.roboter) AS roboter,SUM(h_users.schiffe) AS schiffe,SUM(h_users.verteidigung) AS verteidigung,SUM(h_users.flightexp) AS flightexp,SUM(h_users.battleexp) AS battleexp, gebaeude+forschung+roboter+schiffe+verteidigung+flightexp+battleexp AS total FROM (SELECT tag, user FROM alliances_members LEFT OUTER JOIN ( SELECT user, gebaeude, forschung, roboter, schiffe, verteidigung, flighexp, battleexp FROM highscores ) AS h_users ON alliances_members.user = h_users.user LEFT OUTER JOIN ( SELECT tag, name FROM alliances ) as a ON alliances_members.tag = a.tag ) GROUP BY tag;",
-			"alliance_highscores_average" => "SELECT alliances_members.tag AS tag,alliances.name AS name,COUNT(DISTINCT h_users.user) AS members,AVG(h_users.gebaeude) AS gebaeude,AVG(h_users.forschung) AS forschung,AVG(h_users.roboter) AS roboter,AVG(h_users.schiffe) AS schiffe,AVG(h_users.verteidigung) AS verteidigung,AVG(h_users.flightexp) AS flightexp,AVG(h_users.battleexp) AS battleexp, gebaeude+forschung+roboter+schiffe+verteidigung+flightexp+battleexp AS total FROM (SELECT tag, user FROM alliances_members LEFT OUTER JOIN ( SELECT user, gebaeude, forschung, roboter, schiffe, verteidigung, flighexp, battleexp FROM highscores ) AS h_users ON alliances_members.user = h_users.user LEFT OUTER JOIN ( SELECT tag, name FROM alliances ) as a ON alliances_members.tag = a.tag ) GROUP BY tag;"
+			"alliance_highscores_sum" => "SELECT alliances_members.tag AS tag,alliances.name AS name,COUNT(DISTINCT h_users.user) AS members,SUM(h_users.gebaeude) AS gebaeude,SUM(h_users.forschung) AS forschung,SUM(h_users.roboter) AS roboter,SUM(h_users.schiffe) AS schiffe,SUM(h_users.verteidigung) AS verteidigung,SUM(h_users.flightexp) AS flightexp,SUM(h_users.battleexp) AS battleexp, h_users.gebaeude+h_users.forschung+h_users.roboter+h_users.schiffe+h_users.verteidigung+h_users.flightexp+h_users.battleexp AS total FROM alliances_members LEFT OUTER JOIN ( SELECT user, gebaeude, forschung, roboter, schiffe, verteidigung, flightexp, battleexp FROM highscores ) AS h_users ON alliances_members.member = h_users.user LEFT OUTER JOIN ( SELECT tag, name FROM alliances ) as alliances ON alliances_members.tag = alliances.tag GROUP BY tag;",
+			"alliance_highscores_average" => "SELECT alliances_members.tag AS tag,alliances.name AS name,COUNT(DISTINCT h_users.user) AS members,AVG(h_users.gebaeude) AS gebaeude,AVG(h_users.forschung) AS forschung,AVG(h_users.roboter) AS roboter,AVG(h_users.schiffe) AS schiffe,AVG(h_users.verteidigung) AS verteidigung,AVG(h_users.flightexp) AS flightexp,AVG(h_users.battleexp) AS battleexp, h_users.gebaeude+h_users.forschung+h_users.roboter+h_users.schiffe+h_users.verteidigung+h_users.flightexp+h_users.battleexp AS total FROM alliances_members LEFT OUTER JOIN ( SELECT user, gebaeude, forschung, roboter, schiffe, verteidigung, flightexp, battleexp FROM highscores ) AS h_users ON alliances_members.member = h_users.user LEFT OUTER JOIN ( SELECT tag, name FROM alliances ) as alliances ON alliances_members.tag = alliances.tag GROUP BY tag;"
 		);
 
 		function __construct()
@@ -347,9 +347,9 @@
 		{
 			$new_name = trim($new_name);
 
-			self::$sqlite->query("UPDATE alliances SET tag = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($this->getName());
-			self::$sqlite->query("UPDATE alliances_members SET tag = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($this->getName());
-			self::$sqlite->query("UPDATE alliances_applications SET tag = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($this->getName());
+			self::$sqlite->query("UPDATE alliances SET tag = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($this->getName()));
+			self::$sqlite->query("UPDATE alliances_members SET tag = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($this->getName()));
+			self::$sqlite->query("UPDATE alliances_applications SET tag = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($this->getName()));
 			parent::rename($new_name);
 		}
 
@@ -381,7 +381,7 @@
 				default: $oder = "member"; break;
 			}
 			$oder .= " ".($invert ? "DESC" : "ASC");
-			return self::$sqlite->singleColumn("SELECT member FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName())." ORDER BY ".$order.";")
+			return self::$sqlite->singleColumn("SELECT member FROM alliances_members WHERE tag = ".self::$sqlite->quote($this->getName())." ORDER BY ".$order.";");
 		}
 
 		/**
@@ -683,7 +683,7 @@
 
 		static function userAlliance($user)
 		{
-			return self::$sqlite->singleField("SELECT tag FROM alliances_members WHERE user = ".self::$sqlite->quote($user)." LIMIT 1;");
+			return self::$sqlite->singleField("SELECT tag FROM alliances_members WHERE member = ".self::$sqlite->quote($user)." LIMIT 1;");
 		}
 
 		/**
@@ -709,6 +709,7 @@
 		{
 			self::$sqlite->backgroundQuery("UPDATE alliances_members SET member = ".self::$sqlite->quote($new_name)." WHERE member = ".self::$sqlite->quote($old_name).";");
 			self::$sqlite->backgroundQuery("UPDATE alliances_applications SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($old_name).";");
+		}
 
 		function rewind() { reset($this->users_list); return $this->current(); }
 		function current() { return current($this->users_list); }

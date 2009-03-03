@@ -34,6 +34,7 @@
 	 * der User-Klasse verwendet werden, in Hinblick auf eine etwaige Implementierung von
 	 * Völkern.
 	 * @todo Überlegen: Eventhandler muss auf allen Planeten ausgeführt werden, da Forschungen auf einem Planeten alle anderen beeinflussen
+	 * @todo setActivePlanet scheint noch verwendet zu werden
 	*/
 
 	class User extends SQLiteSet implements \Iterator,StaticInit
@@ -99,7 +100,7 @@
 				"level INTEGER DEFAULT 0",
 				"scores REAL DEFAULT 0"
 			),
-			"highscores" => array ( // Virtuell, siehe User::$views
+			/*"highscores" => array ( // Virtuell, siehe User::$views
 				"user TEXT",
 				"gebaeude REAL",
 				"forschung REAL",
@@ -109,7 +110,7 @@
 				"flightexp REAL",
 				"battleexp REAL",
 				"total REAL"
-			),
+			),*/
 			"users_friends" => array ( // Verbündetenbeziehungen
 				"user1 TEXT NOT NULL",
 				"user2 TEXT NOT NULL"
@@ -141,12 +142,13 @@
 		);
 
 		protected static $views = array (
-			"highscores" => "SELECT h_users.user AS user, h_gebaeude.scores AS gebaeude, h_forschung.scores AS forschung, h_roboter.scores AS roboter, h_schiffe.scores AS schiffe, h_verteidigung.scores AS verteidigung, h_users.flightexp AS flightexp, h_users.battleexp AS battleexp, gebaeude + forschung + roboter + schiffe + verteidigung + flightexp + battleexp AS total FROM ( SELECT user, flightexp, battleexp FROM users ) AS h_users LEFT OUTER JOIN ( SELECT user,scores FROM planets_items WHERE type = 'gebaeude' GROUP BY user ) AS h_gebaeude ON h_gebaeude.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM users_research GROUP BY user ) AS h_forschung ON h_forschung.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM ( SELECT user,scores FROM planets_items WHERE type = 'roboter' UNION ALL SELECT user,scores FROM fleets_users_rob UNION ALL SELECT user,scores FROM fleets_users_hrob ) GROUP BY user ) AS h_roboter ON h_roboter.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM ( SELECT user,scores FROM planets_items WHERE type = 'schiffe' UNION ALL SELECT user,scores FROM fleets_users_fleet UNION ALL SELECT user,scores FROM planet_remote_fleet ) GROUP BY user ) AS h_schiffe ON h_schiffe.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM planets_items WHERE type = 'verteidigung' GROUP BY user ) AS h_verteidigung ON h_verteidigung.user = h_users.user"
+			"highscores" => "SELECT h_users.user AS user, h_gebaeude.scores AS gebaeude, h_forschung.scores AS forschung, h_roboter.scores AS roboter, h_schiffe.scores AS schiffe, h_verteidigung.scores AS verteidigung, h_users.flightexp AS flightexp, h_users.battleexp AS battleexp, h_gebaeude.scores + h_forschung.scores + h_roboter.scores + h_schiffe.scores + h_verteidigung.scores + h_users.flightexp + h_users.battleexp AS total FROM ( SELECT user, flightexp, battleexp FROM users ) AS h_users LEFT OUTER JOIN ( SELECT user,scores FROM planets_items_user WHERE type = 'gebaeude' GROUP BY user ) AS h_gebaeude ON h_gebaeude.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM users_research GROUP BY user ) AS h_forschung ON h_forschung.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM ( SELECT user,scores FROM planets_items_user WHERE type = 'roboter' UNION ALL SELECT user,scores FROM fleets_users_rob UNION ALL SELECT user,scores FROM fleets_users_hrob ) GROUP BY user ) AS h_roboter ON h_roboter.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM ( SELECT user,scores FROM planets_items_user WHERE type = 'schiffe' UNION ALL SELECT user,scores FROM fleets_users_fleet ) GROUP BY user ) AS h_schiffe ON h_schiffe.user = h_users.user LEFT OUTER JOIN ( SELECT user,scores FROM planets_items_user WHERE type = 'verteidigung' GROUP BY user ) AS h_verteidigung ON h_verteidigung.user = h_users.user"
 		);
 
 		static function init()
 		{
 			__autoload("\sua\Planet"); // Die View oben hängt von den Tabellen der Planet-Klasse ab
+			parent::init();
 		}
 
 		/**
@@ -161,7 +163,7 @@
 				throw new UserException("This user does already exist.");
 
 			self::$sqlite->query("INSERT INTO users ( user, registration ) VALUES ( ".self::$sqlite->quote($name).", ".self::$sqlite->quote(time())." );");
-			self::$sqlite->query("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sqlite->quote($name).", ".self::$sqlite->quote("lang").", ".self::$sqlite->quote(L::language())." );");
+			self::$sqlite->query("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sqlite->quote($name).", ".self::$sqlite->quote("lang").", ".self::$sqlite->quote(serialize(L::language()))." );");
 
 			return $name;
 		}
@@ -188,7 +190,7 @@
 				Classes::Message($message_id)->removeUser($me->getName());
 
 			# Aus der Allianz austreten
-			$tag = Alliance::getUserAlliance($this->getName());
+			$tag = Alliance::userAlliance($this->getName());
 			if($tag)
 				Classes::Alliance($tag)->quitUser($this->getName());
 
@@ -202,14 +204,15 @@
 			}
 
 			# Aus der Datenbank entfernen
-			$this->transactionQuery("DELETE FROM users WHERE user = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("DELETE FROM users_research WHERE user = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("DELETE FROM users_friends WHERE user1 = ".$this->quote($this->getName())." OR user2 = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("DELETE FROM users_friend_requests WHERE user_from = ".$this->quote($this->getName())." OR user_to = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("DELETE FROM users_shortcuts WHERE user = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("DELETE FROM users_settings WHERE user = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("DELETE FROM users_email WHERE user = ".$this->quote($this->getName()).";");
-			$this->endTransaction();
+			self::$sqlite->beginTransaction();
+			self::$sqlite->transactionQuery("DELETE FROM users WHERE user = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("DELETE FROM users_research WHERE user = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("DELETE FROM users_friends WHERE user1 = ".self::$sqlite->quote($this->getName())." OR user2 = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("DELETE FROM users_friend_requests WHERE user_from = ".self::$sqlite->quote($this->getName())." OR user_to = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("DELETE FROM users_shortcuts WHERE user = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("DELETE FROM users_settings WHERE user = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("DELETE FROM users_email WHERE user = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->endTransaction();
 		}
 
 /*********************************************
@@ -230,16 +233,17 @@
 			Alliance::renameUser($this->getName(), $new_name);
 			IMServer::renameUser($this->getName(), $new_name);
 
-			$this->transactionQuery("UPDATE users SET user = ".$this->quote($new_name)." WHERE user = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("UPDATE users_research SET user = ".$this->quote($new_name)." WHERE user = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("UPDATE users_friends SET user1 = ".$this->quote($new_name)." WHERE user1 = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("UPDATE users_friends SET user2 = ".$this->quote($new_name)." WHERE user2 = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("UPDATE users_friend_requests SET user_from = ".$this->quote($new_name)." WHERE user_from = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("UPDATE users_friend_requests SET user_to = ".$this->quote($new_name)." WHERE user_to = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("UPDATE users_shortcuts SET user = ".$this->quote($new_name)." WHERE user = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("UPDATE users_settings SET user = ".$this->quote($new_name)." WHERE user = ".$this->quote($this->getName()).";");
-			$this->transactionQuery("UPDATE users_email SET user = ".$this->quote($new_name)." WHERE user = ".$this->quote($this->getName()).";");
-			$this->endTransaction();
+			self::$sqlite->beginTransaction();
+			self::$sqlite->transactionQuery("UPDATE users SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("UPDATE users_research SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("UPDATE users_friends SET user1 = ".self::$sqlite->quote($new_name)." WHERE user1 = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("UPDATE users_friends SET user2 = ".self::$sqlite->quote($new_name)." WHERE user2 = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("UPDATE users_friend_requests SET user_from = ".self::$sqlite->quote($new_name)." WHERE user_from = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("UPDATE users_friend_requests SET user_to = ".self::$sqlite->quote($new_name)." WHERE user_to = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("UPDATE users_shortcuts SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("UPDATE users_settings SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->transactionQuery("UPDATE users_email SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->endTransaction();
 
 			parent::rename($new_name);
 		}
@@ -270,7 +274,7 @@
 				elseif(in_array(floor(($r["last_activity"]-time())/86400), $inact[$r["umode"] ? 1 : 0]))
 				{
 					$user_obj->setLanguage();
-					$user_obj->_sendMail(sprintf(_("Inaktivität in %s"), _("[title_full]")), sprintf(_("Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in %s in %s angemeldet haben. Sie haben bis zum %s Zeit, sich anzumelden, danach wird Ihr Account einer automatischen Löschung unterzogen.\n\nDas Spiel erreichen Sie unter %s – Ihr Benutzername lautet %s."), _("[title_full]"), Classes::Database()->getTitle(), date(_("Y-m-d"), $r["last_activity"]+$inact_delete[$r["umode"] ? 1 : 0]*86400), "http://".Config::getDefaultHostname()."/", $user_obj->getName()));
+					$user_obj->_sendMail(sprintf(_("Inaktivität in %s"), _("[title_full]")), sprintf(_("Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in %s in %s angemeldet haben. Sie haben bis zum %s Zeit, sich anzumelden, danach wird Ihr Account einer automatischen Löschung unterzogen.\n\nDas Spiel erreichen Sie unter %s – Ihr Benutzername lautet %s."), _("[title_full]"), self::getDatabase()->getTitle(), date(_("Y-m-d"), $r["last_activity"]+$inact_delete[$r["umode"] ? 1 : 0]*86400), "http://".Config::getDefaultHostname()."/", $user_obj->getName()));
 					$user_obj->restoreLanguage();
 					self::$sqlite->backgroundQuery("UPDATE users SET last_inactivity_mail = ".self::$sqlite->quote(date("Y-m"))." WHERE user = ".self::$sqlite->quote($r["user"]).";");
 				}
@@ -472,7 +476,7 @@
 			if(self::$sqlite->singleField("SELECT COUNT(*) FROM users_settings WHERE user = ".self::$sqlite->quote($this->getName())." AND setting = ".self::$sqlite->quote($setting)." LIMIT 1;") > 0)
 				self::$sqlite->backgroundQuery("UPDATE users_settings SET value = ".self::$sqlite->quote(serialize($value))." WHERE user = ".self::$sqlite->quote($this->getName())." AND setting = ".self::$sqlite->quote($setting)." LIMIT 1;");
 			else
-				self::$sqlite->backgroundQuery("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($setting).", ".self::$sqlite->quote($value)." );");
+				self::$sqlite->backgroundQuery("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($setting).", ".self::$sqlite->quote(serialize($value))." );");
 		}
 
 		/**
@@ -524,12 +528,14 @@
 		/**
 		 * Erneuert den Zeitpunkt der letzten Aktivität und setzt die letzte URL
 		 * auf die aktuelle.
+		 * @param string $url Die URL, relativ zum HROOT des Spiels
 		 * @return void
 		*/
 
-		function registerAction()
+		function registerAction($url=null)
 		{
-			$this->setMainField("last_request_uri", $_SERVER["REQUEST_URI"]);
+			if(isset($url))
+				$this->setMainField("last_request_uri", $url);
 			$this->setMainField("last_activity", time());
 		}
 
@@ -694,7 +700,7 @@
 
 		function permissionToAct()
 		{
-			return !Classes::Database()->locked() && !$this->userLocked() && !$this->umode();
+			return !self::getDatabase()->getConfig()->getConfigValue("locked") && !$this->userLocked() && !$this->umode();
 		}
 
 		/**
@@ -1068,7 +1074,7 @@
 		{
 			try
 			{
-				return (count($this->getPlanetsList()) < Config::getLibConfig()->getConfigValueE("users", "max_planets"));
+				return (count(Planet::getPlanetsByUser($this->getName())) < Config::getLibConfig()->getConfigValueE("users", "max_planets"));
 			}
 			catch(ConfigException $e)
 			{
@@ -1518,7 +1524,7 @@
 
 						$local_labs = 0;
 						$global_labs = 0;
-						$planets = $this->getPlanetsList();
+						$planets = Planet::getPlanetsByUser($this->getName());
 						$active_planet = $this->getActivePlanet();
 						foreach($planets as $planet)
 						{
@@ -1699,7 +1705,7 @@
 
 		function getItemLevel($id)
 		{
-			$level = $this->singleField("SELECT level FROM users_research WHERE user = ".$this->quote($this->getName())." AND id = ".$this->quote($id)." LIMIT 1;");
+			$level = self::$sqlite->singleField("SELECT level FROM users_research WHERE user = ".self::$sqlite->quote($this->getName())." AND id = ".self::$sqlite->quote($id)." LIMIT 1;");
 			if($level === false)
 				return 0;
 			return $level;
@@ -1718,11 +1724,11 @@
 
 			$item_info = $this->getItemInfo($id, "forschung", array("ress"));
 			$additional_scores = array_sum($item_info["ress"])/1000;
-			$entries = $this->singleField("SELECT COUNT(*) FROM users_research WHERE user = ".$this->quote($this->getName())." AND id = ".$this->quote($id)." LIMIT 1;");
+			$entries = self::$sqlite->singleField("SELECT COUNT(*) FROM users_research WHERE user = ".self::$sqlite->quote($this->getName())." AND id = ".self::$sqlite->quote($id)." LIMIT 1;");
 			if($entries > 0)
-				$this->backgroundQuery("UDPATE users_research SET level = level + ".$this->quote($value).", scores = scores + ".$this->quote($additional_scores)." WHERE user = ".$this->quote($this->getName())." AND id = ".$this->quote($id).";");
+				$this->backgroundQuery("UDPATE users_research SET level = level + ".self::$sqlite->quote($value).", scores = scores + ".self::$sqlite->quote($additional_scores)." WHERE user = ".self::$sqlite->quote($this->getName())." AND id = ".self::$sqlite->quote($id).";");
 			else
-				$this->backgroundQuery("INSERT INTO users_research ( user, id, level, scores ) VALUES ( ".$this->quote($this->getName()).", ".$this->quote($id).", ".$this->quote($value).", ".$this->quote($additional_scores)." );");
+				$this->backgroundQuery("INSERT INTO users_research ( user, id, level, scores ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($id).", ".self::$sqlite->quote($value).", ".self::$sqlite->quote($additional_scores)." );");
 
 			switch($id)
 			{
@@ -1906,14 +1912,14 @@
 			$this->cacheActivePlanet();
 			$user_obj->cacheActivePlanet();
 
-			foreach($user_obj->getPlanetsList() as $planet)
+			foreach(Planet::getPlanetsByUser($user_obj->getName()) as $planet)
 			{
 				$user_obj->setActivePlanet($planet);
 				if(count($user_obj->getForeignFleetsList($this->getName())) > 0)
 					$this->callBackForeignFleet($user_obj->getPosObj());
 			}
 
-			foreach($this->getPlanetsList() as $planet)
+			foreach(Planet::getPlanetsByUser($this->getName()) as $planet)
 			{
 				$this->setActivePlanet($planet);
 				if(count($this->getForeignFleetsList($user)) > 0)

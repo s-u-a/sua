@@ -29,14 +29,13 @@
 	 * Kann als Iterator durchlaufen werden, Index: Planetennummer, Wert: Planetenobjekt
 	*/
 
-	class System implements Iterator
+	class System extends SQLiteSet implements \Iterator,StaticInit
 	{
 		protected static $tables = array (
 			"systems" => array (
 				"id TEXT",
 				"planets INTEGER"
-			),
-			"planets" => Planet::$tables["planets"]
+			)
 		);
 
 		protected static $views = array (
@@ -45,11 +44,20 @@
 
 		private $active_planet;
 
+		static function init()
+		{
+			__autoload("\sua\Planet");
+			parent::init();
+		}
+
 		static function idFromParams(array $params)
 		{
-			if(count($params) < 2)
+			if(count($params) < 1 || ($params[0] instanceof Galaxy && count($params) < 2))
 				throw new DatasetException("Insufficient parameters.");
-			return $params[0]->getGalaxy().":".$params[1];
+			if($params[0] instanceof Galaxy)
+				return $params[0]->getGalaxy().":".$params[1];
+			else
+				return $params[0];
 		}
 
 		static function paramsFromId($id)
@@ -60,10 +68,12 @@
 			return array(Classes::Galaxy($arr[0]), $arr[1]);
 		}
 
-		static function create(Galaxy $galaxy, $system, $transaction=false)
+		static function create($name=null)
 		{
-			if(self::$sqlite->singleField("SELECT COUNT(*) FROM planets WHERE galaxy = ".self::$sqlite->quote($galaxy->getGalaxy())." AND system = ".self::$sqlite->quote($system)." LIMIT 1;") > 0)
-				throw new PlanetException("This system does already exist.");
+			if(self::exists($name))
+				throw new SystemException("This planet does already exist.");
+			$name = self::datasetName($name);
+			list($galaxy, $system) = self::paramsFromId($name);
 
 			$planets = rand(10, 30);
 			for($planet=1; $planet<=$planets; $planet++)

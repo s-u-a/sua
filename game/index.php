@@ -23,27 +23,29 @@
 	*/
 	namespace sua\psua;
 
+	use \sua\Fleet;
+
 	require('include.php');
 
-	if(isset($_GET['cancel']))
+	/*if(isset($_GET['cancel']))
 	{
 		# Flotte zurueckrufen
 
 		$flotte = Classes::Fleet($_GET['cancel']);
-		if($flotte->callBack($me->getName()))
+		if($flotte->callBack($USER->getName()))
 			delete_request();
 	}
 
-	$flotten = Fleet::visibleToUser($me->getName());
+	$flotten = Fleet::visibleToUser($USER->getName());
 
-	$gui->setOption("notify", true);
-	$gui->init();
+	$GUI->setOption("notify", true);*/
+	$GUI->init(); /*
 ?>
 <ul id="planeten-umbenennen">
 	<li><a href="info/rename.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Planeten umbenennen/aufgeben"), false)?>" tabindex="<?=$tabindex++?>"<?=L::accesskeyAttr(_("&umbenennen[login/index.php|1]"))?>><?=L::h(_("&umbenennen[login/index.php|1]"))?></a></li>
 </ul>
 <?php
-	$active_planet = $me->getActivePlanet();
+	$active_planet = $USER->getActivePlanet();
 	if(count($flotten) > 0)
 	{
 ?>
@@ -66,15 +68,15 @@
 			$fl = Classes::Fleet($flotte);
 			$users = $fl->getUsersList();
 
-			$me_in_users = array_search($me->getName(), $users);
-			if($me_in_users !== false)
+			$USER_in_users = array_search($USER->getName(), $users);
+			if($USER_in_users !== false)
 			{
-				$first_user = $me->getName();
-				unset($users[$me_in_users]);
+				$first_user = $USER->getName();
+				unset($users[$USER_in_users]);
 			}
 			else $first_user = array_shift($users);
 
-			$part1 = sprintf(h($me_in_users !== false ? _("Ihre %sFlotte%s") : _("Eine %sFlotte%s")), "<span class=\"beschreibung schiffe\" title=\"".Item::makeItemsString($fl->getFleetList($first_user))."\">", "</span>");
+			$part1 = sprintf(h($USER_in_users !== false ? _("Ihre %sFlotte%s") : _("Eine %sFlotte%s")), "<span class=\"beschreibung schiffe\" title=\"".Item::makeItemsString($fl->getFleetList($first_user))."\">", "</span>");
 
 			$part2 = "";
 			if(count($users) > 0)
@@ -93,11 +95,11 @@
 			}
 
 			$from = $fl->getLastTarget($first_user);
-			$from_own = ($from->getOwner() == $me->getName());
+			$from_own = ($from->getOwner() == $USER->getName());
 			$part3 = sprintf(h($from_own ? _("von Ihrem Planeten %s") : _("vom Planeten %s")), htmlspecialchars(F::formatPlanet($from, !$from_own, false)));
 
 			$to = $fl->getCurrentTarget();
-			$to_own = ($to->getOwner() == $me->getName());
+			$to_own = ($to->getOwner() == $USER->getName());
 			$part4 = sprintf(h($to_own ? _("Ihren Planeten %s") : _("den Planeten %s")), htmlspecialchars(F::formatPlanet($to_pos, !$to_own, false)));
 
 			$string = sprintf(h(_("%s kommt%s %s und erreicht %s.")), $part1, $part2, $part3, $part4);
@@ -178,7 +180,7 @@
 			}
 
 			$user_list = $fl->getUsersList();
-			if(in_array($me->getName(), $user_list))
+			if(in_array($USER->getName(), $user_list))
 			{
 				$first_user = Classes::User(array_shift($user_list));
 				$fleet_passwd = $first_user->getFleetPasswd($fl->getName());
@@ -186,19 +188,19 @@
 					$string .= " ".sprintf(h(_("Das Verbundflottenpasswort lautet %s.")), "<span class=\"flottenpasswd\">".htmlspecialchars($fleet_passwd)."</span>");
 			}
 
-			if($fl->getNeededSlots($me->getName()) > 1)
+			if($fl->getNeededSlots($USER->getName()) > 1)
 				$string .= " <a href=\"info/flotten_actions.php?action=route&amp;id=".htmlspecialchars(urlencode($flotte))."&".htmlspecialchars(global_setting("URL_SUFFIX"))."\">".h(_("Route anzeigen"))."</a>";
 ?>
-	<dt class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=htmlspecialchars($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug">
+	<dt class="<?=($USER_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=htmlspecialchars($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug">
 		<?=$string."\n"?>
 <?php
-			if($fl->getCurrentType() == 4 && !$fl->isFlyingBack() && $me->permissionToAct() && $fl->getCurrentTarget()->getOwner() == $me->getName())
+			if($fl->getCurrentType() == 4 && !$fl->isFlyingBack() && $USER->permissionToAct() && $fl->getCurrentTarget()->getOwner() == $USER->getName())
 			{
 ?>
 		<div class="handel action"><a href="info/flotten_actions.php?action=handel&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Geben Sie dieser Flotte Ladung mit auf den Rückweg"))?>"><?=L::h(_("Handel"))?></a></div>
 <?php
 			}
-			if($fl->getCurrentType() == 3 && !$fl->isFlyingBack() && array_search($me->getName(), $fl->getUsersList()) === 0)
+			if($fl->getCurrentType() == 3 && !$fl->isFlyingBack() && array_search($USER->getName(), $fl->getUsersList()) === 0)
 			{
 ?>
 		<div class="buendnisangriff action"><a href="info/flotten_actions.php?action=buendnisangriff&amp;id=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Erlauben Sie anderen Spielern, der Flotte eigene Schiffe beizusteuern."))?>"><?=L::h(_("Bündnisangriff"))?></a></div>
@@ -206,12 +208,12 @@
 			}
 ?>
 	</dt>
-	<dd class="<?=($me_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=htmlspecialchars($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=htmlspecialchars($flotte)?>"><?=htmlspecialchars(F::formatFTime($next_arrival, $me_in_users !== null ? $me : null))?><?php if(!$fl->isFlyingBack() && ($me_in_users !== false)){?> <a href="index.php?cancel=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen"><?=L::h(_("Abbrechen"))?></a><?php }?></dd>
+	<dd class="<?=($USER_in_users !== false) ? 'eigen' : 'fremd'?> type-<?=htmlspecialchars($fl->getCurrentType())?> <?=$fl->isFlyingBack() ? 'rueck' : 'hin'?>flug" id="restbauzeit-<?=htmlspecialchars($flotte)?>"><?=htmlspecialchars(F::formatFTime($next_arrival, $USER_in_users !== null ? $USER : null))?><?php if(!$fl->isFlyingBack() && ($USER_in_users !== false)){?> <a href="index.php?cancel=<?=htmlspecialchars(urlencode($flotte))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen"><?=L::h(_("Abbrechen"))?></a><?php }?></dd>
 <?php
 			$url = '';
-			if($fl->isFlyingBack()) $url = global_setting("h_root").'/login/flotten.php?'.preg_replace("/((^|&)planet=)\d+/", "\${1}".$me->getPlanetByPos($fl->getCurrentTarget()), global_setting("URL_SUFFIX"));
-			if($me_in_users === false || !$me->umode())
-				$countdowns[] = array($flotte, $next_arrival, ($fl->isFlyingBack() || ($me_in_users === false)), $url);
+			if($fl->isFlyingBack()) $url = global_setting("h_root").'/login/flotten.php?'.preg_replace("/((^|&)planet=)\d+/", "\${1}".$USER->getPlanetByPos($fl->getCurrentTarget()), global_setting("URL_SUFFIX"));
+			if($USER_in_users === false || !$USER->umode())
+				$countdowns[] = array($flotte, $next_arrival, ($fl->isFlyingBack() || ($USER_in_users === false)), $url);
 		}
 ?>
 </dl>
@@ -238,18 +240,18 @@
 <h2 id="planeten"><?=L::h(_("Planeten"))?></h2>
 <ol id="planets">
 <?php
-	$me->setActivePlanet($active_planet);
-	$show_building = $me->checkSetting('show_building');
+	$USER->setActivePlanet($active_planet);
+	$show_building = $USER->checkSetting('show_building');
 	$countdowns = array();
-	$planets = $me->getPlanetsList();
+	$planets = $USER->getPlanetsList();
 	foreach($planets as $planet)
 	{
-		$me->setActivePlanet($planet);
-		$class = $me->getPlanetClass();
+		$USER->setActivePlanet($planet);
+		$class = $USER->getPlanetClass();
 
 		define_url_suffix();
 ?>
-	<li class="planet-<?=htmlspecialchars($class)?><?=($planet == $active_planet) ? ' active' : ''?>"><?=($planet != $active_planet) ? '<a href="index.php?'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=htmlspecialchars($me->planetName())?><?=($planet != $active_planet) ? '</a>' : ''?> <span class="koords">(<?=htmlspecialchars($me->getPosString())?>)</span>
+	<li class="planet-<?=htmlspecialchars($class)?><?=($planet == $active_planet) ? ' active' : ''?>"><?=($planet != $active_planet) ? '<a href="index.php?'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=htmlspecialchars($USER->planetName())?><?=($planet != $active_planet) ? '</a>' : ''?> <span class="koords">(<?=htmlspecialchars($USER->getPosString())?>)</span>
 		<dl class="planet-info">
 			<dt class="c-felder"><?=L::h(_("Felder"))?></dt>
 			<dd class="c-felder"><?=F::ths($PLANET->getUsedFields())?> <span class="gesamtgroesse">(<?=F::ths($PLANET->getSize())?>)</span></dd>
@@ -259,11 +261,11 @@
 ?>
 			<dt class="c-gebaeudebau"><?=L::h(_("Gebäudebau"))?></dt>
 <?php
-			$building_gebaeude = $me->checkBuildingThing('gebaeude');
+			$building_gebaeude = $USER->checkBuildingThing('gebaeude');
 			if($building_gebaeude)
 			{
 ?>
-			<dd class="c-gebaeudebau"><?=L::h(_("[item_".$building_gebaeude[0]."]"))?> <span class="restbauzeit" id="restbauzeit-ge-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($building_gebaeude[1], $me))?></span></dd>
+			<dd class="c-gebaeudebau"><?=L::h(_("[item_".$building_gebaeude[0]."]"))?> <span class="restbauzeit" id="restbauzeit-ge-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($building_gebaeude[1], $USER))?></span></dd>
 <?php
 				$countdowns[] = array('ge-'.$planet, $building_gebaeude[1], global_setting("h_root")."/login/gebaeude.php?".global_setting("URL_SUFFIX"));
 			}
@@ -281,17 +283,17 @@
 			}
 		}
 
-		if($show_building['forschung'] && $me->getItemLevel('B8', 'gebaeude') > 0)
+		if($show_building['forschung'] && $USER->getItemLevel('B8', 'gebaeude') > 0)
 		{
 ?>
 
 			<dt class="c-forschung"><?=L::h(_("Forschung"))?></dt>
 <?php
-			$building_forschung = $me->checkBuildingThing('forschung');
+			$building_forschung = $USER->checkBuildingThing('forschung');
 			if($building_forschung)
 			{
 ?>
-			<dd class="c-forschung"><?=L::h(_("[item_".$building_forschung[0]."]"))?> <span id="restbauzeit-fo-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($building_forschung[1], $me))?></span></dd>
+			<dd class="c-forschung"><?=L::h(_("[item_".$building_forschung[0]."]"))?> <span id="restbauzeit-fo-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($building_forschung[1], $USER))?></span></dd>
 <?php
 				$countdowns[] = array('fo-'.$planet, $building_forschung[1], global_setting("h_root")."/login/forschung.php?".global_setting("URL_SUFFIX"));
 			}
@@ -303,13 +305,13 @@
 			}
 		}
 
-		if($show_building['roboter'] && $me->getItemLevel('B9', 'gebaeude') > 0)
+		if($show_building['roboter'] && $USER->getItemLevel('B9', 'gebaeude') > 0)
 		{
 ?>
 
 			<dt class="c-roboter"><?=L::h(_("Roboter"))?></dt>
 <?php
-			$building = $me->checkBuildingThing('roboter');
+			$building = $USER->checkBuildingThing('roboter');
 			if($building)
 			{
 				switch($show_building['roboter'])
@@ -318,21 +320,21 @@
 						$last_building = array_pop($building);
 						$finishing_time = $last_building[1]+$last_building[2]*$last_building[3];
 ?>
-			<dd class="c-roboter">(<?=L::h(_("[item_".$last_building[0]."]"))?>) <span id="restbauzeit-ro-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $me))?></span></dd>
+			<dd class="c-roboter">(<?=L::h(_("[item_".$last_building[0]."]"))?>) <span id="restbauzeit-ro-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $USER))?></span></dd>
 <?php
 						break;
 					case 2:
 						$first_building = array_shift($building);
 						$finishing_time = $first_building[1]+$first_building[2]*$first_building[3];
 ?>
-			<dd class="c-roboter"><?=L::h(_("[item_".$first_building[0]."]"))?> <span class="anzahl">(<?=F::ths($first_building[2])?>)</span> <span id="restbauzeit-ro-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $me))?></span></dd>
+			<dd class="c-roboter"><?=L::h(_("[item_".$first_building[0]."]"))?> <span class="anzahl">(<?=F::ths($first_building[2])?>)</span> <span id="restbauzeit-ro-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $USER))?></span></dd>
 <?php
 						break;
 					case 1:
 						$first_building = array_shift($building);
 						$finishing_time = $first_building[1]+$first_building[3];
 ?>
-			<dd class="c-roboter"><?=L::h(_("[item_".$first_building[0]."]"))?> <span id="restbauzeit-ro-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $me))?></span></dd>
+			<dd class="c-roboter"><?=L::h(_("[item_".$first_building[0]."]"))?> <span id="restbauzeit-ro-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $USER))?></span></dd>
 <?php
 						break;
 				}
@@ -346,13 +348,13 @@
 			}
 		}
 
-		if($show_building['schiffe'] && $me->getItemLevel('B10', 'gebaeude') > 0)
+		if($show_building['schiffe'] && $USER->getItemLevel('B10', 'gebaeude') > 0)
 		{
 ?>
 
 			<dt class="c-schiffe"><?=L::h(_("Schiffe"))?></dt>
 <?php
-			$building = $me->checkBuildingThing('schiffe');
+			$building = $USER->checkBuildingThing('schiffe');
 			if($building)
 			{
 				switch($show_building['schiffe'])
@@ -361,21 +363,21 @@
 						$last_building = array_pop($building);
 						$finishing_time = $last_building[1]+$last_building[2]*$last_building[3];
 ?>
-			<dd class="c-schiffe">(<?=L::h(_("[item_".$last_building[0]."]"))?>) <span id="restbauzeit-sc-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $me))?></span></dd>
+			<dd class="c-schiffe">(<?=L::h(_("[item_".$last_building[0]."]"))?>) <span id="restbauzeit-sc-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $USER))?></span></dd>
 <?php
 						break;
 					case 2:
 						$first_building = array_shift($building);
 						$finishing_time = $first_building[1]+$first_building[2]*$first_building[3];
 ?>
-			<dd class="c-schiffe"><?=L::h(_("[item_".$first_building[0]."]"))?> <span class="anzahl">(<?=F::ths($first_building[2])?>)</span> <span id="restbauzeit-sc-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $me))?></span></dd>
+			<dd class="c-schiffe"><?=L::h(_("[item_".$first_building[0]."]"))?> <span class="anzahl">(<?=F::ths($first_building[2])?>)</span> <span id="restbauzeit-sc-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $USER))?></span></dd>
 <?php
 						break;
 					case 1:
 						$first_building = array_shift($building);
 						$finishing_time = $first_building[1]+$first_building[3];
 ?>
-			<dd class="c-schiffe"><?=L::h(_("[item_".$first_building[0]."]"))?> <span id="restbauzeit-sc-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $me))?></span></dd>
+			<dd class="c-schiffe"><?=L::h(_("[item_".$first_building[0]."]"))?> <span id="restbauzeit-sc-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $USER))?></span></dd>
 <?php
 						break;
 				}
@@ -389,13 +391,13 @@
 			}
 		}
 
-		if($show_building['verteidigung'] && $me->getItemLevel('B10', 'gebaeude') > 0)
+		if($show_building['verteidigung'] && $USER->getItemLevel('B10', 'gebaeude') > 0)
 		{
 ?>
 
 			<dt class="c-verteidigung"><?=L::h(_("Verteidigung"))?></dt>
 <?php
-			$building = $me->checkBuildingThing('verteidigung');
+			$building = $USER->checkBuildingThing('verteidigung');
 			if($building)
 			{
 				switch($show_building['verteidigung'])
@@ -404,21 +406,21 @@
 						$last_building = array_pop($building);
 						$finishing_time = $last_building[1]+$last_building[2]*$last_building[3];
 ?>
-			<dd class="c-verteidigung">(<?=L::h(_("[item_".$last_building[0]."]"))?>) <span id="restbauzeit-ve-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $me))?></span></dd>
+			<dd class="c-verteidigung">(<?=L::h(_("[item_".$last_building[0]."]"))?>) <span id="restbauzeit-ve-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $USER))?></span></dd>
 <?php
 						break;
 					case 2:
 						$first_building = array_shift($building);
 						$finishing_time = $first_building[1]+$first_building[2]*$first_building[3];
 ?>
-			<dd class="c-verteidigung"><?=L::h(_("[item_".$first_building[0]."]"))?> <span class="anzahl">(<?=F::ths($first_building[2])?>)</span> <span id="restbauzeit-ve-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $me))?></span></dd>
+			<dd class="c-verteidigung"><?=L::h(_("[item_".$first_building[0]."]"))?> <span class="anzahl">(<?=F::ths($first_building[2])?>)</span> <span id="restbauzeit-ve-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $USER))?></span></dd>
 <?php
 						break;
 					case 1:
 						$first_building = array_shift($building);
 						$finishing_time = $first_building[1]+$first_building[3];
 ?>
-			<dd class="c-verteidigung"><?=L::h(_("[item_".$first_building[0]."]"))?> <span id="restbauzeit-ve-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $me))?></span></dd>
+			<dd class="c-verteidigung"><?=L::h(_("[item_".$first_building[0]."]"))?> <span id="restbauzeit-ve-<?=htmlspecialchars($planet)?>"><?=htmlspecialchars(F::formatFTime($finishing_time, $USER))?></span></dd>
 <?php
 						break;
 				}
@@ -437,12 +439,12 @@
 <?php
 	}
 
-	$me->setActivePlanet($active_planet);
+	$USER->setActivePlanet($active_planet);
 	define_url_suffix();
 ?>
 </ol>
 <?php
-	if(count($countdowns) > 0 && !$me->umode())
+	if(count($countdowns) > 0 && !$USER->umode())
 	{
 ?>
 <script type="text/javascript">
@@ -463,29 +465,28 @@
 <h2 id="punkte"><?=L::h(_("Punkte"))?></h2>
 <dl class="punkte">
 	<dt class="c-gebaeude"><?=L::h(_("[scores_0]"))?></dt>
-	<dd class="c-gebaeude"><?=F::ths($me->getScores(0))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($me->getRank(0))."</strong>")?></span>)</dd>
+	<dd class="c-gebaeude"><?=F::ths($USER->getScores(0))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($USER->getRank(0))."</strong>")?></span>)</dd>
 
 	<dt class="c-forschung"><?=L::h(_("[scores_1]"))?></dt>
-	<dd class="c-forschung"><?=F::ths($me->getScores(1))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($me->getRank(1))."</strong>")?></span>)</dd>
+	<dd class="c-forschung"><?=F::ths($USER->getScores(1))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($USER->getRank(1))."</strong>")?></span>)</dd>
 
 	<dt class="c-roboter"><?=L::h(_("[scores_2]"))?></dt>
-	<dd class="c-roboter"><?=F::ths($me->getScores(2))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($me->getRank(2))."</strong>")?></span>)</dd>
+	<dd class="c-roboter"><?=F::ths($USER->getScores(2))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($USER->getRank(2))."</strong>")?></span>)</dd>
 
 	<dt class="c-flotte"><?=L::h(_("[scores_3]"))?></dt>
-	<dd class="c-flotte"><?=F::ths($me->getScores(3))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($me->getRank(3))."</strong>")?></span>)</dd>
+	<dd class="c-flotte"><?=F::ths($USER->getScores(3))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($USER->getRank(3))."</strong>")?></span>)</dd>
 
 	<dt class="c-verteidigung"><?=L::h(_("[scores_4]"))?></dt>
-	<dd class="c-verteidigung"><?=F::ths($me->getScores(4))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($me->getRank(4))."</strong>")?></strong>)</span></dd>
+	<dd class="c-verteidigung"><?=F::ths($USER->getScores(4))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($USER->getRank(4))."</strong>")?></strong>)</span></dd>
 
 	<dt class="c-flugerfahrung"><?=L::h(_("[scores_5]"))?></dt>
-	<dd class="c-flugerfahrung"><?=F::ths($me->getScores(5))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($me->getRank(5))."</strong>")?></span>)</dd>
+	<dd class="c-flugerfahrung"><?=F::ths($USER->getScores(5))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($USER->getRank(5))."</strong>")?></span>)</dd>
 
 	<dt class="c-kampferfahrung"><?=L::h(_("[scores_6]"))?></dt>
-	<dd class="c-kampferfahrung"><?=F::ths($me->getScores(6))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($me->getRank(6))."</strong>")?></span>)</dd>
+	<dd class="c-kampferfahrung"><?=F::ths($USER->getScores(6))?> <span class="platz">(<?=sprintf(h(_("Platz %s")), "<strong>".F::ths($USER->getRank(6))."</strong>")?></span>)</dd>
 
 	<dt class="c-gesamt">Gesamt</dt>
-	<dd class="c-gesamt"><?=F::ths($me->getScores())?> <span class="platz">(<?=sprintf(h(_("Platz %s von %s")), "<strong>".F::ths($me->getRank())."</strong>", "<strong class=\"gesamt-spieler\">".F::ths(User::getNumber())."</strong>")?>)</span></dd>
+	<dd class="c-gesamt"><?=F::ths($USER->getScores())?> <span class="platz">(<?=sprintf(h(_("Platz %s von %s")), "<strong>".F::ths($USER->getRank())."</strong>", "<strong class=\"gesamt-spieler\">".F::ths(User::getNumber())."</strong>")?>)</span></dd>
 </dl>
-<?php
-	$gui->end();
-?>
+<?php */
+	$GUI->end();

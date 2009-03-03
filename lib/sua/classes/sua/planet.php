@@ -50,7 +50,7 @@
 				"tf2 REAL DEFAULT 0",
 				"tf3 REAL DEFAULT 0",
 				"size INTEGER DEFAULT 0",
-				"user_index INTEGER NOT NULL" // Bestimmt die Reihenfolge der Planeten eines Benutzers
+				"user_index INTEGER" // Bestimmt die Reihenfolge der Planeten eines Benutzers
 			),
 			"planets_items" => array (
 				"galaxy INTEGER NOT NULL",
@@ -80,11 +80,18 @@
 			)
 		);
 
+		protected static $views = array(
+			"planets_items_user" => "SELECT planets_items.galaxy AS galaxy, planets_items.system AS system, planets_items.planet AS planet, planets_items.id AS id, planets_items.type AS type, planets_items.level AS level, planets_items.scores AS scores, planets_items.fields AS fields, planets_items.prod_factor AS prod_factor, planets.user AS user FROM planets_items INNER JOIN ( SELECT galaxy, system, planet, user FROM planets ) AS planets ON planets_items.galaxy = planets.galaxy AND planets_items.system = planets.system AND planets_items.planet = planets.planet"
+		);
+
 		static function idFromParams(array $params)
 		{
-			if(count($params) < 2)
+			if(count($params) < 1 || ($params[0] instanceof System && count($params) < 2))
 				throw new DatasetException("Insufficient parameters.");
-			return $params[0]->getGalaxy().":".$params[0]->getSystem().":".$params[1];
+			if($params[0] instanceof System)
+				return $params[0]->getGalaxy().":".$params[0]->getSystem().":".$params[1];
+			else
+				return $params[0];
 		}
 
 		static function paramsFromId($id)
@@ -112,7 +119,7 @@
 				throw new PlanetException("This planet does already exist.");
 			$name = self::datasetName($name);
 			list($system, $planet) = self::paramsFromId($name);
-			self::$sqlite->query("INSERT INTO planets ( galaxy, system, planet, size_original ) VALUES ( ".self::$sqlite->quote($system->getGalaxy()).", ".self::$sqlite->quote($system->getSystem()).", ".self::$sqlite->quote($planet).", ".self::$sqlite->quote(rand(100, 500))." );");
+			self::$sqlite->query("INSERT INTO planets ( galaxy, system, planet, size_original ) VALUES ( ".self::$sqlite->quote($system->getGalaxy()).", ".self::$sqlite->quote($system->getSystem()).", ".self::$sqlite->quote($planet).", ROUND((RANDOM()+9223372036854775808)*400/(9223372036854775808+9223372036854775807)+100) );");
 			return self::idFromParams(array($system, $planet));
 		}
 
@@ -168,7 +175,7 @@
 
 		private function sqlCond()
 		{
-			return "galaxy = ".$this->quote($this->getGalaxy())." AND system = ".$this->quote($this->getSystem())." AND planet = ".$this->quote($this->getPlanet());
+			return "galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem())." AND planet = ".self::$sqlite->quote($this->getPlanet());
 		}
 
 		/**
@@ -209,7 +216,7 @@
 		 * @return string
 		*/
 
-		function getName()
+		function getGivenName()
 		{
 			return $this->getMainField("name");
 		}
@@ -242,9 +249,7 @@
 
 		function getRemainingFields()
 		{
-			$this->_forceActivePlanet();
-
-			return ($this->planet_info["size"][1]-$this->planet_info["size"][0]);
+			return $this->getSize()-$this->getUsedFields();
 		}
 
 		/**
@@ -266,7 +271,7 @@
 
 		function getPlanetClass()
 		{
-			return Galaxy::calcPlanetClass($this);
+			return self::calcPlanetClass($this);
 		}
 
 		/**
@@ -274,7 +279,7 @@
 		 * @param Planet $planet
 		*/
 
-		static function calcPlanetClass(Galaxy $planet)
+		static function calcPlanetClass(Planet $planet)
 		{
 			$type = (((floor($planet->getSystem()/100)+1)*(floor(($planet->getSystem()%100)/10)+1)*(($planet->getSystem()%10)+1))%$planet->getPlanet())*$planet->getPlanet()+($planet->getSystem()%(($planet->getGalaxy()+1)*$planet->getPlanet()));
 			return $type%20+1;
@@ -292,14 +297,13 @@
 		}
 
 		/**
-		 * Gibt die Koordinaten eines Planeten in einem für Benutzer lesbaren Format zurück.
-		 * @param Planet $planet
+		 * Gibt die Koordinaten des Planeten in einem für Benutzer lesbaren Format zurück.
 		 * @return string
 		*/
 
-		static function format(Planet $planet)
+		function format()
 		{
-			return sprintf(_("%d:%d:%d"), $planet->getGalaxy(), $planet->getSystem(), $planet->getPlanet());
+			return sprintf(_("%d:%d:%d"), $this->getGalaxy(), $this->getSystem(), $this->getPlanet());
 		}
 
 		/**
@@ -309,7 +313,7 @@
 
 		static function randomFreePlanet()
 		{
-			$result = self::$sqlite->singleField("SELECT pid FROM planets WHERE NOT user ORDER BY RANDOM() LIMIT 1;");
+			$result = self::$sqlite->singleField("SELECT galaxy || ':' || system || ':' || planet FROM planets WHERE NOT user OR user IS NULL ORDER BY RANDOM() LIMIT 1;");
 			if($result === false)
 				throw new PlanetException("No free planets available.");
 			return Classes::Planet($result);
@@ -359,7 +363,7 @@
 		static function getPlanetsByUser($user)
 		{
 			$return = array();
-			self::$sqlite->query("SELECT galaxy,system,planet FROM planets WHERE user = ".self::$sqlite->quote($user)." ORDER BY i ASC;");
+			self::$sqlite->query("SELECT galaxy,system,planet FROM planets WHERE user = ".self::$sqlite->quote($user)." ORDER BY user_index ASC;");
 			while(($r = self::$sqlite->nextResult()) !== false)
 				$return[] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
 			return $return;
@@ -442,8 +446,6 @@
 			Fleet::planetRemoved($this);
 
 			# Planeten aus der Karte loeschen
-			$this_pos = $this->getPos();
-
 			self::$sqlite->backgroundQuery("UPDATE planets SET user = NULL, name = NULL, size = size_original, ress0 = 0, ress1 = 0, ress2 = 0, ress3 = 0, ress4 = 0 WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem())." AND planet = ".self::$sqlite->quote($this->getPlanet()));
 			self::$sqlite->backgroundQuery("DELETE FROM planets_items WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem())." AND planet = ".self::$sqlite->quote($this->getPlanet()));
 			self::$sqlite->backgroundQuery("DELETE FROM planets_building WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem())." AND planet = ".self::$sqlite->quote($this->getPlanet()));
@@ -472,7 +474,7 @@
 			$size = floor($size*($user_obj->getItemLevel("F9", "forschung")/Item::getIngtechFactor()+1));
 			$this->setMainField("size", $size);
 
-			$index = $this->singleField("SELECT MAX(user_index) FROM planets WHERE user = ".$this->quote($user));
+			$index = self::$sqlite->singleField("SELECT MAX(user_index) FROM planets WHERE user = ".self::$sqlite->quote($user));
 			if($index === false)
 				$index = 0;
 			else
@@ -495,11 +497,11 @@
 			if(!$owner)
 				throw PlanetException("This planet is not colonised.");
 			$current_index = $this->getMainField("user_index");
-			$next_index = $this->singleLine("SELECT galaxy,system,planet,user_index FROM planets WHERE user_index < ".$this->quote($current_index)." ORDER BY user_index DESC LIMIT 1;");
+			$next_index = self::$sqlite->singleLine("SELECT galaxy,system,planet,user_index FROM planets WHERE user_index < ".self::$sqlite->quote($current_index)." ORDER BY user_index DESC LIMIT 1;");
 			if(!$next_index)
 				throw new UserException("This planet is on the top.");
-			$this->backgroundQuery("UPDATE planets SET user_index = ".$this->quote($current_index)." WHERE galaxy = ".$this->quote($next_index["galaxy"])." AND system = ".$this->quote($next_index["system"])." AND planet = ".$this->quote($next_index["planet"]).";");
-			$this->backgroundQuery("UPDATE planets SET user_index = ".$this->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
+			self::$sqlite->backgroundQuery("UPDATE planets SET user_index = ".self::$sqlite->quote($current_index)." WHERE galaxy = ".self::$sqlite->quote($next_index["galaxy"])." AND system = ".self::$sqlite->quote($next_index["system"])." AND planet = ".self::$sqlite->quote($next_index["planet"]).";");
+			self::$sqlite->backgroundQuery("UPDATE planets SET user_index = ".self::$sqlite->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
 		}
 
 		/**
@@ -515,11 +517,11 @@
 			if(!$owner)
 				throw PlanetException("This planet is not colonised.");
 			$current_index = $this->getMainField("user_index");
-			$next_index = $this->singleLine("SELECT galaxy,system,planet,user_index FROM planets WHERE user_index > ".$this->quote($current_index)." ORDER BY user_index ASC LIMIT 1;");
+			$next_index = self::$sqlite->singleLine("SELECT galaxy,system,planet,user_index FROM planets WHERE user_index > ".self::$sqlite->quote($current_index)." ORDER BY user_index ASC LIMIT 1;");
 			if(!$next_index)
 				throw new UserException("This planet is on the bottom.");
-			$this->backgroundQuery("UPDATE planets SET user_index = ".$this->quote($current_index)." WHERE galaxy = ".$this->quote($next_index["galaxy"])." AND system = ".$this->quote($next_index["system"])." AND planet = ".$this->quote($next_index["planet"]).";");
-			$this->backgroundQuery("UPDATE planets SET user_index = ".$this->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
+			self::$sqlite->backgroundQuery("UPDATE planets SET user_index = ".self::$sqlite->quote($current_index)." WHERE galaxy = ".self::$sqlite->quote($next_index["galaxy"])." AND system = ".self::$sqlite->quote($next_index["system"])." AND planet = ".self::$sqlite->quote($next_index["planet"]).";");
+			self::$sqlite->backgroundQuery("UPDATE planets SET user_index = ".self::$sqlite->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
 		}
 
 		/**
@@ -528,7 +530,7 @@
 		 * @return void
 		*/
 
-		function setName($name)
+		function setGivenName($name)
 		{
 			$this->setMainField("name", $name);
 		}
@@ -542,7 +544,15 @@
 		function getRess($refresh=true)
 		{
 			if($refresh)
-				$this->refreshRess();
+			{
+				try
+				{
+					$this->refreshRess();
+				}
+				catch(PlanetException $e)
+				{
+				}
+			}
 
 			$ress = $this->getMainField(array("ress0", "ress1", "ress2", "ress3", "ress4"));
 
@@ -616,20 +626,23 @@
 		 * Erneuert die Rohstoffbestände auf diesem Planeten. Der Zeitpunkt der
 		 * letzten Erneuerung wurde zwischengespeichert, die Produktion seither
 		 * wird nun hinzugefügt.
-		 * @param int $time Bestand zu diesem Zeitpunkt statt zum aktuellen verwenden
+		 * @param int $a_time Bestand zu diesem Zeitpunkt statt zum aktuellen verwenden
 		 * @throw UserException Die letzte Aktualisierung ist neuer als $time
 		 * @return void
 		*/
 
-		protected function refreshRess($time=null)
+		protected function refreshRess($a_time=null)
 		{
+			$time = isset($a_time) ? $a_time : time();
 			$last_refresh = $this->getMainField("last_refresh");
-			if($last_refresh >= $time)
-				throw new PlanetException("Last refresh is in the future.");
+			if($last_refresh == $time)
+				return;
+			elseif($last_refresh >= $time)
+				throw new PlanetException("Last refresh is in the future (".$last_refresh." >= ".$time.", current time ".time().").");
 
-			$prod = $this->getProduction($time !== false);
-			$limit = $this->getProductionLimit($time !== false);
-			$cur = $this->getRess($time !== false);
+			$prod = $this->getProduction(isset($a_time));
+			$limit = $this->getProductionLimit(isset($a_time));
+			$cur = $this->getRess(isset($a_time));
 
 			$f = ($time-$last_refresh)/3600;
 
@@ -654,7 +667,7 @@
 
 		function getProductionFactor($gebaeude)
 		{
-			$factor = $this->singleField("SELECT prod_factor FROM planets_items WHERE ".$this->sqlCond()." AND id = ".$this->quote($gebaeude)." LIMIT 1;");
+			$factor = self::$sqlite->singleField("SELECT prod_factor FROM planets_items WHERE ".$this->sqlCond()." AND id = ".self::$sqlite->quote($gebaeude)." LIMIT 1;");
 			if(!$factor)
 				$factor = 1;
 			return $factor;
@@ -674,7 +687,7 @@
 			if($factor < 0) $factor = 0;
 			if($factor > 1) $factor = 1;
 
-			$this->backgroundQuery("UPDATE planets_items SET prod_factor = ".$this->quote($factor)." WHERE ".$this->sqlCond()." AND id = ".$this->quote($gebaeude).";");
+			self::$sqlite->backgroundQuery("UPDATE planets_items SET prod_factor = ".self::$sqlite->quote($factor)." WHERE ".$this->sqlCond()." AND id = ".self::$sqlite->quote($gebaeude).";");
 		}
 
 		/**
@@ -691,13 +704,13 @@
 				$owner_obj = Classes::User($owner);
 				if($owner_obj->permissionToAct())
 				{
-					$gebaeude = $user_obj->getItemsList("gebaeude");
+					$gebaeude = $owner_obj->getItemsList("gebaeude");
 
 					$energie_prod = 0;
 					$energie_need = 0;
 					foreach($gebaeude as $id)
 					{
-						$item = $user_obj->getItemInfo($id, "gebaeude", array("prod"), false, null, $this);
+						$item = $owner_obj->getItemInfo($id, "gebaeude", array("prod"), false, null, $this);
 						if($item["prod"][5] < 0) $energie_need -= $item["prod"][5];
 						elseif($item["prod"][5] > 0) $energie_prod += $item["prod"][5];
 
@@ -763,8 +776,6 @@
 
 		function getProductionLimit()
 		{
-			$this->_forceActivePlanet();
-
 			$lib_config = Config::getLibConfig();
 			$limit = array(
 				$lib_config->getConfigValue("users", "production_limit", "initial", "ress0"),
@@ -811,7 +822,7 @@
 				return $user_obj->getItemLevel($id);
 			}
 
-			$level = $this->singleField("SELECT level FROM planets_items WHERE = ".$this->sqlCond()." AND id = ".$this->quote($id)." AND type = ".$this->quote($type)." LIMIT 1;");
+			$level = self::$sqlite->singleField("SELECT level FROM planets_items WHERE ".$this->sqlCond()." AND id = ".self::$sqlite->quote($id)." AND type = ".self::$sqlite->quote($type)." LIMIT 1;");
 			if($level === false)
 				$level = 0;
 			return $level;
@@ -827,7 +838,7 @@
 
 		function _delayBuildingThings($seconds)
 		{
-			$this->backgroundQuery("UPDATE planets_building SET start = start + ".$this->quote($seconds)." WHERE ".$this->sqlCond().";");
+			self::$sqlite->backgroundQuery("UPDATE planets_building SET start = start + ".self::$sqlite->quote($seconds)." WHERE ".$this->sqlCond().";");
 		}
 
 		/**
@@ -853,7 +864,7 @@
 
 		static function increaseSize($user, $factor)
 		{
-			$this->backgroundQuery("UPDATE planets SET size = CEIL(size*".$this->quote($factor).") WHERE user = ".$this->quote($user).";");
+			self::$sqlite->backgroundQuery("UPDATE planets SET size = CEIL(size*".self::$sqlite->quote($factor).") WHERE user = ".self::$sqlite->quote($user).";");
 		}
 
 		/**
@@ -901,10 +912,10 @@
 				$type = Item::getItemType($id);
 
 			// TODO: Punkte und belegte Felder aktualisieren
-			if($this->singleField("SELECT COUNT(*) FROM planets_items WHERE ".$this->sqlCond()." AND id = ".$this->quote($id).";") > 0)
-				$this->backgroundQuery("UPDATE planets_items SET level = level+".$this->quote($value)." WHERE ".$this->sqlCond()." AND id = ".$this->quote($id).";");
+			if(self::$sqlite->singleField("SELECT COUNT(*) FROM planets_items WHERE ".$this->sqlCond()." AND id = ".self::$sqlite->quote($id).";") > 0)
+				self::$sqlite->backgroundQuery("UPDATE planets_items SET level = level+".self::$sqlite->quote($value)." WHERE ".$this->sqlCond()." AND id = ".self::$sqlite->quote($id).";");
 			else
-				$this->backgroundQuery("INSERT INTO planets_items ( galaxy, system, planet, id, level ) VALUES ( ".$this->quote($this->getGalaxy()).", ".$this->quote($this->getSystem()).", ".$this->quote($this->getPlanet()).", ".$this->quote($id).", ".$this->quote($value)." );");
+				self::$sqlite->backgroundQuery("INSERT INTO planets_items ( galaxy, system, planet, id, level ) VALUES ( ".self::$sqlite->quote($this->getGalaxy()).", ".self::$sqlite->quote($this->getSystem()).", ".self::$sqlite->quote($this->getPlanet()).", ".self::$sqlite->quote($id).", ".self::$sqlite->quote($value)." );");
 
 			# Felder belegen
 			if($type == "gebaeude")
@@ -995,8 +1006,6 @@
 
 		function checkBuildingThing($type)
 		{
-			$this->_forceActivePlanet();
-
 			switch($type)
 			{
 				case "gebaeude": case "forschung":
@@ -1021,8 +1030,6 @@
 
 		function removeBuildingThing($type, $cancel=true)
 		{
-			$this->_forceActivePlanet();
-
 			switch($type)
 			{
 				case "gebaeude": case "forschung":
@@ -1137,6 +1144,8 @@
 
 		function eventhandler()
 		{
+			return;
+
 			if($this->umode())
 				return;
 
@@ -1195,8 +1204,6 @@
 
 		function buildGebaeude($id, $rueckbau=false)
 		{
-			$this->_forceActivePlanet();
-
 			if($this->checkBuildingThing("gebaeude")) return false;
 			if($id == "B8" && $this->checkBuildingThing("forschung")) return false;
 			if($id == "B9" && $this->checkBuildingThing("roboter")) return false;
@@ -1239,8 +1246,6 @@
 
 		function buildForschung($id, $global)
 		{
-			$this->_forceActivePlanet();
-
 			if($this->checkBuildingThing("forschung")) return false;
 			if(($gebaeude = $this->checkBuildingThing("gebaeude")) && $gebaeude[0] == "B8") return false;
 
@@ -1289,8 +1294,6 @@
 
 		function buildRoboter($id, $anzahl)
 		{
-			$this->_forceActivePlanet();
-
 			$anzahl = floor($anzahl);
 			if($anzahl < 0) return false;
 
@@ -1358,8 +1361,6 @@
 
 		function buildSchiffe($id, $anzahl)
 		{
-			$this->_forceActivePlanet();
-
 			$anzahl = floor($anzahl);
 			if($anzahl < 0) return false;
 
@@ -1427,8 +1428,6 @@
 
 		function buildVerteidigung($id, $anzahl)
 		{
-			$this->_forceActivePlanet();
-
 			$anzahl = floor($anzahl);
 			if($anzahl < 0) return false;
 

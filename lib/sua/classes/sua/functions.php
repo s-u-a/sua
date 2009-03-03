@@ -500,6 +500,19 @@
 		}
 
 		/**
+		 * GIbt des letzten Index des Arrays $array zurück.
+		 * @param array $array
+		 * @return int|string
+		*/
+
+		static function last($array)
+		{
+			$keys = array_keys($array);
+			if(count($keys) < 1) return null;
+			return $keys[count($keys)-1];
+		}
+
+		/**
 		 * Gibt eine mögliche neue ID für ein Dataset zurück. Es ist nicht sichergestellt,
 		 * dass diese nicht bereits existiert. Liefert jedesmal eine andere ID zurück.
 		 * @return string

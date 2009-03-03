@@ -478,6 +478,16 @@
 			fputs(STDERR, "Please run db_things/regen_highscores now.\n");
 			unset($db);
 		}
+
+		########################
+		### Version 9 auf 10 ###
+		########################
+
+		case 9:
+		{
+			# Alles in die SQLite-Datenbank übertragen
+			# TODO
+		}
 	}
 
 	fputs(STDERR, "Database version is now ".$newest_version.".\n");

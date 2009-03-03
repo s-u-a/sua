@@ -83,8 +83,7 @@
 
 		public function __construct($name=null)
 		{
-			if(count(func_get_args()) > 1)
-				$name = static::idFromParams(func_get_args());
+			$name = static::idFromParams(func_get_args());
 
 			$name = static::datasetName($name);
 			$this->name = $name;

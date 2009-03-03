@@ -30,7 +30,7 @@
 	$receive_settings = $me->checkSetting('receive');
 	$show_building = $me->checkSetting('show_building');
 
-	$db_config = Classes::Database()->getConfig();
+	$db_config = $DATABASE->getConfig();
 	$messengers = isset($db_config["instantmessaging"]) ? $db_config["instantmessaging"] : array();
 	$messenger_receive = $me->checkSetting('messenger_receive');
 

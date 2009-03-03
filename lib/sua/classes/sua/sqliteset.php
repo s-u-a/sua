@@ -36,7 +36,7 @@
 		 * Eine SQLite-Instanz, die die Datenbank bedient.
 		 * @var SQLite
 		*/
-		protected static $sqlite;
+		public static $sqlite;
 
 		/**
 		 * Muss von der Kindklasse festgelegt werden. Legt fest, welche Tabellen mit welchen Feldern vom
@@ -48,7 +48,7 @@
 
 		protected static $views;
 
-		private static $tables_checked = array();
+		private static $check_tables_stack = array();
 
 		static function init()
 		{
@@ -63,11 +63,11 @@
 			if(!self::$sqlite)
 			{
 				try { self::$sqlite = Classes::SQLite(Dataset::getDatabase()); }
-				catch(DatasetException $e) { }
+				catch(DatasetException $e) {  }
 			}
 
-			if(self::$sqlite)
-				static::checkTables();
+			self::$check_tables_stack[] = array(static::$tables, static::$views);
+			self::checkTables();
 		}
 
 		/**
@@ -77,7 +77,14 @@
 
 		protected static function checkTables()
 		{
-			self::$sqlite->checkTables(static::$tables, static::$views);
+			if(self::$sqlite)
+			{
+				while(count(self::$check_tables_stack) > 0)
+				{
+					list($tables, $views) = array_shift(self::$check_tables_stack);
+					self::$sqlite->checkTables($tables, $views);
+				}
+			}
 		}
 
 		static function datasetName($name=null)
@@ -137,13 +144,19 @@
 		protected function getMainField($field_name)
 		{
 			if(is_array($field_name))
-				$select_names = $field_name;
+			{
+				$result = self::$sqlite->singleLine("SELECT ".implode(", ", $field_name)." FROM ".Functions::first(static::$tables)." WHERE ".static::_idField()." = ".self::$sqlite->quote($this->getName()).";");
+				$return = array();
+				foreach($field_name as $k=>$v)
+				{
+					if(!isset($result[$v]))
+						throw new SQLiteSetException("Field “".$v."” could not be selected.");
+					$return[$k] = $result[$v];
+				}
+				return $return;
+			}
 			else
-				$select_names = array($field_name);
-			$return = self::$sqlite->singleField("SELECT ".implode(", ", $select_names)." FROM ".Functions::first(static::$tables)." WHERE ".static::_idField()." = ".self::$sqlite->quote($this->getName()).";");
-			if(!is_array($field_name))
-				return $return[$field_name];
-			return $return;
+				return self::$sqlite->singleField("SELECT ".$field_name." FROM ".Functions::first(static::$tables)." WHERE ".static::_idField()." = ".self::$sqlite->quote($this->getName()).";");
 		}
 
 		/**
@@ -163,7 +176,7 @@
 			{
 				if(!isset($values[$k]))
 					throw new SQLiteSetException("setMainField: Could not find a value for field ".$v);
-				$set[] = $v." = ".$this->quote($values[$k]);
+				$set[] = $v." = ".self::$sqlite->quote($values[$k]);
 			}
 			if(count($set) < 1)
 				throw new SQLiteSetException("No fields to update.");

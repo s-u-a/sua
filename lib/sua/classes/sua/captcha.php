@@ -167,7 +167,7 @@
 
 		static function getConfig($index=null)
 		{
-			$config = Config::getConfig();
+			$config = Config::getLibConfig()->getConfig();
 			if(!isset($config["captcha"]))
 				throw new CaptchaException("Captchas are not configured.", CaptchaException::CONFIG_ERROR);
 			$config = &$config["captcha"];
@@ -177,5 +177,18 @@
 			if(!isset($config[$index]))
 				throw new CaptchaException("Configuration setting ".$index." missing.", CaptchaException::CONFIG_ERROR);
 			return $config[$index];
+		}
+
+		/**
+		 * Versucht, alle für die Captcha-Implementierung notwendigen Konfigurationswerte auszulesen. Auf diese Weise kann Exceptions
+		 * vorgebeugt werden.
+		 * @throw CaptchaException {@see getConfig()}
+		 * @return void
+		*/
+
+		static function prepareConfig()
+		{
+			self::getConfig("public");
+			self::getConfig("private");
 		}
 	}

@@ -63,7 +63,7 @@
 					self::$objectInstances[$classname][$p1] = $instance;
 				}
 
-				return self::$objectInstances[$classname][$p1_lower];
+				return self::$objectInstances[$classname][$p1];
 			}
 			else
 			{

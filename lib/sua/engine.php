@@ -24,6 +24,8 @@
 
 	namespace sua
 	{
+		//define("DEBUG", true);
+
 		const VERSION = "1.1.0 svn";
 
 		# s_root ermitteln: Absoluter Pfad zum Spielverzeichnis

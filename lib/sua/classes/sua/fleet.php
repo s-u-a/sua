@@ -1027,7 +1027,7 @@
 			foreach(Planet::getPlanetsByUser($user) as $planet)
 				$planets_query[] = "( galaxy = ".self::$sqlite->quote($planet->getGalaxy())." AND system = ".self::$sqlite->quote($planet->getSystem())." AND planet = ".self::$sqlite->quote($planet->getPlanet())." )";
 
-			return self::$sqlite->singleColumn("SELECT DISTINCT fleet_id FROM ( SELECT fleet_id FROM fleets_users WHERE user = ".self::$sqlite->quote($user)." UNION ALL SELECT fleet_id FROM fleets_targets WHERE type != ".self::$sqlite->quote(self::TYPE_SAMMELN)." AND ( ".implode(" OR ", $planets_query)." ) );");
+			return self::$sqlite->singleColumn("SELECT DISTINCT fleet_id FROM ( SELECT fleet_id FROM fleets_users WHERE user = ".self::$sqlite->quote($user)." UNION ALL SELECT fleet_id FROM fleets_targets WHERE type != ".self::$sqlite->quote(self::TYPE_SAMMELN).(count($planets_query) > 0 ? " AND ( ".implode(" OR ", $planets_query)." )" : "")." );");
 		}
 
 		/**
@@ -1096,7 +1096,7 @@
 
 		static function getFleetsPositionedOnPlanet(Planet $planet)
 		{
-			return self::$sqlite->singleColumn("SELECT fleet_id FROM ( SELECT fleet_id,galaxy,system,planet,finished FROM fleets_targets ORDER BY i DESC GROUP BY fleet_id ) WHERE galaxy = ".self::$sqlite->quote($planet->getGalaxy())." AND system = ".self::$sqlite->quote($planet->getSystem())." AND planet = ".self::$sqlite->quote($planet->getPlanet())." AND finished");
+			return self::$sqlite->singleColumn("SELECT fleet_id FROM ( SELECT fleet_id,galaxy,system,planet,finished,i FROM fleets_targets GROUP BY fleet_id ORDER BY i DESC ) WHERE galaxy = ".self::$sqlite->quote($planet->getGalaxy())." AND system = ".self::$sqlite->quote($planet->getSystem())." AND planet = ".self::$sqlite->quote($planet->getPlanet())." AND finished");
 		}
 
 		/**

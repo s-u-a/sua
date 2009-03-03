@@ -26,28 +26,20 @@
 	use \sua\Classes;
 	use \sua\UserException;
 	use \sua\Dataset;
+	use \sua\L;
+	use \sua\HTTPOutput;
+	use \sua\ConfigException;
+	use \sua\Planet;
+	use \sua\Functions;
+	use \sua\Captcha;
+	use \sua\CaptchaException;
 
 	error_reporting(4095);
 	ignore_user_abort(true);
 
 	# 10 Minuten sollten wohl auch bei hoher Serverlast genuegen
-	set_time_limit(600);
-
-	/* TODO
-	L::language("de_DE", true);
-
-	HTTPOutput::sendContentType();
-	HTTPOutput::disableMagicQuotes();
-
-	$config = Classes::Config(dirname(__FILE__)."/config.xml");
-	$config_arr = $config->getConfig();
-	// Richtigen Hostname sicherstellen
-	if(isset($config_arr["hostname"]) && $config_arr["hostname"] && $_SERVER["HTTP_HOST"] != $config_arr["hostname"])
-		HTTPOutput::changeHostname($config_arr["hostname"]);
-
-	if(isset($config_arr["timezone"]))
-		date_default_timezone_set($config_arr["timezone"]);
-	*/
+	//set_time_limit(600);
+	set_time_limit(30);
 
 	$include_path = explode(":", get_include_path());
 	array_unshift($include_path, dirname(__FILE__)."/classes/");
@@ -56,102 +48,154 @@
 
 	require_once(dirname(__FILE__)."/lib/sua/engine.php");
 
-	$resume = false;
-	$del_email_passwd = false;
-
 	header('Cache-Control: no-cache', true);
+
+	$CONFIG = Classes::Config(dirname(__FILE__)."/config.xml");
+
+	try { HTTPOutput::changeHostname($CONFIG->getConfigValueE("hostname")); }
+	catch(ConfigException $e) { }
+
+	$DATABASE = Classes::Database($CONFIG->getConfigValueE("database"));
+	Dataset::setDatabase($DATABASE);
+
+	L::language("de_DE", true);
+
+	try { date_default_timezone_set($CONFIG->getConfigValueE("timezone")); }
+	catch(ConfigException $e) { }
 
 	const TEXTDOMAIN = "psua";
 	bindtextdomain(TEXTDOMAIN, dirname(__FILE__)."/locale");
 	bind_textdomain_codeset(TEXTDOMAIN, "utf-8");
-	function _($message) { return gettext($message); }
-	function gettext($message) { return dgettext(TEXTDOMAIN, $message); }
+	function _($USERssage) { return gettext($USERssage); }
+	function gettext($USERssage) { return dgettext(TEXTDOMAIN, $USERssage); }
 	function ngettext($msgid1, $msgid2, $n) { return dngettext(TEXTDOMAIN, $msgid1, $msgid2, $n); }
 
-	$CONFIG = Classes::Config(dirname(__FILE__)."/config.xml");
-	$DATABASE = Classes::Database($CONFIG->getConfigValueE("database"));
-	Dataset::setDatabase($DATABASE);
+	define("SROOT", dirname(__FILE__));
+	define("HROOT", HTTPOutput::getHPath(SROOT));
 
 	$GUI = Classes::__callStatic("\sua\psua\LoginGui");
+	$GUI->setOption("h_root", HROOT);
+	$GUI->setOption("s_root", SROOT);
 
-	if(isset($_SESSION["username"]))
+	if(isset($_REQUEST[session_name()]))
+		session_id($_REQUEST[session_name()]);
+	if(!isset($_SESSION))
+		session_start();
+
+	$loggedin = isset($_SESSION["username"]);
+
+	if(isset($_SESSION["ip"]) && $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
 	{
-		# Schnellklicksperre
-		$now_time = microtime(true);
+		if(isset($_COOKIE[session_name()]))
+			setcookie(session_name(), '', 0, HROOT."/");
+		$GUI->setOption("error", _("Diese Session wird bereits von einer anderen IP-Adresse benutzt."));
+		$loggedin = false;
+		if(isset($_SESSION["username"]))
+			$GUI->setOption("login_username", $_SESSION["username"]);
+	}
 
-		if(!isset($_SESSION['last_click_sleep']))
-			$_SESSION['last_click_sleep'] = 0;
-		if(isset($_SESSION['last_click']) && (!isset($_SESSION['last_click_ignore']) || !$_SESSION['last_click_ignore']))
+	try
+	{
+		if(isset($_SESSION["last_click"]) && time()-$_SESSION["last_click"] > $CONFIG->getConfigValueE("session_timeout"))
 		{
-			$last_click_diff = $now_time-$_SESSION['last_click']-pow($_SESSION['last_click_sleep'], 1.5);
-			if($last_click_diff < global_setting("MIN_CLICK_DIFF"))
-			{
-				$_SESSION['last_click_sleep']++;
-				$sleep_time = round(pow($_SESSION['last_click_sleep'], 1.5));
-				sleep($sleep_time);
-			}
-			else
-				$_SESSION['last_click_sleep'] = 0;
+			if(isset($_SESSION["username"]))
+				$GUI->setOption("login_username", $_SESSION["username"]);
+			session_regenerate_id(true);
+			$loggedin = false;
+		}
+	}
+	catch(ConfigException $e) { }
+
+	if(!isset($_SESSION["username"]))
+		$loggedin = false;
+
+	$_SESSION["last_click"] = time();
+
+	$URL_SUFFIX_ARR = array();
+	if(!isset($_COOKIE[session_name()]) || $_COOKIE[session_name()] != session_id())
+		$URL_SUFFIX_ARR[session_name()] = session_id();
+	$URL_SUFFIX = HTTPOutput::arrayToQueryString($URL_SUFFIX_ARR);
+	$GUI->setOption("url_suffix", $URL_SUFFIX);
+
+	if(isset($_SESSION["disable_javascript"]) && $_SESSION["disable_javascript"])
+		$GUI->setOption("disable_javascript", true);
+
+	if(isset($_COOKIE["no_ssl"]) && $_COOKIE["no_ssl"])
+		$GUI->setOption("protocol", "http");
+	else
+		$GUI->setOption("protocol", "https");
+
+	if($_SERVER["PHP_SELF"] == HROOT."/login.php" || $_SERVER["PHP_SELF"] == HROOT."/register.php")
+		$loggedin = false;
+
+	if(!$loggedin)
+	{
+		if($_SERVER["PHP_SELF"] != HROOT."/login.php" && $_SERVER["PHP_SELF"] != HROOT."/register.php")
+		{
+			$GUI->setOption("login_resume", HTTPOutput::getURL());
+			$GUI->setOption("login_keep_post", true);
+		}
+	}
+	else
+	{
+		$USER = Classes::User($_SESSION['username']);
+		$_SESSION['username'] = $USER->getName();
+
+		L::language($USER->checkSetting("lang"));
+		date_default_timezone_set($USER->checkSetting("timezone"));
+		$GUI->setOption("user", $USER);
+
+		$PLANET = null;
+		if(isset($_GET["planet"]))
+		{
+			$PLANET = Classes::Planet($_GET["planet"]);
+			if($PLANET->getOwner() != $USER->getName())
+				unset($PLANET);
+		}
+		if(!isset($PLANET))
+		{
+			$planets = Planet::getPlanetsByUser($USER->getName());
+			$PLANET = $planets[Functions::first($planets)];
+			unset($planets);
 		}
 
-		if(isset($_SESSION['last_click_ignore']))
-			unset($_SESSION['last_click_ignore']);
-		$_SESSION['last_click'] = $now_time;
+		$GUI->setOption("planet", $PLANET);
 
-		$me = Classes::User($_SESSION['username']);
-
-		$_SESSION['username'] = $me->getName();
-		L::language($me->checkSetting("lang"));
-		date_default_timezone_set($me->checkSetting("timezone"));
-		$GUI->setOption("user", $me);
-
-		if(isset($_SESSION["ip"]) && $_SESSION['ip'] != $_SERVER['REMOTE_ADDR'])
-		{
-			if(isset($_COOKIE[global_setting("SESSION_NAME")]))
-				setcookie(global_setting("SESSION_NAME"), '', 0, global_setting("h_root")."/");
-			$GUI->fatal(sprintf(h(_("Diese Session wird bereits von einer anderen IP-Adresse benutzt. Bitte %sneu anmelden%s.")), "<a href=\"http://".htmlspecialchars(Config::get_default_hostname().global_setting("h_root"))."/index.php\">", "</a>"));
-		}
-
-		if(!isset($_GET['planet']) || !$me->planetExists($_GET['planet']))
-		{
-			$planets = $me->getPlanetsList();
-			$_GET["planet"] = array_shift($planets);
-		}
-
-		$me->setActivePlanet($_GET['planet']);
-
-		define_url_suffix();
+		$URL_SUFFIX_ARR["planet"] = $PLANET->getName();
+		$URL_SUFFIX = HTTPOutput::arrayToQueryString($URL_SUFFIX_ARR);
+		$GUI->setOption("url_suffix", $URL_SUFFIX);
 
 		# Captcha-Abfrage
-		while($me->challengeNeeded() && !isset($_SESSION["admin_username"]))
+		if($USER->challengeNeeded() && !isset($_SESSION["admin_username"]))
 		{
 			$error = null;
-			try
+
+			if(isset($_POST["recaptcha_challenge_field"]) && isset($_POST["recaptcha_response_field"]))
 			{
-				if(isset($_POST["recaptcha_challenge_field"]) && isset($_POST["recaptcha_response_field"]))
+				try
 				{
 					Captcha::validate($_POST["recaptcha_challenge_field"], $_POST["recaptcha_response_field"]);
-					$me->_challengePassed();
+					$USER->_challengePassed();
 					break;
 				}
-			}
-			catch(CaptchaException $e)
-			{
-				switch($e->getCode())
+				catch(\sua\CaptchaException $e)
 				{
-					case CaptchaException::HTTP_ERROR:
-						$error = _("Fehler beim Auswerten der Captcha-Informationen.");
-						break;
-					case CaptchaException::USER_ERROR:
-						$me->_challengeFailed();
-						$error = $e->getMessage();
-						break;
+					switch($e->getCode())
+					{
+						case CaptchaException::HTTP_ERROR:
+							$error = _("Fehler beim Auswerten der Captcha-Informationen.");
+							break;
+						case CaptchaException::USER_ERROR:
+							$USER->_challengeFailed();
+							$error = $e->getMessage();
+							break;
+					}
 				}
 			}
 
 			try
 			{
-				Captcha::getConfig();
+				Captcha::prepareConfig();
 				$GUI->init();
 				if($error)
 				{
@@ -165,29 +209,29 @@
 				$GUI->end();
 				exit(0);
 			}
-			catch(CaptchaException $e)
+			catch(\sua\CaptchaException $e)
 			{
-				break;
+				if(defined("DEBUG") && DEBUG)
+					var_dump($e);
 			}
 		}
 
 		if((!isset($_SESSION['ghost']) || !$_SESSION['ghost']) && !defined('ignore_action'))
-			$me->registerAction();
+		{
+			if(substr($_SERVER["REQUEST_URI"], 0, strlen(HROOT)) == HROOT)
+				$USER->registerAction(substr($_SERVER["REQUEST_URI"], strlen(HROOT)));
+			else
+				$USER->registerAction();
+		}
 	}
 
-	function delete_request()
-	{
-		$_SESSION['last_click_ignore'] = true;
-		$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.global_setting("URL_SUFFIX");
-		header('Location: '.$url, true, 303);
-		$GUI->fatal(sprintf(h(_("HTTP redirect: %s")), "<a href=\"".htmlspecialchars($url)."\">".htmlspecialchars($url)."</a>"));
-	}
+	unset($loggedin);
 
 	function define_url_suffix()
 	{
-		global $me;
+		global $USER;
 		$url_suffix = array(
-			"planet" => $me->getActivePlanet()
+			"planet" => $USER->getActivePlanet()
 		);
 		$url_session_suffix = array();
 		if(!isset($_SESSION["cookie"]) || !$_SESSION["cookie"])
@@ -210,41 +254,3 @@
 		global_setting("URL_FORMULAR", $url_formular_g);
 		global_setting("URL_SESSION_SUFFIX", implode("&", $url_session_suffix_g));
 	}
-
-	/**
-		 * Sucht nach installierten Skins und liefert ein Array des folgenden
-		 * Formats zurueck:
-		 * ( ID => [ Name, ( Einstellungsname => ( moeglicher Wert ) ) ] )
-		 * @return array
-		 * @todo
-		*/
-
-		function getSkins()
-		{
-			# Vorgegebene Skins-Liste bekommen
-			$skins = array();
-			if(is_dir(global_setting("s_root")."/login/res/style") && is_readable(global_setting("s_root")."/login/res/style"))
-			{
-				$dh = opendir(global_setting("s_root")."/login/res/style");
-				while(($fname = readdir($dh)) !== false)
-				{
-					if($fname[0] == ".") continue;
-					$path = global_setting("s_root")."/login/res/style/".$fname;
-					if(!is_dir($path) || !is_readable($path)) continue;
-					if(!is_file($path."/types") || !is_readable($path."/types")) continue;
-					$skins_file = preg_split("/\r\n|\r|\n/", file_get_contents($path."/types"));
-					$new_skin = &$skins[$fname];
-					$new_skin = array(array_shift($skins_file), array());
-					foreach($skins_file as $skins_line)
-					{
-						$skins_line = explode("\t", $skins_line);
-						if(count($skins_line) < 2)
-							continue;
-						$new_skin[1][array_shift($skins_line)] = $skins_line;
-					}
-					unset($new_skin);
-				}
-				closedir($dh);
-			}
-			return $skins;
-		}
