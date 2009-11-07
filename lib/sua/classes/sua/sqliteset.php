@@ -122,7 +122,7 @@
 
 		static function getNumber()
 		{
-			return self::singleField("SELECT COUNT(*) FROM ".Functions::first(static::$tables).";");
+			return self::$sqlite->singleField("SELECT COUNT(*) FROM ".Functions::first(static::$tables).";");
 		}
 
 		static function exists($name)

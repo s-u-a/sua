@@ -69,14 +69,15 @@
 				"planet INTEGER NOT NULL",
 				"id TEXT NOT NULL", // Item-ID
 				"type TEXT NOT NULL", // gebaeude, forschung, roboter, schiffe, verteidigung
-				"number INTEGER NOT NULL", // Anzahl der zu bauenden Roboter, Schiffe oder Verteidigungsanlagen dieses Typs
+				"number INTEGER NOT NULL", // Anzahl der zu bauenden Roboter, Schiffe oder Verteidigungsanlagen dieses Typs (bei Gebäuden auch -1)
 				"start INTEGER NOT NULL", // Zeitstempel, wann der Bau gestartet wurde
 				"duration REAL NOT NULL", // Bauzeit eines einzelnen Gegenstandes
 				"cost0 INTEGER DEFAULT 0", // Ausgegebene Kosten, Carbon (wissenswert bei Abbruch von Gebäude oder Forschung
 				"cost1 INTEGER DEFAULT 0", // Kosten, Aluminium
 				"cost2 INTEGER DEFAULT 0", // Kosten, Wolfram
 				"cost3 INTEGER DEFAULT 0", // Kosten, Radium
-				"global INTEGER DEFAULT 0" // Bei Forschung: 1: Es wird global geforscht.
+				"global INTEGER DEFAULT 0" // Bei Forschung: 1: Es wird global geforscht
+
 			)
 		);
 
@@ -996,27 +997,43 @@
 		/**
 		 * Gibt Informationen über die im Bau befindlichen Dinge auf diesem Planeten zurück.
 		 * Das Rückgabe-Array hat bei Gebäuden und Forschung das folgende Format:
-		 * [ Item-ID; Fertigstellungszeitpunkt; Globale Forschung?/Gebäuderückbau?; Verbrauchte Rohstoffe; Planetenindex der globalen Forschung ]
+		 * [ Item-ID; Fertigstellungszeitpunkt; Globale Forschung?/Gebäuderückbau?; Verbrauchte Rohstoffe; Planet der globalen Forschung ]
 		 * Bei Robotern, Schiffen und Verteidigungsanlagen ist das Format wie folgt:
-		 * ( [ Item-ID; Startzeit; Anzahl; Bauzeit pro Stück ] )
+		 * ( [ Item-ID; Startzeit; Anzahl; Bauzeit pro Stück; Verbrauchte Rohstoffe ] )
 		 * @param string $type gebaeude, forschung, roboter, schiffe oder verteidigung
-		 * @return array
-		 * @todo
+		 * @return array|null
 		*/
 
 		function checkBuildingThing($type)
 		{
 			switch($type)
 			{
-				case "gebaeude": case "forschung":
-					if(!isset($this->planet_info["building"]) || !isset($this->planet_info["building"][$type]) || trim($this->planet_info["building"][$type][0]) == "")
-						return false;
-					return $this->planet_info["building"][$type];
+				case "gebaeude":
+					$query = self::$sqlite->singleLine("SELECT id,start,duration,cost0,cost1,cost2,cost3,number FROM planets_building WHERE ".$this->sqlCond()." AND type = ".self::$sqlite->quote($type).";");
+					if(!$query)
+						return null;
+					return array($query["id"], $query["start"]+$query["duration"], $query["number"] < 0, array($query["cost0"], $query["cost1"], $query["cost2"], $query["cost3"]));
+				case "forschung":
+					$query = self::$sqlite->singleLine("SELECT id,start,duration,cost0,cost1,cost2,cost3,".($type == "forschung" ? "global" : "number")." FROM planets_building WHERE ".$this->sqlCond()." AND type = ".self::$sqlite->quote($type).";")
+					if(!$query)
+					{
+						foreach(self::getPlanetsByUser($this->getOwner()) as $planet)
+						{
+							if($planet == $this) continue;
+							if(self::$sqlite->singleField("SELECT id FROM planets_building WHERE ".$planet->sqlCond()." AND type = 'forschung' AND global;"))
+								return $planet->checkBuildingThing("forschung");
+						}
+						return null;
+					}
+					return array($query["id"], $query["start"]+$query["duration"], ($type == "forschung" ? $query["global"] && true : $query["number"] < 0), array($query["cost0"], $query["cost1"], $query["cost2"], $query["cost3"]), $this);
 				case "roboter": case "schiffe": case "verteidigung":
-					if(!isset($this->planet_info["building"]) || !isset($this->planet_info["building"][$type]) || count($this->planet_info["building"][$type]) <= 0)
-						return array();
-					return $this->planet_info["building"][$type];
-				default: return false;
+					self::$sqlite->query("SELECT id,start,duration,cost0,cost1,cost2,cost3,number FROM planets_building WHERE ".$this->sqlCond()." AND type = ".self::$sqlite->quote($type).";");
+					$return = array();
+					while(($res = self::$sqlite->nextResult()) !== false)
+						$return[] = array($res["id"], $res["start"], $res["number"], $res["duration"], array($query["cost0"], $query["cost1"], $query["cost2"], $query["cost3"]));
+					return $return;
+				default:
+					throw new \InvalidArgumentException("Type ".$type." is unknown.");
 			}
 		}
 

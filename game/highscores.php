@@ -147,7 +147,7 @@
 		else
 		{
 			$class = "fremd";
-			if($info["tag"] == Classes::getUserAlliance($me->getName()))
+			if($info["tag"] == Alliance::userAlliance($me->getName()))
 				$class = "verbuendet";
 		}
 ?>
@@ -160,7 +160,7 @@
 				if($info["alliance"])
 				{
 					$alliance_class = "fremd";
-					if($info["alliance"] && Classes::getUserAlliance($me->getName()) == $info["alliance"])
+					if($info["alliance"] && Alliance::userAlliance($me->getName()) == $info["alliance"])
 						$alliance_class = "eigen";
 ?>
 			<td class="c-allianz"><a href="info/allianceinfo.php?alliance=<?=htmlspecialchars(urlencode($info["alliance"]))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Informationen zu dieser Allianz anzeigen"))?>" class="alliancename"><?=htmlspecialchars($info["alliance"])?></a></td>

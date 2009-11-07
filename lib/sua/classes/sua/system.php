@@ -158,13 +158,13 @@
 		}
 
 		/**
-		 * Gibt die Koordinaten eines Systems in einem für Benutzer lesbaren Format zurück.
+		 * Gibt die Koordinaten des Systems in einem für Benutzer lesbaren Format zurück.
 		 * @param System $system
 		 * @return string
 		*/
 
-		static function format(System $planet)
+		function format()
 		{
-			return sprintf(_("%d:%d"), $system->getGalaxy(), $system->getSystem());
+			return sprintf(_("%d:%d"), $this->getGalaxy(), $this->getSystem());
 		}
 	}

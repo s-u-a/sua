@@ -39,7 +39,7 @@
 
 	# 10 Minuten sollten wohl auch bei hoher Serverlast genuegen
 	//set_time_limit(600);
-	set_time_limit(30);
+	set_time_limit(60);
 
 	$include_path = explode(":", get_include_path());
 	array_unshift($include_path, dirname(__FILE__)."/classes/");
@@ -134,6 +134,9 @@
 		{
 			$GUI->setOption("login_resume", HTTPOutput::getURL());
 			$GUI->setOption("login_keep_post", true);
+
+			$GUI->loginForm();
+			exit(0);
 		}
 	}
 	else

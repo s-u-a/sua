@@ -105,9 +105,6 @@
     <item url="game/lib/jabberclass/jabber_example.php" uploadstatus="1" />
     <item url="game/lib/jabberclass/LICENSE" uploadstatus="1" />
     <item url="game/lib/jabberclass/README" uploadstatus="1" />
-    <item url="game/lib/openid/" uploadstatus="1" />
-    <item url="game/lib/openid/class.openid.v3.php" uploadstatus="1" />
-    <item url="game/lib/openid/openid_component_2008-02-06.zip" uploadstatus="1" />
     <item url="game/lib/pjirc/" uploadstatus="1" />
     <item url="game/lib/pjirc/img/" uploadstatus="1" />
     <item url="game/lib/pjirc/img/ange.gif" uploadstatus="1" />
@@ -184,7 +181,6 @@
     <item url="game/locale/" uploadstatus="1" />
     <item url="game/locale/de_DE/" uploadstatus="1" />
     <item url="game/locale/de_DE/LC_MESSAGES/" uploadstatus="1" />
-    <item url="game/login/" uploadstatus="1" />
     <item url="game/scripts/" uploadstatus="1" />
     <item url="game/scripts/callback_atts.phpc" uploadstatus="1" />
     <item url="game/scripts/create_database.sav" uploadstatus="1" />
@@ -214,7 +210,6 @@
     <item url="homepage/config.xml" uploadstatus="1" />
     <item url="lib/" uploadstatus="1" />
     <item url="lib/jabberclass/" uploadstatus="1" />
-    <item url="lib/openid/" uploadstatus="1" />
     <item url="lib/pjirc/" uploadstatus="1" />
     <item url="lib/pjirc/img/" uploadstatus="1" />
     <item url="lib/sarissa/" uploadstatus="1" />
@@ -229,8 +224,6 @@
     <item url="lib/jabberclass/jabber_example.php" uploadstatus="1" />
     <item url="lib/jabberclass/LICENSE" uploadstatus="1" />
     <item url="lib/jabberclass/README" uploadstatus="1" />
-    <item url="lib/openid/class.openid.v3.php" uploadstatus="1" />
-    <item url="lib/openid/openid_component_2008-02-06.zip" uploadstatus="1" />
     <item url="lib/pjirc/img/ange.gif" uploadstatus="1" />
     <item url="lib/pjirc/img/arbre.gif" uploadstatus="1" />
     <item url="lib/pjirc/img/argh.gif" uploadstatus="1" />

@@ -123,7 +123,8 @@
 				"user TEXT NOT NULL",
 				"galaxy INTEGER NOT NULL",
 				"system INTEGER NOT NULL",
-				"planet INTEGER NOT NULL"
+				"planet INTEGER NOT NULL",
+				"i INTEGER"
 			),
 			"users_settings" => array ( // Einstellungen
 				"user TEXT NOT NULL",
