@@ -31,15 +31,7 @@
 
 	class Galaxy extends SQLiteSet implements \Iterator,StaticInit
 	{
-		protected static $views = array (
-			"galaxies" => "SELECT galaxy, COUNT(DISTINCT system) AS systems FROM planets GROUP BY galaxy"
-		);
-		protected static $tables = array (
-			"galaxies" => array (
-				"galaxy INTEGER",
-				"systems INTEGER"
-			)
-		);
+		protected static $primary_index = array("t_galaxies", "t_galaxy");
 
 		static function init()
 		{

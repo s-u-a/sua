@@ -31,67 +31,7 @@
 
 	class Fleet extends SQLiteSet
 	{
-		protected static $tables = array (
-			"fleets" => array (
-				"fleet_id TEXT PRIMARY KEY",
-				"password TEXT"
-			),
-			"fleets_targets" => array (
-				"i INTEGER NOT NULL",
-				"fleet_id TEXT NOT NULL",
-				"galaxy INTEGER NOT NULL",
-				"system INTEGER NOT NULL",
-				"planet INTEGER NOT NULL",
-				"type INTEGER NOT NULL",
-				"flying_back INTEGER DEFAULT 0",
-				"arrival INTEGER NOT NULL",
-				"finished INTEGER DEFAULT 0"
-			),
-		    "fleets_users" => array (
-				"i INTEGER NOT NULL",
-				"fleet_id TEXT NOT NULL",
-				"user TEXT NOT NULL",
-				"from_galaxy INTEGER NOT NULL",
-				"from_system INTEGER NOT NULL",
-				"from_planet INTEGER NOT NULL",
-				"factor REAL DEFAULT 1",
-				"ress0 INTEGER DEFAULT 0",
-				"ress1 INTEGER DEFAULT 0",
-				"ress2 INTEGER DEFAULT 0",
-				"ress3 INTEGER DEFAULT 0",
-				"ress4 INTEGER DEFAULT 0",
-				"ress_tritium INTEGER DEFAULT 0",
-				"hress0 INTEGER DEFAULT 0",
-				"hress1 INTEGER DEFAULT 0",
-				"hress2 INTEGER DEFAULT 0",
-				"hress3 INTEGER DEFAULT 0",
-				"hress4 INTEGER DEFAULT 0",
-				"used_tritium INTEGER DEFAULT 0",
-				"dont_put_ress INTEGER DEFAULT 0",
-				"departing INTEGER DEFAULT 0"
-			),
-		    "fleets_users_rob" => array (
-				"fleet_id TEXT NOT NULL",
-				"user TEXT NOT NULL",
-				"id TEXT NOT NULL",
-				"number INTEGER DEFAULT 0",
-				"scores INTEGER DEFAULT 0"
-			),
-		    "fleets_users_hrob" => array (
-				"fleet_id TEXT NOT NULL",
-				"user TEXT NOT NULL",
-				"id TEXT NOT NULL",
-				"number INTEGER DEFAULT 0",
-				"scores INTEGER DEFAULT 0"
-			),
-		    "fleets_users_fleet" => array (
-				"fleet_id TEXT NOT NULL",
-				"user TEXT NOT NULL",
-				"id TEXT NOT NULL",
-				"number INTEGER DEFAULT 0",
-				"scores INTEGER DEFAULT 0"
-			)
-		);
+		protected static $primary_key = array("t_fleets", "c_fleet_id");
 
 		/**
 		 * Auftrag: steht noch nicht fest

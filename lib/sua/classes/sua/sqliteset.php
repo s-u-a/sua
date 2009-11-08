@@ -39,16 +39,10 @@
 		public static $sqlite;
 
 		/**
-		 * Muss von der Kindklasse festgelegt werden. Legt fest, welche Tabellen mit welchen Feldern vom
-		 * Datenset benötigt werden und kümmert sich darum, dass diese existieren. Siehe SQLite->checkTables()
-		 * für das Format der Variable.
-		 * @var array
+		 * Ein Array von zwei Werten: [0]: Tabellenname, [1]: Spaltenname. Für getMainField() und Ähnliche.
+		 * @var Array
 		*/
-		protected static $tables;
-
-		protected static $views;
-
-		private static $check_tables_stack = array();
+		protected static $primary_key;
 
 		static function init()
 		{
@@ -65,26 +59,6 @@
 				try { self::$sqlite = Classes::SQLite(Dataset::getDatabase()); }
 				catch(DatasetException $e) {  }
 			}
-
-			self::$check_tables_stack[] = array(static::$tables, static::$views);
-			self::checkTables();
-		}
-
-		/**
-		 * Stellt sicher, dass die in $tables definierten Tabellen existieren.
-		 * @return void
-		*/
-
-		protected static function checkTables()
-		{
-			if(self::$sqlite)
-			{
-				while(count(self::$check_tables_stack) > 0)
-				{
-					list($tables, $views) = array_shift(self::$check_tables_stack);
-					self::$sqlite->checkTables($tables, $views);
-				}
-			}
 		}
 
 		static function datasetName($name=null)
@@ -97,32 +71,30 @@
 				do { $name = Functions::randomID(); } while(!self::exists($name));
 			}
 			$name = parent::datasetName($name);
-			$existing = self::$sqlite->singleField("SELECT ".static::_idField()." FROM ".Functions::first(static::$tables)." WHERE LOWER(".static::_idField().") = LOWER(".self::$sqlite->quote($name).");");
+			$existing = self::$sqlite->singleField("SELECT ".static::getMainFieldName()." FROM ".static::getMainTableName()." WHERE LOWER(".static::getMainFieldName().") = LOWER(".self::$sqlite->quote($name).");");
 			if($existing !== false)
 				$name = $existing;
 			return $name;
 		}
 
-		/**
-		 * Gibt die erste Spalte der ersten Tabelle zurück. Diese dient als ID-Feld.
-		 * @return string
-		*/
-
-		private static function _idField()
+		protected static function getMainFieldName()
 		{
-			$t = static::$tables[Functions::first(static::$tables)];
-			list($f) = explode(" ", $t[Functions::first($t)]);
-			return $f;
+			return self::$primary_key[1];
+		}
+
+		protected static function getMainTableName()
+		{
+			return self::$primary_key[0];
 		}
 
 		static function getList()
 		{
-			return self::$sqlite->singleColumn("SELECT DISTINCT ".static::_idField()." FROM ".Functions::first(static::$tables).";");
+			return self::$sqlite->singleColumn("SELECT DISTINCT ".static::getMainFieldName()." FROM ".static::getMainTableName().";");
 		}
 
 		static function getNumber()
 		{
-			return self::$sqlite->singleField("SELECT COUNT(*) FROM ".Functions::first(static::$tables).";");
+			return self::$sqlite->singleField("SELECT COUNT(*) FROM ".static::getMainTableName().";");
 		}
 
 		static function exists($name)
@@ -131,7 +103,7 @@
 				$name = static::idFromParams(func_get_args());
 
 			$name = static::datasetName($name);
-			return (self::$sqlite->singleField("SELECT COUNT(*) FROM ".Functions::first(static::$tables)." WHERE LOWER(".static::_idField().") = LOWER(".self::$sqlite->quote($name).");") >= 1);
+			return (self::$sqlite->singleField("SELECT COUNT(*) FROM ".static::getMainTableName()." WHERE LOWER(".static::getMainFieldName().") = LOWER(".self::$sqlite->quote($name).");") >= 1);
 		}
 
 		/**
@@ -145,7 +117,7 @@
 		{
 			if(is_array($field_name))
 			{
-				$result = self::$sqlite->singleLine("SELECT ".implode(", ", $field_name)." FROM ".Functions::first(static::$tables)." WHERE ".static::_idField()." = ".self::$sqlite->quote($this->getName()).";");
+				$result = self::$sqlite->singleLine("SELECT ".implode(", ", $field_name)." FROM ".static::getMainTableName()." WHERE ".static::getMainFieldName()." = ".self::$sqlite->quote($this->getName()).";");
 				$return = array();
 				foreach($field_name as $k=>$v)
 				{
@@ -156,7 +128,7 @@
 				return $return;
 			}
 			else
-				return self::$sqlite->singleField("SELECT ".$field_name." FROM ".Functions::first(static::$tables)." WHERE ".static::_idField()." = ".self::$sqlite->quote($this->getName()).";");
+				return self::$sqlite->singleField("SELECT ".$field_name." FROM ".static::getMainTableName()." WHERE ".static::getMainFieldName()." = ".self::$sqlite->quote($this->getName()).";");
 		}
 
 		/**
@@ -180,6 +152,6 @@
 			}
 			if(count($set) < 1)
 				throw new SQLiteSetException("No fields to update.");
-			self::$sqlite->query("UPDATE ".Functions::first(static::$tables)." SET ".implode(", ", $set)." WHERE ".static::_idField()." = ".self::$sqlite->quote($this->getName()).";");
+			self::$sqlite->query("UPDATE ".static::getMainTableName()." SET ".implode(", ", $set)." WHERE ".static::getMainFieldName()." = ".self::$sqlite->quote($this->getName()).";");
 		}
 	}

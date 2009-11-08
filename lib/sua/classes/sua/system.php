@@ -31,16 +31,7 @@
 
 	class System extends SQLiteSet implements \Iterator,StaticInit
 	{
-		protected static $tables = array (
-			"systems" => array (
-				"id TEXT",
-				"planets INTEGER"
-			)
-		);
-
-		protected static $views = array (
-			"systems" => "SELECT galaxy || ':' || system AS id, COUNT(DISTINCT planet) AS planets FROM planets GROUP BY id"
-		);
+		protected static $primary_key = array("t_systems", "c_id");
 
 		private $active_planet;
 

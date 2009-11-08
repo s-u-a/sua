@@ -31,59 +31,7 @@
 
 	class Planet extends SQLiteSet
 	{
-		protected static $tables = array (
-			"planets" => array (
-				"galaxy INTEGER NOT NULL",
-				"system INTEGER NOT NULL",
-				"planet INTEGER NOT NULL",
-				"size_original INTEGER DEFAULT 0",
-				"user TEXT",
-				"name TEXT",
-				"ress0 REAL DEFAULT 0",
-				"ress1 REAL DEFAULT 0",
-				"ress2 REAL DEFAULT 0",
-				"ress3 REAL DEFAULT 0",
-				"ress4 REAL DEFAULT 0",
-				"last_refresh INTEGER",
-				"tf0 REAL DEFAULT 0",
-				"tf1 REAL DEFAULT 0",
-				"tf2 REAL DEFAULT 0",
-				"tf3 REAL DEFAULT 0",
-				"size INTEGER DEFAULT 0",
-				"user_index INTEGER" // Bestimmt die Reihenfolge der Planeten eines Benutzers
-			),
-			"planets_items" => array (
-				"galaxy INTEGER NOT NULL",
-				"system INTEGER NOT NULL",
-				"planet INTEGER NOT NULL",
-				"id TEXT NOT NULL",
-				"type TEXT NOT NULL",
-				"level INTEGER DEFAULT 0",
-				"scores INTEGER DEFAULT 0",
-				"fields INTEGER DEFAULT 0",
-				"prod_factor INTEGER DEFAULT 1 NOT NULL"
-			),
-			"planets_building" => array ( // Gerade bauende Gegenstände
-				"galaxy INTEGER NOT NULL",
-				"system INTEGER NOT NULL",
-				"planet INTEGER NOT NULL",
-				"id TEXT NOT NULL", // Item-ID
-				"type TEXT NOT NULL", // gebaeude, forschung, roboter, schiffe, verteidigung
-				"number INTEGER NOT NULL", // Anzahl der zu bauenden Roboter, Schiffe oder Verteidigungsanlagen dieses Typs (bei Gebäuden auch -1)
-				"start INTEGER NOT NULL", // Zeitstempel, wann der Bau gestartet wurde
-				"duration REAL NOT NULL", // Bauzeit eines einzelnen Gegenstandes
-				"cost0 INTEGER DEFAULT 0", // Ausgegebene Kosten, Carbon (wissenswert bei Abbruch von Gebäude oder Forschung
-				"cost1 INTEGER DEFAULT 0", // Kosten, Aluminium
-				"cost2 INTEGER DEFAULT 0", // Kosten, Wolfram
-				"cost3 INTEGER DEFAULT 0", // Kosten, Radium
-				"global INTEGER DEFAULT 0" // Bei Forschung: 1: Es wird global geforscht
-
-			)
-		);
-
-		protected static $views = array(
-			"planets_items_user" => "SELECT planets_items.galaxy AS galaxy, planets_items.system AS system, planets_items.planet AS planet, planets_items.id AS id, planets_items.type AS type, planets_items.level AS level, planets_items.scores AS scores, planets_items.fields AS fields, planets_items.prod_factor AS prod_factor, planets.user AS user FROM planets_items INNER JOIN ( SELECT galaxy, system, planet, user FROM planets ) AS planets ON planets_items.galaxy = planets.galaxy AND planets_items.system = planets.system AND planets_items.planet = planets.planet"
-		);
+		protected $primary_index = array("t_planets", "c_galaxy || ':' || c_system || ':' || c_planet");
 
 		static function idFromParams(array $params)
 		{
@@ -101,11 +49,6 @@
 			if(count($params) < 2)
 				throw new PlanetException("Invalid ID.");
 			return array(Classes::System(Classes::Galaxy($params[0]), $params[1]), $params[2]);
-		}
-
-		static function _idField()
-		{
-			return "galaxy || ':' || system || ':' || planet";
 		}
 
 		/**

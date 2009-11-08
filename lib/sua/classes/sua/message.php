@@ -35,27 +35,7 @@
 
 	class Message extends SQLiteSet
 	{
-		protected static $tables = array (
-			"messages" => array (
-				"message_id TEXT PRIMARY KEY",
-				"time INTEGER",
-				"text TEXT",
-				"parsed_text TEXT",
-				"sender TEXT",
-				"subject TEXT",
-				"html INTEGER"
-			),
-		    "messages_users" => array (
-				"message_id TEXT",
-				"user TEXT",
-				"type INTEGER",
-				"status INTEGER"
-			),
-		    "messages_recipients" => array (
-				"message_id TEXT",
-				"recipient TEXT"
-			)
-		);
+		protected static $primary_key = array("t_messages", "c_message_id");
 
 		/** Array nach dem Schema ( Benutzername => Nachrichtentyp (Message::TYPE_*) ). Beim Zerstören des
 		 * Nachrichtenobjekts werden an die Benutzer IM-Nachrichten verschickt, wenn sie es wünschen. Der Grund,

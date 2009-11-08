@@ -30,7 +30,7 @@
 
 	class PublicMessage extends SQLiteSet
 	{
-		protected $tables = array("public_messages" => array("message_id PRIMARY KEY", "last_view INT", "sender", "text", "parsed", "subject", "html INT", "receiver", "time", "type"));
+		protected static $primary_key = array("t_public_messages", "c_message_id");
 
 		static function create($name=null)
 		{

@@ -30,27 +30,6 @@
 
 	class Market extends SQLite
 	{
-		protected $tables = array (
-			"market" => array (
-				"id PRIMARY KEY",
-				"user",
-				"planet",
-				"offered_resource",
-				"amount",
-				"requested_resource",
-				"min_price",
-				"expiration",
-				"date",
-				"finish"
-			),
-			"market_rate" => array (
-				"offer",
-				"request",
-				"price",
-				"date"
-			)
-		);
-
 		/**
 		 * Berechnet den Handelskurs vom Rohstoff $offer zum Rohstoff $request neu.
 		 * @param int $offer Der Rohstoff des Angebots (0: Carbon, 1: Aluminium, ...)
@@ -145,21 +124,6 @@
 			$this->endTransaction();
 
 			return $id;
-		}
-
-		/**
-		 * Verändert alle Planetennummern $old des Benutzers $username zu $new.
-		 * Sollte ausgeführt werden, wenn sich die Planetennummern des Benutzers
-		 * ändern.
-		 * @param string $username
-		 * @param int $old_number
-		 * @param int $new_number
-		 * @return void
-		*/
-
-		function renamePlanet($username, $old_number, $new_number)
-		{
-			$this->query("UPDATE market SET planet = ".$this->quote($new_number)." WHERE user = ".$this->quote($username)." AND planet = ".$this->quote($old_number).";");
 		}
 
 		/**
