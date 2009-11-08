@@ -28,7 +28,7 @@
 	 * Kontrolliert die Rohstoff-Handelsbörse.
 	*/
 
-	class Market extends SQLite
+	class Market extends SQL
 	{
 		/**
 		 * Berechnet den Handelskurs vom Rohstoff $offer zum Rohstoff $request neu.

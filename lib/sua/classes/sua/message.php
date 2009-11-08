@@ -33,7 +33,7 @@
 	 * auf die Nachricht hat, wird sie aus der Datenbank entfernt.
 	*/
 
-	class Message extends SQLiteSet
+	class Message extends SQLSet
 	{
 		protected static $primary_key = array("t_messages", "c_message_id");
 
@@ -116,7 +116,7 @@
 
 		static function getMessagesCount()
 		{
-			return (self::$sqlite->singleField("SELECT COUNT(*) FROM messages;"));
+			return (self::$sql->singleField("SELECT COUNT(*) FROM messages;"));
 		}
 
 		/**
@@ -131,7 +131,7 @@
 			if(self::exists($name))
 				throw new DatasetException("Dataset already exists.");
 
-			self::$sqlite->query("INSERT INTO messages ( message_id, time ) VALUES ( ".$this->escape($name).", ".$this->escape(time())." );");
+			self::$sql->query("INSERT INTO messages ( message_id, time ) VALUES ( ".$this->escape($name).", ".$this->escape(time())." );");
 			return $name;
 		}
 
@@ -142,7 +142,7 @@
 
 		function destroy()
 		{
-			self::$sqlite->query("DELETE FROM messages WHERE message_id = ".$this->escape($message_id).";");
+			self::$sql->query("DELETE FROM messages WHERE message_id = ".$this->escape($message_id).";");
 		}
 
 		/**
@@ -154,9 +154,9 @@
 
 		static function renameUser($old_name, $new_name)
 		{
-			self::$sqlite->query("UPDATE messages_users SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($old_name).";");
-			self::$sqlite->query("UPDATE message_recipients SET recipient = ".self::$sqlite->quote($new_name)." WHERE recipient = ".self::$sqlite->quote($old_name).";");
-			self::$sqlite->query("UPDATE messages SET sender = ".self::$sqlite->quote($new_name)." WHERE sender = ".self::$sqlite->quote($old_name).";");
+			self::$sql->query("UPDATE messages_users SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($old_name).";");
+			self::$sql->query("UPDATE message_recipients SET recipient = ".self::$sql->quote($new_name)." WHERE recipient = ".self::$sql->quote($old_name).";");
+			self::$sql->query("UPDATE messages SET sender = ".self::$sql->quote($new_name)." WHERE sender = ".self::$sql->quote($old_name).";");
 		}
 
 		/**
@@ -244,11 +244,11 @@
 		{
 			if(!isset($type)) $type = self::TYPE_BENUTZERNACHRICHTEN;
 
-			self::$sqlite->query("INSERT INTO messages_users ( message_id, user, type, status ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($type).", ".self::$sqlite->quote(self::STATUS_NEU)." );");
+			self::$sql->query("INSERT INTO messages_users ( message_id, user, type, status ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($type).", ".self::$sql->quote(self::STATUS_NEU)." );");
 
 			if($type != self::TYPE_POSTAUSGANG)
 			{
-				self::$sqlite->query("INSERT INTO messages_recipients ( message_id, recipient ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user)." );");
+				self::$sql->query("INSERT INTO messages_recipients ( message_id, recipient ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user)." );");
 
 				// IM-Benachrichtung, siehe __destroy()
 				$this->im_check_notify[$user] = $type;
@@ -265,9 +265,9 @@
 		function messageStatus($user, $status=null)
 		{
 			if(!isset($status))
-				return self::$sqlite->singleField("SELECT status FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+				return self::$sql->singleField("SELECT status FROM messages_users WHERE message_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
 			else
-				self::$sqlite->query("UPDATE messages_users SET status = ".self::$sqlite->quote($status)." WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+				self::$sql->query("UPDATE messages_users SET status = ".self::$sql->quote($status)." WHERE message_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
 		}
 
 		/**
@@ -280,9 +280,9 @@
 		function messageType($user, $type=null)
 		{
 			if(!isset($type))
-				return self::$sqlite->singleField("SELECT type FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+				return self::$sql->singleField("SELECT type FROM messages_users WHERE message_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
 			else
-				self::$sqlite->query("UPDATE messages_users SET type = ".self::$sqlite->quote($status)." WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
+				self::$sql->query("UPDATE messages_users SET type = ".self::$sql->quote($status)." WHERE message_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
 		}
 
 		/**
@@ -294,8 +294,8 @@
 
 		function removeUser($user)
 		{
-			self::$sqlite->query("DELETE FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user).";");
-			if(self::$sqlite->singleField("SELECT COUNT(*) FROM message_users WHERE message_id = ".self::$sqlite->quote($this->getName()).";") < 1)
+			self::$sql->query("DELETE FROM messages_users WHERE message_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+			if(self::$sql->singleField("SELECT COUNT(*) FROM message_users WHERE message_id = ".self::$sql->quote($this->getName()).";") < 1)
 				$this->destroy();
 		}
 
@@ -316,7 +316,7 @@
 
 		function getUsersList()
 		{
-			return self::$sqlite->singleColumn("SELECT user FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT user FROM messages_users WHERE message_id = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -328,7 +328,7 @@
 
 		function mayRead($user)
 		{
-			return (self::$sqlite->singleField("SELECT COUNT(*) FROM messages_users WHERE message_id = ".self::$sqlite->quote($this->getName())." AND user = ".self::$sqlite->quote($user)." LIMIT 1;") > 0);
+			return (self::$sql->singleField("SELECT COUNT(*) FROM messages_users WHERE message_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user)." LIMIT 1;") > 0);
 		}
 
 		/**
@@ -338,7 +338,7 @@
 
 		function getRecipients()
 		{
-			return self::$sqlite->singleColumn("SELECT recipient FROM messages_recipients WHERE message_id = ".self::$sqlite->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT recipient FROM messages_recipients WHERE message_id = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -382,7 +382,7 @@
 
 		static function getUserMessages($user, $type=null, $status=null)
 		{
-			return self::$sqlite->singleColumn("SELECT DISTINCT message_id FROM messages_users WHERE user = ".self::$sqlite->quote($user).(isset($type) ? " AND type = ".self::$sqlite->quote($type) : "").(isset($status) ? " AND status = ".self::$sqlite->quote($status) : "").";");
+			return self::$sql->singleColumn("SELECT DISTINCT message_id FROM messages_users WHERE user = ".self::$sql->quote($user).(isset($type) ? " AND type = ".self::$sql->quote($type) : "").(isset($status) ? " AND status = ".self::$sql->quote($status) : "").";");
 		}
 
 		/**
@@ -396,7 +396,7 @@
 
 		static function getUserMessagesCount($user, $type=null, $status=null)
 		{
-			return self::$sqlite->singleField("SELECT COUNT(DISTINCT message_id) FROM messages_users WHERE user = ".self::$sqlite->quote($user).(isset($type) ? " AND type = ".self::$sqlite->quote($type) : "").(isset($status) ? " AND status = ".self::$sqlite->quote($status) : "").";");
+			return self::$sql->singleField("SELECT COUNT(DISTINCT message_id) FROM messages_users WHERE user = ".self::$sql->quote($user).(isset($type) ? " AND type = ".self::$sql->quote($type) : "").(isset($status) ? " AND status = ".self::$sql->quote($status) : "").";");
 		}
 
 		/**
@@ -409,7 +409,7 @@
 		{
 			$times = array();
 			foreach($message_ids as $id)
-				$times[$id] = self::$sqlite->singleField("SELECT time FROM messages WHERE message_id = ".self::$sqlite->quote($id)." LIMIT 1;");
+				$times[$id] = self::$sql->singleField("SELECT time FROM messages WHERE message_id = ".self::$sql->quote($id)." LIMIT 1;");
 			asort($times, SORT_NUMERIC);
 			return array_keys($times);
 		}
@@ -424,10 +424,10 @@
 		{
 			global $message_type_times;
 
-			self::$sqlite->query("SELECT message_id,user,type FROM messages_users WHERE status = ".self::$sqlite->quote(self::STATUS_ALT)." NATURAL JOIN ( SELECT message_id, time AS time FROM messages );");
+			self::$sql->query("SELECT message_id,user,type FROM messages_users WHERE status = ".self::$sql->quote(self::STATUS_ALT)." NATURAL JOIN ( SELECT message_id, time AS time FROM messages );");
 
 			$i = 0;
-			while(($r = self::$sqlite->nextResult()) !== false)
+			while(($r = self::$sql->nextResult()) !== false)
 			{
 				if(!isset($message_type_times[$r["type"]]))
 					continue;

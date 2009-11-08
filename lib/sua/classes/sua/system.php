@@ -29,7 +29,7 @@
 	 * Kann als Iterator durchlaufen werden, Index: Planetennummer, Wert: Planetenobjekt
 	*/
 
-	class System extends SQLiteSet implements \Iterator,StaticInit
+	class System extends SQLSet implements \Iterator,StaticInit
 	{
 		protected static $primary_key = array("t_systems", "c_id");
 
@@ -68,13 +68,13 @@
 
 			$planets = rand(10, 30);
 			for($planet=1; $planet<=$planets; $planet++)
-				self::$sqlite->query("INSERT INTO planets ( galaxy, system, planet, size_original ) VALUES ( ".self::$sqlite->quote($galaxy->getGalaxy()).", ".self::$sqlite->quote($system).", ".self::$sqlite->quote($planet).", ".self::$sqlite->quote(rand(100, 500))." );");
+				self::$sql->query("INSERT INTO planets ( galaxy, system, planet, size_original ) VALUES ( ".self::$sql->quote($galaxy->getGalaxy()).", ".self::$sql->quote($system).", ".self::$sql->quote($planet).", ".self::$sql->quote(rand(100, 500))." );");
 			return self::idFromParams($galaxy, $system);
 		}
 
 		function destroy()
 		{
-			self::$sqlite->query("DELETE FROM planets WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem()).";");
+			self::$sql->query("DELETE FROM planets WHERE galaxy = ".self::$sql->quote($this->getGalaxy())." AND system = ".self::$sql->quote($this->getSystem()).";");
 		}
 
 		/**
@@ -132,14 +132,14 @@
 		function key()
 		{
 			if(!isset($this->active_planet))
-				return self::$sqlite->singleField("SELECT planet FROM planets WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem())." ORDER BY planet ASC LIMIT 1;");
+				return self::$sql->singleField("SELECT planet FROM planets WHERE galaxy = ".self::$sql->quote($this->getGalaxy())." AND system = ".self::$sql->quote($this->getSystem())." ORDER BY planet ASC LIMIT 1;");
 			else
 				return $this->active_planet;
 		}
 
 		function next()
 		{
-			$this->active_planet = self::$sqlite->singleField("SELECT planet FROM planets WHERE galaxy = ".self::$sqlite->quote($this->getGalaxy())." AND system = ".self::$sqlite->quote($this->getSystem())." AND planet > ".self::$sqlite->quote($this->key())." ORDER BY planet ASC LIMIT 1;");
+			$this->active_planet = self::$sql->singleField("SELECT planet FROM planets WHERE galaxy = ".self::$sql->quote($this->getGalaxy())." AND system = ".self::$sql->quote($this->getSystem())." AND planet > ".self::$sql->quote($this->key())." ORDER BY planet ASC LIMIT 1;");
 			return $this->current();
 		}
 

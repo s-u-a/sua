@@ -25,11 +25,11 @@
 	require_once dirname(dirname(dirname(__FILE__)))."/engine.php";
 
 	/**
-	 * Stellt eine Verbindung zur SQLite-Datenbank her und stellt Funktionen zur Verfügung, um damit zu arbeiten.
+	 * Stellt eine Verbindung zur SQL-Datenbank her und stellt Funktionen zur Verfügung, um damit zu arbeiten.
 	 * @todo Die ganzen Kindklassen aktualisieren
 	*/
 
-	class SQLite
+	class SQL
 	{
 		/**
 		 * Die Verbindung zur Datenbank.
@@ -38,7 +38,7 @@
 		private $connection = false;
 
 		/**
-		 * Die Rückgabe des letzten SQLite->query()-Aufrufs für SQLite->nextResult() und SQLite->lastRowsAffected().
+		 * Die Rückgabe des letzten SQL->query()-Aufrufs für SQL->nextResult() und SQL->lastRowsAffected().
 		 * @var PDOStatement
 		*/
 		private $last_result = false;
@@ -50,18 +50,18 @@
 		private $transactions = array();
 
 		/**
-		 * Öffnet die SQLite-Datenbank mit dem Dateinamen $filename. Alternativ kann auch ein Datenbankobjekt übergeben werden, dann
-		 * wird die SQLite-Datei dortheraus verwendet.
-		 * @param string|Database $filename
+		 * Öffnet die Datenbank unter dem DSN $dsn. Alternativ kann auch ein Datenbankobjekt übergeben werden, dann
+		 * wird die dort konfigurierte SQL-Datenbank verwendet.
+		 * @param string|Database $dsn See http://www.php.net/manual/en/ref.pdo-pgsql.connection.php for example
 		*/
 
-		function __construct($filename = null)
+		function __construct($dsn = null)
 		{
 			if($filename instanceof Database)
-				$this->filename = $filename->getDirectory()."/sqlite";
+				$this->filename = $filename->getConfigValueE("database");
 			else
 				$this->filename = $filename;
-			$this->connection = new \PDO("sqlite:".$this->filename);
+			$this->connection = new \PDO($this->filename);
 			$this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			$this->connection->setAttribute(\PDO::ATTR_TIMEOUT, 86400);
 		}
@@ -170,7 +170,7 @@
 			while(($row = $result->fetch(\PDO::FETCH_NUM)) !== false)
 			{
 				if(!isset($row[0]))
-					throw SQLiteException("No columns were queried.");
+					throw SQLException("No columns were queried.");
 				$return[] = $row[0];
 			}
 			return $return;
@@ -205,7 +205,7 @@
 		}
 
 		/**
-		 * Formatiert einen String so, dass dieser als Wert in einem SQLite-Query verwendet werden kann. Ein String wird zum
+		 * Formatiert einen String so, dass dieser als Wert in einem SQL-Query verwendet werden kann. Ein String wird zum
 		 * Beispiel in Anführungszeichen gesetzt.
 		 * @param mixed $value
 		 * @return string
@@ -220,7 +220,7 @@
 		}
 
 		/**
-		 * Alias für SQLite->escape().
+		 * Alias für SQL->escape().
 		 * @param mixed $value
 		 * @return string
 		*/
@@ -247,27 +247,27 @@
 		 * Fügt einen Query zur letzten per beginTransaction() initialisierten Transaktion hinzu.
 		 * @param string $query
 		 * @return void
-		 * @throw SQLiteException Wenn noch keine Transaktion initialisiert wurde
+		 * @throw SQLException Wenn noch keine Transaktion initialisiert wurde
 		*/
 
 		function transactionQuery($query)
 		{
 			$c = count($this->transactions);
 			if($c < 1)
-				throw new SQLiteException("No transaction has been started.");
+				throw new SQLException("No transaction has been started.");
 			$this->transactions[$c-1][] = $query;
 		}
 
 		/**
 		 * Beendet die letzte Transaktion, die durch beginTransaction() initialisiert wurde und führt deren Queries aus.
 		 * @return null
-		 * @throw SQLiteException Wenn noch keine Transaktion initialisiert wurde
+		 * @throw SQLException Wenn noch keine Transaktion initialisiert wurde
 		*/
 
 		function endTransaction()
 		{
 			if(count($this->transactions) < 1)
-				throw new SQLiteException("No transaction has been started.");
+				throw new SQLException("No transaction has been started.");
 			$calls = array_pop($this->transactions);
 			$this->connection->beginTransaction();
 			foreach($calls as $q)

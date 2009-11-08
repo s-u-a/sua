@@ -28,7 +28,7 @@
 	 * Repräsentiert eine veröffentlichte Nachricht im Spiel.
 	*/
 
-	class PublicMessage extends SQLiteSet
+	class PublicMessage extends SQLSet
 	{
 		protected static $primary_key = array("t_public_messages", "c_message_id");
 
@@ -38,7 +38,7 @@
 			if(self::exists($name))
 				throw new DatasetException("Dataset already exists.");
 
-			self::$sqlite->query("INSERT INTO public_messages ( message_id, last_view ) VALUES ( ".self::$sqlite->escape($message_id).", ".self::$sqlite->escape(time())." );");
+			self::$sql->query("INSERT INTO public_messages ( message_id, last_view ) VALUES ( ".self::$sql->escape($message_id).", ".self::$sql->escape(time())." );");
 			return $name;
 		}
 
@@ -215,8 +215,8 @@
 			$public_messages_time = Config::getLibConfig()->getConfigValue("public_messages_time");
 			if(!$public_messages_time)
 				return 0;
-			$count = self::$sqlite->singleField("SELECT COUNT(*) FROM public_messages WHERE last_view < ".(time()-$public_messages_time*86400).";");
-			self::$sqlite->query("DELETE FROM public_messages WHERE last_view < ".(time()-$public_messages_time*86400).";");
+			$count = self::$sql->singleField("SELECT COUNT(*) FROM public_messages WHERE last_view < ".(time()-$public_messages_time*86400).";");
+			self::$sql->query("DELETE FROM public_messages WHERE last_view < ".(time()-$public_messages_time*86400).";");
 			return $count;
 		}
 	}

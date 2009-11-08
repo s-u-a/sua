@@ -28,7 +28,7 @@
 	  * Repraesentiert eine Allianz im Spiel.
 	*/
 
-	class Alliance extends SQLiteSet implements \Iterator
+	class Alliance extends SQLSet implements \Iterator
 	{
 		/** Rundmail schreiben */
 		const PERMISSION_MAIL = 0;
@@ -79,7 +79,7 @@
 		static function create($name=null)
 		{
 			$name = self::datasetName($name);
-			self::$sqlite->query("INSERT INTO t_alliances ( c_tag ) VALUES ( ".self::$sqlite->quote($name)." );");
+			self::$sql->query("INSERT INTO t_alliances ( c_tag ) VALUES ( ".self::$sql->quote($name)." );");
 
 			return $name;
 		}
@@ -132,7 +132,7 @@
 
 		function getScores($i=null, $highscores=Alliance::HIGHSCORES_SUM)
 		{
-			return self::$sqlite->singleField("SELECT ".$i." FROM t_alliance_highscores_".$highscores." WHERE c_tag = ".self::$sqlite->quote($this->getName())." LIMIT 1;");
+			return self::$sql->singleField("SELECT ".$i." FROM t_alliance_highscores_".$highscores." WHERE c_tag = ".self::$sql->quote($this->getName())." LIMIT 1;");
 		}
 
 		/**
@@ -199,7 +199,7 @@
 			elseif(isset($to))
 				$query .= " LIMIT ".$to;
 
-			return self::$sqlite->arrayQuery($query);
+			return self::$sql->arrayQuery($query);
 		}
 
 		/**
@@ -298,10 +298,10 @@
 		{
 			$new_name = trim($new_name);
 
-			self::$sqlite->query("UPDATE t_alliances SET c_tag = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($this->getName()));
+			self::$sql->query("UPDATE t_alliances SET c_tag = ".self::$sql->quote($new_name)." WHERE tag = ".self::$sql->quote($this->getName()));
 			// Other tables are now updated using CASCADE
-			//self::$sqlite->query("UPDATE t_alliances_members SET c_tag = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($this->getName()));
-			//self::$sqlite->query("UPDATE t_alliances_applications SET c_tag = ".self::$sqlite->quote($new_name)." WHERE tag = ".self::$sqlite->quote($this->getName()));
+			//self::$sql->query("UPDATE t_alliances_members SET c_tag = ".self::$sql->quote($new_name)." WHERE tag = ".self::$sql->quote($this->getName()));
+			//self::$sql->query("UPDATE t_alliances_applications SET c_tag = ".self::$sql->quote($new_name)." WHERE tag = ".self::$sql->quote($this->getName()));
 			parent::rename($new_name);
 		}
 
@@ -312,7 +312,7 @@
 
 		function getMembersCount()
 		{
-			return self::$sqlite->singleField("SELECT COUNT(*) FROM t_alliances_members WHERE c_tag = ".self::$sqlite->quote($this->getName()).";");
+			return self::$sql->singleField("SELECT COUNT(*) FROM t_alliances_members WHERE c_tag = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -333,7 +333,7 @@
 				default: $order = "c_member"; break;
 			}
 			$oder .= " ".($invert ? "DESC" : "ASC");
-			return self::$sqlite->singleColumn("SELECT c_member FROM t_alliances_members WHERE c_tag = ".self::$sqlite->quote($this->getName())." ORDER BY ".$order.";");
+			return self::$sql->singleColumn("SELECT c_member FROM t_alliances_members WHERE c_tag = ".self::$sql->quote($this->getName())." ORDER BY ".$order.";");
 		}
 
 		/**
@@ -346,7 +346,7 @@
 
 		function kickUser($user, $by_whom=null)
 		{
-			self::$sqlite->query("DELETE FROM t_alliances_members WHERE c_tag = ".self::$sqlite->quote($this->getName())." AND c_member = ".self::$sqlite->quote($user).";");
+			self::$sql->query("DELETE FROM t_alliances_members WHERE c_tag = ".self::$sql->quote($this->getName())." AND c_member = ".self::$sql->quote($user).";");
 
 			$message = Classes::Message(Message::create());
 			$message->subject($user_obj->_("Allianzmitgliedschaft gekündigt"));
@@ -376,7 +376,7 @@
 
 		function isMember($user)
 		{
-			return (self::$sqlite->singleField("SELECT COUNT(*) FROM t_alliances_members WHERE c_tag = ".self::$sqlite->quote($tag)." AND c_member = ".self::$sqlite->quote($user)." LIMIT 1;") > 0);
+			return (self::$sql->singleField("SELECT COUNT(*) FROM t_alliances_members WHERE c_tag = ".self::$sql->quote($tag)." AND c_member = ".self::$sql->quote($user)." LIMIT 1;") > 0);
 		}
 
 		/**
@@ -387,7 +387,7 @@
 
 		function getUsersWithPermission($permission)
 		{
-			return self::$sqlite->singleColumn("SELECT c_member FROM t_alliances_members WHERE c_tag = ".self::$sqlite->quote($this->getName())." AND ( c_permissions | ".(1 << $permission)." ) == 1;");
+			return self::$sql->singleColumn("SELECT c_member FROM t_alliances_members WHERE c_tag = ".self::$sql->quote($this->getName())." AND ( c_permissions | ".(1 << $permission)." ) == 1;");
 		}
 
 		/**
@@ -399,7 +399,7 @@
 
 		function checkUserPermissions($user, $key)
 		{
-			$permissions = self::$sqlite->singleField("SELECT c_permissions FROM t_alliances_members WHERE c_tag = ".self::$sqlite->quote($this->getName())." AND c_member = ".self::$sqlite->quote($user).";");
+			$permissions = self::$sql->singleField("SELECT c_permissions FROM t_alliances_members WHERE c_tag = ".self::$sql->quote($this->getName())." AND c_member = ".self::$sql->quote($user).";");
 			return (true && ($permissions & (1 << $key)));
 		}
 
@@ -413,12 +413,12 @@
 
 		function setUserPermissions($user, $key, $permission)
 		{
-			$permissions = self::$sqlite->singleField("SELECT c_permissions FROM t_alliances_members WHERE c_tag = ".self::$sqlite->quote($this->getName())." AND c_member = ".self::$sqlite->quote($user).";");
+			$permissions = self::$sql->singleField("SELECT c_permissions FROM t_alliances_members WHERE c_tag = ".self::$sql->quote($this->getName())." AND c_member = ".self::$sql->quote($user).";");
 			if($permission)
 				$permissions |= 1 << $key;
 			elseif($permission & (1 << $key))
 				$permissions ^= 1 << $key;
-			self::$sqlite->query("UPDATE t_alliances_members SET c_permissions = ".self::$sqlite->quote($permissions)." WHERE c_tag = ".self::$sqlite->quote($this->getName())." AND c_member = ".self::$sqlite->quote($user).";");
+			self::$sql->query("UPDATE t_alliances_members SET c_permissions = ".self::$sql->quote($permissions)." WHERE c_tag = ".self::$sql->quote($this->getName())." AND c_member = ".self::$sql->quote($user).";");
 		}
 
 		/**
@@ -429,7 +429,7 @@
 
 		function getUserJoiningTime($user)
 		{
-			return self::$sqlite->singleField("SELECT c_time FROM t_alliances_members WHERE c_tag = ".self::$sqlite->quote($this->getName())." AND c_member = ".self::$sqlite->quote($user).";");
+			return self::$sql->singleField("SELECT c_time FROM t_alliances_members WHERE c_tag = ".self::$sql->quote($this->getName())." AND c_member = ".self::$sql->quote($user).";");
 		}
 
 		/**
@@ -441,7 +441,7 @@
 
 		function setUserStatus($user, $rank)
 		{
-			self::$sqlite->query("UPDATE t_alliances_members SET c_rank = ".self::$sqlite->quote($rank)." WHERE c_tag = ".self::$sqlite->quote($tag)." AND c_member = ".self::$sqlite->quote($user).";");
+			self::$sql->query("UPDATE t_alliances_members SET c_rank = ".self::$sql->quote($rank)." WHERE c_tag = ".self::$sql->quote($tag)." AND c_member = ".self::$sql->quote($user).";");
 		}
 
 		/**
@@ -452,7 +452,7 @@
 
 		function getUserStatus($user)
 		{
-			return self::$sqlite->singleField("SELECT c_rank FROM t_alliances_members WHERE c_tag = ".self::$sqlite->quote($tag)." AND c_member = ".self::$sqlite->quote($user).";");
+			return self::$sql->singleField("SELECT c_rank FROM t_alliances_members WHERE c_tag = ".self::$sql->quote($tag)." AND c_member = ".self::$sql->quote($user).";");
 		}
 
 		/**
@@ -463,7 +463,7 @@
 
 		function quitUser($user)
 		{
-			self::$sqlite->query("DELETE FROM t_alliances_members WHERE c_tag = ".self::$sqlite->quote($this->getName())." AND c_member = ".self::$sqlite->quote($user).";");
+			self::$sql->query("DELETE FROM t_alliances_members WHERE c_tag = ".self::$sql->quote($this->getName())." AND c_member = ".self::$sql->quote($user).";");
 
 			$members = $this->getUsersList();
 			foreach($members as $member)
@@ -487,7 +487,7 @@
 
 		function getApplicationsList()
 		{
-			return self::$sqlite->singleColumn("SELECT c_user FROM t_alliances_applications WHERE c_tag = ".self::$sqlite->quote($tag).";");
+			return self::$sql->singleColumn("SELECT c_user FROM t_alliances_applications WHERE c_tag = ".self::$sql->quote($tag).";");
 		}
 
 		/**
@@ -498,7 +498,7 @@
 
 		function isApplying($user)
 		{
-			return (self::$sqlite->singleField("SELECT COUNT(*) FROM t_alliances_applications WHERE c_tag = ".self::$sqlite->quote($tag)." AND c_user = ".self::$sqlite->quote($user)." LIMIT 1;") > 0);
+			return (self::$sql->singleField("SELECT COUNT(*) FROM t_alliances_applications WHERE c_tag = ".self::$sql->quote($tag)." AND c_user = ".self::$sql->quote($user)." LIMIT 1;") > 0);
 		}
 
 		/**
@@ -513,7 +513,7 @@
 			if(!$this->allowApplications())
 				throw new AllianceException("This alliance does not accept applications.");
 
-			self::$sqlite->query("INSERT INTO t_alliances_applications ( c_tag, c_user ) VALUES ( ".self::$sqlite->quote($this->getName).", ".self::$sqlite->quote($user)." );");
+			self::$sql->query("INSERT INTO t_alliances_applications ( c_tag, c_user ) VALUES ( ".self::$sql->quote($this->getName).", ".self::$sql->quote($user)." );");
 
 			$users = $this->getUsersWithPermission(self::PERMISSION_APPLICATIONS);
 			foreach($users as $user)
@@ -539,7 +539,7 @@
 
 		function cancelApplication($user)
 		{
-			self::$sqlite->query("DELETE FROM t_alliances_applications WHERE c_tag = ".self::$sqlite->quote($tag)." AND c_user = ".self::$sqlite->quote($user).";");
+			self::$sql->query("DELETE FROM t_alliances_applications WHERE c_tag = ".self::$sql->quote($tag)." AND c_user = ".self::$sql->quote($user).";");
 
 			$users = $alliance_obj->getUsersWithPermission(self::PERMISSION_APPLICATIONS);
 			foreach($users as $user)
@@ -564,8 +564,8 @@
 		{
 			$user_obj = Classes::User($user);
 
-			self::$sqlite->query("INSERT INTO t_alliances_members ( c_tag, c_member, c_rank, c_time, c_permissions ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($user).", ".self::$sqlite->quote($user_obj->_("Neuling")).", ".self::$sqlite->quote(time()).", 0 );");
-			self::$sqlite->query("DELETE FROM t_alliances_applications WHERE c_tag = ".self::$sqlite->quote($this->getName())." AND c_user = ".self::$sqlite->quote($user).";");
+			self::$sql->query("INSERT INTO t_alliances_members ( c_tag, c_member, c_rank, c_time, c_permissions ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($user_obj->_("Neuling")).", ".self::$sql->quote(time()).", 0 );");
+			self::$sql->query("DELETE FROM t_alliances_applications WHERE c_tag = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 
 			$message = Classes::Message(Message::create());
 			$message->subject($user_obj->_("Allianzbewerbung angenommen"));
@@ -597,7 +597,7 @@
 		{
 			$user_obj = Classes::User($user);
 
-			self::$sqlite->query("DELETE FROM t_alliances_applications WHERE c_tag = ".self::$sqlite->quote($this->getName())." AND c_user = ".self::$sqlite->quote($user).";");
+			self::$sql->query("DELETE FROM t_alliances_applications WHERE c_tag = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 
 			$message = Classes::Message();
 			$message->subject($user_obj->_("Allianzbewerbung abgelehnt"));
@@ -625,7 +625,7 @@
 
 		static function findAlliance($search_string)
 		{
-			return self::$sqlite->singleColumn("SELECT c_tag FROM t_alliances WHERE c_tag GLOB ".$this->quote($search_string).";");
+			return self::$sql->singleColumn("SELECT c_tag FROM t_alliances WHERE c_tag GLOB ".$this->quote($search_string).";");
 		}
 
 		/**
@@ -636,7 +636,7 @@
 
 		static function userAlliance($user)
 		{
-			return self::$sqlite->singleField("SELECT c_tag FROM t_alliances_members WHERE c_member = ".self::$sqlite->quote($user)." LIMIT 1;");
+			return self::$sql->singleField("SELECT c_tag FROM t_alliances_members WHERE c_member = ".self::$sql->quote($user)." LIMIT 1;");
 		}
 
 		/**
@@ -647,7 +647,7 @@
 
 		static function userAllianceApplying($user)
 		{
-			return self::$sqlite->singleField("SELECT c_tag FROM t_alliances_applications WHERE c_user = ".self::$sqlite->quote($user)." LIMIT 1;");
+			return self::$sql->singleField("SELECT c_tag FROM t_alliances_applications WHERE c_user = ".self::$sql->quote($user)." LIMIT 1;");
 		}
 
 		/**
@@ -661,8 +661,8 @@
 		static function renameUser($old_name, $new_name)
 		{
 			// Now done using CASCADE
-			//self::$sqlite->backgroundQuery("UPDATE alliances_members SET member = ".self::$sqlite->quote($new_name)." WHERE member = ".self::$sqlite->quote($old_name).";");
-			//self::$sqlite->backgroundQuery("UPDATE alliances_applications SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($old_name).";");
+			//self::$sql->backgroundQuery("UPDATE alliances_members SET member = ".self::$sql->quote($new_name)." WHERE member = ".self::$sql->quote($old_name).";");
+			//self::$sql->backgroundQuery("UPDATE alliances_applications SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($old_name).";");
 		}
 
 		function rewind() { reset($this->users_list); return $this->current(); }

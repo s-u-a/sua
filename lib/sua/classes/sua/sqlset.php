@@ -25,18 +25,18 @@
 	require_once dirname(dirname(dirname(__FILE__)))."/engine.php";
 
 	/**
-	 * Ein Datenset, das SQLite als Speicher verwendet.
+	 * Ein Datenset, das SQL als Speicher verwendet.
 	 * Kümmert sich um die Verbindung zur Datenbank und stellt Funktionen zur Verfügung, um diese zu benutzen.
 	 * Implementiert die Dataset-Funktionen.
 	*/
 
-	abstract class SQLiteSet extends Dataset implements StaticInit
+	abstract class SQLSet extends Dataset implements StaticInit
 	{
 		/**
-		 * Eine SQLite-Instanz, die die Datenbank bedient.
-		 * @var SQLite
+		 * Eine SQL-Instanz, die die Datenbank bedient.
+		 * @var SQL
 		*/
-		public static $sqlite;
+		public static $sql;
 
 		/**
 		 * Ein Array von zwei Werten: [0]: Tabellenname, [1]: Spaltenname. Für getMainField() und Ähnliche.
@@ -50,13 +50,13 @@
 
 			if(!isset($added_to_dataset) || !$added_to_dataset)
 			{
-				Dataset::addDatabaseChangeListener(function(){ SQLiteSet::init(); });
+				Dataset::addDatabaseChangeListener(function(){ SQLSet::init(); });
 				$added_to_dataset = true;
 			}
 
-			if(!self::$sqlite)
+			if(!self::$sql)
 			{
-				try { self::$sqlite = Classes::SQLite(Dataset::getDatabase()); }
+				try { self::$sql = Classes::SQL(Dataset::getDatabase()); }
 				catch(DatasetException $e) {  }
 			}
 		}
@@ -71,7 +71,7 @@
 				do { $name = Functions::randomID(); } while(!self::exists($name));
 			}
 			$name = parent::datasetName($name);
-			$existing = self::$sqlite->singleField("SELECT ".static::getMainFieldName()." FROM ".static::getMainTableName()." WHERE LOWER(".static::getMainFieldName().") = LOWER(".self::$sqlite->quote($name).");");
+			$existing = self::$sql->singleField("SELECT ".static::getMainFieldName()." FROM ".static::getMainTableName()." WHERE LOWER(".static::getMainFieldName().") = LOWER(".self::$sql->quote($name).");");
 			if($existing !== false)
 				$name = $existing;
 			return $name;
@@ -89,12 +89,12 @@
 
 		static function getList()
 		{
-			return self::$sqlite->singleColumn("SELECT DISTINCT ".static::getMainFieldName()." FROM ".static::getMainTableName().";");
+			return self::$sql->singleColumn("SELECT DISTINCT ".static::getMainFieldName()." FROM ".static::getMainTableName().";");
 		}
 
 		static function getNumber()
 		{
-			return self::$sqlite->singleField("SELECT COUNT(*) FROM ".static::getMainTableName().";");
+			return self::$sql->singleField("SELECT COUNT(*) FROM ".static::getMainTableName().";");
 		}
 
 		static function exists($name)
@@ -103,7 +103,7 @@
 				$name = static::idFromParams(func_get_args());
 
 			$name = static::datasetName($name);
-			return (self::$sqlite->singleField("SELECT COUNT(*) FROM ".static::getMainTableName()." WHERE LOWER(".static::getMainFieldName().") = LOWER(".self::$sqlite->quote($name).");") >= 1);
+			return (self::$sql->singleField("SELECT COUNT(*) FROM ".static::getMainTableName()." WHERE LOWER(".static::getMainFieldName().") = LOWER(".self::$sql->quote($name).");") >= 1);
 		}
 
 		/**
@@ -117,18 +117,18 @@
 		{
 			if(is_array($field_name))
 			{
-				$result = self::$sqlite->singleLine("SELECT ".implode(", ", $field_name)." FROM ".static::getMainTableName()." WHERE ".static::getMainFieldName()." = ".self::$sqlite->quote($this->getName()).";");
+				$result = self::$sql->singleLine("SELECT ".implode(", ", $field_name)." FROM ".static::getMainTableName()." WHERE ".static::getMainFieldName()." = ".self::$sql->quote($this->getName()).";");
 				$return = array();
 				foreach($field_name as $k=>$v)
 				{
 					if(!isset($result[$v]))
-						throw new SQLiteSetException("Field “".$v."” could not be selected.");
+						throw new SQLSetException("Field “".$v."” could not be selected.");
 					$return[$k] = $result[$v];
 				}
 				return $return;
 			}
 			else
-				return self::$sqlite->singleField("SELECT ".$field_name." FROM ".static::getMainTableName()." WHERE ".static::getMainFieldName()." = ".self::$sqlite->quote($this->getName()).";");
+				return self::$sql->singleField("SELECT ".$field_name." FROM ".static::getMainTableName()." WHERE ".static::getMainFieldName()." = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -147,11 +147,11 @@
 			foreach($field_names as $k=>$v)
 			{
 				if(!isset($values[$k]))
-					throw new SQLiteSetException("setMainField: Could not find a value for field ".$v);
-				$set[] = $v." = ".self::$sqlite->quote($values[$k]);
+					throw new SQLSetException("setMainField: Could not find a value for field ".$v);
+				$set[] = $v." = ".self::$sql->quote($values[$k]);
 			}
 			if(count($set) < 1)
-				throw new SQLiteSetException("No fields to update.");
-			self::$sqlite->query("UPDATE ".static::getMainTableName()." SET ".implode(", ", $set)." WHERE ".static::getMainFieldName()." = ".self::$sqlite->quote($this->getName()).";");
+				throw new SQLSetException("No fields to update.");
+			self::$sql->query("UPDATE ".static::getMainTableName()." SET ".implode(", ", $set)." WHERE ".static::getMainFieldName()." = ".self::$sql->quote($this->getName()).";");
 		}
 	}

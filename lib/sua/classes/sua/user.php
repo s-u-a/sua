@@ -37,7 +37,7 @@
 	 * @todo setActivePlanet scheint noch verwendet zu werden
 	*/
 
-	class User extends SQLiteSet implements \Iterator,StaticInit
+	class User extends SQLSet implements \Iterator,StaticInit
 	{
 		/** Gebäudepunkte */
 		const SCORES_GEBAEUDE = "gebaeude";
@@ -88,8 +88,8 @@
 			if(self::exists($name))
 				throw new UserException("This user does already exist.");
 
-			self::$sqlite->query("INSERT INTO users ( user, registration ) VALUES ( ".self::$sqlite->quote($name).", ".self::$sqlite->quote(time())." );");
-			self::$sqlite->query("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sqlite->quote($name).", ".self::$sqlite->quote("lang").", ".self::$sqlite->quote(serialize(L::language()))." );");
+			self::$sql->query("INSERT INTO users ( user, registration ) VALUES ( ".self::$sql->quote($name).", ".self::$sql->quote(time())." );");
+			self::$sql->query("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sql->quote($name).", ".self::$sql->quote("lang").", ".self::$sql->quote(serialize(L::language()))." );");
 
 			return $name;
 		}
@@ -130,15 +130,15 @@
 			}
 
 			# Aus der Datenbank entfernen
-			self::$sqlite->beginTransaction();
-			self::$sqlite->transactionQuery("DELETE FROM users WHERE user = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("DELETE FROM users_research WHERE user = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("DELETE FROM users_friends WHERE user1 = ".self::$sqlite->quote($this->getName())." OR user2 = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("DELETE FROM users_friend_requests WHERE user_from = ".self::$sqlite->quote($this->getName())." OR user_to = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("DELETE FROM users_shortcuts WHERE user = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("DELETE FROM users_settings WHERE user = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("DELETE FROM users_email WHERE user = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->endTransaction();
+			self::$sql->beginTransaction();
+			self::$sql->transactionQuery("DELETE FROM users WHERE user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM users_research WHERE user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM users_friends WHERE user1 = ".self::$sql->quote($this->getName())." OR user2 = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM users_friend_requests WHERE user_from = ".self::$sql->quote($this->getName())." OR user_to = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM users_settings WHERE user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM users_email WHERE user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->endTransaction();
 		}
 
 /*********************************************
@@ -159,17 +159,17 @@
 			Alliance::renameUser($this->getName(), $new_name);
 			IMServer::renameUser($this->getName(), $new_name);
 
-			self::$sqlite->beginTransaction();
-			self::$sqlite->transactionQuery("UPDATE users SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("UPDATE users_research SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("UPDATE users_friends SET user1 = ".self::$sqlite->quote($new_name)." WHERE user1 = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("UPDATE users_friends SET user2 = ".self::$sqlite->quote($new_name)." WHERE user2 = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("UPDATE users_friend_requests SET user_from = ".self::$sqlite->quote($new_name)." WHERE user_from = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("UPDATE users_friend_requests SET user_to = ".self::$sqlite->quote($new_name)." WHERE user_to = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("UPDATE users_shortcuts SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("UPDATE users_settings SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->transactionQuery("UPDATE users_email SET user = ".self::$sqlite->quote($new_name)." WHERE user = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->endTransaction();
+			self::$sql->beginTransaction();
+			self::$sql->transactionQuery("UPDATE users SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE users_research SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE users_friends SET user1 = ".self::$sql->quote($new_name)." WHERE user1 = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE users_friends SET user2 = ".self::$sql->quote($new_name)." WHERE user2 = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE users_friend_requests SET user_from = ".self::$sql->quote($new_name)." WHERE user_from = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE users_friend_requests SET user_to = ".self::$sql->quote($new_name)." WHERE user_to = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE users_shortcuts SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE users_settings SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE users_email SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->endTransaction();
 
 			parent::rename($new_name);
 		}
@@ -188,8 +188,8 @@
 			$inact_delete = array(array_shift($inact[0]), array_shift($inact[1]));
 
 			$i = 0;
-			self::$sqlite->query("SELECT user,last_activity,holidays FROM users WHERE last_inactivity_mail != ".self::$sqlite->quote(date("Y-m"))." AND ( ( NOT holidays AND last_activity < ".self::$sqlite->query(time()-$user_inactivity[0][0]*86400)." ) OR ( holidays AND last_activity < ".self::$sqlite->query(time()-$user_inactivity[1][0]*86400)." ) );");
-			while(($r = self::$sqlite->nextResult()) !== false)
+			self::$sql->query("SELECT user,last_activity,holidays FROM users WHERE last_inactivity_mail != ".self::$sql->quote(date("Y-m"))." AND ( ( NOT holidays AND last_activity < ".self::$sql->query(time()-$user_inactivity[0][0]*86400)." ) OR ( holidays AND last_activity < ".self::$sql->query(time()-$user_inactivity[1][0]*86400)." ) );");
+			while(($r = self::$sql->nextResult()) !== false)
 			{
 				$user_obj = Classes::User($r["user"]);
 				if($r["last_activity"]-time() > $inact_delete[$r["umode"] ? 1 : 0]*86400)
@@ -202,7 +202,7 @@
 					$user_obj->setLanguage();
 					$user_obj->_sendMail(sprintf(_("Inaktivität in %s"), _("[title_full]")), sprintf(_("Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in %s in %s angemeldet haben. Sie haben bis zum %s Zeit, sich anzumelden, danach wird Ihr Account einer automatischen Löschung unterzogen.\n\nDas Spiel erreichen Sie unter %s – Ihr Benutzername lautet %s."), _("[title_full]"), self::getDatabase()->getTitle(), date(_("Y-m-d"), $r["last_activity"]+$inact_delete[$r["umode"] ? 1 : 0]*86400), "http://".Config::getDefaultHostname()."/", $user_obj->getName()));
 					$user_obj->restoreLanguage();
-					self::$sqlite->backgroundQuery("UPDATE users SET last_inactivity_mail = ".self::$sqlite->quote(date("Y-m"))." WHERE user = ".self::$sqlite->quote($r["user"]).";");
+					self::$sql->backgroundQuery("UPDATE users SET last_inactivity_mail = ".self::$sql->quote(date("Y-m"))." WHERE user = ".self::$sql->quote($r["user"]).";");
 				}
 			}
 			return $i;
@@ -280,7 +280,7 @@
 
 		static function getUserByOpenId($openid)
 		{
-			$openid = self::$sqlite->singleField("SELECT user FROM users_openid WHERE openid = ".self::$sqlite->quote($openid)." LIMIT 1;");
+			$openid = self::$sql->singleField("SELECT user FROM users_openid WHERE openid = ".self::$sql->quote($openid)." LIMIT 1;");
 			if(!$openid)
 				return null;
 			return $openid;
@@ -297,7 +297,7 @@
 		{
 			if(self::getUserByOpenId($openid))
 				throw new UserException("This OpenID is already used by another account.");
-			self::$sqlite->backgroundQuery("INSERT INTO users_openid ( user, openid ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($openid)." );");
+			self::$sql->backgroundQuery("INSERT INTO users_openid ( user, openid ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($openid)." );");
 		}
 
 		/**
@@ -307,7 +307,7 @@
 
 		function getOpenIds()
 		{
-			return self::$sqlite->singleColumn("SELECT openid FROM users_openid WHERE user = ".self::$sqlite->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT openid FROM users_openid WHERE user = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -325,7 +325,7 @@
 				throw new UserException("This OpenID is not assigned to this user.");
 			if(count($openids) < 2 && !$this->passwordIsSet())
 				throw new UserException("This OpenID may not be removed unless a password is set.");
-			self::$sqlite->backgroundQuery("DELETE FROM users_openid WHERE user = ".self::$sqlite->quote($this->getName())." AND openid = ".self::$sqlite->quote($openid).";");
+			self::$sql->backgroundQuery("DELETE FROM users_openid WHERE user = ".self::$sql->quote($this->getName())." AND openid = ".self::$sql->quote($openid).";");
 		}
 
 		/**
@@ -336,7 +336,7 @@
 
 		function checkSetting($setting)
 		{
-			$value = self::$sqlite->singleField("SELECT value FROM users_settings WHERE user = ".self::$sqlite->quote($this->getName())." AND setting = ".self::$sqlite->quote($setting)." LIMIT 1;");
+			$value = self::$sql->singleField("SELECT value FROM users_settings WHERE user = ".self::$sql->quote($this->getName())." AND setting = ".self::$sql->quote($setting)." LIMIT 1;");
 			if($value === false)
 			{
 				switch($setting)
@@ -399,10 +399,10 @@
 
 		function setSetting($setting, $value)
 		{
-			if(self::$sqlite->singleField("SELECT COUNT(*) FROM users_settings WHERE user = ".self::$sqlite->quote($this->getName())." AND setting = ".self::$sqlite->quote($setting)." LIMIT 1;") > 0)
-				self::$sqlite->backgroundQuery("UPDATE users_settings SET value = ".self::$sqlite->quote(serialize($value))." WHERE user = ".self::$sqlite->quote($this->getName())." AND setting = ".self::$sqlite->quote($setting)." LIMIT 1;");
+			if(self::$sql->singleField("SELECT COUNT(*) FROM users_settings WHERE user = ".self::$sql->quote($this->getName())." AND setting = ".self::$sql->quote($setting)." LIMIT 1;") > 0)
+				self::$sql->backgroundQuery("UPDATE users_settings SET value = ".self::$sql->quote(serialize($value))." WHERE user = ".self::$sql->quote($this->getName())." AND setting = ".self::$sql->quote($setting)." LIMIT 1;");
 			else
-				self::$sqlite->backgroundQuery("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($setting).", ".self::$sqlite->quote(serialize($value))." );");
+				self::$sql->backgroundQuery("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($setting).", ".self::$sql->quote(serialize($value))." );");
 		}
 
 		/**
@@ -637,11 +637,11 @@
 
 		function addPosShortcut(Planet $pos)
 		{
-			if(self::$sqlite->singleField("SELECT COUNT(*) FROM users_shortcuts WHERE user = ".self::$sqlite->quote($this->getName())." AND galaxy = ".self::$sqlite->quote($pos->getGalaxy())." AND system = ".self::$sqlite->quote($pos->getSystem())." AND planet = ".self::$sqlite->quote($pos->getPlanet())." LIMIT 1;") > 0)
+			if(self::$sql->singleField("SELECT COUNT(*) FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($pos->getGalaxy())." AND system = ".self::$sql->quote($pos->getSystem())." AND planet = ".self::$sql->quote($pos->getPlanet())." LIMIT 1;") > 0)
 				throw new UserException("This shortcut is already in the list.");
 
-			$i = self::$sqlite->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sqlite->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
-			self::$sqlite->backgroundQuery("INSERT INTO users_shortcuts ( user, galaxy, system, planet, i ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($pos->getGalaxy()).", ".self::$sqlite->quote($pos->getSystem()).", ".self::$sqlite->quote($pos->getPlanet()).", ".self::$sqlite->quote($i+1)." );");
+			$i = self::$sql->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
+			self::$sql->backgroundQuery("INSERT INTO users_shortcuts ( user, galaxy, system, planet, i ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($pos->getGalaxy()).", ".self::$sql->quote($pos->getSystem()).", ".self::$sql->quote($pos->getPlanet()).", ".self::$sql->quote($i+1)." );");
 		}
 
 		/**
@@ -652,8 +652,8 @@
 		function getPosShortcutsList()
 		{
 			$return = array();
-			self::$sqlite->query("SELECT galaxy, system, planet FROM users_shortcuts WHERE user = ".self::$sqlite->quote($this->getName())." ORDER BY i ASC;");
-			while(($r = self::$sqlite->nextResult()) !== false)
+			self::$sql->query("SELECT galaxy, system, planet FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." ORDER BY i ASC;");
+			while(($r = self::$sql->nextResult()) !== false)
 				$return[] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
 			return $return;
 		}
@@ -666,7 +666,7 @@
 
 		function removePosShortcut(Planet $pos)
 		{
-			self::$sqlite->query("DELETE FROM users_shortcuts WHERE user = ".self::$sqlite->quote($this->getName())." AND galaxy = ".self::$sqlite->quote($pos->getGalaxy())." AND system = ".self::$sqlite->quote($pos->getSystem())." AND planet = ".self::$sqlite->quote($pos->getPlanet()).";");
+			self::$sql->query("DELETE FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($pos->getGalaxy())." AND system = ".self::$sql->quote($pos->getSystem())." AND planet = ".self::$sql->quote($pos->getPlanet()).";");
 		}
 
 		/**
@@ -677,10 +677,10 @@
 
 		function movePosShortcutUp(Planet $pos)
 		{
-			$i = self::$sqlite->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sqlite->quote($this->getName())." AND galaxy = ".self::$sqlite->quote($pos->getGalaxy())." AND system = ".self::$sqlite->quote($pos->getSystem())." AND planet = ".self::$sqlite->quote($pos->getPlanet())." LIMIT 1;");
-			$i2 = self::$sqlite->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sqlite->quote($this->getName())." AND i < ".self::$sqlite->quote($i)." ORDER BY i DESC LIMIT 1;");
-			self::$sqlite->backgroundQuery("UPDATE users_shortcuts SET i = ".self::$sqlite->quote($i)." WHERE user = ".self::$sqlite->quote($this->getName())." AND i = ".self::$sqlite->quote($i2).";");
-			self::$sqlite->backgroundQuery("UPDATE users_shortcuts SET i = ".self::$sqlite->quote($i2)." WHERE user = ".self::$sqlite->quote($this->getName())." AND galaxy = ".self::$sqlite->quote($pos->getGalaxy())." AND system = ".self::$sqlite->quote($pos->getSystem())." AND planet = ".self::$sqlite->quote($pos->getPlanet()).";");
+			$i = self::$sql->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($pos->getGalaxy())." AND system = ".self::$sql->quote($pos->getSystem())." AND planet = ".self::$sql->quote($pos->getPlanet())." LIMIT 1;");
+			$i2 = self::$sql->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." AND i < ".self::$sql->quote($i)." ORDER BY i DESC LIMIT 1;");
+			self::$sql->backgroundQuery("UPDATE users_shortcuts SET i = ".self::$sql->quote($i)." WHERE user = ".self::$sql->quote($this->getName())." AND i = ".self::$sql->quote($i2).";");
+			self::$sql->backgroundQuery("UPDATE users_shortcuts SET i = ".self::$sql->quote($i2)." WHERE user = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($pos->getGalaxy())." AND system = ".self::$sql->quote($pos->getSystem())." AND planet = ".self::$sql->quote($pos->getPlanet()).";");
 		}
 
 		/**
@@ -691,10 +691,10 @@
 
 		function movePosShortcutDown(Planet $pos)
 		{
-			$i = self::$sqlite->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sqlite->quote($this->getName())." AND galaxy = ".self::$sqlite->quote($pos->getGalaxy())." AND system = ".self::$sqlite->quote($pos->getSystem())." AND planet = ".self::$sqlite->quote($pos->getPlanet())." LIMIT 1;");
-			$i2 = self::$sqlite->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sqlite->quote($this->getName())." AND i > ".self::$sqlite->quote($i)." ORDER BY i ASC LIMIT 1;");
-			self::$sqlite->backgroundQuery("UPDATE users_shortcuts SET i = ".self::$sqlite->quote($i)." WHERE user = ".self::$sqlite->quote($this->getName())." AND i = ".self::$sqlite->quote($i2).";");
-			self::$sqlite->backgroundQuery("UPDATE users_shortcuts SET i = ".self::$sqlite->quote($i2)." WHERE user = ".self::$sqlite->quote($this->getName())." AND galaxy = ".self::$sqlite->quote($pos->getGalaxy())." AND system = ".self::$sqlite->quote($pos->getSystem())." AND planet = ".self::$sqlite->quote($pos->getPlanet()).";");
+			$i = self::$sql->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($pos->getGalaxy())." AND system = ".self::$sql->quote($pos->getSystem())." AND planet = ".self::$sql->quote($pos->getPlanet())." LIMIT 1;");
+			$i2 = self::$sql->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." AND i > ".self::$sql->quote($i)." ORDER BY i ASC LIMIT 1;");
+			self::$sql->backgroundQuery("UPDATE users_shortcuts SET i = ".self::$sql->quote($i)." WHERE user = ".self::$sql->quote($this->getName())." AND i = ".self::$sql->quote($i2).";");
+			self::$sql->backgroundQuery("UPDATE users_shortcuts SET i = ".self::$sql->quote($i2)." WHERE user = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($pos->getGalaxy())." AND system = ".self::$sql->quote($pos->getSystem())." AND planet = ".self::$sql->quote($pos->getPlanet()).";");
 		}
 
 		/**
@@ -840,7 +840,7 @@
 
 		function getEMailAddress()
 		{
-			return self::$sqlite->singleField("SELECT email FROM users_email WHERE user = ".self::$sqlite->quote($this->getName())." AND valid_from <= ".self::$sqlite->quote(time())." ORDER BY valid_from DESC LIMIT 1;");
+			return self::$sql->singleField("SELECT email FROM users_email WHERE user = ".self::$sql->quote($this->getName())." AND valid_from <= ".self::$sql->quote(time())." ORDER BY valid_from DESC LIMIT 1;");
 		}
 
 		/**
@@ -852,7 +852,7 @@
 
 		function getTemporaryEMailAddress($array=false)
 		{
-			$res = self::$sqlite->singleLine("SELECT email,valid_from FROM users_email WHERE user = ".self::$sqlite->quote($this->getName())." ORDER BY valid_from DESC LIMIT 1;");
+			$res = self::$sql->singleLine("SELECT email,valid_from FROM users_email WHERE user = ".self::$sql->quote($this->getName())." ORDER BY valid_from DESC LIMIT 1;");
 			if($array)
 				return array($res["email"], $res["valid_from"]);
 			else
@@ -870,12 +870,12 @@
 		{
 			if($address === $this->getTemporaryEMailAddress() && $do_delay)
 				return;
-			self::$sqlite->backgroundQuery("DELETE FROM users_email WHERE user = ".self::$sqlite->quote($this->getName())." AND valid_from > ".self::$sqlite->quote(time()).";");
+			self::$sql->backgroundQuery("DELETE FROM users_email WHERE user = ".self::$sql->quote($this->getName())." AND valid_from > ".self::$sql->quote(time()).";");
 
 			if($address == $this->getEMailAddress())
 				return;
 
-			self::$sqlite->backgroundQuery("INSERT INTO users_email ( user, email, valid_from ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($email).", ".self::$sqlite->quote(time()+($do_delay ? Config::getLibConfig()->getConfigValue("users", "email_change_delay") : 0))." );");
+			self::$sql->backgroundQuery("INSERT INTO users_email ( user, email, valid_from ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($email).", ".self::$sql->quote(time()+($do_delay ? Config::getLibConfig()->getConfigValue("users", "email_change_delay") : 0))." );");
 		}
 
 		/**
@@ -967,7 +967,7 @@
 				$field = "used_ress0+used_ress1+used_ress2+used_ress3+used_ress4";
 			else
 				$field = "used_ress".$i;
-			return self::$sqlite->getMainField($field);
+			return self::$sql->getMainField($field);
 		}
 
 		/**
@@ -1037,7 +1037,7 @@
 
 		function getScores($i=null)
 		{
-			return self::$sqlite->singleField("SELECT ".$i." FROM highscores WHERE user = ".self::$sqlite->quote($this->getName())." LIMIT 1;");
+			return self::$sql->singleField("SELECT ".$i." FROM highscores WHERE user = ".self::$sql->quote($this->getName())." LIMIT 1;");
 		}
 
 		/**
@@ -1102,7 +1102,7 @@
 			elseif(isset($to))
 				$query .= " LIMIT ".$to;
 
-			return self::$sqlite->arrayQuery($query);
+			return self::$sql->arrayQuery($query);
 		}
 
 /***************************************
@@ -1631,7 +1631,7 @@
 
 		function getItemLevel($id)
 		{
-			$level = self::$sqlite->singleField("SELECT level FROM users_research WHERE user = ".self::$sqlite->quote($this->getName())." AND id = ".self::$sqlite->quote($id)." LIMIT 1;");
+			$level = self::$sql->singleField("SELECT level FROM users_research WHERE user = ".self::$sql->quote($this->getName())." AND id = ".self::$sql->quote($id)." LIMIT 1;");
 			if($level === false)
 				return 0;
 			return $level;
@@ -1650,11 +1650,11 @@
 
 			$item_info = $this->getItemInfo($id, "forschung", array("ress"));
 			$additional_scores = array_sum($item_info["ress"])/1000;
-			$entries = self::$sqlite->singleField("SELECT COUNT(*) FROM users_research WHERE user = ".self::$sqlite->quote($this->getName())." AND id = ".self::$sqlite->quote($id)." LIMIT 1;");
+			$entries = self::$sql->singleField("SELECT COUNT(*) FROM users_research WHERE user = ".self::$sql->quote($this->getName())." AND id = ".self::$sql->quote($id)." LIMIT 1;");
 			if($entries > 0)
-				$this->backgroundQuery("UDPATE users_research SET level = level + ".self::$sqlite->quote($value).", scores = scores + ".self::$sqlite->quote($additional_scores)." WHERE user = ".self::$sqlite->quote($this->getName())." AND id = ".self::$sqlite->quote($id).";");
+				$this->backgroundQuery("UDPATE users_research SET level = level + ".self::$sql->quote($value).", scores = scores + ".self::$sql->quote($additional_scores)." WHERE user = ".self::$sql->quote($this->getName())." AND id = ".self::$sql->quote($id).";");
 			else
-				$this->backgroundQuery("INSERT INTO users_research ( user, id, level, scores ) VALUES ( ".self::$sqlite->quote($this->getName()).", ".self::$sqlite->quote($id).", ".self::$sqlite->quote($value).", ".self::$sqlite->quote($additional_scores)." );");
+				$this->backgroundQuery("INSERT INTO users_research ( user, id, level, scores ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($id).", ".self::$sql->quote($value).", ".self::$sql->quote($additional_scores)." );");
 
 			switch($id)
 			{
@@ -1683,7 +1683,7 @@
 		function isVerbuendet($user)
 		{
 			if($user == $this->getName()) return true;
-			return self::$sqlite->singleField("SELECT COUNT(*) FROM users_friends WHERE ( user1 = ".self::$sqlite->quote($user)." AND user2 = ".self::$sqlite->quote($this->getName())." ) OR ( user1 = ".self::$sqlite->quote($this->getName())." AND user2 = ".self::$sqlite->quote($user)." );") > 0;
+			return self::$sql->singleField("SELECT COUNT(*) FROM users_friends WHERE ( user1 = ".self::$sql->quote($user)." AND user2 = ".self::$sql->quote($this->getName())." ) OR ( user1 = ".self::$sql->quote($this->getName())." AND user2 = ".self::$sql->quote($user)." );") > 0;
 		}
 
 		/**
@@ -1694,7 +1694,7 @@
 
 		function isApplying($user)
 		{
-			return self::$sqlite->singleField("SELECT COUNT(*) FROM users_friend_requests WHERE user_from = ".self::$sqlite->quote($user)." AND user_to = ".self::$sqlite->quote($this->getName()).";") > 0;
+			return self::$sql->singleField("SELECT COUNT(*) FROM users_friend_requests WHERE user_from = ".self::$sql->quote($user)." AND user_to = ".self::$sql->quote($this->getName()).";") > 0;
 		}
 
 		/**
@@ -1709,7 +1709,7 @@
 			if($this->isVerbuendet($user))
 				return true;
 
-			return self::$sqlite->singleField("SELECT COUNT(*) FROM users_friend_requests WHERE ( user_from = ".self::$sqlite->quote($user)." AND user_to = ".self::$sqlite->quote($this->getName())." ) OR ( user_from = ".self::$sqlite->quote($this->getName())." AND user_to = ".self::$sqlite->quote($user)." );") > 0;
+			return self::$sql->singleField("SELECT COUNT(*) FROM users_friend_requests WHERE ( user_from = ".self::$sql->quote($user)." AND user_to = ".self::$sql->quote($this->getName())." ) OR ( user_from = ".self::$sql->quote($this->getName())." AND user_to = ".self::$sql->quote($user)." );") > 0;
 		}
 
 		/**
@@ -1719,7 +1719,7 @@
 
 		function getVerbuendetList()
 		{
-			return self::$sqlite->singleColumn("SELECT user1 FROM users_friends WHERE user2 = ".self::$sqlite->quote($this->getName())." UNION SELECT user2 FROM users_friends WHERE user1 = ".self::$sqlite->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT user1 FROM users_friends WHERE user2 = ".self::$sql->quote($this->getName())." UNION SELECT user2 FROM users_friends WHERE user1 = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -1729,7 +1729,7 @@
 
 		function getVerbuendetApplicationList()
 		{
-			return self::$sqlite->singleColumn("SELECT user_to FROM users_friend_requests WHERE user_from = ".self::$sqlite->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT user_to FROM users_friend_requests WHERE user_from = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -1739,7 +1739,7 @@
 
 		function getVerbuendetRequestList()
 		{
-			return self::$sqlite->singleColumn("SELECT user_from FROM users_friend_requests WHERE user_to = ".self::$sqlite->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT user_from FROM users_friend_requests WHERE user_to = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -1759,7 +1759,7 @@
 			elseif($this->existsVerbuendet($user))
 				throw new UserException("These users are already friends.");
 
-			self::$sqlite->query("INSERT INTO users_friends ( user_from, user_to ) VALUES ( ".self::$sqlite->quote($user).", ".self::$sqlite->quote($this->getName())." );");
+			self::$sql->query("INSERT INTO users_friends ( user_from, user_to ) VALUES ( ".self::$sql->quote($user).", ".self::$sql->quote($this->getName())." );");
 
 			$message = Classes::Message(Message::create());
 			$message->addUser($this->getName(), Message::TYPE_VERBUENDETE);
@@ -1782,8 +1782,8 @@
 			if(!$this->isApplying($user))
 				throw new UserException("This user is not applying for a friendship.");
 
-			self::$sqlite->query("DELETE FROM users_friend_requests WHERE user_from = ".self::$sqlite->quote($user)." AND user_to = ".self::$sqlite->quote($this->getName()).";");
-			self::$sqlite->query("INSERT INTO users_friends ( user1, user2 ) VALUES ( ".self::$sqlite->quote($user).", ".self::$sqlite->quote($this->getName())." );");
+			self::$sql->query("DELETE FROM users_friend_requests WHERE user_from = ".self::$sql->quote($user)." AND user_to = ".self::$sql->quote($this->getName()).";");
+			self::$sql->query("INSERT INTO users_friends ( user1, user2 ) VALUES ( ".self::$sql->quote($user).", ".self::$sql->quote($this->getName())." );");
 
 			$user_obj = Classes::User($user);
 			$message = Classes::Message(Message::create());
@@ -1804,7 +1804,7 @@
 			if(!$this->isApplying($user))
 				throw new UserException("This user is not applying for a friendship.");
 
-			self::$sqlite->query("DELETE FROM users_friend_requests WHERE user_from = ".self::$sqlite->quote($user)." AND user_to = ".self::$sqlite->quote($this->getName()).";");
+			self::$sql->query("DELETE FROM users_friend_requests WHERE user_from = ".self::$sql->quote($user)." AND user_to = ".self::$sql->quote($this->getName()).";");
 
 			$user_obj = Classes::User($user);
 			$message = Classes::Message(Message::create());
@@ -1825,7 +1825,7 @@
 			if(!$this->isVerbuendet($user))
 				throw new UserException("These users are not friends.");
 
-			self::$sqlite->query("DELETE FROM users_friends WHERE ( user1 = ".self::$sqlite->quote($this->getName())." AND user2 = ".self::$sqlite->quote($user)." ) OR ( user1 = ".self::$sqlite->quote($user)." AND user2 = ".self::$sqlite->quote($this->getName())." );");
+			self::$sql->query("DELETE FROM users_friends WHERE ( user1 = ".self::$sql->quote($this->getName())." AND user2 = ".self::$sql->quote($user)." ) OR ( user1 = ".self::$sql->quote($user)." AND user2 = ".self::$sql->quote($this->getName())." );");
 
 			$user_obj = Classes::User($user);
 			$message = Classes::Message(Message::create());

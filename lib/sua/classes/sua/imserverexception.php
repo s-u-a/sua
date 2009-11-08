@@ -24,8 +24,7 @@
 	require_once dirname(dirname(dirname(__FILE__)))."/engine.php";
 
 	/**
-	 * Ein Problem mit einem SQLite-Datenset ist aufgetreten. Zum Beispiel wurde eines
-	 * geöffnet, das noch nicht in der Datenbank aufgeführt ist.
+	 * Es ist ein Fehler im Instant Messaging aufgetreten.
 	*/
 
 	class IMServerException extends SuaException

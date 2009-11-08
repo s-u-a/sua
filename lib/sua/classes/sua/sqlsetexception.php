@@ -24,10 +24,10 @@
 	require_once dirname(dirname(dirname(__FILE__)))."/engine.php";
 
 	/**
-	 * Ein Problem mit einem SQLite-Datenset ist aufgetreten. Zum Beispiel wurde eines
+	 * Ein Problem mit einem SQL-Datenset ist aufgetreten. Zum Beispiel wurde eines
 	 * geöffnet, das noch nicht in der Datenbank aufgeführt ist.
 	*/
 
-	class SQLiteSetException extends SuaException
+	class SQLSetException extends SuaException
 	{
 	}

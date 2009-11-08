@@ -24,11 +24,11 @@
 	require_once dirname(dirname(dirname(__FILE__)))."/engine.php";
 
 	/**
-	 * Es ist ein Problem mit der SQLite-Datenbank des Spiels aufgetreten. Tritt
+	 * Es ist ein Problem mit der SQL-Datenbank des Spiels aufgetreten. Tritt
 	 * zum Beispiel auf, wenn ein columnQuery ausgeführt wird, der Query aber keine
 	 * Spalte geliefert hat.
 	*/
 
-	class SQLiteException extends SuaException
+	class SQLException extends SuaException
 	{
 	}
