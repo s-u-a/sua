@@ -26,6 +26,7 @@
 
 	/**
 	 * Kontrolliert die Rohstoff-Handelsbörse.
+	 * @todo Arbeitet noch mit altem setActivePlanet()-Zeugs
 	*/
 
 	class Market extends SQL
@@ -41,10 +42,10 @@
 		public function recalcRate($offer, $request, $transaction=false)
 		{
 			$check_prices = array();
-			$this->query("SELECT DISTINCT ROUND(min_price, 2) FROM market WHERE offered_resource = ".$this->escape($offer)." AND requested_resource = ".$this->escape($request).";");
+			$this->query("SELECT DISTINCT ROUND(c_min_price, 2) FROM t_market WHERE c_offered_resource = ".$this->escape($offer)." AND c_requested_resource = ".$this->escape($request).";");
 			while($r = $this->nextResult())
 				$check_prices[] = 0+array_shift($r);
-			$this->query("SELECT DISTINCT ROUND(1/min_price, 2) FROM market WHERE offered_resource = ".$this->escape($request)." AND requested_resource = ".$this->escape($offer).";");
+			$this->query("SELECT DISTINCT ROUND(1/c_min_price, 2) FROM t_market WHERE c_offered_resource = ".$this->escape($request)." AND c_requested_resource = ".$this->escape($offer).";");
 			while($r = $this->nextResult())
 				$check_prices[] = 0+array_shift($r);
 			$check_prices = array_unique($check_prices);
@@ -54,10 +55,10 @@
 			$best_price = null;
 			foreach($check_prices as $price)
 			{
-				$sum1 = 0+$this->singleField("SELECT SUM(amount) FROM market WHERE offered_resource = ".$this->escape($offer)." AND requested_resource = ".$this->escape($request)." AND min_price >= ".$this->escape($price).";");
+				$sum1 = 0+$this->singleField("SELECT SUM(c_amount) FROM t_market WHERE c_offered_resource = ".$this->escape($offer)." AND c_requested_resource = ".$this->escape($request)." AND c_min_price >= ".$this->escape($price).";");
 				$sum2 = 0;
 				if($price > 0)
-					$sum2 += $this->singleField("SELECT SUM(amount) FROM market WHERE offered_resource = ".$this->escape($request)." AND requested_resource = ".$this->escape($offer)." AND min_price >= ".$this->escape(round(1/$price, 2)).";");
+					$sum2 += $this->singleField("SELECT SUM(c_amount) FROM t_market WHERE c_offered_resource = ".$this->escape($request)." AND c_requested_resource = ".$this->escape($offer)." AND c_min_price >= ".$this->escape(round(1/$price, 2)).";");
 				$this_diff = abs($sum1-$sum2);
 				if($diff === null || $this_diff < $diff)
 				{
@@ -68,7 +69,7 @@
 					break;
 			}
 
-			$this->query("INSERT INTO market_rate ( offer, request, price, date ) VALUES ( ".$this->escape($offer).", ".$this->escape($request).", ".$this->escape($best_price).", ".$this->escape(microtime(true))." );");
+			$this->query("INSERT INTO t_market_rate ( c_offer, c_request, c_price, c_date ) VALUES ( ".$this->escape($offer).", ".$this->escape($request).", ".$this->escape($best_price).", ".$this->escape(microtime(true))." );");
 
 			$this->checkAccepted($offer, $request, $transaction);
 		}
@@ -82,9 +83,9 @@
 
 		public function getRate($offer, $request)
 		{
-			$q = $this->arrayQuery("SELECT price FROM market_rate WHERE offer = ".$this->escape($offer)." AND request = ".$this->escape($request)." ORDER BY date desc LIMIT 1;");
+			$q = $this->arrayQuery("SELECT c_price FROM t_market_rate WHERE c_offer = ".$this->escape($offer)." AND c_request = ".$this->escape($request)." ORDER BY c_date desc LIMIT 1;");
 			if(!isset($q[0])) return 0;
-			return 0+$q[0]['price'];
+			return 0+$q[0]['c_price'];
 		}
 
 		/**
@@ -94,7 +95,7 @@
 
 		protected function getNewId()
 		{
-			return 1+$this->singleField("SELECT id FROM market ORDER BY id DESC LIMIT 1;");
+			return 1+$this->singleField("SELECT c_id FROM t_market ORDER BY c_id DESC LIMIT 1;");
 		}
 
 		/**
@@ -112,7 +113,7 @@
 		public function addOrder($user, $planet, $offered_resource, $amount, $requested_resource, $min_price, $expiration)
 		{
 			$id = $this->getNewId();
-			$this->query("INSERT INTO market ( id, user, planet, offered_resource, amount, requested_resource, min_price, expiration, date, finish ) VALUES ( ".$this->escape($id).", ".$this->escape($user).", ".$this->escape($planet).", ".$this->escape(0+$offered_resource).", ".$this->escape(0+$amount).", ".$this->escape(0+$requested_resource).", ".$this->escape(0+$min_price).", ".$this->escape(0+$expiration).", ".$this->escape(time()).", -1);");
+			$this->query("INSERT INTO t_market ( c_id, c_user, c_planet, c_offered_resource, c_amount, c_requested_resource, c_min_price, c_expiration, c_date, c_finish ) VALUES ( ".$this->escape($id).", ".$this->escape($user).", ".$this->escape($planet).", ".$this->escape(0+$offered_resource).", ".$this->escape(0+$amount).", ".$this->escape(0+$requested_resource).", ".$this->escape(0+$min_price).", ".$this->escape(0+$expiration).", ".$this->escape(time()).", -1);");
 			$this->recalcRate($offered_resource, $requested_resource, true);
 
 			for($i=1; $i<=5; $i++)
@@ -138,15 +139,15 @@
 		public function checkAccepted($offered_resource, $requested_resource, $transaction=false)
 		{
 			# Bestehende Angebote einzuloesen versuchen
-			$this->query("SELECT * FROM market WHERE offered_resource = ".$this->escape($offered_resource)." AND finish = -1 AND expiration < ".$this->escape(time())." AND min_price <= ".$this->escape($this->getRate($offered_resource, $requested_resource)).";");
+			$this->query("SELECT * FROM t_market WHERE c_offered_resource = ".$this->escape($offered_resource)." AND c_finish = -1 AND c_expiration < ".$this->escape(time())." AND c_min_price <= ".$this->escape($this->getRate($offered_resource, $requested_resource)).";");
 			while($r = $this->nextResult())
 			{
-				$sum = $this->singleField("SELECT sum(amount) FROM market WHERE offered_resource = ".$this->escape($r['offered_resource'])." AND date >= ".$this->escape($r['date'])." AND user != ".$this->escape($r['user']).";");
-				$count = $this->singleField("SELECT count(DISTINCT user) FROM market WHERE offered_resource = ".$this->escape($r['offered_resource'])." AND user != ".$this->escape($r['user']).";");
-				if($sum >= Config::getLibConfig()->getConfigValueE("market", "min_amount")*$r['amount'] && $count > Config::getLibConfig()->getConfigValueE("market", "min_amount"))
+				$sum = $this->singleField("SELECT sum(c_amount) FROM t_market WHERE c_offered_resource = ".$this->escape($r['c_offered_resource'])." AND c_date >= ".$this->escape($r['c_date'])." AND c_user != ".$this->escape($r['c_user']).";");
+				$count = $this->singleField("SELECT count(DISTINCT c_user) FROM t_market WHERE c_offered_resource = ".$this->escape($r['c_offered_resource'])." AND c_user != ".$this->escape($r['c_user']).";");
+				if($sum >= Config::getLibConfig()->getConfigValueE("market", "min_amount")*$r['c_amount'] && $count > Config::getLibConfig()->getConfigValueE("market", "min_amount"))
 				{
 					# Auftrag wird ausgefuehrt
-					$this->acceptOrder($r['id'], $transaction);
+					$this->acceptOrder($r['c_id'], $transaction);
 				}
 			}
 		}
@@ -161,7 +162,7 @@
 		public function acceptOrder($id, $transaction=false)
 		{
 			# TODO: Benachrichtigung
-			$q = "UPDATE market SET finish = ".$this->escape(time()+Config::getLibConfig()->getConfigValueE("market", "delay"))." WHERE id = ".$this->escape($id).";";
+			$q = "UPDATE t_market SET c_finish = ".$this->escape(time()+Config::getLibConfig()->getConfigValueE("market", "delay"))." WHERE c_id = ".$this->escape($id).";";
 			if($transaction)
 				$this->transactionQuery($q);
 			else
@@ -172,15 +173,15 @@
 		 * Gibt alle Handelsaufträge in einem Array von assoziativen Arrays zurück,
 		 * die der Benutzer am Laufen hat.
 		 * Die assoziativen Arrays haben folgendes Format:
-		 * • id => Die Auftrags-ID
-		 * • user => Der Benutzer
-		 * • planet => Die Planetennummer
-		 * • offered_resource => Der angebotene Rohstoff (0: Carbon; 1: Aluminium; ...)
-		 * • amount => Die angebotene Menge
-		 * • requested_resource => Der nachgefragte Rohstoff
-		 * • min_price => Der Mindestkurs zur Durchführung
-		 * • expiration => Der Zeitpunkt, zu dem das Angebot abläuft
-		 * • finish => Der Zeitpunkt, zu dem der Handel durchgeführt wird, sofern dieser feststeht
+		 * • c_id => Die Auftrags-ID
+		 * • c_user => Der Benutzer
+		 * • c_planet => Die Planetennummer
+		 * • c_offered_resource => Der angebotene Rohstoff (0: Carbon; 1: Aluminium; ...)
+		 * • c_amount => Die angebotene Menge
+		 * • c_requested_resource => Der nachgefragte Rohstoff
+		 * • c_min_price => Der Mindestkurs zur Durchführung
+		 * • c_expiration => Der Zeitpunkt, zu dem das Angebot abläuft
+		 * • c_finish => Der Zeitpunkt, zu dem der Handel durchgeführt wird, sofern dieser feststeht
 		 * @param string $user
 		 * @return array
 		*/
@@ -188,7 +189,7 @@
 		public function getOrders($user)
 		{
 			$this->cleanUp($user);
-			return $this->arrayQuery("SELECT id, user, planet, offered_resource, amount, requested_resource, min_price, expiration, finish FROM market WHERE user = ".$this->escape($user).";");
+			return $this->arrayQuery("SELECT c_id, c_user, c_planet, c_offered_resource, c_amount, c_requested_resource, c_min_price, c_expiration, c_finish FROM t_market WHERE c_user = ".$this->escape($user).";");
 		}
 
 		/**
@@ -201,7 +202,7 @@
 
 		public function getFinishingOrdersList($max_time)
 		{
-			return $this->arrayQuery("SELECT id, finish FROM market WHERE finish <= ".$this->escape($max_time)." AND finish != -1 ORDER BY finish ASC;");
+			return $this->arrayQuery("SELECT c_id, c_finish FROM t_market WHERE c_finish <= ".$this->escape($max_time)." AND c_finish != -1 ORDER BY c_finish ASC;");
 		}
 
 		/**
@@ -213,12 +214,12 @@
 
 		public function finishOrder($id)
 		{
-			$r = $this->arrayQuery("SELECT * FROM market WHERE id = ".$this->escape($id).";");
+			$r = $this->arrayQuery("SELECT * FROM t_market WHERE c_id = ".$this->escape($id).";");
 			if(!isset($r[0])) return false;
-			$u = Classes::User($r[0]['user']);
-			$this->query("DELETE FROM market WHERE id = ".$this->escape($id).";");
-			$u->setActivePlanet($r[0]['planet']);
-			$u->addRess(array($r[0]['requested_resource']-1 => max($r[0]['amount']*$r[0]['min_price'], $r[0]['amount']*$this->getRate($r[0]['offered_resource'], $r[0]['requested_resource']))));
+			$u = Classes::User($r[0]['c_user']);
+			$this->query("DELETE FROM t_market WHERE c_id = ".$this->escape($id).";");
+			$u->setActivePlanet($r[0]['c_planet']);
+			$u->addRess(array($r[0]['c_requested_resource']-1 => max($r[0]['c_amount']*$r[0]['c_min_price'], $r[0]['c_amount']*$this->getRate($r[0]['c_offered_resource'], $r[0]['c_requested_resource']))));
 		}
 
 		/**
@@ -231,18 +232,18 @@
 		public function cancelOrder($id, $user)
 		{
 			$u = Classes::User($user);
-			$r = $this->arrayQuery("SELECT id, planet, amount, offered_resource, requested_resource FROM market WHERE id = ".$this->escape($id)." AND user = ".$this->escape($u->getName())." AND finish = -1;");
+			$r = $this->arrayQuery("SELECT c_id, c_planet, c_amount, c_offered_resource, c_requested_resource FROM t_market WHERE c_id = ".$this->escape($id)." AND c_user = ".$this->escape($u->getName())." AND c_finish = -1;");
 			if(isset($r[0]))
 			{
-				$this->query("DELETE FROM market WHERE id = ".$this->escape($r[0]['id']).";");
+				$this->query("DELETE FROM t_market WHERE c_id = ".$this->escape($r[0]['c_id']).";");
 				$ress = array(0, 0, 0, 0, 0);
-				$ress[$r[0]['offered_resource']-1] = $r[0]['amount'];
+				$ress[$r[0]['c_offered_resource']-1] = $r[0]['c_amount'];
 				$planet = $u->getActivePlanet();
-				$u->setActivePlanet($r[0]['planet']);
+				$u->setActivePlanet($r[0]['c_planet']);
 				$u->addRess($ress);
 				$u->setActivePlanet($planet);
 
-				$this->recalcRate($r[0]['offered_resource'], $r[0]['requested_resource']);
+				$this->recalcRate($r[0]['c_offered_resource'], $r[0]['c_requested_resource']);
 			}
 		}
 
@@ -257,15 +258,15 @@
 			$u = Classes::User($user);
 			$planet = $u->getActivePlanet();
 			$recalc = array();
-			$this->query("SELECT id, planet, amount, offered_resource, requested_resource FROM market WHERE expiration < ".$this->escape(time())." AND finish = -1 AND user = ".$this->escape($u->getName()).";");
+			$this->query("SELECT c_id, c_planet, c_amount, c_offered_resource, c_requested_resource FROM t_market WHERE c_expiration < ".$this->escape(time())." AND c_finish = -1 AND c_user = ".$this->escape($u->getName()).";");
 			while($r = $this->nextResult())
 			{
 				$ress = array(0, 0, 0, 0, 0);
-				$ress[$r['offered_resource']-1] = $r['amount'];
-				$u->setActivePlanet($r['planet']);
+				$ress[$r['c_offered_resource']-1] = $r['c_amount'];
+				$u->setActivePlanet($r['c_planet']);
 				$u->addRess($ress);
-				$this->transactionQuery("DELETE FROM market WHERE id = ".$this->escape($r['id']).";");
-				$recalc[] = array($r['offered_resource'], $r['requested_resource']);
+				$this->transactionQuery("DELETE FROM t_market WHERE c_id = ".$this->escape($r['c_id']).";");
+				$recalc[] = array($r['c_offered_resource'], $r['c_requested_resource']);
 			}
 			$this->endTransaction();
 			$u->setActivePlanet($planet);

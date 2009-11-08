@@ -26,7 +26,7 @@
 
 	/**
 	 * Repräsentiert eine Flotte im Spiel.
-	 * @todo Fremdstationierung einbauen. Flotten, bei denen kein Ziel auf NOT finished steht, sind fremdstationiert. Muss auch bei callBack() noch korrigiert werden.
+	 * @todo Fremdstationierung einbauen. Flotten, bei denen kein Ziel auf NOT c_finished steht, sind fremdstationiert. Muss auch bei callBack() noch korrigiert werden.
 	*/
 
 	class Fleet extends SQLSet
@@ -83,7 +83,7 @@
 		static function create($name=null)
 		{
 			$name = self::datasetName($name);
-			self::$sql->query("INSERT INTO fleets ( fleet_id ) VALUES ( ".self::$sql->quote($name)." );");
+			self::$sql->query("INSERT INTO t_fleets ( c_fleet_id ) VALUES ( ".self::$sql->quote($name)." );");
 			return $name;
 		}
 
@@ -94,8 +94,7 @@
 
 		function destroy()
 		{
-			foreach(array_keys(self::$tables) as $table)
-				self::$sql->query("DELETE FROM ".$table." WHERE fleet_id = ".self::$sql->quote($this->getName()).";");
+			self::$sql->query("DELETE FROM t_fleets WHERE c_fleet_id = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -106,7 +105,7 @@
 
 		static function getArrivedFleets()
 		{
-			return self::$sql->singleColumn("SELECT DISTINCT fleet_id FROM fleets_targets WHERE arrival <= ".self::$sql->quote(time())." AND NOT finished ORDER BY arrival ASC;");
+			return self::$sql->singleColumn("SELECT DISTINCT c_fleet_id FROM t_fleets_targets WHERE c_arrival <= ".self::$sql->quote(time())." AND NOT c_finished ORDER BY c_arrival ASC;");
 		}
 
 		/**
@@ -119,8 +118,8 @@
 
 		function moveTime($time_diff)
 		{
-			self::$sql->query("UPDATE fleets_targets SET arrival = arrival + ".self::$sql->quote($time_diff)." WHERE fleet_id = ".self::$sql->quote($this->getName()).";");
-			self::$sql->query("UPDATE fleets_users SET departing = departing + ".self::$sql->quote($time_diff)." WHERE fleet_id = ".self::$sql->quote($this->getName()).";");
+			self::$sql->query("UPDATE t_fleets_targets SET c_arrival = c_arrival + ".self::$sql->quote($time_diff)." WHERE c_fleet_id = ".self::$sql->quote($this->getName()).";");
+			self::$sql->query("UPDATE t_fleets_users SET c_departing = c_departing + ".self::$sql->quote($time_diff)." WHERE c_fleet_id = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -130,10 +129,10 @@
 
 		function getTargetsList()
 		{
-			self::$sql->query("SELECT galaxy, system, planet, i FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND NOT finished ORDER BY i ASC;");
+			self::$sql->query("SELECT c_galaxy, c_system, c_planet, c_i FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND NOT c_finished ORDER BY c_i ASC;");
 			$return = array();
 			while(($r = self::$sql->nextResult()) !== false)
-				$return[$r["i"]] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
+				$return[$r["c_i"]] = Planet::fromKoords($r["c_galaxy"], $r["c_system"], $r["c_planet"]);
 			return $return;
 		}
 
@@ -144,10 +143,10 @@
 
 		function getOldTargetsList()
 		{
-			self::$sql->query("SELECT galaxy, system, planet FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND finished ORDER BY i ASC;");
+			self::$sql->query("SELECT c_galaxy, c_system, c_planet FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_finished ORDER BY c_i ASC;");
 			$return = array();
 			while(($r = self::$sql->nextResult()) !== false)
-				$return[$r["i"]] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
+				$return[$r["c_i"]] = Planet::fromKoords($r["c_galaxy"], $r["c_system"], $r["c_planet"]);
 			return $return;
 		}
 
@@ -159,11 +158,11 @@
 
 		function getTargetType($i)
 		{
-			self::$sql->query("SELECT type, flying_back FROM fleets_target WHERE fleet_id = ".self::$sql->quote($this->getName())." AND i = ".self::$sql->quote($i).";");
+			self::$sql->query("SELECT c_type, c_flying_back FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_i = ".self::$sql->quote($i).";");
 			$r = self::$sql->nextResult();
 			if($r === false)
 				throw new FleetException("This target does not exist.");
-			return array($r["type"], true && $r["flying_back"]);
+			return array($r["c_type"], true && $r["c_flying_back"]);
 		}
 
 		/**
@@ -177,9 +176,9 @@
 		function getTargetsInformation()
 		{
 			$return = array();
-			$this->query("SELECT galaxy || ':' || system || ':' || planet, type, flying_back FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND NOT finished ORDER BY i ASC;");
+			$this->query("SELECT c_galaxy || ':' || c_system || ':' || c_planet, c_type, c_flying_back FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND NOT c_finished ORDER BY c_i ASC;");
 			while(($r = $this->nextResult()) !== false)
-				$return[$r["galaxy || ':' || system || ':' || planet"].($r["type"] == self::TYPE_SAMMELN && !$r["flying_back"] ? "T" : "")] = array($r["type"], true && $r["flying_back"]);
+				$return[$r["c_galaxy || ':' || c_system || ':' || c_planet"].($r["c_type"] == self::TYPE_SAMMELN && !$r["c_flying_back"] ? "T" : "")] = array($r["c_type"], true && $r["c_flying_back"]);
 			return $return;
 		}
 
@@ -192,9 +191,9 @@
 		function getOldTargetsInformation()
 		{
 			$return = array();
-			$this->query("SELECT galaxy || ':' || system || ':' || planet, type, flying_back FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND finished ORDER BY i ASC;");
+			$this->query("SELECT c_galaxy || ':' || c_system || ':' || c_planet, c_type, c_flying_back FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_finished ORDER BY c_i ASC;");
 			while(($r = $this->nextResult()) !== false)
-				$return[$r["galaxy || ':' || system || ':' || planet"].($r["type"] == self::TYPE_SAMMELN ? "T" : "")] = array($r["type"], true && $r["flying_back"]);
+				$return[$r["c_galaxy || ':' || c_system || ':' || c_planet"].($r["c_type"] == self::TYPE_SAMMELN ? "T" : "")] = array($r["c_type"], true && $r["c_flying_back"]);
 			return $return;
 		}
 
@@ -215,7 +214,7 @@
 			elseif(!$this->isFirstUser($user))
 				return 1;
 
-			$slots = self::$sql->singleField("SELECT COUNT(*) FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND NOT flying_back AND NOT finished;");
+			$slots = self::$sql->singleField("SELECT COUNT(*) FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND NOT c_flying_back AND NOT c_finished;");
 			if($slots < 1) $slots = 1;
 			return $slots;
 		}
@@ -230,10 +229,8 @@
 
 		function addTarget(Planet $pos, $type, $back)
 		{
-			$i = 1+self::$sql->singleField("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
-			self::$sql->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back ) VALUES ( ".self::$sql->quote($i).", ".self::$sql->quote($this->getName()).", ".self::$sql->quote($pos->getGalaxy()).", ".self::$sql->quote($pos->getSystem()).", ".self::$sql->quote($pos->getPlanet()).", ".self::$sql->quote($type).", ".self::$sql->quote($flying_back ? 1 : 0)." );");
-
-
+			$i = 1+self::$sql->singleField("SELECT c_i FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." ORDER BY c_i DESC LIMIT 1;");
+			self::$sql->query("INSERT INTO t_fleets_targets ( c_i, c_fleet_id, c_galaxy, c_system, c_planet, c_type, c_flying_back ) VALUES ( ".self::$sql->quote($i).", ".self::$sql->quote($this->getName()).", ".self::$sql->quote($pos->getGalaxy()).", ".self::$sql->quote($pos->getSystem()).", ".self::$sql->quote($pos->getPlanet()).", ".self::$sql->quote($type).", ".self::$sql->quote($back ? 1 : 0)." );");
 		}
 
 		/**
@@ -244,7 +241,7 @@
 
 		function userExists($user)
 		{
-			return (self::$sql->singleField("SELECT COUNT(*) FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND username = ".self::$sql->quote($user).";") > 0);
+			return (self::$sql->singleField("SELECT COUNT(*) FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";") > 0);
 		}
 
 		/**
@@ -254,7 +251,7 @@
 
 		function getCurrentType()
 		{
-			return self::$sql->singleField("SELECT type FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;");
+			return self::$sql->singleField("SELECT c_type FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND NOT c_finished ORDER BY c_i ASC LIMIT 1;");
 		}
 
 		/**
@@ -264,11 +261,11 @@
 
 		function getCurrentTarget()
 		{
-			self::$sql->query("SELECT galaxy, system, planet FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;");
+			self::$sql->query("SELECT c_galaxy, c_system, c_planet FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND NOT c_finished ORDER BY c_i ASC LIMIT 1;");
 			$r = self::$sql->nextResult();
 			if($r === false)
 				return false;
-			return Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
+			return Planet::fromKoords($r["c_galaxy"], $r["c_system"], $r["c_planet"]);
 		}
 
 		/**
@@ -282,16 +279,16 @@
 			if(!isset($user)) $user = $this->getFirstUser();
 			if($this->isFirstUser($user))
 			{
-				self::$sql->query("SELECT galaxy,system,planet FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND finished ORDER BY i DESC LIMIT 1;");
+				self::$sql->query("SELECT c_galaxy,c_system,c_planet FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_finished ORDER BY c_i DESC LIMIT 1;");
 				$r = self::$sql->nextResult();
 				if($r !== false)
-					return Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
+					return Planet::fromKoords($r["c_galaxy"], $r["c_system"], $r["c_planet"]);
 			}
-			self::$sql->query("SELECT from_galaxy,from_system,from_planet FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user)." LIMIT 1;");
+			self::$sql->query("SELECT c_from_galaxy,c_from_system,c_from_planet FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user)." LIMIT 1;");
 			$r = self::$sql->nextResult();
 			if($r === false)
 				throw new FleetException("This user does not participate on the fleet.");
-			return Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
+			return Planet::fromKoords($r["c_galaxy"], $r["c_system"], $r["c_planet"]);
 		}
 
 		/**
@@ -302,7 +299,7 @@
 		function getNextArrival()
 		{
 			if($this->started())
-				return self::$sql->singleField("SELECT arrival FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND NOT finished ORDER BY i DESC LIMIT 1;");
+				return self::$sql->singleField("SELECT c_arrival FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND NOT c_finished ORDER BY c_i DESC LIMIT 1;");
 			else
 				return time()+$this->calcTime($this->getFirstUser(), $this->getLastTarget(), $this->getCurrentTarget());
 		}
@@ -315,7 +312,7 @@
 
 		function getArrival($i)
 		{
-			return self::$sql->singleField("SELECT arrival FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND i = ".self::$sql->quote($i).";");
+			return self::$sql->singleField("SELECT c_arrival FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_i = ".self::$sql->quote($i).";");
 		}
 
 		/**
@@ -325,7 +322,7 @@
 
 		function isFlyingBack()
 		{
-			return (true && self::$sql->singleField("SELECT flying_back FROM fleets_targets WHERE fleet_id = ".self::$sqite->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;"));
+			return (true && self::$sql->singleField("SELECT c_flying_back FROM t_fleets_targets WHERE c_fleet_id = ".self::$sqite->quote($this->getName())." AND NOT c_finished ORDER BY c_i ASC LIMIT 1;"));
 		}
 
 		/**
@@ -345,14 +342,14 @@
 			$user_obj = Classes::User($user);
 			$item_info = $user_obj->getItemInfo($id, "schiffe", array("scores"));
 			$scores = $item_info["scores"]*$count;
-			$old_number = self::$sql->singleField("SELECT number FROM fleets_users_fleet WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user)." AND id = ".self::$sql->quote($id)." LIMIT 1;");
+			$old_number = self::$sql->singleField("SELECT c_number FROM t_fleets_users_fleet WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user)." AND c_id = ".self::$sql->quote($id)." LIMIT 1;");
 			if($old_number === false)
-				self::$sql->query("INSERT INTO fleets_users_fleet ( fleet_id, user, id, number, scores ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($id).", ".self::$sql->quote($count).", ".self::$sql->quote($scores)." );");
+				self::$sql->query("INSERT INTO t_fleets_users_fleet ( c_fleet_id, c_user, c_id, c_number, c_scores ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($id).", ".self::$sql->quote($count).", ".self::$sql->quote($scores)." );");
 			else
-				self::$sql->query("UPDATE fleets_users_fleet SET number = number + ".self::$sql->quote($count).", scores = scores + ".self::$sql->quote($scores)." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user)." AND id = ".self::$sql->quote($id).";");
+				self::$sql->query("UPDATE t_fleets_users_fleet SET c_number = c_number + ".self::$sql->quote($count).", c_scores = c_scores + ".self::$sql->quote($scores)." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user)." AND c_id = ".self::$sql->quote($id).";");
 
 			if(!$this->isFirstUser($user)) // Geschwindigkeitsfaktor anpassen
-				self::$sql->query("UPDATE fleets_users SET factor = ".self::$sql->quote($this->calcTime($user, $this->from($user), $this->getCurrentTarget(), true, true)/($this->getNextArrival()-time()))." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+				self::$sql->query("UPDATE t_fleets_users SET c_factor = ".self::$sql->quote($this->calcTime($user, $this->from($user), $this->getCurrentTarget(), true, true)/($this->getNextArrival()-time()))." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 		}
 
 		/**
@@ -362,7 +359,7 @@
 
 		function getFirstUser()
 		{
-			return self::$sql->singleField("SELECT user FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." ORDER BY i ASC LIMIT 1;");
+			return self::$sql->singleField("SELECT c_user FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." ORDER BY c_i ASC LIMIT 1;");
 		}
 
 		/**
@@ -393,8 +390,8 @@
 			if($this->getFirstUser() !== false)
 				$factor = null;
 
-			$i = 1+self::$sql->singleField("SELECT i FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
-			self::$sql->query("INSERT INTO fleets_users ( i, fleet_id, user, from_galaxy, from_system, from_planet, factor ) VALUES ( ".self::$sql->quote($i).", ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($from->getGalaxy()).", ".self::$sql->quote($from->getSystem()).", ".self::$sql->quote($from->getPlanet()).", ".self::$sql->quote($factor)." );");
+			$i = 1+self::$sql->singleField("SELECT c_i FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." ORDER BY c_i DESC LIMIT 1;");
+			self::$sql->query("INSERT INTO t_fleets_users ( i, c_fleet_id, c_user, c_from_galaxy, c_from_system, c_from_planet, c_factor ) VALUES ( ".self::$sql->quote($i).", ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($from->getGalaxy()).", ".self::$sql->quote($from->getSystem()).", ".self::$sql->quote($from->getPlanet()).", ".self::$sql->quote($factor)." );");
 		}
 
 		/**
@@ -408,12 +405,12 @@
 		{
 			$trans = array(0, 0);
 			$user_object = Classes::User($user);
-			self::$sql->query("SELECT id,number FROM fleets_users_fleet WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+			self::$sql->query("SELECT c_id,c_number FROM t_fleets_users_fleet WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 			while(($r = self::$sql->nextResult()) !== false)
 			{
 				$item_info = $user_object->getItemInfo($r["id"], "schiffe", array("trans"));
-				$trans[0] += $item_info["trans"][0]*$r["number"];
-				$trans[1] += $item_info["trans"][1]*$r["number"];
+				$trans[0] += $item_info["trans"][0]*$r["c_number"];
+				$trans[1] += $item_info["trans"][1]*$r["c_number"];
 			}
 			return $trans;
 		}
@@ -437,7 +434,7 @@
 			if($ress)
 			{
 				$ress = Functions::fitToMax($ress, $max_ress);
-				self::$sql->query("UPDATE fleets_users SET ress0 = ress0 + ".self::$sql->quote($ress[0]).", ress1 = ress1 + ".self::$sql->quote($ress[1]).", ress2 = ress2 + ".self::$sql->quote($ress[2]).", ress3 = ress3 + ".self::$sql->quote($ress[3]).", ress4 = ress4 + ".self::$sql->quote($ress[4])." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+				self::$sql->query("UPDATE t_fleets_users SET c_ress0 = c_ress0 + ".self::$sql->quote($ress[0]).", c_ress1 = c_ress1 + ".self::$sql->quote($ress[1]).", c_ress2 = c_ress2 + ".self::$sql->quote($ress[2]).", c_ress3 = c_ress3 + ".self::$sql->quote($ress[3]).", c_ress4 = c_ress4 + ".self::$sql->quote($ress[4])." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 			}
 
 			if($robs)
@@ -449,9 +446,9 @@
 					$item_info = $user_obj->getItemInfo($i, "roboter", array("scores"));
 					$scores = $item_info["scores"]*$rob;
 					if(isset($trans[1][$i]))
-						self::$sql->query("UPDATE fleets_users_rob SET number = number + ".self::$sql->quote($rob).", scores = scores + ".self::$sql->quote($scores)." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+						self::$sql->query("UPDATE t_fleets_users_rob SET c_number = c_number + ".self::$sql->quote($rob).", c_scores = c_scores + ".self::$sql->quote($scores)." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 					else
-						self::$sql->query("INSERT INTO fleets_users_rob ( fleet_id, user, id, number, scores ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($i).", ".self::$sql->quote($rob).", ".self::$sql->quote($scores).");");
+						self::$sql->query("INSERT INTO t_fleets_users_rob ( c_fleet_id, c_user, c_id, c_number, c_scores ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($i).", ".self::$sql->quote($rob).", ".self::$sql->quote($scores).");");
 				}
 			}
 		}
@@ -482,7 +479,7 @@
 			if($ress)
 			{
 				$ress = Functions::fitToMax($ress, $max_ress);
-				self::$sql->query("UPDATE fleets_users SET hress0 = hress0 + ".self::$sql->quote($ress[0]).", hress1 = hress1 + ".self::$sql->quote($ress[1]).", hress2 = hress2 + ".self::$sql->quote($ress[2]).", hress3 = hress3 + ".self::$sql->quote($ress[3]).", hress4 = hress4 + ".self::$sql->quote($ress[4])." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+				self::$sql->query("UPDATE t_fleets_users SET c_hress0 = c_hress0 + ".self::$sql->quote($ress[0]).", c_hress1 = c_hress1 + ".self::$sql->quote($ress[1]).", c_hress2 = c_hress2 + ".self::$sql->quote($ress[2]).", c_hress3 = c_hress3 + ".self::$sql->quote($ress[3]).", c_hress4 = c_hress4 + ".self::$sql->quote($ress[4])." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 			}
 
 			if($robs)
@@ -494,9 +491,9 @@
 					$item_info = $user_obj->getItemInfo($i, "roboter", array("scores"));
 					$scores = $item_info["scores"]*$rob;
 					if(isset($trans[1][$i]))
-						self::$sql->query("UPDATE fleets_users_hrob SET number = number + ".self::$sql->quote($rob).", scores = scores + ".self::$sql->quote($scores)." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+						self::$sql->query("UPDATE t_fleets_users_hrob SET c_number = c_number + ".self::$sql->quote($rob).", c_scores = c_scores + ".self::$sql->quote($scores)." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 					else
-						self::$sql->query("INSERT INTO fleets_users_hrob ( fleet_id, user, id, number, scores ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($i).", ".self::$sql->quote($rob).", ".self::$sql->quote($scores)." );");
+						self::$sql->query("INSERT INTO t_fleets_users_hrob ( c_fleet_id, c_user, c_id, c_number, c_scores ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($i).", ".self::$sql->quote($rob).", ".self::$sql->quote($scores)." );");
 				}
 			}
 		}
@@ -525,7 +522,7 @@
 			if($ress)
 			{
 				$ress = Functions::fitToMax($ress, $max_ress);
-				self::$sql->query("UPDATE fleets_users SET hress0 = ".self::$sql->quote($ress[0]).", hress1 = ".self::$sql->quote($ress[1]).", hress2 = ".self::$sql->quote($ress[2]).", hress3 = ".self::$sql->quote($ress[3]).", hress4 = ".self::$sql->quote($ress[4])." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+				self::$sql->query("UPDATE t_fleets_users SET c_hress0 = ".self::$sql->quote($ress[0]).", c_hress1 = ".self::$sql->quote($ress[1]).", c_hress2 = ".self::$sql->quote($ress[2]).", c_hress3 = ".self::$sql->quote($ress[3]).", c_hress4 = ".self::$sql->quote($ress[4])." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 			}
 
 			if($robs)
@@ -537,9 +534,9 @@
 					$item_info = $user_obj->getItemInfo($i, "roboter", array("scores"));
 					$scores = $item_info["scores"]*$rob;
 					if(isset($trans[1][$i]))
-						self::$sql->query("UPDATE fleets_users_hrob SET number = ".self::$sql->quote($rob).", scores = ".self::$sql->quote($scores)." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+						self::$sql->query("UPDATE t_fleets_users_hrob SET c_number = ".self::$sql->quote($rob).", c_scores = ".self::$sql->quote($scores)." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 					else
-						self::$sql->query("INSERT INTO fleets_users_hrob ( fleet_id, user, id, number, scores ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($i).", ".self::$sql->quote($rob).", ".self::$sql->quote($scores)." );");
+						self::$sql->query("INSERT INTO t_fleets_users_hrob ( c_fleet_id, c_user, c_id, c_number, c_scores ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($i).", ".self::$sql->quote($rob).", ".self::$sql->quote($scores)." );");
 				}
 			}
 		}
@@ -552,16 +549,16 @@
 
 		function getTransport($user)
 		{
-			self::$sql->query("SELECT ress0,ress1,ress2,ress3,ress4 FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user)." LIMIT 1;");
+			self::$sql->query("SELECT c_ress0,c_ress1,c_ress2,c_ress3,c_ress4 FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user)." LIMIT 1;");
 			$r = self::$sql->nextResult();
 			if($r === false)
 				throw new FleetException("This user does not participate on the fleet.");
-			$return = array(array($r["ress0"], $r["ress1"], $r["ress2"], $r["ress3"], $r["ress4"]), array());
-			self::$sql->query("SELECT id,number FROM fleets_users_rob WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+			$return = array(array($r["c_ress0"], $r["c_ress1"], $r["c_ress2"], $r["c_ress3"], $r["c_ress4"]), array());
+			self::$sql->query("SELECT c_id,c_number FROM t_fleets_users_rob WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 			while(($r = self::$sql->nextResult()) !== false)
 			{
-				if(!isset($return[1][$r["id"]])) $return[1][$r["id"]] = 0;
-				$return[1][$r["id"]] += $r["number"];
+				if(!isset($return[1][$r["c_id"]])) $return[1][$r["c_id"]] = 0;
+				$return[1][$r["c_id"]] += $r["c_number"];
 			}
 			return $return;
 		}
@@ -574,16 +571,16 @@
 
 		function getHandel($user)
 		{
-			self::$sql->query("SELECT hress0,hress1,hress2,hress3,hress4 FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user)." LIMIT 1;");
+			self::$sql->query("SELECT c_hress0,c_hress1,c_hress2,c_hress3,c_hress4 FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user)." LIMIT 1;");
 			$r = self::$sql->nextResult();
 			if($r === false)
 				throw new FleetException("This user does not participate on the fleet.");
-			$return = array(array($r["hress0"], $r["hress1"], $r["hress2"], $r["hress3"], $r["hress4"]), array());
-			self::$sql->query("SELECT id,number FROM fleets_users_hrob WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+			$return = array(array($r["c_hress0"], $r["c_hress1"], $r["c_hress2"], $r["c_hress3"], $r["c_hress4"]), array());
+			self::$sql->query("SELECT c_id,c_number FROM t_fleets_users_hrob WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 			while(($r = self::$sql->nextResult()) !== false)
 			{
-				if(!isset($return[1][$r["id"]])) $return[1][$r["id"]] = 0;
-				$return[1][$r["id"]] += $r["number"];
+				if(!isset($return[1][$r["c_id"]])) $return[1][$r["c_id"]] = 0;
+				$return[1][$r["id"]] += $r["c_number"];
 			}
 			return $return;
 		}
@@ -598,9 +595,9 @@
 		function dontPutRes($user, $new_value=null)
 		{
 			if(isset($new_value))
-				self::$sql->query("UPDATE fleets_users SET dont_put_ress = ".self::$sql->quote($new_value ? 1 : 0)." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+				self::$sql->query("UPDATE t_fleets_users SET c_dont_put_ress = ".self::$sql->quote($new_value ? 1 : 0)." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 			else
-				return (true && self::$sql->singleField("SELECT dont_put_ress FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";"));
+				return (true && self::$sql->singleField("SELECT c_dont_put_ress FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";"));
 		}
 
 		/**
@@ -751,9 +748,9 @@
 				throw new FleetException("This user does not participate on the fleet.");
 
 			if(isset($factor))
-				self::$sql->query("UPDATE fleets_users SET factor = ".self::$sql->quote($factor)." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+				self::$sql->query("UPDATE t_fleets_users SET c_factor = ".self::$sql->quote($factor)." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 			else
-				return self::$sql->singleField("SELECT factor FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+				return self::$sql->singleField("SELECT c_factor FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 		}
 
 		/**
@@ -765,11 +762,11 @@
 		function getFleetList($user)
 		{
 			$return = array();
-			self::$sql->query("SELECT id,number FROM fleets_users_fleet WHERE fleet_id = ".self::$sql->quote($this->getName()).";");
+			self::$sql->query("SELECT c_id,c_number FROM t_fleets_users_fleet WHERE c_fleet_id = ".self::$sql->quote($this->getName()).";");
 			while(($r = self::$sql->nextResult()) !== false)
 			{
-				if(!isset($return[$r["id"]])) $return[$r["id"]] = 0;
-				$return[$r["id"]] += $r["number"];
+				if(!isset($return[$r["c_id"]])) $return[$r["c_id"]] = 0;
+				$return[$r["c_id"]] += $r["c_number"];
 			}
 			return $return;
 		}
@@ -781,7 +778,7 @@
 
 		function getUsersList()
 		{
-			return self::$sql->singleColumn("SELECT DISTINCT user FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT DISTINCT c_user FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -791,11 +788,11 @@
 
 		function from($user)
 		{
-			self::$sql->query("SELECT from_galaxy,from_system,from_planet FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+			self::$sql->query("SELECT c_from_galaxy,c_from_system,c_from_planet FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 			$r = self::$sql->nextResult();
 			if($r === false)
 				throw new FleetException("This user does not participate on the fleet.");
-			return Planet::fromKoords($r["from_galaxy"], $r["from_system"], $r["from_planet"]);
+			return Planet::fromKoords($r["c_from_galaxy"], $r["c_from_system"], $r["c_from_planet"]);
 		}
 
 		/**
@@ -806,21 +803,7 @@
 
 		function isATarget(Planet $target)
 		{
-			return (self::$sql->singleField("SELECT COUNT(*) FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($target->getGalaxy())." AND system = ".self::$sql->quote($target->getSystem())." AND planet = ".self::$sql->quote($target->getPlanet()).";") > 0);
-		}
-
-		/**
-		 * Benennt den Benutzer in der Flotte um.
-		 * @param string $old_name
-		 * @param string $new_name
-		 * @return void
-		*/
-
-		function renameUser($old_name, $new_name)
-		{
-			if(!$this->userExists($old_name))
-				throw new FleetException("This user does not participate on the fleet.");
-			self::$sql->query("UPDATE fleets_users SET user = ".self::$sql->quote($new_name)." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($old_name).";");
+			return (self::$sql->singleField("SELECT COUNT(*) FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_galaxy = ".self::$sql->quote($target->getGalaxy())." AND c_system = ".self::$sql->quote($target->getSystem())." AND c_planet = ".self::$sql->quote($target->getPlanet()).";") > 0);
 		}
 
 		/**
@@ -849,7 +832,7 @@
 					$this->factor($user, $this->calcTime($user, $this->from($user), $koords)/$time);
 			}
 
-			self::$sql->query("UPDATE fleets_users SET departing = ".self::$sql->quote(time())." WHERE fleet_id = ".self::$sql->quote($this->getName()).";");
+			self::$sql->query("UPDATE t_fleets_users SET c_departing = ".self::$sql->quote(time())." WHERE c_fleet_id = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -859,7 +842,7 @@
 
 		function started()
 		{
-			return (true && self::$sql->singleField("SELECT departing FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($this->getFirstUser()).";"));
+			return (true && self::$sql->singleField("SELECT c_departing FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($this->getFirstUser()).";"));
 		}
 
 		/**
@@ -871,7 +854,7 @@
 		function getStartTime($user = null)
 		{
 			if(!isset($user)) $user = $this->getFirstUser();
-			return self::$sql->singleField("SELECT departing FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+			return self::$sql->singleField("SELECT c_departing FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 		}
 
 		/**
@@ -965,9 +948,9 @@
 		{
 			$planets_query = array();
 			foreach(Planet::getPlanetsByUser($user) as $planet)
-				$planets_query[] = "( galaxy = ".self::$sql->quote($planet->getGalaxy())." AND system = ".self::$sql->quote($planet->getSystem())." AND planet = ".self::$sql->quote($planet->getPlanet())." )";
+				$planets_query[] = "( c_galaxy = ".self::$sql->quote($planet->getGalaxy())." AND c_system = ".self::$sql->quote($planet->getSystem())." AND c_planet = ".self::$sql->quote($planet->getPlanet())." )";
 
-			return self::$sql->singleColumn("SELECT DISTINCT fleet_id FROM ( SELECT fleet_id FROM fleets_users WHERE user = ".self::$sql->quote($user)." UNION ALL SELECT fleet_id FROM fleets_targets WHERE type != ".self::$sql->quote(self::TYPE_SAMMELN).(count($planets_query) > 0 ? " AND ( ".implode(" OR ", $planets_query)." )" : "")." );");
+			return self::$sql->singleColumn("SELECT DISTINCT c_fleet_id FROM ( SELECT c_fleet_id FROM t_fleets_users WHERE c_user = ".self::$sql->quote($user)." UNION ALL SELECT c_fleet_id FROM t_fleets_targets WHERE c_type != ".self::$sql->quote(self::TYPE_SAMMELN).(count($planets_query) > 0 ? " AND ( ".implode(" OR ", $planets_query)." )" : "")." );");
 		}
 
 		/**
@@ -981,9 +964,9 @@
 		{
 			$planets_query = array();
 			foreach(Planet::getPlanetsByUser($user) as $planet)
-				$planets_query[] = "( galaxy = ".self::$sql->quote($planet->getGalaxy())." AND system = ".self::$sql->quote($planet->getSystem())." AND planet = ".self::$sql->quote($planet->getPlanet())." )";
+				$planets_query[] = "( c_galaxy = ".self::$sql->quote($planet->getGalaxy())." AND c_system = ".self::$sql->quote($planet->getSystem())." AND c_planet = ".self::$sql->quote($planet->getPlanet())." )";
 
-			return self::$sql->singleField("SELECT COUNT(DISTINCT fleet_id) FROM ( SELECT fleet_id FROM ( SELECT DISTINCT fleet_id FROM fleets_targets EXCEPT ( SELECT fleet_id FROM fleets_targets WHERE ".implode(" OR ", $planets_query)." ) ) NATURAL JOIN ( SELECT fleet_id, user FROM fleets_users ) ) WHERE user != ".self::$sql->query($user).";");
+			return self::$sql->singleField("SELECT COUNT(DISTINCT c_fleet_id) FROM ( SELECT c_fleet_id FROM ( SELECT DISTINCT c_fleet_id FROM t_fleets_targets EXCEPT ( SELECT c_fleet_id FROM t_fleets_targets WHERE ".implode(" OR ", $planets_query)." ) ) NATURAL JOIN ( SELECT c_fleet_id, c_user FROM t_fleets_users ) ) WHERE c_user != ".self::$sql->query($user).";");
 		}
 
 		/**
@@ -999,11 +982,11 @@
 		{
 			$query = "";
 			if($not_match)
-				$query .= "SELECT fleet_id FROM ( SELECT DISTINCT fleet_id FROM fleets_users EXCEPT ";
-			$query .= "SELECT DISTINCT fleet_id FROM fleets_users WHERE user = ".self::$sql->quote($user)." ";
+				$query .= "SELECT c_fleet_id FROM ( SELECT DISTINCT c_fleet_id FROM t_fleets_users EXCEPT ";
+			$query .= "SELECT DISTINCT c_fleet_id FROM t_fleets_users WHERE c_user = ".self::$sql->quote($user)." ";
 			if($not_match)
 				$query .= ") ";
-			$query .= "INTERSECT SELECT DISTINCT fleet_id FROM fleets_targets WHERE galaxy = ".self::$sql->quote($planet->getGalaxy())." AND system = ".self::$sql->quote($planet->getSystem())." AND planet = ".self::$sql->quote($planet->getPlanet())." AND NOT finished;";
+			$query .= "INTERSECT SELECT DISTINCT c_fleet_id FROM t_fleets_targets WHERE c_galaxy = ".self::$sql->quote($planet->getGalaxy())." AND c_system = ".self::$sql->quote($planet->getSystem())." AND c_planet = ".self::$sql->quote($planet->getPlanet())." AND NOT c_finished;";
 			return self::$sql->singleColumn($query);
 		}
 
@@ -1036,7 +1019,7 @@
 
 		static function getFleetsPositionedOnPlanet(Planet $planet)
 		{
-			return self::$sql->singleColumn("SELECT fleet_id FROM ( SELECT fleet_id,galaxy,system,planet,finished,i FROM fleets_targets GROUP BY fleet_id ORDER BY i DESC ) WHERE galaxy = ".self::$sql->quote($planet->getGalaxy())." AND system = ".self::$sql->quote($planet->getSystem())." AND planet = ".self::$sql->quote($planet->getPlanet())." AND finished");
+			return self::$sql->singleColumn("SELECT c_fleet_id FROM ( SELECT c_fleet_id,c_galaxy,c_system,c_planet,c_finished,c_i FROM t_fleets_targets GROUP BY c_fleet_id ORDER BY c_i DESC ) WHERE c_galaxy = ".self::$sql->quote($planet->getGalaxy())." AND c_system = ".self::$sql->quote($planet->getSystem())." AND c_planet = ".self::$sql->quote($planet->getPlanet())." AND c_finished");
 		}
 
 		/**
@@ -1050,10 +1033,10 @@
 		static function planetRemoved(Planet $planet)
 		{
 			// Stationierungen auf diesen Planeten
-			self::$sql->query("SELECT DISTINCT fleet_id,arrival FROM fleets_targets WHERE galaxy = ".self::$sql->quote($planet->getGalaxy())." AND system = ".self::$sql->quote($planet->getSystem())." AND planet = ".self::$sql->quote($planet->getPlanet())." AND NOT finished AND ( type = ".self::TYPE_STATIONIEREN." OR flying_back = 1 );");
+			self::$sql->query("SELECT DISTINCT c_fleet_id,c_arrival FROM t_fleets_targets WHERE c_galaxy = ".self::$sql->quote($planet->getGalaxy())." AND c_system = ".self::$sql->quote($planet->getSystem())." AND c_planet = ".self::$sql->quote($planet->getPlanet())." AND NOT c_finished AND ( c_type = ".self::TYPE_STATIONIEREN." OR c_flying_back = 1 );");
 			while(($r = self::$sql->nextResult()) !== false)
 			{
-				$fleet = Classes::Fleet($r["fleet_id"]);
+				$fleet = Classes::Fleet($r["c_fleet_id"]);
 				$from = $fleet->from($fleet->getFirstUser());
 				if($from->equals($planet))
 					$fleet->destroy();
@@ -1143,7 +1126,7 @@
 			# Mit Erfahrungspunkten herumhantieren
 			# Tritium, das für den Rückflug verbraucht wird, wird zum benutzten Tritium hinzugezählt
 			# Das Tritium vom aktuellen Ziel zum Ausgangsplaneten wird bei der Ankunft zum benutzten Tritium hinzugezaehlt und deswegen jetzt abgezogen
-			self::$sql->query("UPDATE fleets_users SET used_tritium = used_tritium + ".self::$sql->quote($needed_back_tritium-$tritium2).", ress_tritium = ".self::$sql->quote($back_tritium)." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+			self::$sql->query("UPDATE t_fleets_users SET c_used_tritium = c_used_tritium + ".self::$sql->quote($needed_back_tritium-$tritium2).", c_ress_tritium = ".self::$sql->quote($back_tritium)." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 
 			# Eventuellen Handel zurueckerstatten
 			$handel = $this->getHandel($user);
@@ -1161,19 +1144,19 @@
 			// Rückflugflotte erstellen
 			$new_fleet = self::create();
 			// Benutzer von der einen Flotte in die andere verschieben
-			self::$sql->query("UPDATE fleets_users SET fleet_id = ".self::$sql->quote($new_fleet).", i = 1 WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
-			self::$sql->query("UPDATE fleets_users_rob SET fleet_id = ".self::$sql->quote($new_fleet).", i = 1 WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
-			self::$sql->query("UPDATE fleets_users_fleet SET fleet_id = ".self::$sql->quote($new_fleet).", i = 1 WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+			self::$sql->query("UPDATE t_fleets_users SET c_fleet_id = ".self::$sql->quote($new_fleet).", i = 1 WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
+			self::$sql->query("UPDATE t_fleets_users_rob SET c_fleet_id = ".self::$sql->quote($new_fleet).", i = 1 WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
+			self::$sql->query("UPDATE t_fleets_users_fleet SET c_fleet_id = ".self::$sql->quote($new_fleet).", i = 1 WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 
 			// Alte Ziele kopieren, wenn der Benutzer sie angeflogen hat
 			if($is_first_user)
-				self::$sql->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished SELECT i, ".self::$sql->quote($new_fleet).", galaxy, system, planet, type, flying_back, arrival, finished FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND NOT finished;");
+				self::$sql->query("INSERT INTO t_fleets_targets ( c_i, c_fleet_id, c_galaxy, c_system, c_planet, c_type, c_flying_back, c_arrival, c_finished SELECT c_i, ".self::$sql->quote($new_fleet).", c_galaxy, c_system, c_planet, c_type, c_flying_back, c_arrival, c_finished FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND NOT c_finished;");
 
 			// Neues Ziel hinzufügen
-			$i = self::$sql->singleField("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($new_fleet)." ORDER BY i DESC LIMIT 1;");
+			$i = self::$sql->singleField("SELECT c_i FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($new_fleet)." ORDER BY c_i DESC LIMIT 1;");
 			if($i === false)
 				$i = 1;
-			self::$sql->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished ) VALUES ( ".self::$sql->quote($i).", ".self::$sql->quote($new_fleet).", ".self::$sql->quote($start->getGalaxy()).", ".self::$sql->quote($start->getSystem()).", ".self::$sql->quote($start->getPlanet()).", ".self::$sql->quote($this->getCurrentType()).", 1, ".self::$sql->quote(time()+$back_time).", 0 );");
+			self::$sql->query("INSERT INTO t_fleets_targets ( c_i, c_fleet_id, c_galaxy, c_system, c_planet, c_type, c_flying_back, c_arrival, c_finished ) VALUES ( ".self::$sql->quote($i).", ".self::$sql->quote($new_fleet).", ".self::$sql->quote($start->getGalaxy()).", ".self::$sql->quote($start->getSystem()).", ".self::$sql->quote($start->getPlanet()).", ".self::$sql->quote($this->getCurrentType()).", 1, ".self::$sql->quote(time()+$back_time).", 0 );");
 
 			if(count($this->getUsersList()) < 1)
 			{
@@ -1183,8 +1166,8 @@
 			elseif(!$is_first_user)
 			{
 				# Weitere Ziele entfernen, da diese zu diesem Benutzer gehoert haben
-				$min_i = self::$sql->singleField("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." ORDER BY i ASC LIMIT 1;");
-				self::$sql->query("DELETE FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND i > ".self::$sql->quote($min_i).";");
+				$min_i = self::$sql->singleField("SELECT c_i FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." ORDER BY c_i ASC LIMIT 1;");
+				self::$sql->query("DELETE FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_i > ".self::$sql->quote($min_i).";");
 
 				# Letztes Ziel muss stationieren, Ursprungsplaneten des Benutzers hinzufuegen
 				if($this->getCurrentType() != self::TYPE_STATIONIEREN)
@@ -1335,7 +1318,7 @@
 								$rtrans[2] = floor($ress_max[2]*$p);
 								$rtrans[3] = floor($ress_max[3]*$p);
 
-								self::$sql->query("UPDATE fleets_users SET ress0 = ress0 + ".self::$sql->quote($rtrans[0]).", ress1 = ress1 + ".self::$sql->quote($rtrans[1]).", ress2 = ress2 + ".self::$sql->quote($rtrans[2]).", ress3 = ress3 + ".self::$sql->quote($rtrans[3])." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+								self::$sql->query("UPDATE t_fleets_users SET c_ress0 = c_ress0 + ".self::$sql->quote($rtrans[0]).", c_ress1 = c_ress1 + ".self::$sql->quote($rtrans[1]).", c_ress2 = c_ress2 + ".self::$sql->quote($rtrans[2]).", c_ress3 = c_ress3 + ".self::$sql->quote($rtrans[3])." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 
 								$got_ress[$username] = $rtrans;
 							}
@@ -1378,15 +1361,15 @@
 									if($username == $first_user) $further = false;
 									else
 									{
-										self::$sql->transactionQuery("DELETE FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username).";");
+										self::$sql->transactionQuery("DELETE FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username).";");
 									}
 								}
 								else
 								{
-									self::$sql->transactionQuery("DELETE FROM fleets_users_fleet WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username).";");
+									self::$sql->transactionQuery("DELETE FROM t_fleets_users_fleet WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username).";");
 									foreach($angreifer2[$username][0] as $id=>$number)
-										self::$sql->transactionQuery("INSERT INTO fleets_users_fleet ( fleet_id, user, id, number ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($username).", ".self::$sql->quote($id).", ".self::$sql->quote($number).");");
-									self::$sql->transactionQuery("UPDATE fleets_users SET ress0 = ".self::$sql->quote($angreifer2[$username][1][0]).", ress1 = ".self::$sql->quote($angreifer2[$username][1][1]).", ress2 = ".self::$sql->quote($angreifer2[$username][1][2]).", ress3 = ".self::$sql->quote($angreifer2[$username][1][3]).", ress4 = ".self::$sql->quote($angreifer2[$username][1][4])." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username).";");
+										self::$sql->transactionQuery("INSERT INTO t_fleets_users_fleet ( c_fleet_id, c_user, c_id, c_number ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($username).", ".self::$sql->quote($id).", ".self::$sql->quote($number).");");
+									self::$sql->transactionQuery("UPDATE t_fleets_users SET c_ress0 = ".self::$sql->quote($angreifer2[$username][1][0]).", c_ress1 = ".self::$sql->quote($angreifer2[$username][1][1]).", c_ress2 = ".self::$sql->quote($angreifer2[$username][1][2]).", c_ress3 = ".self::$sql->quote($angreifer2[$username][1][3]).", c_ress4 = ".self::$sql->quote($angreifer2[$username][1][4])." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username).";");
 								}
 							}
 							self::$sql->endTransaction();
@@ -1411,8 +1394,8 @@
 								if(!$this->dontPutRes($username))
 								{
 									$trans = $this->getTransport($username);
-									self::$sql->query("UPDATE fleets_users SET ress0 = 0, ress1 = 0, ress2 = 0, ress3 = 0, ress4 = 0 WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username).";");
-									self::$sql->query("DELETE FROM fleets_users_rob WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username).";");
+									self::$sql->query("UPDATE t_fleets_users SET c_ress0 = 0, c_ress1 = 0, c_ress2 = 0, c_ress3 = 0, c_ress4 = 0 WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username).";");
+									self::$sql->query("DELETE FROM t_fleets_users_rob WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username).";");
 									$target_user->addRess($trans[0]);
 									if($write_this_username) $message_text[$username] .= sprintf($user_obj->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $user_obj->_("[ress_0]"), F::ths($data[3][0][0], true), $user_obj->_("[ress_1]"), F::ths($data[3][0][1], true), $user_obj->_("[ress_2]"), F::ths($data[3][0][2], true), $user_obj->_("[ress_3]"), F::ths($data[3][0][3], true), $user_obj->_("[ress_4]"), F::ths($data[3][0][4], true));
 									$message_text[$target_owner] .= sprintf($target_user->_("%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"), $target_user->_("[ress_0]"), F::ths($data[3][0][0], true), $target_user->_("[ress_1]"), F::ths($data[3][0][1], true), $target_user->_("[ress_2]"), F::ths($data[3][0][2], true), $target_user->_("[ress_3]"), F::ths($data[3][0][3], true), $target_user->_("[ress_4]"), F::ths($data[3][0][4], true));
@@ -1439,17 +1422,17 @@
 								$transh = $this->getHandel($username);
 								if(array_sum($transh[0]) != 0 || array_sum($transh[1]) != 0)
 								{
-									self::$sql->query("UPDATE fleets_users SET hress0 = 0, hress1 = 0, hress2 = 0, hress3 = 0, hress4 = 0 WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username).";");
-									self::$sql->query("DELETE FROM fleets_users_hrob WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username).";");
+									self::$sql->query("UPDATE t_fleets_users SET c_hress0 = 0, c_hress1 = 0, c_hress2 = 0, c_hress3 = 0, c_hress4 = 0 WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username).";");
+									self::$sql->query("DELETE FROM t_fleets_users_hrob WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username).";");
 
 									$handel[$username] = $transh;
-									self::$sql->query("UPDATE fleets_users SET ress0 = ress0 + ".$transh[0].", ress1 = ress1 + ".$transh[1].", ress2 = ress2 + ".$transh[2].", ress3 = ress3 + ".$transh[3].", ress4 = ress4 + ".$transh[4]." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username).";");
+									self::$sql->query("UPDATE t_fleets_users SET c_ress0 = c_ress0 + ".$transh[0].", c_ress1 = c_ress1 + ".$transh[1].", c_ress2 = c_ress2 + ".$transh[2].", c_ress3 = c_ress3 + ".$transh[3].", c_ress4 = c_ress4 + ".$transh[4]." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username).";");
 									foreach($transh[1] as $id=>$number)
 									{
-										if(self::$sql->singleField("SELECT COUNT(*) FROM fleets_users_rob WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username)." AND id = ".self::$sql->quote($id).";") >= 1)
-											self::$sql->query("UPDATE fleets_users_rob SET number = number + ".self::$sql->quote($number)." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username)." AND id = ".self::$sql->quote($id).";");
+										if(self::$sql->singleField("SELECT COUNT(*) FROM t_fleets_users_rob WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username)." AND c_id = ".self::$sql->quote($id).";") >= 1)
+											self::$sql->query("UPDATE t_fleets_users_rob SET c_number = c_number + ".self::$sql->quote($number)." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username)." AND c_id = ".self::$sql->quote($id).";");
 										else
-											self::$sql->query("INSERT INTO fleets_users_rob ( fleet_id, user, id, number ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($username).", ".self::$sql->quote($id).", ".self::$sql->quote($number).");");
+											self::$sql->query("INSERT INTO t_fleets_users_rob ( c_fleet_id, c_user, c_id, c_number ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($username).", ".self::$sql->quote($id).", ".self::$sql->quote($number).");");
 									}
 									$make_handel_message = true;
 								}
@@ -1554,12 +1537,12 @@
 											$destroyed[$username] = $owner_v7;
 											if($owner_v7 >= $fl["S5"])
 											{
-												self::$sql->query("DELETE FROM fleets_users_fleet WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username)." AND id = ".self::$sql->quote("S5").";");
+												self::$sql->query("DELETE FROM t_fleets_users_fleet WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username)." AND c_id = ".self::$sql->quote("S5").";");
 												$destroyed[$username] = $fl["S5"];
 											}
 											else
 											{
-												self::$sql->query("UPDATE fleets_users_fleet SET number = number - ".self::$sql->quote($owner_v7)." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username)." AND id = ".self::$sql->quote("S5").";");
+												self::$sql->query("UPDATE t_fleets_users_fleet SET c_number = c_number - ".self::$sql->quote($owner_v7)." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username)." AND c_id = ".self::$sql->quote("S5").";");
 												$destroyed[$username] = $owner_v7;
 											}
 										}
@@ -1763,10 +1746,10 @@
 										$further = false;
 									else
 									{
-										self::$sql->query("DELETE FROM fleets_users WHERE fleet_id = ".self::$sql->query($this->getName())." AND user = ".self::$sql->query($username).";");
-										self::$sql->query("DELETE FROM fleets_users_fleet WHERE fleet_id = ".self::$sql->query($this->getName())." AND user = ".self::$sql->query($username).";");
-										self::$sql->query("DELETE FROM fleets_users_rob WHERE fleet_id = ".self::$sql->query($this->getName())." AND user = ".self::$sql->query($username).";");
-										self::$sql->query("DELETE FROM fleets_users_hrob WHERE fleet_id = ".self::$sql->query($this->getName())." AND user = ".self::$sql->query($username).";");
+										self::$sql->query("DELETE FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->query($this->getName())." AND c_user = ".self::$sql->query($username).";");
+										self::$sql->query("DELETE FROM t_fleets_users_fleet WHERE c_fleet_id = ".self::$sql->query($this->getName())." AND c_user = ".self::$sql->query($username).";");
+										self::$sql->query("DELETE FROM t_fleets_users_rob WHERE c_fleet_id = ".self::$sql->query($this->getName())." AND c_user = ".self::$sql->query($username).";");
+										self::$sql->query("DELETE FROM t_fleets_users_hrob WHERE c_fleet_id = ".self::$sql->query($this->getName())." AND c_user = ".self::$sql->query($username).";");
 									}
 								}
 							}
@@ -1781,7 +1764,7 @@
 
 				# Flugerfahrung
 				foreach($this->getUsersList() as $user)
-					self::$sql->query("UPDATE fleets_users SET used_tritium = used_tritium + ".self::$sql->quote($this->getTritium($user, $this->getLastTarget($user), $target))." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+					self::$sql->query("UPDATE t_fleets_users SET c_used_tritium = c_used_tritium + ".self::$sql->quote($this->getTritium($user, $this->getLastTarget($user), $target))." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 
 				# Rückflugflotten der anderen Benutzer
 				$users = $this->getUsersList();
@@ -1791,15 +1774,15 @@
 					$user_obj = Classes::User($user);
 					$new_fleet = self::create();
 					$from = $this->from($user);
-					self::$sql->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished ) SELECT 1, ".self::$sql->quote($new_fleet).", galaxy, system, planet, type, flying_back, arrival, 1 FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND NOT finished ORDER BY i ASC LIMIT 1;");
-					self::$sql->query("INSERT INTO fleets_targets ( i, fleet_id, galaxy, system, planet, type, flying_back, arrival, finished ) VALUES ( 2, ".self::$sql->quote($new_fleet).", ".self::$sql->quote($from->getGalaxy()).", ".self::$sql->quote($from->getSystem()).", ".self::$sql->quote($from->getPlanet()).", ".self::$sql->quote($this->getCurrentType()).", 1, ".self::$sql->quote(2*$this->getNextArrival()-$this->getStartTime($user)).", 0);");
-					self::$sql->query("UPDATE fleets_users SET fleet_id = ".self::$sql->quote($new_fleet)." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+					self::$sql->query("INSERT INTO t_fleets_targets ( c_i, c_fleet_id, c_galaxy, c_system, c_planet, c_type, c_flying_back, c_arrival, c_finished ) SELECT 1, ".self::$sql->quote($new_fleet).", c_galaxy, c_system, c_planet, c_type, c_flying_back, c_arrival, 1 FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND NOT c_finished ORDER BY c_i ASC LIMIT 1;");
+					self::$sql->query("INSERT INTO t_fleets_targets ( c_i, c_fleet_id, c_galaxy, c_system, c_planet, c_type, c_flying_back, c_arrival, c_finished ) VALUES ( 2, ".self::$sql->quote($new_fleet).", ".self::$sql->quote($from->getGalaxy()).", ".self::$sql->quote($from->getSystem()).", ".self::$sql->quote($from->getPlanet()).", ".self::$sql->quote($this->getCurrentType()).", 1, ".self::$sql->quote(2*$this->getNextArrival()-$this->getStartTime($user)).", 0);");
+					self::$sql->query("UPDATE t_fleets_users SET c_fleet_id = ".self::$sql->quote($new_fleet)." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 				}
 
 				if($further)
 				{
-					$i = self::$sql->singleField("SELECT i FROM fleets_targets WHERE fleet_id = ".self::$sql->quote($this->getName())." AND NOT FINISHED ORDER BY i ASC LIMIT 1;");
-					self::$sql->query("UPDATE fleets_targets SET finished = 1 WHERE fleet_id = ".self::$sql->quote($this->getName())." AND i = ".self::$sql->quote($i).";");
+					$i = self::$sql->singleField("SELECT c_i FROM t_fleets_targets WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND NOT FINISHED ORDER BY c_i ASC LIMIT 1;");
+					self::$sql->query("UPDATE t_fleets_targets SET c_finished = 1 WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_i = ".self::$sql->quote($i).";");
 				}
 
 				if(!$further) $this->destroy();
@@ -1813,7 +1796,7 @@
 				if($besiedeln || $owner == $first_user && !$back)
 				{
 					# Ueberschuessiges Tritium
-					self::$sql->query("UPDATE fleets_users SET ress_tritium = ress_tritium + ".self::$sql->quote($this->getTritium($first_user, $this->from($first_user), $target))." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($first_user).";");
+					self::$sql->query("UPDATE t_fleets_users SET c_ress_tritium = c_ress_tritium + ".self::$sql->quote($this->getTritium($first_user, $this->from($first_user), $target))." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($first_user).";");
 				}
 
 				if($besiedeln)
@@ -1823,7 +1806,7 @@
 					$fleet = $this->getFleetsList($first_user);
 					if(isset($fleet["S6"]) && $fleet["S6"] > 0) // Besiedelungsschiff
 					{
-						self::$sql->query("UPDATE fleets_users_fleet SET number = number - 1 WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($first_user)." AND id = ".self::$sql->quote("S6").";");
+						self::$sql->query("UPDATE t_fleets_users_fleet SET c_number = c_number - 1 WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($first_user)." AND c_id = ".self::$sql->quote("S6").";");
 						$user_obj->cacheActivePlanet();
 						$user_obj->setActivePlanet($user_obj->getPlanetByPos($target));
 						$item_info = $user_obj->getItemInfo("S6", "schiffe", array("ress"));
@@ -1881,7 +1864,7 @@
 						}
 
 						if($username != $first_user) # Überschüssiges Tritium
-							self::$sql->query("UPDATE fleets_users SET ress_tritium = ress_tritium + ".self::$sql->quote($this->getTritium($username, $this->from($username), $target))." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username).";");
+							self::$sql->query("UPDATE t_fleets_users SET c_ress_tritium = c_ress_tritium + ".self::$sql->quote($this->getTritium($username, $this->from($username), $target))." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username).";");
 					}
 					else
 					{
@@ -1896,10 +1879,10 @@
 					}
 
 					# Flugerfahrung
-					self::$sql->query("UPDATE fleets_users SET used_tritium = used_tritium + ".self::$sql->quote($this->getTritium($username, $this->getLastTarget($username), $target))." WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username).";");
+					self::$sql->query("UPDATE t_fleets_users SET c_used_tritium = c_used_tritium + ".self::$sql->quote($this->getTritium($username, $this->getLastTarget($username), $target))." WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username).";");
 
 					$user_obj = Classes::User($username);
-					$user_obj->addScores(User::SCORES_FLUGERFAHRUNG, self::$sql->singleField("SELECT used_tritium FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($username)." LIMIT 1;")/1000);
+					$user_obj->addScores(User::SCORES_FLUGERFAHRUNG, self::$sql->singleField("SELECT c_used_tritium FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($username)." LIMIT 1;")/1000);
 				}
 
 				foreach($schiffe_own as $id=>$anzahl)
@@ -1909,7 +1892,7 @@
 				foreach($robs as $id=>$anzahl)
 					$owner_obj->changeItemLevel($id, $anzahl, "roboter");
 
-				$ress[4] += self::$sql->singleField("SELECT ress_tritium FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($first_user)." LIMIT 1;");
+				$ress[4] += self::$sql->singleField("SELECT c_ress_tritium FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($first_user)." LIMIT 1;");
 				$owner_obj->addRess($ress);
 
 				$message_users = array();
@@ -1968,7 +1951,7 @@
 						$user_obj->restoreLanguage();
 					}
 
-					$tritium = self::$sql->singleField("SELECT ress_tritium FROM fleets_users WHERE fleet_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($first_user)." LIMIT 1;");
+					$tritium = self::$sql->singleField("SELECT c_ress_tritium FROM t_fleets_users WHERE c_fleet_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($first_user)." LIMIT 1;");
 					if($tritium > 0)
 						$message_text .= "\n\n".sprintf($user_obj->_("Folgender überschüssiger Treibstoff wird abgeliefert: %s."), sprintf($user_obj->_("%s %s"), F::ths($tritium, true), $user_obj->_("[ress_4]")));
 

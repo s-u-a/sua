@@ -35,6 +35,7 @@
 	 * Völkern.
 	 * @todo Überlegen: Eventhandler muss auf allen Planeten ausgeführt werden, da Forschungen auf einem Planeten alle anderen beeinflussen
 	 * @todo setActivePlanet scheint noch verwendet zu werden
+	 * @todo t_ c_
 	*/
 
 	class User extends SQLSet implements \Iterator,StaticInit

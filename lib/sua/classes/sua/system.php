@@ -27,6 +27,7 @@
 	/**
 	 * Repräsentiert ein Sonnensystem im Spiel.
 	 * Kann als Iterator durchlaufen werden, Index: Planetennummer, Wert: Planetenobjekt
+	 * @todo t_ c_
 	*/
 
 	class System extends SQLSet implements \Iterator,StaticInit

@@ -31,7 +31,7 @@
 
 	class Galaxy extends SQLSet implements \Iterator,StaticInit
 	{
-		protected static $primary_index = array("t_galaxies", "t_galaxy");
+		protected static $primary_index = array("t_galaxies", "c_galaxy");
 
 		static function init()
 		{
@@ -54,7 +54,7 @@
 				$system_quote = self::$sql->quote($system);
 				$planets = rand(10, 30);
 				for($planet=1; $planet<=$planets; $planet++)
-					self::$sql->transactionQuery("INSERT INTO planets ( galaxy, system, planet, size_original ) VALUES ( ".$galaxy_quote.", ".$system_quote.", ".self::$sql->quote($planet).", ".self::$sql->quote(rand(100, 500))." );");
+					self::$sql->transactionQuery("INSERT INTO t_planets ( c_galaxy, c_system, c_planet, c_size_original ) VALUES ( ".$galaxy_quote.", ".$system_quote.", ".self::$sql->quote($planet).", ".self::$sql->quote(rand(100, 500))." );");
 			}
 			self::$sql->endTransaction();
 			return $name;
@@ -62,13 +62,13 @@
 
 		public function destroy()
 		{
-			self::$sql->query("DELETE FROM planets WHERE galaxy = ".self::$sql->quote($this->getName()).";");
+			self::$sql->query("DELETE FROM t_planets WHERE c_galaxy = ".self::$sql->quote($this->getName()).";");
 		}
 
 		static function datasetName($name=null)
 		{
 			if(!isset($name))
-				$name = self::$sql->singleField("SELECT MAX(galaxy)+1 FROM galaxies;");
+				$name = self::$sql->singleField("SELECT MAX(c_galaxy)+1 FROM t_galaxies;");
 			return parent::datasetName($name);
 		}
 
@@ -79,7 +79,7 @@
 
 		function getSystemsCount()
 		{
-			return $this->getMainField("systems");
+			return $this->getMainField("c_systems");
 		}
 
 		function rewind()
@@ -98,14 +98,14 @@
 		function key()
 		{
 			if(!isset($this->active_system))
-				return self::$sql->singleField("SELECT system FROM planets WHERE galaxy = ".self::$sql->quote($this->getGalaxy())." ORDER BY system ASC LIMIT 1;");
+				return self::$sql->singleField("SELECT c_system FROM t_planets WHERE c_galaxy = ".self::$sql->quote($this->getGalaxy())." ORDER BY c_system ASC LIMIT 1;");
 			else
 				return $this->active_system;
 		}
 
 		function next()
 		{
-			$this->active_system = self::$sql->singleField("SELECT system FROM planets WHERE galaxy = ".self::$sql->quote($this->getGalaxy())." AND system > ".self::$sql->quote($this->key())." ORDER BY system ASC LIMIT 1;");
+			$this->active_system = self::$sql->singleField("SELECT c_system FROM t_planets WHERE c_galaxy = ".self::$sql->quote($this->getGalaxy())." AND c_system > ".self::$sql->quote($this->key())." ORDER BY c_system ASC LIMIT 1;");
 			return $this->current();
 		}
 

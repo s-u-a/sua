@@ -31,6 +31,7 @@
 	 * ausgeführt werden. Damit wird die Leseberechtigung des Benutzers auf die Nachricht entfernt, versucht
 	 * er also, sie abzurufen, soll er eine Fehlermeldung erhalten. Erst wenn kein Benutzer mehr Leseberechtigung
 	 * auf die Nachricht hat, wird sie aus der Datenbank entfernt.
+	 * @todo t_ c_
 	*/
 
 	class Message extends SQLSet

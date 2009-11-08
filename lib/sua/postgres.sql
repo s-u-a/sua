@@ -31,7 +31,7 @@ CREATE TABLE t_planets (
 	c_system INTEGER,
 	c_planet INTEGER,
 	c_size_original INTEGER DEFAULT 0,
-	c_user TEXT REFERENCES t_users,
+	c_user TEXT REFERENCES t_users ON UPDATE CASCADE,
 	c_name TEXT,
 	c_ress0 DOUBLE PRECISION DEFAULT 0,
 	c_ress1 DOUBLE PRECISION DEFAULT 0,
@@ -51,7 +51,7 @@ CREATE TABLE t_planets (
 CREATE INDEX i_planets_user ON t_planets ( c_user );
 
 CREATE TABLE t_users_research ( -- Erlangte Forschungen der Benutzer
-	c_user TEXT REFERENCES t_users,
+	c_user TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE CASCADE,
 	c_id TEXT,
 	c_level BIGINT DEFAULT 0,
 	c_scores DOUBLE PRECISION DEFAULT 0,
@@ -59,19 +59,19 @@ CREATE TABLE t_users_research ( -- Erlangte Forschungen der Benutzer
 );
 
 CREATE TABLE t_users_friends ( -- Verbündetenbeziehungen
-	c_user1 TEXT REFERENCES t_users,
-	c_user2 TEXT REFERENCES t_users,
+	c_user1 TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE CASCADE,
+	c_user2 TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE CASCADE,
 	PRIMARY KEY ( c_user1, c_user2 )
 );
 
 CREATE TABLE t_users_friend_requests ( -- Verbündetenanfragen
-	c_user_from TEXT REFERENCES t_users,
-	c_user_to TEXT REFERENCES t_users,
+	c_user_from TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE CASCADE,
+	c_user_to TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE CASCADE,
 	PRIMARY KEY ( c_user_from, c_user_to )
 );
 
 CREATE TABLE t_users_shortcuts ( -- Planeten-„Lesezeichen“
-	c_user TEXT REFERENCES t_users,
+	c_user TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE CASCADE,
 	c_galaxy INTEGER,
 	c_system INTEGER,
 	c_planet INTEGER,
@@ -80,19 +80,19 @@ CREATE TABLE t_users_shortcuts ( -- Planeten-„Lesezeichen“
 );
 
 CREATE TABLE t_users_settings ( -- Einstellungen
-	c_user TEXT REFERENCES t_users,
+	c_user TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE CASCADE,
 	c_setting TEXT NOT NULL,
 	c_value TEXT
 );
 
 CREATE TABLE t_users_email ( -- E-Mail-Adressen der Benutzer, alte Einstellungen werden gespeichert
-	c_user TEXT REFERENCES t_users,
+	c_user TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE CASCADE,
 	c_email TEXT,
 	c_valid_from TIMESTAMP
 );
 
 CREATE TABLE t_users_openid ( -- OpenID-Accounts, die zu Benutzern gehören
-	c_user TEXT REFERENCES t_users,
+	c_user TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE CASCADE,
 	openid TEXT NOT NULL
 );
 
@@ -171,7 +171,7 @@ CREATE TABLE t_fleets (
 );
 
 CREATE TABLE t_fleets_targets (
-	c_fleet_id TEXT REFERENCES t_fleets,
+	c_fleet_id TEXT REFERENCES t_fleets ON UPDATE CASCADE ON DELETE CASCADE,
 	c_i INTEGER,
 	c_galaxy INTEGER,
 	c_system INTEGER,
@@ -185,8 +185,8 @@ CREATE TABLE t_fleets_targets (
 );
 
 CREATE TABLE t_fleets_users (
-	c_fleet_id TEXT REFERENCES t_fleets,
-	c_user TEXT REFERENCES t_users,
+	c_fleet_id TEXT REFERENCES t_fleets ON UPDATE CASCADE ON DELETE CASCADE,
+	c_user TEXT REFERENCES t_users ON UPDATE CASCADE,
 	c_i INTEGER,
 	c_from_galaxy INTEGER,
 	c_from_system INTEGER,
@@ -205,7 +205,7 @@ CREATE TABLE t_fleets_users (
 	c_hress4 BIGINT DEFAULT 0,
 	c_used_tritium BIGINT DEFAULT 0,
 	c_dont_put_ress BOOLEAN DEFAULT false, -- FIXME: Shouldn’t this be separated for each target?
-	c_departing BOOLEAN DEFAULT false,
+	c_departing TIMESTAMP,
 	FOREIGN KEY ( c_from_galaxy, c_from_system, c_from_planet ) REFERENCES t_planets,
 	PRIMARY KEY ( c_fleet_id, c_user )
 );
@@ -218,7 +218,7 @@ CREATE TABLE t_fleets_users_rob (
 	c_id TEXT,
 	c_number BIGINT DEFAULT 0,
 	c_scores BIGINT DEFAULT 0,
-	FOREIGN KEY ( c_fleet_id, c_user ) REFERENCES t_fleets_users,
+	FOREIGN KEY ( c_fleet_id, c_user ) REFERENCES t_fleets_users ON UPDATE CASCADE ON DELETE CASCADE,
 	PRIMARY KEY ( c_fleet_id, c_user, c_id )
 );
 
@@ -228,7 +228,7 @@ CREATE TABLE t_fleets_users_hrob (
 	c_id TEXT,
 	c_number BIGINT DEFAULT 0,
 	c_scores BIGINT DEFAULT 0,
-	FOREIGN KEY ( c_fleet_id, c_user ) REFERENCES t_fleets_users,
+	FOREIGN KEY ( c_fleet_id, c_user ) REFERENCES t_fleets_users ON UPDATE CASCADE ON DELETE CASCADE,
 	PRIMARY KEY ( c_fleet_id, c_user, c_id )
 );
 
@@ -238,7 +238,7 @@ CREATE TABLE t_fleets_users_fleet (
 	c_id TEXT,
 	c_number BIGINT DEFAULT 0,
 	c_scores BIGINT DEFAULT 0,
-	FOREIGN KEY ( c_fleet_id, c_user ) REFERENCES t_fleets_users,
+	FOREIGN KEY ( c_fleet_id, c_user ) REFERENCES t_fleets_users ON UPDATE CASCADE ON DELETE CASCADE,
 	PRIMARY KEY ( c_fleet_id, c_user, c_id )
 );
 
@@ -292,7 +292,7 @@ CREATE TABLE t_alliances (
 CREATE INDEX i_alliances_name ON t_alliances ( c_name );
 
 CREATE TABLE t_alliances_members (
-	c_tag TEXT REFERENCES t_alliances ON UPDATE CASCADE,
+	c_tag TEXT REFERENCES t_alliances ON UPDATE CASCADE ON DELETE CASCADE,
 	c_member TEXT REFERENCES t_users ON UPDATE CASCADE,
 	c_rank TEXT,
 	c_time TIMESTAMP,
@@ -303,8 +303,8 @@ CREATE TABLE t_alliances_members (
 CREATE INDEX i_alliances_members_permissions ON t_alliances_members ( c_tag, c_member, c_permissions );
 
 CREATE TABLE t_alliances_applications (
-	c_tag TEXT REFERENCES t_alliances ON UPDATE CASCADE,
-	c_user TEXT REFERENCES t_users ON UPDATE CASCADE,
+	c_tag TEXT REFERENCES t_alliances ON UPDATE CASCADE ON DELETE CASCADE,
+	c_user TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE CASCADE,
 	PRIMARY KEY (c_tag, c_user)
 );
 
@@ -377,22 +377,22 @@ CREATE TABLE t_messages (
 	c_time TIMESTAMP,
 	c_text TEXT,
 	c_parsed_text TEXT,
-	c_sender TEXT REFERENCES t_users,
+	c_sender TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE SET NULL,
 	c_subject TEXT,
 	c_html BOOLEAN DEFAULT false
 );
 
 CREATE TABLE t_messages_users (
-	c_message_id TEXT REFERENCES t_messages,
-	c_user TEXT REFERENCES t_users,
+	c_message_id TEXT REFERENCES t_messages ON UPDATE CASCADE ON DELETE CASCADE,
+	c_user TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE CASCADE,
 	c_type INTEGER,
 	c_status INTEGER,
 	PRIMARY KEY ( c_user, c_message_id )
 );
 
 CREATE TABLE t_messages_messages_recipients (
-	c_message_id TEXT REFERENCES t_messages,
-	c_recipient TEXT REFERENCES t_users,
+	c_message_id TEXT REFERENCES t_messages ON UPDATE CASCADE ON DELETE CASCADE,
+	c_recipient TEXT REFERENCES t_users ON UPDATE CASCADE ON DELETE CASCADE,
 	PRIMARY KEY ( c_recipient, c_message_id )
 );
 
@@ -417,7 +417,7 @@ CREATE TABLE t_market (
 	c_id BIGINT PRIMARY KEY,
 	c_galaxy INTEGER,
 	c_system INTEGER,
-	c_user TEXT REFERENCES t_users,
+	c_user TEXT REFERENCES t_users ON UPDATE CASCADE,
 	c_planet INTEGER,
 	c_offered_resource INTEGER,
 	c_amount BIGINT,
@@ -429,9 +429,9 @@ CREATE TABLE t_market (
 	FOREIGN KEY ( c_galaxy, c_system, c_planet ) REFERENCES t_planets
 );
 
-CREATE INDEX i_market_offered_requested ON t_market ( c_offered_resource, c_requested_resource );
 CREATE INDEX i_market_offered_requested_price ON t_market ( c_offered_resource, c_requested_resource, c_min_price );
 CREATE INDEX i_market_planet ON t_market ( c_galaxy, c_system, c_planet );
+CREATE INDEX i_market_user ON t_market ( c_user );
 
 CREATE TABLE t_market_rate (
 	c_offer INTEGER,

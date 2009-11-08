@@ -26,6 +26,7 @@
 
 	/**
 	 * Repräsentiert eine veröffentlichte Nachricht im Spiel.
+	 * @todo t_ c_
 	*/
 
 	class PublicMessage extends SQLSet
