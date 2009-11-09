@@ -80,4 +80,13 @@
 		{
 			return date(_("Y-m-d\\TH:i:s"), $this->time);
 		}
+
+		/**
+		 * To be used by SQL->quote().
+		 * @return string
+		*/
+		function __toString()
+		{
+			return $this->getFormattedGMT();
+		}
 	}

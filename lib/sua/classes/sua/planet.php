@@ -31,7 +31,7 @@
 
 	class Planet extends SQLSet
 	{
-		protected $primary_index = array("t_planets", "c_galaxy || ':' || c_system || ':' || c_planet");
+		protected static $primary_key = array("t_planets", "c_galaxy || ':' || c_system || ':' || c_planet");
 
 		static function idFromParams(array $params)
 		{
@@ -257,7 +257,7 @@
 
 		static function randomFreePlanet()
 		{
-			$result = self::$sql->singleField("SELECT c_galaxy || ':' || c_system || ':' || c_planet FROM t_planets WHERE NOT c_user OR c_user IS NULL ORDER BY RANDOM() LIMIT 1;");
+			$result = self::$sql->singleField("SELECT c_galaxy || ':' || c_system || ':' || c_planet FROM t_planets WHERE c_user IS NULL ORDER BY RANDOM() LIMIT 1;");
 			if($result === false)
 				throw new PlanetException("No free planets available.");
 			return Classes::Planet($result);
@@ -957,7 +957,7 @@
 						return null;
 					return array($query["c_id"], $query["c_start"]+$query["c_duration"], $query["c_number"] < 0, array($query["c_cost0"], $query["c_cost1"], $query["c_cost2"], $query["c_cost3"]));
 				case "forschung":
-					$query = self::$sql->singleLine("SELECT c_id,c_start,c_duration,c_cost0,c_cost1,c_cost2,c_cost3,".($type == "forschung" ? "c_global" : "c_number")." FROM t_planets_building WHERE ".$this->sqlCond()." AND c_type = ".self::$sql->quote($type).";")
+					$query = self::$sql->singleLine("SELECT c_id,c_start,c_duration,c_cost0,c_cost1,c_cost2,c_cost3,".($type == "forschung" ? "c_global" : "c_number")." FROM t_planets_building WHERE ".$this->sqlCond()." AND c_type = ".self::$sql->quote($type).";");
 					if(!$query)
 					{
 						foreach(self::getPlanetsByUser($this->getOwner()) as $planet)

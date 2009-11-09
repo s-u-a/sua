@@ -31,7 +31,7 @@
 
 	class Galaxy extends SQLSet implements \Iterator,StaticInit
 	{
-		protected static $primary_index = array("t_galaxies", "c_galaxy");
+		protected static $primary_key = array("t_galaxies", "c_galaxy");
 
 		static function init()
 		{

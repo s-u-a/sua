@@ -78,7 +78,7 @@
 				$GUI->setOption("login_username", $_REQUEST["username"]);
 				$GUI->init();
 ?>
-<p class="successful"><?=L::h(sprintf(_("Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten %s."), Planet::format($koords)))?></p>
+<p class="successful"><?=L::h(sprintf(_("Die Registrierung war erfolgreich. Sie können sich nun anmelden. Die Koordinaten Ihres Hauptplaneten lauten %s."), $koords->format()))?></p>
 <?php
 				$GUI->loginFormular();
 			}

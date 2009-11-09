@@ -26,6 +26,7 @@
 	/**
 	 * Einheitliche Funktionen, um mit bestimmten Objekten aus der Datenbank wie
 	 * Benutzern, Nachrichten oder Allianzen umzugehen.
+	 * @todo Re-enable abstract keywords as soon as PHP stops printing errors on them.
 	*/
 
 	abstract class Dataset implements Singleton
@@ -43,7 +44,7 @@
 		 * @param $name string Null, wenn ein neuer Name erzeugt werden soll.
 		 * @return String Die ID des neuen Objekts (normalerweise datasetName($name))
 		*/
-		abstract static public function create($name=null);
+		/*abstract*/ static public function create($name=null) {}
 
 		/**
 		 * Löscht das instanzierte Datenset aus der Datenbank.
@@ -55,19 +56,19 @@
 		 * Gibt eine Liste aller Datensets des implementierenden Typs zurück.
 		 * @return array(string)
 		*/
-		abstract static public function getList();
+		/*abstract*/ static public function getList() {}
 
 		/**
 		 * Gibt die Anzahl existierender Sets des implementierenden Typs zurück (count(getList())).
 		 * @return int
 		*/
-		abstract static public function getNumber();
+		/*abstract*/ static public function getNumber() {}
 
 		/**
 		 * Gibt zurück, ob das angegebene Datenset existiert.
 		 * @return bool
 		*/
-		abstract static public function exists($name);
+		/*abstract*/ static public function exists($name) {}
 
 		static public function datasetName($name=null)
 		{

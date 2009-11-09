@@ -79,12 +79,12 @@
 
 		protected static function getMainFieldName()
 		{
-			return self::$primary_key[1];
+			return static::$primary_key[1];
 		}
 
 		protected static function getMainTableName()
 		{
-			return self::$primary_key[0];
+			return static::$primary_key[0];
 		}
 
 		static function getList()

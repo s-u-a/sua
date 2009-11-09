@@ -50,6 +50,12 @@
 		private $transactions = array();
 
 		/**
+		 * Enthält den DSN des PDO-Objekts. Siehe zum Beispiel http://www.php.net/manual/en/ref.pdo-pgsql.connection.php.
+		 * @var string
+		*/
+		private $dsn;
+
+		/**
 		 * Öffnet die Datenbank unter dem DSN $dsn. Alternativ kann auch ein Datenbankobjekt übergeben werden, dann
 		 * wird die dort konfigurierte SQL-Datenbank verwendet.
 		 * @param string|Database $dsn See http://www.php.net/manual/en/ref.pdo-pgsql.connection.php for example
@@ -57,11 +63,11 @@
 
 		function __construct($dsn = null)
 		{
-			if($filename instanceof Database)
-				$this->filename = $filename->getConfigValueE("database");
+			if($dsn instanceof Database)
+				$this->dsn = $dsn->getConfig()->getConfigValueE("database");
 			else
-				$this->filename = $filename;
-			$this->connection = new \PDO($this->filename);
+				$this->dsn = $dsn;
+			$this->connection = new \PDO($this->dsn);
 			$this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 			$this->connection->setAttribute(\PDO::ATTR_TIMEOUT, 86400);
 		}
@@ -286,6 +292,7 @@
 		function printException(\Exception $exception, $query)
 		{
 			Logger::log("PDO error, query: ".$query);
+			echo "<pre>";
 			throw $exception;
 		}
 	}

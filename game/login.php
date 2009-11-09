@@ -30,8 +30,10 @@
 
 	require_once("lib/sua/engine.php");
 
+	$HROOT = HTTPOutput::getHPath(dirname(__FILE__));
+
 	if(!isset($_COOKIE["use_cookies"]) && !headers_sent())
-		setcookie("use_cookies", "1", time()+4838400, global_setting("h_root")."/");
+		setcookie("use_cookies", "1", time()+4838400, $HROOT."/");
 	ini_set("session.use_cookies", "0");
 
 	if(isset($_GET[session_name()]))
@@ -41,12 +43,12 @@
 
 	if(HTTPOutput::getProtocol() != "https" && (!isset($_COOKIE["use_ssl"]) || $_COOKIE["use_ssl"]))
 	{
-		setcookie("use_ssl", "0", time()+4838400, HROOT."/");
+		setcookie("use_ssl", "0", time()+4838400, $HROOT."/");
 		$_COOKIE["use_ssl"] = "0";
 	}
 	elseif(HTTPOutput::getProtocol() == "https" && isset($_COOKIE["use_ssl"]) && !$_COOKIE["use_ssl"])
 	{
-		setcookie("use_ssl", "1", time()+4838400, HROOT."/");
+		setcookie("use_ssl", "1", time()+4838400, $HROOT."/");
 		$_COOKIE["use_ssl"] = "1";
 	}
 	$GUI->setOption("protocol", HTTPOutput::getProtocol());
@@ -122,15 +124,13 @@
 		$_SESSION["last_click"] = time();
 
 		if(!isset($_COOKIE[session_name()]))
-			setcookie(session_name(), session_id(), 0, HROOT."/");
-
-		var_dump($_SESSION);
+			setcookie(session_name(), session_id(), 0, $HROOT."/");
 
 		if(isset($_REQUEST["resume"]))
 			HTTPOutput::changeURL($_REQUEST["resume"]);
 		elseif($last_request = $user_obj->lastRequest())
 		{
-			$url = 'http://'.$_SERVER["HTTP_HOST"].HROOT.$last_request;
+			$url = 'http://'.$_SERVER["HTTP_HOST"].$HROOT.$last_request;
 
 			$url = explode('?', $url, 2);
 			if(isset($url[1]))
@@ -148,7 +148,7 @@
 			HTTPOutput::changeURL($url, false);
 		}
 		else
-			HTTPOutput::changeURL("http://".$_SERVER["HTTP_HOST"].HROOT."/?".urlencode(session_name())."=".urlencode(session_id()), false);
+			HTTPOutput::changeURL("http://".$_SERVER["HTTP_HOST"].$HROOT."/?".urlencode(session_name())."=".urlencode(session_id()), false);
 	}
 	else
 	{

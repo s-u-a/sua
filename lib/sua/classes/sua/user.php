@@ -88,7 +88,7 @@
 			if(self::exists($name))
 				throw new UserException("This user does already exist.");
 
-			self::$sql->query("INSERT INTO t_users ( c_user, c_registration ) VALUES ( ".self::$sql->quote($name).", ".self::$sql->quote(time())." );");
+			self::$sql->query("INSERT INTO t_users ( c_user, c_registration ) VALUES ( ".self::$sql->quote($name).", ".self::$sql->quote(Classes::Date())." );");
 			self::$sql->query("INSERT INTO t_users_settings ( c_user, c_setting, c_value ) VALUES ( ".self::$sql->quote($name).", ".self::$sql->quote("lang").", ".self::$sql->quote(serialize(L::language()))." );");
 
 			return $name;
@@ -431,7 +431,7 @@
 		{
 			if(isset($url))
 				$this->setMainField("c_last_request_uri", $url);
-			$this->setMainField("c_last_activity", time());
+			$this->setMainField("c_last_activity", Classes::Date());
 		}
 
 		/**
@@ -839,12 +839,12 @@
 		{
 			if($address === $this->getTemporaryEMailAddress() && $do_delay)
 				return;
-			self::$sql->backgroundQuery("DELETE FROM t_users_email WHERE c_user = ".self::$sql->quote($this->getName())." AND c_valid_from > ".self::$sql->quote(time()).";");
+			self::$sql->backgroundQuery("DELETE FROM t_users_email WHERE c_user = ".self::$sql->quote($this->getName())." AND c_valid_from > ".self::$sql->quote(Classes::Date()).";");
 
 			if($address == $this->getEMailAddress())
 				return;
 
-			self::$sql->backgroundQuery("INSERT INTO t_users_email ( c_user, c_email, c_valid_from ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($email).", ".self::$sql->quote(time()+($do_delay ? Config::getLibConfig()->getConfigValue("users", "email_change_delay") : 0))." );");
+			self::$sql->backgroundQuery("INSERT INTO t_users_email ( c_user, c_email, c_valid_from ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($address).", ".self::$sql->quote(Classes::Date(time()+($do_delay ? Config::getLibConfig()->getConfigValue("users", "email_change_delay") : 0)))." );");
 		}
 
 		/**

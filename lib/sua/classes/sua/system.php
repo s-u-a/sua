@@ -31,7 +31,7 @@
 
 	class System extends SQLSet implements \Iterator,StaticInit
 	{
-		protected static $primary_key = array("t_systems", "c_galaxy || ':' || c_system");
+		protected static $primary_key = array("t_systems", "c_id");
 
 		private $active_planet;
 
