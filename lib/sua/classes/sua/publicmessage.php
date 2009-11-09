@@ -26,7 +26,6 @@
 
 	/**
 	 * Repräsentiert eine veröffentlichte Nachricht im Spiel.
-	 * @todo t_ c_
 	*/
 
 	class PublicMessage extends SQLSet
@@ -39,7 +38,7 @@
 			if(self::exists($name))
 				throw new DatasetException("Dataset already exists.");
 
-			self::$sql->query("INSERT INTO public_messages ( message_id, last_view ) VALUES ( ".self::$sql->escape($message_id).", ".self::$sql->escape(time())." );");
+			self::$sql->query("INSERT INTO t_public_messages ( c_message_id, c_last_view ) VALUES ( ".self::$sql->escape($message_id).", ".self::$sql->escape(time())." );");
 			return $name;
 		}
 
@@ -68,7 +67,7 @@
 
 		protected function _read()
 		{
-			$this->setMainField("last_view", time());
+			$this->setMainField("c_last_view", time());
 		}
 
 		/**
@@ -78,7 +77,7 @@
 
 		function getLastViewTime()
 		{
-			return $this->getMainField("last_view");
+			return $this->getMainField("c_last_view");
 		}
 
 		/**
@@ -96,7 +95,7 @@
 
 			if(!isset($text))
 			{ // Text zurückgeben
-				$text = $this->getMainField("parsed");
+				$text = $this->getMainField("c_parsed");
 				if($filter)
 				{
 					$text = preg_replace('/ ?<span class="koords">.*?<\\/span>/', '', $text);
@@ -107,12 +106,12 @@
 			}
 
 			// Text setzen
-			$this->setMainField("text", $text);
+			$this->setMainField("c_text", $text);
 			$this->_createParsed();
 			if($this->html())
-				$this->setMainField("parsed", $text);
+				$this->setMainField("c_parsed", $text);
 			else
-				$this->setMainField("parsed", FormattedString::parseHTML($text));
+				$this->setMainField("c_parsed", FormattedString::parseHTML($text));
 		}
 
 		/**
@@ -125,9 +124,9 @@
 		function from($from=null)
 		{
 			if(!isset($from))
-				return $this->getMainField("sender");
+				return $this->getMainField("c_sender");
 			else
-				$this->setMainField("sender", $from);
+				$this->setMainField("c_sender", $from);
 		}
 
 		/**
@@ -140,9 +139,9 @@
 		function subject($subject=false)
 		{
 			if(!isset($subject))
-				return $this->getMainField("subject");
+				return $this->getMainField("c_subject");
 			else
-				$this->setMainField("subject", $subject);
+				$this->setMainField("c_subject", $subject);
 		}
 
 		/**
@@ -155,9 +154,9 @@
 		function html($html=null)
 		{
 			if(!isset($html))
-				return (true && $this->getMainField("html"));
+				return (true && $this->getMainField("c_html"));
 			else
-				$this->setMainField("html", $html ? 1 : 0);
+				$this->setMainField("c_html", true && $html);
 		}
 
 		/**
@@ -170,9 +169,9 @@
 		function type($type=null)
 		{
 			if(!isset($type))
-				return $this->getMainField("type");
+				return $this->getMainField("c_type");
 			else
-				$this->setMainField("type", $type);
+				$this->setMainField("c_type", $type);
 		}
 
 		/**
@@ -185,9 +184,9 @@
 		function time($time=null)
 		{
 			if(!isset($type))
-				return $this->getMainField("time");
+				return $this->getMainField("c_time");
 			else
-				$this->setMainField("time", $time);
+				$this->setMainField("c_time", $time);
 		}
 
 		/**
@@ -200,9 +199,9 @@
 		function to($to=null)
 		{
 			if(!isset($to))
-				return $this->getMainField("receiver");
+				return $this->getMainField("c_receiver");
 			else
-				$this->setMainField("receiver", $to);
+				$this->setMainField("c_receiver", $to);
 		}
 
 		/**
@@ -216,8 +215,8 @@
 			$public_messages_time = Config::getLibConfig()->getConfigValue("public_messages_time");
 			if(!$public_messages_time)
 				return 0;
-			$count = self::$sql->singleField("SELECT COUNT(*) FROM public_messages WHERE last_view < ".(time()-$public_messages_time*86400).";");
-			self::$sql->query("DELETE FROM public_messages WHERE last_view < ".(time()-$public_messages_time*86400).";");
+			$count = self::$sql->singleField("SELECT COUNT(*) FROM t_public_messages WHERE c_last_view < ".(time()-$public_messages_time*86400).";");
+			self::$sql->query("DELETE FROM t_public_messages WHERE c_last_view < ".(time()-$public_messages_time*86400).";");
 			return $count;
 		}
 	}

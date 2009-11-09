@@ -27,7 +27,6 @@
 	/**
 	 * Repräsentiert einen Planeten im Universum.
 	 * Konstruktor: Classes::Planet(System $system, int $planet)
-	 * @todo t_ c_
 	*/
 
 	class Planet extends SQLSet
@@ -64,7 +63,7 @@
 				throw new PlanetException("This planet does already exist.");
 			$name = self::datasetName($name);
 			list($system, $planet) = self::paramsFromId($name);
-			self::$sql->query("INSERT INTO planets ( galaxy, system, planet, size_original ) VALUES ( ".self::$sql->quote($system->getGalaxy()).", ".self::$sql->quote($system->getSystem()).", ".self::$sql->quote($planet).", ROUND((RANDOM()+9223372036854775808)*400/(9223372036854775808+9223372036854775807)+100) );");
+			self::$sql->query("INSERT INTO t_planets ( c_galaxy, c_system, c_planet, c_size_original ) VALUES ( ".self::$sql->quote($system->getGalaxy()).", ".self::$sql->quote($system->getSystem()).", ".self::$sql->quote($planet).", ROUND(RANDOM()*400)+100) );");
 			return self::idFromParams(array($system, $planet));
 		}
 
@@ -76,9 +75,9 @@
 		{
 			if($this->getOwner())
 				$this->decolonise();
-			self::$sql->query("DELETE FROM planets WHERE ".$this->sqlCond().";");
-			self::$sql->query("DELETE FROM planets_items WHERE ".$this->sqlCond().";");
-			self::$sql->query("DELETE FROM planets_building WHERE ".$this->sqlCond().";");
+			self::$sql->query("DELETE FROM t_planets_items WHERE ".$this->sqlCond().";");
+			self::$sql->query("DELETE FROM t_planets_building WHERE ".$this->sqlCond().";");
+			self::$sql->query("DELETE FROM t_planets WHERE ".$this->sqlCond().";");
 		}
 
 		/**
@@ -120,7 +119,7 @@
 
 		private function sqlCond()
 		{
-			return "galaxy = ".self::$sql->quote($this->getGalaxy())." AND system = ".self::$sql->quote($this->getSystem())." AND planet = ".self::$sql->quote($this->getPlanet());
+			return "c_galaxy = ".self::$sql->quote($this->getGalaxy())." AND c_system = ".self::$sql->quote($this->getSystem())." AND c_planet = ".self::$sql->quote($this->getPlanet());
 		}
 
 		/**
@@ -153,7 +152,7 @@
 
 		function getOwner()
 		{
-			return $this->getMainField("user");
+			return $this->getMainField("c_user");
 		}
 
 		/**
@@ -163,7 +162,7 @@
 
 		function getGivenName()
 		{
-			return $this->getMainField("name");
+			return $this->getMainField("c_name");
 		}
 
 		/**
@@ -174,7 +173,7 @@
 
 		function getSize($original=false)
 		{
-			return $this->getMainField($original ? "size_original" : "size");
+			return $this->getMainField($original ? "c_size_original" : "c_size");
 		}
 
 		/**
@@ -184,7 +183,7 @@
 
 		function getUsedFields()
 		{
-			return self::$sql->singleField("SELECT SUM(fields) FROM planets_items WHERE galaxy = ".self::$sql->quote($this->getGalaxy())." AND system = ".self::$sql->quote($this->getSystem())." AND planet = ".self::$sql->quote($this->getPlanet()).";");
+			return self::$sql->singleField("SELECT SUM(c_fields) FROM t_planets_items WHERE c_galaxy = ".self::$sql->quote($this->getGalaxy())." AND c_system = ".self::$sql->quote($this->getSystem())." AND c_planet = ".self::$sql->quote($this->getPlanet()).";");
 		}
 
 		/**
@@ -205,7 +204,7 @@
 
 		function _setFields($size)
 		{
-			$this->setMainField("size", $size);
+			$this->setMainField("c_size", $size);
 		}
 
 		/**
@@ -258,7 +257,7 @@
 
 		static function randomFreePlanet()
 		{
-			$result = self::$sql->singleField("SELECT galaxy || ':' || system || ':' || planet FROM planets WHERE NOT user OR user IS NULL ORDER BY RANDOM() LIMIT 1;");
+			$result = self::$sql->singleField("SELECT c_galaxy || ':' || c_system || ':' || c_planet FROM t_planets WHERE NOT c_user OR c_user IS NULL ORDER BY RANDOM() LIMIT 1;");
 			if($result === false)
 				throw new PlanetException("No free planets available.");
 			return Classes::Planet($result);
@@ -308,9 +307,9 @@
 		static function getPlanetsByUser($user)
 		{
 			$return = array();
-			self::$sql->query("SELECT galaxy,system,planet FROM planets WHERE user = ".self::$sql->quote($user)." ORDER BY user_index ASC;");
+			self::$sql->query("SELECT c_galaxy,c_system,c_planet FROM t_planets WHERE c_user = ".self::$sql->quote($user)." ORDER BY c_user_index ASC;");
 			while(($r = self::$sql->nextResult()) !== false)
-				$return[] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
+				$return[] = Planet::fromKoords($r["c_galaxy"], $r["c_system"], $r["c_planet"]);
 			return $return;
 		}
 
@@ -321,7 +320,7 @@
 
 		function getTruemmerfeld()
 		{
-			return array($this->getMainField("tf0"), $this->getMainField("tf1"), $this->getMainField("tf2"), $this->getMainField("tf3"));
+			return array($this->getMainField("c_tf0"), $this->getMainField("c_tf1"), $this->getMainField("c_tf2"), $this->getMainField("c_tf3"));
 		}
 
 		/**
@@ -332,10 +331,10 @@
 
 		function setTruemmerfeld($ress)
 		{
-			$this->setMainField("tf0", $ress[0]);
-			$this->setMainField("tf1", $ress[1]);
-			$this->setMainField("tf2", $ress[2]);
-			$this->setMainField("tf3", $ress[3]);
+			$this->setMainField("c_tf0", $ress[0]);
+			$this->setMainField("c_tf1", $ress[1]);
+			$this->setMainField("c_tf2", $ress[2]);
+			$this->setMainField("c_tf3", $ress[3]);
 		}
 
 		/**
@@ -391,9 +390,9 @@
 			Fleet::planetRemoved($this);
 
 			# Planeten aus der Karte loeschen
-			self::$sql->backgroundQuery("UPDATE planets SET user = NULL, name = NULL, size = size_original, ress0 = 0, ress1 = 0, ress2 = 0, ress3 = 0, ress4 = 0 WHERE galaxy = ".self::$sql->quote($this->getGalaxy())." AND system = ".self::$sql->quote($this->getSystem())." AND planet = ".self::$sql->quote($this->getPlanet()));
-			self::$sql->backgroundQuery("DELETE FROM planets_items WHERE galaxy = ".self::$sql->quote($this->getGalaxy())." AND system = ".self::$sql->quote($this->getSystem())." AND planet = ".self::$sql->quote($this->getPlanet()));
-			self::$sql->backgroundQuery("DELETE FROM planets_building WHERE galaxy = ".self::$sql->quote($this->getGalaxy())." AND system = ".self::$sql->quote($this->getSystem())." AND planet = ".self::$sql->quote($this->getPlanet()));
+			self::$sql->backgroundQuery("UPDATE t_planets SET c_user = NULL, c_name = NULL, c_size = c_size_original, c_ress0 = 0, c_ress1 = 0, c_ress2 = 0, c_ress3 = 0, c_ress4 = 0 WHERE c_galaxy = ".self::$sql->quote($this->getGalaxy())." AND c_system = ".self::$sql->quote($this->getSystem())." AND c_planet = ".self::$sql->quote($this->getPlanet()));
+			self::$sql->backgroundQuery("DELETE FROM t_planets_items WHERE c_galaxy = ".self::$sql->quote($this->getGalaxy())." AND c_system = ".self::$sql->quote($this->getSystem())." AND c_planet = ".self::$sql->quote($this->getPlanet()));
+			self::$sql->backgroundQuery("DELETE FROM t_planets_building WHERE c_galaxy = ".self::$sql->quote($this->getGalaxy())." AND c_system = ".self::$sql->quote($this->getSystem())." AND c_planet = ".self::$sql->quote($this->getPlanet()));
 		}
 
 		/**
@@ -411,20 +410,20 @@
 			if($this->getOwner())
 				throw new PlanetException("This planet is already colonised.");
 
-			$this->setMainField("user", $user_obj->getName());
-			$this->setMainField("name", $user_obj->_("Kolonie"));
+			$this->setMainField("c_user", $user_obj->getName());
+			$this->setMainField("c_name", $user_obj->_("Kolonie"));
 
 			if(count($this->getPlanetsByUser($user)) <= 0) $size = 375;
 			else $size = $this->getSize(true);
 			$size = floor($size*($user_obj->getItemLevel("F9", "forschung")/Item::getIngtechFactor()+1));
-			$this->setMainField("size", $size);
+			$this->setMainField("c_size", $size);
 
-			$index = self::$sql->singleField("SELECT MAX(user_index) FROM planets WHERE user = ".self::$sql->quote($user));
+			$index = self::$sql->singleField("SELECT MAX(c_user_index) FROM t_planets WHERE c_user = ".self::$sql->quote($user));
 			if($index === false)
 				$index = 0;
 			else
 				$index++;
-			$this->setMainField("user_index", $index);
+			$this->setMainField("c_user_index", $index);
 
 			return $index;
 		}
@@ -438,15 +437,15 @@
 
 		function moveUp()
 		{
-			$owner = $this->getMainField("user");
+			$owner = $this->getMainField("c_user");
 			if(!$owner)
 				throw PlanetException("This planet is not colonised.");
-			$current_index = $this->getMainField("user_index");
-			$next_index = self::$sql->singleLine("SELECT galaxy,system,planet,user_index FROM planets WHERE user_index < ".self::$sql->quote($current_index)." ORDER BY user_index DESC LIMIT 1;");
+			$current_index = $this->getMainField("c_user_index");
+			$next_index = self::$sql->singleLine("SELECT c_galaxy,c_system,c_planet,c_user_index FROM t_planets WHERE c_user_index < ".self::$sql->quote($current_index)." ORDER BY c_user_index DESC LIMIT 1;");
 			if(!$next_index)
 				throw new UserException("This planet is on the top.");
-			self::$sql->backgroundQuery("UPDATE planets SET user_index = ".self::$sql->quote($current_index)." WHERE galaxy = ".self::$sql->quote($next_index["galaxy"])." AND system = ".self::$sql->quote($next_index["system"])." AND planet = ".self::$sql->quote($next_index["planet"]).";");
-			self::$sql->backgroundQuery("UPDATE planets SET user_index = ".self::$sql->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
+			self::$sql->backgroundQuery("UPDATE t_planets SET c_user_index = ".self::$sql->quote($current_index)." WHERE c_galaxy = ".self::$sql->quote($next_index["c_galaxy"])." AND c_system = ".self::$sql->quote($next_index["c_system"])." AND c_planet = ".self::$sql->quote($next_index["c_planet"]).";");
+			self::$sql->backgroundQuery("UPDATE t_planets SET c_user_index = ".self::$sql->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
 		}
 
 		/**
@@ -458,15 +457,15 @@
 
 		function moveDown()
 		{
-			$owner = $this->getMainField("user");
+			$owner = $this->getMainField("c_user");
 			if(!$owner)
 				throw PlanetException("This planet is not colonised.");
-			$current_index = $this->getMainField("user_index");
-			$next_index = self::$sql->singleLine("SELECT galaxy,system,planet,user_index FROM planets WHERE user_index > ".self::$sql->quote($current_index)." ORDER BY user_index ASC LIMIT 1;");
+			$current_index = $this->getMainField("c_user_index");
+			$next_index = self::$sql->singleLine("SELECT c_galaxy,c_system,c_planet,c_user_index FROM t_planets WHERE c_user_index > ".self::$sql->quote($current_index)." ORDER BY c_user_index ASC LIMIT 1;");
 			if(!$next_index)
 				throw new UserException("This planet is on the bottom.");
-			self::$sql->backgroundQuery("UPDATE planets SET user_index = ".self::$sql->quote($current_index)." WHERE galaxy = ".self::$sql->quote($next_index["galaxy"])." AND system = ".self::$sql->quote($next_index["system"])." AND planet = ".self::$sql->quote($next_index["planet"]).";");
-			self::$sql->backgroundQuery("UPDATE planets SET user_index = ".self::$sql->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
+			self::$sql->backgroundQuery("UPDATE t_planets SET c_user_index = ".self::$sql->quote($current_index)." WHERE c_galaxy = ".self::$sql->quote($next_index["c_galaxy"])." AND c_system = ".self::$sql->quote($next_index["c_system"])." AND c_planet = ".self::$sql->quote($next_index["c_planet"]).";");
+			self::$sql->backgroundQuery("UPDATE t_planets SET c_user_index = ".self::$sql->quote($next_index["index"])." WHERE ".$this->sqlCond().";");
 		}
 
 		/**
@@ -477,7 +476,7 @@
 
 		function setGivenName($name)
 		{
-			$this->setMainField("name", $name);
+			$this->setMainField("c_name", $name);
 		}
 
 		/**
@@ -499,7 +498,7 @@
 				}
 			}
 
-			$ress = $this->getMainField(array("ress0", "ress1", "ress2", "ress3", "ress4"));
+			$ress = $this->getMainField(array("c_ress0", "c_ress1", "c_ress2", "c_ress3", "c_ress4"));
 
 			if($refresh)
 			{
@@ -518,13 +517,13 @@
 
 		function addRess(array $ress)
 		{
-			$cur = $this->getMainField(array("ress0", "ress1", "ress2", "ress3", "ress4"));
+			$cur = $this->getMainField(array("c_ress0", "c_ress1", "c_ress2", "c_ress3", "c_ress4"));
 			if(isset($ress[0])) $cur[0] += $ress[0];
 			if(isset($ress[1])) $cur[1] += $ress[1];
 			if(isset($ress[2])) $cur[2] += $ress[2];
 			if(isset($ress[3])) $cur[3] += $ress[3];
 			if(isset($ress[4])) $cur[4] += $ress[4];
-			$this->setMainField(array("ress0", "ress1", "ress2", "ress3", "ress4"), $cur);
+			$this->setMainField(array("c_ress0", "c_ress1", "c_ress2", "c_ress3", "c_ress4"), $cur);
 		}
 
 		/**
@@ -579,7 +578,7 @@
 		protected function refreshRess($a_time=null)
 		{
 			$time = isset($a_time) ? $a_time : time();
-			$last_refresh = $this->getMainField("last_refresh");
+			$last_refresh = $this->getMainField("c_last_refresh");
 			if($last_refresh == $time)
 				return;
 			elseif($last_refresh >= $time)
@@ -600,8 +599,8 @@
 					$cur[$i] = $limit[$i];
 			}
 
-			$this->setMainField(array("ress0", "ress1", "ress2", "ress3", "ress4"), $cur);
-			$this->setMainField("last_refresh", $time);
+			$this->setMainField(array("c_ress0", "c_ress1", "c_ress2", "c_ress3", "c_ress4"), $cur);
+			$this->setMainField("c_last_refresh", $time);
 		}
 
 		/**
@@ -612,7 +611,7 @@
 
 		function getProductionFactor($gebaeude)
 		{
-			$factor = self::$sql->singleField("SELECT prod_factor FROM planets_items WHERE ".$this->sqlCond()." AND id = ".self::$sql->quote($gebaeude)." LIMIT 1;");
+			$factor = self::$sql->singleField("SELECT c_prod_factor FROM t_planets_items WHERE ".$this->sqlCond()." AND c_id = ".self::$sql->quote($gebaeude)." LIMIT 1;");
 			if(!$factor)
 				$factor = 1;
 			return $factor;
@@ -632,7 +631,7 @@
 			if($factor < 0) $factor = 0;
 			if($factor > 1) $factor = 1;
 
-			self::$sql->backgroundQuery("UPDATE planets_items SET prod_factor = ".self::$sql->quote($factor)." WHERE ".$this->sqlCond()." AND id = ".self::$sql->quote($gebaeude).";");
+			self::$sql->backgroundQuery("UPDATE t_planets_items SET c_prod_factor = ".self::$sql->quote($factor)." WHERE ".$this->sqlCond()." AND c_id = ".self::$sql->quote($gebaeude).";");
 		}
 
 		/**
@@ -767,7 +766,7 @@
 				return $user_obj->getItemLevel($id);
 			}
 
-			$level = self::$sql->singleField("SELECT level FROM planets_items WHERE ".$this->sqlCond()." AND id = ".self::$sql->quote($id)." AND type = ".self::$sql->quote($type)." LIMIT 1;");
+			$level = self::$sql->singleField("SELECT c_level FROM t_planets_items WHERE ".$this->sqlCond()." AND c_id = ".self::$sql->quote($id)." AND c_type = ".self::$sql->quote($type)." LIMIT 1;");
 			if($level === false)
 				$level = 0;
 			return $level;
@@ -783,7 +782,7 @@
 
 		function _delayBuildingThings($seconds)
 		{
-			self::$sql->backgroundQuery("UPDATE planets_building SET start = start + ".self::$sql->quote($seconds)." WHERE ".$this->sqlCond().";");
+			self::$sql->backgroundQuery("UPDATE t_planets_building SET c_start = c_start + ".self::$sql->quote($seconds)." WHERE ".$this->sqlCond().";");
 		}
 
 		/**
@@ -796,7 +795,7 @@
 
 		static function renameUser($old_name, $new_name)
 		{
-			self::$sql->backgroundQuery("UPDATE planets SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($old_name).";");
+			self::$sql->backgroundQuery("UPDATE t_planets SET c_user = ".self::$sql->quote($new_name)." WHERE c_user = ".self::$sql->quote($old_name).";");
 		}
 
 		/**
@@ -809,7 +808,7 @@
 
 		static function increaseSize($user, $factor)
 		{
-			self::$sql->backgroundQuery("UPDATE planets SET size = CEIL(size*".self::$sql->quote($factor).") WHERE user = ".self::$sql->quote($user).";");
+			self::$sql->backgroundQuery("UPDATE t_planets SET c_size = CEIL(c_size*".self::$sql->quote($factor).") WHERE c_user = ".self::$sql->quote($user).";");
 		}
 
 		/**
@@ -857,10 +856,10 @@
 				$type = Item::getItemType($id);
 
 			// TODO: Punkte und belegte Felder aktualisieren
-			if(self::$sql->singleField("SELECT COUNT(*) FROM planets_items WHERE ".$this->sqlCond()." AND id = ".self::$sql->quote($id).";") > 0)
-				self::$sql->backgroundQuery("UPDATE planets_items SET level = level+".self::$sql->quote($value)." WHERE ".$this->sqlCond()." AND id = ".self::$sql->quote($id).";");
+			if(self::$sql->singleField("SELECT COUNT(*) FROM t_planets_items WHERE ".$this->sqlCond()." AND c_id = ".self::$sql->quote($id).";") > 0)
+				self::$sql->backgroundQuery("UPDATE t_planets_items SET c_level = c_level+".self::$sql->quote($value)." WHERE ".$this->sqlCond()." AND c_id = ".self::$sql->quote($id).";");
 			else
-				self::$sql->backgroundQuery("INSERT INTO planets_items ( galaxy, system, planet, id, level ) VALUES ( ".self::$sql->quote($this->getGalaxy()).", ".self::$sql->quote($this->getSystem()).", ".self::$sql->quote($this->getPlanet()).", ".self::$sql->quote($id).", ".self::$sql->quote($value)." );");
+				self::$sql->backgroundQuery("INSERT INTO t_planets_items ( c_galaxy, c_system, c_planet, c_id, c_level ) VALUES ( ".self::$sql->quote($this->getGalaxy()).", ".self::$sql->quote($this->getSystem()).", ".self::$sql->quote($this->getPlanet()).", ".self::$sql->quote($id).", ".self::$sql->quote($value)." );");
 
 			# Felder belegen
 			if($type == "gebaeude")
@@ -953,28 +952,28 @@
 			switch($type)
 			{
 				case "gebaeude":
-					$query = self::$sql->singleLine("SELECT id,start,duration,cost0,cost1,cost2,cost3,number FROM planets_building WHERE ".$this->sqlCond()." AND type = ".self::$sql->quote($type).";");
+					$query = self::$sql->singleLine("SELECT c_id,c_start,c_duration,c_cost0,c_cost1,c_cost2,c_cost3,c_number FROM t_planets_building WHERE ".$this->sqlCond()." AND c_type = ".self::$sql->quote($type).";");
 					if(!$query)
 						return null;
-					return array($query["id"], $query["start"]+$query["duration"], $query["number"] < 0, array($query["cost0"], $query["cost1"], $query["cost2"], $query["cost3"]));
+					return array($query["c_id"], $query["c_start"]+$query["c_duration"], $query["c_number"] < 0, array($query["c_cost0"], $query["c_cost1"], $query["c_cost2"], $query["c_cost3"]));
 				case "forschung":
-					$query = self::$sql->singleLine("SELECT id,start,duration,cost0,cost1,cost2,cost3,".($type == "forschung" ? "global" : "number")." FROM planets_building WHERE ".$this->sqlCond()." AND type = ".self::$sql->quote($type).";")
+					$query = self::$sql->singleLine("SELECT c_id,c_start,c_duration,c_cost0,c_cost1,c_cost2,c_cost3,".($type == "forschung" ? "c_global" : "c_number")." FROM t_planets_building WHERE ".$this->sqlCond()." AND c_type = ".self::$sql->quote($type).";")
 					if(!$query)
 					{
 						foreach(self::getPlanetsByUser($this->getOwner()) as $planet)
 						{
 							if($planet == $this) continue;
-							if(self::$sql->singleField("SELECT id FROM planets_building WHERE ".$planet->sqlCond()." AND type = 'forschung' AND global;"))
+							if(self::$sql->singleField("SELECT c_id FROM t_planets_building WHERE ".$planet->sqlCond()." AND c_type = 'forschung' AND c_global;"))
 								return $planet->checkBuildingThing("forschung");
 						}
 						return null;
 					}
-					return array($query["id"], $query["start"]+$query["duration"], ($type == "forschung" ? $query["global"] && true : $query["number"] < 0), array($query["cost0"], $query["cost1"], $query["cost2"], $query["cost3"]), $this);
+					return array($query["c_id"], $query["c_start"]+$query["c_duration"], ($type == "forschung" ? $query["c_global"] && true : $query["c_number"] < 0), array($query["c_cost0"], $query["c_cost1"], $query["c_cost2"], $query["c_cost3"]), $this);
 				case "roboter": case "schiffe": case "verteidigung":
-					self::$sql->query("SELECT id,start,duration,cost0,cost1,cost2,cost3,number FROM planets_building WHERE ".$this->sqlCond()." AND type = ".self::$sql->quote($type).";");
+					self::$sql->query("SELECT c_id,c_start,c_duration,c_cost0,c_cost1,c_cost2,c_cost3,c_number FROM t_planets_building WHERE ".$this->sqlCond()." AND c_type = ".self::$sql->quote($type).";");
 					$return = array();
 					while(($res = self::$sql->nextResult()) !== false)
-						$return[] = array($res["id"], $res["start"], $res["number"], $res["duration"], array($query["cost0"], $query["cost1"], $query["cost2"], $query["cost3"]));
+						$return[] = array($res["c_id"], $res["c_start"], $res["c_number"], $res["c_duration"], array($query["c_cost0"], $query["c_cost1"], $query["c_cost2"], $query["c_cost3"]));
 					return $return;
 				default:
 					throw new \InvalidArgumentException("Type ".$type." is unknown.");

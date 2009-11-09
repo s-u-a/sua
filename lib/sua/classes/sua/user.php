@@ -35,34 +35,33 @@
 	 * Völkern.
 	 * @todo Überlegen: Eventhandler muss auf allen Planeten ausgeführt werden, da Forschungen auf einem Planeten alle anderen beeinflussen
 	 * @todo setActivePlanet scheint noch verwendet zu werden
-	 * @todo t_ c_
 	*/
 
 	class User extends SQLSet implements \Iterator,StaticInit
 	{
 		/** Gebäudepunkte */
-		const SCORES_GEBAEUDE = "gebaeude";
+		const SCORES_GEBAEUDE = "c_gebaeude";
 
 		/** Forschungspunkte */
-		const SCORES_FORSCHUNG = "forschung";
+		const SCORES_FORSCHUNG = "c_forschung";
 
 		/** Roboterpunkte */
-		const SCORES_ROBOTER = "roboter";
+		const SCORES_ROBOTER = "c_roboter";
 
 		/** Flottenpunkte */
-		const SCORES_SCHIFFE = "schiffe";
+		const SCORES_SCHIFFE = "c_schiffe";
 
 		/** Verteidigungspunkte */
-		const SCORES_VERTEIDIGUNG = "verteidigung";
+		const SCORES_VERTEIDIGUNG = "c_verteidigung";
 
 		/** Flugerfahrungspunkte */
-		const SCORES_FLUGERFAHRUNG = "flightexp";
+		const SCORES_FLUGERFAHRUNG = "c_flightexp";
 
 		/** Kampferfahrungspunkte */
-		const SCORES_KAMPFERFAHRUNG = "battleexp";
+		const SCORES_KAMPFERFAHRUNG = "c_battleexp";
 
 		/** Gesamtpunktzahl */
-		const SCORES_TOTAL = "total";
+		const SCORES_TOTAL = "c_total";
 
 		/**
 		 * Gecachte Spracheinstellung für User->setLanguage() und User->restoreLanguage().
@@ -89,8 +88,8 @@
 			if(self::exists($name))
 				throw new UserException("This user does already exist.");
 
-			self::$sql->query("INSERT INTO users ( user, registration ) VALUES ( ".self::$sql->quote($name).", ".self::$sql->quote(time())." );");
-			self::$sql->query("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sql->quote($name).", ".self::$sql->quote("lang").", ".self::$sql->quote(serialize(L::language()))." );");
+			self::$sql->query("INSERT INTO t_users ( c_user, c_registration ) VALUES ( ".self::$sql->quote($name).", ".self::$sql->quote(time())." );");
+			self::$sql->query("INSERT INTO t_users_settings ( c_user, c_setting, c_value ) VALUES ( ".self::$sql->quote($name).", ".self::$sql->quote("lang").", ".self::$sql->quote(serialize(L::language()))." );");
 
 			return $name;
 		}
@@ -132,13 +131,13 @@
 
 			# Aus der Datenbank entfernen
 			self::$sql->beginTransaction();
-			self::$sql->transactionQuery("DELETE FROM users WHERE user = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("DELETE FROM users_research WHERE user = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("DELETE FROM users_friends WHERE user1 = ".self::$sql->quote($this->getName())." OR user2 = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("DELETE FROM users_friend_requests WHERE user_from = ".self::$sql->quote($this->getName())." OR user_to = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("DELETE FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("DELETE FROM users_settings WHERE user = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("DELETE FROM users_email WHERE user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM t_users WHERE c_user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM t_users_research WHERE c_user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM t_users_friends WHERE c_user1 = ".self::$sql->quote($this->getName())." OR c_user2 = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM t_users_friend_requests WHERE c_user_from = ".self::$sql->quote($this->getName())." OR c_user_to = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM t_users_shortcuts WHERE c_user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM t_users_settings WHERE c_user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("DELETE FROM t_users_email WHERE c_user = ".self::$sql->quote($this->getName()).";");
 			self::$sql->endTransaction();
 		}
 
@@ -154,25 +153,23 @@
 
 		function rename($new_name)
 		{
-			Planet::renameUser($this->getName(), $new_name);
+			/*Planet::renameUser($this->getName(), $new_name);
 			Message::renameUser($this->getName(), $new_name);
 			Fleet::renameUser($this->getName(), $new_name);
 			Alliance::renameUser($this->getName(), $new_name);
 			IMServer::renameUser($this->getName(), $new_name);
 
-			self::$sql->beginTransaction();
-			self::$sql->transactionQuery("UPDATE users SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("UPDATE users_research SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("UPDATE users_friends SET user1 = ".self::$sql->quote($new_name)." WHERE user1 = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("UPDATE users_friends SET user2 = ".self::$sql->quote($new_name)." WHERE user2 = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("UPDATE users_friend_requests SET user_from = ".self::$sql->quote($new_name)." WHERE user_from = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("UPDATE users_friend_requests SET user_to = ".self::$sql->quote($new_name)." WHERE user_to = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("UPDATE users_shortcuts SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("UPDATE users_settings SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($this->getName()).";");
-			self::$sql->transactionQuery("UPDATE users_email SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($this->getName()).";");
-			self::$sql->endTransaction();
-
-			parent::rename($new_name);
+			self::$sql->beginTransaction();*/
+			self::$sql->transactionQuery("UPDATE t_users SET c_user = ".self::$sql->quote($new_name)." WHERE c_user = ".self::$sql->quote($this->getName()).";");
+			/*self::$sql->transactionQuery("UPDATE t_users_research SET c_user = ".self::$sql->quote($new_name)." WHERE c_user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE t_users_friends SET c_user1 = ".self::$sql->quote($new_name)." WHERE c_user1 = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE t_users_friends SET c_user2 = ".self::$sql->quote($new_name)." WHERE c_user2 = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE t_users_friend_requests SET c_user_from = ".self::$sql->quote($new_name)." WHERE c_user_from = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE t_users_friend_requests SET c_user_to = ".self::$sql->quote($new_name)." WHERE c_user_to = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE t_users_shortcuts SET c_user = ".self::$sql->quote($new_name)." WHERE c_user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE t_users_settings SET c_user = ".self::$sql->quote($new_name)." WHERE c_user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->transactionQuery("UPDATE t_users_email SET c_user = ".self::$sql->quote($new_name)." WHERE c_user = ".self::$sql->quote($this->getName()).";");
+			self::$sql->endTransaction();*/
 		}
 
 		/**
@@ -189,21 +186,21 @@
 			$inact_delete = array(array_shift($inact[0]), array_shift($inact[1]));
 
 			$i = 0;
-			self::$sql->query("SELECT user,last_activity,holidays FROM users WHERE last_inactivity_mail != ".self::$sql->quote(date("Y-m"))." AND ( ( NOT holidays AND last_activity < ".self::$sql->query(time()-$user_inactivity[0][0]*86400)." ) OR ( holidays AND last_activity < ".self::$sql->query(time()-$user_inactivity[1][0]*86400)." ) );");
+			self::$sql->query("SELECT c_user,c_last_activity,c_holidays FROM t_users WHERE c_last_inactivity_mail != ".self::$sql->quote(date("Y-m"))." AND ( ( NOT c_holidays AND c_last_activity < ".self::$sql->query(time()-$user_inactivity[0][0]*86400)." ) OR ( c_holidays AND c_last_activity < ".self::$sql->query(time()-$user_inactivity[1][0]*86400)." ) );");
 			while(($r = self::$sql->nextResult()) !== false)
 			{
-				$user_obj = Classes::User($r["user"]);
-				if($r["last_activity"]-time() > $inact_delete[$r["umode"] ? 1 : 0]*86400)
+				$user_obj = Classes::User($r["c_user"]);
+				if($r["c_last_activity"]-time() > $inact_delete[$r["c_holidays"] ? 1 : 0]*86400)
 				{ # Benutzer löschen
 					$user_obj->destroy();
 					$i++;
 				}
-				elseif(in_array(floor(($r["last_activity"]-time())/86400), $inact[$r["umode"] ? 1 : 0]))
+				elseif(in_array(floor(($r["c_last_activity"]-time())/86400), $inact[$r["c_holidays"] ? 1 : 0]))
 				{
 					$user_obj->setLanguage();
-					$user_obj->_sendMail(sprintf(_("Inaktivität in %s"), _("[title_full]")), sprintf(_("Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in %s in %s angemeldet haben. Sie haben bis zum %s Zeit, sich anzumelden, danach wird Ihr Account einer automatischen Löschung unterzogen.\n\nDas Spiel erreichen Sie unter %s – Ihr Benutzername lautet %s."), _("[title_full]"), self::getDatabase()->getTitle(), date(_("Y-m-d"), $r["last_activity"]+$inact_delete[$r["umode"] ? 1 : 0]*86400), "http://".Config::getDefaultHostname()."/", $user_obj->getName()));
+					$user_obj->_sendMail(sprintf(_("Inaktivität in %s"), _("[title_full]")), sprintf(_("Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in %s in %s angemeldet haben. Sie haben bis zum %s Zeit, sich anzumelden, danach wird Ihr Account einer automatischen Löschung unterzogen.\n\nDas Spiel erreichen Sie unter %s – Ihr Benutzername lautet %s."), _("[title_full]"), self::getDatabase()->getTitle(), date(_("Y-m-d"), $r["c_last_activity"]+$inact_delete[$r["umode"] ? 1 : 0]*86400), "http://".Config::getDefaultHostname()."/", $user_obj->getName()));
 					$user_obj->restoreLanguage();
-					self::$sql->backgroundQuery("UPDATE users SET last_inactivity_mail = ".self::$sql->quote(date("Y-m"))." WHERE user = ".self::$sql->quote($r["user"]).";");
+					self::$sql->backgroundQuery("UPDATE t_users SET c_last_inactivity_mail = ".self::$sql->quote(date("Y-m"))." WHERE c_user = ".self::$sql->quote($r["c_user"]).";");
 				}
 			}
 			return $i;
@@ -219,28 +216,7 @@
 
 		function checkPassword($password)
 		{
-			$password_sha1 = $this->getMainField("password_sha1");
-			$password_md5 = $this->getMainField("password_md5");
-			if($password_sha1)
-				$return = (sha1($password) == $password_sha1);
-			elseif($password_md5)
-			{ // Es wird nur noch sha1 verwendet, aber bei manchen Benutzeraccounts steht unter Umständen nur die MD5-Summe drinnen,
-			  // wenn sie sich in einer alten Version registriert haben.
-				$return = (md5($password) == $password_md5);
-				if($return)
-				{ // Wenn das Passwort stimmt, wird die alte MD5-Summe rausgeschmissen und die SHA1-Summe eingetragen
-					$this->setMainField("password_sha1", sha1($password));
-					$this->setMainField("password_md5", "");
-				}
-			}
-			else
-				$return = false;
-
-			# Passwort stimmt, Passwort-vergessen-Funktion deaktivieren
-			if($return)
-				$this->setMainField("password_reset_hash", "");
-
-			return $return;
+			return sha1($password) == $this->getMainField("c_password_sha1");
 		}
 
 		/**
@@ -251,7 +227,7 @@
 
 		function setPassword($password)
 		{
-			$this->setMainField("password_sha1", sha1($password));
+			$this->setMainField("c_password_sha1", sha1($password));
 		}
 
 		/**
@@ -262,15 +238,7 @@
 
 		function passwordIsSet()
 		{
-			$hash_sha1 = $this->getMainField("password_sha1");
-			$hash_md5 = $this->getMainField("password_md5");
-
-			if(preg_match("/^[a-z0-9]{32}\$/", $hash_sha1))
-				return true;
-			elseif(preg_match("/^[a-z0-9]{32}\$/", $hash_md5))
-				return true;
-			else
-				return false;
+			return preg_match("/^[a-z0-9]{32}\$/", $this->getMainField("c_password_sha1"));
 		}
 
 		/**
@@ -281,7 +249,7 @@
 
 		static function getUserByOpenId($openid)
 		{
-			$openid = self::$sql->singleField("SELECT user FROM users_openid WHERE openid = ".self::$sql->quote($openid)." LIMIT 1;");
+			$openid = self::$sql->singleField("SELECT c_user FROM t_users_openid WHERE c_openid = ".self::$sql->quote($openid)." LIMIT 1;");
 			if(!$openid)
 				return null;
 			return $openid;
@@ -298,7 +266,7 @@
 		{
 			if(self::getUserByOpenId($openid))
 				throw new UserException("This OpenID is already used by another account.");
-			self::$sql->backgroundQuery("INSERT INTO users_openid ( user, openid ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($openid)." );");
+			self::$sql->backgroundQuery("INSERT INTO t_users_openid ( c_user, c_openid ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($openid)." );");
 		}
 
 		/**
@@ -308,7 +276,7 @@
 
 		function getOpenIds()
 		{
-			return self::$sql->singleColumn("SELECT openid FROM users_openid WHERE user = ".self::$sql->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT c_openid FROM t_users_openid WHERE c_user = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -326,7 +294,7 @@
 				throw new UserException("This OpenID is not assigned to this user.");
 			if(count($openids) < 2 && !$this->passwordIsSet())
 				throw new UserException("This OpenID may not be removed unless a password is set.");
-			self::$sql->backgroundQuery("DELETE FROM users_openid WHERE user = ".self::$sql->quote($this->getName())." AND openid = ".self::$sql->quote($openid).";");
+			self::$sql->backgroundQuery("DELETE FROM t_users_openid WHERE c_user = ".self::$sql->quote($this->getName())." AND c_openid = ".self::$sql->quote($openid).";");
 		}
 
 		/**
@@ -337,7 +305,7 @@
 
 		function checkSetting($setting)
 		{
-			$value = self::$sql->singleField("SELECT value FROM users_settings WHERE user = ".self::$sql->quote($this->getName())." AND setting = ".self::$sql->quote($setting)." LIMIT 1;");
+			$value = self::$sql->singleField("SELECT c_value FROM t_users_settings WHERE c_user = ".self::$sql->quote($this->getName())." AND c_setting = ".self::$sql->quote($setting)." LIMIT 1;");
 			if($value === false)
 			{
 				switch($setting)
@@ -400,10 +368,10 @@
 
 		function setSetting($setting, $value)
 		{
-			if(self::$sql->singleField("SELECT COUNT(*) FROM users_settings WHERE user = ".self::$sql->quote($this->getName())." AND setting = ".self::$sql->quote($setting)." LIMIT 1;") > 0)
-				self::$sql->backgroundQuery("UPDATE users_settings SET value = ".self::$sql->quote(serialize($value))." WHERE user = ".self::$sql->quote($this->getName())." AND setting = ".self::$sql->quote($setting)." LIMIT 1;");
+			if(self::$sql->singleField("SELECT COUNT(*) FROM t_users_settings WHERE c_user = ".self::$sql->quote($this->getName())." AND c_setting = ".self::$sql->quote($setting)." LIMIT 1;") > 0)
+				self::$sql->backgroundQuery("UPDATE t_users_settings SET c_value = ".self::$sql->quote(serialize($value))." WHERE c_user = ".self::$sql->quote($this->getName())." AND c_setting = ".self::$sql->quote($setting)." LIMIT 1;");
 			else
-				self::$sql->backgroundQuery("INSERT INTO users_settings ( user, setting, value ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($setting).", ".self::$sql->quote(serialize($value))." );");
+				self::$sql->backgroundQuery("INSERT INTO t_users_settings ( c_user, c_setting, c_value ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($setting).", ".self::$sql->quote(serialize($value))." );");
 		}
 
 		/**
@@ -415,16 +383,16 @@
 		function getUserDescription($parsed=true)
 		{
 			if(!$parsed)
-				return $this->getMainField("description");
+				return $this->getMainField("c_description");
 
-			$parsed = $this->getMainField("description_parsed");
+			$parsed = $this->getMainField("c_description_parsed");
 			if(!$parsed)
 			{
-				$unparsed = $this->getMainField("description");
+				$unparsed = $this->getMainField("c_description");
 				if($unparsed)
 				{
 					$parsed = FormattedString::parseHTML($unparsed);
-					$this->setMainField("description_parsed", $parsed);
+					$this->setMainField("c_description_parsed", $parsed);
 				}
 			}
 			return $parsed;
@@ -438,8 +406,8 @@
 
 		function setUserDescription($description)
 		{
-			$this->setMainField("description", $description);
-			$this->setMainField("description_parsed", FormattedString::parseHTML($description));
+			$this->setMainField("c_description", $description);
+			$this->setMainField("c_description_parsed", FormattedString::parseHTML($description));
 		}
 
 		/**
@@ -449,7 +417,7 @@
 
 		function lastRequest()
 		{
-			return $this->getMainField("last_request_uri");
+			return $this->getMainField("c_last_request_uri");
 		}
 
 		/**
@@ -462,8 +430,8 @@
 		function registerAction($url=null)
 		{
 			if(isset($url))
-				$this->setMainField("last_request_uri", $url);
-			$this->setMainField("last_activity", time());
+				$this->setMainField("c_last_request_uri", $url);
+			$this->setMainField("c_last_activity", time());
 		}
 
 		/**
@@ -473,7 +441,7 @@
 
 		function getLastActivity()
 		{
-			return $this->getMainField("last_activity");
+			return $this->getMainField("c_last_activity");
 		}
 
 		/**
@@ -483,7 +451,7 @@
 
 		function getRegistrationTime()
 		{
-			return $this->getMainField("registration");
+			return $this->getMainField("c_registration");
 		}
 
 		/**
@@ -493,7 +461,7 @@
 
 		function userLocked()
 		{
-			$locked = $this->getMainField("locked");
+			$locked = $this->getMainField("c_locked");
 			if($locked == -1)
 				return true;
 			elseif($locked >= time())
@@ -508,7 +476,7 @@
 
 		function lockedUntil()
 		{
-			return $this->getMainField("locked");
+			return $this->getMainField("c_locked");
 		}
 
 		/**
@@ -519,7 +487,7 @@
 
 		function lockUser($lock_time=-1)
 		{
-			$this->setMainField("locked", $lock_time);
+			$this->setMainField("c_locked", $lock_time);
 		}
 
 		/**
@@ -540,7 +508,7 @@
 
 				if(!$set)
 				{ // Urlaubsmodus wird beendet. Die Fertigstellungszeiten aller Dinge im Bau nach hinten verschieben
-					$time_diff = time()-$this->getMainField("holidays_changed");
+					$time_diff = time()-$this->getMainField("c_holidays_changed");
 					foreach(Planet::getPlanetsByUser($this->getName()) as $planet)
 						$planet->_delayBuildingThings($time_diff);
 
@@ -551,11 +519,11 @@
 					}
 				}
 
-				$this->setMainField("holidays", $set ? 1 : 0);
-				$this->setMainField("holidays_changed", time());
+				$this->setMainField("c_holidays", $set ? 1 : 0);
+				$this->setMainField("c_holidays_changed", time());
 			}
 
-			return (true && $this->getMainField("holidays"));
+			return (true && $this->getMainField("c_holidays"));
 		}
 
 		/**
@@ -578,7 +546,7 @@
 
 		function permissionToUmode()
 		{
-			$holidays_change = $this->getMainField("holidays_changed");
+			$holidays_change = $this->getMainField("c_holidays_changed");
 			if(!$holidays_change) return true;
 
 			if($this->umode())
@@ -597,7 +565,7 @@
 		function getUmodeEnteringTime()
 		{
 			if(!$this->umode()) return null;
-			$change = $this->getMainField("holidays_changed");
+			$change = $this->getMainField("c_holidays_changed");
 			if(!$change) return null;
 			return $change;
 		}
@@ -627,7 +595,7 @@
 
 		function permissionToAct()
 		{
-			return !self::getDatabase()->getConfig()->getConfigValue("locked") && !$this->userLocked() && !$this->umode();
+			return !self::getDatabase()->getConfig()->getConfigValue("c_locked") && !$this->userLocked() && !$this->umode();
 		}
 
 		/**
@@ -638,11 +606,11 @@
 
 		function addPosShortcut(Planet $pos)
 		{
-			if(self::$sql->singleField("SELECT COUNT(*) FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($pos->getGalaxy())." AND system = ".self::$sql->quote($pos->getSystem())." AND planet = ".self::$sql->quote($pos->getPlanet())." LIMIT 1;") > 0)
+			if(self::$sql->singleField("SELECT COUNT(*) FROM t_users_shortcuts WHERE c_user = ".self::$sql->quote($this->getName())." AND c_galaxy = ".self::$sql->quote($pos->getGalaxy())." AND c_system = ".self::$sql->quote($pos->getSystem())." AND c_planet = ".self::$sql->quote($pos->getPlanet())." LIMIT 1;") > 0)
 				throw new UserException("This shortcut is already in the list.");
 
-			$i = self::$sql->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." ORDER BY i DESC LIMIT 1;");
-			self::$sql->backgroundQuery("INSERT INTO users_shortcuts ( user, galaxy, system, planet, i ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($pos->getGalaxy()).", ".self::$sql->quote($pos->getSystem()).", ".self::$sql->quote($pos->getPlanet()).", ".self::$sql->quote($i+1)." );");
+			$i = self::$sql->singleField("SELECT c_i FROM t_users_shortcuts WHERE c_user = ".self::$sql->quote($this->getName())." ORDER BY c_i DESC LIMIT 1;");
+			self::$sql->backgroundQuery("INSERT INTO t_users_shortcuts ( c_user, c_galaxy, c_system, c_planet, c_i ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($pos->getGalaxy()).", ".self::$sql->quote($pos->getSystem()).", ".self::$sql->quote($pos->getPlanet()).", ".self::$sql->quote($i+1)." );");
 		}
 
 		/**
@@ -653,9 +621,9 @@
 		function getPosShortcutsList()
 		{
 			$return = array();
-			self::$sql->query("SELECT galaxy, system, planet FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." ORDER BY i ASC;");
+			self::$sql->query("SELECT c_galaxy, c_system, c_planet FROM t_users_shortcuts WHERE c_user = ".self::$sql->quote($this->getName())." ORDER BY c_i ASC;");
 			while(($r = self::$sql->nextResult()) !== false)
-				$return[] = Planet::fromKoords($r["galaxy"], $r["system"], $r["planet"]);
+				$return[] = Planet::fromKoords($r["c_galaxy"], $r["c_system"], $r["c_planet"]);
 			return $return;
 		}
 
@@ -667,7 +635,7 @@
 
 		function removePosShortcut(Planet $pos)
 		{
-			self::$sql->query("DELETE FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($pos->getGalaxy())." AND system = ".self::$sql->quote($pos->getSystem())." AND planet = ".self::$sql->quote($pos->getPlanet()).";");
+			self::$sql->query("DELETE FROM t_users_shortcuts WHERE c_user = ".self::$sql->quote($this->getName())." AND c_galaxy = ".self::$sql->quote($pos->getGalaxy())." AND c_system = ".self::$sql->quote($pos->getSystem())." AND c_planet = ".self::$sql->quote($pos->getPlanet()).";");
 		}
 
 		/**
@@ -678,10 +646,10 @@
 
 		function movePosShortcutUp(Planet $pos)
 		{
-			$i = self::$sql->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($pos->getGalaxy())." AND system = ".self::$sql->quote($pos->getSystem())." AND planet = ".self::$sql->quote($pos->getPlanet())." LIMIT 1;");
-			$i2 = self::$sql->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." AND i < ".self::$sql->quote($i)." ORDER BY i DESC LIMIT 1;");
-			self::$sql->backgroundQuery("UPDATE users_shortcuts SET i = ".self::$sql->quote($i)." WHERE user = ".self::$sql->quote($this->getName())." AND i = ".self::$sql->quote($i2).";");
-			self::$sql->backgroundQuery("UPDATE users_shortcuts SET i = ".self::$sql->quote($i2)." WHERE user = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($pos->getGalaxy())." AND system = ".self::$sql->quote($pos->getSystem())." AND planet = ".self::$sql->quote($pos->getPlanet()).";");
+			$i = self::$sql->singleField("SELECT i FROM t_users_shortcuts WHERE c_user = ".self::$sql->quote($this->getName())." AND c_galaxy = ".self::$sql->quote($pos->getGalaxy())." AND c_system = ".self::$sql->quote($pos->getSystem())." AND c_planet = ".self::$sql->quote($pos->getPlanet())." LIMIT 1;");
+			$i2 = self::$sql->singleField("SELECT i FROM t_users_shortcuts WHERE c_user = ".self::$sql->quote($this->getName())." AND c_i < ".self::$sql->quote($i)." ORDER BY c_i DESC LIMIT 1;");
+			self::$sql->backgroundQuery("UPDATE t_users_shortcuts SET c_i = ".self::$sql->quote($i)." WHERE c_user = ".self::$sql->quote($this->getName())." AND c_i = ".self::$sql->quote($i2).";");
+			self::$sql->backgroundQuery("UPDATE t_users_shortcuts SET c_i = ".self::$sql->quote($i2)." WHERE c_user = ".self::$sql->quote($this->getName())." AND c_galaxy = ".self::$sql->quote($pos->getGalaxy())." AND c_system = ".self::$sql->quote($pos->getSystem())." AND c_planet = ".self::$sql->quote($pos->getPlanet()).";");
 		}
 
 		/**
@@ -692,10 +660,10 @@
 
 		function movePosShortcutDown(Planet $pos)
 		{
-			$i = self::$sql->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($pos->getGalaxy())." AND system = ".self::$sql->quote($pos->getSystem())." AND planet = ".self::$sql->quote($pos->getPlanet())." LIMIT 1;");
-			$i2 = self::$sql->singleField("SELECT i FROM users_shortcuts WHERE user = ".self::$sql->quote($this->getName())." AND i > ".self::$sql->quote($i)." ORDER BY i ASC LIMIT 1;");
-			self::$sql->backgroundQuery("UPDATE users_shortcuts SET i = ".self::$sql->quote($i)." WHERE user = ".self::$sql->quote($this->getName())." AND i = ".self::$sql->quote($i2).";");
-			self::$sql->backgroundQuery("UPDATE users_shortcuts SET i = ".self::$sql->quote($i2)." WHERE user = ".self::$sql->quote($this->getName())." AND galaxy = ".self::$sql->quote($pos->getGalaxy())." AND system = ".self::$sql->quote($pos->getSystem())." AND planet = ".self::$sql->quote($pos->getPlanet()).";");
+			$i = self::$sql->singleField("SELECT c_i FROM t_users_shortcuts WHERE c_user = ".self::$sql->quote($this->getName())." AND c_galaxy = ".self::$sql->quote($pos->getGalaxy())." AND c_system = ".self::$sql->quote($pos->getSystem())." AND c_planet = ".self::$sql->quote($pos->getPlanet())." LIMIT 1;");
+			$i2 = self::$sql->singleField("SELECT c_i FROM t_users_shortcuts WHERE c_user = ".self::$sql->quote($this->getName())." AND c_i > ".self::$sql->quote($i)." ORDER BY c_i ASC LIMIT 1;");
+			self::$sql->backgroundQuery("UPDATE t_users_shortcuts SET c_i = ".self::$sql->quote($i)." WHERE c_user = ".self::$sql->quote($this->getName())." AND c_i = ".self::$sql->quote($i2).";");
+			self::$sql->backgroundQuery("UPDATE t_users_shortcuts SET c_i = ".self::$sql->quote($i2)." WHERE c_user = ".self::$sql->quote($this->getName())." AND c_galaxy = ".self::$sql->quote($pos->getGalaxy())." AND c_system = ".self::$sql->quote($pos->getSystem())." AND c_planet = ".self::$sql->quote($pos->getPlanet()).";");
 		}
 
 		/**
@@ -707,7 +675,7 @@
 		function getPasswordSendID()
 		{
 			$send_id = md5(microtime());
-			$this->setMainField("password_reset_hash", $send_id);
+			$this->setMainField("c_password_reset_hash", $send_id);
 			return $send_id;
 		}
 
@@ -719,7 +687,7 @@
 
 		function checkPasswordSendID($id)
 		{
-			return $id == $this->getMainField("password_reset_hash");
+			return $id == $this->getMainField("c_password_reset_hash");
 		}
 
 		/**
@@ -841,7 +809,7 @@
 
 		function getEMailAddress()
 		{
-			return self::$sql->singleField("SELECT email FROM users_email WHERE user = ".self::$sql->quote($this->getName())." AND valid_from <= ".self::$sql->quote(time())." ORDER BY valid_from DESC LIMIT 1;");
+			return self::$sql->singleField("SELECT c_email FROM t_users_email WHERE c_user = ".self::$sql->quote($this->getName())." AND c_valid_from <= ".self::$sql->quote(time())." ORDER BY c_valid_from DESC LIMIT 1;");
 		}
 
 		/**
@@ -853,11 +821,11 @@
 
 		function getTemporaryEMailAddress($array=false)
 		{
-			$res = self::$sql->singleLine("SELECT email,valid_from FROM users_email WHERE user = ".self::$sql->quote($this->getName())." ORDER BY valid_from DESC LIMIT 1;");
+			$res = self::$sql->singleLine("SELECT c_email,c_valid_from FROM t_users_email WHERE c_user = ".self::$sql->quote($this->getName())." ORDER BY c_valid_from DESC LIMIT 1;");
 			if($array)
-				return array($res["email"], $res["valid_from"]);
+				return array($res["c_email"], $res["c_valid_from"]);
 			else
-				return $res["email"];
+				return $res["c_email"];
 		}
 
 		/**
@@ -871,12 +839,12 @@
 		{
 			if($address === $this->getTemporaryEMailAddress() && $do_delay)
 				return;
-			self::$sql->backgroundQuery("DELETE FROM users_email WHERE user = ".self::$sql->quote($this->getName())." AND valid_from > ".self::$sql->quote(time()).";");
+			self::$sql->backgroundQuery("DELETE FROM t_users_email WHERE c_user = ".self::$sql->quote($this->getName())." AND c_valid_from > ".self::$sql->quote(time()).";");
 
 			if($address == $this->getEMailAddress())
 				return;
 
-			self::$sql->backgroundQuery("INSERT INTO users_email ( user, email, valid_from ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($email).", ".self::$sql->quote(time()+($do_delay ? Config::getLibConfig()->getConfigValue("users", "email_change_delay") : 0))." );");
+			self::$sql->backgroundQuery("INSERT INTO t_users_email ( c_user, c_email, c_valid_from ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($email).", ".self::$sql->quote(time()+($do_delay ? Config::getLibConfig()->getConfigValue("users", "email_change_delay") : 0))." );");
 		}
 
 		/**
@@ -920,7 +888,7 @@
 
 		function challengeNeeded()
 		{
-			$next_challenge = $this->getMainField("next_challenge");
+			$next_challenge = $this->getMainField("c_next_challenge");
 			if(!$next_challenge)
 				return true;
 			return time() >= $next_challenge;
@@ -935,8 +903,8 @@
 		function _challengePassed()
 		{
 			$lib_config = Config::getLibConfig();
-			$this->setMainField("next_challenge", time()+rand($lib_config->getConfigValueE("captcha", "min_time"), $lib_config->getConfigValueE("captcha", "max_time")));
-			$this->setMainField("challenge_failures", 0);
+			$this->setMainField("c_next_challenge", time()+rand($lib_config->getConfigValueE("captcha", "min_time"), $lib_config->getConfigValueE("captcha", "max_time")));
+			$this->setMainField("c_challenge_failures", 0);
 		}
 
 		/**
@@ -946,9 +914,9 @@
 
 		function _challengeFailed()
 		{
-			$failures = $this->getMainField("challenge_failures");
+			$failures = $this->getMainField("c_challenge_failures");
 			$failures++;
-			$this->setMainField("challenge_failures", $failures);
+			$this->setMainField("c_challenge_failures", $failures);
 
 			$lib_config = Config::getLibConfig();
 			if($failures > $lib_config->getConfigValueE("captcha", "max_failures") && !$this->userLocked())
@@ -965,9 +933,9 @@
 		function getSpentRess($i=null)
 		{
 			if(!isset($i))
-				$field = "used_ress0+used_ress1+used_ress2+used_ress3+used_ress4";
+				$field = "c_used_ress0+c_used_ress1+c_used_ress2+c_used_ress3+c_used_ress4";
 			else
-				$field = "used_ress".$i;
+				$field = "c_used_ress".$i;
 			return self::$sql->getMainField($field);
 		}
 
@@ -979,13 +947,13 @@
 
 		function _addSpentRess(array $ress)
 		{
-			$cur = $this->getMainField(array("used_ress0", "used_ress1", "used_ress2", "used_ress3", "used_ress4"));
+			$cur = $this->getMainField(array("c_used_ress0", "c_used_ress1", "c_used_ress2", "c_used_ress3", "c_used_ress4"));
 			if(isset($ress[0])) $cur[0] += $ress[0];
 			if(isset($ress[1])) $cur[1] += $ress[1];
 			if(isset($ress[2])) $cur[2] += $ress[2];
 			if(isset($ress[3])) $cur[3] += $ress[3];
 			if(isset($ress[4])) $cur[4] += $ress[4];
-			$this->setMainField(array("used_ress0", "used_ress1", "used_ress2", "used_ress3", "used_ress4"), $cur);
+			$this->setMainField(array("c_used_ress0", "c_used_ress1", "c_used_ress2", "c_used_ress3", "c_used_ress4"), $cur);
 		}
 
 /***************************************************
@@ -1038,7 +1006,7 @@
 
 		function getScores($i=null)
 		{
-			return self::$sql->singleField("SELECT ".$i." FROM highscores WHERE user = ".self::$sql->quote($this->getName())." LIMIT 1;");
+			return self::$sql->singleField("SELECT ".$i." FROM t_highscores WHERE c_user = ".self::$sql->quote($this->getName())." LIMIT 1;");
 		}
 
 		/**
@@ -1052,7 +1020,7 @@
 			if(!isset($i))
 				$i = self::SCORES_TOTAL;
 
-			return self::singleField("SELECT COUNT(*)+1 FROM highscores WHERE ".$i." > ".$me->getScores($i).";");
+			return self::singleField("SELECT COUNT(*)+1 FROM t_highscores WHERE ".$i." > ".$me->getScores($i).";");
 		}
 
 		/**
@@ -1080,17 +1048,17 @@
 			if(isset($fields))
 			{
 				if(is_array($fields))
-					$query .= implode(",", array_merge(array("user"), $fields));
+					$query .= implode(",", array_merge(array("c_user"), $fields));
 				else
-					$query .= "user,".$fields;
+					$query .= "c_user,".$fields;
 			}
 			else
 				$query .= "*";
-			$query .= " FROM highscores ORDER BY ";
+			$query .= " FROM t_highscores ORDER BY ";
 			if(isset($sort))
 				$query .= $sort;
 			else
-				$query .= "total";
+				$query .= self::SCORES_TOTAL;
 			$query .= " ASC";
 
 			if(isset($from))
@@ -1632,7 +1600,7 @@
 
 		function getItemLevel($id)
 		{
-			$level = self::$sql->singleField("SELECT level FROM users_research WHERE user = ".self::$sql->quote($this->getName())." AND id = ".self::$sql->quote($id)." LIMIT 1;");
+			$level = self::$sql->singleField("SELECT c_level FROM t_users_research WHERE c_user = ".self::$sql->quote($this->getName())." AND c_id = ".self::$sql->quote($id)." LIMIT 1;");
 			if($level === false)
 				return 0;
 			return $level;
@@ -1651,11 +1619,11 @@
 
 			$item_info = $this->getItemInfo($id, "forschung", array("ress"));
 			$additional_scores = array_sum($item_info["ress"])/1000;
-			$entries = self::$sql->singleField("SELECT COUNT(*) FROM users_research WHERE user = ".self::$sql->quote($this->getName())." AND id = ".self::$sql->quote($id)." LIMIT 1;");
+			$entries = self::$sql->singleField("SELECT COUNT(*) FROM t_users_research WHERE c_user = ".self::$sql->quote($this->getName())." AND c_id = ".self::$sql->quote($id)." LIMIT 1;");
 			if($entries > 0)
-				$this->backgroundQuery("UDPATE users_research SET level = level + ".self::$sql->quote($value).", scores = scores + ".self::$sql->quote($additional_scores)." WHERE user = ".self::$sql->quote($this->getName())." AND id = ".self::$sql->quote($id).";");
+				$this->backgroundQuery("UDPATE t_users_research SET c_level = c_level + ".self::$sql->quote($value).", c_scores = c_scores + ".self::$sql->quote($additional_scores)." WHERE c_user = ".self::$sql->quote($this->getName())." AND c_id = ".self::$sql->quote($id).";");
 			else
-				$this->backgroundQuery("INSERT INTO users_research ( user, id, level, scores ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($id).", ".self::$sql->quote($value).", ".self::$sql->quote($additional_scores)." );");
+				$this->backgroundQuery("INSERT INTO t_users_research ( c_user, c_id, c_level, c_scores ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($id).", ".self::$sql->quote($value).", ".self::$sql->quote($additional_scores)." );");
 
 			switch($id)
 			{
@@ -1684,7 +1652,7 @@
 		function isVerbuendet($user)
 		{
 			if($user == $this->getName()) return true;
-			return self::$sql->singleField("SELECT COUNT(*) FROM users_friends WHERE ( user1 = ".self::$sql->quote($user)." AND user2 = ".self::$sql->quote($this->getName())." ) OR ( user1 = ".self::$sql->quote($this->getName())." AND user2 = ".self::$sql->quote($user)." );") > 0;
+			return self::$sql->singleField("SELECT COUNT(*) FROM t_users_friends WHERE ( c_user1 = ".self::$sql->quote($user)." AND c_user2 = ".self::$sql->quote($this->getName())." ) OR ( c_user1 = ".self::$sql->quote($this->getName())." AND c_user2 = ".self::$sql->quote($user)." );") > 0;
 		}
 
 		/**
@@ -1695,7 +1663,7 @@
 
 		function isApplying($user)
 		{
-			return self::$sql->singleField("SELECT COUNT(*) FROM users_friend_requests WHERE user_from = ".self::$sql->quote($user)." AND user_to = ".self::$sql->quote($this->getName()).";") > 0;
+			return self::$sql->singleField("SELECT COUNT(*) FROM t_users_friend_requests WHERE c_user_from = ".self::$sql->quote($user)." AND c_user_to = ".self::$sql->quote($this->getName()).";") > 0;
 		}
 
 		/**
@@ -1710,7 +1678,7 @@
 			if($this->isVerbuendet($user))
 				return true;
 
-			return self::$sql->singleField("SELECT COUNT(*) FROM users_friend_requests WHERE ( user_from = ".self::$sql->quote($user)." AND user_to = ".self::$sql->quote($this->getName())." ) OR ( user_from = ".self::$sql->quote($this->getName())." AND user_to = ".self::$sql->quote($user)." );") > 0;
+			return self::$sql->singleField("SELECT COUNT(*) FROM t_users_friend_requests WHERE ( c_user_from = ".self::$sql->quote($user)." AND c_user_to = ".self::$sql->quote($this->getName())." ) OR ( c_user_from = ".self::$sql->quote($this->getName())." AND c_user_to = ".self::$sql->quote($user)." );") > 0;
 		}
 
 		/**
@@ -1720,7 +1688,7 @@
 
 		function getVerbuendetList()
 		{
-			return self::$sql->singleColumn("SELECT user1 FROM users_friends WHERE user2 = ".self::$sql->quote($this->getName())." UNION SELECT user2 FROM users_friends WHERE user1 = ".self::$sql->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT c_user1 FROM t_users_friends WHERE c_user2 = ".self::$sql->quote($this->getName())." UNION SELECT c_user2 FROM t_users_friends WHERE c_user1 = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -1730,7 +1698,7 @@
 
 		function getVerbuendetApplicationList()
 		{
-			return self::$sql->singleColumn("SELECT user_to FROM users_friend_requests WHERE user_from = ".self::$sql->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT c_user_to FROM t_users_friend_requests WHERE c_user_from = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -1740,7 +1708,7 @@
 
 		function getVerbuendetRequestList()
 		{
-			return self::$sql->singleColumn("SELECT user_from FROM users_friend_requests WHERE user_to = ".self::$sql->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT c_user_from FROM t_users_friend_requests WHERE c_user_to = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -1760,7 +1728,7 @@
 			elseif($this->existsVerbuendet($user))
 				throw new UserException("These users are already friends.");
 
-			self::$sql->query("INSERT INTO users_friends ( user_from, user_to ) VALUES ( ".self::$sql->quote($user).", ".self::$sql->quote($this->getName())." );");
+			self::$sql->query("INSERT INTO t_users_friends ( c_user_from, c_user_to ) VALUES ( ".self::$sql->quote($user).", ".self::$sql->quote($this->getName())." );");
 
 			$message = Classes::Message(Message::create());
 			$message->addUser($this->getName(), Message::TYPE_VERBUENDETE);
@@ -1783,8 +1751,8 @@
 			if(!$this->isApplying($user))
 				throw new UserException("This user is not applying for a friendship.");
 
-			self::$sql->query("DELETE FROM users_friend_requests WHERE user_from = ".self::$sql->quote($user)." AND user_to = ".self::$sql->quote($this->getName()).";");
-			self::$sql->query("INSERT INTO users_friends ( user1, user2 ) VALUES ( ".self::$sql->quote($user).", ".self::$sql->quote($this->getName())." );");
+			self::$sql->query("DELETE FROM t_users_friend_requests WHERE c_user_from = ".self::$sql->quote($user)." AND c_user_to = ".self::$sql->quote($this->getName()).";");
+			self::$sql->query("INSERT INTO t_users_friends ( c_user1, c_user2 ) VALUES ( ".self::$sql->quote($user).", ".self::$sql->quote($this->getName())." );");
 
 			$user_obj = Classes::User($user);
 			$message = Classes::Message(Message::create());
@@ -1805,7 +1773,7 @@
 			if(!$this->isApplying($user))
 				throw new UserException("This user is not applying for a friendship.");
 
-			self::$sql->query("DELETE FROM users_friend_requests WHERE user_from = ".self::$sql->quote($user)." AND user_to = ".self::$sql->quote($this->getName()).";");
+			self::$sql->query("DELETE FROM t_users_friend_requests WHERE c_user_from = ".self::$sql->quote($user)." AND c_user_to = ".self::$sql->quote($this->getName()).";");
 
 			$user_obj = Classes::User($user);
 			$message = Classes::Message(Message::create());
@@ -1826,7 +1794,7 @@
 			if(!$this->isVerbuendet($user))
 				throw new UserException("These users are not friends.");
 
-			self::$sql->query("DELETE FROM users_friends WHERE ( user1 = ".self::$sql->quote($this->getName())." AND user2 = ".self::$sql->quote($user)." ) OR ( user1 = ".self::$sql->quote($user)." AND user2 = ".self::$sql->quote($this->getName())." );");
+			self::$sql->query("DELETE FROM t_users_friends WHERE ( c_user1 = ".self::$sql->quote($this->getName())." AND c_user2 = ".self::$sql->quote($user)." ) OR ( c_user1 = ".self::$sql->quote($user)." AND c_user2 = ".self::$sql->quote($this->getName())." );");
 
 			$user_obj = Classes::User($user);
 			$message = Classes::Message(Message::create());

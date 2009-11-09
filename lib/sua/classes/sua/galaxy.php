@@ -54,7 +54,7 @@
 				$system_quote = self::$sql->quote($system);
 				$planets = rand(10, 30);
 				for($planet=1; $planet<=$planets; $planet++)
-					self::$sql->transactionQuery("INSERT INTO t_planets ( c_galaxy, c_system, c_planet, c_size_original ) VALUES ( ".$galaxy_quote.", ".$system_quote.", ".self::$sql->quote($planet).", ".self::$sql->quote(rand(100, 500))." );");
+					self::$sql->transactionQuery("INSERT INTO t_planets ( c_galaxy, c_system, c_planet, c_size_original ) VALUES ( ".$galaxy_quote.", ".$system_quote.", ".self::$sql->quote($planet).", ROUND(RANDOM()*400)+100 );");
 			}
 			self::$sql->endTransaction();
 			return $name;

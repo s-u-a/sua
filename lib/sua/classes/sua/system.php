@@ -27,12 +27,11 @@
 	/**
 	 * Repräsentiert ein Sonnensystem im Spiel.
 	 * Kann als Iterator durchlaufen werden, Index: Planetennummer, Wert: Planetenobjekt
-	 * @todo t_ c_
 	*/
 
 	class System extends SQLSet implements \Iterator,StaticInit
 	{
-		protected static $primary_key = array("t_systems", "c_id");
+		protected static $primary_key = array("t_systems", "c_galaxy || ':' || c_system");
 
 		private $active_planet;
 
@@ -69,13 +68,13 @@
 
 			$planets = rand(10, 30);
 			for($planet=1; $planet<=$planets; $planet++)
-				self::$sql->query("INSERT INTO planets ( galaxy, system, planet, size_original ) VALUES ( ".self::$sql->quote($galaxy->getGalaxy()).", ".self::$sql->quote($system).", ".self::$sql->quote($planet).", ".self::$sql->quote(rand(100, 500))." );");
+				self::$sql->query("INSERT INTO t_planets ( c_galaxy, c_system, c_planet, c_size_original ) VALUES ( ".self::$sql->quote($galaxy->getGalaxy()).", ".self::$sql->quote($system).", ".self::$sql->quote($planet).", ROUND(RANDOM()*400)+100 );");
 			return self::idFromParams($galaxy, $system);
 		}
 
 		function destroy()
 		{
-			self::$sql->query("DELETE FROM planets WHERE galaxy = ".self::$sql->quote($this->getGalaxy())." AND system = ".self::$sql->quote($this->getSystem()).";");
+			self::$sql->query("DELETE FROM t_planets WHERE c_galaxy = ".self::$sql->quote($this->getGalaxy())." AND c_system = ".self::$sql->quote($this->getSystem()).";");
 		}
 
 		/**
@@ -113,7 +112,7 @@
 
 		function getPlanetsCount()
 		{
-			return $this->getMainField("planets");
+			return $this->getMainField("c_planets");
 		}
 
 		function rewind()
@@ -133,14 +132,14 @@
 		function key()
 		{
 			if(!isset($this->active_planet))
-				return self::$sql->singleField("SELECT planet FROM planets WHERE galaxy = ".self::$sql->quote($this->getGalaxy())." AND system = ".self::$sql->quote($this->getSystem())." ORDER BY planet ASC LIMIT 1;");
+				return self::$sql->singleField("SELECT c_planet FROM t_planets WHERE c_galaxy = ".self::$sql->quote($this->getGalaxy())." AND c_system = ".self::$sql->quote($this->getSystem())." ORDER BY c_planet ASC LIMIT 1;");
 			else
 				return $this->active_planet;
 		}
 
 		function next()
 		{
-			$this->active_planet = self::$sql->singleField("SELECT planet FROM planets WHERE galaxy = ".self::$sql->quote($this->getGalaxy())." AND system = ".self::$sql->quote($this->getSystem())." AND planet > ".self::$sql->quote($this->key())." ORDER BY planet ASC LIMIT 1;");
+			$this->active_planet = self::$sql->singleField("SELECT c_planet FROM t_planets WHERE c_galaxy = ".self::$sql->quote($this->getGalaxy())." AND c_system = ".self::$sql->quote($this->getSystem())." AND c_planet > ".self::$sql->quote($this->key())." ORDER BY c_planet ASC LIMIT 1;");
 			return $this->current();
 		}
 

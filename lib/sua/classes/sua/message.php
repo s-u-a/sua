@@ -31,7 +31,6 @@
 	 * ausgeführt werden. Damit wird die Leseberechtigung des Benutzers auf die Nachricht entfernt, versucht
 	 * er also, sie abzurufen, soll er eine Fehlermeldung erhalten. Erst wenn kein Benutzer mehr Leseberechtigung
 	 * auf die Nachricht hat, wird sie aus der Datenbank entfernt.
-	 * @todo t_ c_
 	*/
 
 	class Message extends SQLSet
@@ -117,7 +116,7 @@
 
 		static function getMessagesCount()
 		{
-			return (self::$sql->singleField("SELECT COUNT(*) FROM messages;"));
+			return (self::$sql->singleField("SELECT COUNT(*) FROM t_messages;"));
 		}
 
 		/**
@@ -132,7 +131,7 @@
 			if(self::exists($name))
 				throw new DatasetException("Dataset already exists.");
 
-			self::$sql->query("INSERT INTO messages ( message_id, time ) VALUES ( ".$this->escape($name).", ".$this->escape(time())." );");
+			self::$sql->query("INSERT INTO t_messages ( c_message_id, c_time ) VALUES ( ".$this->escape($name).", ".$this->escape(time())." );");
 			return $name;
 		}
 
@@ -143,7 +142,7 @@
 
 		function destroy()
 		{
-			self::$sql->query("DELETE FROM messages WHERE message_id = ".$this->escape($message_id).";");
+			self::$sql->query("DELETE FROM t_messages WHERE c_message_id = ".$this->escape($message_id).";");
 		}
 
 		/**
@@ -155,9 +154,9 @@
 
 		static function renameUser($old_name, $new_name)
 		{
-			self::$sql->query("UPDATE messages_users SET user = ".self::$sql->quote($new_name)." WHERE user = ".self::$sql->quote($old_name).";");
-			self::$sql->query("UPDATE message_recipients SET recipient = ".self::$sql->quote($new_name)." WHERE recipient = ".self::$sql->quote($old_name).";");
-			self::$sql->query("UPDATE messages SET sender = ".self::$sql->quote($new_name)." WHERE sender = ".self::$sql->quote($old_name).";");
+			self::$sql->query("UPDATE t_messages_users SET c_user = ".self::$sql->quote($new_name)." WHERE c_user = ".self::$sql->quote($old_name).";");
+			self::$sql->query("UPDATE t_messages_recipients SET c_recipient = ".self::$sql->quote($new_name)." WHERE c_recipient = ".self::$sql->quote($old_name).";");
+			self::$sql->query("UPDATE t_messages SET c_sender = ".self::$sql->quote($new_name)." WHERE c_sender = ".self::$sql->quote($old_name).";");
 		}
 
 		/**
@@ -170,12 +169,12 @@
 		function text($text=null)
 		{
 			if(!isset($text))
-				return $this->getMainField($this->html() ? "text" : "parsed_text");
+				return $this->getMainField($this->html() ? "c_text" : "c_parsed_text");
 			else
 			{
-				$this->setMainField("text", $text);
+				$this->setMainField("c_text", $text);
 				if(!$this->html())
-					$this->setMainField("parsed_text", FormattedString::parseHTML($text));
+					$this->setMainField("c_parsed_text", FormattedString::parseHTML($text));
 			}
 		}
 
@@ -186,7 +185,7 @@
 
 		function rawText()
 		{
-			return $this->getMainField("text");
+			return $this->getMainField("c_text");
 		}
 
 		/**
@@ -199,9 +198,9 @@
 		function from($from=null)
 		{
 			if(!isset($from))
-				return $this->getMainField("sender");
+				return $this->getMainField("c_sender");
 			else
-				$this->setMainField("sender", $from);
+				$this->setMainField("c_sender", $from);
 		}
 
 		/**
@@ -214,9 +213,9 @@
 		function subject($subject=false)
 		{
 			if(!isset($subject))
-				return $this->getMainField("subject");
+				return $this->getMainField("c_subject");
 			else
-				$this->setMainField("subject", $subject);
+				$this->setMainField("c_subject", $subject);
 		}
 
 		/**
@@ -229,9 +228,9 @@
 		function html($html=null)
 		{
 			if(!isset($html))
-				return (true && $this->getMainField("html"));
+				return (true && $this->getMainField("c_html"));
 			else
-				$this->setMainField("html", $html ? 1 : 0);
+				$this->setMainField("c_html", true && $html);
 		}
 
 		/**
@@ -245,11 +244,11 @@
 		{
 			if(!isset($type)) $type = self::TYPE_BENUTZERNACHRICHTEN;
 
-			self::$sql->query("INSERT INTO messages_users ( message_id, user, type, status ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($type).", ".self::$sql->quote(self::STATUS_NEU)." );");
+			self::$sql->query("INSERT INTO t_messages_users ( c_message_id, c_user, c_type, c_status ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user).", ".self::$sql->quote($type).", ".self::$sql->quote(self::STATUS_NEU)." );");
 
 			if($type != self::TYPE_POSTAUSGANG)
 			{
-				self::$sql->query("INSERT INTO messages_recipients ( message_id, recipient ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user)." );");
+				self::$sql->query("INSERT INTO t_messages_recipients ( c_message_id, c_recipient ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($user)." );");
 
 				// IM-Benachrichtung, siehe __destroy()
 				$this->im_check_notify[$user] = $type;
@@ -266,9 +265,9 @@
 		function messageStatus($user, $status=null)
 		{
 			if(!isset($status))
-				return self::$sql->singleField("SELECT status FROM messages_users WHERE message_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+				return self::$sql->singleField("SELECT c_status FROM t_messages_users WHERE c_message_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 			else
-				self::$sql->query("UPDATE messages_users SET status = ".self::$sql->quote($status)." WHERE message_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+				self::$sql->query("UPDATE t_messages_users SET c_status = ".self::$sql->quote($status)." WHERE c_message_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 		}
 
 		/**
@@ -281,9 +280,9 @@
 		function messageType($user, $type=null)
 		{
 			if(!isset($type))
-				return self::$sql->singleField("SELECT type FROM messages_users WHERE message_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+				return self::$sql->singleField("SELECT c_type FROM t_messages_users WHERE c_message_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 			else
-				self::$sql->query("UPDATE messages_users SET type = ".self::$sql->quote($status)." WHERE message_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
+				self::$sql->query("UPDATE t_messages_users SET c_type = ".self::$sql->quote($status)." WHERE c_message_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
 		}
 
 		/**
@@ -295,8 +294,8 @@
 
 		function removeUser($user)
 		{
-			self::$sql->query("DELETE FROM messages_users WHERE message_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user).";");
-			if(self::$sql->singleField("SELECT COUNT(*) FROM message_users WHERE message_id = ".self::$sql->quote($this->getName()).";") < 1)
+			self::$sql->query("DELETE FROM t_messages_users WHERE c_message_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user).";");
+			if(self::$sql->singleField("SELECT COUNT(*) FROM t_messages_users WHERE c_message_id = ".self::$sql->quote($this->getName()).";") < 1)
 				$this->destroy();
 		}
 
@@ -307,7 +306,7 @@
 
 		function getTime()
 		{
-			return $this->getMainField("time");
+			return $this->getMainField("c_time");
 		}
 
 		/**
@@ -317,7 +316,7 @@
 
 		function getUsersList()
 		{
-			return self::$sql->singleColumn("SELECT user FROM messages_users WHERE message_id = ".self::$sql->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT c_user FROM t_messages_users WHERE c_message_id = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -329,7 +328,7 @@
 
 		function mayRead($user)
 		{
-			return (self::$sql->singleField("SELECT COUNT(*) FROM messages_users WHERE message_id = ".self::$sql->quote($this->getName())." AND user = ".self::$sql->quote($user)." LIMIT 1;") > 0);
+			return (self::$sql->singleField("SELECT COUNT(*) FROM t_messages_users WHERE c_message_id = ".self::$sql->quote($this->getName())." AND c_user = ".self::$sql->quote($user)." LIMIT 1;") > 0);
 		}
 
 		/**
@@ -339,7 +338,7 @@
 
 		function getRecipients()
 		{
-			return self::$sql->singleColumn("SELECT recipient FROM messages_recipients WHERE message_id = ".self::$sql->quote($this->getName()).";");
+			return self::$sql->singleColumn("SELECT c_recipient FROM t_messages_recipients WHERE c_message_id = ".self::$sql->quote($this->getName()).";");
 		}
 
 		/**
@@ -383,7 +382,7 @@
 
 		static function getUserMessages($user, $type=null, $status=null)
 		{
-			return self::$sql->singleColumn("SELECT DISTINCT message_id FROM messages_users WHERE user = ".self::$sql->quote($user).(isset($type) ? " AND type = ".self::$sql->quote($type) : "").(isset($status) ? " AND status = ".self::$sql->quote($status) : "").";");
+			return self::$sql->singleColumn("SELECT DISTINCT c_message_id FROM t_messages_users WHERE c_user = ".self::$sql->quote($user).(isset($type) ? " AND c_type = ".self::$sql->quote($type) : "").(isset($status) ? " AND c_status = ".self::$sql->quote($status) : "").";");
 		}
 
 		/**
@@ -397,7 +396,7 @@
 
 		static function getUserMessagesCount($user, $type=null, $status=null)
 		{
-			return self::$sql->singleField("SELECT COUNT(DISTINCT message_id) FROM messages_users WHERE user = ".self::$sql->quote($user).(isset($type) ? " AND type = ".self::$sql->quote($type) : "").(isset($status) ? " AND status = ".self::$sql->quote($status) : "").";");
+			return self::$sql->singleField("SELECT COUNT(DISTINCT c_message_id) FROM t_messages_users WHERE c_user = ".self::$sql->quote($user).(isset($type) ? " AND c_type = ".self::$sql->quote($type) : "").(isset($status) ? " AND c_status = ".self::$sql->quote($status) : "").";");
 		}
 
 		/**
@@ -410,7 +409,7 @@
 		{
 			$times = array();
 			foreach($message_ids as $id)
-				$times[$id] = self::$sql->singleField("SELECT time FROM messages WHERE message_id = ".self::$sql->quote($id)." LIMIT 1;");
+				$times[$id] = self::$sql->singleField("SELECT c_time FROM t_messages WHERE c_message_id = ".self::$sql->quote($id)." LIMIT 1;");
 			asort($times, SORT_NUMERIC);
 			return array_keys($times);
 		}
@@ -425,18 +424,18 @@
 		{
 			global $message_type_times;
 
-			self::$sql->query("SELECT message_id,user,type FROM messages_users WHERE status = ".self::$sql->quote(self::STATUS_ALT)." NATURAL JOIN ( SELECT message_id, time AS time FROM messages );");
+			self::$sql->query("SELECT c_message_id,c_user,c_type FROM t_messages_users WHERE c_status = ".self::$sql->quote(self::STATUS_ALT)." NATURAL JOIN ( SELECT c_message_id, c_time AS c_time FROM t_messages );");
 
 			$i = 0;
 			while(($r = self::$sql->nextResult()) !== false)
 			{
-				if(!isset($message_type_times[$r["type"]]))
+				if(!isset($message_type_times[$r["c_type"]]))
 					continue;
 
-				if(time()-$time > $message_type_times[$r["type"]]*86400)
+				if(time()-$time > $message_type_times[$r["c_type"]]*86400)
 				{
-					$message = Classes::Message($r["message_id"]);
-					$message->removeUser($r["user"]);
+					$message = Classes::Message($r["c_message_id"]);
+					$message->removeUser($r["c_user"]);
 					$i++;
 				}
 			}
