@@ -1016,64 +1016,21 @@
 		 * @param string $type gebaeude, forschung, roboter, schiffe, verteidigung
 		 * @param bool $cancel Wenn true, werden die Rohstoffe bei Gebäude und Forschung rückerstattet.
 		 * @return void
-		 * @todo
 		*/
 
 		function removeBuildingThing($type, $cancel=true)
 		{
-			switch($type)
-			{
-				case "gebaeude": case "forschung":
-					if(!isset($this->planet_info["building"]) || !isset($this->planet_info["building"][$type]) || trim($this->planet_info["building"][$type][0]) == "")
-						return;
+			$building = $this->checkBuildingThing($type);
 
-					if($type == "forschung" && $this->planet_info["building"][$type][2])
-					{
-						$source_planet = $this->planet_info["building"][$type][4];
-						//if(!isset($this->raw["planets"][$source_planet]["building"][$type]) || trim($this->raw["planets"][$source_planet]["building"][$type][0]) == "")
-						//	return false;
-						$active_planet = $this->getActivePlanet();
-						$planets = $this->getPlanetsList();
-						foreach($planets as $planet)
-						{
-							$this->setActivePlanet($planet);
-							if($planet == $source_planet && $cancel)
-								$this->addRess($this->planet_info["building"][$type][3]);
-							if(isset($this->planet_info["building"][$type]))
-								unset($this->planet_info["building"][$type]);
-						}
-						$this->setActivePlanet($active_planet);
-					}
-					elseif($cancel)
-						$this->addRess($this->planet_info["building"][$type][3]);
-
-					if($cancel)
-					{
-						$this->raw["punkte"][7] -= $this->planet_info["building"][$type][3][0];
-						$this->raw["punkte"][8] -= $this->planet_info["building"][$type][3][1];
-						$this->raw["punkte"][9] -= $this->planet_info["building"][$type][3][2];
-						$this->raw["punkte"][10] -= $this->planet_info["building"][$type][3][3];
-						$this->raw["punkte"][11] -= $this->planet_info["building"][$type][3][4];
-					}
-
-					unset($this->planet_info["building"][$type]);
-					$this->changed = true;
-
-					if($cancel)
-						$this->refreshMessengerBuildingNotifications($type);
-
-					break;
-				case "roboter": case "schiffe": case "verteidigung":
-					if(!isset($this->planet_info["building"]) || !isset($this->planet_info["building"][$type]) || count($this->planet_info["building"][$type]) <= 0)
-						return;
-					unset($this->planet_info["building"][$type]);
-					$this->changed = true;
-
-					if($cancel)
-						$this->refreshMessengerBuildingNotifications($type);
-
-					break;
+			if($type == "forschung" && $building[2] && $building[4] != $this)
+			{ // Globale Forschung auf einem anderen Planeten
+				return $building[4]->removeBuildingThing($type, $cancel);
 			}
+
+			if($cancel && ($type == "gebaeude" || $type == "forschung")) // Rohstoffe wieder hinzufügen, „ausgegebene Rohstoffe“ wieder abziehen
+				$this->subtractRess(array(-$building[3][0], -$building[3][1], -$building[3][2], -$building[3][3]));
+
+			self::$sql->query("DELETE FROM t_planets_building WHERE ".$this->sqlCond()." AND c_type = ".self::$sql->quote($type).";");
 		}
 
 		/**
