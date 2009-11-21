@@ -89,6 +89,7 @@
 			}
 ?>
 		<script type="text/javascript">
+		// <![CDATA[
 			var databases = <?=JS::aimplodeJS($databases_js)?>;
 			var ssl_callbacks = [ ];
 			var openid_callbacks = [ ];
@@ -112,6 +113,7 @@
 						openid_callbacks[i](document.getElementById("i-openid-aktivieren").checked);
 				}
 			}
+		// ]]>
 		</script>
 	</head>
 	<body><div id="main-container">

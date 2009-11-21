@@ -41,9 +41,9 @@
 			parent::init();
 		}
 
-		static function idFromParams(array $params)
+		static function idFromParams($params = null)
 		{
-			if(count($params) < 1 || ($params[0] instanceof Galaxy && count($params) < 2))
+			if(!$params || count($params) < 1 || ($params[0] instanceof Galaxy && count($params) < 2))
 				throw new DatasetException("Insufficient parameters.");
 			if($params[0] instanceof Galaxy)
 				return $params[0]->getGalaxy().":".$params[1];

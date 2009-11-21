@@ -46,6 +46,21 @@
 				$this->time = strtotime($time);
 		}
 
+		static function fromPostgres($string)
+		{
+			return Classes::Date($string."Z");
+		}
+
+		/**
+		 * Gibt den UNIX-Zeitstempel zurück.
+		 * @return int
+		*/
+
+		function getTime()
+		{
+			return $this->time;
+		}
+
 		/**
 		 * Gibt die Zeit im Standardformat zurück.
 		 * @return string

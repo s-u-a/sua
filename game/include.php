@@ -66,8 +66,8 @@
 	const TEXTDOMAIN = "psua";
 	bindtextdomain(TEXTDOMAIN, dirname(__FILE__)."/locale");
 	bind_textdomain_codeset(TEXTDOMAIN, "utf-8");
-	function _($USERssage) { return gettext($USERssage); }
-	function gettext($USERssage) { return dgettext(TEXTDOMAIN, $USERssage); }
+	function _($message) { return gettext($message); }
+	function gettext($message) { return dgettext(TEXTDOMAIN, $message); }
 	function ngettext($msgid1, $msgid2, $n) { return dngettext(TEXTDOMAIN, $msgid1, $msgid2, $n); }
 
 	define("SROOT", dirname(__FILE__));
@@ -135,7 +135,7 @@
 			$GUI->setOption("login_resume", HTTPOutput::getURL());
 			$GUI->setOption("login_keep_post", true);
 
-			$GUI->loginForm();
+			$GUI->loginFormular();
 			exit(0);
 		}
 	}
@@ -167,6 +167,8 @@
 		$URL_SUFFIX_ARR["planet"] = $PLANET->getName();
 		$URL_SUFFIX = HTTPOutput::arrayToQueryString($URL_SUFFIX_ARR);
 		$GUI->setOption("url_suffix", $URL_SUFFIX);
+
+		$tabindex = 1;
 
 		# Captcha-Abfrage
 		if($USER->challengeNeeded() && !isset($_SESSION["admin_username"]))

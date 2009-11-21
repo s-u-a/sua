@@ -34,6 +34,7 @@
 		private $name;
 		protected $params;
 		private static $setdatabase_handlers = array();
+		private $cache = array();
 
 		/** Die Datenbank, in der die Dataset-Objekte gespeichert werden.
 		  * @var Database */
@@ -42,7 +43,7 @@
 		/**
 		 * Erzeugt ein Datenset mit dem Namen $name.
 		 * @param $name string Null, wenn ein neuer Name erzeugt werden soll.
-		 * @return String Die ID des neuen Objekts (normalerweise datasetName($name))
+		 * @return String Die ID des neuen Objekts (normalerweise idFromParams(array("ID")))
 		*/
 		/*abstract*/ static public function create($name=null) {}
 
@@ -70,14 +71,6 @@
 		*/
 		/*abstract*/ static public function exists($name) {}
 
-		static public function datasetName($name=null)
-		{
-			if($name === "0")
-				return "O";
-			else
-				return $name;
-		}
-
 		/**
 		 * @param $name Die ID des zu instanzierenden Datensets.
 		*/
@@ -85,8 +78,6 @@
 		public function __construct($name=null)
 		{
 			$name = static::idFromParams(func_get_args());
-
-			$name = static::datasetName($name);
 			$this->name = $name;
 			$this->params = static::paramsFromId($name);
 			if(!static::exists($name))
@@ -114,12 +105,15 @@
 		 * @return string
 		*/
 
-		static function idFromParams(array $params)
+		static function idFromParams($params=null)
 		{
-			if(isset($params[0]))
-				return $params[0];
-			else
+			if(!$params || !isset($params[0]))
 				return null;
+
+			if($params[0] === "0")
+				return "O";
+			else
+				return $params[0];
 		}
 
 		/**
@@ -184,5 +178,29 @@
 		public static final function addDatabaseChangeListener($handler)
 		{
 			self::$setdatabase_handlers[] = $handler;
+		}
+
+		protected function setCacheValue(array $path, $value)
+		{
+			$pos = &$this->cache;
+			foreach($path as $v)
+			{
+				if(!isset($pos[$v]))
+					$pos[$v] = array();
+				$pos = &$pos[$v];
+			}
+			$pos = $value;
+		}
+
+		protected function getCacheValue(array $path)
+		{
+			$pos = &$this->cache;
+			foreach($path as $v)
+			{
+				if(!in_array($v, array_keys($pos)))
+					throw new DatasetException("This cache value has not been set yet.", DatasetException::CACHE_VALUE_NOT_SET);
+				$pos = &$pos[$v];
+			}
+			return $pos;
 		}
 	}

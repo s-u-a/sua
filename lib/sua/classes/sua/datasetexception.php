@@ -32,4 +32,7 @@
 	{
 		/** Es wurde noch keine Datenbank per Dataset::setDatabase() gesetzt. */
 		const NO_DATABASE = 1;
+
+		/** Der Cache-Wert wurde noch nicht per Dataset::setCacheValue() gesetzt. */
+		const CACHE_VALUE_NOT_SET = 2;
 	}

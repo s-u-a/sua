@@ -61,16 +61,16 @@
 			}
 		}
 
-		static function datasetName($name=null)
+		static function idFromParams($params=null)
 		{
-			if(count(func_get_args()) > 1)
-				$name = static::idFromParams(func_get_args());
-
-			if(count($name) < 1)
+			if(!$params || (is_array($params) && !$params[0]))
 			{
-				do { $name = Functions::randomID(); } while(!self::exists($name));
+				do { $name = static::idFromParams(array(Functions::randomID())); } while(!static::exists($name));
 			}
-			$name = parent::datasetName($name);
+			elseif(is_array($params))
+				$name = $params[0];
+			else
+				$name = $params;
 			$existing = self::$sql->singleField("SELECT ".static::getMainFieldName()." FROM ".static::getMainTableName()." WHERE LOWER(".static::getMainFieldName().") = LOWER(".self::$sql->quote($name).");");
 			if($existing !== false)
 				$name = $existing;
@@ -99,10 +99,7 @@
 
 		static function exists($name)
 		{
-			if(count(func_get_args()) > 1)
-				$name = static::idFromParams(func_get_args());
-
-			$name = static::datasetName($name);
+			$name = static::idFromParams(func_get_args());
 			return (self::$sql->singleField("SELECT COUNT(*) FROM ".static::getMainTableName()." WHERE LOWER(".static::getMainFieldName().") = LOWER(".self::$sql->quote($name).");") >= 1);
 		}
 
@@ -115,20 +112,42 @@
 
 		protected function getMainField($field_name)
 		{
-			if(is_array($field_name))
+			$field_names = (is_array($field_name) ? $field_name : array(0 => $field_name));
+
+			$return = array();
+			foreach($field_names as $k=>$v)
 			{
-				$result = self::$sql->singleLine("SELECT ".implode(", ", $field_name)." FROM ".static::getMainTableName()." WHERE ".static::getMainFieldName()." = ".self::$sql->quote($this->getName()).";");
-				$return = array();
-				foreach($field_name as $k=>$v)
+				try
+				{
+					$return[$k] = $this->getCacheValue(array("getMainField", $v));
+					unset($field_names[$k]);
+				}
+				catch(DatasetException $e)
+				{
+				}
+			}
+
+			if(count($field_names) > 0)
+			{
+				$result = self::$sql->singleLine("SELECT ".implode(", ", $field_names)." FROM ".static::getMainTableName()." WHERE ".static::getMainFieldName()." = ".self::$sql->quote($this->getName()).";");
+				foreach($field_names as $k=>$v)
 				{
 					if(!isset($result[$v]))
-						throw new SQLSetException("Field “".$v."” could not be selected.");
+					{
+						if(is_array($field_name))
+							throw new SQLSetException("Field “".$v."” could not be selected.");
+						else
+							$v = Functions::first($result);
+					}
 					$return[$k] = $result[$v];
+					$this->setCacheValue(array("getMainField", $v), $result[$v]);
 				}
-				return $return;
 			}
+
+			if(is_array($field_name))
+				return $return;
 			else
-				return self::$sql->singleField("SELECT ".$field_name." FROM ".static::getMainTableName()." WHERE ".static::getMainFieldName()." = ".self::$sql->quote($this->getName()).";");
+				return $return[0];
 		}
 
 		/**
@@ -153,5 +172,7 @@
 			if(count($set) < 1)
 				throw new SQLSetException("No fields to update.");
 			self::$sql->query("UPDATE ".static::getMainTableName()." SET ".implode(", ", $set)." WHERE ".static::getMainFieldName()." = ".self::$sql->quote($this->getName()).";");
+			foreach($field_names as $k=>$v)
+				$this->setCacheValue(array("getMainField", $v), $values[$k]);
 		}
 	}

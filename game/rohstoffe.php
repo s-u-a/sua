@@ -23,33 +23,36 @@
 	*/
 	namespace sua\psua;
 
+	use \sua\F;
+	use \sua\L;
+
 	require('include.php');
 
 	if(isset($_POST['prod']) && is_array($_POST['prod']) && count($_POST['prod']) > 0)
 	{
 		$changed = false;
 		foreach($_POST['prod'] as $id=>$prod)
-			$me->setProductionFactor($id, $prod);
+			$USER->setProductionFactor($id, $prod);
 
 		if(isset($_POST['show_days']))
-			$me->setSetting('prod_show_days', $_POST['show_days']);
+			$USER->setSetting('prod_show_days', $_POST['show_days']);
 	}
 
-	$gui->init();
+	$GUI->init();
 ?>
-<h2>Rohstoffproduktion pro Stunde</h2>
-<form action="rohstoffe.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" method="post">
+<h2><?=L::h(_("Rohstoffproduktion pro Stunde"))?></h2>
+<form action="rohstoffe.php?<?=htmlspecialchars($GUI->getOption("url_suffix"))?>" method="post">
 	<table class="ress-prod">
 		<thead>
 			<tr>
-				<th class="c-gebaeude">Gebäude</th>
-				<th class="c-carbon">Carbon</th>
-				<th class="c-aluminium">Aluminium</th>
-				<th class="c-wolfram">Wolfram</th>
-				<th class="c-radium">Radium</th>
-				<th class="c-tritium">Tritium</th>
-				<th class="c-energie">Energie</th>
-				<th class="c-produktion">Prod<kbd>u</kbd>ktion</th>
+				<th class="c-gebaeude"><?=L::h(_("Gebäude"))?></th>
+				<th class="c-carbon"><?=L::h(_("[ress_0]"))?></th>
+				<th class="c-aluminium"><?=L::h(_("[ress_1]"))?></th>
+				<th class="c-wolfram"><?=L::h(_("[ress_2]"))?></th>
+				<th class="c-radium"><?=L::h(_("[ress_3]"))?></th>
+				<th class="c-tritium"><?=L::h(_("[ress_4]"))?></th>
+				<th class="c-energie"><?=L::h(_("[ress_5]"))?></th>
+				<th class="c-produktion"><?=L::h(_("Prod&uktion[login/rohstoffe.php|1]"))?></th>
 			</tr>
 
 		</thead>
@@ -65,22 +68,22 @@
 			return 'null';
 	}
 
-	$ges_prod = $me->getProduction();
-	$gebaeude = $me->getItemsList('gebaeude');
+	$ges_prod = $PLANET->getProduction();
+	$gebaeude = $USER->getItemsList('gebaeude');
 	$energie_prod = 0;
 	foreach($gebaeude as $id)
 	{
-		$item_info = $me->getItemInfo($id, 'gebaeude', array("level", "has_prod", "prod", "name"));
+		$item_info = $USER->getItemInfo($id, 'gebaeude', array("level", "has_prod", "prod", "name"), $PLANET);
 
 		if($item_info['level'] <= 0 || !$item_info['has_prod'])
 			continue; # Es wird nichts produziert, also nicht anzeigen
-		$prod = $me->checkProductionFactor($id);
+		$prod = $PLANET->checkProductionFactor($id);
 
 		if($item_info["prod"][5] > 0)
 			$energie_prod += $item_info["prod"][5];
 ?>
 			<tr>
-				<th class="c-gebaeude"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="Genauere Informationen anzeigen"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(Stufe&nbsp;<?=htmlspecialchars($item_info['level'])?>)</span></th>
+				<th class="c-gebaeude"><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars($GUI->getOption("url_suffix"))?>" title="<?=L::h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe"><?=h(sprintf(_("(Stufe %s)"), $item_info['level']))?></span></th>
 				<td class="c-carbon number <?=get_prod_class($item_info['prod'][0])?>"><?=F::ths($item_info['prod'][0]*$ges_prod[6])?></td>
 				<td class="c-aluminium number <?=get_prod_class($item_info['prod'][1])?>"><?=F::ths($item_info['prod'][1]*$ges_prod[6])?></td>
 				<td class="c-wolfram number <?=get_prod_class($item_info['prod'][2])?>"><?=F::ths($item_info['prod'][2]*$ges_prod[6])?></td>
@@ -88,7 +91,7 @@
 				<td class="c-tritium number <?=get_prod_class($item_info['prod'][4])?>"><?=F::ths($item_info['prod'][4]*$ges_prod[6])?></td>
 				<td class="c-energie number <?=get_prod_class($item_info['prod'][5])?>"><?=F::ths($item_info['prod'][5])?></td>
 				<td class="c-produktion">
-					<select name="prod[<?=htmlspecialchars($id)?>]" onchange="this.form.submit();" tabindex="<?=$tabindex?>"<?=($tabindex == 1) ? ' accesskey="u"' : ''?>>
+					<select name="prod[<?=htmlspecialchars($id)?>]" onchange="this.form.submit();" tabindex="<?=$tabindex?>"<?=($tabindex == 1) ? L::accesskeyAttr(_("Prod&uktion[login/rohstoffe.php|1]")) : ''?>>
 <?php
 		for($i=1,$h=100; $i>=0; $i-=.05,$h-=5)
 		{
@@ -100,7 +103,7 @@
 			if($diff >= 0.0001 && $diff <= 0.0499)
 			{
 ?>
-						<option value="<?=htmlspecialchars($prod)?>" selected="selected"><?=htmlspecialchars(str_replace('.', ',', $prod*100))?>&thinsp;%</option>
+						<option value="<?=htmlspecialchars($prod)?>" selected="selected"><?=L::h(sprintf(_("%s %%"), ths($prod*100)))?></option>
 <?php
 			}
 		}
@@ -115,7 +118,7 @@
 		</tbody>
 		<tfoot class="gesamt">
 			<tr class="c-stunde">
-				<th>Gesamt pro Stunde</th>
+				<th><?=L::h(_("Gesamt pro Stunde"))?></th>
 				<td class="c-carbon number <?=get_prod_class($ges_prod[0])?>"><?=F::ths($ges_prod[0])?></td>
 				<td class="c-aluminium number <?=get_prod_class($ges_prod[1])?>"><?=F::ths($ges_prod[1])?></td>
 				<td class="c-wolfram number <?=get_prod_class($ges_prod[2])?>"><?=F::ths($ges_prod[2])?></td>
@@ -128,24 +131,24 @@
 <?php
 	$day_prod = array($ges_prod[0]*24, $ges_prod[1]*24, $ges_prod[2]*24, $ges_prod[3]*24, $ges_prod[4]*24);
 	$show_day_prod = $day_prod;
-	$show_days = $me->checkSetting('prod_show_days');
+	$show_days = $USER->checkSetting('prod_show_days');
 	$show_day_prod[0] *= $show_days;
 	$show_day_prod[1] *= $show_days;
 	$show_day_prod[2] *= $show_days;
 	$show_day_prod[3] *= $show_days;
 	$show_day_prod[4] *= $show_days;
 ?>
-				<th>Gesamt pr<kbd>o</kbd> <input type="text" class="prod-show-days" name="show_days" id="show_days" value="<?=htmlspecialchars($show_days)?>" tabindex="<?=$tabindex?>" accesskey="o" onchange="recalc_perday();" onclick="recalc_perday();" onkeyup="recalc_perday();" />&nbsp;Tage</th>
+				<th><?=sprintf(L::h(_("Gesamt pr&o %s Tage[login/rohstoffe.php|1]")), "<input type=\"text\" class=\"prod-show-days\" name=\"show_days\" id=\"show_days\" value=\"".htmlspecialchars($show_days)."\" tabindex=\"".$tabindex."\"".L::accesskeyAttr(_("Gesamt pr&o %s Tage[login/rohstoffe.php|1]"))." onchange=\"recalc_perday();\" onclick=\"recalc_perday();\" onkeyup=\"recalc_perday();\" />")?></th>
 				<td class="c-carbon number <?=get_prod_class($show_day_prod[0])?>" id="taeglich-carbon"><?=F::ths($show_day_prod[0])?></td>
 				<td class="c-aluminium number <?=get_prod_class($show_day_prod[1])?>" id="taeglich-aluminium"><?=F::ths($show_day_prod[1])?></td>
 				<td class="c-wolfram number <?=get_prod_class($show_day_prod[2])?>" id="taeglich-wolfram"><?=F::ths($show_day_prod[2])?></td>
 				<td class="c-radium number <?=get_prod_class($show_day_prod[3])?>" id="taeglich-radium"><?=F::ths($show_day_prod[3])?></td>
 				<td class="c-tritium number <?=get_prod_class($show_day_prod[4])?>" id="taeglich-tritium"><?=F::ths($show_day_prod[4])?></td>
-				<td class="c-speichern" colspan="2" class="button"><button type="submit" tabindex="<?=$tabindex+1?>" accesskey="n">Speicher<kbd>n</kbd></button></td>
+				<td class="c-speichern" colspan="2" class="button"><button type="submit" tabindex="<?=$tabindex+1?>"<?=L::accesskeyAttr(_("Speicher&n[login/rohstoffe.php|1]"))?>><?=L::h(_("Speicher&n[login/rohstoffe.php|1]"))?></button></td>
 			</tr>
 <?php
-	$limit = $me->getProductionLimit();
-	$ress = $me->getRess();
+	$limit = $PLANET->getProductionLimit();
+	$ress = $PLANET->getRess();
 ?>
 			<tr class="c-speicher">
 				<th>Speicher</th>
@@ -221,5 +224,4 @@
 // ]]>
 </script>
 <?php
-	$gui->end();
-?>
+	$GUI->end();

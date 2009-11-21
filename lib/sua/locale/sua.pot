@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-01-20 20:58+0100\n"
+"POT-Creation-Date: 2009-11-09 10:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,588 +18,965 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: ../locale/refresh_tmp.php:2
-msgid "[message_1]"
+msgid "[item_B0]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:3
-msgid "[message_2]"
+msgid "[item_B0_def_acc]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:4
-msgid "[message_3]"
+msgid "[itemdesc_B0]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:5
-msgid "[message_4]"
+msgid "[item_B1]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:6
-msgid "[message_5]"
+msgid "[item_B1_def_acc]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:7
-msgid "[message_6]"
+msgid "[itemdesc_B1]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:8
-msgid "[message_7]"
+msgid "[item_B2]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:9
-msgid "[message_8]"
+msgid "[item_B2_def_acc]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:10
-msgid "[fleet_1]"
+msgid "[itemdesc_B2]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:11
-msgid "[fleet_2]"
+msgid "[item_B3]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:12
-msgid "[fleet_3]"
+msgid "[item_B3_def_acc]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:13
-msgid "[fleet_4]"
+msgid "[itemdesc_B3]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:14
-msgid "[fleet_5]"
+msgid "[item_B4]"
 msgstr ""
 
 #: ../locale/refresh_tmp.php:15
+msgid "[item_B4_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:16
+msgid "[itemdesc_B4]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:17
+msgid "[item_B5]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:18
+msgid "[item_B5_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:19
+msgid "[itemdesc_B5]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:20
+msgid "[item_B6]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:21
+msgid "[item_B6_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:22
+msgid "[itemdesc_B6]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:23
+msgid "[item_B7]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:24
+msgid "[item_B7_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:25
+msgid "[itemdesc_B7]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:26
+msgid "[item_B8]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:27
+msgid "[item_B8_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:28
+msgid "[itemdesc_B8]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:29
+msgid "[item_B9]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:30
+msgid "[item_B9_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:31
+msgid "[itemdesc_B9]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:32
+msgid "[item_B10]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:33
+msgid "[item_B10_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:34
+msgid "[itemdesc_B10]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:35
+msgid "[item_F0]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:36
+msgid "[item_F0_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:37
+msgid "[itemdesc_F0]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:38
+msgid "[item_F1]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:39
+msgid "[item_F1_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:40
+msgid "[itemdesc_F1]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:41
+msgid "[item_F2]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:42
+msgid "[item_F2_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:43
+msgid "[itemdesc_F2]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:44
+msgid "[item_F3]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:45
+msgid "[item_F3_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:46
+msgid "[itemdesc_F3]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:47
+msgid "[item_F4]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:48
+msgid "[item_F4_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:49
+msgid "[itemdesc_F4]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:50
+msgid "[item_F5]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:51
+msgid "[item_F5_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:52
+msgid "[itemdesc_F5]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:53
+msgid "[item_F10]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:54
+msgid "[item_F10_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:55
+msgid "[itemdesc_F10]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:56
+msgid "[item_F6]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:57
+msgid "[item_F6_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:58
+msgid "[itemdesc_F6]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:59
+msgid "[item_F7]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:60
+msgid "[item_F7_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:61
+msgid "[itemdesc_F7]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:62
+msgid "[item_F8]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:63
+msgid "[item_F8_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:64
+msgid "[itemdesc_F8]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:65
+msgid "[item_F9]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:66
+msgid "[item_F9_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:67
+msgid "[itemdesc_F9]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:68
+msgid "[item_F11]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:69
+msgid "[item_F11_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:70
+msgid "[itemdesc_F11]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:71
+msgid "[item_R01]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:72
+msgid "[item_R01_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:73
+msgid "[itemdesc_R01]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:74
+msgid "[item_R02]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:75
+msgid "[item_R02_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:76
+msgid "[itemdesc_R02]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:77
+msgid "[item_R03]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:78
+msgid "[item_R03_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:79
+msgid "[itemdesc_R03]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:80
+msgid "[item_R04]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:81
+msgid "[item_R04_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:82
+msgid "[itemdesc_R04]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:83
+msgid "[item_R05]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:84
+msgid "[item_R05_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:85
+msgid "[itemdesc_R05]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:86
+msgid "[item_R06]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:87
+msgid "[item_R06_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:88
+msgid "[itemdesc_R06]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:89
+msgid "[item_S0]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:90
+msgid "[item_S0_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:91
+msgid "[itemdesc_S0]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:92
+msgid "[item_S1]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:93
+msgid "[item_S1_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:94
+msgid "[itemdesc_S1]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:95
+msgid "[item_S2]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:96
+msgid "[item_S2_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:97
+msgid "[itemdesc_S2]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:98
+msgid "[item_S3]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:99
+msgid "[item_S3_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:100
+msgid "[itemdesc_S3]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:101
+msgid "[item_S5]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:102
+msgid "[item_S5_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:103
+msgid "[itemdesc_S5]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:104
+msgid "[item_S6]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:105
+msgid "[item_S6_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:106
+msgid "[itemdesc_S6]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:107
+msgid "[item_S7]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:108
+msgid "[item_S7_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:109
+msgid "[itemdesc_S7]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:110
+msgid "[item_S8]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:111
+msgid "[item_S8_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:112
+msgid "[itemdesc_S8]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:113
+msgid "[item_S9]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:114
+msgid "[item_S9_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:115
+msgid "[itemdesc_S9]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:116
+msgid "[item_S10]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:117
+msgid "[item_S10_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:118
+msgid "[itemdesc_S10]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:119
+msgid "[item_S11]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:120
+msgid "[item_S11_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:121
+msgid "[itemdesc_S11]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:122
+msgid "[item_S12]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:123
+msgid "[item_S12_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:124
+msgid "[itemdesc_S12]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:125
+msgid "[item_S13]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:126
+msgid "[item_S13_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:127
+msgid "[itemdesc_S13]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:128
+msgid "[item_S14]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:129
+msgid "[item_S14_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:130
+msgid "[itemdesc_S14]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:131
+msgid "[item_S15]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:132
+msgid "[item_S15_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:133
+msgid "[itemdesc_S15]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:134
+msgid "[item_S16]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:135
+msgid "[item_S16_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:136
+msgid "[itemdesc_S16]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:137
+msgid "[item_V0]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:138
+msgid "[item_V0_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:139
+msgid "[itemdesc_V0]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:140
+msgid "[item_V1]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:141
+msgid "[item_V1_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:142
+msgid "[itemdesc_V1]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:143
+msgid "[item_V2]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:144
+msgid "[item_V2_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:145
+msgid "[itemdesc_V2]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:146
+msgid "[item_V6]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:147
+msgid "[item_V6_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:148
+msgid "[itemdesc_V6]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:149
+msgid "[item_V3]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:150
+msgid "[item_V3_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:151
+msgid "[itemdesc_V3]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:152
+msgid "[item_V4]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:153
+msgid "[item_V4_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:154
+msgid "[itemdesc_V4]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:155
+msgid "[item_V5]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:156
+msgid "[item_V5_def_acc]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:157
+msgid "[itemdesc_V5]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:158
+msgid "[message_1]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:159
+msgid "[message_2]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:160
+msgid "[message_3]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:161
+msgid "[message_4]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:162
+msgid "[message_5]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:163
+msgid "[message_6]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:164
+msgid "[message_7]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:165
+msgid "[message_8]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:166
+msgid "[fleet_1]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:167
+msgid "[fleet_2]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:168
+msgid "[fleet_3]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:169
+msgid "[fleet_4]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:170
+msgid "[fleet_5]"
+msgstr ""
+
+#: ../locale/refresh_tmp.php:171
 msgid "[fleet_6]"
 msgstr ""
 
-#: ../classes/sua/f.php:74
+#: ../classes/sua/f.php:72
 #, php-format
 msgid "%s Tag"
 msgid_plural "%s Tage"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/f.php:76
+#: ../classes/sua/f.php:74
 #, php-format
 msgid "%s Stunde"
 msgid_plural "%s Stunden"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/f.php:78
+#: ../classes/sua/f.php:76
 #, php-format
 msgid "%s Minute"
 msgid_plural "%s Minuten"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/f.php:80
+#: ../classes/sua/f.php:78
 #, php-format
 msgid "%s Sekunde"
 msgid_plural "%s Sekunden"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/f.php:143 ../classes/sua/fleet.php:1413
-#: ../classes/sua/fleet.php:1476 ../classes/sua/fleet.php:1477
-#: ../classes/sua/fleet.php:1527 ../classes/sua/fleet.php:1529
-#: ../classes/sua/fleet.php:1997 ../classes/sua/fleet.php:2022
-#: ../classes/sua/fleet.php:2729 ../classes/sua/fleet.php:2808
-#: ../classes/sua/fleet.php:2816 ../classes/sua/fleet.php:2821
+#: ../classes/sua/f.php:141 ../classes/sua/fleet.php:1337
+#: ../classes/sua/fleet.php:1400 ../classes/sua/fleet.php:1401
+#: ../classes/sua/fleet.php:1451 ../classes/sua/fleet.php:1453
+#: ../classes/sua/fleet.php:1921 ../classes/sua/fleet.php:1946
+#: ../classes/sua/fleet.php:2653 ../classes/sua/fleet.php:2732
+#: ../classes/sua/fleet.php:2740 ../classes/sua/fleet.php:2745
 msgid "[ress_0]"
 msgstr ""
 
-#: ../classes/sua/f.php:145 ../classes/sua/fleet.php:1413
-#: ../classes/sua/fleet.php:1476 ../classes/sua/fleet.php:1477
-#: ../classes/sua/fleet.php:1527 ../classes/sua/fleet.php:1529
-#: ../classes/sua/fleet.php:1997 ../classes/sua/fleet.php:2022
-#: ../classes/sua/fleet.php:2729 ../classes/sua/fleet.php:2808
-#: ../classes/sua/fleet.php:2816 ../classes/sua/fleet.php:2821
+#: ../classes/sua/f.php:143 ../classes/sua/fleet.php:1337
+#: ../classes/sua/fleet.php:1400 ../classes/sua/fleet.php:1401
+#: ../classes/sua/fleet.php:1451 ../classes/sua/fleet.php:1453
+#: ../classes/sua/fleet.php:1921 ../classes/sua/fleet.php:1946
+#: ../classes/sua/fleet.php:2653 ../classes/sua/fleet.php:2732
+#: ../classes/sua/fleet.php:2740 ../classes/sua/fleet.php:2745
 msgid "[ress_1]"
 msgstr ""
 
-#: ../classes/sua/f.php:147 ../classes/sua/fleet.php:1413
-#: ../classes/sua/fleet.php:1476 ../classes/sua/fleet.php:1477
-#: ../classes/sua/fleet.php:1527 ../classes/sua/fleet.php:1529
-#: ../classes/sua/fleet.php:1997 ../classes/sua/fleet.php:2022
-#: ../classes/sua/fleet.php:2729 ../classes/sua/fleet.php:2808
-#: ../classes/sua/fleet.php:2816 ../classes/sua/fleet.php:2821
+#: ../classes/sua/f.php:145 ../classes/sua/fleet.php:1337
+#: ../classes/sua/fleet.php:1400 ../classes/sua/fleet.php:1401
+#: ../classes/sua/fleet.php:1451 ../classes/sua/fleet.php:1453
+#: ../classes/sua/fleet.php:1921 ../classes/sua/fleet.php:1946
+#: ../classes/sua/fleet.php:2653 ../classes/sua/fleet.php:2732
+#: ../classes/sua/fleet.php:2740 ../classes/sua/fleet.php:2745
 msgid "[ress_2]"
 msgstr ""
 
-#: ../classes/sua/f.php:149 ../classes/sua/fleet.php:1413
-#: ../classes/sua/fleet.php:1476 ../classes/sua/fleet.php:1477
-#: ../classes/sua/fleet.php:1527 ../classes/sua/fleet.php:1529
-#: ../classes/sua/fleet.php:1997 ../classes/sua/fleet.php:2022
-#: ../classes/sua/fleet.php:2729 ../classes/sua/fleet.php:2808
-#: ../classes/sua/fleet.php:2816 ../classes/sua/fleet.php:2821
+#: ../classes/sua/f.php:147 ../classes/sua/fleet.php:1337
+#: ../classes/sua/fleet.php:1400 ../classes/sua/fleet.php:1401
+#: ../classes/sua/fleet.php:1451 ../classes/sua/fleet.php:1453
+#: ../classes/sua/fleet.php:1921 ../classes/sua/fleet.php:1946
+#: ../classes/sua/fleet.php:2653 ../classes/sua/fleet.php:2732
+#: ../classes/sua/fleet.php:2740 ../classes/sua/fleet.php:2745
 msgid "[ress_3]"
 msgstr ""
 
-#: ../classes/sua/f.php:153 ../classes/sua/fleet.php:1476
-#: ../classes/sua/fleet.php:1477 ../classes/sua/fleet.php:1527
-#: ../classes/sua/fleet.php:1529 ../classes/sua/fleet.php:2022
-#: ../classes/sua/fleet.php:2032 ../classes/sua/fleet.php:2808
-#: ../classes/sua/fleet.php:2816
+#: ../classes/sua/f.php:151 ../classes/sua/fleet.php:1400
+#: ../classes/sua/fleet.php:1401 ../classes/sua/fleet.php:1451
+#: ../classes/sua/fleet.php:1453 ../classes/sua/fleet.php:1946
+#: ../classes/sua/fleet.php:1956 ../classes/sua/fleet.php:2732
+#: ../classes/sua/fleet.php:2740
 msgid "[ress_4]"
 msgstr ""
 
-#: ../classes/sua/f.php:158
+#: ../classes/sua/f.php:156
 msgid "[ress_5]"
 msgstr ""
 
-#: ../classes/sua/f.php:626 ../classes/sua/f.php:658
+#: ../classes/sua/f.php:310 ../classes/sua/f.php:343
 #, php-format
 msgid "%s (unbesiedelt)"
 msgstr ""
 
-#: ../classes/sua/f.php:631 ../classes/sua/f.php:663
-#: ../classes/sua/logingui.php:222 ../classes/sua/logingui.php:423
-#: ../classes/sua/fleet.php:1458 ../classes/sua/fleet.php:1767
+#: ../classes/sua/f.php:315 ../classes/sua/f.php:348
+#: ../classes/sua/fleet.php:1382 ../classes/sua/fleet.php:1691
 #, php-format
 msgid "„%s“ (%s)"
 msgstr ""
 
-#: ../classes/sua/f.php:638 ../classes/sua/f.php:671
+#: ../classes/sua/f.php:322 ../classes/sua/f.php:356
 #, php-format
 msgid "[%s] %s"
 msgstr ""
 
-#: ../classes/sua/f.php:640 ../classes/sua/f.php:673
-#: ../classes/sua/fleet.php:1468 ../classes/sua/fleet.php:1767
-#: ../classes/sua/fleet.php:1789 ../classes/sua/fleet.php:1807
-#: ../classes/sua/fleet.php:1812 ../classes/sua/fleet.php:2001
+#: ../classes/sua/f.php:324 ../classes/sua/f.php:358
+#: ../classes/sua/fleet.php:1392 ../classes/sua/fleet.php:1691
+#: ../classes/sua/fleet.php:1713 ../classes/sua/fleet.php:1731
+#: ../classes/sua/fleet.php:1736 ../classes/sua/fleet.php:1925
 #, php-format
 msgid "„%s“ (%s, Eigentümer: %s)"
 msgstr ""
 
-#: ../classes/sua/f.php:655
+#: ../classes/sua/f.php:340
 msgid "Diesen Planeten in der Karte anzeigen"
 msgstr ""
 
-#: ../classes/sua/f.php:669
+#: ../classes/sua/f.php:354
 msgid "Informationen zu diesem Spieler anzeigen"
 msgstr ""
 
-#: ../classes/sua/f.php:671
+#: ../classes/sua/f.php:356
 msgid "Informationen zu dieser Allianz anzeigen"
 msgstr ""
 
-#: ../classes/sua/f.php:697
+#: ../classes/sua/f.php:382
 #, php-format
 msgid "%s d %02d:%02d:%02d"
 msgstr ""
 
-#: ../classes/sua/f.php:699
+#: ../classes/sua/f.php:384
 #, php-format
 msgid "%02d:%02d:%02d"
 msgstr ""
 
-#: ../classes/sua/f.php:702
+#: ../classes/sua/f.php:387
 #, php-format
 msgid "Fertigstellung: %s"
 msgstr ""
 
-#: ../classes/sua/f.php:702 ../classes/sua/logingui.php:177
-#: ../classes/sua/logingui.php:186 ../classes/sua/logingui.php:201
+#: ../classes/sua/f.php:387
 #, php-format
 msgid "%s (Serverzeit)"
 msgstr ""
 
-#: ../classes/sua/f.php:702 ../classes/sua/user.php:885
+#: ../classes/sua/f.php:387 ../classes/sua/user.php:868
 msgid "Y-m-d H:i:s"
 msgstr ""
 
-#: ../classes/sua/alliance.php:154 ../classes/sua/alliance.php:167
+#: ../classes/sua/alliance.php:104 ../classes/sua/alliance.php:117
 msgid "Allianz aufgelöst"
 msgstr ""
 
-#: ../classes/sua/alliance.php:155
+#: ../classes/sua/alliance.php:105
 #, php-format
 msgid "Die Allianz %s wurde aufgelöst."
 msgstr ""
 
-#: ../classes/sua/alliance.php:168
+#: ../classes/sua/alliance.php:118
 #, php-format
 msgid ""
 "Die Allianz %s wurde aufgelöst. Ihre Bewerbung wurde deshalb zurückgewiesen."
 msgstr ""
 
-#: ../classes/sua/alliance.php:400
+#: ../classes/sua/alliance.php:352
 msgid "Allianzmitgliedschaft gekündigt"
 msgstr ""
 
-#: ../classes/sua/alliance.php:401
+#: ../classes/sua/alliance.php:353
 #, php-format
 msgid "Sie wurden aus der Allianz %s geworfen."
 msgstr ""
 
-#: ../classes/sua/alliance.php:411
+#: ../classes/sua/alliance.php:363
 msgid "Spieler aus Allianz geworfen"
 msgstr ""
 
-#: ../classes/sua/alliance.php:412
+#: ../classes/sua/alliance.php:364
 #, php-format
 msgid "Der Spieler %s wurde aus Ihrer Allianz geworfen."
 msgstr ""
 
-#: ../classes/sua/alliance.php:522
+#: ../classes/sua/alliance.php:474
 msgid "Benutzer aus Allianz ausgetreten"
 msgstr ""
 
-#: ../classes/sua/alliance.php:523
+#: ../classes/sua/alliance.php:475
 #, php-format
 msgid "Der Benutzer %s hat Ihre Allianz verlassen."
 msgstr ""
 
-#: ../classes/sua/alliance.php:571
+#: ../classes/sua/alliance.php:523
 #, php-format
 msgid ""
 "Der Benutzer %s hat sich bei Ihrer Allianz beworben. Gehen Sie auf Ihre "
 "Allianzseite, um die Bewerbung anzunehmen oder abzulehnen."
 msgstr ""
 
-#: ../classes/sua/alliance.php:573
+#: ../classes/sua/alliance.php:525
 msgid "Der Bewerber hat keinen Bewerbungstext hinterlassen."
 msgstr ""
 
-#: ../classes/sua/alliance.php:574
+#: ../classes/sua/alliance.php:526
 msgid "Der Bewerber hat folgenden Bewerbungstext hinterlassen:"
 msgstr ""
 
-#: ../classes/sua/alliance.php:577
+#: ../classes/sua/alliance.php:529
 msgid "Neue Allianzbewerbung"
 msgstr ""
 
-#: ../classes/sua/alliance.php:598
+#: ../classes/sua/alliance.php:550
 msgid "Allianzbewerbung zurückgezogen"
 msgstr ""
 
-#: ../classes/sua/alliance.php:599
+#: ../classes/sua/alliance.php:551
 #, php-format
 msgid "Der Benutzer %s hat seine Bewerbung bei Ihrer Allianz zurückgezogen."
 msgstr ""
 
-#: ../classes/sua/alliance.php:615
+#: ../classes/sua/alliance.php:567
 msgid "Neuling"
 msgstr ""
 
-#: ../classes/sua/alliance.php:619
+#: ../classes/sua/alliance.php:571
 msgid "Allianzbewerbung angenommen"
 msgstr ""
 
-#: ../classes/sua/alliance.php:620
+#: ../classes/sua/alliance.php:572
 #, php-format
 msgid "Ihre Bewerbung bei der Allianz %s wurde angenommen."
 msgstr ""
 
-#: ../classes/sua/alliance.php:630
+#: ../classes/sua/alliance.php:582
 msgid "Neues Allianzmitglied"
 msgstr ""
 
-#: ../classes/sua/alliance.php:631
+#: ../classes/sua/alliance.php:583
 #, php-format
 msgid "Ein neues Mitglied wurde in Ihre Allianz aufgenommen: %s"
 msgstr ""
 
-#: ../classes/sua/alliance.php:651 ../classes/sua/alliance.php:661
+#: ../classes/sua/alliance.php:603 ../classes/sua/alliance.php:613
 msgid "Allianzbewerbung abgelehnt"
 msgstr ""
 
-#: ../classes/sua/alliance.php:652
+#: ../classes/sua/alliance.php:604
 #, php-format
 msgid "Ihre Bewerbung bei der Allianz %s wurde abgelehnt."
 msgstr ""
 
-#: ../classes/sua/alliance.php:662
+#: ../classes/sua/alliance.php:614
 #, php-format
 msgid "Die Bewerbung von %s an Ihre Allianz wurde abgelehnt."
 msgstr ""
 
-#: ../classes/sua/logingui.php:51 ../classes/sua/captcha.php:44
-#: ../classes/sua/homegui.php:43
+#: ../classes/sua/date.php:81
+msgid "Y-m-d\\TH:i:s"
+msgstr ""
+
+#: ../classes/sua/captcha.php:43
 msgid "[LANG]"
 msgstr ""
 
-#: ../classes/sua/logingui.php:70 ../classes/sua/homegui.php:61
-#: ../classes/sua/homegui.php:67
-msgid "[title_abbr_full]"
+#: ../classes/sua/captcha.php:70
+msgid "Generierter Code"
 msgstr ""
 
-#: ../classes/sua/logingui.php:73
-msgid "[thousand_separator]"
+#: ../classes/sua/captcha.php:73
+msgid "Okay"
 msgstr ""
 
-#: ../classes/sua/logingui.php:157 ../classes/sua/logingui.php:390
-#: ../classes/sua/logingui.php:554
-msgid "Zum Inhalt&[login/include.php|1]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:158
-msgid "Zur Navigation&[login/include.php|1]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:159
-msgid "Zu den Spieldaten&[login/include.php|1]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:177
-msgid "Das Spiel ist derzeit gesperrt."
-msgstr ""
-
-#: ../classes/sua/logingui.php:177 ../classes/sua/logingui.php:186
-#: ../classes/sua/logingui.php:201
-#, php-format
-msgid "bis %s"
-msgstr ""
-
-#: ../classes/sua/logingui.php:177 ../classes/sua/logingui.php:186
-#: ../classes/sua/logingui.php:201
-msgid "Y-m-d, H:i:s"
-msgstr ""
-
-#: ../classes/sua/logingui.php:186
-msgid "Ihr Benutzeraccount ist gesperrt."
-msgstr ""
-
-#: ../classes/sua/logingui.php:193
-msgid "Ihr Benutzeraccount befindet sich im Urlaubsmodus."
-msgstr ""
-
-#: ../classes/sua/logingui.php:201
-msgid "Es herrscht eine Flottensperre für feindliche Flüge."
-msgstr ""
-
-#: ../classes/sua/logingui.php:222
-msgid "Zum vorigen Planeten wechseln&[login/include.php|1]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:222
-msgid "←"
-msgstr ""
-
-#: ../classes/sua/logingui.php:222 ../classes/sua/logingui.php:423
-#: ../classes/sua/planet.php:301 ../classes/sua/fleet.php:1281
-#: ../classes/sua/fleet.php:1282 ../classes/sua/fleet.php:1292
-#: ../classes/sua/fleet.php:1293 ../classes/sua/fleet.php:1323
-#: ../classes/sua/fleet.php:1324
+#: ../classes/sua/planet.php:250 ../classes/sua/fleet.php:1205
+#: ../classes/sua/fleet.php:1206 ../classes/sua/fleet.php:1216
+#: ../classes/sua/fleet.php:1217 ../classes/sua/fleet.php:1247
+#: ../classes/sua/fleet.php:1248
 #, php-format
 msgid "%d:%d:%d"
 msgstr ""
 
-#: ../classes/sua/logingui.php:222
-msgid "Zum nächsten Planeten wechseln&[login/include.php|1]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:222
-msgid "→"
-msgstr ""
-
-#: ../classes/sua/logingui.php:228 ../classes/sua/user.php:266
-#: ../classes/sua/user.php:894
-msgid "[title_full]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:267 ../classes/sua/item.php:240
-#: ../classes/sua/fleet.php:2016
-#, php-format
-msgid "%s: %s"
-msgstr ""
-
-#: ../classes/sua/logingui.php:267 ../classes/sua/message.php:380
-msgid "[message_"
-msgstr ""
-
-#: ../classes/sua/logingui.php:279
-#, php-format
-msgid "Sie haben %s neue &Nachricht.[login/include.php|2]"
-msgid_plural "Sie haben %s neue &Nachrichten.[login/include.php|2]"
-msgstr[0] ""
-msgstr[1] ""
-
-#: ../classes/sua/logingui.php:389 ../classes/sua/logingui.php:553
-msgid "Zur Rohstoffanzeige&[login/include.php|1]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:405
-msgid "Planeten wechseln"
-msgstr ""
-
-#: ../classes/sua/logingui.php:415
-msgid "Ihre &Planeten[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:429
-msgid "Wechseln"
-msgstr ""
-
-#: ../classes/sua/logingui.php:434
-msgid "&Übersicht[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:435
-msgid "&Rohstoffe[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:436
-msgid "&Gebäude[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:437
-msgid "&Forschung[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:438
-msgid "Ro&boter[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:439
-msgid "F&lotten[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:440
-msgid "&Schiffswerft[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:441
-msgid "&Verteidigung[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:442
-msgid "Han&delsbörse[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:443
-msgid "I&mperium[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:447
-msgid "&Karte[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:448
-msgid "All&ianz[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:449
-msgid "V&erbündete[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:450
-msgid "&Highscores[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:451
-msgid "Na&chrichten[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:452
-msgid "Forschungsb&aum[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:453
-msgid "Eins&tellungen[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:458
-msgid "Adminbereich&[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:464
-msgid "Abmelden&[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:475
-msgid "Board&[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:476
-msgid "FAQ&[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:477
-msgid "Chat&[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:478
-msgid "Entwicklerseite&[login/include.php|3]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:491
-msgid "Serverzeit"
-msgstr ""
-
-#: ../classes/sua/logingui.php:492
-msgid "H:i:s"
-msgstr ""
-
-#: ../classes/sua/logingui.php:501
-msgid ""
-"mk2(local_time_obj.getHours())+':'+mk2(local_time_obj.getMinutes())+':'+mk2"
-"(local_time_obj.getSeconds())"
-msgstr ""
-
-#: ../classes/sua/logingui.php:503
-msgid "Lokalzeit"
-msgstr ""
-
-#: ../classes/sua/logingui.php:540
-msgid "Changelog anzeigen&[login/include.php|4]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:540
-#, php-format
-msgid "Version %s"
-msgstr ""
-
-#: ../classes/sua/logingui.php:676
-msgid ""
-"Anmeldung fehlgeschlagen. Haben Sie sich bereits registriert und Ihren "
-"Benutzernamen und Ihr Passwort korrekt in die zugehörigen Felder beim "
-"Anmelden-Button eingetragen? Haben Sie Groß-Klein-Schreibung beim Passwort "
-"beachtet?"
-msgstr ""
-
-#: ../classes/sua/logingui.php:676
-msgid "Sie sind nicht angemeldet."
-msgstr ""
-
-#: ../classes/sua/logingui.php:680 ../classes/sua/logingui.php:681
-msgid "&Benutzername[login/include.php|5]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:683 ../classes/sua/logingui.php:684
-msgid "&Passwort[login/include.php|5]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:697
-msgid "&Anmelden[login/include.php|5]"
-msgstr ""
-
-#: ../classes/sua/logingui.php:706
-#, php-format
-msgid "Nicht angemeldet. Bitte %serneut anmelden%s."
-msgstr ""
-
-#: ../classes/sua/captcha.php:69
-msgid "Generierter Code"
-msgstr ""
-
-#: ../classes/sua/captcha.php:72
-msgid "Okay"
-msgstr ""
-
-#: ../classes/sua/planet.php:467
+#: ../classes/sua/planet.php:414
 msgid "Kolonie"
 msgstr ""
 
-#: ../classes/sua/user.php:266
+#: ../classes/sua/user.php:201
 #, php-format
 msgid "Inaktivität in %s"
 msgstr ""
 
-#: ../classes/sua/user.php:266
+#: ../classes/sua/user.php:201 ../classes/sua/user.php:877
+msgid "[title_full]"
+msgstr ""
+
+#: ../classes/sua/user.php:201
 #, php-format
 msgid ""
 "Sie erhalten diese Nachricht, weil Sie sich seit geraumer Zeit nicht mehr in "
@@ -609,80 +986,89 @@ msgid ""
 "Das Spiel erreichen Sie unter %s – Ihr Benutzername lautet %s."
 msgstr ""
 
-#: ../classes/sua/user.php:266
+#: ../classes/sua/user.php:201
 msgid "Y-m-d"
 msgstr ""
 
-#: ../classes/sua/user.php:885
+#: ../classes/sua/user.php:868
 #, php-format
 msgid "Automatisch generierte Nachricht vom %s"
 msgstr ""
 
-#: ../classes/sua/user.php:1267 ../classes/sua/item.php:240
-#: ../classes/sua/fleet.php:2394 ../classes/sua/fleet.php:2404
+#: ../classes/sua/user.php:1258 ../classes/sua/item.php:242
+#: ../classes/sua/fleet.php:2318 ../classes/sua/fleet.php:2328
 msgid "[item_"
 msgstr ""
 
-#: ../classes/sua/user.php:1756
+#: ../classes/sua/user.php:1734
 msgid "Anfrage auf ein Bündnis"
 msgstr ""
 
-#: ../classes/sua/user.php:1759
+#: ../classes/sua/user.php:1737
 #, php-format
 msgid "Der Spieler %s hat Ihnen eine mitteilungslose Bündnisanfrage gestellt."
 msgstr ""
 
-#: ../classes/sua/user.php:1781
+#: ../classes/sua/user.php:1759
 msgid "Bündnisanfrage angenommen"
 msgstr ""
 
-#: ../classes/sua/user.php:1782
+#: ../classes/sua/user.php:1760
 #, php-format
 msgid "Der Spieler %s hat Ihre Bündnisanfrage angenommen."
 msgstr ""
 
-#: ../classes/sua/user.php:1802
+#: ../classes/sua/user.php:1780
 msgid "Bündnisanfrage abgelehnt"
 msgstr ""
 
-#: ../classes/sua/user.php:1803
+#: ../classes/sua/user.php:1781
 #, php-format
 msgid "Der Spieler %s hat Ihre Bündnisanfrage abgelehnt."
 msgstr ""
 
-#: ../classes/sua/user.php:1823
+#: ../classes/sua/user.php:1801
 msgid "Bündnis gekündigt"
 msgstr ""
 
-#: ../classes/sua/user.php:1824
+#: ../classes/sua/user.php:1802
 #, php-format
 msgid "Der Spieler %s hat sein Bündnis mit Ihnen gekündigt."
 msgstr ""
 
-#: ../classes/sua/user.php:1862
+#: ../classes/sua/user.php:1840
 msgid "Bündnisanfrage zurückgezogen"
 msgstr ""
 
-#: ../classes/sua/user.php:1863
+#: ../classes/sua/user.php:1841
 #, php-format
 msgid "Der Spieler %s hat seine Bündnisanfrage an Sie zurückgezogen."
 msgstr ""
 
-#: ../classes/sua/item.php:314 ../classes/sua/fleet.php:2695
+#: ../classes/sua/item.php:242 ../classes/sua/fleet.php:1940
+#, php-format
+msgid "%s: %s"
+msgstr ""
+
+#: ../classes/sua/item.php:317 ../classes/sua/fleet.php:2619
 msgid "Genauere Informationen anzeigen"
 msgstr ""
 
-#: ../classes/sua/message.php:380
+#: ../classes/sua/message.php:359
 #, php-format
 msgid ""
 "Sie haben eine neue Nachricht der Sorte %s von %s erhalten. Der Betreff "
 "lautet: %s"
 msgstr ""
 
-#: ../classes/sua/message.php:380
+#: ../classes/sua/message.php:359
 #, php-format
 msgid ""
 "Sie haben eine neue Nachricht der Sorte %s erhalten. Der Betreff lautet: %3$s"
+msgstr ""
+
+#: ../classes/sua/message.php:359
+msgid "[message_"
 msgstr ""
 
 #: ../classes/sua/system.php:159
@@ -690,7 +1076,7 @@ msgstr ""
 msgid "%d:%d"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1281
+#: ../classes/sua/fleet.php:1205
 #, php-format
 msgid ""
 "Ihre Flotte erreicht den Planeten %s und will mit der Besiedelung anfangen. "
@@ -698,12 +1084,12 @@ msgid ""
 "sich auf den Rückweg."
 msgstr ""
 
-#: ../classes/sua/fleet.php:1282 ../classes/sua/fleet.php:1292
+#: ../classes/sua/fleet.php:1206 ../classes/sua/fleet.php:1216
 #, php-format
 msgid "Besiedelung von %s fehlgeschlagen"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1293
+#: ../classes/sua/fleet.php:1217
 #, php-format
 msgid ""
 "Ihre Flotte erreicht den Planeten %s und will mit der Besiedelung anfangen. "
@@ -713,12 +1099,12 @@ msgid ""
 "Ihrer Flotte das Signal zum Rückflug."
 msgstr ""
 
-#: ../classes/sua/fleet.php:1323
+#: ../classes/sua/fleet.php:1247
 #, php-format
 msgid "%s unbesiedelt"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1324
+#: ../classes/sua/fleet.php:1248
 #, php-format
 msgid ""
 "Ihre Flotte erreicht den Planeten %s und will ihren Auftrag ausführen. "
@@ -726,137 +1112,137 @@ msgid ""
 "sich auf den weiteren Weg."
 msgstr ""
 
-#: ../classes/sua/fleet.php:1412
+#: ../classes/sua/fleet.php:1336
 #, php-format
 msgid "Abbau auf %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1413
+#: ../classes/sua/fleet.php:1337
 #, php-format
 msgid ""
 "Ihre Flotte erreicht das Trümmerfeld auf %s und belädt die %s Tonnen "
 "Sammlerkapazität mit folgenden Rohstoffen: %s."
 msgstr ""
 
-#: ../classes/sua/fleet.php:1413
+#: ../classes/sua/fleet.php:1337
 #, php-format
 msgid "%1$s %5$s, %2$s %6$s, %3$s %7$s und %4s %8$s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1413
+#: ../classes/sua/fleet.php:1337
 msgid "Verbleibende Rohstoffe im Trümmerfeld"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1458
+#: ../classes/sua/fleet.php:1382
 #, php-format
 msgid ""
 "Ein Transport erreicht Ihren Planeten %s. Folgende Spieler liefern Güter ab:"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1468
+#: ../classes/sua/fleet.php:1392
 #, php-format
 msgid "Ihre Flotte erreicht den Planeten %s und liefert folgende Güter ab:"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1476 ../classes/sua/fleet.php:1477
-#: ../classes/sua/fleet.php:1527 ../classes/sua/fleet.php:1529
+#: ../classes/sua/fleet.php:1400 ../classes/sua/fleet.php:1401
+#: ../classes/sua/fleet.php:1451 ../classes/sua/fleet.php:1453
 #, php-format
 msgid "%s: %s, %s: %s, %s: %s, %s: %s, %s: %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1485 ../classes/sua/fleet.php:1533
+#: ../classes/sua/fleet.php:1409 ../classes/sua/fleet.php:1457
 msgid "; "
 msgstr ""
 
-#: ../classes/sua/fleet.php:1492 ../classes/sua/fleet.php:1493
-#: ../classes/sua/fleet.php:2698
+#: ../classes/sua/fleet.php:1416 ../classes/sua/fleet.php:1417
+#: ../classes/sua/fleet.php:2622
 msgid "Keine."
 msgstr ""
 
-#: ../classes/sua/fleet.php:1519 ../classes/sua/fleet.php:1526
+#: ../classes/sua/fleet.php:1443 ../classes/sua/fleet.php:1450
 msgid "Folgender Handel wird durchgeführt:"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1554
+#: ../classes/sua/fleet.php:1478
 #, php-format
 msgid "Ankunft eines fremden Transportes auf %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1559
+#: ../classes/sua/fleet.php:1483
 #, php-format
 msgid "Ankunft Ihres Transportes auf %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1765
+#: ../classes/sua/fleet.php:1689
 #, php-format
 msgid "Fremde Flotte auf dem Planeten %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1767
+#: ../classes/sua/fleet.php:1691
 #, php-format
 msgid ""
 "Eine fremde Flotte vom Planeten %s wurde von Ihrem Planeten %s aus bei der "
 "Spionage gesichtet."
 msgstr ""
 
-#: ../classes/sua/fleet.php:1769
+#: ../classes/sua/fleet.php:1693
 #, php-format
 msgid "Durch Spionageabwehr haben Sie eine Spionagesonde zerstört."
 msgid_plural "Durch Spionageabwehr haben Sie %s Spionagesonden zerstört."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:1782
+#: ../classes/sua/fleet.php:1706
 #, php-format
 msgid "Spionage des Planeten %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1784 ../classes/sua/fleet.php:1789
+#: ../classes/sua/fleet.php:1708 ../classes/sua/fleet.php:1713
 #, php-format
 msgid "Spionagebericht des Planeten %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1785
+#: ../classes/sua/fleet.php:1709
 msgid "Planet"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1786
+#: ../classes/sua/fleet.php:1710
 msgid "Felder"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1787
+#: ../classes/sua/fleet.php:1711
 msgid "Schicken Sie ein Besiedelungsschiff zu diesem Planeten"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1788
+#: ../classes/sua/fleet.php:1712
 msgid "Besiedeln"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1790
+#: ../classes/sua/fleet.php:1714
 msgid "Roboter"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1791
+#: ../classes/sua/fleet.php:1715
 msgid "Forschung"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1792
+#: ../classes/sua/fleet.php:1716
 msgid "Schiffe"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1793
+#: ../classes/sua/fleet.php:1717
 msgid "Verteidigung"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1794
+#: ../classes/sua/fleet.php:1718
 msgid "Gebäude"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1795
+#: ../classes/sua/fleet.php:1719
 msgid "Rohstoffe"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1799
+#: ../classes/sua/fleet.php:1723
 #, php-format
 msgid "Die Spionageabwehr des Planeten hat eine Ihrer Spionagesonden zerstört."
 msgid_plural ""
@@ -864,12 +1250,12 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:1806
+#: ../classes/sua/fleet.php:1730
 #, php-format
 msgid "Spionage des Planeten %s abgewehrt"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1807
+#: ../classes/sua/fleet.php:1731
 #, php-format
 msgid ""
 "Ihre Flotte erreichte den Planeten %s, um diesen auszuspionieren.\n"
@@ -884,12 +1270,12 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:1811
+#: ../classes/sua/fleet.php:1735
 #, php-format
 msgid "Spionage des Planeten %s fehlgeschlagen"
 msgstr ""
 
-#: ../classes/sua/fleet.php:1812
+#: ../classes/sua/fleet.php:1736
 #, php-format
 msgid ""
 "Ihre Flotte erreichte den Planeten %s, um diesen auszuspionieren.\n"
@@ -898,423 +1284,254 @@ msgid ""
 "Spionage nicht möglich war."
 msgstr ""
 
-#: ../classes/sua/fleet.php:1995
+#: ../classes/sua/fleet.php:1919
 #, php-format
 msgid ""
 "Ihre Flotte erreicht den Planeten %s und beginnt mit seiner Besiedelung."
 msgstr ""
 
-#: ../classes/sua/fleet.php:1997
+#: ../classes/sua/fleet.php:1921
 #, php-format
 msgid ""
 " Durch den Abbau eines Besiedelungsschiffs konnten folgende Rohstoffe "
 "wiederhergestellt werden: %s."
 msgstr ""
 
-#: ../classes/sua/fleet.php:1997
+#: ../classes/sua/fleet.php:1921
 #, php-format
 msgid "%s %s, %s %s, %s %s, %s %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2001
+#: ../classes/sua/fleet.php:1925
 #, php-format
 msgid "Eine Flotte erreicht den Planeten %s."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2006
+#: ../classes/sua/fleet.php:1930
 #, php-format
 msgid "Die Flotte besteht aus folgenden Schiffen: %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2012
+#: ../classes/sua/fleet.php:1936
 msgid "Folgende Schiffe werden fremdstationiert:"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2021
+#: ../classes/sua/fleet.php:1945
 msgid "Folgende Güter werden abgeliefert:"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2022
+#: ../classes/sua/fleet.php:1946
 #, php-format
 msgid "%s %s, %s %s, %s %s, %s %s, %s %s."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2032
+#: ../classes/sua/fleet.php:1956
 #, php-format
 msgid "Folgender überschüssiger Treibstoff wird abgeliefert: %s."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2032
+#: ../classes/sua/fleet.php:1956
 #, php-format
 msgid "%s %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2037
+#: ../classes/sua/fleet.php:1961
 #, php-format
 msgid "Besiedelung von %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2039
+#: ../classes/sua/fleet.php:1963
 #, php-format
 msgid "Stationierung auf %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2365
+#: ../classes/sua/fleet.php:2289
 #, php-format
 msgid "Runde %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2368
+#: ../classes/sua/fleet.php:2292
 #, php-format
 msgid "Der Angreifer ist am Zug (Gesamtstärke %s)"
 msgid_plural "Die Angreifer sind am Zug (Gesamtstärke %s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2368
+#: ../classes/sua/fleet.php:2292
 #, php-format
 msgid "Der Verteidiger ist am Zug (Gesamtstärke %s)"
 msgid_plural "Die Verteidiger sind am Zug (Gesamtstärke %s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2394
+#: ../classes/sua/fleet.php:2318
 #, php-format
 msgid "Eine Einheit des Typs %s (%s) wird angeschossen."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2396
+#: ../classes/sua/fleet.php:2320
 #, php-format
 msgid "%s Einheit des Typs %s (%s) wird zerstört."
 msgid_plural "%s Einheiten des Typs %s (%s) werden zerstört."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2396
+#: ../classes/sua/fleet.php:2320
 #, php-format
 msgid "%s verbleibt."
 msgid_plural "%s verbleiben."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2404
+#: ../classes/sua/fleet.php:2328
 #, php-format
 msgid "Alle Einheiten des Typs %s (%s) (%s) werden zerstört."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2690
+#: ../classes/sua/fleet.php:2614
 msgid "Flotten des Angreifers"
 msgid_plural "Flotten der Angreifer"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2691
+#: ../classes/sua/fleet.php:2615
 msgid "Schiffstyp"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2692
+#: ../classes/sua/fleet.php:2616
 msgid "Anzahl"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2693
+#: ../classes/sua/fleet.php:2617
 msgid "Gesamtstärke"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2694
+#: ../classes/sua/fleet.php:2618
 msgid "Gesamtschild"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2696
+#: ../classes/sua/fleet.php:2620
 msgid "Gesamt"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2697
+#: ../classes/sua/fleet.php:2621
 msgid "Flotten des Verteidigers"
 msgid_plural "Flotten der Verteidiger"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2699
+#: ../classes/sua/fleet.php:2623
 #, php-format
 msgid "%s sind stärker ausgebildet als %s und %s."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2699 ../classes/sua/fleet.php:2700
+#: ../classes/sua/fleet.php:2623 ../classes/sua/fleet.php:2624
 msgid "Die Sensoren des Angreifers"
 msgid_plural "Die Sensoren der Angreifer"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2699
+#: ../classes/sua/fleet.php:2623
 msgid "die des Verteidigers"
 msgid_plural "die der Verteidiger"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2699
+#: ../classes/sua/fleet.php:2623
 msgid "ermöglichen es ihm, den Erstschlag auszuführen"
 msgid_plural "ermöglichen es ihnen, den Erstschlag auszuführen"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2700
+#: ../classes/sua/fleet.php:2624
 #, php-format
 msgid "%s sind %s nicht überlegen, weshalb %s."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2700
+#: ../classes/sua/fleet.php:2624
 msgid "denen des Verteidigers"
 msgid_plural "denen der Verteidiger"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2700
+#: ../classes/sua/fleet.php:2624
 msgid "letzterer den Erstschlag ausführt"
 msgid_plural "letztere den Erstschlag ausführen"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2702
+#: ../classes/sua/fleet.php:2626
 msgid "Der Kampf ist vorüber. Gewinner ist der Verteidiger."
 msgid_plural "Der Kampf ist vorüber. Gewinner sind die Verteidiger."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2703
+#: ../classes/sua/fleet.php:2627
 msgid "Der Kampf ist vorüber. Gewinner ist der Angreifer."
 msgid_plural "Der Kampf ist vorüber. Gewinner sind die Angreifer."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2704
+#: ../classes/sua/fleet.php:2628
 msgid "Der Kampf ist vorüber. Er endet unentschieden."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2705
+#: ../classes/sua/fleet.php:2629
 #, php-format
 msgid "Der Angreifer hat %s Kampferfahrungspunkte gesammelt."
 msgid_plural "Die Angreifer haben %s Kampferfahrungspunkte gesammelt."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2706
+#: ../classes/sua/fleet.php:2630
 #, php-format
 msgid "Der Verteidiger hat %s Kampferfahrungspunkte gesammelt."
 msgid_plural "Die Verteidiger haben %s Kampferfahrungspunkte gesammelt."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../classes/sua/fleet.php:2714
+#: ../classes/sua/fleet.php:2638
 #, php-format
 msgid "Der Angreifer %s hat %s Punkte verloren."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2722
+#: ../classes/sua/fleet.php:2646
 #, php-format
 msgid "Der Verteidiger %s hat %s Punkte verloren."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2729
+#: ../classes/sua/fleet.php:2653
 #, php-format
 msgid ""
 "Folgende Trümmer zerstörter Schiffe sind durch dem Kampf in die Umlaufbahn "
 "des Planeten gelangt: %s."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2729 ../classes/sua/fleet.php:2821
+#: ../classes/sua/fleet.php:2653 ../classes/sua/fleet.php:2745
 #, php-format
 msgid "%s %s, %s %s, %s %s und %s %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2808
+#: ../classes/sua/fleet.php:2732
 #, php-format
 msgid "Sie haben %s %s, %s %s, %s %s, %s %s und %s %s erbeutet."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2816
+#: ../classes/sua/fleet.php:2740
 #, php-format
 msgid ""
 "Die überlebenden Angreifer haben %s %s, %s %s, %s %s, %s %s und %s %s "
 "erbeutet."
 msgstr ""
 
-#: ../classes/sua/fleet.php:2821
+#: ../classes/sua/fleet.php:2745
 #, php-format
 msgid ""
 "Durch Wiederverwertung konnten folgende Rohstoffe aus den Trümmern der "
 "zerstörten Verteidigungsanlagen wiederhergestellt werden: %s"
 msgstr ""
 
-#: ../classes/sua/fleet.php:2828
+#: ../classes/sua/fleet.php:2752
 #, php-format
 msgid "Kampf auf %s"
-msgstr ""
-
-#: ../classes/sua/imserver.php:212
-#, php-format
-msgid "Automatische Benachrichtigung von %s, %s:"
-msgstr ""
-
-#: ../classes/sua/imserver.php:219
-msgid "Verschlüsselte Nachricht."
-msgstr ""
-
-#: ../classes/sua/imserver.php:257
-msgid "Akzeptiert."
-msgstr ""
-
-#: ../classes/sua/homegui.php:67
-#, php-format
-msgid ""
-"%s ist ein Online-Spiel, für das man nur einen Browser benötigt. Bauen Sie "
-"sich im Weltraum ein kleines Imperium auf und kämpfen und handeln Sie mit "
-"Hunderten anderer Spieler."
-msgstr ""
-
-#: ../classes/sua/homegui.php:79
-msgid "Zurück zur Startseite"
-msgstr ""
-
-#: ../classes/sua/homegui.php:79
-msgid "[title_full]&[include.php|1]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:81 ../classes/sua/homegui.php:219
-msgid "Zum Inhalt&[include.php|1]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:82
-msgid "Zur Navigation&[include.php|1]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:91
-msgid "Anmelden"
-msgstr ""
-
-#: ../classes/sua/homegui.php:93 ../classes/sua/homegui.php:94
-msgid "Runde&[include.php|2]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:109 ../classes/sua/homegui.php:110
-msgid "Name&[include.php|2]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:112 ../classes/sua/homegui.php:113
-msgid "Passwort&[include.php|2]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:115
-msgid "Anmelden&[include.php|2]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:117
-msgid "Registrieren&[include.php|2]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:118
-msgid "Passwort vergessen?&[include.php|2]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:123
-msgid "SSL abschalten&[include.php|3]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:129
-msgid "SSL einschalten&[include.php|3]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:133
-msgid "SSL-Zertifikat installieren&[include.php|3]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:137 ../classes/sua/homegui.php:160
-msgid "Optionen"
-msgstr ""
-
-#: ../classes/sua/homegui.php:139
-msgid "JavaScript deaktivieren"
-msgstr ""
-
-#: ../classes/sua/homegui.php:140
-msgid ""
-"Mit dieser Option können Sie alle fortwährenden JavaScript-Änderungen (zum "
-"Beispiel die Uhr) deaktivieren. Nützlich an langsamen Terminals."
-msgstr ""
-
-#: ../classes/sua/homegui.php:142
-msgid "IP-Schutz abschalten"
-msgstr ""
-
-#: ../classes/sua/homegui.php:143
-msgid ""
-"Wenn diese Option deaktiviert ist, kann Ihre Session von mehreren IP-"
-"Adressen gleichzeitig genutzt werden. (Unsicher!)"
-msgstr ""
-
-#: ../classes/sua/homegui.php:187
-msgid "Nach oben&[include.php|4]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:188
-msgid "Zur Anmeldung&[include.php|4]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:189
-msgid "Zum Inhalt&[include.php|4]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:193
-msgid "Navigation"
-msgstr ""
-
-#: ../classes/sua/homegui.php:195
-msgid "Neuigkeiten&[include.php|6]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:196
-msgid "Features&[include.php|6]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:197
-msgid "Registrieren&[include.php|6]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:198
-msgid "Regeln&[include.php|6]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:199
-msgid "FAQ&[include.php|6]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:200
-msgid "Chat&[include.php|6]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:201
-msgid "Board&[include.php|6]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:202
-msgid "Entwicklerseite&"
-msgstr ""
-
-#: ../classes/sua/homegui.php:202
-msgid "Entwicklerseite&[include.php|6]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:203
-msgid "Impressum&[include.php|6]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:208
-msgid "Adminbereich&[include.php|6]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:217
-msgid "Nach oben&[include.php|1]"
-msgstr ""
-
-#: ../classes/sua/homegui.php:218
-msgid "Zur Anmeldung&[include.php|1]"
 msgstr ""

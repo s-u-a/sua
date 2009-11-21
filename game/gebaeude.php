@@ -23,11 +23,14 @@
 	*/
 	namespace sua\psua;
 
+	use \sua\Planet;
+	use \sua\L;
+	use \sua\F;
+
 	require('include.php');
 
-	$planets = $me->getPlanetsList();
-	$active_planet = $me->getActivePlanet();
-	$act = array_search($active_planet, $planets);
+	$planets = Planet::getPlanetsByUser($USER->getName());
+	$act = array_search($PLANET, $planets);
 
 	# Naechsten nicht bauenden Planeten herausfinden
 	$i = $act+1;
@@ -36,12 +39,11 @@
 	{
 		if($i >= count($planets))
 			$i = 0;
-		if($planets[$i] == $active_planet)
+		if($i == $act)
 			break;
 
-		$me->setActivePlanet($planets[$i]);
-		$building = $me->checkBuildingThing('gebaeude');
-		if(!$building && ($PLANET->getRemainingFields() > 0 || $me->checkSetting('fastbuild_full')))
+		$building = $planets[$i]->checkBuildingThing('gebaeude');
+		if(!$building && ($planets[$i]->getRemainingFields() > 0 || $USER->checkSetting('fastbuild_full')))
 		{
 			$fastbuild_next = $planets[$i];
 			break;
@@ -60,9 +62,8 @@
 		if($i == $act)
 			break;
 
-		$me->setActivePlanet($planets[$i]);
-		$building = $me->checkBuildingThing('gebaeude');
-		if(!$building && ($PLANET->getRemainingFields() > 0 || $me->checkSetting('fastbuild_full')))
+		$building = $planets[$i]->checkBuildingThing('gebaeude');
+		if(!$building && ($planets[$i]->getRemainingFields() > 0 || $USER->checkSetting('fastbuild_full')))
 		{
 			$fastbuild_prev = $planets[$i];
 			break;
@@ -70,8 +71,6 @@
 
 		$i--;
 	}
-
-	$me->setActivePlanet($active_planet);
 
 	if(isset($_GET['ausbau']))
 	{
@@ -84,17 +83,17 @@
 		$rueckbau = true;
 	}
 
-	if(isset($a_id) && $me->permissionToAct())
+	if(isset($a_id) && $USER->permissionToAct())
 	{
-		$me->buildGebaeude($a_id, $rueckbau);
-		if($me->checkBuildingThing("gebaeude"))
+		$PLANET->buildGebaeude($a_id, $rueckbau);
+		if($PLANET->checkBuildingThing("gebaeude"))
 		{
-			if($me->checkSetting('fastbuild') && $fastbuild_next !== false)
+			if($USER->checkSetting('fastbuild') && $fastbuild_next !== false)
 			{
 				# Fastbuild
 
 				$_SESSION['last_click_ignore'] = true;
-				$url = global_setting("PROTOCOL")."://".$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"]."?".preg_replace("/((^|&)planet=)\d+/", "\${1}".$fastbuild_next, global_setting("URL_SUFFIX"));
+				$url = $GUI->getOption("protocol")."://".$_SERVER["HTTP_HOST"].$_SERVER["PHP_SELF"]."?".preg_replace("/((^|&)planet=)\d+/", "\${1}".$fastbuild_next, $GUI->getOption("url_suffix"));
 				header('Location: '.$url, true, 303);
 				die('HTTP redirect: <a href="'.htmlspecialchars($url).'">'.htmlspecialchars($url).'</a>');
 			}
@@ -105,66 +104,59 @@
 
 	if(isset($_GET['cancel']))
 	{
-		$building = $me->checkBuildingThing('gebaeude');
-		if($building && $building[0] == $_GET['cancel'] && $me->removeBuildingThing('gebaeude'))
+		$building = $PLANET->checkBuildingThing('gebaeude');
+		if($building && $building[0] == $_GET['cancel'] && $PLANET->removeBuildingThing('gebaeude'))
 			delete_request();
 	}
 
-	$gui->init();
+	$GUI->init();
 ?>
 <h2><?=L::h(_("Gebäude"))?></h2>
 <?php
-	if(($fastbuild_prev !== false || $fastbuild_next !== false) && $me->permissionToAct())
+	if(($fastbuild_prev !== false || $fastbuild_next !== false) && $USER->permissionToAct())
 	{
 ?>
 <ul class="unbeschaeftigte-planeten fast-seek">
 <?php
-		$active_planet = $me->getActivePlanet();
 		if($fastbuild_prev !== false)
 		{
-			$me->setActivePlanet($fastbuild_prev);
-			define_url_suffix();
 ?>
-	<li class="c-prev"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=sprintf(h(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"), false), htmlspecialchars($me->getActivePlanetFormatted()))?>" tabindex="<?=$tabindex++?>"<?=L::accesskeyAttr(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"))?> rel="prev"><?=L::h(_("←"))?></a></li>
+	<li class="c-prev"><a href="gebaeude.php?<?=htmlspecialchars(HTTPOutput::arrayToQueryString($URL_SUFFIX_ARR + array("planet" => $fastbuild_prev->getName())))?>" title="<?=sprintf(L::h(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"), false), htmlspecialchars(F::formatPlanet($PLANET, false)))?>" tabindex="<?=$tabindex++?>"<?=L::accesskeyAttr(_("Voriger &unbeschäftigter Planet: %s[login/gebaeude.php|1]"))?> rel="prev"><?=L::h(_("←"))?></a></li>
 <?php
 		}
 		if($fastbuild_next !== false)
 		{
-			$me->setActivePlanet($fastbuild_next);
-			define_url_suffix();
 ?>
-	<li class="c-next"><a href="gebaeude.php?<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=sprintf(h(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"), false), htmlspecialchars($me->getActivePlanetFormatted()))?>" tabindex="<?=$tabindex++?>"<?=L::accesskeyAttr(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"))?> rel="next"><?=L::h(_("→"))?></a></li>
+	<li class="c-next"><a href="gebaeude.php?<?=htmlspecialchars(HTTPOutput::arrayToQueryString($URL_SUFFIX_ARR + array("planet" => $fastbuild_prev->getName())))?>" title="<?=sprintf(L::h(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"), false), htmlspecialchars(F::formatPlanet($PLANET, false)))?>" tabindex="<?=$tabindex++?>"<?=L::accesskeyAttr(_("Nächster unbeschäftigter Planet: %s [&Q][login/gebaeude.php|1]"))?> rel="next"><?=L::h(_("→"))?></a></li>
 <?php
 		}
-		$me->setActivePlanet($active_planet);
-		define_url_suffix();
 ?>
 </ul>
 <?php
 	}
 
-	$gebaeude = $me->getItemsList('gebaeude');
+	$gebaeude = $USER->getItemsList('gebaeude');
 	foreach($gebaeude as $id)
 	{
-		$geb = $me->getItemInfo($id, 'gebaeude', array("deps-okay", "level", "buildable", "debuildable", "name", "ress", "time", "prod"));
+		$geb = $USER->getItemInfo($id, 'gebaeude', array("deps-okay", "level", "buildable", "debuildable", "name", "ress", "time", "prod"), $PLANET);
 		$building = false;
 
 		if(!$geb['deps-okay'] && $geb['level'] <= 0) # Abhaengigkeiten nicht erfuellt
 			continue;
 ?>
 <div class="item gebaeude" id="item-<?=htmlspecialchars($id)?>">
-	<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($geb['name'])?></a> <span class="stufe">(<?=sprintf(h(_("Stufe %s")), F::ths($geb['level']))?>)</span></h3>
+	<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars($GUI->getOption("url_suffix"))?>" title="<?=L::h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($geb['name'])?></a> <span class="stufe">(<?=sprintf(L::h(_("Stufe %s")), F::ths($geb['level']))?>)</span></h3>
 <?php
-		if($me->permissionToAct() && ($geb['buildable'] || $geb['debuildable']) && !($building = $me->checkBuildingThing('gebaeude')) && ($id != 'B8' || !$me->checkBuildingThing('forschung')) && ($id != 'B9' || !$me->checkBuildingThing('roboter')) && ($id != 'B10' || (!$me->checkBuildingThing('schiffe') && !$me->checkBuildingThing('verteidigung'))))
+		if($USER->permissionToAct() && ($geb['buildable'] || $geb['debuildable']) && !($building = $PLANET->checkBuildingThing('gebaeude')) && ($id != 'B8' || !$PLANET->checkBuildingThing('forschung')) && ($id != 'B9' || !$PLANET->checkBuildingThing('roboter')) && ($id != 'B10' || (!$PLANET->checkBuildingThing('schiffe') && !$PLANET->checkBuildingThing('verteidigung'))))
 		{
 ?>
 	<ul>
 <?php
 			if($geb['buildable'])
 			{
-				$enough_ress = $me->checkRess($geb['ress']);
+				$enough_ress = $PLANET->checkRess($geb['ress']);
 ?>
-		<li class="item-ausbau <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="gebaeude.php?ausbau='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=sprintf(h(_("Ausbau auf Stufe %s")), F::ths($geb['level']+1))?><?=$enough_ress ? '</a>' : ''?></li>
+		<li class="item-ausbau <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="gebaeude.php?ausbau='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars($GUI->getOption("url_suffix")).'" tabindex="'.($tabindex++).'">' : ''?><?=sprintf(L::h(_("Ausbau auf Stufe %s")), F::ths($geb['level']+1))?><?=$enough_ress ? '</a>' : ''?></li>
 <?php
 			}
 			if($geb['debuildable'])
@@ -174,9 +166,9 @@
 				$ress[1] /= 2;
 				$ress[2] /= 2;
 				$ress[3] /= 2;
-				$enough_ress = $me->checkRess($ress);
+				$enough_ress = $PLANET->checkRess($ress);
 ?>
-		<li class="item-rueckbau <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="gebaeude.php?abbau='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'">' : ''?><?=sprintf(h(_("Rückbau auf Stufe %s")), F::ths($geb['level']-1))?><?=$enough_ress ? '</a>' : ''?></li>
+		<li class="item-rueckbau <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="gebaeude.php?abbau='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars($GUI->getOption("url_suffix")).'">' : ''?><?=sprintf(L::h(_("Rückbau auf Stufe %s")), F::ths($geb['level']-1))?><?=$enough_ress ? '</a>' : ''?></li>
 <?php
 			}
 ?>
@@ -186,9 +178,9 @@
 		elseif($building && $building[0] == $id)
 		{
 ?>
-	<div class="restbauzeit" id="restbauzeit-<?=htmlspecialchars($building[0])?>"><?=F::formatFTime($building[1], $me)?> <a href="gebaeude.php?cancel=<?=htmlspecialchars(urlencode($building[0]))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen"><?=L::h(_("Abbrechen"))?></a></div>
+	<div class="restbauzeit" id="restbauzeit-<?=htmlspecialchars($building[0])?>"><?=F::formatFTime($building[1], $USER)?> <a href="gebaeude.php?cancel=<?=htmlspecialchars(urlencode($building[0]))?>&amp;<?=htmlspecialchars($GUI->getOption("url_suffix"))?>" class="abbrechen"><?=L::h(_("Abbrechen"))?></a></div>
 <?php
-			if(!$me->umode())
+			if(!$USER->umode())
 			{
 ?>
 	<script type="text/javascript">
@@ -202,16 +194,16 @@
 		<dt class="item-kosten"><?=L::h(_("Kosten"))?></dt>
 		<dd class="item-kosten">
 <?php
-		echo F::formatRess($geb['ress'], 3, false, false, false, $me);
+		echo F::formatRess($geb['ress'], 3, false, false, false, $PLANET);
 ?>
 		</dd>
 
 		<dt class="item-bauzeit"><?=L::h(_("Bauzeit"))?></dt>
 		<dd class="item-bauzeit"><?=F::formatBTime($geb['time'])?></dd>
 <?php
-		if($me->checkSetting("extended_buildings"))
+		if($USER->checkSetting("extended_buildings"))
 		{
-			$geb_next = $me->getItemInfo($id, "gebaeude", array("prod"), null, $geb["level"]+1);
+			$geb_next = $USER->getItemInfo($id, "gebaeude", array("prod"), null, $geb["level"]+1);
 ?>
 
 		<dt class="item-produktion-aktuell"><?=L::h(_("Produktion aktuell"))?></dt>
@@ -236,5 +228,4 @@
 	}
 ?>
 <?php
-	$gui->end();
-?>
+	$GUI->end();

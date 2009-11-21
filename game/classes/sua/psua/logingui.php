@@ -95,7 +95,7 @@
 			if($USER)
 			{
 ?>
-			var umode = <?=$USER->umode() ? "true" : "false"?>
+			var umode = <?=$USER->umode() ? "true" : "false"?>;
 <?php
 			}
 ?>
@@ -445,7 +445,7 @@
 				foreach($planets as $planet)
 				{
 ?>
-						<option value="<?=htmlspecialchars($planet->getName())?>"<?=($planet == $PLANET) ? ' selected="selected"' : ''?>><?=sprintf(L::h(_("„%s“ (%s)")), htmlspecialchars($planet->getName()), $planet->format())?></option>
+						<option value="<?=htmlspecialchars($planet->getName())?>"<?=($planet == $PLANET) ? ' selected="selected"' : ''?>><?=sprintf(L::h(_("„%s“ (%s)")), htmlspecialchars($planet->getGivenName()), $planet->format())?></option>
 <?php
 				}
 ?>
@@ -516,7 +516,7 @@
 			<dd id="time-server"><?=date(_("H:i:s"), time()+1)?></dd>
 		</dl>
 <?php
-			if(!$USER || $this->getOption("disable_javascript"))
+			if(!$USER || !$this->getOption("disable_javascript"))
 			{
 ?>
 		<script type="text/javascript">
@@ -566,52 +566,33 @@
 		</div></div></div></div></div></div></div></div>
 		<div id="css-4"></div>
 <?php
-			if($USER && !$this->getOption("disable_javascript"))
+			if($USER && !$this->getOption("disable_javascript") && ($USER->checkSetting('tooltips') || $USER->checkSetting('shortcuts') || $USER->checkSetting('ress_refresh') > 0))
 			{
-				if($USER->checkSetting('tooltips') || $USER->checkSetting('shortcuts') || $USER->checkSetting('ress_refresh') > 0)
-				{
 ?>
 		<script type="text/javascript">
 <?php
-					if($USER->checkSetting('shortcuts'))
-					{
+				if($USER->checkSetting('shortcuts'))
+				{
 ?>
 			get_key_elements();
 <?php
-					}
-					if($USER->checkSetting('tooltips'))
-					{
+				}
+				if($USER->checkSetting('tooltips'))
+				{
 ?>
 			load_titles();
 <?php
-					}
-					if($USER->checkSetting('ress_refresh') > 0)
-					{
-						$ress = $USER->getRess();
-						$prod = $USER->getProduction();
-						$limit = $USER->getProductionLimit();
+				}
+				if($USER->checkSetting('ress_refresh') > 0)
+				{
+					$ress = $USER->getRess();
+					$prod = $USER->getProduction();
+					$limit = $USER->getProductionLimit();
 ?>
 			refresh_ress(<?=$USER->checkSetting('ress_refresh')*1000?>, 'ress', [ <?=$ress[0]?>, <?=$ress[1]?>, <?=$ress[2]?>, <?=$ress[3]?>, <?=$ress[4]?> ], [ <?=$prod[0]?>, <?=$prod[1]?>, <?=$prod[2]?>, <?=$prod[3]?>, <?=$prod[4]?>] , [ <?=$limit[0]?>, <?=$limit[1]?>, <?=$limit[2]?>, <?=$limit[3]?>, <?=$limit[4]?> ]);
 <?php
-					}
-?>
-		</script>
-<?php
 				}
-
-				if($this->getOption("protocol") == "https")
-					$analytics_prefix = "https://ssl";
-				else
-					$analytics_prefix = "http://www";
 ?>
-		<script src="<?=htmlspecialchars($analytics_prefix)?>.google-analytics.com/ga.js" type="text/javascript"></script>
-		<script type="text/javascript">
-			if(typeof _gat != "undefined")
-			{
-				var pageTracker = _gat._getTracker("UA-471643-1");
-				pageTracker._initData();
-				pageTracker._trackPageview();
-			}
 		</script>
 <?php
 			}

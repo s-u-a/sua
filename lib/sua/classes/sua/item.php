@@ -74,15 +74,17 @@
 		static function init()
 		{
 			$db_config = Dataset::getDatabase()->getConfig();
-			if(!isset($config["items"]))
+			try {
+				self::$config = $db_config->getConfigValueE("items");
+			} catch(ConfigException $e) {
 				self::$config = array();
-			else
-				self::$config = $config["items"];
+			}
 		}
 
-		static function datasetName($id=null)
+		static function idFromParams($params = null)
 		{
-			return $id;
+			if(!is_array($params) || !isset($params[0])) return null;
+			return $params[0];
 		}
 
 		/**
@@ -118,10 +120,6 @@
 		function __construct($id, $type=null)
 		{
 			$this->item = $id;
-
-			$config = Dataset::getDatabase()->getConfig();
-			if(!isset($config["items"]))
-				throw new ItemException("No items are configured.");
 
 			$this->type = $type;
 			if(is_null($this->type))

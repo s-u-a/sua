@@ -40,11 +40,12 @@
 		public function getName();
 
 		/**
-		 * Liefert einen eindeutigen Namen des Datensets $name zurück. Der Benutzeraccount „test“ lässt sich
-		 * zum Beispiel auch als „tEst“ referenzieren, da Groß-Klein-Schreibung nicht beachtet wird. Für beide
-		 * Werte als $name soll das gleiche zurückgeliefert werden.
-		 * @param $name string Der Name des Datensets, oder null, wenn ein zufälliger Name erzeugt werden soll.
+		 * Liefert einen eindeutigen Namen des Datensets mit den Parametern $params zurück. Der Benutzeraccount „test“
+		 * lässt sich zum Beispiel auch als „tEst“ referenzieren, da Groß-Klein-Schreibung nicht beachtet wird. Für
+		 * beide Werte als $params[0] soll das gleiche zurückgeliefert werden. Manche Datensets benötigen auch mehrere
+		 * Paramter zur Referenzierung (Galaxie, System, Planet).
+		 * @param $params array
 		 * @return string
 		*/
-		public static function datasetName($name=null);
+		public static function idFromParams($params=null);
 	}

@@ -305,6 +305,9 @@
 
 		function checkSetting($setting)
 		{
+			try { return $this->getCacheValue(array("checkSetting", $setting)); }
+			catch(DatasetException $e) { }
+
 			$value = self::$sql->singleField("SELECT c_value FROM t_users_settings WHERE c_user = ".self::$sql->quote($this->getName())." AND c_setting = ".self::$sql->quote($setting)." LIMIT 1;");
 			if($value === false)
 			{
@@ -321,42 +324,53 @@
 					case "fastbuild_full":
 					case "fingerprint":
 					case "gpg_im":
-						return false;
+						$ret = false;
+						break;
 					case "schrift":
-						return true;
+						$ret = true;
+						break;
 					case "receive":
-						return array(
+						$ret = array(
 							1 => array(true, true),
 							2 => array(true, false),
 							3 => array(true, false),
 							4 => array(true, true),
 							5 => array(true, false)
 						);
+						break;
 					case "show_building":
-						return array(
+						$ret = array(
 							"gebaeude" => 1,
 							"forschung" => 1,
 							"roboter" => 0,
 							"schiffe" => 0,
 							"verteidigung" => 0
 						);
+						break;
 					case "prod_show_days":
-						return 1;
+						$ret = 1;
+						break;
 					case "messenger_receive":
-						return array(
+						$ret = array(
 							"messages" => array(1=>true, 2=>true, 3=>true, 4=>true, 5=>true, 6=>true, 7=>true),
 							"building" => array("gebaeude" => 1, "forschung" => 1, "roboter" => 3, "schiffe" => 3, "verteidigung" => 3)
 						);
+						break;
 					case "lang":
-						return L::language();
+						$ret = L::language();
+						break;
 					case "timezone":
-						return date_default_timezone_get();
+						$ret = date_default_timezone_get();
+						break;
 					default:
-						return null;
+						$ret = null;
+						break;
 				}
 			}
-
-			return unserialize($value);
+			else
+				$ret = unserialize($value);
+			$this->setCacheValue(array("checkSetting", $setting), $ret);
+			return $ret;
 		}
 
 		/**
@@ -372,6 +386,7 @@
 				self::$sql->backgroundQuery("UPDATE t_users_settings SET c_value = ".self::$sql->quote(serialize($value))." WHERE c_user = ".self::$sql->quote($this->getName())." AND c_setting = ".self::$sql->quote($setting)." LIMIT 1;");
 			else
 				self::$sql->backgroundQuery("INSERT INTO t_users_settings ( c_user, c_setting, c_value ) VALUES ( ".self::$sql->quote($this->getName()).", ".self::$sql->quote($setting).", ".self::$sql->quote(serialize($value))." );");
+			$this->setCacheValue(array("checkSetting", $setting), $value);
 		}
 
 		/**
@@ -744,7 +759,7 @@
 
 		function _($message)
 		{
-			return $this->localise("_", $message);
+			return $this->localise("\sua\_", $message);
 		}
 
 		/**
@@ -1234,13 +1249,12 @@
 		 * @param string $id
 		 * @param string $type gebaeude, forschung, roboter, schiffe, verteidigung
 		 * @param array $fields Wenn angegeben, werden nur diese Eigenschaften (also nur diese Array-Keys) zurückgegeben.
-		 * @param bool $run_eventhandler Wirkungslos
-		 * @param int $level Gibt die Informationen auf einer bestimmten Ausbaustufe zurück
 		 * @param Planet $planet Berechnet die Eigenschaften mit den Werten auf dem Planeten
+		 * @param int $level Gibt die Informationen auf einer bestimmten Ausbaustufe zurück
 		 * @return array
 		*/
 
-		function getItemInfo($id, $type=null, $fields=null, $run_eventhandler=null, $level=null, $planet=null)
+		function getItemInfo($id, $type=null, $fields=null, $planet=null, $level=null)
 		{
 			list($calc, $fields) = $this->_itemInfoFields($fields);
 
@@ -1304,14 +1318,14 @@
 			{
 				case "gebaeude":
 					if(($calc["prod"] || $calc["time"]) && isset($planet))
-						$max_rob_limit = floor($planet->getBasicFields()/2);
+						$max_rob_limit = floor($planet->getSize(true)/2);
 
 					if($calc["has_prod"])
 						$info["has_prod"] = ($info["prod"][0] > 0 || $info["prod"][1] > 0 || $info["prod"][2] > 0 || $info["prod"][3] > 0 || $info["prod"][4] > 0 || $info["prod"][5] > 0);
 					if($calc["prod"] && isset($planet))
 					{
 						$level_f = pow($info["level"], 2);
-						$percent_f = $planet->checkProductionFactor($id);
+						$percent_f = $planet->getProductionFactor($id);
 						$info["prod"][0] *= $level_f*$percent_f;
 						$info["prod"][1] *= $level_f*$percent_f;
 						$info["prod"][2] *= $level_f*$percent_f;
@@ -1378,10 +1392,10 @@
 						$info["ress"][3] *= $ress_f;
 					}
 
-					if($calc["buildable"] && $info["buildable"] && $info["fields"] > $this->getRemainingFields())
+					if($calc["buildable"] && $info["buildable"] && isset($planet) && $info["fields"] > $planet->getRemainingFields())
 						$info["buildable"] = false;
 					if($calc["debuildable"])
-						$info["debuildable"] = ($info["level"] >= 1 && -$info["fields"] <= $this->getRemainingFields());
+						$info["debuildable"] = ($info["level"] >= 1 && isset($planet) && -$info["fields"] <= $planet->getRemainingFields());
 
 					if($calc["limit_factor"])
 					{
@@ -1600,9 +1614,13 @@
 
 		function getItemLevel($id)
 		{
+			try { return $this->getCacheValue(array("getItemLevel", $id)); }
+			catch(DatasetException $e) { }
+
 			$level = self::$sql->singleField("SELECT c_level FROM t_users_research WHERE c_user = ".self::$sql->quote($this->getName())." AND c_id = ".self::$sql->quote($id)." LIMIT 1;");
 			if($level === false)
-				return 0;
+				$level = 0;
+			$this->setCacheValue(array("getItemLevel", $id), $level);
 			return $level;
 		}
 

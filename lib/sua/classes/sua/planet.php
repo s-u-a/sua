@@ -33,9 +33,11 @@
 	{
 		protected static $primary_key = array("t_planets", "c_galaxy || ':' || c_system || ':' || c_planet");
 
-		static function idFromParams(array $params)
+		protected $cache = array();
+
+		static function idFromParams($params = null)
 		{
-			if(count($params) < 1 || ($params[0] instanceof System && count($params) < 2))
+			if(!$params || count($params) < 1 || ($params[0] instanceof System && count($params) < 2))
 				throw new DatasetException("Insufficient parameters.");
 			if($params[0] instanceof System)
 				return $params[0]->getGalaxy().":".$params[0]->getSystem().":".$params[1];
@@ -578,7 +580,7 @@
 		protected function refreshRess($a_time=null)
 		{
 			$time = isset($a_time) ? $a_time : time();
-			$last_refresh = $this->getMainField("c_last_refresh");
+			$last_refresh = Date::fromPostgres($this->getMainField("c_last_refresh"))->getTime();
 			if($last_refresh == $time)
 				return;
 			elseif($last_refresh >= $time)
@@ -600,7 +602,7 @@
 			}
 
 			$this->setMainField(array("c_ress0", "c_ress1", "c_ress2", "c_ress3", "c_ress4"), $cur);
-			$this->setMainField("c_last_refresh", $time);
+			$this->setMainField("c_last_refresh", Classes::Date($time));
 		}
 
 		/**
@@ -611,9 +613,13 @@
 
 		function getProductionFactor($gebaeude)
 		{
+			try { return $this->getCacheValue(array("getProductionFactor", $gebaeude)); }
+			catch(DatasetException $e) {}
+
 			$factor = self::$sql->singleField("SELECT c_prod_factor FROM t_planets_items WHERE ".$this->sqlCond()." AND c_id = ".self::$sql->quote($gebaeude)." LIMIT 1;");
 			if(!$factor)
 				$factor = 1;
+			$this->setCacheValue(array("getProductionFactor", $gebaeude), $factor);
 			return $factor;
 		}
 
@@ -632,6 +638,8 @@
 			if($factor > 1) $factor = 1;
 
 			self::$sql->backgroundQuery("UPDATE t_planets_items SET c_prod_factor = ".self::$sql->quote($factor)." WHERE ".$this->sqlCond()." AND c_id = ".self::$sql->quote($gebaeude).";");
+
+			$this->setCacheValue(array("getProductionFactor", $gebaeude), $factor);
 		}
 
 		/**
@@ -641,6 +649,9 @@
 
 		function getProduction()
 		{
+			try { return $this->getCacheValue(array("getProduction")); }
+			catch(DatasetException $e) { }
+
 			$prod = array(0,0,0,0,0,0,0,false);
 			$owner = $this->getOwner();
 			if($owner)
@@ -654,7 +665,7 @@
 					$energie_need = 0;
 					foreach($gebaeude as $id)
 					{
-						$item = $owner_obj->getItemInfo($id, "gebaeude", array("prod"), false, null, $this);
+						$item = $owner_obj->getItemInfo($id, "gebaeude", array("prod"), $this);
 						if($item["prod"][5] < 0) $energie_need -= $item["prod"][5];
 						elseif($item["prod"][5] > 0) $energie_prod += $item["prod"][5];
 
@@ -710,6 +721,7 @@
 					$prod[6] = $f;
 				}
 			}
+			$this->setCacheValue(array("getProduction"), $prod);
 			return $prod;
 		}
 
@@ -766,9 +778,13 @@
 				return $user_obj->getItemLevel($id);
 			}
 
+			try { return $this->getCacheValue(array("getItemLevel", $type, $id)); }
+			catch(DatasetException $e) { }
+
 			$level = self::$sql->singleField("SELECT c_level FROM t_planets_items WHERE ".$this->sqlCond()." AND c_id = ".self::$sql->quote($id)." AND c_type = ".self::$sql->quote($type)." LIMIT 1;");
 			if($level === false)
 				$level = 0;
+			$this->setCacheValue(array("getItemLevel", $type, $id), $level);
 			return $level;
 		}
 
@@ -857,9 +873,22 @@
 
 			// TODO: Punkte und belegte Felder aktualisieren
 			if(self::$sql->singleField("SELECT COUNT(*) FROM t_planets_items WHERE ".$this->sqlCond()." AND c_id = ".self::$sql->quote($id).";") > 0)
+			{
 				self::$sql->backgroundQuery("UPDATE t_planets_items SET c_level = c_level+".self::$sql->quote($value)." WHERE ".$this->sqlCond()." AND c_id = ".self::$sql->quote($id).";");
+				try
+				{
+					$cache = $this->getCacheValue(array("getItemLevel", $type, $id));
+					$this->setCacheValue(array("getItemLevel", $type, $id), $cache+$value);
+				}
+				catch(DatasetException $e)
+				{
+				}
+			}
 			else
+			{
 				self::$sql->backgroundQuery("INSERT INTO t_planets_items ( c_galaxy, c_system, c_planet, c_id, c_level ) VALUES ( ".self::$sql->quote($this->getGalaxy()).", ".self::$sql->quote($this->getSystem()).", ".self::$sql->quote($this->getPlanet()).", ".self::$sql->quote($id).", ".self::$sql->quote($value)." );");
+				$this->setCacheValue(array("getItemInfo", $type, $id), $value);
+			}
 
 			# Felder belegen
 			if($type == "gebaeude")
@@ -935,6 +964,8 @@
 
 					break;*/
 			}
+
+			$this->setCacheValue(array("getProduction"), null);
 		}
 
 		/**
