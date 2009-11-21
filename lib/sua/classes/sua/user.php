@@ -1442,7 +1442,7 @@
 						$planets = Planet::getPlanetsByUser($this->getName());
 						foreach($planets as $act_planet)
 						{
-							if($act_planet == $planet) $local_labs += $act_planet->getItemLevel("B8", "gebaeude");
+							if($act_planet === $planet) $local_labs += $act_planet->getItemLevel("B8", "gebaeude");
 							else $global_labs += $act_planet->getItemLevel("B8", "gebaeude");
 						}
 

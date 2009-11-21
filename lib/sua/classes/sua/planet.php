@@ -1022,7 +1022,7 @@
 		{
 			$building = $this->checkBuildingThing($type);
 
-			if($type == "forschung" && $building[2] && $building[4] != $this)
+			if($type == "forschung" && $building[2] && $building[4] !== $this)
 			{ // Globale Forschung auf einem anderen Planeten
 				return $building[4]->removeBuildingThing($type, $cancel);
 			}
