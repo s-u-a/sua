@@ -30,7 +30,7 @@
 	require('include.php');
 
 	$planets = Planet::getPlanetsByUser($USER->getName());
-	$act = array_search($PLANET, $planets);
+	$act = array_search($PLANET, $planets, true);
 
 	# Naechsten nicht bauenden Planeten herausfinden
 	$i = $act+1;
