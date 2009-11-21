@@ -986,7 +986,7 @@
 					$query = self::$sql->singleLine("SELECT c_id,c_start,c_duration,c_cost0,c_cost1,c_cost2,c_cost3,c_number FROM t_planets_building WHERE ".$this->sqlCond()." AND c_type = ".self::$sql->quote($type).";");
 					if(!$query)
 						return null;
-					return array($query["c_id"], $query["c_start"]+$query["c_duration"], $query["c_number"] < 0, array($query["c_cost0"], $query["c_cost1"], $query["c_cost2"], $query["c_cost3"]));
+					return array($query["c_id"], Date::fromPostgres($query["c_start"])->toTime()->addSeconds($query["c_duration"]), $query["c_number"] < 0, array($query["c_cost0"], $query["c_cost1"], $query["c_cost2"], $query["c_cost3"]));
 				case "forschung":
 					$query = self::$sql->singleLine("SELECT c_id,c_start,c_duration,c_cost0,c_cost1,c_cost2,c_cost3,".($type == "forschung" ? "c_global" : "c_number")." FROM t_planets_building WHERE ".$this->sqlCond()." AND c_type = ".self::$sql->quote($type).";");
 					if(!$query)
@@ -994,7 +994,7 @@
 						foreach(self::getPlanetsByUser($this->getOwner()) as $planet)
 						{
 							if($planet == $this) continue;
-							if(self::$sql->singleField("SELECT c_id FROM t_planets_building WHERE ".$planet->sqlCond()." AND c_type = 'forschung' AND c_global;"))
+							if(self::$sql->singleField("SELECT c_id FROM t_planets_building WHERE ".$planet->sqlCond()." AND c_type = 'forschung' AND c_global LIMIT 1;"))
 								return $planet->checkBuildingThing("forschung");
 						}
 						return null;

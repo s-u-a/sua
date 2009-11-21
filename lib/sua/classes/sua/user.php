@@ -64,6 +64,12 @@
 		const SCORES_TOTAL = "c_total";
 
 		/**
+		 * Für die Iterator-Funktion.
+		 * @var array(Planet)
+		*/
+		private $planets = null;
+
+		/**
 		 * Gecachte Spracheinstellung für User->setLanguage() und User->restoreLanguage().
 		 * @var array(string)
 		*/
@@ -1434,14 +1440,11 @@
 						$local_labs = 0;
 						$global_labs = 0;
 						$planets = Planet::getPlanetsByUser($this->getName());
-						$active_planet = $this->getActivePlanet();
-						foreach($planets as $planet)
+						foreach($planets as $act_planet)
 						{
-							$this->setActivePlanet($planet);
-							if($planet == $active_planet) $local_labs += $this->getItemLevel("B8", "gebaeude");
-							else $global_labs += $this->getItemLevel("B8", "gebaeude");
+							if($act_planet == $planet) $local_labs += $act_planet->getItemLevel("B8", "gebaeude");
+							else $global_labs += $act_planet->getItemLevel("B8", "gebaeude");
 						}
-						$this->setActivePlanet($active_planet);
 
 						if($calc["time_local"])
 							$info["time_local"] = $info["time"]*pow(0.95, $local_labs);
@@ -1884,28 +1887,39 @@
 			}
 		}
 
+		protected function loadIterator($force = false)
+		{
+			if($force || is_null($this->planets))
+				$this->planets = Planet::getPlanetsByUser($this->getName());
+		}
+
 		function rewind()
 		{
+			$this->loadIterator(true);
 			return reset($this->planets);
 		}
 
 		function current()
 		{
+			$this->loadIterator();
 			return current($this->planets);
 		}
 
 		function key()
 		{
+			$this->loadIterator();
 			return key($this->planets);
 		}
 
 		function next()
 		{
+			$this->loadIterator();
 			return next($this->planets);
 		}
 
 		function valid()
 		{
-			return key($this->planets) !== false;
+			$this->loadIterator();
+			return !is_null(key($this->planets));
 		}
 	}

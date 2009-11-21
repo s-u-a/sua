@@ -104,4 +104,10 @@
 		{
 			return $this->getFormattedGMT();
 		}
+
+		function addSeconds($seconds)
+		{
+			$this->time += $seconds;
+			return $this;
+		}
 	}
