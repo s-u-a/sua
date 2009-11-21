@@ -24,6 +24,7 @@
 	namespace sua\psua;
 
 	use \sua\L;
+	use \sua\F;
 
 	require('include.php');
 
@@ -68,7 +69,7 @@
 <?php
 	foreach($forschungen as $id)
 	{
-		$item_info = $USER->getItemInfo($id, 'forschung', array("deps-okay", "level", "buildable", "ress", "level", "name", "time_local", "time_global"));
+		$item_info = $USER->getItemInfo($id, 'forschung', array("deps-okay", "level", "buildable", "ress", "level", "name", "time_local", "time_global"), $PLANET);
 
 		if(!$item_info['deps-okay'] && $item_info['level'] <= 0 && (!$building || $building[0] != $id))
 			continue;
@@ -78,7 +79,7 @@
 			$buildable_global = false; # Es wird schon wo geforscht
 ?>
 <div class="item forschung" id="item-<?=htmlspecialchars($id)?>">
-	<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(<?=sprintf(h(_("Level %s")), F::ths($item_info['level']))?>)</span></h3>
+	<h3><a href="info/description.php?id=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars($GUI->getOption("url_suffix"))?>" title="<?=L::h(_("Genauere Informationen anzeigen"))?>"><?=htmlspecialchars($item_info['name'])?></a> <span class="stufe">(<?=sprintf(h(_("Level %s")), F::ths($item_info['level']))?>)</span></h3>
 <?php
 		if((!($building_geb = $USER->checkBuildingThing('gebaeude')) || $building_geb[0] != 'B8') && $item_info['buildable'] && $USER->permissionToAct() && !($building = $USER->checkBuildingThing('forschung')) && !in_array($id, $laufende_forschungen) && $item_info['deps-okay'])
 		{
@@ -86,12 +87,12 @@
 			$buildable_global = ($buildable_global && $enough_ress);
 ?>
 	<ul>
-		<li class="item-ausbau forschung-lokal <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="forschung.php?lokal='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=L::h(_("Lokal weiterentwickeln"))?><?=$enough_ress ? '</a>' : ''?></li>
+		<li class="item-ausbau forschung-lokal <?=$enough_ress ? 'genug' : 'fehlend'?>"><?=$enough_ress ? '<a href="forschung.php?lokal='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars($GUI->getOption("url_suffix")).'" tabindex="'.($tabindex++).'">' : ''?><?=L::h(_("Lokal weiterentwickeln"))?><?=$enough_ress ? '</a>' : ''?></li>
 <?php
 			if(count($laufende_forschungen) <= 0)
 			{
 ?>
-		<li class="item-ausbau forschung-global <?=$buildable_global ? 'genug' : 'fehlend'?>"><?=$buildable_global ? '<a href="forschung.php?global='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars(global_setting("URL_SUFFIX")).'" tabindex="'.($tabindex++).'">' : ''?><?=L::h(_("Global weiterentwickeln"))?><?=$buildable_global ? '</a>' : ''?></li>
+		<li class="item-ausbau forschung-global <?=$buildable_global ? 'genug' : 'fehlend'?>"><?=$buildable_global ? '<a href="forschung.php?global='.htmlspecialchars(urlencode($id)).'&amp;'.htmlspecialchars($GUI->getOption("url_suffix")).'" tabindex="'.($tabindex++).'">' : ''?><?=L::h(_("Global weiterentwickeln"))?><?=$buildable_global ? '</a>' : ''?></li>
 <?php
 			}
 ?>
@@ -101,7 +102,7 @@
 		elseif($building && $building[0] == $id)
 		{
 ?>
-	<div class="restbauzeit" id="restbauzeit-<?=htmlspecialchars($id)?>"><?=htmlspecialchars(F::formatFTime($building[1], $USER))?> <a href="forschung.php?cancel=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars(global_setting("URL_SUFFIX"))?>" class="abbrechen"><?=L::h(_("Abbrechen"))?></a></div>
+	<div class="restbauzeit" id="restbauzeit-<?=htmlspecialchars($id)?>"><?=htmlspecialchars(F::formatFTime($building[1], $USER))?> <a href="forschung.php?cancel=<?=htmlspecialchars(urlencode($id))?>&amp;<?=htmlspecialchars($GUI->getOption("url_suffix"))?>" class="abbrechen"><?=L::h(_("Abbrechen"))?></a></div>
 <?php
 			if(!$USER->umode())
 			{
@@ -117,7 +118,7 @@
 		<dt class="item-kosten"><?=L::h(_("Kosten"))?></dt>
 		<dd class="item-kosten">
 <?php
-		echo F::formatRess($item_info['ress'], 3, false, false, false, $USER);
+		echo F::formatRess($item_info['ress'], 3, false, false, false, $PLANET);
 ?>
 		</dd>
 
@@ -133,4 +134,3 @@
 ?>
 <?php
 	$GUI->end();
-?>
