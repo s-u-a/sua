@@ -1,3 +1,6 @@
 [submodule "game/res/style/default"]
 	path = game/res/style/default
 	url = git://gitorious.org/sua/skin_default.git
+[submodule "login/style/default"]
+	path = login/style/default
+	url = git://gitorious.org/sua/skin_default.git
