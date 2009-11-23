@@ -1,0 +1,3 @@
+[submodule "login/style/default"]
+	path = login/style/default
+	url = git://gitorious.org/sua/skin_default.git
