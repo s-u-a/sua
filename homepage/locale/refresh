@@ -1,5 +1,5 @@
 #!/bin/bash
-cd "$(dirname "$(which "$0")")"
+cd "$(dirname "$(readlink -m "$(which "$0")")")"
 echo '<?php' > refresh_tmp.php
 ( cat ../database.global/{gebaeude,forschung,roboter,schiffe,verteidigung} | cut -f 1 | xargs -n1 -I{} echo -e 'item_{}\nitem_{}_def_acc\nitemdesc_{}' ; cat << EOF ) | xargs -n1 -I{} echo '_("[{}]");' >> refresh_tmp.php
 message_1
@@ -18,3 +18,4 @@ fleet_5
 fleet_6
 EOF
 find .. -name '*.php' | xgettext -f- -dsua -osua.pot -LPHP --from-code=UTF-8 --add-comments="I18N:"
+rm -f refresh_tmp.php
