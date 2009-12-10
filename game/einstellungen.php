@@ -217,8 +217,8 @@
 			$imfile->addCheck(trim($_POST["im-protocol"]), trim($_POST["im-uin"]), $me->getName());
 		else
 		{
-			$me->setSetting("im-protocol", $_POST["im-protocol");
-			$me->setSetting("im-uin", $_POST["im-uin");
+			$me->setSetting("im-protocol", $_POST["im-protocol"]);
+			$me->setSetting("im-uin", $_POST["im-uin"]);
 		}
 	}
 
@@ -897,18 +897,16 @@
 	if(Functions::check_email($me->getTemporaryEMailAddress() !== null ? $me->getTemporaryEMailAddress() : $me->getEMailAddress()))
 	{
 ?>
-				<dd class="c-email-adresse validity successful"><?=L::h(_("Diese E-Mail-Adresse ist gültig."))?></dd>
+			<dd class="c-email-adresse validity successful"><?=L::h(_("Diese E-Mail-Adresse ist gültig."))?></dd>
 <?php
 	}
 	else
 	{
 ?>
-				<dd class="c-email-adresse validity error"><?=L::h(_("Diese E-Mail-Adresse ist ungültig."))?></dd>
+			<dd class="c-email-adresse validity error"><?=L::h(_("Diese E-Mail-Adresse ist ungültig."))?></dd>
 <?php
 	}
-?>
-			</dd>
-<?php
+
 	if($me->getTemporaryEMailAddress() !== null)
 	{
 ?>
@@ -976,10 +974,10 @@
 	<fieldset id="fieldset-<?=$fieldset++?>">
 		<legend><a accesskey="<?=L::accesskeyAttr(_("Administration&[login/einstellungen.php|1]"))?>" tabindex="<?=$tabindex++?>"><?=L::h(_("Administration&[login/einstellungen.php|1]"))?></a></legend>
 		<dl class="form">
-			<dt class="c-benutzer-umbenennen"><label for="i-benutzer-umbenennen"><?=L::h(_("Benutzer umbenennen&[login/einstellungen.php|1]"))?></label>
+			<dt class="c-benutzer-umbenennen"><label for="i-benutzer-umbenennen"><?=L::h(_("Benutzer umbenennen&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-benutzer-umbenennen"><input type="text" id="i-benutzer-umbenennen" name="rename" value="<?=htmlspecialchars($me->getName())?>"<?=L::accesskeyAttr(_("Benutzer umbenennen&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
 
-			<dt class="c-benutzer-loeschen"><label for="i-benutzer-loeschen"><?=L::h(_("Benutzer löschen&[login/einstellungen.php|1]"))?></label>
+			<dt class="c-benutzer-loeschen"><label for="i-benutzer-loeschen"><?=L::h(_("Benutzer löschen&[login/einstellungen.php|1]"))?></label></dt>
 			<dd class="c-benutzer-loeschen"><input type="checkbox" id="i-benutzer-loeschen" name="remove"<?=L::accesskeyAttr(_("Benutzer löschen&[login/einstellungen.php|1]"))?> tabindex="<?=$tabindex++?>" /></dd>
 		</dl>
 	</fieldset>

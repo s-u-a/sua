@@ -226,7 +226,7 @@
 					foreach($message->getRecipients() as $recipient)
 					{
 ?>
-		<li><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($recipient)."&".global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($recipient)?></a></dd>
+		<li><a href="info/playerinfo.php?player=<?=htmlspecialchars(urlencode($recipient)."&".global_setting("URL_SUFFIX"))?>" title="<?=L::h(_("Informationen zu diesem Spieler anzeigen"))?>"><?=htmlspecialchars($recipient)?></a></li>
 <?php
 					}
 ?>
@@ -406,6 +406,7 @@
 						$message = Classes::Message($message_id);
 						if($message->messageStatus($me->getName()) == Message::STATUS_NEU)
 							$message->messageStatus($me->getName(), Message::STATUS_ALT);
+					}
 				}
 				elseif(isset($_POST['delete']))
 				{
@@ -506,7 +507,7 @@
 			$ncount[$i] = array($unread, $total, $unread > 0 ? "neu type-strong" : ($total > 0 ? "alt type-weak" : "leer type-empty"));
 			$ges_ncount[0] += $unread;
 			$ges_ncount[1] += $read;
-		);
+		};
 
 		if($ges_ncount[0] > 0)
 			$ges_ncount[2] = 'neu type-strong';

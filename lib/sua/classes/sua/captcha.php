@@ -70,7 +70,7 @@
 <?=$t?>			<dt class="c-generierter-code"><label for="i-generierter-code"><?=L::h(_("Generierter Code"))?></label></dt>
 <?=$t?>			<dd class="c-generierter-code"><textarea name="recaptcha_challenge_field" id="i-generierter-code" tabindex="<?=$tabindex++?>"></textarea></dd>
 <?=$t?>		</dl>
-<?=$t?>		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"><?=L::h(_("Okay"))?></button><input type="hidden" name="recaptcha_response_field" value="manual_challenge"></button>
+<?=$t?>		<div class="button"><button type="submit" tabindex="<?=$tabindex++?>"><?=L::h(_("Okay"))?></button><input type="hidden" name="recaptcha_response_field" value="manual_challenge"></div>
 <?=$t?>	</noscript>
 <?php
 			F::makeHiddenFields($_POST, $tabs+1);
