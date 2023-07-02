@@ -1890,7 +1890,7 @@
 					}
 				}
 
-				mergeEventhandlerActions(&$actions, array(&$actions_gebaeude, &$actions_forschung, &$actions_roboter, &$actions_schiffe, &$actions_verteidigung));
+				mergeEventhandlerActions($actions, array(&$actions_gebaeude, &$actions_forschung, &$actions_roboter, &$actions_schiffe, &$actions_verteidigung));
 
 				unset($actions_gebaeude);
 				unset($actions_forschung);

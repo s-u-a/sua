@@ -313,7 +313,7 @@ EOF
 				Classes::resetInstances();
 				if($pid != -1) exit(0);
 			}
-			else pcntl_waitpid($pid, &$status);
+			else pcntl_waitpid($pid, $status);
 		}
 
 		function reload_stack()
@@ -604,7 +604,7 @@ EOF
 			{
 				fputs($errlog, time_prefix()." There are ".$existing_messages." messages in the database, but only ".$linked_messages." are referenced in the user accounts, cleaning up ghost messages...\n");
 				$message_db = new MessageDatabase();
-				fputs($errlog, time_prefix()." Deleted ".$message_db->cleanUp(&$linked_messages_list)." ghost messages.\n");
+				fputs($errlog, time_prefix()." Deleted ".$message_db->cleanUp($linked_messages_list)." ghost messages.\n");
 			}
 			elseif($verbose)
 				fputs($errlog, time_prefix()." Referring messages count ".$linked_messages." matches database messages count.\n");
