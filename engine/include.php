@@ -80,8 +80,8 @@
 	global_setting('DB_DATABASES', $GDB_DIR.'/databases');
 	global_setting('DB_HOSTNAME', $GDB_DIR.'/hostname');
 	global_setting('EVENTHANDLER_INTERVAL', 2);
-	global_setting('THS_HTML', '&nbsp;');
-	global_setting('THS_UTF8', "\xc2\xa0");
+	global_setting('THS_HTML', '&#8239;');
+	global_setting('THS_UTF8', "\xe2\x80\xaf");
 	global_setting('MIN_CLICK_DIFF', 0.3); # Sekunden, die zwischen zwei Klicks mindestens vergehen muessen, sonst Bremsung
 	global_setting('EMAIL_FROM', 'webmaster@s-u-a.net');
 	global_setting('MAX_PLANETS', 15);
