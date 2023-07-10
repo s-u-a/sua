@@ -1038,7 +1038,7 @@
 							$info['prod'][5] *= pow(1.05, $this->getItemLevel('F3', 'forschung', $run_eventhandler));
 
 						$info['time'] *= pow($info['level']+1, 1.5);
-						$baurob = 1-0.00125*$this->getItemLevel('F2', 'forschung', $run_eventhandler);
+						$baurob = max(0, 1-0.00125*$this->getItemLevel('F2', 'forschung', $run_eventhandler));
 						$rob = $this->getItemLevel('R01', 'roboter', $run_eventhandler);
 						if($rob > $max_rob_limit) $rob = $max_rob_limit;
 						$info['time'] *= pow($baurob, $rob);
